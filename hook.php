@@ -63,8 +63,8 @@ function plugin_monitoring_install() {
 //   if ((isset($version_detected)) AND ($version_detected != PLUGIN_FUSIONINVENTORY_VERSION)) {
 //      pluginFusioninventoryUpdate($version_detected);
 //   } else {
-//      include (GLPI_ROOT . "/plugins/fusioninventory/install/install.php");
-//      pluginFusioninventoryInstall(PLUGIN_FUSIONINVENTORY_VERSION);
+      include (GLPI_ROOT . "/plugins/monitoring/install/install.php");
+      pluginMonitoringInstall(PLUGIN_MONITORING_VERSION);
 //   }
 
    return true;

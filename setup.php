@@ -31,6 +31,7 @@
    Purpose of file:
    ----------------------------------------------------------------------
  */
+
 define ("PLUGIN_MONITORING_VERSION","1.0.0");
 
 // Init the hooks of monitoring
