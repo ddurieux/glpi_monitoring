@@ -123,13 +123,20 @@ class PluginMonitoringHost extends CommonDBTM {
          $this->getEmpty();
       }
 
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
-
+      if ($items_id!='') {
+         $this->getFromDB($items_id);
+         $this->showFormButtons($options);
+      } else {
+         echo "<tr>";
+         echo "<td colspan='4' align='center'>
+            <input name='add' value='Add this host to monitoring' class='submit' type='submit'></td>";
+         echo "</tr>";
+         $this->showFormButtons(array('canedit'=>false));
+      }
       
-      $this->showFormButtons($options);
-      $this->addDivForTabs();
+
 
       return true;
    }

@@ -82,20 +82,37 @@ function plugin_monitoring_uninstall() {
 function plugin_get_headings_monitoring($item,$withtemplate) {
    global $LANG;
 
+   switch (get_class($item)) {
+      case 'Computer' :
+         $array = array();
+         $array[1] = $LANG['plugin_monitoring']['title'][0];
+         return $array;
+         break;
+   }
+
    return false;
 }
 
 // Define headings actions added by the plugin
 //function plugin_headings_actions_fusioninventory($type) {
 function plugin_headings_actions_monitoring($item) {
-
+   switch (get_class($item)) {
+      case 'Computer' :
+         $array = array ();
+         $array[1] = "plugin_headings_monitoring_hosts";
+         return $array;
+         break;
+   }
    return false;
 }
 
 
 //function plugin_headings_fusioninventory_locks($type, $id) {
-function plugin_headings_monitoring_locks($item) {
- 
+function plugin_headings_monitoring_hosts($item) {
+
+   $pluginMonitoringHost = new PluginMonitoringHost();
+   $pluginMonitoringHost->showForm('');
+
 }
 
 function plugin_headings_monitoring_tasks($item, $itemtype='', $items_id=0) {

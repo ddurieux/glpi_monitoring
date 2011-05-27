@@ -46,7 +46,13 @@ function plugin_init_monitoring() {
          if ($plugin->isActivated('monitoring')) {
             
                $PLUGIN_HOOKS['menu_entry']['monitoring'] = true;
-        }
+         }
+
+         // Tabs for each type
+         $PLUGIN_HOOKS['headings']['monitoring'] = 'plugin_get_headings_monitoring';
+         $PLUGIN_HOOKS['headings_action']['monitoring'] = 'plugin_headings_actions_monitoring';
+
+
       }
 
 
