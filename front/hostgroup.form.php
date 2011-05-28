@@ -32,22 +32,22 @@
    ----------------------------------------------------------------------
  */
 
-$title="Monitoring";
+define('GLPI_ROOT', '../../..');
 
-$LANG['plugin_monitoring']['title'][0]="$title";
+include (GLPI_ROOT . "/inc/includes.php");
 
-$LANG['plugin_monitoring']['host'][0]="hosts";
-$LANG['plugin_monitoring']['host'][1]="Dependencies";
-$LANG['plugin_monitoring']['host'][2]="Dynamic management";
-$LANG['plugin_monitoring']['host'][3]="Static management";
-$LANG['plugin_monitoring']['host'][4]="Dependency host";
-$LANG['plugin_monitoring']['host'][5]="Active checks";
-$LANG['plugin_monitoring']['host'][6]="Passive checks";
-$LANG['plugin_monitoring']['host'][7]="Dynamic dependencies are";
-$LANG['plugin_monitoring']['host'][8]="Host";
+commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
+             "monitoring", "hostgroup");
 
-$LANG['plugin_monitoring']['grouphost'][0]="hosts groups";
-$LANG['plugin_monitoring']['grouphost'][1]="hosts group";
+$pluginMonitoringHostgroup = new PluginMonitoringHostgroup();
 
+
+if (isset($_GET["id"])) {
+   $pluginMonitoringHostgroup->showForm($_GET["id"]);
+} else {
+   $pluginMonitoringHostgroup->showForm("");
+}
+
+commonFooter();
 
 ?>

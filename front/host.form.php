@@ -39,7 +39,6 @@ include (GLPI_ROOT . "/inc/includes.php");
 commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "host");
 
-
 $pluginMonitoringHost = new PluginMonitoringHost();
 if (isset($_POST["add"])) {
    if (($_POST['items_id'] != "0") AND ($_POST['items_id'] != "")) {
@@ -54,8 +53,8 @@ if (isset($_POST["add"])) {
    $pluginMonitoringHost->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["delete"])) {
-
-   
+   $pluginMonitoringHost->delete($_POST, 1);
+   glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST['parent_add'])) {
    // Add host in dependencies/parent of host
 
@@ -90,9 +89,9 @@ if (isset($_POST["add"])) {
 
 
 if (isset($_GET["id"])) {
-   $agent->showForm($_GET["id"]);
+   $pluginMonitoringHost->showForm($_GET["id"]);
 } else {
-   $agent->showForm("");
+   $pluginMonitoringHost->showForm("");
 }
 
 commonFooter();

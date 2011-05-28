@@ -30,3 +30,15 @@ CREATE TABLE `glpi_plugin_monitoring_hosts` (
   `plugin_monitoring_timeperiods_id`  int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_hostgroups`;
+
+CREATE TABLE `glpi_plugin_monitoring_hostgroups` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `plugin_monitoring_hosts` text COLLATE utf8_unicode_ci,
+  `plugin_monitoring_hostgroups` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

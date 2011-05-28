@@ -88,7 +88,7 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
       case 'Printer':
       case 'NetworkEquipment':
          $array = array();
-         $array[1] = $LANG['plugin_monitoring']['title'][0];
+         $array[1] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['host'][8];
          return $array;
          break;
    }
