@@ -41,7 +41,9 @@ $LANG['plugin_monitoring']['host'][1]="Dependencies";
 $LANG['plugin_monitoring']['host'][2]="Dynamic management";
 $LANG['plugin_monitoring']['host'][3]="Static management";
 $LANG['plugin_monitoring']['host'][4]="Dependency host";
-
 $LANG['plugin_monitoring']['host'][5]="Active checks";
 $LANG['plugin_monitoring']['host'][6]="Passive checks";
+$LANG['plugin_monitoring']['host'][7]="Dynamic dependencies are";
+
+
 ?>

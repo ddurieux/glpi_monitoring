@@ -48,21 +48,43 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["update"])) {
 
-   if (isset($_POST['itemtype'])) {
-      $array = array();
-      $array['itemtype'] = $_POST['itemtype'];
-      $array['items_id'] = $_POST['parents'];
-      $_POST['parents'] = exportArrayToDB($array);
-   }
    if ($_POST['parenttype'] == '0' OR $_POST['parenttype'] == '2') {
       $_POST['parents'] = "";
    }
-   unset($_POST['itemtype']);
    $pluginMonitoringHost->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["delete"])) {
 
    
+} else if (isset($_POST['parent_add'])) {
+   // Add host in dependencies/parent of host
+
+   $pluginMonitoringHost->getFromDB($_POST['id']);
+
+   $array = importArrayFromDB($pluginMonitoringHost->fields['parents']);
+   if (!array_search($_POST['itemtype']."-".$_POST['parent_to_add'], $array)) {
+      $array[] = $_POST['itemtype']."-".$_POST['parent_to_add'];
+   }
+
+   $input = array();
+   $input['id'] = $pluginMonitoringHost->fields['id'];
+   $input['parents'] = exportArrayToDB($array);
+   $pluginMonitoringHost->update($input);
+   glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset($_POST['parent_delete'])) {
+   // Delete host in dependencies/parent of host
+
+   $pluginMonitoringHost->getFromDB($_POST['id']);
+
+   $array = importArrayFromDB($pluginMonitoringHost->fields['parents']);
+   $key = array_search($_POST['parent_to_delete'][0], $array);
+   unset($array[$key]);
+
+   $input = array();
+   $input['id'] = $pluginMonitoringHost->fields['id'];
+   $input['parents'] = exportArrayToDB($array);
+   $pluginMonitoringHost->update($input);
+   glpi_header($_SERVER['HTTP_REFERER']);
 }
 
 

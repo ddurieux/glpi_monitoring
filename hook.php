@@ -109,10 +109,13 @@ function plugin_headings_actions_monitoring($item) {
 
 //function plugin_headings_fusioninventory_locks($type, $id) {
 function plugin_headings_monitoring_hosts($item) {
-
+   
    $pluginMonitoringHost = new PluginMonitoringHost();
    $pluginMonitoringHost->showForm('', array(), get_class($item));
-
+   if ($pluginMonitoringHost->getField('id')
+           AND $pluginMonitoringHost->getField('parenttype') == '1') {
+      $pluginMonitoringHost->manageDependencies($pluginMonitoringHost->getField('id'));
+   }
 }
 
 function plugin_headings_monitoring_tasks($item, $itemtype='', $items_id=0) {

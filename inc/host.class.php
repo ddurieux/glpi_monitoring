@@ -145,14 +145,8 @@ class PluginMonitoringHost extends CommonDBTM {
          $array[2] = $LANG['plugin_monitoring']['host'][2];
          Dropdown::showFromArray("parenttype", $array, array('value'=>$this->fields['parenttype']));
          echo "</td>";
-         echo "<td>".$LANG['plugin_monitoring']['host'][4]."&nbsp;:</td>";
+         echo "<td>".$LANG['plugin_monitoring']['host'][7]."&nbsp;:</td>";
          echo "<td align='center'>";
-         $array = importArrayFromDB($this->fields['parents']);
-         if (!isset($array['itemtype']))
-            $array['itemtype'] = 0;
-         if (!isset($array['items_id']))
-            $array['items_id'] = 0;
-         Dropdown::showAllItems("parents", $array['itemtype'], $array['items_id']);
          echo "</td>";
          echo "</tr>";
 
@@ -185,6 +179,57 @@ class PluginMonitoringHost extends CommonDBTM {
    }
 
 
+
+   function manageDependencies($items_id) {
+      global $LANG;
+
+      $this->getFromDB($items_id);
+
+
+      echo "<form name='dependencies_form' id='dependencies_form'
+             method='post' action=' ";
+      echo getItemTypeFormURL(__CLASS__)."'>";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<th colspan='3'>";
+      echo $LANG['plugin_monitoring']['host'][1];
+      echo "</th>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td class='right'>";
+      Dropdown::showAllItems("parent_to_add");
+      echo "</td>";
+      echo "<td class='center'>";
+      echo "<input type='submit' class='submit' name='parent_add' value='".
+            $LANG['buttons'][8]." >>'>";
+      echo "<br><br>";
+      if ($this->getField('parents')) {
+         echo "<input type='submit' class='submit' name='parent_delete' value='<< ".
+               $LANG['buttons'][6]."'>";
+      }
+      echo "</td>";
+      echo "<td>";
+      if ($this->getField('parents')) {
+         echo "<select name='parent_to_delete[]' multiple size='5'>";
+         $array = importArrayFromDB($this->getField('parents'));
+         foreach ($array as $data) {
+            $datasplit = explode("-", $data);
+            $classname = $datasplit[0];
+            $class = new $classname;
+            $class->getFromDB($datasplit[1]);
+            echo "<option value='".$data."'>[".$datasplit[0]."] ".$class->getName()." - ".$class->getField('serial')."</option>";
+         }
+         echo "</select>";
+      } else {
+         echo "&nbsp;";
+      }
+      echo "</td>";
+      echo "</tr>";
+      echo "</table>";
+      echo "<input type='hidden' name='id' value='".$items_id."' />";
+      echo "</form>";
+   }
 }
 
 ?>
