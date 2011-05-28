@@ -114,8 +114,16 @@ class PluginMonitoringHost extends CommonDBTM {
    *@return bool true if form is ok
    *
    **/
-   function showForm($items_id, $options=array()) {
+   function showForm($items_id, $options=array(), $itemtype='') {
       global $DB,$CFG_GLPI,$LANG;
+
+      if ($items_id == '') {
+         $a_list = $this->find("`items_id`='".$_POST['id']."' AND `itemtype`='".$itemtype."'", '', 1);
+         if (count($a_list)) {
+            $array = current($a_list);
+            $items_id = $array['id'];
+         }
+      }
 
       if ($items_id!='') {
          $this->getFromDB($items_id);
@@ -127,11 +135,17 @@ class PluginMonitoringHost extends CommonDBTM {
 
       if ($items_id!='') {
          $this->getFromDB($items_id);
+
+
+         
          $this->showFormButtons($options);
       } else {
+         // Add button for host creation
          echo "<tr>";
-         echo "<td colspan='4' align='center'>
-            <input name='add' value='Add this host to monitoring' class='submit' type='submit'></td>";
+         echo "<td colspan='4' align='center'>";
+         echo "<input name='items_id' type='hidden' value='".$_POST['id']."' />";
+         echo "<input name='itemtype' type='hidden' value='".$itemtype."' />";
+         echo "<input name='add' value='Add this host to monitoring' class='submit' type='submit'></td>";
          echo "</tr>";
          $this->showFormButtons(array('canedit'=>false));
       }

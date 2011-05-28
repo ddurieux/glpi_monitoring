@@ -111,7 +111,7 @@ function plugin_headings_actions_monitoring($item) {
 function plugin_headings_monitoring_hosts($item) {
 
    $pluginMonitoringHost = new PluginMonitoringHost();
-   $pluginMonitoringHost->showForm('');
+   $pluginMonitoringHost->showForm('', array(), get_class($item));
 
 }
 
