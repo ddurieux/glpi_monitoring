@@ -84,6 +84,9 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
 
    switch (get_class($item)) {
       case 'Computer' :
+      case 'Device':
+      case 'Printer':
+      case 'NetworkEquipment':
          $array = array();
          $array[1] = $LANG['plugin_monitoring']['title'][0];
          return $array;
@@ -97,7 +100,10 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
 //function plugin_headings_actions_fusioninventory($type) {
 function plugin_headings_actions_monitoring($item) {
    switch (get_class($item)) {
-      case 'Computer' :
+      case 'Computer':
+      case 'Device':
+      case 'Printer':
+      case 'NetworkEquipment':
          $array = array ();
          $array[1] = "plugin_headings_monitoring_hosts";
          return $array;

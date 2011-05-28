@@ -20,7 +20,7 @@ CREATE TABLE `glpi_plugin_monitoring_hosts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `items_id` int(11) NOT NULL DEFAULT '0',
   `itemtype` varchar(100) DEFAULT NULL,
-  `parenttype` int(1) NOT NULL,
+  `parenttype` int(1) NOT NULL DEFAULT '0',
   `parents` text COLLATE utf8_unicode_ci,
   `plugin_monitoring_hostgroups_id` int(11) NOT NULL DEFAULT '0',
   `plugin_monitoring_commands_id` int(11) NOT NULL DEFAULT '0',
