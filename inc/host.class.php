@@ -147,6 +147,21 @@ class PluginMonitoringHost extends CommonDBTM {
          echo "</td>";
          echo "<td>".$LANG['plugin_monitoring']['host'][7]."&nbsp;:</td>";
          echo "<td align='center'>";
+         // List all dynamic dependencies
+         $networkPort = new NetworkPort();
+         $a_list = $networkPort->find("`items_id`='".$_POST['id']."'
+            AND `itemtype`='".$itemtype."'");
+         foreach ($a_list as $data) {
+            $networkports_id = $networkPort->getContact($data['id']);
+            if ($networkports_id) {
+               $networkPort->getFromDB($networkports_id);
+               $classname = $networkPort->fields['itemtype'];
+               $class = new $classname;
+               $class->getFromDB($networkPort->fields['items_id']);
+               echo $class->getName(1);
+               echo "<br/>";
+            }            
+         }
          echo "</td>";
          echo "</tr>";
 
