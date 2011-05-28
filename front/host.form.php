@@ -48,7 +48,18 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["update"])) {
 
-   
+   if (isset($_POST['itemtype'])) {
+      $array = array();
+      $array['itemtype'] = $_POST['itemtype'];
+      $array['items_id'] = $_POST['parents'];
+      $_POST['parents'] = exportArrayToDB($array);
+   }
+   if ($_POST['parenttype'] == '0' OR $_POST['parenttype'] == '2') {
+      $_POST['parents'] = "";
+   }
+   unset($_POST['itemtype']);
+   $pluginMonitoringHost->update($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["delete"])) {
 
    

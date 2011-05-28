@@ -48,7 +48,7 @@ class PluginMonitoringHost extends CommonDBTM {
    static function getTypeName() {
       global $LANG;
 
-      return "hosts";
+      return $LANG['plugin_monitoring']['host'][0];
    }
 
 
@@ -88,7 +88,7 @@ class PluginMonitoringHost extends CommonDBTM {
 
       $tab = array();
     
-      $tab['common'] = "hosts";
+      $tab['common'] = $LANG['plugin_monitoring']['host'][0];
 
       return $tab;
    }
@@ -136,7 +136,36 @@ class PluginMonitoringHost extends CommonDBTM {
       if ($items_id!='') {
          $this->getFromDB($items_id);
 
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['plugin_monitoring']['host'][1]."&nbsp;:</td>";
+         echo "<td align='center'>";
+         $array = array();
+         $array[0] = $LANG['common'][49];
+         $array[1] = $LANG['plugin_monitoring']['host'][3];
+         $array[2] = $LANG['plugin_monitoring']['host'][2];
+         Dropdown::showFromArray("parenttype", $array, array('value'=>$this->fields['parenttype']));
+         echo "</td>";
+         echo "<td>".$LANG['plugin_monitoring']['host'][4]."&nbsp;:</td>";
+         echo "<td align='center'>";
+         $array = importArrayFromDB($this->fields['parents']);
+         if (!isset($array['itemtype']))
+            $array['itemtype'] = 0;
+         if (!isset($array['items_id']))
+            $array['items_id'] = 0;
+         Dropdown::showAllItems("parents", $array['itemtype'], $array['items_id']);
+         echo "</td>";
+         echo "</tr>";
 
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['plugin_monitoring']['host'][5]."&nbsp;:</td>";
+         echo "<td align='center'>";
+         Dropdown::showYesNo("active_checks_enabled", $this->fields['active_checks_enabled']);
+         echo "</td>";
+         echo "<td>".$LANG['plugin_monitoring']['host'][6]."&nbsp;:</td>";
+         echo "<td align='center'>";
+         Dropdown::showYesNo("passive_checks_enabled", $this->fields['passive_checks_enabled']);
+         echo "</td>";
+         echo "</tr>";
          
          $this->showFormButtons($options);
       } else {
