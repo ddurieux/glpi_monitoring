@@ -220,4 +220,16 @@ function plugin_monitoring_addWhere($link,$nott,$type,$id,$val) {
 }
 
 
+/*
+ * Webservices
+ */
+function plugin_monitoring_registerMethods() {
+   global $WEBSERVICES_METHOD;
+
+   $WEBSERVICES_METHOD['monitoring.test'] = array('PluginMonitoringWebservice',
+                                                       'methodTest');
+   $WEBSERVICES_METHOD['monitoring.shinken'] = array('PluginMonitoringWebservice',
+                                                       'methodShinken');
+}
+
 ?>

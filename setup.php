@@ -55,7 +55,7 @@ function plugin_init_monitoring() {
 
       }
 
-
+   $PLUGIN_HOOKS['webservices']['monitoring'] = 'plugin_monitoring_registerMethods';
 }
 
 // Name and Version of the plugin
