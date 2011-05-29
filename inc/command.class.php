@@ -161,6 +161,36 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['command_name'] = 'check_esx_vm';
       $input['command_line'] = "\$PLUGINSDIR\$/check_esx3.pl -D \$VCENTER\$ -N \$HOSTALIAS\$ -u \$VCENTERLOGIN\$ -p \$VCENTERLOGIN\$ -l \$ARG1\$";
       $this->add($input);
+
+      $input = array();
+      $input['name'] = 'Check Linux host alive';
+      $input['command_name'] = 'check_linux_host_alive';
+      $input['command_line'] = "\$PLUGINSDIR\$/check_tcp -H \$HOSTADDRESS\$ -p 22 -t 3";
+      $this->add($input);
+
+      $input = array();
+      $input['name'] = 'Check host alive';
+      $input['command_name'] = 'check_host_alive';
+      $input['command_line'] = "\$PLUGINSDIR\$/check_ping -H \$HOSTADDRESS\$ -w 1,50% -c 2,70% -p 1";
+      $this->add($input);
+
+      $input = array();
+      $input['name'] = 'Check Windows host alive';
+      $input['command_name'] = 'check_windows_host_alive';
+      $input['command_line'] = "\$PLUGINSDIR\$/check_tcp -H \$HOSTADDRESS\$ -p 139 -t 3";
+      $this->add($input);
+
+      $input = array();
+      $input['name'] = 'Check local disk';
+      $input['command_name'] = 'check_local_disk';
+      $input['command_line'] = "\$PLUGINSDIR\$/check.sh \$HOSTADDRESS\$ -c \$ARG1\$ SERVICE \$USER1\$";
+      $this->add($input);
+
+      $input = array();
+      $input['name'] = 'Check local disk';
+      $input['command_name'] = 'check-host-alive';
+      $input['command_line'] = "\$PLUGINSDIR\$/check.sh \$HOSTADDRESS\$ -c \$ARG1\$ SERVICE \$USER1\$";
+      $this->add($input);
       
    }
 
@@ -174,7 +204,7 @@ class PluginMonitoringCommand extends CommonDBTM {
    static function getTypeName() {
       global $LANG;
 
-      return "commands";
+      return $LANG['plugin_monitoring']['command'][0];
    }
 
 
@@ -214,7 +244,7 @@ class PluginMonitoringCommand extends CommonDBTM {
 
       $tab = array();
     
-      $tab['common'] = "commands";
+      $tab['common'] = $LANG['plugin_monitoring']['command'][0];
 
 		$tab[1]['table'] = $this->getTable();
 		$tab[1]['field'] = 'name';

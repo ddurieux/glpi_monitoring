@@ -170,7 +170,10 @@ class PluginMonitoringHost extends CommonDBTM {
          echo "<td align='center'>";
          Dropdown::show("PluginMonitoringHostgroup");
          echo "</td>";
-         echo "<td colspan='2'>";
+         echo "<td>".$LANG['plugin_monitoring']['command'][1]."&nbsp;:</td>";
+         echo "<td>";
+         Dropdown::show("PluginMonitoringCommand", array('name'=>'plugin_monitoring_commands_id',
+                                                   'value'=>$this->fields['plugin_monitoring_commands_id']));
          echo "</td>";
          echo "</tr>";
 
@@ -202,6 +205,9 @@ class PluginMonitoringHost extends CommonDBTM {
 
 
 
+   /*
+    * Function used to display hosts with itemtype in dropdown
+    */
    function showAllHosts($myname, $value_type=0, $value=0, $entity_restrict=-1, $types='',
                                 $onlyglobal=false) {
       global $LANG, $DB, $CFG_GLPI;

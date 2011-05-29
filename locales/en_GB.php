@@ -49,5 +49,7 @@ $LANG['plugin_monitoring']['host'][8]="Host";
 $LANG['plugin_monitoring']['grouphost'][0]="hosts groups";
 $LANG['plugin_monitoring']['grouphost'][1]="hosts group";
 
+$LANG['plugin_monitoring']['command'][0]="Commands";
+$LANG['plugin_monitoring']['command'][1]="Command check";
 
 ?>
