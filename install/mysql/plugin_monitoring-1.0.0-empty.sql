@@ -151,3 +151,15 @@ CREATE TABLE `glpi_plugin_monitoring_hosts_contactgroups` (
   KEY `plugin_monitoring_contactgroups_id` (`plugin_monitoring_contactgroups_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_checks`;
+
+CREATE TABLE `glpi_plugin_monitoring_checks` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `max_check_attempts` int(2) NOT NULL DEFAULT '1',
+  `check_interval` int(5) NOT NULL DEFAULT '1',
+  `retry_interval` int(5) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

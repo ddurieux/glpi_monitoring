@@ -166,14 +166,15 @@ class PluginMonitoringHost extends CommonDBTM {
          echo "</tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['plugin_monitoring']['grouphost'][1]."&nbsp;:</td>";
-         echo "<td align='center'>";
-         Dropdown::show("PluginMonitoringHostgroup");
-         echo "</td>";
          echo "<td>".$LANG['plugin_monitoring']['command'][1]."&nbsp;:</td>";
          echo "<td>";
          Dropdown::show("PluginMonitoringCommand", array('name'=>'plugin_monitoring_commands_id',
                                                    'value'=>$this->fields['plugin_monitoring_commands_id']));
+         echo "</td>";
+         echo "<td>".$LANG['plugin_monitoring']['check'][0]."&nbsp;:</td>";
+         echo "<td align='center'>";
+         Dropdown::show("PluginMonitoringCheck", array('name'=>'plugin_monitoring_checks_id',
+                                                   'value'=>$this->fields['plugin_monitoring_checks_id']));
          echo "</td>";
          echo "</tr>";
 

@@ -52,4 +52,6 @@ $LANG['plugin_monitoring']['grouphost'][1]="hosts group";
 $LANG['plugin_monitoring']['command'][0]="Commands";
 $LANG['plugin_monitoring']['command'][1]="Command check";
 
+$LANG['plugin_monitoring']['check'][0]="Check definition";
+
 ?>

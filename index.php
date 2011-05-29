@@ -32,25 +32,15 @@
    ----------------------------------------------------------------------
  */
 
-function pluginMonitoringInstall($version) {
-   global $DB,$LANG,$CFG_GLPI;
-
-   // ** Insert in DB
-   $DB_file = GLPI_ROOT ."/plugins/monitoring/install/mysql/plugin_monitoring-"
-              .$version."-empty.sql";
-   $DBf_handle = fopen($DB_file, "rt");
-   $sql_query = fread($DBf_handle, filesize($DB_file));
-   fclose($DBf_handle);
-   foreach ( explode(";\n", "$sql_query") as $sql_line) {
-      if (get_magic_quotes_runtime()) $sql_line=stripslashes_deep($sql_line);
-      if (!empty($sql_line)) $DB->query($sql_line);
-   }
-
-   include (GLPI_ROOT . "/plugins/monitoring/inc/command.class.php");
-   $pluginMonitoringCommand = new PluginMonitoringCommand();
-   $pluginMonitoringCommand->initCommands();
-   $pluginMonitoringCheck = new PluginMonitoringCheck();
-   $pluginMonitoringCheck->initChecks();
+if(!defined('GLPI_ROOT')) {
+   define('GLPI_ROOT', '../..');
 }
+include (GLPI_ROOT."/inc/includes.php");
+
+commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
+             "monitoring");
+
+glpi_header(GLPI_ROOT ."/plugins/monitoring/front/menu.php");
+commonFooter();
 
 ?>
