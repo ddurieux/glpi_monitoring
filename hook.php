@@ -120,7 +120,9 @@ function plugin_headings_monitoring_hosts($item) {
    $pluginMonitoringHost->showForm('', array(), get_class($item));
    if ($pluginMonitoringHost->getField('id')
            AND $pluginMonitoringHost->getField('parenttype') == '1') {
-      $pluginMonitoringHost->manageDependencies($pluginMonitoringHost->getField('id'));
+
+      $pluginMonitoringHost_Host = new PluginMonitoringHost_Host();
+      $pluginMonitoringHost_Host->manageDependencies($pluginMonitoringHost->getField('id'));
    }
 }
 

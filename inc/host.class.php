@@ -196,64 +196,72 @@ class PluginMonitoringHost extends CommonDBTM {
          echo "</tr>";
          $this->showFormButtons(array('canedit'=>false));
       }
-      
-
 
       return true;
    }
 
 
 
-   function manageDependencies($items_id) {
-      global $LANG;
+   function showAllHosts($myname, $value_type=0, $value=0, $entity_restrict=-1, $types='',
+                                $onlyglobal=false) {
+      global $LANG, $DB, $CFG_GLPI;
 
-      $this->getFromDB($items_id);
-
-
-      echo "<form name='dependencies_form' id='dependencies_form'
-             method='post' action=' ";
-      echo getItemTypeFormURL(__CLASS__)."'>";
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'>";
-      echo "<th colspan='3'>";
-      echo $LANG['plugin_monitoring']['host'][1];
-      echo "</th>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td class='right'>";
-      Dropdown::showAllItems("parent_to_add");
-      echo "</td>";
-      echo "<td class='center'>";
-      echo "<input type='submit' class='submit' name='parent_add' value='".
-            $LANG['buttons'][8]." >>'>";
-      echo "<br><br>";
-      if ($this->getField('parents')) {
-         echo "<input type='submit' class='submit' name='parent_delete' value='<< ".
-               $LANG['buttons'][6]."'>";
+      $types = array();
+      $query = "SELECT * FROM `".$this->getTable()."`
+         GROUP BY `itemtype`";
+      if ($result = $DB->query($query)) {
+         while ($data=$DB->fetch_array($result)) {
+            $types[] = $data['itemtype'];
+         }
       }
-      echo "</td>";
-      echo "<td>";
-      if ($this->getField('parents')) {
-         echo "<select name='parent_to_delete[]' multiple size='5'>";
-         $array = importArrayFromDB($this->getField('parents'));
-         foreach ($array as $data) {
-            $datasplit = explode("-", $data);
-            $classname = $datasplit[0];
-            $class = new $classname;
-            $class->getFromDB($datasplit[1]);
-            echo "<option value='".$data."'>[".$datasplit[0]."] ".$class->getName()." - ".$class->getField('serial')."</option>";
+
+      $rand    = mt_rand();
+      $options = array();
+
+      foreach ($types as $type) {
+         if (class_exists($type)) {
+            $item = new $type();
+            $options[$type] = $item->getTypeName($type);
+         }
+      }
+      asort($options);
+
+      if (count($options)) {
+         echo "<select name='itemtype' id='itemtype$rand'>";
+         echo "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option>\n";
+
+         foreach ($options as $key => $val) {
+            echo "<option value='".$key."'>".$val."</option>";
          }
          echo "</select>";
-      } else {
-         echo "&nbsp;";
+
+         $params = array('idtable'          => '__VALUE__',
+                          'value'           => $value,
+                          'myname'          => $myname,
+                          'entity_restrict' => $entity_restrict);
+
+         if ($onlyglobal) {
+            $params['condition'] = "`is_global` = '1'";
+         }
+         ajaxUpdateItemOnSelectEvent("itemtype$rand", "show_$myname$rand",
+                                     $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownAllHosts.php", $params);
+
+         echo "<br><span id='show_$myname$rand'>&nbsp;</span>\n";
+
+         if ($value>0) {
+            echo "<script type='text/javascript' >\n";
+            echo "window.document.getElementById('itemtype$rand').value='".$value_type."';";
+            echo "</script>\n";
+
+            $params["idtable"] = $value_type;
+            ajaxUpdateItem("show_$myname$rand", $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownAllHosts.php",
+                           $params);
+         }
       }
-      echo "</td>";
-      echo "</tr>";
-      echo "</table>";
-      echo "<input type='hidden' name='id' value='".$items_id."' />";
-      echo "</form>";
+      return $rand;
    }
+
+
 }
 
 ?>
