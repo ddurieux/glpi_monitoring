@@ -161,7 +161,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
 
       
-      return array('hosts.cfg', $config);
+      return array('contacts.cfg', $config);
    }
 
 
@@ -216,7 +216,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $config .= "\n\n";
       }
 
-      return array('hosts.cfg', $config);
+      return array('timeperiods.cfg', $config);
    }
 
 
