@@ -85,22 +85,36 @@ class PluginMonitoringWebservice {
 
          case 'commands.cfg':
             $array = $pluginMonitoringShinken->generateCommandsCfg();
-            echo $array[1];
+            return array($array[0]=>$array[1]);
             break;
 
          case 'hosts.cfg':
             $array = $pluginMonitoringShinken->generateHostsCfg();
-            echo $array[1];
+            return array($array[0]=>$array[1]);
             break;
 
          case 'contacts.cfg':
             $array = $pluginMonitoringShinken->generateContactsCfg();
-            echo $array[1];
+            return array($array[0]=>$array[1]);
             break;
 
          case 'timeperiods.cfg':
             $array = $pluginMonitoringShinken->generateTimeperiodsCfg();
-            echo $array[1];
+            return array($array[0]=>$array[1]);
+            break;
+
+         case 'all':
+            $output = array();
+            $array = $pluginMonitoringShinken->generateCommandsCfg();
+            $output[$array[0]] = $array[1];
+            $array = $pluginMonitoringShinken->generateHostsCfg();
+            $output[$array[0]] = $array[1];
+            $array = $pluginMonitoringShinken->generateContactsCfg();
+            $output[$array[0]] = $array[1];
+            $array = $pluginMonitoringShinken->generateTimeperiodsCfg();
+            $output[$array[0]] = $array[1];
+
+            return $output;
             break;
 
       }
