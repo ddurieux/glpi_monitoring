@@ -140,6 +140,19 @@ class PluginMonitoringContact extends CommonDBTM {
          echo "</tr>";
 
          echo "<tr class='tab_bg_1'>";
+         echo "<td>".$LANG['plugin_monitoring']['contact'][19]."&nbsp;:</td>";
+         echo "<td align='center'>";
+         dropdown::show("PluginMonitoringNotificationcommand", array('name'=>'host_notification_commands',
+                                    'value'=>$this->fields['host_notification_commands']));
+         echo "</td>";
+         echo "<td>".$LANG['plugin_monitoring']['contact'][19]."&nbsp;:</td>";
+         echo "<td align='center'>";
+         dropdown::show("PluginMonitoringNotificationcommand", array('name'=>'service_notification_commands',
+                                    'value'=>$this->fields['service_notification_commands']));
+         echo "</td>";
+         echo "</tr>";
+
+         echo "<tr class='tab_bg_1'>";
          echo "<td>".$LANG['plugin_monitoring']['contact'][6]."&nbsp;:</td>";
          echo "<td align='center'>";
          dropdown::show("Calendar", array('name'=>'host_notification_period',
