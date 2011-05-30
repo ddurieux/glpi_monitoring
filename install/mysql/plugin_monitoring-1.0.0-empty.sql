@@ -88,8 +88,8 @@ CREATE TABLE `glpi_plugin_monitoring_contacts` (
   `pager` varchar(255) DEFAULT NULL,
   `host_notifications_enabled` tinyint(1) NOT NULL DEFAULT '1',
   `service_notifications_enabled` tinyint(1) NOT NULL DEFAULT '1',
-  `service_notification_period` tinyint(1) NOT NULL DEFAULT '1',
-  `host_notification_period` tinyint(1) NOT NULL DEFAULT '1',
+  `service_notification_period` int(11) NOT NULL DEFAULT '1',
+  `host_notification_period` int(11) NOT NULL DEFAULT '1',
   `service_notification_options_w` tinyint(1) NOT NULL DEFAULT '1',
   `service_notification_options_u` tinyint(1) NOT NULL DEFAULT '1',
   `service_notification_options_c` tinyint(1) NOT NULL DEFAULT '1',
@@ -102,8 +102,6 @@ CREATE TABLE `glpi_plugin_monitoring_contacts` (
   `host_notification_options_f` tinyint(1) NOT NULL DEFAULT '0',
   `host_notification_options_s` tinyint(1) NOT NULL DEFAULT '0',
   `host_notification_options_n` tinyint(1) NOT NULL DEFAULT '0',
-  `service_notification_commands` varchar(255) DEFAULT NULL,
-  `host_notification_commands` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

@@ -39,28 +39,26 @@ include (GLPI_ROOT . "/inc/includes.php");
 commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "host");
 
-$pluginMonitoringHost = new PluginMonitoringHost();
-if (isset($_POST["add"])) {
-   if (($_POST['items_id'] != "0") AND ($_POST['items_id'] != "")) {
-      $pluginMonitoringHost->add($_POST);
+$pluginMonitoringHost_Contact = new PluginMonitoringHost_Contact();
+if (isset($_POST['parent_add'])) {
+   // Add host in dependencies/parent of host
+
+   $input = array();
+   $input['plugin_monitoring_hosts_id'] = $_POST['id'];
+   $input['plugin_monitoring_contacts_id'] = $_POST['plugin_monitoring_contacts_id'];
+   $pluginMonitoringHost_Contact->add($input);
+
+   glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset($_POST['parent_delete'])) {
+   // Delete host in dependencies/parent of host
+
+   foreach ($_POST['parent_to_delete'] as $delete_id) {
+      $query = "DELETE FROM ".$pluginMonitoringHost_Contact->getTable()."
+         WHERE `plugin_monitoring_hosts_id`='".$_POST['id']."'
+            AND `plugin_monitoring_contacts_id`='".$delete_id."'";
+      $DB->query($query);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset ($_POST["update"])) {
-
-   if ($_POST['parenttype'] == '0' OR $_POST['parenttype'] == '2') {
-      $_POST['parents'] = "";
-   }
-   $pluginMonitoringHost->update($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset ($_POST["delete"])) {
-   $pluginMonitoringHost->delete($_POST, 1);
-   glpi_header($_SERVER['HTTP_REFERER']);
-}
-
-if (isset($_GET["id"])) {
-   $pluginMonitoringHost->showForm($_GET["id"]);
-} else {
-   $pluginMonitoringHost->showForm("");
 }
 
 commonFooter();

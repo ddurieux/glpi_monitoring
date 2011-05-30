@@ -89,10 +89,14 @@ class PluginMonitoringWebservice {
             break;
 
          case 'hosts.cfg':
-            $array = $pluginMonitoringShinken->generatehostsCfg();
+            $array = $pluginMonitoringShinken->generateHostsCfg();
             echo $array[1];
             break;
-         
+
+         case 'contacts.cfg':
+            $array = $pluginMonitoringShinken->generateContactsCfg();
+            echo $array[1];
+            break;
       }
    }
 

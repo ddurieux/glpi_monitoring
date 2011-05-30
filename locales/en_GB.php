@@ -54,4 +54,26 @@ $LANG['plugin_monitoring']['command'][1]="Command check";
 
 $LANG['plugin_monitoring']['check'][0]="Check definition";
 
+$LANG['plugin_monitoring']['contact'][0]="Contact";
+$LANG['plugin_monitoring']['contact'][1]="Manage this user for monitoring system";
+$LANG['plugin_monitoring']['contact'][2]="Pager";
+$LANG['plugin_monitoring']['contact'][3]="Hosts";
+$LANG['plugin_monitoring']['contact'][4]="Services";
+$LANG['plugin_monitoring']['contact'][5]="Notifications";
+$LANG['plugin_monitoring']['contact'][6]="Period";
+$LANG['plugin_monitoring']['contact'][7]="Notify on DOWN host states";
+$LANG['plugin_monitoring']['contact'][8]="Notify on WARNING service states";
+$LANG['plugin_monitoring']['contact'][9]="Notify on UNREACHABLE host states";
+$LANG['plugin_monitoring']['contact'][10]="Notify on UNKNOWN service states";
+$LANG['plugin_monitoring']['contact'][11]="Notify on host recoveries (UP states)";
+$LANG['plugin_monitoring']['contact'][12]="Notify on CRITICAL service states";
+$LANG['plugin_monitoring']['contact'][13]="Notify when the host starts and stops flapping";
+$LANG['plugin_monitoring']['contact'][14]="Notify on service recoveries (OK states)";
+$LANG['plugin_monitoring']['contact'][15]="Send notifications when host or service scheduled downtime starts and ends";
+$LANG['plugin_monitoring']['contact'][16]="Notify when the service starts and stops flapping";
+$LANG['plugin_monitoring']['contact'][17]="The contact will not receive any type of host notifications";
+$LANG['plugin_monitoring']['contact'][18]="The contact will not receive any type of service notifications";
+$LANG['plugin_monitoring']['contact'][19]="Notification command";
+$LANG['plugin_monitoring']['contact'][20]="Contacts";
+
 ?>

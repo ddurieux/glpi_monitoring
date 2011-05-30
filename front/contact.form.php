@@ -39,23 +39,20 @@ include (GLPI_ROOT . "/inc/includes.php");
 commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "host");
 
-$pluginMonitoringHost = new PluginMonitoringHost();
+$pluginMonitoringContact = new PluginMonitoringContact();
 if (isset($_POST["add"])) {
-   if (($_POST['items_id'] != "0") AND ($_POST['items_id'] != "")) {
-      $pluginMonitoringHost->add($_POST);
+   if ($_POST['users_id'] != "0") {
+      $pluginMonitoringContact->add($_POST);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["update"])) {
-
-   if ($_POST['parenttype'] == '0' OR $_POST['parenttype'] == '2') {
-      $_POST['parents'] = "";
-   }
-   $pluginMonitoringHost->update($_POST);
+   $pluginMonitoringContact->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["delete"])) {
-   $pluginMonitoringHost->delete($_POST, 1);
+   $pluginMonitoringContact->delete($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 }
+
 
 if (isset($_GET["id"])) {
    $pluginMonitoringHost->showForm($_GET["id"]);
