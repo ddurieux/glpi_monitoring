@@ -105,15 +105,35 @@ class PluginMonitoringShinken extends CommonDBTM {
             }
          $config .= "       address             ".$ip."\n";
             $a_parents = array();
-            $a_list_parent = $pluginMonitoringHost_Host->find("`plugin_monitoring_hosts_id_1`='".$data['id']."'");
-            foreach ($a_list_parent as $data_parent) {
-               $pluginMonitoringHost->getFromDB($data_parent['plugin_monitoring_hosts_id_2']);
-               $classnameparent = $pluginMonitoringHost->fields['itemtype'];
-               $classparent = new $classnameparent;
-               $classparent->getFromDB($pluginMonitoringHost->fields['items_id']);
-               $a_parents[] = $classnameparent."-".$classparent->fields['name'];
+            switch ($data['parenttype']) {
+
+               case 0:
+                  // Disable
+                  break;
+
+               case 1:
+                  // Static
+                  $a_list_parent = $pluginMonitoringHost_Host->find("`plugin_monitoring_hosts_id_1`='".$data['id']."'");
+                  foreach ($a_list_parent as $data_parent) {
+                     $pluginMonitoringHost->getFromDB($data_parent['plugin_monitoring_hosts_id_2']);
+                     $classnameparent = $pluginMonitoringHost->fields['itemtype'];
+                     $classparent = new $classnameparent;
+                     $classparent->getFromDB($pluginMonitoringHost->fields['items_id']);
+                     $a_parents[] = $classnameparent."-".$classparent->fields['name'];
+                  }
+                  break;
+
+               case 2:
+                  // dynamic
+
+                  break;
+               
             }
-         $config .= "       parents             ".implode(',', $a_parents)."\n";
+
+
+         if (count($a_parents) > 0) {
+            $config .= "       parents             ".implode(',', $a_parents)."\n";
+         }
          $pluginMonitoringCommand->getFromDB($data['plugin_monitoring_commands_id']);
          $config .= "       check_command       ".$pluginMonitoringCommand->fields['name']."\n";
          $pluginMonitoringCheck->getFromDB($data['plugin_monitoring_checks_id']);
