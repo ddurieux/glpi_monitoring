@@ -87,7 +87,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $class->getFromDB($data['items_id']);
 
          $config .= "define host {\n";
-         $config .= "       host_name     ".$classname."-".$class->fields['name']."\n";
+         $config .= "       host_name           ".$classname."-".$class->fields['name']."\n";
             $ip = $class->fields['name'];
             if ($data['itemtype'] == 'NetworkEquipment') {
                if ($class->fields['ip'] != '') {
@@ -103,7 +103,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                   }
                }
             }
-         $config .= "       address     ".$ip."\n";
+         $config .= "       address             ".$ip."\n";
             $a_parents = array();
             $a_list_parent = $pluginMonitoringHost_Host->find("`plugin_monitoring_hosts_id_1`='".$data['id']."'");
             foreach ($a_list_parent as $data_parent) {
@@ -113,12 +113,12 @@ class PluginMonitoringShinken extends CommonDBTM {
                $classparent->getFromDB($pluginMonitoringHost->fields['items_id']);
                $a_parents[] = $classnameparent."-".$classparent->fields['name'];
             }
-         $config .= "       parents     ".implode(',', $a_parents)."\n";
+         $config .= "       parents             ".implode(',', $a_parents)."\n";
          $pluginMonitoringCommand->getFromDB($data['plugin_monitoring_commands_id']);
-         $config .= "       check_command     ".$pluginMonitoringCommand->fields['name']."\n";
+         $config .= "       check_command       ".$pluginMonitoringCommand->fields['name']."\n";
          $pluginMonitoringCheck->getFromDB($data['plugin_monitoring_checks_id']);
-         $config .= "       check_interval     ".$pluginMonitoringCheck->fields['check_interval']."\n";
-         $config .= "       retry_interval     ".$pluginMonitoringCheck->fields['retry_interval']."\n";
+         $config .= "       check_interval      ".$pluginMonitoringCheck->fields['check_interval']."\n";
+         $config .= "       retry_interval      ".$pluginMonitoringCheck->fields['retry_interval']."\n";
          $config .= "       max_check_attempts  ".$pluginMonitoringCheck->fields['max_check_attempts']."\n";
             $a_contacts = array();
             $a_list_contact = $pluginMonitoringHost_Contact->find("`plugin_monitoring_hosts_id`='".$data['id']."'");
@@ -126,7 +126,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                $pluginMonitoringContact->getFromDB($data_contact['plugin_monitoring_contacts_id']);
                $user->getFromDB($pluginMonitoringContact->fields['users_id']);
                $a_contacts[] = $user->fields['name'];
-            }          
+            }
          $config .= "       contacts            ".implode(',', $a_contacts)."\n";
          $config .= "}\n";
          $config .= "\n\n";
