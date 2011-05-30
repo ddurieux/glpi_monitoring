@@ -134,7 +134,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             $config .= "       parents             ".implode(',', $a_parents)."\n";
          }
          $pluginMonitoringCommand->getFromDB($data['plugin_monitoring_commands_id']);
-         $config .= "       check_command       ".$pluginMonitoringCommand->fields['name']."\n";
+         $config .= "       check_command       ".$pluginMonitoringCommand->fields['command_name']."\n";
          $pluginMonitoringCheck->getFromDB($data['plugin_monitoring_checks_id']);
          $config .= "       check_interval      ".$pluginMonitoringCheck->fields['check_interval']."\n";
          $config .= "       retry_interval      ".$pluginMonitoringCheck->fields['retry_interval']."\n";
