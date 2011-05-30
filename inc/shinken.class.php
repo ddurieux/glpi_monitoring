@@ -77,6 +77,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       $pluginMonitoringHost_Contact = new PluginMonitoringHost_Contact();
       $pluginMonitoringCommand = new PluginMonitoringCommand();
       $pluginMonitoringCheck = new PluginMonitoringCheck();
+      $calendar = new Calendar();
       $user = new User();
       $networkPort = new NetworkPort();
 
@@ -129,8 +130,6 @@ class PluginMonitoringShinken extends CommonDBTM {
                   break;
                
             }
-
-
          if (count($a_parents) > 0) {
             $config .= "       parents             ".implode(',', $a_parents)."\n";
          }
@@ -140,6 +139,9 @@ class PluginMonitoringShinken extends CommonDBTM {
          $config .= "       check_interval      ".$pluginMonitoringCheck->fields['check_interval']."\n";
          $config .= "       retry_interval      ".$pluginMonitoringCheck->fields['retry_interval']."\n";
          $config .= "       max_check_attempts  ".$pluginMonitoringCheck->fields['max_check_attempts']."\n";
+         if ($calendar->getFromDB($data['calendars_id'])) {
+            $config .= "       check_period        ".$calendar->fields['name']."\n";
+         }
             $a_contacts = array();
             $a_list_contact = $pluginMonitoringHost_Contact->find("`plugin_monitoring_hosts_id`='".$data['id']."'");
             foreach ($a_list_contact as $data_contact) {

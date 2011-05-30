@@ -45,6 +45,7 @@ $LANG['plugin_monitoring']['host'][5]="Active checks";
 $LANG['plugin_monitoring']['host'][6]="Passive checks";
 $LANG['plugin_monitoring']['host'][7]="Dynamic dependencies are";
 $LANG['plugin_monitoring']['host'][8]="Host";
+$LANG['plugin_monitoring']['host'][9]="Check period";
 
 $LANG['plugin_monitoring']['grouphost'][0]="hosts groups";
 $LANG['plugin_monitoring']['grouphost'][1]="hosts group";
