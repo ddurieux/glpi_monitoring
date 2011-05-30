@@ -79,12 +79,6 @@ class PluginMonitoringCommand extends CommonDBTM {
       $this->add($input);
 
       $input = array();
-      $input['name'] = 'Ask a nrpe agent with arguments';
-      $input['command_name'] = 'check_nrpe';
-      $input['command_line'] = "\$PLUGINSDIR\$/check_nrpe -H \$HOSTADDRESS\$ -t 9 -u -c \$ARG1\$ -a \$ARG2\$ \$ARG3\$ \$ARG4\$ \$ARG5\$";
-      $this->add($input);
-
-      $input = array();
       $input['name'] = 'Simple ping command';
       $input['command_name'] = 'check_ping';
       $input['command_line'] = "\$PLUGINSDIR\$/check_ping -H \$HOSTADDRESS\$ -w 3000,100% -c 5000,100% -p 1";
