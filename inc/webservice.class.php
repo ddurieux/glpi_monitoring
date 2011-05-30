@@ -97,6 +97,12 @@ class PluginMonitoringWebservice {
             $array = $pluginMonitoringShinken->generateContactsCfg();
             echo $array[1];
             break;
+
+         case 'timeperiods.cfg':
+            $array = $pluginMonitoringShinken->generateTimeperiodsCfg();
+            echo $array[1];
+            break;
+
       }
    }
 
