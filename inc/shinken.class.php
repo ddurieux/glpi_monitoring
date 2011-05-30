@@ -169,7 +169,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       foreach ($a_listmcontacts as $data) {
          $user->getFromDB($data['users_id']);
 
-         $config .= "define host {\n";
+         $config .= "define contact {\n";
          $config .= "       contact_name                   ".$user->fields['name']."\n";
          $config .= "       alias                          ".$user->getName()."\n";
          $config .= "       host_notifications_enabled     ".$data['host_notifications_enabled']."\n";
