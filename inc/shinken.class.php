@@ -159,7 +159,20 @@ class PluginMonitoringShinken extends CommonDBTM {
 
                case 2:
                   // dynamic
-
+                  if ($data['itemtype'] != 'NetworkEquipment') {
+                     $a_listnetwork = $networkPort->find("`itemtype`='".$data['itemtype']."'
+                        AND `items_id`='".$data['items_id']."'");
+                     foreach ($a_listnetwork as $datanetwork) {
+                        $contact_id = $networkPort->getContact($datanetwork['id']);
+                        if ($contact_id) {
+                           $networkPort->getFromDB($contact_id);
+                           $classnameparent = $networkPort->fields['itemtype'];
+                           $classparent = new $classnameparent;
+                           $classparent->getFromDB($networkPort->fields['items_id']);
+                           $a_parents[] = $classnameparent."-".$classparent->fields['name'];
+                        }
+                     }
+                  }
                   break;
 
             }
