@@ -142,25 +142,31 @@ class PluginMonitoringHost extends CommonDBTM {
          $array = array();
          $array[0] = $LANG['common'][49];
          $array[1] = $LANG['plugin_monitoring']['host'][3];
-         $array[2] = $LANG['plugin_monitoring']['host'][2];
+         if ($itemtype != "NetworkEquipment") {
+            $array[2] = $LANG['plugin_monitoring']['host'][2];
+         }
          Dropdown::showFromArray("parenttype", $array, array('value'=>$this->fields['parenttype']));
          echo "</td>";
-         echo "<td>".$LANG['plugin_monitoring']['host'][7]."&nbsp;:</td>";
-         echo "<td align='center'>";
-         // List all dynamic dependencies
-         $networkPort = new NetworkPort();
-         $a_list = $networkPort->find("`items_id`='".$_POST['id']."'
-            AND `itemtype`='".$itemtype."'");
-         foreach ($a_list as $data) {
-            $networkports_id = $networkPort->getContact($data['id']);
-            if ($networkports_id) {
-               $networkPort->getFromDB($networkports_id);
-               $classname = $networkPort->fields['itemtype'];
-               $class = new $classname;
-               $class->getFromDB($networkPort->fields['items_id']);
-               echo $class->getName(1);
-               echo "<br/>";
-            }            
+         if ($itemtype == "NetworkEquipment") {
+            echo "<td colspan='2'>";
+         } else {
+            echo "<td>".$LANG['plugin_monitoring']['host'][7]."&nbsp;:</td>";
+            echo "<td align='center'>";
+            // List all dynamic dependencies
+            $networkPort = new NetworkPort();
+            $a_list = $networkPort->find("`items_id`='".$_POST['id']."'
+               AND `itemtype`='".$itemtype."'");
+            foreach ($a_list as $data) {
+               $networkports_id = $networkPort->getContact($data['id']);
+               if ($networkports_id) {
+                  $networkPort->getFromDB($networkports_id);
+                  $classname = $networkPort->fields['itemtype'];
+                  $class = new $classname;
+                  $class->getFromDB($networkPort->fields['items_id']);
+                  echo $class->getName(1);
+                  echo "<br/>";
+               }
+            }
          }
          echo "</td>";
          echo "</tr>";
