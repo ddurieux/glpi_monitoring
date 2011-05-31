@@ -49,8 +49,10 @@ function pluginMonitoringInstall($version) {
    include (GLPI_ROOT . "/plugins/monitoring/inc/command.class.php");
    $pluginMonitoringCommand = new PluginMonitoringCommand();
    $pluginMonitoringCommand->initCommands();
+   include (GLPI_ROOT . "/plugins/monitoring/inc/notificationcommand.class.php");
    $pluginMonitoringNotificationcommand = new PluginMonitoringNotificationcommand();
    $pluginMonitoringNotificationcommand->initCommands();
+   include (GLPI_ROOT . "/plugins/monitoring/inc/check.class.php");
    $pluginMonitoringCheck = new PluginMonitoringCheck();
    $pluginMonitoringCheck->initChecks();
 }
