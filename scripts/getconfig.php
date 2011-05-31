@@ -48,7 +48,7 @@ $host = 'localhost';
 $glpi_user  = "glpi";
 $glpi_pass  = "glpi";
 
-$method = "monitoring.shinken";
+$method = "monitoring.shinkenGetConffiles";
 $file = "all";
 
 

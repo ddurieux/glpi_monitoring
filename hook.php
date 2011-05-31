@@ -248,8 +248,17 @@ function plugin_monitoring_registerMethods() {
 
    $WEBSERVICES_METHOD['monitoring.test'] = array('PluginMonitoringWebservice',
                                                        'methodTest');
-   $WEBSERVICES_METHOD['monitoring.shinken'] = array('PluginMonitoringWebservice',
-                                                       'methodShinken');
+   $WEBSERVICES_METHOD['monitoring.shinkenGetConffiles'] = array('PluginMonitoringWebservice',
+                                                       'methodShinkenGetConffiles');
+   # Get commands for arbiter
+   $WEBSERVICES_METHOD['monitoring.shinkenCommands'] = array('PluginMonitoringWebservice',
+                                                       'methodShinkenCommands');
+   $WEBSERVICES_METHOD['monitoring.shinkenHosts'] = array('PluginMonitoringWebservice',
+                                                       'methodShinkenHosts');
+   $WEBSERVICES_METHOD['monitoring.shinkenContacts'] = array('PluginMonitoringWebservice',
+                                                       'methodShinkenContacts');
+   $WEBSERVICES_METHOD['monitoring.shinkenTimeperiods'] = array('PluginMonitoringWebservice',
+                                                       'methodShinkenTimeperiods');
 }
 
 ?>

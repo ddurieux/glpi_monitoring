@@ -72,7 +72,7 @@ class PluginMonitoringWebservice {
    }
 
    
-   static function methodShinken($params, $protocol) {
+   static function methodShinkenGetConffiles($params, $protocol) {
       global $LANG, $CFG_GLPI;
 
       if (isset ($params['help'])) {
@@ -84,40 +84,79 @@ class PluginMonitoringWebservice {
       switch ($params['file']) {
 
          case 'commands.cfg':
-            $array = $pluginMonitoringShinken->generateCommandsCfg();
+            $array = $pluginMonitoringShinken->generateCommandsCfg(1);
             return array($array[0]=>$array[1]);
             break;
 
          case 'hosts.cfg':
-            $array = $pluginMonitoringShinken->generateHostsCfg();
+            $array = $pluginMonitoringShinken->generateHostsCfg(1);
             return array($array[0]=>$array[1]);
             break;
 
          case 'contacts.cfg':
-            $array = $pluginMonitoringShinken->generateContactsCfg();
+            $array = $pluginMonitoringShinken->generateContactsCfg(1);
             return array($array[0]=>$array[1]);
             break;
 
          case 'timeperiods.cfg':
-            $array = $pluginMonitoringShinken->generateTimeperiodsCfg();
+            $array = $pluginMonitoringShinken->generateTimeperiodsCfg(1);
             return array($array[0]=>$array[1]);
             break;
 
          case 'all':
             $output = array();
-            $array = $pluginMonitoringShinken->generateCommandsCfg();
+            $array = $pluginMonitoringShinken->generateCommandsCfg(1);
             $output[$array[0]] = $array[1];
-            $array = $pluginMonitoringShinken->generateHostsCfg();
+            $array = $pluginMonitoringShinken->generateHostsCfg(1);
             $output[$array[0]] = $array[1];
-            $array = $pluginMonitoringShinken->generateContactsCfg();
+            $array = $pluginMonitoringShinken->generateContactsCfg(1);
             $output[$array[0]] = $array[1];
-            $array = $pluginMonitoringShinken->generateTimeperiodsCfg();
+            $array = $pluginMonitoringShinken->generateTimeperiodsCfg(1);
             $output[$array[0]] = $array[1];
 
             return $output;
             break;
 
       }
+   }
+
+
+   static function methodShinkenCommands($params, $protocol) {
+      global $LANG, $CFG_GLPI;
+
+      $pluginMonitoringShinken = new PluginMonitoringShinken();
+      $array = $pluginMonitoringShinken->generateCommandsCfg();
+      return $array;
+   }
+
+   
+   
+   static function methodShinkenHosts($params, $protocol) {
+      global $LANG, $CFG_GLPI;
+
+      $pluginMonitoringShinken = new PluginMonitoringShinken();
+      $array = $pluginMonitoringShinken->generateHostsCfg();
+      return $array;
+   }
+
+
+
+   static function methodShinkenContacts($params, $protocol) {
+      global $LANG, $CFG_GLPI;
+
+      $pluginMonitoringShinken = new PluginMonitoringShinken();
+      $array = $pluginMonitoringShinken->generateContactsCfg();
+      return $array;
+   }
+
+
+
+   static function methodShinkenTimeperiods($params, $protocol) {
+      global $LANG, $CFG_GLPI;
+
+      $pluginMonitoringShinken = new PluginMonitoringShinken();
+      $array = $pluginMonitoringShinken->generateTimeperiodsCfg();
+      return $array;
    }
 
 }
