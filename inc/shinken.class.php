@@ -165,6 +165,8 @@ class PluginMonitoringShinken extends CommonDBTM {
             }
          if (count($a_parents) > 0) {
             $a_hosts[$i]['parents'] = implode(',', $a_parents);
+         } else {
+            $a_hosts[$i]['parents'] = "";
          }
             $pluginMonitoringCommand->getFromDB($data['plugin_monitoring_commands_id']);
          $a_hosts[$i]['check_command'] = $pluginMonitoringCommand->fields['command_name'];

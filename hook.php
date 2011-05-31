@@ -134,8 +134,10 @@ function plugin_headings_monitoring_hosts($item) {
       $pluginMonitoringHost_Host = new PluginMonitoringHost_Host();
       $pluginMonitoringHost_Host->manageDependencies($pluginMonitoringHost->getField('id'));
    }
-   $pluginMonitoringHost_Contact = new PluginMonitoringHost_Contact();
-   $pluginMonitoringHost_Contact->manageContacts($pluginMonitoringHost->getField('id'));
+   if ($pluginMonitoringHost->getField('id')) {
+      $pluginMonitoringHost_Contact = new PluginMonitoringHost_Contact();
+      $pluginMonitoringHost_Contact->manageContacts($pluginMonitoringHost->getField('id'));
+   }
 }
 
 
