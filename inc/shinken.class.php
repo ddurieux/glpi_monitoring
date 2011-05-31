@@ -290,45 +290,47 @@ class PluginMonitoringShinken extends CommonDBTM {
       
       $a_listcalendar = $calendar->find();
       foreach ($a_listcalendar as $datacalendar) {
-         $a_timeperiods[$i]['timeperiod_name'] = $datacalendar['name'];
-         $a_listsegment = $calendarSegment->find("`calendars_id`='".$datacalendar['id']."'");
-         foreach ($a_listsegment as $datasegment) {
-            $begin = preg_replace("/:00$/", "", $datasegment['begin']);
-            $end = preg_replace("/:00$/", "", $datasegment['end']);
-            switch ($datasegment['day']) {
+         if ($datacalendar['name'] != "Default") {
+            $a_timeperiods[$i]['timeperiod_name'] = $datacalendar['name'];
+            $a_listsegment = $calendarSegment->find("`calendars_id`='".$datacalendar['id']."'");
+            foreach ($a_listsegment as $datasegment) {
+               $begin = preg_replace("/:00$/", "", $datasegment['begin']);
+               $end = preg_replace("/:00$/", "", $datasegment['end']);
+               switch ($datasegment['day']) {
 
-               case "0":
-                  $day = "sunday   ";
-                  break;
+                  case "0":
+                     $day = "sunday";
+                     break;
 
-               case "1":
-                  $day = "monday   ";
-                  break;
+                  case "1":
+                     $day = "monday";
+                     break;
 
-               case "2":
-                  $day = "tuesday  ";
-                  break;
+                  case "2":
+                     $day = "tuesday";
+                     break;
 
-               case "3":
-                  $day = "wednesday";
-                  break;
+                  case "3":
+                     $day = "wednesday";
+                     break;
 
-               case "4":
-                  $day = "thursday ";
-                  break;
+                  case "4":
+                     $day = "thursday";
+                     break;
 
-               case "5":
-                  $day = "friday   ";
-                  break;
+                  case "5":
+                     $day = "friday";
+                     break;
 
-               case "6":
-                  $day = "saturday ";
-                  break;
+                  case "6":
+                     $day = "saturday";
+                     break;
 
+               }
+               $a_timeperiods[$i][$day] = $begin."-".$end;
             }
-            $a_timeperiods[$i][$day] = $begin."-".$end;
+            $i++;
          }
-         $i++;
       }
 
       if ($file == "1") {
