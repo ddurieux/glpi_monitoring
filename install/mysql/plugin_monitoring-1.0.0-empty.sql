@@ -40,6 +40,8 @@ CREATE TABLE `glpi_plugin_monitoring_hosts` (
   `active_checks_enabled` tinyint(1) NOT NULL DEFAULT '1',
   `passive_checks_enabled` tinyint(1) NOT NULL DEFAULT '1',
   `calendars_id`  int(11) NOT NULL DEFAULT '0',
+  `is_template` tinyint(1) NOT NULL DEFAULT '0',
+  `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

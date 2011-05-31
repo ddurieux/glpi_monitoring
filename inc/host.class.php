@@ -117,7 +117,13 @@ class PluginMonitoringHost extends CommonDBTM {
    function showForm($items_id, $options=array(), $itemtype='') {
       global $DB,$CFG_GLPI,$LANG;
 
-      if ($items_id == '') {
+      if (isset($_GET['withtemplate']) AND ($_GET['withtemplate'] == '1')) {
+         $options['withtemplate'] = 1;
+      } else {
+         $options['withtemplate'] = 0;
+      }
+
+      if ($items_id == '' AND $itemtype != '') {
          $a_list = $this->find("`items_id`='".$_POST['id']."' AND `itemtype`='".$itemtype."'", '', 1);
          if (count($a_list)) {
             $array = current($a_list);
@@ -133,7 +139,9 @@ class PluginMonitoringHost extends CommonDBTM {
 
       $this->showFormHeader($options);
 
-      if ($items_id!='') {
+      if (($items_id!='')
+         OR ($options['withtemplate'] == '1')) {
+         
          $this->getFromDB($items_id);
 
          echo "<tr class='tab_bg_1'>";
@@ -147,7 +155,8 @@ class PluginMonitoringHost extends CommonDBTM {
          }
          Dropdown::showFromArray("parenttype", $array, array('value'=>$this->fields['parenttype']));
          echo "</td>";
-         if ($itemtype == "NetworkEquipment") {
+         if (($itemtype == "NetworkEquipment")
+            OR ($options['withtemplate'] == '1')) {
             echo "<td colspan='2'>";
          } else {
             echo "<td>".$LANG['plugin_monitoring']['host'][7]."&nbsp;:</td>";
@@ -203,12 +212,47 @@ class PluginMonitoringHost extends CommonDBTM {
          Dropdown::showYesNo("passive_checks_enabled", $this->fields['passive_checks_enabled']);
          echo "</td>";
          echo "</tr>";
-         
+
+         $withtemplate = $options['withtemplate'];
+         unset($options['withtemplate']);
          $this->showFormButtons($options);
+
+         if ($withtemplate == '1') {
+            if ($this->getField('parenttype') == '1') {
+               $pluginMonitoringHost_Host = new PluginMonitoringHost_Host();
+               $pluginMonitoringHost_Host->manageDependencies($this->getField('id'));
+            }
+            if ($this->getField('id')) {
+               $pluginMonitoringHost_Contact = new PluginMonitoringHost_Contact();
+               $pluginMonitoringHost_Contact->manageContacts($this->getField('id'));
+            }
+         }
       } else {
          // Add button for host creation
          echo "<tr>";
-         echo "<td colspan='4' align='center'>";
+         echo "<td>".$LANG['common'][7]."&nbsp;:</td>";
+         echo "<td>";
+         $a_list = $this->find("`is_template`='1'");
+         $a_elements = array();
+         $a_elements[0] = "------";
+         foreach ($a_list as $data) {
+            $a_elements[$data['id']] = $data['template_name'];
+         }
+         $rand = Dropdown::showFromArray("template_id", $a_elements);
+         
+//         $options_tooltip = array('contentid' => "comment_template".$rand);
+//         $options_tooltip['link']       = $this->getLinkURL();
+//         $options_tooltip['linktarget'] = '_blank';
+//
+//         showToolTip("test",$options_tooltip);
+
+         echo "<img alt='' title=\"".$LANG['buttons'][8]."\" src='".$CFG_GLPI["root_doc"].
+                     "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
+                     onClick=\"var w = window.open('".$this->getFormURL()."?withtemplate=1&popup=1&amp;rand=".
+                     $rand."' ,'glpipopup', 'height=400, ".
+                     "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
+         echo "</td>";
+         echo "<td colspan='2' align='center' width='50%'>";
          echo "<input name='items_id' type='hidden' value='".$_POST['id']."' />";
          echo "<input name='itemtype' type='hidden' value='".$itemtype."' />";
          echo "<input name='add' value='Add this host to monitoring' class='submit' type='submit'></td>";

@@ -115,7 +115,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_hosts = array();
       $i=0;
 
-      $a_list = $pluginMonitoringHost->find();
+      $a_list = $pluginMonitoringHost->find("`is_template`='0'");
       foreach ($a_list as $data) {
          $classname = $data['itemtype'];
          $class = new $classname;

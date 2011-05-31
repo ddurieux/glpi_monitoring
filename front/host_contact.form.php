@@ -41,7 +41,7 @@ commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugi
 
 $pluginMonitoringHost_Contact = new PluginMonitoringHost_Contact();
 if (isset($_POST['parent_add'])) {
-   // Add host in dependencies/parent of host
+   // Add contact to notify for host problem
 
    $input = array();
    $input['plugin_monitoring_hosts_id'] = $_POST['id'];
@@ -50,7 +50,7 @@ if (isset($_POST['parent_add'])) {
 
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST['parent_delete'])) {
-   // Delete host in dependencies/parent of host
+   // Delete contact to notify for host problem
 
    foreach ($_POST['parent_to_delete'] as $delete_id) {
       $query = "DELETE FROM ".$pluginMonitoringHost_Contact->getTable()."
