@@ -72,10 +72,9 @@ function plugin_monitoring_install() {
 
 // Uninstall process for plugin : need to return true if succeeded
 function plugin_monitoring_uninstall() {
-//   if (!class_exists('PluginFusioninventorySetup')) { // if plugin is unactive
-//      include(GLPI_ROOT . "/plugins/fusioninventory/inc/setup.class.php");
-//   }
-//   return PluginFusioninventorySetup::uninstall();
+   include (GLPI_ROOT . "/plugins/monitoring/install/install.php");
+   pluginMonitoringUninstall();
+   return true;
 }
 
 // Define headings added by the plugin //

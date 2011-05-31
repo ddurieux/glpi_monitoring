@@ -55,4 +55,18 @@ function pluginMonitoringInstall($version) {
    $pluginMonitoringCheck->initChecks();
 }
 
+
+function pluginMonitoringUninstall() {
+   global $DB;
+
+   $query = "SHOW TABLES;";
+   $result=$DB->query($query);
+   while ($data=$DB->fetch_array($result)) {
+      if (strstr($data[0],"glpi_plugin_monitoring_")) {
+         $query_delete = "DROP TABLE `".$data[0]."`;";
+         $DB->query($query_delete) or die($DB->error());
+      }
+   }
+}
+
 ?>
