@@ -362,16 +362,31 @@ class PluginMonitoringHost extends CommonDBTM {
             $a_hostevents = $pluginMonitoringHostevent->find("`plugin_monitoring_hosts_id`='".$data['id']."'",
                                                              "`date` DESC", 1);
             $a_hostevent = current($a_hostevents);
-            $time = mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('Y'))
-                    - $pluginMonitoringHostevent->convert_datetime_timestamp($a_hostevent['date']);
-            echo "<td>".$time." seconds</td>";
+            $this->date_diff($pluginMonitoringHostevent->convert_datetime_timestamp($a_hostevent['date']),
+                    mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('Y')));
+//            $time = mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('Y'))
+//                    - $pluginMonitoringHostevent->convert_datetime_timestamp($a_hostevent['date']);
+//            echo "<td>".$time." seconds</td>";
          }
-
 
          echo "</tr>";
       }
 
       echo "</table>";
+   }
+
+
+   function date_diff($timestamp1, $timestamp2) {
+
+      $interval = array();
+      $timestamp = $timestamp2 - $timestamp1;
+      $nb_min = floor($timestamp / 60);
+      $interval['s'] = $timestamp - ($nb_min * 60);
+      $nb_hour = floor($nb_min / 60);
+      $interval['i'] = $nb_min - ($nb_hour * 60);
+
+      echo "<td>".$nb_hour."h ".$interval['i']."min ".$interval['s']."s</td>";
+
    }
 
 
