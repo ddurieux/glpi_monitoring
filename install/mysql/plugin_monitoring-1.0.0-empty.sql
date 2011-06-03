@@ -205,7 +205,9 @@ DROP TABLE IF EXISTS `glpi_plugin_monitoring_hostevents`;
 CREATE TABLE `glpi_plugin_monitoring_hostevents` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `plugin_monitoring_hosts_id` int(11) NOT NULL DEFAULT '0',
-  `date` datetime NOT NULL,
-  `event` varchar(255) DEFAULT NULL,
+  `date` datetime DEFAULT NULL,
+  `event` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `perf_data` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
