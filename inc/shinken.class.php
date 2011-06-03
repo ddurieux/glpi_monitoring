@@ -121,7 +121,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $class = new $classname;
          $class->getFromDB($data['items_id']);
 
-         $a_hosts[$i]['host_name'] = $classname."-".$data['items_id']."-".$class->fields['name'];
+         $a_hosts[$i]['host_name'] = $classname."-".$data['id']."-".$class->fields['name'];
             $ip = $class->fields['name'];
             if ($data['itemtype'] == 'NetworkEquipment') {
                if ($class->fields['ip'] != '') {
@@ -153,7 +153,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                      $classnameparent = $pluginMonitoringHost->fields['itemtype'];
                      $classparent = new $classnameparent;
                      $classparent->getFromDB($pluginMonitoringHost->fields['items_id']);
-                     $a_parents[] = $classnameparent."-".$pluginMonitoringHost->fields['items_id']."-".$classparent->fields['name'];
+                     $a_parents[] = $classnameparent."-".$data_parent['plugin_monitoring_hosts_id_2']."-".$classparent->fields['name'];
                   }
                   break;
 
@@ -169,7 +169,12 @@ class PluginMonitoringShinken extends CommonDBTM {
                            $classnameparent = $networkPort->fields['itemtype'];
                            $classparent = new $classnameparent;
                            $classparent->getFromDB($networkPort->fields['items_id']);
-                           $a_parents[] = $classnameparent."-".$networkPort->fields['items_id']."-".$classparent->fields['name'];
+                           $a_listhostt = $pluginMonitoringHost->find("`itemtype`='".$classnameparent."'
+                              AND `items_id`='".$networkPort->fields['items_id']."'", "", 1);
+                           if (count($a_listhostt) > 0) {
+                              $a_hostt = current($a_listhostt);
+                              $a_parents[] = $classnameparent."-".$a_hostt['id']."-".$classparent->fields['name'];
+                           }
                         }
                      }
                   }
