@@ -46,6 +46,14 @@ $LANG['plugin_monitoring']['host'][6]="Passive checks";
 $LANG['plugin_monitoring']['host'][7]="Dynamic dependencies are";
 $LANG['plugin_monitoring']['host'][8]="Host";
 $LANG['plugin_monitoring']['host'][9]="Check period";
+$LANG['plugin_monitoring']['host'][10]="Last month";
+$LANG['plugin_monitoring']['host'][11]="Last 6 months";
+$LANG['plugin_monitoring']['host'][12]="Last year";
+$LANG['plugin_monitoring']['host'][13]="State ok";
+$LANG['plugin_monitoring']['host'][14]="State critical";
+$LANG['plugin_monitoring']['host'][15]="Last day";
+$LANG['plugin_monitoring']['host'][16]="Last week";
+$LANG['plugin_monitoring']['host'][17]="temps";
 
 $LANG['plugin_monitoring']['grouphost'][0]="hosts groups";
 $LANG['plugin_monitoring']['grouphost'][1]="hosts group";

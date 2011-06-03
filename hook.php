@@ -87,11 +87,13 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
       case 'Printer':
       case 'NetworkEquipment':
          $array = array();
+         $array[0] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['state'][0];
          $array[1] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['host'][8];
          return $array;
          break;
       case 'User':
          $array = array();
+         $array[0] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['state'][0];
          $array[1] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['contact'][0];
          return $array;
          break;
@@ -109,17 +111,28 @@ function plugin_headings_actions_monitoring($item) {
       case 'Printer':
       case 'NetworkEquipment':
          $array = array ();
+         $array[0] = "plugin_headings_monitoring_status";
          $array[1] = "plugin_headings_monitoring_hosts";
          return $array;
          break;
       case 'User':
          $array = array ();
+         $array[0] = "plugin_headings_monitoring_status";
          $array[1] = "plugin_headings_monitoring_contacts";
          return $array;
          break;
    }
    return false;
 }
+
+
+function plugin_headings_monitoring_status($item) {
+
+   $pluginMonitoringHostevent = new PluginMonitoringHostevent();
+   $pluginMonitoringHostevent->showForm($item);
+
+}
+
 
 
 //function plugin_headings_fusioninventory_locks($type, $id) {

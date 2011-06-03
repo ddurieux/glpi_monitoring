@@ -54,51 +54,159 @@ class PluginMonitoringHostevent extends CommonDBTM {
       $pluginMonitoringHost = new PluginMonitoringHost();
       $a_list = $pluginMonitoringHost->find("`itemtype`='".get_class($item)."'
          AND `items_id`='".$item->fields['id']."'", "", 1);
+      $a_host = array();
       if (count($a_list) == '0') {
          return true;
       } else {
          $a_host = current($a_list);
       }
 
-      $a_list = $this->find("`plugin_monitoring_hosts_id`='".$a_host['id']."'", "date");
-      $count = array();
-      $last_datetime= '';
-      foreach($a_list as $data) {
-         if ($last_datetime == '') {
-            $last_datetime = $data['date'];
-         } else {
-            if (strstr($data['event'], ' OK -')) {
-               $count['critical'] = $this->convert_datetime($data['date']) - $this->convert_datetime($last_datetime);
-            } else {
-               $count['ok'] = $this->convert_datetime($data['date']) - $this->convert_datetime($last_datetime);
-            }
-            $last_datetime = $data['date'];
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<th></th>";
+      echo "<th>".$LANG['plugin_monitoring']['host'][13]." (%)</th>";
+      echo "<th>".$LANG['plugin_monitoring']['host'][14]." (%)</th>";
+      echo "<th>".$LANG['plugin_monitoring']['host'][13]." (".$LANG['plugin_monitoring']['host'][17].")</th>";
+      echo "<th>".$LANG['plugin_monitoring']['host'][14]." (".$LANG['plugin_monitoring']['host'][17].")</th>";
+      echo "</tr>";
+
+      $time_list = array();
+      $time_list[] = "day";
+      $time_list[] = "week";
+      $time_list[] = "month";
+      $time_list[] = "6 months";
+      $time_list[] = "year";
+
+      foreach ($time_list as $time) {
+         echo "<tr class='tab_bg_1'>";
+         $now = mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('Y'));
+         switch ($time) {
+
+            case 'day':
+               echo "<th>".$LANG['plugin_monitoring']['host'][15]."</th>";
+               $startDate = mktime(date('H'),date('i'),date('s'),date('m'),date('d')-1,date('Y'));
+               break;
+
+            case 'week':
+               echo "<th>".$LANG['plugin_monitoring']['host'][16]."</th>";
+               $startDate = mktime(date('H'),date('i'),date('s'),date('m'),date('d')-7,date('Y'));
+               break;
+
+            case 'month':
+               echo "<th>".$LANG['plugin_monitoring']['host'][10]."</th>";
+               $startDate = mktime(date('H'),date('i'),date('s'),date('m')-1,date('d'),date('Y'));
+               break;
+
+            case '6 months':
+               echo "<th>".$LANG['plugin_monitoring']['host'][11]."</th>";
+               $startDate = mktime(date('H'),date('i'),date('s'),date('m')-6,date('d'),date('Y'));
+               break;
+
+            case 'year':
+               echo "<th>".$LANG['plugin_monitoring']['host'][12]."</th>";
+               $startDate = mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('Y')-1);
+               break;
+
          }
+         $array = $this->calculateUptime($a_host['id'],$startDate,$now);
+         echo "<td align='center'>".$array['ok_p']."</td>";
+         echo "<td align='center'>".$array['critical_p']."</td>";
+         echo "<td align='center'>".$array['ok_t']."</td>";
+         echo "<td align='center'>".$array['critical_t']."</td>";
+         echo "</tr>";
       }
-      if (strstr($data['event'], ' OK -')) {
-         $count['ok'] = date('U') - $this->convert_datetime($last_datetime);
-      } else {
-         $count['critical'] = date('U') - $this->convert_datetime($last_datetime);
-      }
-      $total = $count['ok'] + $count['critical'];
-      echo "OK : ".$count['ok']." seconds (".round(($count['ok'] * 100) / $total, 3)." %)<br/>";
-      echo "CRITICAL : ".$count['critical']." seconds (".round(($count['critical'] * 100) / $total, 3)." %)<br/>";
+
+      echo "</table>";
       
 
       return true;
    }
 
 
-function convert_datetime($str) {
 
-    list($date, $time) = explode(' ', $str);
-    list($year, $month, $day) = explode('-', $date);
-    list($hour, $minute, $second) = explode(':', $time);
+   function convert_datetime_timestamp($str) {
 
-    $timestamp = mktime($hour, $minute, $second, $month, $day, $year);
+      list($date, $time) = explode(' ', $str);
+      list($year, $month, $day) = explode('-', $date);
+      list($hour, $minute, $second) = explode(':', $time);
 
-    return $timestamp;
-} 
+      $timestamp = mktime($hour, $minute, $second, $month, $day, $year);
+
+      return $timestamp;
+   }
+
+
+   function convert_timestamp_datetime($str) {
+
+      list($date, $time) = explode(' ', $str);
+      list($year, $month, $day) = explode('-', $date);
+      list($hour, $minute, $second) = explode(':', $time);
+
+      $timestamp = mktime($hour, $minute, $second, $month, $day, $year);
+
+      return $timestamp;
+   }
+   
+
+   function calculateUptime($hosts_id, $startDate, $endDate) {
+      $a_list = $this->find("`plugin_monitoring_hosts_id`='".$hosts_id."'
+         AND `date` > '".date("Y-m-d H:i:s", $startDate)."'
+         AND `date` < '".date("Y-m-d H:i:s", $endDate)."'", "date");
+
+      $a_list_before = $this->find("`plugin_monitoring_hosts_id`='".$hosts_id."'
+         AND `date` < '".date("Y-m-d H:i:s", $startDate)."'", "date DESC", 1);
+
+      if (count($a_list_before) == '0') {
+         $state_before = 'OK';
+      } else {
+         $datat = current($a_list_before);
+         if (strstr($datat['event'], ' OK -')) {
+            $state_before = 'OK';
+         } else {
+            $state_before = 'CRITICAL';
+         }
+      }
+
+      $count = array();
+      $count['critical'] = 0;
+      $count['ok'] = 0;
+      $last_datetime= date("Y-m-d H:i:s", $startDate);
+
+      foreach($a_list as $data) {
+         if (strstr($data['event'], ' OK -')) {
+            if ($state_before == "OK") {
+               $count['ok'] += $this->convert_datetime_timestamp($data['date']) -
+                        $this->convert_datetime_timestamp($last_datetime);
+            } else {
+               $count['critical'] += $this->convert_datetime_timestamp($data['date']) -
+                        $this->convert_datetime_timestamp($last_datetime);
+            }
+            $state_before = '';
+         } else {
+            if ($state_before == "CRITICAL") {
+               $count['critical'] += $this->convert_datetime_timestamp($data['date']) -
+                        $this->convert_datetime_timestamp($last_datetime);
+            } else {
+               $count['ok'] += $this->convert_datetime_timestamp($data['date']) -
+                       $this->convert_datetime_timestamp($last_datetime);
+            }
+            $state_before = '';
+         }
+         $last_datetime = $data['date'];
+
+      }
+      if (!isset($data['event']) OR strstr($data['event'], ' OK -')) {
+         $count['ok'] += date('U') - $this->convert_datetime_timestamp($last_datetime);
+      } else {
+         $count['critical'] += date('U') - $this->convert_datetime_timestamp($last_datetime);
+      }
+      $total = $count['ok'] + $count['critical'];
+      return array('ok_t'      => $count['ok']." seconds",
+                   'critical_t'=> $count['critical']." seconds",
+                   'ok_p'      => round(($count['ok'] * 100) / $total, 3),
+                   'critical_p'=> round(($count['critical'] * 100) / $total, 3));
+      
+   }
 
 }
 
