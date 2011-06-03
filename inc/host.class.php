@@ -332,12 +332,13 @@ class PluginMonitoringHost extends CommonDBTM {
 
       $pluginMonitoringHostevent = new PluginMonitoringHostevent();
 
-      $a_list = $this->find("`event` NOT LIKE '% OK -%'", "last_check DESC");
+      $a_list = $this->find("`event` NOT LIKE '% OK -%' AND `is_template`='0'");
 
       echo "<table class='tab_cadre_fixe'>";
       
       echo "<tr class='tab_bg_1'>";
       echo "<th>Name</th>";
+      echo "<th>type</th>";
       echo "<th>IP</th>";
       echo "<th>Last check</th>";
       echo "<th>State</th>";
@@ -350,6 +351,7 @@ class PluginMonitoringHost extends CommonDBTM {
          $class = new $classname;
          $class->getFromDB($data['items_id']);
          echo "<td>".$class->getLink(1)." </td>";
+         echo "<td>".$class->getTypeName()." </td>";
          echo "<td></td>";
          echo "<td>".convDateTime($data['last_check'])."</td>";
          if (strstr($data['event'], " OK -")) {
@@ -370,7 +372,49 @@ class PluginMonitoringHost extends CommonDBTM {
       }
 
       echo "</table>";
+   }
 
+
+
+   function massiveactionAddHost($itemtype, $items_id, $templates_id) {
+      $a_list = $this->find("`itemtype`='".$itemtype."' AND `items_id`='".$items_id."'");
+
+      if (count($a_list) == '0') {
+         // Add host to monitoring system
+         if ($templates_id > 0) {
+            $this->getFromDB($templates_id);
+            $input = array();
+            $input['itemtype'] = $itemtype;
+            $input['items_id'] = $items_id;
+            $input['parenttype'] = $this->fields['parenttype'];
+            $input['plugin_monitoring_commands_id'] = $this->fields['plugin_monitoring_commands_id'];
+            $input['plugin_monitoring_checks_id'] = $this->fields['plugin_monitoring_checks_id'];
+            $input['active_checks_enabled'] = $this->fields['active_checks_enabled'];
+            $input['passive_checks_enabled'] = $this->fields['passive_checks_enabled'];
+            $input['calendars_id'] = $this->fields['calendars_id'];
+
+            $hosts_id = $this->add($input);
+            // Add parents
+            $pluginMonitoringHost_Host = new PluginMonitoringHost_Host();
+            $a_list = $pluginMonitoringHost_Host->find("`plugin_monitoring_hosts_id_1`='".$templates_id."'");
+            foreach ($a_list as $data) {
+               $input = array();
+               $input['plugin_monitoring_hosts_id_1'] = $hosts_id;
+               $input['plugin_monitoring_hosts_id_2'] = $data['plugin_monitoring_hosts_id_2'];
+               $pluginMonitoringHost_Host->add($input);
+            }
+
+            // Add contacts
+            $pluginMonitoringHost_Contact = new PluginMonitoringHost_Contact();
+            $a_list = $pluginMonitoringHost_Contact->find("`plugin_monitoring_hosts_id`='".$templates_id."'");
+            foreach ($a_list as $data) {
+               $input = array();
+               $input['plugin_monitoring_hosts_id'] = $hosts_id;
+               $input['plugin_monitoring_contacts_id'] = $data['plugin_monitoring_contacts_id'];
+               $pluginMonitoringHost_Contact->add($input);
+            }
+         }
+      }
    }
 
 }

@@ -173,12 +173,6 @@ function plugin_headings_monitoring($item, $withtemplate=0) {
 
 
 
-function plugin_monitoring_MassiveActions($type) {
-   global $LANG;
-   
-   return array ();
-}
-
 function plugin_monitoring_MassiveActionsFieldsDisplay($options=array()) {
    global $LANG;
 
@@ -187,8 +181,46 @@ function plugin_monitoring_MassiveActionsFieldsDisplay($options=array()) {
 
 
 
+function plugin_monitoring_MassiveActions($type) {
+   global $LANG;
+
+   switch ($type) {
+      case "Computer":
+         return array (
+            "plugin_monitoring_activatehosts" => $LANG['plugin_monitoring']['host'][18]
+         );
+         break;
+   }
+
+   return array ();
+}
+
+
+
 function plugin_monitoring_MassiveActionsDisplay($options=array()) {
    global $LANG, $CFG_GLPI, $DB;
+
+   switch ($options['itemtype']) {
+      case "Computer":
+         switch ($options['action']) {
+            case "plugin_monitoring_activatehosts" :
+               $pluginMonitoringHost = new PluginMonitoringHost();
+               $a_list = $pluginMonitoringHost->find("`is_template`='1'");
+               $a_elements = array();
+               foreach ($a_list as $data) {
+                  $a_elements[$data['id']] = $data['template_name'];
+               }
+               $rand = Dropdown::showFromArray("template_id", $a_elements);
+               echo "<img alt='' title=\"".$LANG['buttons'][8]."\" src='".$CFG_GLPI["root_doc"].
+                     "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
+                     onClick=\"var w = window.open('".$pluginMonitoringHost->getFormURL()."?withtemplate=1&popup=1&amp;rand=".
+                     $rand."' ,'glpipopup', 'height=400, ".
+                     "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
+               echo "<input name='add' value='Post' class='submit' type='submit'>";
+               break;
+         }
+         break;
+   }
 
    return "";
 }
@@ -198,7 +230,19 @@ function plugin_monitoring_MassiveActionsDisplay($options=array()) {
 function plugin_monitoring_MassiveActionsProcess($data) {
    global $LANG;
 
-   
+   switch ($data['action']) {
+      case "plugin_monitoring_activatehosts" :
+         if ($data['itemtype'] == "Computer") {
+            $pluginMonitoringHost = new PluginMonitoringHost();
+            foreach ($data['item'] as $key => $val) {
+               if ($val == '1') {
+                  $pluginMonitoringHost->massiveactionAddHost($data['itemtype'], $key, $data['template_id']);
+               }
+            }
+         }
+         break;
+         
+   }
 }
 
 
