@@ -121,7 +121,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $class = new $classname;
          $class->getFromDB($data['items_id']);
 
-         $a_hosts[$i]['host_name'] = $classname."-".$class->fields['name'];
+         $a_hosts[$i]['host_name'] = $classname."-".$data['items_id']."-".$class->fields['name'];
             $ip = $class->fields['name'];
             if ($data['itemtype'] == 'NetworkEquipment') {
                if ($class->fields['ip'] != '') {
@@ -153,7 +153,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                      $classnameparent = $pluginMonitoringHost->fields['itemtype'];
                      $classparent = new $classnameparent;
                      $classparent->getFromDB($pluginMonitoringHost->fields['items_id']);
-                     $a_parents[] = $classnameparent."-".$classparent->fields['name'];
+                     $a_parents[] = $classnameparent."-".$pluginMonitoringHost->fields['items_id']."-".$classparent->fields['name'];
                   }
                   break;
 
@@ -169,7 +169,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                            $classnameparent = $networkPort->fields['itemtype'];
                            $classparent = new $classnameparent;
                            $classparent->getFromDB($networkPort->fields['items_id']);
-                           $a_parents[] = $classnameparent."-".$classparent->fields['name'];
+                           $a_parents[] = $classnameparent."-".$networkPort->fields['items_id']."-".$classparent->fields['name'];
                         }
                      }
                   }
