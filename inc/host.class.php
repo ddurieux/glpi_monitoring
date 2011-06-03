@@ -328,6 +328,51 @@ class PluginMonitoringHost extends CommonDBTM {
    }
 
 
+   function showHostChecks() {
+
+      $pluginMonitoringHostevent = new PluginMonitoringHostevent();
+
+      $a_list = $this->find("`event` NOT LIKE '% OK -%'", "last_check DESC");
+
+      echo "<table class='tab_cadre_fixe'>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<th>Name</th>";
+      echo "<th>IP</th>";
+      echo "<th>Last check</th>";
+      echo "<th>State</th>";
+      echo "<th>Since</th>";
+      echo "</tr>";
+
+      foreach ($a_list as $data) {
+         echo "<tr class='tab_bg_1'>";
+         $classname = $data['itemtype'];
+         $class = new $classname;
+         $class->getFromDB($data['items_id']);
+         echo "<td>".$class->getLink(1)." </td>";
+         echo "<td></td>";
+         echo "<td>".convDateTime($data['last_check'])."</td>";
+         if (strstr($data['event'], " OK -")) {
+            echo "<td style='background-color: #00ff00;'>Ok</td>";
+            echo "<td></td>";
+         } else {
+            echo "<td style='background-color: #ff0000;'>".$data['event']."</td>";
+            $a_hostevents = $pluginMonitoringHostevent->find("`plugin_monitoring_hosts_id`='".$data['id']."'",
+                                                             "`date` DESC", 1);
+            $a_hostevent = current($a_hostevents);
+            $time = mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('Y'))
+                    - $pluginMonitoringHostevent->convert_datetime_timestamp($a_hostevent['date']);
+            echo "<td>".$time." seconds</td>";
+         }
+
+
+         echo "</tr>";
+      }
+
+      echo "</table>";
+
+   }
+
 }
 
 ?>

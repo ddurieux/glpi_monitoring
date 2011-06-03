@@ -134,18 +134,6 @@ class PluginMonitoringHostevent extends CommonDBTM {
 
       return $timestamp;
    }
-
-
-   function convert_timestamp_datetime($str) {
-
-      list($date, $time) = explode(' ', $str);
-      list($year, $month, $day) = explode('-', $date);
-      list($hour, $minute, $second) = explode(':', $time);
-
-      $timestamp = mktime($hour, $minute, $second, $month, $day, $year);
-
-      return $timestamp;
-   }
    
 
    function calculateUptime($hosts_id, $startDate, $endDate) {

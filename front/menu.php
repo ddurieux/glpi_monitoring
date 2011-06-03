@@ -42,11 +42,9 @@ commonHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plug
              "monitoring", "commands");
 
 
-$PluginMonitoringShinken = new PluginMonitoringShinken();
+$PluginMonitoringHost = new PluginMonitoringHost();
 
-$array = $PluginMonitoringShinken->generatehostsCfg();
-
-echo $array[1];
+$PluginMonitoringHost->showHostChecks();
 
 commonFooter();
 
