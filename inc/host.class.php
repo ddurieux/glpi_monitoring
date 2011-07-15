@@ -364,9 +364,6 @@ class PluginMonitoringHost extends CommonDBTM {
             $a_hostevent = current($a_hostevents);
             $this->date_diff($pluginMonitoringHostevent->convert_datetime_timestamp($a_hostevent['date']),
                     mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('Y')));
-//            $time = mktime(date('H'),date('i'),date('s'),date('m'),date('d'),date('Y'))
-//                    - $pluginMonitoringHostevent->convert_datetime_timestamp($a_hostevent['date']);
-//            echo "<td>".$time." seconds</td>";
          }
 
          echo "</tr>";
