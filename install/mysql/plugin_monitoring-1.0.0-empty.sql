@@ -1,3 +1,17 @@
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_businessapplications`;
+
+CREATE TABLE `glpi_plugin_monitoring_businessapplications` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `name` varchar(255) DEFAULT NULL,
+   `entities_id` int(11) NOT NULL DEFAULT '0',
+   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+   `comment` text COLLATE utf8_unicode_ci,
+   PRIMARY KEY (`id`),
+   KEY `name` (`name`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_commands`;
 
 CREATE TABLE `glpi_plugin_monitoring_commands` (
@@ -210,6 +224,37 @@ CREATE TABLE `glpi_plugin_monitoring_hostevents` (
   `date` datetime DEFAULT NULL,
   `event` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `perf_data` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_services`;
+
+CREATE TABLE `glpi_plugin_monitoring_services` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(100) DEFAULT NULL,
+  `is_template` tinyint(1) NOT NULL DEFAULT '0',
+  `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `template_link` tinyint(1) NOT NULL DEFAULT '0',
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `plugin_monitoring_commands_id` int(11) NOT NULL DEFAULT '0',
+  `arguments` text COLLATE utf8_unicode_ci,
+  `criticity` tinyint(1) NOT NULL DEFAULT '3',
+  `check_interval` tinyint(1) NOT NULL DEFAULT '1',
+  `last_check` datetime DEFAULT NULL,
+  `event` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_servicesuggests`;
+
+CREATE TABLE `glpi_plugin_monitoring_servicesuggests` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `plugin_monitoring_services_id` int(11) NOT NULL DEFAULT '0',
+  `softwares_name` text COLLATE utf8_unicode_ci,
+  `computers_services` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

@@ -82,6 +82,7 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
    global $LANG;
 
    switch (get_class($item)) {
+      
       case 'Computer' :
       case 'Device':
       case 'Printer':
@@ -89,14 +90,23 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
          $array = array();
          $array[0] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['state'][0];
          $array[1] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['host'][8];
+         $array[2] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['service'][0];
          return $array;
          break;
+      
       case 'User':
          $array = array();
          $array[0] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['state'][0];
          $array[1] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['contact'][0];
          return $array;
          break;
+      
+      case 'PluginMonitoringBusinessapplication':
+         $array = array();
+         $array[0] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['service'][0];
+         return $array;
+         break;
+      
    }
 
    return false;
@@ -105,7 +115,9 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
 // Define headings actions added by the plugin
 //function plugin_headings_actions_fusioninventory($type) {
 function plugin_headings_actions_monitoring($item) {
+
    switch (get_class($item)) {
+      
       case 'Computer':
       case 'Device':
       case 'Printer':
@@ -113,14 +125,23 @@ function plugin_headings_actions_monitoring($item) {
          $array = array ();
          $array[0] = "plugin_headings_monitoring_status";
          $array[1] = "plugin_headings_monitoring_hosts";
+         $array[2] = "plugin_headings_monitoring_services";
          return $array;
          break;
+      
       case 'User':
          $array = array ();
          $array[0] = "plugin_headings_monitoring_status";
          $array[1] = "plugin_headings_monitoring_contacts";
          return $array;
          break;
+      
+      case 'PluginMonitoringBusinessapplication':
+         $array = array ();
+         $array[0] = "plugin_headings_monitoring_services";
+         return $array;
+         break;
+      
    }
    return false;
 }
@@ -135,7 +156,6 @@ function plugin_headings_monitoring_status($item) {
 
 
 
-//function plugin_headings_fusioninventory_locks($type, $id) {
 function plugin_headings_monitoring_hosts($item) {
    
    $pluginMonitoringHost = new PluginMonitoringHost();
@@ -151,6 +171,20 @@ function plugin_headings_monitoring_hosts($item) {
       $pluginMonitoringHost_Contact->manageContacts($pluginMonitoringHost->getField('id'));
    }
 }
+
+
+
+function plugin_headings_monitoring_services($item) {
+
+   $pluginMonitoringService = new PluginMonitoringService();
+   $pluginMonitoringService->listByHost(get_class($item), $item->fields['id']);
+   if (get_class($item) != "PluginMonitoringBusinessapplication") {
+      $pluginMonitoringServicesuggest = new PluginMonitoringServicesuggest();
+      $pluginMonitoringServicesuggest->listSuggests(get_class($item), $item->fields['id']);
+   }
+}
+
+
 
 
 function plugin_headings_monitoring_contacts($item) {
@@ -317,6 +351,15 @@ function plugin_monitoring_registerMethods() {
                                                        'methodShinkenContacts');
    $WEBSERVICES_METHOD['monitoring.shinkenTimeperiods'] = array('PluginMonitoringWebservice',
                                                        'methodShinkenTimeperiods');
+}
+
+/**
+ * Define Dropdown tables to be manage in GLPI :
+**/
+function plugin_monitoring_getDropdown(){
+   global $LANG;
+
+   return array('PluginMonitoringBusinessapplication'  => "Business application");
 }
 
 ?>

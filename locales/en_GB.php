@@ -86,4 +86,9 @@ $LANG['plugin_monitoring']['contact'][18]="The contact will not receive any type
 $LANG['plugin_monitoring']['contact'][19]="Notification command";
 $LANG['plugin_monitoring']['contact'][20]="Contacts";
 
+$LANG['plugin_monitoring']['service'][0]="Services";
+$LANG['plugin_monitoring']['service'][1]="Criticity";
+
+$LANG['plugin_monitoring']['servicesuggest'][0]="Suggests";
+
 ?>
