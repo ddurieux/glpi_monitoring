@@ -12,6 +12,44 @@ CREATE TABLE `glpi_plugin_monitoring_businessapplications` (
 
 
 
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_businessrules`;
+
+CREATE TABLE `glpi_plugin_monitoring_businessrules` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `plugin_monitoring_services_id` int(11) NOT NULL DEFAULT '0',
+   `operator` varchar(255) DEFAULT NULL,
+   PRIMARY KEY (`id`),
+   KEY `plugin_monitoring_services_id` (`plugin_monitoring_services_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_businessrules_definitions`;
+
+CREATE TABLE `glpi_plugin_monitoring_businessrules_definitions` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `name` varchar(255) DEFAULT NULL,
+   `plugin_monitoring_businessrules_id` int(11) NOT NULL DEFAULT '0',
+   `minimumservices` tinyint(4) NOT NULL DEFAULT '1',
+   PRIMARY KEY (`id`),
+   KEY `plugin_monitoring_businessrules_id` (`plugin_monitoring_businessrules_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_businessrules_definitionselements`;
+
+CREATE TABLE `glpi_plugin_monitoring_businessrules_definitionselements` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `plugin_monitoring_businessrules_definitions_id` int(11) NOT NULL DEFAULT '0',
+   `plugin_monitoring_services_id` int(11) NOT NULL DEFAULT '0',
+   PRIMARY KEY (`id`),
+   KEY `plugin_monitoring_businessrules_definitions_id` (`plugin_monitoring_businessrules_definitions_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_commands`;
 
 CREATE TABLE `glpi_plugin_monitoring_commands` (
@@ -241,12 +279,15 @@ CREATE TABLE `glpi_plugin_monitoring_services` (
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `plugin_monitoring_commands_id` int(11) NOT NULL DEFAULT '0',
   `arguments` text COLLATE utf8_unicode_ci,
-  `criticity` tinyint(1) NOT NULL DEFAULT '3',
-  `check_interval` tinyint(1) NOT NULL DEFAULT '1',
+  `plugin_monitoring_checks_id` int(11) NOT NULL DEFAULT '0',
+  `active_checks_enabled` tinyint(1) NOT NULL DEFAULT '1',
+  `passive_checks_enabled` tinyint(1) NOT NULL DEFAULT '1',
+  `calendars_id`  int(11) NOT NULL DEFAULT '0',
   `last_check` datetime DEFAULT NULL,
   `event` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_servicesuggests`;

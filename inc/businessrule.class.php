@@ -33,21 +33,77 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   define('GLPI_ROOT', '../../..');
+   die("Sorry. You can't access directly to this file");
 }
 
-include (GLPI_ROOT."/inc/includes.php");
+class PluginMonitoringBusinessrule extends CommonDBTM {
+   
 
-commonHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "commands");
+   function canCreate() {
+      return true;
+   }
 
 
-$PluginMonitoringHost = new PluginMonitoringHost();
-$pluginMonitoringBusinessapplication = new PluginMonitoringBusinessapplication();
+   
+   function canView() {
+      return true;
+   }
 
-$pluginMonitoringBusinessapplication->showBAChecks();
-//$PluginMonitoringHost->showHostChecks();
 
-commonFooter();
+   
+   function canCancel() {
+      return true;
+   }
+
+
+   
+   function canUndo() {
+      return true;
+   }
+
+
+   
+   function canValidate() {
+      return true;
+   }
+
+   
+
+   /**
+   * Display form for agent configuration
+   *
+   * @param $items_id integer ID 
+   * @param $options array
+   *
+   *@return bool true if form is ok
+   *
+   **/
+   function showForm($options=array()) {
+      global $DB,$CFG_GLPI,$LANG;
+
+      $items_id = '';
+      if ($items_id!='') {
+         $this->getFromDB($items_id);
+      } else {
+         $this->getEmpty();
+      }
+
+//      $this->showFormHeader($options);
+//
+//
+//      
+//      $this->showFormButtons($options);
+
+      /*
+       * We must display businessrules_definitions
+       */
+      $PluginMonitoringBusinessrule_Definition = new PluginMonitoringBusinessrule_Definition();
+      $PluginMonitoringBusinessrule_Definition->showForm();
+      
+      return true;
+   }
+
+
+}
 
 ?>

@@ -105,10 +105,24 @@ class PluginMonitoringService extends CommonDBTM {
 
       $ong = array();
 
+      $ong[2] = $LANG['plugin_monitoring']['businessrule'][0]; 
+      
       return $ong;
    }
 
+   
+   
+   function maybeTemplate() {
 
+      if (!isset($this->fields['id'])) {
+         $this->getEmpty();
+      }
+      if (strstr($_SERVER['PHP_SELF'], 'service.form.php')) {
+         return false;
+      } else {
+         return isset($this->fields['is_template']);
+      }
+   }
 
    /**
    * Display form for service configuration
@@ -140,14 +154,99 @@ class PluginMonitoringService extends CommonDBTM {
          $this->getFromDB($items_id);
       } else {
          $this->getEmpty();
+         if (isset($_GET['items_id']) AND isset($_GET['itemtype'])) {
+            $this->fields['itemtype'] = $_GET['itemtype'];
+            $this->fields['items_id'] = $_GET['items_id'];         
+         }
       }
+      $template = false;
 
+      $link = NOT_AVAILABLE;
+      $type = $this->fields['itemtype'];
+      if (class_exists($this->fields['itemtype'])) {
+         $item = new $this->fields['itemtype']();
+         $type = $item->getTypeName();
+
+         if ($item->getFromDB($this->fields["items_id"])) {
+            $link = $item->getLink();
+         }
+      }
+      $this->showTabs($options);
       $this->showFormHeader($options);
 
-
+      echo "<tr>";
+      echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
+      echo "<td>";
+      $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),
+                             $this->getType());
+      autocompletionTextField($this, 'name', array('value' => $objectName));      
+      echo "</td>";
+      echo "<td>";
+      echo $type."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      echo "<input type='hidden' name='items_id' value='".$this->fields["items_id"]."'>\n";
+      echo "<input type='hidden' name='itemtype' value='".$this->fields["itemtype"]."'>\n";
+      echo $link;
+      echo "</td>";
+      echo "</tr>";
       
-      $this->showFormButtons($options);
+      echo "<tr>";
+      echo "<th colspan='2'>".$LANG['common'][7]."&nbsp;:</th>";
+      echo "<th colspan='2' width='50%'>";
+      echo $LANG['plugin_monitoring']['service'][3]."&nbsp;:";
+      echo "</th>";
+      echo "</tr>";
+      
+      echo "<tr>";
+      echo "<td colspan='2' align='center'>";
+      Dropdown::show("PluginMonitoringService", array(
+            'name' => 'template_link',
+            'value' => $this->fields['template_link'],
+            'auto_submit' => true,
+            'condition' => '`is_template` = "1"'
+      ));
+      echo "</td>";
+      echo "<td>".$LANG['plugin_monitoring']['command'][1]."&nbsp;:</td>";
+      echo "<td>";
+      Dropdown::show("PluginMonitoringCommand", array('name'=>'plugin_monitoring_commands_id',
+                                                'value'=>$this->fields['plugin_monitoring_commands_id']));
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr>";
+      echo "<td colspan='2' align='center'>";
+      echo "</td>";
+      echo "<td>".$LANG['plugin_monitoring']['service'][4]."&nbsp;:</td>";
+      echo "<td>";
+      $objectName = autoName($this->fields["arguments"], "arguments", ($template === "newcomp"),
+                             $this->getType());
+      autocompletionTextField($this, 'arguments', array('value' => $objectName));
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr>";
+      echo "<td colspan='2' align='center'>";
+      echo "</td>";
+      echo "<td>".$LANG['plugin_monitoring']['check'][0]."&nbsp;:</td>";
+      echo "<td align='center'>";
+      Dropdown::show("PluginMonitoringCheck", array('name'=>'plugin_monitoring_checks_id',
+                                                'value'=>$this->fields['plugin_monitoring_checks_id']));
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr>";
+      echo "<td colspan='2' align='center'>";
+      echo "</td>";
+      echo "<td>".$LANG['plugin_monitoring']['host'][9]."&nbsp;:</td>";
+      echo "<td align='center'>";
+      dropdown::show("Calendar", array('name'=>'calendars_id',
+                                 'value'=>$this->fields['calendars_id']));
+      echo "</td>";
+      echo "</tr>";
 
+      $this->showFormButtons($options);
+      $this->addDivForTabs();
       return true;
    }
 
@@ -163,6 +262,16 @@ class PluginMonitoringService extends CommonDBTM {
    function listByHost($itemtype, $items_id) {
       global $LANG;
 
+      echo "<table class='tab_cadre'>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo "<a href='".GLPI_ROOT."/plugins/monitoring/front/service.form.php?items_id=".$items_id."&itemtype=".$itemtype."'>".
+         $LANG['plugin_monitoring']['service'][2]."</a>";
+      echo "</td>";
+      echo "</tr>";
+      echo "</table>";
+      echo "<br/>";      
+      
       $pluginMonitoringCommand = new PluginMonitoringCommand();
 
       $start = 0;
@@ -203,8 +312,10 @@ class PluginMonitoringService extends CommonDBTM {
             $data['criticity'] = $this->fields['criticity'];
             $data['check_interval'] = $this->fields['check_interval'];
          }
-
-         echo "<td>".$data['name']."</td>";
+         $this->getFromDB($data['id']);
+         echo "<td>";
+         echo "<a href='". $this->getLinkURL()."'>".$this->getName()."</a>";
+         echo "</td>";
          echo "<td>".$template."</td>";
          $pluginMonitoringCommand->getFromDB($data['plugin_monitoring_commands_id']);
          echo "<td>".$pluginMonitoringCommand->getLink(1)."</td>";

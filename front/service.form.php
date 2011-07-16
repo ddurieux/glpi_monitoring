@@ -32,21 +32,31 @@
    ----------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   define('GLPI_ROOT', '../../..');
+define('GLPI_ROOT', '../../..');
+
+include (GLPI_ROOT . "/inc/includes.php");
+
+commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
+             "monitoring", "host");
+
+$pluginMonitoringService = new PluginMonitoringService();
+if (isset($_POST["add"])) {
+   $pluginMonitoringService->add($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset ($_POST["update"])) {
+   $pluginMonitoringService->update($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset ($_POST["delete"])) {
+   $pluginMonitoringService->delete($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']);
 }
 
-include (GLPI_ROOT."/inc/includes.php");
 
-commonHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "commands");
-
-
-$PluginMonitoringHost = new PluginMonitoringHost();
-$pluginMonitoringBusinessapplication = new PluginMonitoringBusinessapplication();
-
-$pluginMonitoringBusinessapplication->showBAChecks();
-//$PluginMonitoringHost->showHostChecks();
+if (isset($_GET["id"])) {
+   $pluginMonitoringService->showForm($_GET["id"]);
+} else {
+   $pluginMonitoringService->showForm("");
+}
 
 commonFooter();
 

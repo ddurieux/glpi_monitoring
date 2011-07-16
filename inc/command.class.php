@@ -185,6 +185,12 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['command_name'] = 'check-host-alive';
       $input['command_line'] = "\$PLUGINSDIR\$/check.sh \$HOSTADDRESS\$ -c \$ARG1\$ SERVICE \$USER1\$";
       $this->add($input);
+   
+      $input = array();
+      $input['name'] = 'Business rules';
+      $input['command_name'] = 'bp_rule';
+      $input['command_line'] = "";
+      $this->add($input);
       
    }
 

@@ -33,21 +33,85 @@
  */
 
 if (!defined('GLPI_ROOT')) {
-   define('GLPI_ROOT', '../../..');
+   die("Sorry. You can't access directly to this file");
 }
 
-include (GLPI_ROOT."/inc/includes.php");
+class PluginMonitoringBusinessrule_Definition extends CommonDBTM {
+   
 
-commonHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "commands");
+   /**
+   * Get name of this type
+   *
+   *@return text name of this type by language of the user connected
+   *
+   **/
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['plugin_monitoring']['businessrule'][0];
+   }
+
+   
+   
+   function canCreate() {
+      return true;
+   }
 
 
-$PluginMonitoringHost = new PluginMonitoringHost();
-$pluginMonitoringBusinessapplication = new PluginMonitoringBusinessapplication();
+   
+   function canView() {
+      return true;
+   }
 
-$pluginMonitoringBusinessapplication->showBAChecks();
-//$PluginMonitoringHost->showHostChecks();
 
-commonFooter();
+   
+   function canCancel() {
+      return true;
+   }
+
+
+   
+   function canUndo() {
+      return true;
+   }
+
+
+   
+   function canValidate() {
+      return true;
+   }
+
+   
+
+   /**
+   * Display form for agent configuration
+   *
+   * @param $items_id integer ID 
+   * @param $options array
+   *
+   *@return bool true if form is ok
+   *
+   **/
+   function showForm($options=array()) {
+      global $DB,$CFG_GLPI,$LANG;
+
+      $items_id = '';
+      if ($items_id!='') {
+         $this->getFromDB($items_id);
+      } else {
+         $this->getEmpty();
+      }
+
+      $this->showFormHeader($options);
+
+
+      
+      $this->showFormButtons($options);
+      
+      return true;
+   }
+
+
+}
 
 ?>

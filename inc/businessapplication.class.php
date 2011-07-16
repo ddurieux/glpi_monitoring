@@ -80,6 +80,44 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
       return true;
    }
 
+   
+   function showBAChecks() {
+      global $LANG;
+      
+      echo "<table>";
+      echo "<tr>";
+      
+         $a_ba = $this->find();
+         foreach ($a_ba as $data) {
+            echo "<td>";
+            
+            echo "<table  class='tab_cadre' width='200'>";
+            echo "<tr>";
+            echo "<th colspan='2'>";
+            echo $data['name'];
+            echo "</th>";
+            echo "</tr>";
+            
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo $LANG['state'][0]."&nbsp:";
+            echo "</td>";
+            echo "<td width='30'>";
+     echo "OK";
+            echo "</td>";
+            echo "</tr>";
+            echo "</table>";
+            
+            echo "</td>";
+         }     
+      
+      
+      echo "</tr>";
+      echo "</table>";
+      
+   }
+   
+   
 }
 
 ?>
