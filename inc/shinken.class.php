@@ -79,10 +79,12 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_listnotif = $pluginMonitoringNotificationcommand->find();
       $a_list = array_merge($a_list, $a_listnotif);
       foreach ($a_list as $data) {
-         $a_commands[$i]['name'] = $data['name'];
-         $a_commands[$i]['command_name'] = $data['command_name'];
-         $a_commands[$i]['command_line'] = $data['command_line'];
-         $i++;
+         if ($data['command_name'] != "bp_rule") {
+            $a_commands[$i]['name'] = $data['name'];
+            $a_commands[$i]['command_name'] = $data['command_name'];
+            $a_commands[$i]['command_line'] = $data['command_line'];
+            $i++;
+         }
       }
 
       if ($file == "1") {
@@ -310,8 +312,9 @@ class PluginMonitoringShinken extends CommonDBTM {
       
       $a_listcalendar = $calendar->find();
       foreach ($a_listcalendar as $datacalendar) {
-         if ($datacalendar['name'] != "Default") {
+         //if ($datacalendar['name'] != "Default") {
             $a_timeperiods[$i]['timeperiod_name'] = $datacalendar['name'];
+            $a_timeperiods[$i]['alias'] = $datacalendar['name'];
             $a_listsegment = $calendarSegment->find("`calendars_id`='".$datacalendar['id']."'");
             foreach ($a_listsegment as $datasegment) {
                $begin = preg_replace("/:00$/", "", $datasegment['begin']);
@@ -350,7 +353,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_timeperiods[$i][$day] = $begin."-".$end;
             }
             $i++;
-         }
+         //}
       }
 
       if ($file == "1") {
