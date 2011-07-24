@@ -48,6 +48,12 @@ $pluginMonitoringBusinessapplication = new PluginMonitoringBusinessapplication()
 $pluginMonitoringBusinessapplication->showBAChecks();
 //$PluginMonitoringHost->showHostChecks();
 
+
+$plu = new PluginMonitoringHostevent();
+//$plu->parseToRrdtool();
+$to = new PluginMonitoringRrdtool();
+$to->displayGLPIGraph("NetworkEquipment", "161");
+
 commonFooter();
 
 ?>

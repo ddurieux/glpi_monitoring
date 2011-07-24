@@ -195,6 +195,36 @@ class PluginMonitoringHostevent extends CommonDBTM {
                    'critical_p'=> round(($count['critical'] * 100) / $total, 3));
       
    }
+   
+   
+   
+   function parseToRrdtool() {
+      
+      $pluginMonitoringHost = new PluginMonitoringHost();
+      $pluginMonitoringRrdtool = new PluginMonitoringRrdtool();
+      $pluginMonitoringCommand = new PluginMonitoringCommand();
+      
+      $a_hosts = $pluginMonitoringHost->find("`id`='2'");
+      foreach ($a_hosts as $hdata) {
+         $a_events = $this->find("`plugin_monitoring_hosts_id`='".$hdata['id']."'", 
+                        "date");
+         $i = 0;
+         foreach ($a_events as $edata) {
+            $i++;
+            if ($i < count($a_events)) {
+               $pluginMonitoringCommand->getFromDB($hdata['plugin_monitoring_commands_id']);
+               if ($pluginMonitoringCommand->fields['legend'] != '') {
+               
+                  $pluginMonitoringRrdtool->addData($hdata['plugin_monitoring_commands_id'], 
+                                                 $hdata['itemtype'], 
+                                                 $hdata['items_id'], 
+                                                 $this->convert_datetime_timestamp($edata['date']), 
+                                                 $edata['perf_data']);
+               }
+            }            
+         }
+      }
+   }
 
 }
 
