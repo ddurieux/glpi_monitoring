@@ -55,6 +55,10 @@ function pluginMonitoringInstall($version) {
    include (GLPI_ROOT . "/plugins/monitoring/inc/check.class.php");
    $pluginMonitoringCheck = new PluginMonitoringCheck();
    $pluginMonitoringCheck->initChecks();
+   
+   if (!is_dir(GLPI_PLUGIN_DOC_DIR.'/monitoring')) {
+      mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring");
+   }
 }
 
 
