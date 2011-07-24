@@ -60,6 +60,8 @@ CREATE TABLE `glpi_plugin_monitoring_commands` (
    `command_line` text COLLATE utf8_unicode_ci,
    `poller_tag` varchar(255) DEFAULT NULL,
    `module_type` varchar(255) DEFAULT NULL,
+   `regex` text COLLATE utf8_unicode_ci,
+   `legend` text COLLATE utf8_unicode_ci,
    PRIMARY KEY (`id`),
    KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -262,6 +264,10 @@ CREATE TABLE `glpi_plugin_monitoring_hostevents` (
   `date` datetime DEFAULT NULL,
   `event` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `perf_data` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `output` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `state` varchar(255) COLLATE utf8_unicode_ci DEFAULT '0',
+  `latency` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `execution_time` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
