@@ -125,12 +125,12 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       $opts = array();
       $opts[] = '--start';
       $opts[] = '-1d';
-      $opts[] = "-t";
-      $opts[] = $pluginMonitoringCommand->fields['name'];
+//      $opts[] = "-t";
+//      $opts[] = $pluginMonitoringCommand->fields['name'];
       $opts[] = "-v";
       $opts[] = "Time in ms";
       $opts[] = "--width";
-      $opts[] = "600";
+      $opts[] = "470";
       $opts[] = "-c";
       $opts[] = "BACK#e1cc7b";
       $opts[] = "-c";
@@ -156,16 +156,11 @@ class PluginMonitoringRrdtool extends CommonDBTM {
             $i++;
          }
          if (!strstr($legend, "timeout")) {
-            
-            if ($legend == "response_time") {
-               $opts[] = $type.":".$legend.$color.":".$legend;
-               $opts[] = "GPRINT:response_time:LAST:Last\: %2.2lf ms";
-               $opts[] = "GPRINT:response_time:MIN:Min\: %2.2lf ms";
-               $opts[] = "GPRINT:response_time:MAX:Max\: %2.2lf ms";
-               $opts[] = "GPRINT:response_time:AVERAGE:Avg\: %2.2lf ms\l";
-            } else {
-               $opts[] = $type.":".$legend.$color.":".$legend."\l";
-            }
+            $opts[] = $type.":".$legend.$color.":".$legend;
+            $opts[] = "GPRINT:".$legend.":LAST:Last\: %2.2lf ms";
+            $opts[] = "GPRINT:".$legend.":MIN:Min\: %2.2lf ms";
+            $opts[] = "GPRINT:".$legend.":MAX:Max\: %2.2lf ms";
+            $opts[] = "GPRINT:".$legend.":AVERAGE:Avg\: %2.2lf ms\l";
          }                 
       }
       foreach ($a_legend as $legend){
@@ -173,31 +168,11 @@ class PluginMonitoringRrdtool extends CommonDBTM {
             $opts[] = "CDEF:1".$legend."=".$legend.",0.98,*";
          }
       }
-
-      
-      
-//          
-//$opts = array( "–start", "-1d", "–vertical-label=B/s",
-//                 "DEF:inoctets=net.rrd:input:AVERAGE",
-//                 "DEF:outoctets=net.rrd:output:AVERAGE",
-//                 "AREA:inoctets#00FF00:In traffic",
-//                 "LINE1:outoctets#0000FF:Out traffic\\r",
-//                 "CDEF:inbits=inoctets,8,*",
-//                 "CDEF:outbits=outoctets,8,*",
-//                 "COMMENT:\\n",
-//                 "GPRINT:inbits:AVERAGE:Avg In traffic\: %6.2lf %Sbps",
-//                 "COMMENT:  ",
-//                 "GPRINT:inbits:MAX:Max In traffic\: %6.2lf %Sbps\\r",
-//                 "GPRINT:outbits:AVERAGE:Avg Out traffic\: %6.2lf %Sbps",
-//                 "COMMENT: ",
-//                 "GPRINT:outbits:MAX:Max Out traffic\: %6.2lf %Sbps\\r"
-//               );
-
-  $ret = rrd_graph(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id.".gif", $opts, count($opts));
-  if( !is_array($ret)) {
-    $err = rrd_error();
-    echo "rrd_graph() ERROR: $err\n";
-  }
+      $ret = rrd_graph(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id.".gif", $opts, count($opts));
+      if( !is_array($ret)) {
+         $err = rrd_error();
+         echo "rrd_graph() ERROR: $err\n";
+      }
       
       
 //      $data = rrd_fetch(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id.".rrd",

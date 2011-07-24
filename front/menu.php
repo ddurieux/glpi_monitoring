@@ -54,6 +54,7 @@ $plu = new PluginMonitoringHostevent();
 $to = new PluginMonitoringRrdtool();
 $to->displayGLPIGraph("NetworkEquipment", "161");
 
+echo "<img src='".GLPI_ROOT."/plugins/monitoring/front/send.php?file=NetworkEquipment-161.gif' />";
 commonFooter();
 
 ?>
