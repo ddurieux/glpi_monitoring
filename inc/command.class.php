@@ -46,6 +46,13 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['name'] = 'Simple tcp port check';
       $input['command_name'] = 'check_tcp';
       $input['command_line'] = "\$PLUGINSDIR\$/check_tcp  -H \$HOSTADDRESS\$ -p \$ARG1$";
+      $input['regex'] = "time=(\d+\.\d+)\w;(\d*\.*\d*);(\d*\.*\d*);(\d*\.*\d*);(\d*\.*\d*)";
+      $legend = array();
+      $legend[1] = "response_time";
+      $legend[2] = "warning_time";
+      $legend[3] = "critical_time";
+      $legend[5] = "timeout_time";
+      $input['legend'] = exportArrayToDB($legend);
       $this->add($input);
 
       $input = array();
@@ -160,6 +167,13 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['name'] = 'Check Linux host alive';
       $input['command_name'] = 'check_linux_host_alive';
       $input['command_line'] = "\$PLUGINSDIR\$/check_tcp -H \$HOSTADDRESS\$ -p 22 -t 3";
+      $input['regex'] = "time=(\d+\.\d+)\w;(\d*\.*\d*);(\d*\.*\d*);(\d*\.*\d*);(\d*\.*\d*)";
+      $legend = array();
+      $legend[1] = "response_time";
+      $legend[2] = "warning_time";
+      $legend[3] = "critical_time";
+      $legend[5] = "timeout_time";
+      $input['legend'] = exportArrayToDB($legend);
       $this->add($input);
 
       $input = array();
@@ -172,6 +186,13 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['name'] = 'Check Windows host alive';
       $input['command_name'] = 'check_windows_host_alive';
       $input['command_line'] = "\$PLUGINSDIR\$/check_tcp -H \$HOSTADDRESS\$ -p 139 -t 3";
+      $input['regex'] = "time=(\d+\.\d+)\w;(\d*\.*\d*);(\d*\.*\d*);(\d*\.*\d*);(\d*\.*\d*)";
+      $legend = array();
+      $legend[1] = "response_time";
+      $legend[2] = "warning_time";
+      $legend[3] = "critical_time";
+      $legend[5] = "timeout_time";
+      $input['legend'] = exportArrayToDB($legend);
       $this->add($input);
 
       $input = array();
