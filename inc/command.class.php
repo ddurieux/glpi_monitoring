@@ -276,6 +276,12 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['command_line'] = "";
       $this->add($input);
       
+      $input = array();
+      $input['name'] = 'Check local cpu';
+      $input['command_name'] = 'check_cpu_usage';
+      $input['command_line'] = "\$PLUGINSDIR\$/check_cpu_usage -w \$ARG1\$ -c \$ARG2\$";
+      $this->add($input);
+      
    }
 
 

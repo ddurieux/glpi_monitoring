@@ -52,6 +52,29 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
    }
 
 
+   
+   function initSuggest() {
+      
+      // MySQL Server
+      $input = array();
+      $input['plugin_monitoring_commands_id'] = '17';
+      $input['softwares_name'] = '([mM][yY][sS][qQ][lL])(.*)([sS][eE][rR][vV][eE][rR])';
+      $this->add($input);
+      
+      // Apache Server
+      $input = array();
+      $input['plugin_monitoring_commands_id'] = '2';
+      $input['softwares_name'] = '^([aA][pP][aA][cC][hH][eE])(\\s[hH][tT][tT][pP](.*)|$)';
+      $this->add($input);
+      
+      // PostgreSQL
+      $input = array();
+      $input['plugin_monitoring_commands_id'] = '';
+      $input['softwares_name'] = '[pP][oO][sS][tT][gG][rR][eE][sS][qQ][lL] ';
+      $this->add($input);
+      
+   }
+   
 
    function canCreate() {
       return true;
@@ -159,7 +182,7 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
       $a_list = $computerDisk->find("`computers_id`='".$items_id."'");
       foreach ($a_list as $data) {
          echo "<tr>";
-         echo "<td></td>";
+         echo "<td><input type='checkbox'/></td>";
          echo "<td><strong>".$LANG['computers'][6]." : </strong>".$data['name']."</td>";
          echo "<td>Check disk ".$data['mountpoint']."</td>";
          echo "<td></td>";
@@ -197,15 +220,53 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
          $result = $DB->query($query);
          while ($sdata = $DB->fetch_array($result)) {
             
-            $pMonitoringService->getFromDB($data['plugin_monitoring_services_id']);
+            //$pMonitoringService->getFromDB($data['plugin_monitoring_commands_id']);
             echo "<tr>";
-            echo "<td></td>";
+            echo "<td><input type='checkbox'/></td>";
             echo "<td><strong>".$LANG['help'][31]." : </strong>".$sdata['softname']."</td>";
             echo "<td>Check mysql</td>";
-            echo "<td></td>";
+            $a_listtemplates = $pMonitoringService->find("`is_template`='1'
+                  AND `plugin_monitoring_commands_id`='".$data['plugin_monitoring_commands_id']."'");
+            $list = array();
+            $list[0] = "------";
+            foreach ($a_listtemplates as $datatemplates) {
+               $list[$datatemplates['id']] = $datatemplates['template_name'];
+            }
+            
+            echo "<td>";
+            Dropdown::showFromArray("template", $list);
+            echo "</td>";
             echo "</tr>";
          }
       }
+   }
+   
+   
+   
+   function suggestHarddisk($items_id) {
+      global $LANG;
+      
+   }
+   
+   
+   
+   function suggestProcessor($items_id) {
+      global $LANG;
+      
+   }
+   
+   
+   
+   function suggestMemory($items_id) {
+      global $LANG;
+      
+   }
+   
+   
+   
+   function suggestNetwork($items_id) {
+      global $LANG;
+      
    }
    
 }
