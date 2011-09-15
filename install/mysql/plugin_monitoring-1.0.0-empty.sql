@@ -62,6 +62,7 @@ CREATE TABLE `glpi_plugin_monitoring_commands` (
    `module_type` varchar(255) DEFAULT NULL,
    `regex` text COLLATE utf8_unicode_ci,
    `legend` text COLLATE utf8_unicode_ci,
+   `unit` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
    PRIMARY KEY (`id`),
    KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

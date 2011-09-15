@@ -46,37 +46,70 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['name'] = 'Simple tcp port check';
       $input['command_name'] = 'check_tcp';
       $input['command_line'] = "\$PLUGINSDIR\$/check_tcp  -H \$HOSTADDRESS\$ -p \$ARG1$";
-      $input['regex'] = "time=(\d+\.\d+)\w;(\d*\.*\d*);(\d*\.*\d*);(\d*\.*\d*);(\d*\.*\d*)";
+      $input['regex'] = addslashes('time=(\\d+\\.\\d+)\\w;(\\d*\\.*\\d*);(\\d*\\.*\\d*);(\\d*\\.*\\d*);(\\d*\\.*\\d*)');
       $legend = array();
       $legend[1] = "response_time";
       $legend[2] = "warning_time";
       $legend[3] = "critical_time";
       $legend[5] = "timeout_time";
       $input['legend'] = exportArrayToDB($legend);
+      $input['unit'] = "ms"; 
       $this->add($input);
 
       $input = array();
       $input['name'] = 'Simple web check';
       $input['command_name'] = 'check_http';
       $input['command_line'] = "\$PLUGINSDIR\$/check_http -H \$HOSTADDRESS\$";
+      $input['regex'] = addslashes('time=(\\d+\\.\\d+)\\w;(\\d*\\.*\\d*);(\\d*\\.*\\d*);(\\d*\\.*\\d*)');
+      $legend = array();
+      $legend[1] = "response_time";
+      $legend[2] = "warning_time";
+      $legend[3] = "critical_time";
+      $legend[4] = "timeout_time";
+      $input['legend'] = exportArrayToDB($legend);
+      $input['unit'] = "ms";
       $this->add($input);
 
       $input = array();
       $input['name'] = 'Simple web check with SSL';
       $input['command_name'] = 'check_https';
       $input['command_line'] = "\$PLUGINSDIR\$/check_http -H \$HOSTADDRESS\$ -S";
+      $input['regex'] = addslashes('time=(\\d+\\.\\d+)\\w;(\\d*\\.*\\d*);(\\d*\\.*\\d*);(\\d*\\.*\\d*)');
+      $legend = array();
+      $legend[1] = "response_time";
+      $legend[2] = "warning_time";
+      $legend[3] = "critical_time";
+      $legend[4] = "timeout_time";
+      $input['legend'] = exportArrayToDB($legend);
+      $input['unit'] = "ms";
       $this->add($input);
       
       $input = array();
       $input['name'] = 'Check a DNS entry';
       $input['command_name'] = 'check_dig';
       $input['command_line'] = "\$PLUGINSDIR\$/check_dig -H \$HOSTADDRESS\$ -l \$ARG1\$";
+      $input['regex'] = addslashes('time=(\\d+\\.\\d+)\\w;(\\d*\\.*\\d*);(\\d*\\.*\\d*);(\\d*\\.*\\d*)');
+      $legend = array();
+      $legend[1] = "response_time";
+      $legend[2] = "warning_time";
+      $legend[3] = "critical_time";
+      $legend[4] = "timeout_time";
+      $input['legend'] = exportArrayToDB($legend);
+      $input['unit'] = "ms";
       $this->add($input);
 
       $input = array();
       $input['name'] = 'Check a FTP service';
       $input['command_name'] = 'check_ftp';
       $input['command_line'] = "\$PLUGINSDIR\$/check_ftp -H \$HOSTADDRESS\$";
+      $input['regex'] = addslashes('time=(\\d+\\.\\d+)\\w;(\\d*\\.*\\d*);(\\d*\\.*\\d*);(\\d*\\.*\\d*);(\\d*\\.*\\d*)');
+      $legend = array();
+      $legend[1] = "response_time";
+      $legend[2] = "warning_time";
+      $legend[3] = "critical_time";
+      $legend[6] = "timeout_time";
+      $input['legend'] = exportArrayToDB($legend);
+      $input['unit'] = "ms";
       $this->add($input);
 
       $input = array();
@@ -89,6 +122,13 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['name'] = 'Simple ping command';
       $input['command_name'] = 'check_ping';
       $input['command_line'] = "\$PLUGINSDIR\$/check_ping -H \$HOSTADDRESS\$ -w 3000,100% -c 5000,100% -p 1";
+      $input['regex'] = addslashes('time=(\\d+\\.\\d+)\\w;(\\d*\\.*\\d*);(\\d*\\.*\\d*);(\\d*\\.*\\d*)');
+      $legend = array();
+      $legend[1] = "response_time";
+      $legend[2] = "warning_time";
+      $legend[3] = "critical_time";
+      $input['legend'] = exportArrayToDB($legend);
+      $input['unit'] = "ms";
       $this->add($input);
 
       $input = array();
@@ -101,12 +141,26 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['name'] = 'Look for good SMTP connexion';
       $input['command_name'] = 'check_smtp';
       $input['command_line'] = "\$PLUGINSDIR\$/check_smtp -H \$HOSTADDRESS\$";
+      $input['regex'] = addslashes('time=(\\d+\\.\\d+)\\w;(\\d*\\.*\\d*);(\\d*\\.*\\d*);(\\d*\\.*\\d*)');
+      $legend = array();
+      $legend[1] = "response_time";
+      $legend[2] = "warning_time";
+      $legend[3] = "critical_time";
+      $input['legend'] = exportArrayToDB($legend);
+      $input['unit'] = "ms";
       $this->add($input);
 
       $input = array();
       $input['name'] = 'Look for good SMTPS connexion';
       $input['command_name'] = 'check_smtps';
       $input['command_line'] = "\$PLUGINSDIR\$/check_smtp -H \$HOSTADDRESS\$ -S";
+      $input['regex'] = addslashes('time=(\\d+\\.\\d+)\\w;(\\d*\\.*\\d*);(\\d*\\.*\\d*);(\\d*\\.*\\d*)');
+      $legend = array();
+      $legend[1] = "response_time";
+      $legend[2] = "warning_time";
+      $legend[3] = "critical_time";
+      $input['legend'] = exportArrayToDB($legend);
+      $input['unit'] = "ms";
       $this->add($input);
 
       $input = array();
@@ -167,32 +221,41 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['name'] = 'Check Linux host alive';
       $input['command_name'] = 'check_linux_host_alive';
       $input['command_line'] = "\$PLUGINSDIR\$/check_tcp -H \$HOSTADDRESS\$ -p 22 -t 3";
-      $input['regex'] = "time=(\d+\.\d+)\w;(\d*\.*\d*);(\d*\.*\d*);(\d*\.*\d*);(\d*\.*\d*)";
+      $input['regex'] = addslashes('time=(\\d+\\.\\d+)\\w;(\\d*\\.*\\d*);(\\d*\\.*\\d*);(\\d*\\.*\\d*);(\\d*\\.*\\d*)');
       $legend = array();
       $legend[1] = "response_time";
       $legend[2] = "warning_time";
       $legend[3] = "critical_time";
       $legend[5] = "timeout_time";
       $input['legend'] = exportArrayToDB($legend);
+      $input['unit'] = "ms";
       $this->add($input);
 
       $input = array();
       $input['name'] = 'Check host alive';
       $input['command_name'] = 'check_host_alive';
       $input['command_line'] = "\$PLUGINSDIR\$/check_ping -H \$HOSTADDRESS\$ -w 1,50% -c 2,70% -p 1";
+      $input['regex'] = addslashes('time=(\\d+\\.\\d+)\\w;(\\d*\\.*\\d*);(\\d*\\.*\\d*);(\\d*\\.*\\d*)');
+      $legend = array();
+      $legend[1] = "response_time";
+      $legend[2] = "warning_time";
+      $legend[3] = "critical_time";
+      $input['legend'] = exportArrayToDB($legend);
+      $input['unit'] = "ms";
       $this->add($input);
 
       $input = array();
       $input['name'] = 'Check Windows host alive';
       $input['command_name'] = 'check_windows_host_alive';
       $input['command_line'] = "\$PLUGINSDIR\$/check_tcp -H \$HOSTADDRESS\$ -p 139 -t 3";
-      $input['regex'] = "time=(\d+\.\d+)\w;(\d*\.*\d*);(\d*\.*\d*);(\d*\.*\d*);(\d*\.*\d*)";
+      $input['regex'] = addslashes('time=(\\d+\\.\\d+)\\w;(\\d*\\.*\\d*);(\\d*\\.*\\d*);(\\d*\\.*\\d*);(\\d*\\.*\\d*)');
       $legend = array();
       $legend[1] = "response_time";
       $legend[2] = "warning_time";
       $legend[3] = "critical_time";
       $legend[5] = "timeout_time";
       $input['legend'] = exportArrayToDB($legend);
+      $input['unit'] = "ms";
       $this->add($input);
 
       $input = array();
