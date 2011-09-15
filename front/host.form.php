@@ -41,7 +41,7 @@ commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugi
 
 $pluginMonitoringHost = new PluginMonitoringHost();
 if (isset($_POST["add"])) {
-   if ((($_POST['items_id'] != "0") AND ($_POST['items_id'] != ""))
+   if (((isset($_POST['items_id']) AND $_POST['items_id'] != "0") AND ($_POST['items_id'] != ""))
          OR (isset($_POST['is_template']) AND ($_POST['is_template'] == "1"))) {
 
       if (isset($_POST['template_id']) AND $_POST['template_id'] > 0) {

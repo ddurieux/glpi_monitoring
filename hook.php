@@ -103,7 +103,7 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
       
       case 'PluginMonitoringBusinessapplication':
          $array = array();
-         $array[0] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['service'][0];
+         $array[0] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['businessrule'][0];
          return $array;
          break;
       
@@ -138,7 +138,7 @@ function plugin_headings_actions_monitoring($item) {
       
       case 'PluginMonitoringBusinessapplication':
          $array = array ();
-         $array[0] = "plugin_headings_monitoring_services";
+         $array[0] = "plugin_headings_monitoring_businessrules";
          return $array;
          break;
       
@@ -184,6 +184,12 @@ function plugin_headings_monitoring_services($item) {
    }
 }
 
+
+
+function plugin_headings_monitoring_businessrules($item) {
+   $pMonitoringBusinessrule = new PluginMonitoringBusinessrule();
+   $pMonitoringBusinessrule->showForm($item->fields['id']);
+}
 
 
 

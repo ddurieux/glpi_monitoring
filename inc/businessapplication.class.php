@@ -82,30 +82,51 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
 
    
    function showBAChecks() {
-      global $LANG;
+      global $CFG_GLPI,$LANG;
       
-      echo "<table>";
+      echo "<table'>";
       echo "<tr>";
       
          $a_ba = $this->find();
          foreach ($a_ba as $data) {
             echo "<td>";
             
-            echo "<table  class='tab_cadre' width='200'>";
-            echo "<tr>";
-            echo "<th colspan='2'>";
+            echo "<table  class='tab_cadre_fixe' style='width:200px;height:200px'>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<th colspan='2' style='font-size:20px;' height='50'>";
             echo $data['name'];
             echo "</th>";
             echo "</tr>";
             
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
-            echo $LANG['state'][0]."&nbsp:";
+            echo $LANG['state'][0]."&nbsp;:";
             echo "</td>";
-            echo "<td width='30'>";
-     echo "OK";
+            echo "<td>";
+            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/red_button.png' />";
+//            echo "<audio controls preload>
+//               <source src=\"../startrek.ogg\">
+//               </audio>";
+//            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/orange_button.png' />";
+//            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/green_button.png' />";
             echo "</td>";
             echo "</tr>";
+   
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo "Temps de réponse&nbsp;:";
+            echo "</td>";
+            echo "<td>";
+            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/green_button.png' />";
+            echo "</td>";
+            echo "</tr>";
+            
+            echo "<tr class='tab_bg_1'>";
+            echo "<td colspan='2' align='center'>";
+            echo "<input type='button' class='submit' value='Détail >>'>";
+            echo "</td>";
+            echo "</tr>";
+            
             echo "</table>";
             
             echo "</td>";
@@ -113,8 +134,7 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
       
       
       echo "</tr>";
-      echo "</table>";
-      
+      echo "</table>";      
    }
    
    

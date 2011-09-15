@@ -89,5 +89,16 @@ $LANG['plugin_monitoring']['contact'][19]="Notification command";
 $LANG['plugin_monitoring']['contact'][20]="Contacts";
 
 $LANG['plugin_monitoring']['service'][0]="Services";
+$LANG['plugin_monitoring']['service'][1]="Criticity";
+$LANG['plugin_monitoring']['service'][2]="Add a service";
+$LANG['plugin_monitoring']['service'][3]="or/and define these values";
+$LANG['plugin_monitoring']['service'][4]="Arguments";
+$LANG['plugin_monitoring']['service'][5]="";
+
+$LANG['plugin_monitoring']['servicesuggest'][0]="Suggests";
+
+$LANG['plugin_monitoring']['businessrule'][0]="Business rules";
+
+$LANG['plugin_monitoring']['businessruledefinition'][0] = $LANG['plugin_monitoring']['businessrule'][0];
 
 ?>

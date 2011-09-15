@@ -126,22 +126,22 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
       echo "<table class='tab_cadre' width='950'>";
 
       echo "<tr>";
-      echo "<th colspan='8'>Suggests</th>";
+      echo "<th colspan='7'>Suggests</th>";
       echo "</tr>";
 
       echo "<tr>";
+      echo "<th></th>";
       echo "<th>".$LANG['common'][16]."</th>";
       echo "<th>Comments</th>";
       echo "<th>".$LANG['common'][13]."</th>";
       echo "<th>".$LANG['plugin_monitoring']['command'][1]."</th>";
       echo "<th>".$LANG['plugin_monitoring']['service'][1]."</th>";
       echo "<th>check_interval</th>";
-      echo "<th>Last check</th>";
-      echo "<th>State</th>";
       echo "</tr>";
 
       if ($itemtype == "Computer") {
          $this->suggestPartitions($items_id);
+         $this->suggestSoftwares($items_id);
       }
 
 
@@ -151,6 +151,8 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
 
 
    function suggestPartitions($items_id) {
+      global $LANG;
+      
       $computerDisk = new ComputerDisk();
       $pluginMonitoringCommand = new PluginMonitoringCommand();
       $a_listcommands = $pluginMonitoringCommand->find("`command_name`='check_disk'", "", 1);
@@ -160,19 +162,61 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
       $a_list = $computerDisk->find("`computers_id`='".$items_id."'");
       foreach ($a_list as $data) {
          echo "<tr>";
-         echo "<td>Disk_".$data['name']."</td>";
+         echo "<td></td>";
+         echo "<td>".$LANG['computers'][6]." : ".$data['name']."</td>";
          echo "<td>Check disk ".$data['mountpoint']."</td>";
          echo "<td></td>";
          echo "<td>".$pluginMonitoringCommand->getLink(1)."</td>";
          echo "<td>3</td>";
          echo "<td>1</td>";
-         echo "<td></td>";
-         echo "<td></td>";
          echo "</tr>";
       }
-
    }
 
+   
+   
+   function suggestSoftwares($items_id) {
+      global $DB,$LANG;
+      
+      $pMonitoringService = new PluginMonitoringService();
+      
+      $a_list = $this->find();
+      foreach($a_list as $data) {
+         $query = "SELECT `glpi_softwares`.`softwarecategories_id`,
+                    `glpi_softwares`.`name` AS softname,
+                    `glpi_computers_softwareversions`.`id`,
+                    `glpi_states`.`name` AS state,
+                    `glpi_softwareversions`.`id` AS verid,
+                    `glpi_softwareversions`.`softwares_id`,
+                    `glpi_softwareversions`.`name` AS version
+             FROM `glpi_computers_softwareversions`
+             LEFT JOIN `glpi_softwareversions`
+                  ON (`glpi_computers_softwareversions`.`softwareversions_id`
+                        = `glpi_softwareversions`.`id`)
+             LEFT JOIN `glpi_states`
+                  ON (`glpi_states`.`id` = `glpi_softwareversions`.`states_id`)
+             LEFT JOIN `glpi_softwares`
+                  ON (`glpi_softwareversions`.`softwares_id` = `glpi_softwares`.`id`)
+             WHERE `glpi_computers_softwareversions`.`computers_id` = '$items_id'
+                  AND `glpi_softwares`.`name` REGEXP '".$data['softwares_name']."'
+             ORDER BY `softwarecategories_id`, `softname`, `version`";
+         $result = $DB->query($query);
+         while ($sdata = $DB->fetch_array($result)) {
+            
+            $pMonitoringService->getFromDB($data['plugin_monitoring_services_id']);
+            echo "<tr>";
+            echo "<td></td>";
+            echo "<td>".$LANG['help'][31]." : ".$sdata['softname']."</td>";
+            echo "<td>Check mysql</td>";
+            echo "<td></td>";
+            echo "<td></td>";
+            echo "<td>3</td>";
+            echo "<td>1</td>";
+            echo "</tr>";
+         }
+      }
+   }
+   
 }
 
 ?>

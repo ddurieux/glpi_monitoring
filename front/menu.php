@@ -45,16 +45,26 @@ commonHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plug
 $PluginMonitoringHost = new PluginMonitoringHost();
 $pluginMonitoringBusinessapplication = new PluginMonitoringBusinessapplication();
 
+echo "<table class='tab_cadre' width='100%' style='background: #a3a3a3;>";
+echo "<tr class='tab_bg_3'>";
+echo "<td>";
 $pluginMonitoringBusinessapplication->showBAChecks();
 //$PluginMonitoringHost->showHostChecks();
+echo "</td>";
+echo "</tr>";
+echo "</table>";
 
+//
+//$plu = new PluginMonitoringHostevent();
+////$plu->parseToRrdtool();
+//$to = new PluginMonitoringRrdtool();
+//$to->displayGLPIGraph("NetworkEquipment", "161");
+//$to->displayGLPIGraph("NetworkEquipment", "161", "1w");
+//
+//echo "<img src='".GLPI_ROOT."/plugins/monitoring/front/send.php?file=NetworkEquipment-161-1d.gif' />";
+//echo "<br/>";
+//echo "<img src='".GLPI_ROOT."/plugins/monitoring/front/send.php?file=NetworkEquipment-161-1w.gif' />";
 
-$plu = new PluginMonitoringHostevent();
-//$plu->parseToRrdtool();
-$to = new PluginMonitoringRrdtool();
-$to->displayGLPIGraph("NetworkEquipment", "161");
-
-echo "<img src='".GLPI_ROOT."/plugins/monitoring/front/send.php?file=NetworkEquipment-161.gif' />";
 commonFooter();
 
 ?>

@@ -96,7 +96,17 @@ $LANG['plugin_monitoring']['service'][5]="";
 $LANG['plugin_monitoring']['servicesuggest'][0]="Suggests";
 
 $LANG['plugin_monitoring']['businessrule'][0]="Business rules";
-
-$LANG['plugin_monitoring']['businessruledefinition'][0] = $LANG['plugin_monitoring']['businessrule'][0];
+$LANG['plugin_monitoring']['businessrule'][2]="2 of";
+$LANG['plugin_monitoring']['businessrule'][3]="3 of";
+$LANG['plugin_monitoring']['businessrule'][4]="4 of";
+$LANG['plugin_monitoring']['businessrule'][5]="5 of";
+$LANG['plugin_monitoring']['businessrule'][6]="6 of";
+$LANG['plugin_monitoring']['businessrule'][7]="7 of";
+$LANG['plugin_monitoring']['businessrule'][8]="8 of";
+$LANG['plugin_monitoring']['businessrule'][9]="9 of";
+$LANG['plugin_monitoring']['businessrule'][10]="10 of";
+$LANG['plugin_monitoring']['businessrule'][11]="";
+$LANG['plugin_monitoring']['businessrule'][12]="";
+$LANG['plugin_monitoring']['businessrule'][13]="";
 
 ?>
