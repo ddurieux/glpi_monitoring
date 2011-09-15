@@ -134,9 +134,6 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
       echo "<th>".$LANG['common'][16]."</th>";
       echo "<th>Comments</th>";
       echo "<th>".$LANG['common'][13]."</th>";
-      echo "<th>".$LANG['plugin_monitoring']['command'][1]."</th>";
-      echo "<th>".$LANG['plugin_monitoring']['service'][1]."</th>";
-      echo "<th>check_interval</th>";
       echo "</tr>";
 
       if ($itemtype == "Computer") {
@@ -163,12 +160,9 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
       foreach ($a_list as $data) {
          echo "<tr>";
          echo "<td></td>";
-         echo "<td>".$LANG['computers'][6]." : ".$data['name']."</td>";
+         echo "<td><strong>".$LANG['computers'][6]." : </strong>".$data['name']."</td>";
          echo "<td>Check disk ".$data['mountpoint']."</td>";
          echo "<td></td>";
-         echo "<td>".$pluginMonitoringCommand->getLink(1)."</td>";
-         echo "<td>3</td>";
-         echo "<td>1</td>";
          echo "</tr>";
       }
    }
@@ -206,12 +200,9 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
             $pMonitoringService->getFromDB($data['plugin_monitoring_services_id']);
             echo "<tr>";
             echo "<td></td>";
-            echo "<td>".$LANG['help'][31]." : ".$sdata['softname']."</td>";
+            echo "<td><strong>".$LANG['help'][31]." : </strong>".$sdata['softname']."</td>";
             echo "<td>Check mysql</td>";
             echo "<td></td>";
-            echo "<td></td>";
-            echo "<td>3</td>";
-            echo "<td>1</td>";
             echo "</tr>";
          }
       }

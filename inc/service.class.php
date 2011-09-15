@@ -49,6 +49,13 @@ class PluginMonitoringService extends CommonDBTM {
 
       return $LANG['plugin_monitoring']['service'][0];
    }
+   
+   
+   function initTemplates() {
+      
+      
+      
+   }
 
 
 
