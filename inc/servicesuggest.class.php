@@ -141,10 +141,15 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
 
 
    function listSuggests($itemtype, $items_id) {
-      global $LANG;
+      global $LANG,$CFG_GLPI;
 
       $pluginMonitoringCommand = new PluginMonitoringCommand();
 
+      echo "<form name='form' method='post' 
+         action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicesuggest.form.php'>";
+      echo "<input type='hidden' name='plugin_monitoring_hosts_id' 
+               value=''/>";
+      
       echo "<br/>";
       echo "<table class='tab_cadre' width='950'>";
 
@@ -164,8 +169,15 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
          $this->suggestSoftwares($items_id);
       }
 
-
+      echo "<tr>";
+       echo "<td></td>";
+      echo "<td colspan='3'>";
+      echo "<img src='".$CFG_GLPI['root_doc']."/pics/arrow-left.png'/> <input type='submit' class='submit' name='addsuggest' value='".$LANG['buttons'][8]."'/>";
+      echo "</td>";
+      echo "</tr>";
+      
       echo "</table>";
+      echo "</form>";
    }
 
 
@@ -182,7 +194,7 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
       $a_list = $computerDisk->find("`computers_id`='".$items_id."'");
       foreach ($a_list as $data) {
          echo "<tr>";
-         echo "<td><input type='checkbox'/></td>";
+         echo "<td><input type='checkbox' name='suggestnum[]' /></td>";
          echo "<td><strong>".$LANG['computers'][6]." : </strong>".$data['name']."</td>";
          echo "<td>Check disk ".$data['mountpoint']."</td>";
          echo "<td></td>";
@@ -222,7 +234,7 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
             
             //$pMonitoringService->getFromDB($data['plugin_monitoring_commands_id']);
             echo "<tr>";
-            echo "<td><input type='checkbox'/></td>";
+            echo "<td><input type='checkbox' name='suggestnum[]'/></td>";
             echo "<td><strong>".$LANG['help'][31]." : </strong>".$sdata['softname']."</td>";
             echo "<td>Check mysql</td>";
             $a_listtemplates = $pMonitoringService->find("`is_template`='1'
