@@ -50,6 +50,8 @@ class PluginMonitoringHost_Service extends CommonDBTM {
       global $LANG;
 
       $pMonitoringHost = new PluginMonitoringHost();
+      $pMonitoringService = new PluginMonitoringService();
+      $pMonitoringCheck = new PluginMonitoringCheck();
 
       $a_hosts = current($pMonitoringHost->find("`items_id`='".$items_id."'
                         AND `itemtype`='".$itemtype."'"));
@@ -93,27 +95,35 @@ class PluginMonitoringHost_Service extends CommonDBTM {
       echo "</tr>";
 
       foreach ($a_list as $data) {
-         echo "<tr>";
-         $template = "";
-         if ($data['template_link'] > 0) {
-            $this->getFromDB($data['template_link']);
-            $template = $this->getLink(1);
-            $data['name'] = $this->fields['name'];
-            $data['plugin_monitoring_commands_id'] = $this->fields['plugin_monitoring_commands_id'];
-            $data['criticity'] = $this->fields['criticity'];
-            $data['check_interval'] = $this->fields['check_interval'];
+         if ($data['plugin_monitoring_services_id'] > 0) {
+            $pMonitoringService->getFromDB($data['plugin_monitoring_services_id']);
+         } else {
+            
          }
+         echo "<tr>";
          $this->getFromDB($data['id']);
          echo "<td>";
-         echo "<a href='". $this->getLinkURL()."'>".$this->getName()."</a>";
+         echo $this->getName();
          echo "</td>";
-         echo "<td>".$template."</td>";
-         $pluginMonitoringCommand->getFromDB($data['plugin_monitoring_commands_id']);
+         echo "<td>";
+         // Template
+         $a_listtemplates = $pMonitoringService->find("`is_template`='1'");
+         $list = array();
+         $list[0] = "------";
+         foreach ($a_listtemplates as $datatemplates) {
+            $list[$datatemplates['id']] = $datatemplates['template_name'];
+         }
+         Dropdown::showFromArray("plugin_monitoring_services_id", 
+                                 $list,
+                                 array("value"=>$pMonitoringService->fields['id']));
+         echo "</td>";
+         $pluginMonitoringCommand->getFromDB($pMonitoringService->fields['plugin_monitoring_commands_id']);
          echo "<td>".$pluginMonitoringCommand->getLink(1)."</td>";
-         echo "<td>".$data['criticity']."</td>";
-         echo "<td>".$data['check_interval']."</td>";
-         echo "<td>".$data['last_check']."</td>";
-         echo "<td>".$data['event']."</td>";
+         echo "<td></td>";
+         $pMonitoringCheck->getFromDB($pMonitoringService->fields['plugin_monitoring_checks_id']);
+         echo "<td>".$pMonitoringCheck->getName(1)."</td>";
+         echo "<td>".$this->fields['last_check']."</td>";
+         echo "<td>".$this->fields['event']."</td>";
          echo "</tr>";
       }
       echo "</table>";

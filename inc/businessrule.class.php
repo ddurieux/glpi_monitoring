@@ -126,7 +126,7 @@ class PluginMonitoringBusinessrule extends CommonDBTM {
             Dropdown::showFromArray('operator[]', $operator);
             echo "</td>";
             echo "<td>";
-            Dropdown::show("PluginMonitoringService", array("name"=>"services_id[]"));
+            Dropdown::show("PluginMonitoringHost_Service", array("name"=>"services_id[]"));
             echo "</td>";
             echo "</tr>";
             echo "</table><br/>";
@@ -159,7 +159,7 @@ class PluginMonitoringBusinessrule extends CommonDBTM {
          }
          echo "</td>";
          echo "<td>";
-         Dropdown::show("PluginMonitoringService", array("name"=>"services_id[]",
+         Dropdown::show("PluginMonitoringHost_Service", array("name"=>"services_id[]",
                                                          "value"=>$data['items_id']));
          echo "</td>";
          echo "</tr>";         
