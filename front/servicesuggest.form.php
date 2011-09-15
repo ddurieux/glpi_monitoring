@@ -39,9 +39,41 @@ include (GLPI_ROOT . "/inc/includes.php");
 commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "servicesuggest");
 
-print_r($_POST); exit;
+//echo "<pre>";print_r($_POST); exit;
+$pMonitoringService = new PluginMonitoringService();
+$pMonitoringHost_Service = new PluginMonitoringHost_Service();
+$pMonitoringServicesuggest = new PluginMonitoringServicesuggest();
 
-//   glpi_header($_SERVER['HTTP_REFERER']);
+if (isset($_POST['addsuggest'])) {
+   foreach ($_POST['suggestnum'] as $num) {
+      $inputHS = array();
+      if ($_POST['plugin_monitoring_services_id'][$num] == '0') {
+         // Add service
+         
+      } else {
+         // use template service
+         $inputHS['plugin_monitoring_services_id'] = $_POST['plugin_monitoring_services_id'][$num];
+      }      
+      $inputHS['plugin_monitoring_hosts_id'] = $_POST['plugin_monitoring_hosts_id'];
+      $inputHS['plugin_monitoring_servicesuggests_id'] = $_POST['plugin_monitoring_servicesuggests_id'][$num];
+      $inputHS['name'] = '';
+      if ($inputHS['plugin_monitoring_servicesuggests_id'] > 0) {
+         $pMonitoringServicesuggest->getFromDB($inputHS['plugin_monitoring_servicesuggests_id']);
+         $inputHS['name'] = $pMonitoringServicesuggest->fields['name'];
+      }
+      
+      $inputHS['items_id'] = 0;
+      $inputHS['itemtype'] = '';
+      if ($_POST['itemtype'][$num] != '') {
+         $inputHS['items_id'] = $_POST['items_id'][$num];
+         $inputHS['itemtype'] = $_POST['itemtype'][$num];         
+      }      
+      $pMonitoringHost_Service->add($inputHS);
+   }
+}
+
+
+glpi_header($_SERVER['HTTP_REFERER']);
 
 commonFooter();
 

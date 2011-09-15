@@ -259,6 +259,7 @@ CREATE TABLE `glpi_plugin_monitoring_hosts_services` (
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `plugin_monitoring_services_id` int(11) NOT NULL DEFAULT '0',
   `plugin_monitoring_hosts_id` int(11) NOT NULL DEFAULT '0',
+  `plugin_monitoring_servicesuggests_id` int(11) NOT NULL DEFAULT '0',
   `last_check` datetime DEFAULT NULL,
   `event` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `arguments` text COLLATE utf8_unicode_ci,
@@ -292,6 +293,7 @@ DROP TABLE IF EXISTS `glpi_plugin_monitoring_servicesuggests`;
 
 CREATE TABLE `glpi_plugin_monitoring_servicesuggests` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `plugin_monitoring_commands_id` int(11) NOT NULL DEFAULT '0',
   `softwares_name` text COLLATE utf8_unicode_ci,
   `computers_services` text COLLATE utf8_unicode_ci,

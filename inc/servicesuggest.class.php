@@ -57,18 +57,21 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
       
       // MySQL Server
       $input = array();
+      $input['name'] = 'MySQL';
       $input['plugin_monitoring_commands_id'] = '17';
       $input['softwares_name'] = '([mM][yY][sS][qQ][lL])(.*)([sS][eE][rR][vV][eE][rR])';
       $this->add($input);
       
       // Apache Server
       $input = array();
+      $input['name'] = 'Apache';
       $input['plugin_monitoring_commands_id'] = '2';
       $input['softwares_name'] = '^([aA][pP][aA][cC][hH][eE])(\\s[hH][tT][tT][pP](.*)|$)';
       $this->add($input);
       
       // PostgreSQL
       $input = array();
+      $input['name'] = 'PostgreSQL';
       $input['plugin_monitoring_commands_id'] = '';
       $input['softwares_name'] = '[pP][oO][sS][tT][gG][rR][eE][sS][qQ][lL] ';
       $this->add($input);
@@ -144,11 +147,16 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
       global $LANG,$CFG_GLPI;
 
       $pluginMonitoringCommand = new PluginMonitoringCommand();
+      $pMonitoringHost = new PluginMonitoringHost();
+      $num = -1;
 
+      $a_hosts = current($pMonitoringHost->find("`items_id`='".$items_id."'
+                        AND `itemtype`='".$itemtype."'"));
+      
       echo "<form name='form' method='post' 
          action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicesuggest.form.php'>";
       echo "<input type='hidden' name='plugin_monitoring_hosts_id' 
-               value=''/>";
+               value='".$a_hosts['id']."'/>";
       
       echo "<br/>";
       echo "<table class='tab_cadre' width='950'>";
@@ -165,24 +173,27 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
       echo "</tr>";
 
       if ($itemtype == "Computer") {
-         $this->suggestPartitions($items_id);
-         $this->suggestSoftwares($items_id);
+         $num = $this->suggestPartitions($items_id, $num);
+         $num = $this->suggestSoftwares($items_id, $num);
       }
-
+     
+      echo "</table>";
+      
+      echo "<table>";
       echo "<tr>";
-       echo "<td></td>";
-      echo "<td colspan='3'>";
-      echo "<img src='".$CFG_GLPI['root_doc']."/pics/arrow-left.png'/> <input type='submit' class='submit' name='addsuggest' value='".$LANG['buttons'][8]."'/>";
+      echo "<td>&nbsp;<img src='".$CFG_GLPI['root_doc']."/pics/arrow-left.png'/></td>";
+      echo "<td>";
+      echo "<input type='submit' class='submit' name='addsuggest' value='".$LANG['buttons'][8]."'/>";
       echo "</td>";
       echo "</tr>";
-      
       echo "</table>";
+      
       echo "</form>";
    }
 
 
 
-   function suggestPartitions($items_id) {
+   function suggestPartitions($items_id, $num) {
       global $LANG;
       
       $computerDisk = new ComputerDisk();
@@ -193,18 +204,26 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
 
       $a_list = $computerDisk->find("`computers_id`='".$items_id."'");
       foreach ($a_list as $data) {
+         $num++;
          echo "<tr>";
-         echo "<td><input type='checkbox' name='suggestnum[]' /></td>";
-         echo "<td><strong>".$LANG['computers'][6]." : </strong>".$data['name']."</td>";
+         echo "<td><input type='checkbox' name='suggestnum[]' value='".$num."' /></td>";
+         echo "<td><strong>".$LANG['computers'][6]." : </strong>".$data['name'];
+         echo "<input type='hidden' name='itemtype[]' value=''/>";
+         echo "<input type='hidden' name='items_id[]' value=''/>";
+         echo "<input type='hidden' name='plugin_monitoring_servicesuggests_id[]' value='0'/>";
+         echo "</td>";
          echo "<td>Check disk ".$data['mountpoint']."</td>";
-         echo "<td></td>";
+         echo "<td>";
+         echo "<input type='hidden' name='plugin_monitoring_services_id[]' value=''/>";
+         echo "</td>";
          echo "</tr>";
       }
+      return $num;
    }
 
    
    
-   function suggestSoftwares($items_id) {
+   function suggestSoftwares($items_id, $num) {
       global $DB,$LANG;
       
       $pMonitoringService = new PluginMonitoringService();
@@ -231,11 +250,15 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
              ORDER BY `softwarecategories_id`, `softname`, `version`";
          $result = $DB->query($query);
          while ($sdata = $DB->fetch_array($result)) {
-            
-            //$pMonitoringService->getFromDB($data['plugin_monitoring_commands_id']);
+            $num++;
+
             echo "<tr>";
-            echo "<td><input type='checkbox' name='suggestnum[]'/></td>";
-            echo "<td><strong>".$LANG['help'][31]." : </strong>".$sdata['softname']."</td>";
+            echo "<td><input type='checkbox' name='suggestnum[]' value='".$num."'/></td>";
+            echo "<td><strong>".$LANG['help'][31]." : </strong>".$sdata['softname'];
+            echo "<input type='hidden' name='itemtype[]' value=''/>";
+            echo "<input type='hidden' name='items_id[]' value=''/>";
+            echo "<input type='hidden' name='plugin_monitoring_servicesuggests_id[]' value='".$data['id']."'/>";
+            echo "</td>";
             echo "<td>Check mysql</td>";
             $a_listtemplates = $pMonitoringService->find("`is_template`='1'
                   AND `plugin_monitoring_commands_id`='".$data['plugin_monitoring_commands_id']."'");
@@ -244,13 +267,13 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
             foreach ($a_listtemplates as $datatemplates) {
                $list[$datatemplates['id']] = $datatemplates['template_name'];
             }
-            
             echo "<td>";
-            Dropdown::showFromArray("template", $list);
+            Dropdown::showFromArray("plugin_monitoring_services_id[]", $list);
             echo "</td>";
             echo "</tr>";
          }
       }
+      return $num;
    }
    
    
