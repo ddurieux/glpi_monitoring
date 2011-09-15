@@ -116,7 +116,14 @@ class PluginMonitoringRrdtool extends CommonDBTM {
    
    
    
-   function displayGLPIGraph($itemtype, $items_id) {
+   /**
+    * Function used to generate gif of rrdtool graph
+    * 
+    * @param type $itemtype
+    * @param type $items_id
+    * @param type $time 
+    */
+   function displayGLPIGraph($itemtype, $items_id, $time='1d') {
       
       $pluginMonitoringCommand = new PluginMonitoringCommand();
       $pluginMonitoringCommand->getFromDB(20);
@@ -124,19 +131,18 @@ class PluginMonitoringRrdtool extends CommonDBTM {
 
       $opts = array();
       $opts[] = '--start';
-      $opts[] = '-1d';
-//      $opts[] = "-t";
-//      $opts[] = $pluginMonitoringCommand->fields['name'];
-      $opts[] = "-v";
-      $opts[] = "Time in ms";
+      $opts[] = '-'.$time;
+      if ($pluginMonitoringCommand->fields['unit'] == "ms") {
+         $opts[] = "-v";
+         $opts[] = "Time in ms";
+      }
       $opts[] = "--width";
       $opts[] = "470";
       $opts[] = "-c";
       $opts[] = "BACK#e1cc7b";
       $opts[] = "-c";
       $opts[] = "CANVAS#f1f1f1";
-      
-//      $opts[] = '–vertical-label=ms';
+
       foreach ($a_legend as $legend){
           if (!strstr($legend, "timeout")) {
             $opts[] = "DEF:".$legend."=".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id.".rrd:".$legend.":AVERAGE";
@@ -168,7 +174,7 @@ class PluginMonitoringRrdtool extends CommonDBTM {
             $opts[] = "CDEF:1".$legend."=".$legend.",0.98,*";
          }
       }
-      $ret = rrd_graph(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id.".gif", $opts, count($opts));
+      $ret = rrd_graph(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.".gif", $opts, count($opts));
       if( !is_array($ret)) {
          $err = rrd_error();
          echo "rrd_graph() ERROR: $err\n";
