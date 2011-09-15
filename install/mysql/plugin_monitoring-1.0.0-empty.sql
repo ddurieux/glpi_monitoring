@@ -16,37 +16,15 @@ DROP TABLE IF EXISTS `glpi_plugin_monitoring_businessrules`;
 
 CREATE TABLE `glpi_plugin_monitoring_businessrules` (
    `id` int(11) NOT NULL AUTO_INCREMENT,
-   `plugin_monitoring_services_id` int(11) NOT NULL DEFAULT '0',
+   `plugin_monitoring_businessapplications_id` int(11) NOT NULL DEFAULT '0',
+   `group` int(11) NOT NULL DEFAULT '0',
+   `position` int(11) NOT NULL DEFAULT '0',
    `operator` varchar(255) DEFAULT NULL,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(100) DEFAULT NULL,
    PRIMARY KEY (`id`),
-   KEY `plugin_monitoring_services_id` (`plugin_monitoring_services_id`)
+   KEY `plugin_monitoring_businessapplications_id` (`plugin_monitoring_businessapplications_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_businessrules_definitions`;
-
-CREATE TABLE `glpi_plugin_monitoring_businessrules_definitions` (
-   `id` int(11) NOT NULL AUTO_INCREMENT,
-   `name` varchar(255) DEFAULT NULL,
-   `plugin_monitoring_businessrules_id` int(11) NOT NULL DEFAULT '0',
-   `minimumservices` tinyint(4) NOT NULL DEFAULT '1',
-   PRIMARY KEY (`id`),
-   KEY `plugin_monitoring_businessrules_id` (`plugin_monitoring_businessrules_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_businessrules_definitionselements`;
-
-CREATE TABLE `glpi_plugin_monitoring_businessrules_definitionselements` (
-   `id` int(11) NOT NULL AUTO_INCREMENT,
-   `plugin_monitoring_businessrules_definitions_id` int(11) NOT NULL DEFAULT '0',
-   `plugin_monitoring_services_id` int(11) NOT NULL DEFAULT '0',
-   PRIMARY KEY (`id`),
-   KEY `plugin_monitoring_businessrules_definitions_id` (`plugin_monitoring_businessrules_definitions_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 
 
 
