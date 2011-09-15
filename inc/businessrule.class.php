@@ -111,7 +111,7 @@ class PluginMonitoringBusinessrule extends CommonDBTM {
       $position = 0;
       foreach ($a_list as $data) {
          if ($groupnum == '0') {
-            echo "<table class='tab_cadre' width='400'>";
+            echo "<table class='tab_cadre' width='600'>";
             echo "<tr class='tab_bg_1'>";
             echo "<th colspan='2'>";
             echo "Group N°".$data['group'];
@@ -126,7 +126,7 @@ class PluginMonitoringBusinessrule extends CommonDBTM {
             Dropdown::showFromArray('operator[]', $operator);
             echo "</td>";
             echo "<td>";
-            Dropdown::show("PluginMonitoringHost_Service", array("name"=>"services_id[]"));
+//            Dropdown::show("PluginMonitoringHost_Service", array("name"=>"services_id[]"));
             echo "</td>";
             echo "</tr>";
             echo "</table><br/>";
@@ -159,8 +159,9 @@ class PluginMonitoringBusinessrule extends CommonDBTM {
          }
          echo "</td>";
          echo "<td>";
-         Dropdown::show("PluginMonitoringHost_Service", array("name"=>"services_id[]",
-                                                         "value"=>$data['items_id']));
+//         Dropdown::show("PluginMonitoringHost_Service", array("name"=>"services_id[]",
+//                                                         "value"=>$data['items_id']));
+         $this->showService($device1, $netport);
          echo "</td>";
          echo "</tr>";         
       }
@@ -173,7 +174,7 @@ class PluginMonitoringBusinessrule extends CommonDBTM {
       Dropdown::showFromArray('operator[]', $operator);
       echo "</td>";
       echo "<td>";
-      Dropdown::show("PluginMonitoringService", array("name"=>"services_id[]"));
+//      Dropdown::show("PluginMonitoringService", array("name"=>"services_id[]"));
       echo "</td>";
       echo "</tr>";
       echo "</table><br/>";
@@ -202,7 +203,7 @@ class PluginMonitoringBusinessrule extends CommonDBTM {
       Dropdown::showFromArray('operator[]', $first_operator);
       echo "</td>";
       echo "<td>";
-      Dropdown::show("PluginMonitoringService", array("name"=>"services_id[]"));
+//      Dropdown::show("PluginMonitoringService", array("name"=>"services_id[]"));
       echo "</td>";
       echo "</tr>";
       echo "</table>"; 
@@ -214,6 +215,161 @@ class PluginMonitoringBusinessrule extends CommonDBTM {
 //      $this->showFormButtons($options);
       return true;
    }
+   
+   
+   
+   /**
+    * Display a connection of a networking port
+    *
+    * @param $device1 the device of the port
+    * @param $netport to be displayed
+    * @param $withtemplate
+   **/
+   static function showService(& $device1, & $netport, $withtemplate = '') {
+      global $CFG_GLPI, $LANG;
+$ID = 0;
+
+      $contact = new NetworkPort_NetworkPort;
+//      $ID      = $netport->fields["id"];
+
+//      if ($contact_id = $contact->getOppositeContact($ID)) {
+//         $netport->getFromDB($contact_id);
+//
+//         if (class_exists($netport->fields["itemtype"])) {
+//            $device2 = new $netport->fields["itemtype"]();
+//
+//            if ($device2->getFromDB($netport->fields["items_id"])) {
+//               echo "\n<table width='100%'>\n";
+//               echo "<tr " . ($device2->fields["is_deleted"] ? "class='tab_bg_2_2'" : "") . ">";
+//               echo "<td><strong>";
+//
+//               if ($device2->can($device2->fields["id"], 'r')) {
+//                  echo $netport->getLink();
+//                  echo "</strong>\n";
+//                  showToolTip($netport->fields['comment']);
+//                  echo "&nbsp;".$LANG['networking'][25] . " <strong>";
+//                  echo $device2->getLink();
+//                  echo "</strong>";
+//
+//                  if ($device1->fields["entities_id"] != $device2->fields["entities_id"]) {
+//                     echo "<br>(". Dropdown::getDropdownName("glpi_entities",
+//                                                            $device2->getEntityID()) .")";
+//                  }
+//
+//                  // 'w' on dev1 + 'r' on dev2 OR 'r' on dev1 + 'w' on dev2
+//                  if ($canedit || $device2->can($device2->fields["id"], 'w')) {
+//                     echo "</td>\n<td class='right'><strong>";
+//
+//                     if ($withtemplate != 2) {
+//                        echo "<a href=\"".$netport->getFormURL()."?disconnect=".
+//                              "disconnect&amp;id=".$contact->fields['id']."\">" .
+//                              $LANG['buttons'][10] . "</a>";
+//                     } else {
+//                        "&nbsp;";
+//                     }
+//
+//                     echo "</strong>";
+//                  }
+//
+//               } else {
+//                  if (rtrim($netport->fields["name"]) != "") {
+//                     echo $netport->fields["name"];
+//                  } else {
+//                     echo $LANG['common'][0];
+//                  }
+//                  echo "</strong> " . $LANG['networking'][25] . " <strong>";
+//                  echo $device2->getName();
+//                  echo "</strong><br>(" .Dropdown::getDropdownName("glpi_entities",
+//                                                                   $device2->getEntityID()) .")";
+//               }
+//
+//               echo "</td></tr></table>\n";
+//            }
+//         }
+//
+//      } else {
+         echo "\n<table width='100%'><tr>";
+
+            echo "<td class='left'>";
+
+            if ($withtemplate != 2 && $withtemplate != 1) {
+               self::dropdownService($ID, array('name' => 'dport'));
+            } else {
+               echo "&nbsp;";
+            }
+
+            echo "</td>\n";
+
+         echo "</tr></table>\n";
+//      }
+   }
+
+   
+   
+   /**
+    * Make a select box for service
+    *
+    * Parameters which could be used in options array :
+    *    - name : string / name of the select (default is networkports_id)
+    *    - comments : boolean / is the comments displayed near the dropdown (default true)
+    *    - entity : integer or array / restrict to a defined entity or array of entities
+    *                   (default -1 : no restriction)
+    *    - entity_sons : boolean / if entity restrict specified auto select its sons
+    *                   only available if entity is a single value not an array (default false)
+    *
+    * @param $ID ID of the current port to connect
+    * @param $options possible options
+    *
+    * @return nothing (print out an HTML select box)
+   **/
+   static function dropdownService($ID,$options=array()) {
+      global $LANG, $CFG_GLPI;
+
+      $p['name']        = 'networkports_id';
+      $p['comments']    = 1;
+      $p['entity']      = -1;
+      $p['entity_sons'] = false;
+
+     if (is_array($options) && count($options)) {
+         foreach ($options as $key => $val) {
+            $p[$key] = $val;
+         }
+      }
+
+      // Manage entity_sons
+      if (!($p['entity']<0) && $p['entity_sons']) {
+         if (is_array($p['entity'])) {
+            echo "entity_sons options is not available with array of entity";
+         } else {
+            $p['entity'] = getSonsOf('glpi_entities', $p['entity']);
+         }
+      }
+
+      $rand = mt_rand();
+      echo "<select name='itemtype[$ID]' id='itemtype$rand'>";
+      echo "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option>";
+
+      $a_types =array();
+      echo "<option value='Computer'>".Computer::getTypeName()."</option>";
+      echo "<option value='NetworkEquipment'>".NetworkEquipment::getTypeName()."</option>";
+      echo "</select>";
+
+      $params = array('itemtype'        => '__VALUE__',
+                      'entity_restrict' => $p['entity'],
+                      'current'         => $ID,
+                      'comments'        => $p['comments'],
+                      'myname'          => $p['name'],
+                      'rand'            => $rand);
+
+      ajaxUpdateItemOnSelectEvent("itemtype$rand", "show_".$p['name']."$rand",
+                                  $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownServiceHostType.php",
+                                  $params);
+
+      echo "<span id='show_".$p['name']."$rand'>&nbsp;</span>\n";
+
+      return $rand;
+   }
+
 
 
 }

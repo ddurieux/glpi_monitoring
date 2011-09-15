@@ -41,7 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "businessrules");
 
-//echo "<pre>";print_r($_POST);echo "</pre>";exit;
+echo "<pre>";print_r($_POST);echo "</pre>";exit;
 $pMonitoringBusinessrule = new PluginMonitoringBusinessrule();
 if (isset($_POST['update'])) {
    foreach ($_POST['num'] as $key=>$val) {
