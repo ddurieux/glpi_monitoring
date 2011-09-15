@@ -176,8 +176,8 @@ function plugin_headings_monitoring_hosts($item) {
 
 function plugin_headings_monitoring_services($item) {
 
-   $pluginMonitoringService = new PluginMonitoringService();
-   $pluginMonitoringService->listByHost(get_class($item), $item->fields['id']);
+   $pMonitoringHost_Service = new PluginMonitoringHost_Service();
+   $pMonitoringHost_Service->listByHost(get_class($item), $item->fields['id']);
    if (get_class($item) != "PluginMonitoringBusinessapplication") {
       $pluginMonitoringServicesuggest = new PluginMonitoringServicesuggest();
       $pluginMonitoringServicesuggest->listSuggests(get_class($item), $item->fields['id']);
