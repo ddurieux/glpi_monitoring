@@ -41,7 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "businessrules");
 
-echo "<pre>";print_r($_POST);echo "</pre>";exit;
+//echo "<pre>";print_r($_POST);echo "</pre>";exit;
 $pMonitoringBusinessrule = new PluginMonitoringBusinessrule();
 if (isset($_POST['update'])) {
    foreach ($_POST['num'] as $key=>$val) {
@@ -60,18 +60,21 @@ if (isset($_POST['update'])) {
             $pMonitoringBusinessrule->update($input);
          }         
       } else if ($_POST['services_id'][$key] != '0') {
+
          // Add new entry in DB
          $input = array();
          $input['plugin_monitoring_businessapplications_id'] = 
             $_POST['businessapplications_id'];
          $input['group'] = $split[0];
          $input['position'] = $split[1];
-         $input['operator'] = $_POST['operator'][$key];         
+         $input['operator'] = $_POST['operator'][$key];
          $input['items_id'] = $_POST['services_id'][$key];
-         $input['itemtype'] = "PluginMonitoringService";
+         $input['itemtype'] = "PluginMonitoringHost_Service";
          $pMonitoringBusinessrule->add($input);
       }
    }
+} else if (isset($_POST['delete'])) {
+   $pMonitoringBusinessrule->delete(array('id'=>$_POST['businessrules_id']));   
 }
 glpi_header($_SERVER['HTTP_REFERER']);
 

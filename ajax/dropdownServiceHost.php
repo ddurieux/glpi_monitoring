@@ -44,9 +44,10 @@ if (class_exists($_POST["itemtype"]) && isset($_POST["hosts"])) {
    $table = getTableForItemType($_POST["itemtype"]);
    $pMonitoringHost_Service = new PluginMonitoringHost_Service();
    Dropdown::show("PluginMonitoringHost_Service", array(
-                        "name" => "services[]",
+                        "name" => "services_id[]",
                         "condition"=>"`plugin_monitoring_hosts_id`='".$_POST['hosts']."'"
                   ));
+
 }
 
 ?>
