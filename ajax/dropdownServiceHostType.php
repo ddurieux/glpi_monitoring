@@ -70,8 +70,7 @@ if (class_exists($_POST["itemtype"])) {
                                $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownServiceHost.php",
                                $params);
 
-   echo "<span id='show_items$rand'><input type='hidden' name='services_id[]' value='0'/>";
-   echo "</span>\n";
+   echo "<span id='show_items$rand'><input type='hidden' name='services_id[]' value='0'/></span>";
 }
 
 ?>

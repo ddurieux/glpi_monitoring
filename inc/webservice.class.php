@@ -102,6 +102,11 @@ class PluginMonitoringWebservice {
             $array = $pluginMonitoringShinken->generateTimeperiodsCfg(1);
             return array($array[0]=>$array[1]);
             break;
+         
+         case 'services.cfg':
+            $array = $pluginMonitoringShinken->generateServicesCfg(1);
+            return array($array[0]=>$array[1]);
+            break;
 
          case 'all':
             $output = array();
@@ -112,6 +117,8 @@ class PluginMonitoringWebservice {
             $array = $pluginMonitoringShinken->generateContactsCfg(1);
             $output[$array[0]] = $array[1];
             $array = $pluginMonitoringShinken->generateTimeperiodsCfg(1);
+            $output[$array[0]] = $array[1];
+            $array = $pluginMonitoringShinken->generateServicesCfg(1);
             $output[$array[0]] = $array[1];
 
             return $output;
