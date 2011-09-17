@@ -149,6 +149,20 @@ function plugin_headings_actions_monitoring($item) {
 
 function plugin_headings_monitoring_status($item) {
 
+$plu = new PluginMonitoringHostevent();
+$plu->parseToRrdtool($item->fields['id'], get_class($item));
+$to = new PluginMonitoringRrdtool();
+$to->displayGLPIGraph("Computer", $item->fields['id'], "3h");
+$to->displayGLPIGraph("Computer", $item->fields['id']);
+$to->displayGLPIGraph("Computer", $item->fields['id'], "1w");
+
+echo "<img src='".GLPI_ROOT."/plugins/monitoring/front/send.php?file=Computer-".$item->fields['id']."-3h.gif' />";
+echo "<br/>";
+echo "<img src='".GLPI_ROOT."/plugins/monitoring/front/send.php?file=Computer-".$item->fields['id']."-1d.gif' />";
+echo "<br/>";
+echo "<img src='".GLPI_ROOT."/plugins/monitoring/front/send.php?file=Computer-".$item->fields['id']."-1w.gif' />";
+   
+   
    $pluginMonitoringHostevent = new PluginMonitoringHostevent();
    $pluginMonitoringHostevent->showForm($item);
 
@@ -357,6 +371,9 @@ function plugin_monitoring_registerMethods() {
                                                        'methodShinkenContacts');
    $WEBSERVICES_METHOD['monitoring.shinkenTimeperiods'] = array('PluginMonitoringWebservice',
                                                        'methodShinkenTimeperiods');
+   
+   $WEBSERVICES_METHOD['monitoring.shinkenServices'] = array('PluginMonitoringWebservice',
+                                                       'methodShinkenServices');
 }
 
 /**

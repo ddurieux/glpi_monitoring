@@ -235,11 +235,9 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['name'] = 'Check host alive';
       $input['command_name'] = 'check_host_alive';
       $input['command_line'] = "\$PLUGINSDIR\$/check_ping -H \$HOSTADDRESS\$ -w 1,50% -c 2,70% -p 1";
-      $input['regex'] = addslashes('time=(\\d+\\.\\d+)\\w;(\\d*\\.*\\d*);(\\d*\\.*\\d*);(\\d*\\.*\\d*)');
+      $input['regex'] = addslashes('rta=(\\d+\\.\\d+\\w+)+;(\\d*\\.*\\d*);(\\d*\\.*\\d*);(\\d*\.*\\d*)');
       $legend = array();
       $legend[1] = "response_time";
-      $legend[2] = "warning_time";
-      $legend[3] = "critical_time";
       $input['legend'] = exportArrayToDB($legend);
       $input['unit'] = "ms";
       $this->add($input);

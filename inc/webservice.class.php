@@ -145,6 +145,16 @@ class PluginMonitoringWebservice {
       $array = $pluginMonitoringShinken->generateHostsCfg();
       return $array;
    }
+   
+   
+   
+   static function methodShinkenServices($params, $protocol) {
+      global $LANG, $CFG_GLPI;
+
+      $pluginMonitoringShinken = new PluginMonitoringShinken();
+      $array = $pluginMonitoringShinken->generateServicesCfg();
+      return $array;
+   }
 
 
 

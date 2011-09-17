@@ -124,6 +124,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $class->getFromDB($data['items_id']);
 
          $a_hosts[$i]['host_name'] = $classname."-".$data['id']."-".$class->fields['name'];
+         $a_hosts[$i]['alias'] = $a_hosts[$i]['host_name'];
             $ip = $class->fields['name'];
             if ($data['itemtype'] == 'NetworkEquipment') {
                if ($class->fields['ip'] != '') {
@@ -227,7 +228,6 @@ class PluginMonitoringShinken extends CommonDBTM {
    function generateServicesCfg($file=0) {
       
       $pluginMonitoringHost         = new PluginMonitoringHost();
-      $pluginMonitoringHost_Host    = new PluginMonitoringHost_Host();
       $pluginMonitoringHost_Service = new PluginMonitoringHost_Service();
       $pMonitoringService = new PluginMonitoringService();
       $pluginMonitoringContact      = new PluginMonitoringContact();
@@ -251,7 +251,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          foreach ($a_listHS as $dataHS) {
 
             $a_services[$i]['host_name'] = $classname."-".$data['id']."-".$class->fields['name'];
-            $a_services[$i]['service_description'] = $dataHS['name'];
+            $a_services[$i]['service_description'] = $dataHS['name']."-".$dataHS['id'];
             $pMonitoringService->getFromDB($dataHS['plugin_monitoring_services_id']);
             $pMonitoringCommand->getFromDB($pMonitoringService->fields['plugin_monitoring_commands_id']);
             $a_services[$i]['check_command'] = $pMonitoringCommand->fields['command_name'];
@@ -305,8 +305,8 @@ define service{
       $a_listBA = $pluginMonitoringBusinessapplication->find();
       foreach ($a_listBA as $dataBA) {
          $a_services[$i]['use'] = "standard-service";
-         $a_services[$i]['host_name'] = $dataBA['name'];
-         $a_services[$i]['service_description'] = $dataBA['comment'];
+         $a_services[$i]['host_name'] = 'Computer-3-ddurieux-Extensa-5620';
+         $a_services[$i]['service_description'] = $dataBA['name'];
          $command = "bp_rule!";
          $a_listBR = $pluginMonitoringBusinessrule->find(
                  "`plugin_monitoring_businessapplications_id`='".$dataBA['id']."'",
@@ -330,9 +330,9 @@ define service{
                   $operator = ' | ';
                }
                
-               $a_group[$dataBR['group']] .= $operator.$hostname.",".$item->getName();
+               $a_group[$dataBR['group']] .= $operator.$hostname.",".$item->getName()."-".$item->fields['id'];
             } else {
-               $a_group[$dataBR['group']] = $dataBR['operator']." ".$hostname.",".$item->getName();
+               $a_group[$dataBR['group']] = $dataBR['operator']." ".$hostname.",".$item->getName()."-".$item->fields['id'];
             }            
          }
          foreach ($a_group as $key=>$value) {
@@ -448,46 +448,46 @@ define service{
       $a_listcalendar = $calendar->find();
       foreach ($a_listcalendar as $datacalendar) {
          //if ($datacalendar['name'] != "Default") {
-            $a_timeperiods[$i]['timeperiod_name'] = $datacalendar['name'];
-            $a_timeperiods[$i]['alias'] = $datacalendar['name'];
-            $a_listsegment = $calendarSegment->find("`calendars_id`='".$datacalendar['id']."'");
-            foreach ($a_listsegment as $datasegment) {
-               $begin = preg_replace("/:00$/", "", $datasegment['begin']);
-               $end = preg_replace("/:00$/", "", $datasegment['end']);
-               switch ($datasegment['day']) {
-
-                  case "0":
-                     $day = "sunday";
-                     break;
-
-                  case "1":
-                     $day = "monday";
-                     break;
-
-                  case "2":
-                     $day = "tuesday";
-                     break;
-
-                  case "3":
-                     $day = "wednesday";
-                     break;
-
-                  case "4":
-                     $day = "thursday";
-                     break;
-
-                  case "5":
-                     $day = "friday";
-                     break;
-
-                  case "6":
-                     $day = "saturday";
-                     break;
-
-               }
-               $a_timeperiods[$i][$day] = $begin."-".$end;
-            }
-            $i++;
+//            $a_timeperiods[$i]['timeperiod_name'] = $datacalendar['name'];
+//            $a_timeperiods[$i]['alias'] = $datacalendar['name'];
+//            $a_listsegment = $calendarSegment->find("`calendars_id`='".$datacalendar['id']."'");
+//            foreach ($a_listsegment as $datasegment) {
+//               $begin = preg_replace("/:00$/", "", $datasegment['begin']);
+//               $end = preg_replace("/:00$/", "", $datasegment['end']);
+//               switch ($datasegment['day']) {
+//
+//                  case "0":
+//                     $day = "sunday";
+//                     break;
+//
+//                  case "1":
+//                     $day = "monday";
+//                     break;
+//
+//                  case "2":
+//                     $day = "tuesday";
+//                     break;
+//
+//                  case "3":
+//                     $day = "wednesday";
+//                     break;
+//
+//                  case "4":
+//                     $day = "thursday";
+//                     break;
+//
+//                  case "5":
+//                     $day = "friday";
+//                     break;
+//
+//                  case "6":
+//                     $day = "saturday";
+//                     break;
+//
+//               }
+//               $a_timeperiods[$i][$day] = $begin."-".$end;
+//            }
+//            $i++;
          //}
       }
 

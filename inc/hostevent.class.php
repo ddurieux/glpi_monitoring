@@ -198,13 +198,14 @@ class PluginMonitoringHostevent extends CommonDBTM {
    
    
    
-   function parseToRrdtool() {
+   function parseToRrdtool($items_id, $itemtype) {
       
       $pluginMonitoringHost = new PluginMonitoringHost();
       $pluginMonitoringRrdtool = new PluginMonitoringRrdtool();
       $pluginMonitoringCommand = new PluginMonitoringCommand();
       
-      $a_hosts = $pluginMonitoringHost->find("`id`='2'");
+      $a_hosts = $pluginMonitoringHost->find("`items_id`='".$items_id."'
+               AND `itemtype`='".$itemtype."'", "", 1);
       foreach ($a_hosts as $hdata) {
          $a_events = $this->find("`plugin_monitoring_hosts_id`='".$hdata['id']."'", 
                         "date");
@@ -214,14 +215,19 @@ class PluginMonitoringHostevent extends CommonDBTM {
             if ($i < count($a_events)) {
                $pluginMonitoringCommand->getFromDB($hdata['plugin_monitoring_commands_id']);
                if ($pluginMonitoringCommand->fields['legend'] != '') {
-               
+                  $perf_data = $edata['perf_data'];
+                  if ($edata['perf_data'] == '') {
+                     $perf_data = $edata['output'];                     
+                  }
                   $pluginMonitoringRrdtool->addData($hdata['plugin_monitoring_commands_id'], 
                                                  $hdata['itemtype'], 
                                                  $hdata['items_id'], 
                                                  $this->convert_datetime_timestamp($edata['date']), 
-                                                 $edata['perf_data']);
+                                                 $perf_data);
+//                  $this->delete($edata);
                }
-            }            
+            }
+            
          }
       }
    }
