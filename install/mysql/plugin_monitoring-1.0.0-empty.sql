@@ -252,6 +252,24 @@ CREATE TABLE `glpi_plugin_monitoring_hostevents` (
 
 
 
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_serviceevents`;
+
+CREATE TABLE `glpi_plugin_monitoring_serviceevents` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `plugin_monitoring_hosts_services_id` int(11) NOT NULL DEFAULT '0',
+  `date` datetime DEFAULT NULL,
+  `event` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `perf_data` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `output` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `state` varchar(255) COLLATE utf8_unicode_ci DEFAULT '0',
+  `latency` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `execution_time` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_hosts_services`;
 
 CREATE TABLE `glpi_plugin_monitoring_hosts_services` (

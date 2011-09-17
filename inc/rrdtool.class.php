@@ -104,7 +104,7 @@ class PluginMonitoringRrdtool extends CommonDBTM {
             }
          }
                   
-      }echo $value."<br/>";
+      }
       $ret = rrd_update($fname, $value);
 
       if( $ret == 0 ) {

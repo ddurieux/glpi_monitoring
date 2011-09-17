@@ -249,7 +249,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $class->getFromDB($data['items_id']);
          $a_listHS = $pluginMonitoringHost_Service->find("`plugin_monitoring_hosts_id`='".$data['id']."'");
          foreach ($a_listHS as $dataHS) {
-
+if ($dataHS['plugin_monitoring_services_id'] == '2') {
             $a_services[$i]['host_name'] = $classname."-".$data['id']."-".$class->fields['name'];
             $a_services[$i]['service_description'] = $dataHS['name']."-".$dataHS['id'];
             $pMonitoringService->getFromDB($dataHS['plugin_monitoring_services_id']);
@@ -271,76 +271,50 @@ class PluginMonitoringShinken extends CommonDBTM {
                }
             $a_services[$i]['contacts'] = implode(',', $a_contacts);
             $i++;
+}
          }         
       }
 
-      /*
-	  define service{
-	  host_name               linux-server
-	  service_description     check-disk-sda1
-	  check_command           check-disk!/dev/sda1
-	  max_check_attempts      5
-	  check_interval          5
-	  retry_interval          3
-	  check_period            24x7
-	  notification_interval   30
-	  notification_period     24x7
-	  notification_options    w,c,r
-	  contact_groups          linux-admins
-	  poller_tag              DMZ
-	  }
-       */
       
-      
-      
-      // Generate Business rules
-      /*
-define service{
-     use         standard-service
-     host_name   dummy
-     service_description  ERP
-     check_command        bp_rule!(h1,database1 | h2,database2) & (2 of: h3,Http1 & h4,Http4 & h5,Http5) & (h6,IPVS1 | h7,IPVS2)
-}
-       */
-      $a_listBA = $pluginMonitoringBusinessapplication->find();
-      foreach ($a_listBA as $dataBA) {
-         $a_services[$i]['use'] = "standard-service";
-         $a_services[$i]['host_name'] = 'Computer-3-ddurieux-Extensa-5620';
-         $a_services[$i]['service_description'] = $dataBA['name'];
-         $command = "bp_rule!";
-         $a_listBR = $pluginMonitoringBusinessrule->find(
-                 "`plugin_monitoring_businessapplications_id`='".$dataBA['id']."'",
-                 "`group`, `position`");
-         $a_group = array();
-         foreach ($a_listBR as $dataBR) {
-            $itemtype = $dataBR['itemtype'];
-            $item = new $itemtype();
-            $item->getFromDB($dataBR['items_id']);
-            $pluginMonitoringHost->getFromDB($item->fields['plugin_monitoring_hosts_id']);
-               $classname = $pluginMonitoringHost->fields['itemtype'];
-               $class = new $classname;
-               $class->getFromDB($pluginMonitoringHost->fields['items_id']);
-            $hostname = $classname."-".$data['id']."-".$class->fields['name'];
- 
-            if ($dataBR['operator'] == 'and'
-                    OR $dataBR['operator'] == 'or') {
-               
-               $operator = ' & ';
-               if ($dataBR['operator'] == 'or') {
-                  $operator = ' | ';
-               }
-               
-               $a_group[$dataBR['group']] .= $operator.$hostname.",".$item->getName()."-".$item->fields['id'];
-            } else {
-               $a_group[$dataBR['group']] = $dataBR['operator']." ".$hostname.",".$item->getName()."-".$item->fields['id'];
-            }            
-         }
-         foreach ($a_group as $key=>$value) {
-            $a_group[$key] = "(".$value.")";
-         }
-         $a_services[$i]['check_command'] = $command.implode(" & ", $a_group);
-         $i++;
-      }
+//      $a_listBA = $pluginMonitoringBusinessapplication->find();
+//      foreach ($a_listBA as $dataBA) {
+//         $a_services[$i]['use'] = "standard-service";
+//         $a_services[$i]['host_name'] = 'Computer-3-ddurieux-Extensa-5620';
+//         $a_services[$i]['service_description'] = $dataBA['name'];
+//         $command = "bp_rule!";
+//         $a_listBR = $pluginMonitoringBusinessrule->find(
+//                 "`plugin_monitoring_businessapplications_id`='".$dataBA['id']."'",
+//                 "`group`, `position`");
+//         $a_group = array();
+//         foreach ($a_listBR as $dataBR) {
+//            $itemtype = $dataBR['itemtype'];
+//            $item = new $itemtype();
+//            $item->getFromDB($dataBR['items_id']);
+//            $pluginMonitoringHost->getFromDB($item->fields['plugin_monitoring_hosts_id']);
+//               $classname = $pluginMonitoringHost->fields['itemtype'];
+//               $class = new $classname;
+//               $class->getFromDB($pluginMonitoringHost->fields['items_id']);
+//            $hostname = $classname."-".$data['id']."-".$class->fields['name'];
+// 
+//            if ($dataBR['operator'] == 'and'
+//                    OR $dataBR['operator'] == 'or') {
+//               
+//               $operator = ' & ';
+//               if ($dataBR['operator'] == 'or') {
+//                  $operator = ' | ';
+//               }
+//               
+//               $a_group[$dataBR['group']] .= $operator.$hostname.",".$item->getName()."-".$item->fields['id'];
+//            } else {
+//               $a_group[$dataBR['group']] = $dataBR['operator']." ".$hostname.",".$item->getName()."-".$item->fields['id'];
+//            }            
+//         }
+//         foreach ($a_group as $key=>$value) {
+//            $a_group[$key] = "(".$value.")";
+//         }
+//         $a_services[$i]['check_command'] = $command.implode(" & ", $a_group);
+//         $i++;
+//      }
       
       if ($file == "1") {
          $config = "# Generated by plugin monitoring for GLPI\n# on ".date("Y-m-d H:i:s")."\n\n";
