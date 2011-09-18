@@ -94,6 +94,8 @@ class PluginMonitoringRrdtool extends CommonDBTM {
          if (!empty($matches[$key])) {
             if (strstr($matches[$key], "ms")) {
                $value .= ':'. round(str_replace("ms", "", $matches[$key]));
+            } else if (strstr($matches[$key], "s")) {
+               $value .= ':'. round((str_replace("s", "", $matches[$key]) * 1000));
             } else if (!strstr($data, "timeout")){
                $value .= ':U';
             }
@@ -126,75 +128,90 @@ class PluginMonitoringRrdtool extends CommonDBTM {
    function displayGLPIGraph($itemtype, $items_id, $time='1d') {
       
       $pluginMonitoringCommand = new PluginMonitoringCommand();
-      $pluginMonitoringHost = new PluginMonitoringHost();
-      
-      $a_hosts = $pluginMonitoringHost->find("`items_id`='".$items_id."'
-               AND `itemtype`='".$itemtype."'", "", 1);
-      foreach ($a_hosts as $hdata) {
+
+      $title = '';
+      if ($itemtype == "PluginMonitoringHost_Service") {
+         $pMonitoringHost_Service = new PluginMonitoringHost_Service();
+         $pMonitoringService = new PluginMonitoringService();
+         $pMonitoringHost_Service->getFromDB($items_id);
+         $pMonitoringService->getFromDB($pMonitoringHost_Service->fields['plugin_monitoring_services_id']);
+         $pluginMonitoringCommand->getFromDB($pMonitoringService->fields['plugin_monitoring_commands_id']);
+         $title = $pMonitoringHost_Service->fields['name'];
+      } else if ($itemtype == "Computer") {
+         $pluginMonitoringHost = new PluginMonitoringHost();
+         $hdata = current($pluginMonitoringHost->find("`items_id`='".$items_id."'
+                  AND `itemtype`='".$itemtype."'", "", 1));
+
          $pluginMonitoringCommand->getFromDB($hdata['plugin_monitoring_commands_id']);
-         $a_legend = importArrayFromDB($pluginMonitoringCommand->fields['legend']);
+         $title = 'Ping';
+      }
+      
+      
+      $a_legend = importArrayFromDB($pluginMonitoringCommand->fields['legend']);
 
-         $opts = array();
-         $opts[] = '--start';
-         $opts[] = '-'.$time;
-         if ($pluginMonitoringCommand->fields['unit'] == "ms") {
-            $opts[] = "-v";
-            $opts[] = "Time in ms";
-         }
-         $opts[] = "--width";
-         $opts[] = "470";
-         $opts[] = "-c";
-         $opts[] = "BACK#e1cc7b";
-         $opts[] = "-c";
-         $opts[] = "CANVAS#f1f1f1";
+      $opts = array();
+      $opts[] = '--title';
+      $opts[] = $title;
+      $opts[] = '--start';
+      $opts[] = '-'.$time;
+      if ($pluginMonitoringCommand->fields['unit'] == "ms") {
+         $opts[] = "-v";
+         $opts[] = "Time in ms";
+      }
+      $opts[] = "--width";
+      $opts[] = "470";
+      $opts[] = "-c";
+      $opts[] = "BACK#e1cc7b";
+      $opts[] = "-c";
+      $opts[] = "CANVAS#f1f1f1";
 
-         foreach ($a_legend as $legend){
-             if (!strstr($legend, "timeout")) {
-               $opts[] = "DEF:".$legend."=".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id.".rrd:".$legend.":AVERAGE";
-             }
+      foreach ($a_legend as $legend){
+          if (!strstr($legend, "timeout")) {
+            $opts[] = "DEF:".$legend."=".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id.".rrd:".$legend.":AVERAGE";
+          }
+      }
+      $i = 2;
+      foreach ($a_legend as $legend){
+         $color = "#00FF00";
+         $type = "AREA";
+         if (strstr($legend, "warning")) {
+            $type = "LINE".$i;
+            $color = "#0000FF";
+            $i++;
+         } else if (strstr($legend, "critical")) {
+            $type = "LINE".$i;
+            $color = "#FF0000";
+            $i++;
+         } else if (strstr($legend, "packet_loss")) {
+            $type = "LINE".$i;
+            $color = "#FF0000";
+            $i++;
          }
-         $i = 2;
-         foreach ($a_legend as $legend){
-            $color = "#00FF00";
-            $type = "AREA";
-            if (strstr($legend, "warning")) {
-               $type = "LINE".$i;
-               $color = "#0000FF";
-               $i++;
-            } else if (strstr($legend, "critical")) {
-               $type = "LINE".$i;
-               $color = "#FF0000";
-               $i++;
-            } else if (strstr($legend, "packet_loss")) {
-               $type = "LINE".$i;
-               $color = "#FF0000";
-               $i++;
-            }
-            if (strstr($legend, "packet_loss")) {
-               $opts[] = $type.":".$legend.$color.":".$legend;
-               $opts[] = "GPRINT:".$legend.":LAST:Last\: %2.0lf";
-               $opts[] = "GPRINT:".$legend.":MIN:Min\: %2.0lf";
-               $opts[] = "GPRINT:".$legend.":MAX:Max\: %2.0lf";
-               $opts[] = "GPRINT:".$legend.":AVERAGE:Avg\: %2.0lf\l";
-            } else if (!strstr($legend, "timeout")) {
-               $opts[] = $type.":".$legend.$color.":".$legend;
-               $opts[] = "GPRINT:".$legend.":LAST:Last\: %2.2lf ms";
-               $opts[] = "GPRINT:".$legend.":MIN:Min\: %2.2lf ms";
-               $opts[] = "GPRINT:".$legend.":MAX:Max\: %2.2lf ms";
-               $opts[] = "GPRINT:".$legend.":AVERAGE:Avg\: %2.2lf ms\l";
-            }                 
-         }
-         foreach ($a_legend as $legend){
-            if (!strstr($legend, "timeout")) {
-               $opts[] = "CDEF:1".$legend."=".$legend.",0.98,*";
-            }
-         }
-         $ret = rrd_graph(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.".gif", $opts, count($opts));
-         if( !is_array($ret)) {
-            $err = rrd_error();
-            echo "rrd_graph() ERROR: $err\n";
+         if (strstr($legend, "packet_loss")) {
+            $opts[] = $type.":".$legend.$color.":".$legend;
+            $opts[] = "GPRINT:".$legend.":LAST:Last\: %2.0lf";
+            $opts[] = "GPRINT:".$legend.":MIN:Min\: %2.0lf";
+            $opts[] = "GPRINT:".$legend.":MAX:Max\: %2.0lf";
+            $opts[] = "GPRINT:".$legend.":AVERAGE:Avg\: %2.0lf\l";
+         } else if (!strstr($legend, "timeout")) {
+            $opts[] = $type.":".$legend.$color.":".$legend;
+            $opts[] = "GPRINT:".$legend.":LAST:Last\: %2.2lf ms";
+            $opts[] = "GPRINT:".$legend.":MIN:Min\: %2.2lf ms";
+            $opts[] = "GPRINT:".$legend.":MAX:Max\: %2.2lf ms";
+            $opts[] = "GPRINT:".$legend.":AVERAGE:Avg\: %2.2lf ms\l";
+         }                 
+      }
+      foreach ($a_legend as $legend){
+         if (!strstr($legend, "timeout")) {
+            $opts[] = "CDEF:1".$legend."=".$legend.",0.98,*";
          }
       }
+      $ret = rrd_graph(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.".gif", $opts, count($opts));
+      if( !is_array($ret)) {
+         $err = rrd_error();
+         echo "rrd_graph() ERROR: $err\n";
+      }
+
       
       
 //      $data = rrd_fetch(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id.".rrd",
