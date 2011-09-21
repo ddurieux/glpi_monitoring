@@ -77,6 +77,7 @@ CREATE TABLE `glpi_plugin_monitoring_hosts` (
   `template_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `last_check` datetime DEFAULT NULL,
   `event` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `state` varchar(255) COLLATE utf8_unicode_ci DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -280,6 +281,7 @@ CREATE TABLE `glpi_plugin_monitoring_hosts_services` (
   `plugin_monitoring_servicesuggests_id` int(11) NOT NULL DEFAULT '0',
   `last_check` datetime DEFAULT NULL,
   `event` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `state` varchar(255) COLLATE utf8_unicode_ci DEFAULT '0',
   `arguments` text COLLATE utf8_unicode_ci,
   `items_id` int(11) NOT NULL DEFAULT '0',
   `itemtype` varchar(100) DEFAULT NULL,
