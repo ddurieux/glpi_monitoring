@@ -203,32 +203,55 @@ class PluginMonitoringHostevent extends CommonDBTM {
       $pluginMonitoringHost = new PluginMonitoringHost();
       $pluginMonitoringRrdtool = new PluginMonitoringRrdtool();
       $pluginMonitoringCommand = new PluginMonitoringCommand();
-      
-      $a_hosts = $pluginMonitoringHost->find("`items_id`='".$items_id."'
-               AND `itemtype`='".$itemtype."'", "", 1);
-      foreach ($a_hosts as $hdata) {
+      $pMonitoringServiceevent  = new PluginMonitoringServiceevent();
+
+      $hdata = array();
+      $a_events = array();
+      if ($itemtype == 'PluginMonitoringHost_Service') {
+         $pMonitoringHost_Service = new PluginMonitoringHost_Service();
+         $pMonitoringService = new PluginMonitoringService();
+         
+         
+         $pMonitoringHost_Service->getFromDB($items_id);
+         //$pluginMonitoringHost->getFromDB($pMonitoringHost_Service->fields['plugin_monitoring_hosts_id']);
+         $hdata = $pMonitoringHost_Service->fields;
+         $pMonitoringService->getFromDB($hdata['plugin_monitoring_services_id']);
+         $hdata['plugin_monitoring_commands_id'] = $pMonitoringService->fields['plugin_monitoring_commands_id'];
+         $hdata['itemtype'] = $itemtype;
+         $hdata['items_id'] = $items_id;
+         $a_events = $pMonitoringServiceevent->find("`plugin_monitoring_hosts_services_id`='".$hdata['id']."'", 
+                     "date");
+      } else {
+         $hdata = current($pluginMonitoringHost->find("`items_id`='".$items_id."'
+                  AND `itemtype`='".$itemtype."'", "", 1));
          $a_events = $this->find("`plugin_monitoring_hosts_id`='".$hdata['id']."'", 
-                        "date");
-         $i = 0;
-         foreach ($a_events as $edata) {
-            $i++;
-            if ($i < count($a_events)) {
-               $pluginMonitoringCommand->getFromDB($hdata['plugin_monitoring_commands_id']);
-               if ($pluginMonitoringCommand->fields['legend'] != '') {
-                  $perf_data = $edata['perf_data'];
-                  if ($edata['perf_data'] == '') {
-                     $perf_data = $edata['output'];                     
-                  }
-                  $pluginMonitoringRrdtool->addData($hdata['plugin_monitoring_commands_id'], 
-                                                 $hdata['itemtype'], 
-                                                 $hdata['items_id'], 
-                                                 $this->convert_datetime_timestamp($edata['date']), 
-                                                 $perf_data);
-//                  $this->delete($edata);
+                     "date");
+      }
+
+
+      $i = 0;
+      foreach ($a_events as $edata) {
+         $i++;
+         if ($i < count($a_events)) {
+            $pluginMonitoringCommand->getFromDB($hdata['plugin_monitoring_commands_id']);
+            if ($pluginMonitoringCommand->fields['legend'] != '') {
+               $perf_data = $edata['perf_data'];
+               if ($edata['perf_data'] == '') {
+                  $perf_data = $edata['output'];                     
                }
+               $pluginMonitoringRrdtool->addData($hdata['plugin_monitoring_commands_id'], 
+                                              $hdata['itemtype'], 
+                                              $hdata['items_id'], 
+                                              $this->convert_datetime_timestamp($edata['date']), 
+                                              $perf_data);
+               if ($itemtype == 'PluginMonitoringHost_Service') {
+                  $pMonitoringServiceevent->delete($edata);
+               } else {
+                  $this->delete($edata);
+               }               
             }
-            
          }
+
       }
    }
 

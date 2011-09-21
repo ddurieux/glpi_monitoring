@@ -38,5 +38,12 @@ define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 $dropdown = new PluginMonitoringBusinessapplication();
-include (GLPI_ROOT . "/front/dropdown.common.form.php");
+if (isset($_GET['detail']) AND isset($_GET['id'])) {
+   commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
+             "monitoring", "businessapplication");
+   $dropdown->showBADetail($_GET['id']);
+   commonFooter();
+} else {
+   include (GLPI_ROOT . "/front/dropdown.common.form.php");
+}
 ?>

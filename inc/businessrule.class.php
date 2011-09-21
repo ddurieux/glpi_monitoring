@@ -156,7 +156,7 @@ class PluginMonitoringBusinessrule extends CommonDBTM {
          if ($data['position'] == '0') {
             Dropdown::showFromArray('operator[]', $first_operator);
          } else {
-            Dropdown::showFromArray('operator[]', $operator);
+            Dropdown::showFromArray('operator[]', $operator, array("value"=>$data['operator']));
          }
          echo "</td>";
          echo "<td>";

@@ -6,6 +6,8 @@ CREATE TABLE `glpi_plugin_monitoring_businessapplications` (
    `entities_id` int(11) NOT NULL DEFAULT '0',
    `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
    `comment` text COLLATE utf8_unicode_ci,
+   `last_check` datetime DEFAULT NULL,
+   `state` varchar(255) COLLATE utf8_unicode_ci DEFAULT '0',
    PRIMARY KEY (`id`),
    KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

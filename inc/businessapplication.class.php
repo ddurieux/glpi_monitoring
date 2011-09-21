@@ -84,6 +84,8 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
    function showBAChecks() {
       global $CFG_GLPI,$LANG;
       
+      $pMonitoringBusinessrule = new PluginMonitoringBusinessrule();
+      $pMonitoringHost_Service = new PluginMonitoringHost_Service();
       echo "<table'>";
       echo "<tr>";
       
@@ -102,28 +104,60 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
             echo "<td>";
             echo $LANG['state'][0]."&nbsp;:";
             echo "</td>";
-            echo "<td>";
-            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/red_button.png' />";
-//            echo "<audio controls preload>
-//               <source src=\"../startrek.ogg\">
-//               </audio>";
-//            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/orange_button.png' />";
-//            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/green_button.png' />";
+            echo "<td width='40'>";
+            switch($data['state']) {
+
+               case 'UP':
+               case 'OK':
+                  echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_40.png'/>";
+                  break;
+
+               case 'DOWN':
+               case 'UNREACHABLE':
+               case 'CRITICAL':
+               case 'DOWNTIME':
+                  echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_40.png'/>";
+                  break;
+
+               case 'WARNING':
+               case 'UNKNOWN':
+               case 'RECOVERY':
+               case 'FLAPPING':
+                  echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_40.png'/>";
+                  break;
+
+            }
             echo "</td>";
             echo "</tr>";
    
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
-            echo "Temps de réponse&nbsp;:";
+            echo "Mode dégradé&nbsp;:";
             echo "</td>";
-            echo "<td>";
-            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/green_button.png' />";
+            echo "<td width='40' align='center'>";
+            
+            $a_brules = $pMonitoringBusinessrule->find("`plugin_monitoring_businessapplications_id`='".$data['id']."'");
+            $state = "OK";
+            foreach ($a_brules as $brulesdata) {
+               if ($brulesdata['itemtype'] == 'PluginMonitoringHost_Service') {
+                  $pMonitoringHost_Service->getFromDB($brulesdata['items_id']);
+                  if ($pMonitoringHost_Service->fields['state'] != 'OK'
+                          AND $pMonitoringHost_Service->fields['state'] != 'UP') {
+                     $state = "BAD";
+                  }
+               }
+            }
+            $color = 'green';
+            if ($state == 'BAD') {
+               $color = 'red';
+            }
+            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$color."_32.png' />";
             echo "</td>";
             echo "</tr>";
             
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='2' align='center'>";
-            echo "<input type='button' class='submit' value='Détail >>'>";
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/businessapplication.form.php?id=".$data['id']."&detail=1'>Détail</a>";
             echo "</td>";
             echo "</tr>";
             
@@ -135,6 +169,73 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
       
       echo "</tr>";
       echo "</table>";      
+   }
+   
+   
+   function showBADetail($id) {
+      global $CFG_GLPI,$LANG;
+      
+      $pMonitoringBusinessrule = new PluginMonitoringBusinessrule();
+      $pMonitoringHost_Service = new PluginMonitoringHost_Service();
+      
+      $this->getFromDB($id);
+      echo "<table class='tab_cadrehov'>";
+      $a_brules = $pMonitoringBusinessrule->find("`plugin_monitoring_businessapplications_id`='".$id."'");
+      $a_groups = array();
+      foreach ($a_brules as $brulesdata) {
+         $a_groups[$brulesdata['group']] = '';
+      }
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<th rowspan='".(count($a_brules) + (count($a_brules) + 1))."' width='200'>";
+      echo $this->getName();
+      echo "</th>";
+      
+      $i = 0;
+      foreach($a_groups as $group=>$num) {
+         $a_brulesg = $pMonitoringBusinessrule->find("`plugin_monitoring_businessapplications_id`='".$id."'
+            AND `group`='".$group."'");
+
+         if ($i > 0) {
+            echo "<tr class='tab_bg_4'>";
+         }
+         echo "<th height='5' colspan='8'></th>";
+         if ($i == '0') {
+            echo "<th rowspan='".(count($a_brules) + (count($a_brules) + 1))."' width='1'></th>";
+         }
+         echo "</tr>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<th rowspan='".count($a_brulesg)."'>Group ".$i;
+         echo "</th>";
+         $j = 0;
+         foreach ($a_brulesg as $brulesdata) {
+            if ($brulesdata['itemtype'] == 'PluginMonitoringHost_Service') {
+               if ($j > 0) {
+                  echo "<tr class='tab_bg_1'>";
+               }
+               $pMonitoringHost_Service->getFromDB($brulesdata['items_id']);
+               PluginMonitoringDisplay::displayLine($pMonitoringHost_Service->fields, $brulesdata['itemtype']);
+               echo "</tr>";
+               $j++;
+            }
+         }         
+         
+         if ($j > 0) {
+            echo "</tr>";
+         }
+         $i++;
+      }
+      echo "<tr class='tab_bg_4'>";
+      echo "<th height='4' colspan='8'></th>";
+      echo "</tr>";
+      
+      echo "</table>";
+      
+      $state = "OK";
+      
+      
+
+      
    }
    
    

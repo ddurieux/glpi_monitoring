@@ -26,7 +26,7 @@
    along with FusionInventory.  If not, see <http://www.gnu.org/licenses/>.
 
    ------------------------------------------------------------------------
-   Original Author of file: Vincent Mazzoni
+   Original Author of file: David Durieux
    Co-authors of file:
    Purpose of file:
    ----------------------------------------------------------------------

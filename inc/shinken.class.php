@@ -249,12 +249,28 @@ class PluginMonitoringShinken extends CommonDBTM {
          $class->getFromDB($data['items_id']);
          $a_listHS = $pluginMonitoringHost_Service->find("`plugin_monitoring_hosts_id`='".$data['id']."'");
          foreach ($a_listHS as $dataHS) {
-if ($dataHS['plugin_monitoring_services_id'] == '2') {
             $a_services[$i]['host_name'] = $classname."-".$data['id']."-".$class->fields['name'];
             $a_services[$i]['service_description'] = $dataHS['name']."-".$dataHS['id'];
             $pMonitoringService->getFromDB($dataHS['plugin_monitoring_services_id']);
             $pMonitoringCommand->getFromDB($pMonitoringService->fields['plugin_monitoring_commands_id']);
-            $a_services[$i]['check_command'] = $pMonitoringCommand->fields['command_name'];
+            // Manage arguments
+            $array = array();
+            preg_match_all("/\\$[A-Z]+\\$/", $pMonitoringCommand->fields['command_line'], $array);
+            $a_arguments = importArrayFromDB($dataHS['arguments']);
+            $args = '';
+            foreach ($array[0] as $arg) {
+               if ($arg != '$PLUGINSDIR$'
+                       AND $arg != '$HOSTADDRESS$') {
+                  $arg = str_replace('$', '', $arg);
+                  if (!isset($a_arguments[$arg])) {
+                     $args .= '!';
+                  } else {
+                     $args .= '!'.$a_arguments[$arg];
+                  }
+               }
+            }
+            // End manage arguments
+            $a_services[$i]['check_command'] = $pMonitoringCommand->fields['command_name'].$args;
                $pMonitoringCheck->getFromDB($pMonitoringService->fields['plugin_monitoring_checks_id']);
             $a_services[$i]['check_interval'] = $pMonitoringCheck->fields['check_interval'];
             $a_services[$i]['retry_interval'] = $pMonitoringCheck->fields['retry_interval'];
@@ -271,50 +287,62 @@ if ($dataHS['plugin_monitoring_services_id'] == '2') {
                }
             $a_services[$i]['contacts'] = implode(',', $a_contacts);
             $i++;
-}
          }         
       }
 
       
-//      $a_listBA = $pluginMonitoringBusinessapplication->find();
-//      foreach ($a_listBA as $dataBA) {
+      $a_listBA = $pluginMonitoringBusinessapplication->find();
+      foreach ($a_listBA as $dataBA) {
 //         $a_services[$i]['use'] = "standard-service";
-//         $a_services[$i]['host_name'] = 'Computer-3-ddurieux-Extensa-5620';
-//         $a_services[$i]['service_description'] = $dataBA['name'];
-//         $command = "bp_rule!";
-//         $a_listBR = $pluginMonitoringBusinessrule->find(
-//                 "`plugin_monitoring_businessapplications_id`='".$dataBA['id']."'",
-//                 "`group`, `position`");
-//         $a_group = array();
-//         foreach ($a_listBR as $dataBR) {
-//            $itemtype = $dataBR['itemtype'];
-//            $item = new $itemtype();
-//            $item->getFromDB($dataBR['items_id']);
-//            $pluginMonitoringHost->getFromDB($item->fields['plugin_monitoring_hosts_id']);
-//               $classname = $pluginMonitoringHost->fields['itemtype'];
-//               $class = new $classname;
-//               $class->getFromDB($pluginMonitoringHost->fields['items_id']);
-//            $hostname = $classname."-".$data['id']."-".$class->fields['name'];
-// 
-//            if ($dataBR['operator'] == 'and'
-//                    OR $dataBR['operator'] == 'or') {
-//               
-//               $operator = ' & ';
-//               if ($dataBR['operator'] == 'or') {
-//                  $operator = ' | ';
-//               }
-//               
-//               $a_group[$dataBR['group']] .= $operator.$hostname.",".$item->getName()."-".$item->fields['id'];
-//            } else {
-//               $a_group[$dataBR['group']] = $dataBR['operator']." ".$hostname.",".$item->getName()."-".$item->fields['id'];
-//            }            
-//         }
-//         foreach ($a_group as $key=>$value) {
-//            $a_group[$key] = "(".$value.")";
-//         }
-//         $a_services[$i]['check_command'] = $command.implode(" & ", $a_group);
-//         $i++;
-//      }
+$a_services[$i]['contacts'] = 'ddurieux';
+$pMonitoringCheck->getFromDB($pMonitoringService->fields['plugin_monitoring_checks_id']);
+$a_services[$i]['check_interval'] = $pMonitoringCheck->fields['check_interval'];
+$a_services[$i]['retry_interval'] = $pMonitoringCheck->fields['retry_interval'];
+$a_services[$i]['max_check_attempts'] = $pMonitoringCheck->fields['max_check_attempts'];
+if ($calendar->getFromDB($data['calendars_id'])) {
+   $a_services[$i]['check_period'] = $calendar->fields['name'];            
+}
+         $a_services[$i]['host_name'] = 'Computer-3-ddurieux-Extensa-5620';
+         $a_services[$i]['service_description'] = $dataBA['name']."-".$dataBA['id']."-businessrules";
+         $command = "bp_rule!";
+         $a_listBR = $pluginMonitoringBusinessrule->find(
+                 "`plugin_monitoring_businessapplications_id`='".$dataBA['id']."'",
+                 "`group`, `position`");
+         $a_group = array();
+         foreach ($a_listBR as $dataBR) {
+            $itemtype = $dataBR['itemtype'];
+            $item = new $itemtype();
+            $item->getFromDB($dataBR['items_id']);
+            $pluginMonitoringHost->getFromDB($item->fields['plugin_monitoring_hosts_id']);
+               $classname = $pluginMonitoringHost->fields['itemtype'];
+               $class = new $classname;
+               $class->getFromDB($pluginMonitoringHost->fields['items_id']);
+            $hostname = $classname."-".$pluginMonitoringHost->fields['id']."-".$class->fields['name'];
+ 
+            if ($dataBR['operator'] == 'and'
+                    OR $dataBR['operator'] == 'or') {
+               
+               $operator = '&';
+               if ($dataBR['operator'] == 'or') {
+                  $operator = '|';
+               }
+               
+               $a_group[$dataBR['group']] .= $operator.$hostname.",".$item->getName()."-".$item->fields['id'];
+            } else {
+               $a_group[$dataBR['group']] = $dataBR['operator']." ".$hostname.",".$item->getName()."-".$item->fields['id'];
+            }            
+         }
+         foreach ($a_group as $key=>$value) {
+            if (!strstr($value, "&")
+                    AND !strstr($value, "|")) {
+               $a_group[$key] = trim($value);
+            } else {
+               $a_group[$key] = "(".trim($value).")";
+            }
+         }
+         $a_services[$i]['check_command'] = $command.implode("&", $a_group);
+         $i++;
+      }
       
       if ($file == "1") {
          $config = "# Generated by plugin monitoring for GLPI\n# on ".date("Y-m-d H:i:s")."\n\n";

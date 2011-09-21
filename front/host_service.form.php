@@ -32,43 +32,34 @@
    ----------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   define('GLPI_ROOT', '../../..');
+define('GLPI_ROOT', '../../..');
+
+include (GLPI_ROOT . "/inc/includes.php");
+
+commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
+             "monitoring", "host_service");
+
+
+$pMonitoringHost_Service = new PluginMonitoringHost_Service();
+
+if (isset($_POST['update'])) {
+   foreach ($_POST['id'] as $key=>$id) {
+      $input = array();
+      $input['id'] = $id;
+      $input['plugin_monitoring_services_id'] = $_POST['plugin_monitoring_services_id'][$key];
+      $a_arguments = array();
+      foreach ($_POST as $key=>$value) {
+         if (strstr($key, "arg".$id."||")) {
+            $a_ex = explode("||", $key);
+            $a_arguments[$a_ex[1]] = $value;
+         }
+      }
+      $input['arguments'] = exportArrayToDB($a_arguments);
+      $pMonitoringHost_Service->update($input);
+   }
 }
+glpi_header($_SERVER['HTTP_REFERER']);
 
-include (GLPI_ROOT."/inc/includes.php");
-
-commonHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "commands");
-
-
-$PluginMonitoringHost = new PluginMonitoringHost();
-$pluginMonitoringBusinessapplication = new PluginMonitoringBusinessapplication();
-
-echo "<table class='tab_cadre' width='100%' style='background: #a3a3a3;>";
-echo "<tr class='tab_bg_3'>";
-echo "<td>";
-$pluginMonitoringBusinessapplication->showBAChecks();
-//$PluginMonitoringHost->showHostChecks();
-echo "</td>";
-echo "</tr>";
-echo "</table>";
-
-//
-//$plu = new PluginMonitoringHostevent();
-////$plu->parseToRrdtool();
-//$to = new PluginMonitoringRrdtool();
-//$to->displayGLPIGraph("NetworkEquipment", "161");
-//$to->displayGLPIGraph("NetworkEquipment", "161", "1w");
-//
-//echo "<img src='".GLPI_ROOT."/plugins/monitoring/front/send.php?file=NetworkEquipment-161-1d.gif' />";
-//echo "<br/>";
-//echo "<img src='".GLPI_ROOT."/plugins/monitoring/front/send.php?file=NetworkEquipment-161-1w.gif' />";
-
-
-$pMonitoringDisplay = new PluginMonitoringDisplay();
-$pMonitoringDisplay->showBoard("PluginMonitoringHost");
-$pMonitoringDisplay->showBoard("PluginMonitoringHost_Service");
 commonFooter();
 
 ?>
