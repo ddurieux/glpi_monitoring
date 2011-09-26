@@ -254,6 +254,27 @@ class PluginMonitoringHostevent extends CommonDBTM {
 
       }
    }
+   
+   
+   
+   
+   
+   static function cronUpdaterrd() {
+
+      $plu = new PluginMonitoringHostevent();
+      $pMonitoringHost = new PluginMonitoringHost();
+      $pMonitoringHost_Service = new PluginMonitoringHost_Service();
+      
+      $a_listh = $pMonitoringHost->find();
+      foreach ($a_listh as $data) {
+         $plu->parseToRrdtool($data['id'], "PluginMonitoringHost");
+      }
+      $a_lisths = $pMonitoringHost_Service->find();
+      foreach ($a_lisths as $data) {
+         $plu->parseToRrdtool($data['id'], "PluginMonitoringHost_Service");
+      }
+      return true;
+   }
 
 }
 

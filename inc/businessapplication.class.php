@@ -199,7 +199,7 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
          if ($i > 0) {
             echo "<tr class='tab_bg_4'>";
          }
-         echo "<th height='5' colspan='8'></th>";
+         echo "<th height='5' colspan='9'></th>";
          if ($i == '0') {
             echo "<th rowspan='".(count($a_brules) + (count($a_brules) + 1))."' width='1'></th>";
          }
@@ -226,7 +226,7 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
          $i++;
       }
       echo "<tr class='tab_bg_4'>";
-      echo "<th height='4' colspan='8'></th>";
+      echo "<th height='4' colspan='9'></th>";
       echo "</tr>";
       
       echo "</table>";

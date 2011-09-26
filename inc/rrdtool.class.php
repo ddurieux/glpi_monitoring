@@ -97,7 +97,7 @@ class PluginMonitoringRrdtool extends CommonDBTM {
             } else if (strstr($matches[$key], "s")) {
                $value .= ':'. round((str_replace("s", "", $matches[$key]) * 1000));
             } else if (!strstr($data, "timeout")){
-               $value .= ':U';
+               $value .= ':'.round($matches[$key]);
             }
             
          } else {
@@ -160,6 +160,10 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       }
       $opts[] = "--width";
       $opts[] = "470";
+      if (count($a_legend) > 3) {
+         $opts[] = "--height";
+         $opts[] = "200";
+      }
       $opts[] = "-c";
       $opts[] = "BACK#e1cc7b";
       $opts[] = "-c";
@@ -170,22 +174,32 @@ class PluginMonitoringRrdtool extends CommonDBTM {
             $opts[] = "DEF:".$legend."=".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id.".rrd:".$legend.":AVERAGE";
           }
       }
-      $i = 2;
+      $a_colors = array();
+      $a_colors[] = "#00FF00";
+      $a_colors[] = "#cc0000";
+      $a_colors[] = "#0000cc";
+      $a_colors[] = "#ff9900";
+      $a_colors[] = "#993300";
+      $a_colors[] = "#336699";
+      $a_colors[] = "#939933";
+      $a_colors[] = "#e031de";
+      $a_colors[] = "#3bdb8a";
+      
+      $j = 0;
       foreach ($a_legend as $legend){
-         $color = "#00FF00";
-         $type = "AREA";
+         #$type = "AREA";
+         $type = "LINE";
          if (strstr($legend, "warning")) {
-            $type = "LINE".$i;
+            $type = "LINE";
             $color = "#0000FF";
-            $i++;
-         } else if (strstr($legend, "critical")) {
-            $type = "LINE".$i;
+           } else if (strstr($legend, "critical")) {
+            $type = "LINE";
             $color = "#FF0000";
-            $i++;
          } else if (strstr($legend, "packet_loss")) {
-            $type = "LINE".$i;
+            $type = "LINE";
             $color = "#FF0000";
-            $i++;
+         } else {
+            $color = $a_colors[$j];
          }
          if (strstr($legend, "packet_loss")) {
             $opts[] = $type.":".$legend.$color.":".$legend;
@@ -193,13 +207,21 @@ class PluginMonitoringRrdtool extends CommonDBTM {
             $opts[] = "GPRINT:".$legend.":MIN:Min\: %2.0lf";
             $opts[] = "GPRINT:".$legend.":MAX:Max\: %2.0lf";
             $opts[] = "GPRINT:".$legend.":AVERAGE:Avg\: %2.0lf\l";
-         } else if (!strstr($legend, "timeout")) {
+         } else if (!strstr($legend, "timeout") 
+                 AND $pluginMonitoringCommand->fields['unit'] == "ms") {
             $opts[] = $type.":".$legend.$color.":".$legend;
             $opts[] = "GPRINT:".$legend.":LAST:Last\: %2.2lf ms";
             $opts[] = "GPRINT:".$legend.":MIN:Min\: %2.2lf ms";
             $opts[] = "GPRINT:".$legend.":MAX:Max\: %2.2lf ms";
             $opts[] = "GPRINT:".$legend.":AVERAGE:Avg\: %2.2lf ms\l";
-         }                 
+         } else if (!strstr($legend, "timeout")) {
+            $opts[] = $type.":".$legend.$color.":".$legend;
+            $opts[] = "GPRINT:".$legend.":LAST:Last\: %2.0lf";
+            $opts[] = "GPRINT:".$legend.":MIN:Min\: %2.0lf";
+            $opts[] = "GPRINT:".$legend.":MAX:Max\: %2.0lf";
+            $opts[] = "GPRINT:".$legend.":AVERAGE:Avg\: %2.0lf\l";
+         }
+         $j++;
       }
       foreach ($a_legend as $legend){
          if (!strstr($legend, "timeout")) {

@@ -260,7 +260,9 @@ class PluginMonitoringShinken extends CommonDBTM {
             $args = '';
             foreach ($array[0] as $arg) {
                if ($arg != '$PLUGINSDIR$'
-                       AND $arg != '$HOSTADDRESS$') {
+                       AND $arg != '$HOSTADDRESS$'
+                       AND $arg != '$MYSQLUSER$'
+                       AND $arg != '$MYSQLPASSWORD$') {
                   $arg = str_replace('$', '', $arg);
                   if (!isset($a_arguments[$arg])) {
                      $args .= '!';

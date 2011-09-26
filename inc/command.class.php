@@ -203,6 +203,16 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['name'] = 'Distant mysql check';
       $input['command_name'] = 'check_mysql_connexion';
       $input['command_line'] = "\$PLUGINSDIR\$/check_mysql -H \$HOSTADDRESS\$ -u \$MYSQLUSER\$ -p \$MYSQLPASSWORD\$";
+      $input['regex'] = addslashes('Uptime: (\\d+)  Threads: (\\d+)  Questions: (\\d+)  Slow queries: (\\d+)  Opens: (\\d+)  Flush tables: (\\d+)  Open tables: (\\d+)  Queries per second avg: (.+\\d+)');
+      $legend = array();
+      $legend[2] = "Threads";
+      $legend[2] = "Questions";
+      $legend[3] = "Slow_queries";
+      $legend[4] = "Opens";
+      $legend[5] = "Flush_tables";
+      $legend[6] = "Open_tables";
+      $legend[7] = "Qps_avg";
+      $input['legend'] = exportArrayToDB($legend);
       $this->add($input);
 
       $input = array();

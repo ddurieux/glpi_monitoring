@@ -85,6 +85,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       global $DB,$CFG_GLPI,$LANG;
       
       $pMonitoringHost_Service = new PluginMonitoringHost_Service();
+      $pMonitoringHost = new PluginMonitoringHost();
       
       echo "<td width='32'>";
       $shortstate = self::getState($data['state']);
@@ -103,7 +104,11 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "</td>";
       } else {
          echo "<td>Services</td>";
-         echo "<td>".$data['name']." sur ...</td>";
+         $pMonitoringHost->getFromDB($data['plugin_monitoring_hosts_id']);
+         $itemtypemat = $pMonitoringHost->fields['itemtype'];
+         $itemmat = new $itemtypemat();
+         $itemmat->getFromDB($pMonitoringHost->fields['items_id']);
+         echo "<td>".$data['name']." ".$LANG['networking'][25]." ".$itemmat->getLink(1)."</td>";
       }
 
       echo "<td align='center'>";
