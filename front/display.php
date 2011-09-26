@@ -39,15 +39,14 @@ if (!defined('GLPI_ROOT')) {
 include (GLPI_ROOT."/inc/includes.php");
 
 commonHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "commands");
-
-echo '<meta http-equiv ="refresh" content="30">';
+             "monitoring", "display");
 
 
-$pMonitoringDisplay =new PluginMonitoringDisplay();
-$pMonitoringDisplay->showTabs();
-$pMonitoringDisplay->addDivForTabs();
+$pMonitoringDisplay = new PluginMonitoringDisplay();
 
+if (isset($_GET['itemtype']) AND isset($_GET['items_id'])) {
+   $pMonitoringDisplay->displayGraphs($_GET['itemtype'], $_GET['items_id']);
+}
 
 commonFooter();
 

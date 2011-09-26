@@ -86,8 +86,8 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
       
       $pMonitoringBusinessrule = new PluginMonitoringBusinessrule();
       $pMonitoringHost_Service = new PluginMonitoringHost_Service();
-      echo "<table'>";
-      echo "<tr>";
+      echo "<table class='tab_cadre' width='100%'>";
+      echo "<tr class='tab_bg_4' style='background: #cececc;'>";
       
          $a_ba = $this->find();
          foreach ($a_ba as $data) {
@@ -137,19 +137,43 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
             echo "<td width='40' align='center'>";
             
             $a_brules = $pMonitoringBusinessrule->find("`plugin_monitoring_businessapplications_id`='".$data['id']."'");
-            $state = "OK";
+            $state = array();
+            $state['OK'] = 0;
+            $state['WARNING'] = 0;
+            $state['CRITICAL'] = 0;
             foreach ($a_brules as $brulesdata) {
                if ($brulesdata['itemtype'] == 'PluginMonitoringHost_Service') {
                   $pMonitoringHost_Service->getFromDB($brulesdata['items_id']);
-                  if ($pMonitoringHost_Service->fields['state'] != 'OK'
-                          AND $pMonitoringHost_Service->fields['state'] != 'UP') {
-                     $state = "BAD";
+                  switch($pMonitoringHost_Service->fields['state']) {
+
+                     case 'UP':
+                     case 'OK':
+                        $state['OK']++;
+                        break;
+
+                     case 'DOWN':
+                     case 'UNREACHABLE':
+                     case 'CRITICAL':
+                     case 'DOWNTIME':
+                        $state['CRITICAL']++;
+                        break;
+
+                     case 'WARNING':
+                     case 'UNKNOWN':
+                     case 'RECOVERY':
+                     case 'FLAPPING':
+                        $state['WARNING']++;
+                        break;
+
                   }
                }
             }
-            $color = 'green';
-            if ($state == 'BAD') {
+            if ($state['CRITICAL'] > 0) {
                $color = 'red';
+            } else if ($state['WARNING'] > 0) {
+               $color = 'orange';
+            } else {
+               $color = 'green';
             }
             echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$color."_32.png' />";
             echo "</td>";

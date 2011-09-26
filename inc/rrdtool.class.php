@@ -125,7 +125,7 @@ class PluginMonitoringRrdtool extends CommonDBTM {
     * @param type $items_id
     * @param type $time 
     */
-   function displayGLPIGraph($itemtype, $items_id, $time='1d') {
+   function displayGLPIGraph($itemtype, $items_id, $time='1d', $width='470') {
       
       $pluginMonitoringCommand = new PluginMonitoringCommand();
 
@@ -159,7 +159,7 @@ class PluginMonitoringRrdtool extends CommonDBTM {
          $opts[] = "Time in ms";
       }
       $opts[] = "--width";
-      $opts[] = "470";
+      $opts[] = $width;
       if (count($a_legend) > 3) {
          $opts[] = "--height";
          $opts[] = "200";

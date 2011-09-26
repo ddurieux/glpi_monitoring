@@ -138,8 +138,7 @@ class PluginMonitoringHost_Service extends CommonDBTM {
          preg_match_all("/\\$[A-Z]+\\$/", $pMonitoringCommand->fields['command_line'], $array);
          $a_arguments = importArrayFromDB($this->fields['arguments']);
          foreach ($array[0] as $arg) {
-            if ($arg != '$PLUGINSDIR$'
-                    AND $arg != '$HOSTADDRESS$') {
+            if (strstr($arg, "ARG")) {
                $arg = str_replace('$', '', $arg);
                if (!isset($a_arguments[$arg])) {
                   $a_arguments[$arg] = '';

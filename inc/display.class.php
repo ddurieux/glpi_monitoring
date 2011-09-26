@@ -38,14 +38,32 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringDisplay extends CommonDBTM {
    
+   
+   function defineTabs($options=array()){
+      global $LANG,$CFG_GLPI;
 
-   function showBoard($itemtype) {
+      $ong = array();
+      $ong[1] = "Business Rules";
+      $ong[2] = "All services";
+      $ong[3] = "Hosts";
+      $ong[4] = "Services";
+      return $ong;
+   }
+   
+
+   function showBoard($itemtype, $width='', $start=1, $end=1) {
       global $DB,$CFG_GLPI,$LANG;
 
       $item = new $itemtype();
       $query = "SELECT * FROM `".getTableForItemType($itemtype)."`";
       $result = $DB->query($query);
-      echo "<table class='tab_cadrehov'>";
+      if ($start == '1') {
+         if ($width == '') {
+            echo "<table class='tab_cadrehov'>";
+         } else {
+            echo "<table class='tab_cadrehov' style='width:".$width."px;'>";
+         }
+      }
       
       echo "<tr class='tab_bg_1'>";
       echo "<th>";
@@ -76,7 +94,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
          
          echo "</tr>";         
       }
-      echo "</table>";
+      if ($end == '1') {
+         echo "</table>";
+      }
    }
    
    
@@ -123,12 +143,13 @@ class PluginMonitoringDisplay extends CommonDBTM {
          $plu->parseToRrdtool($data['id'], $itemtype);
          $to->displayGLPIGraph($itemtype, $data['id'], "12h");
          $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=".$itemtype."-".$data['id']."-12h.gif'/>";
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php?itemtype=".$itemtype."&items_id=".$data['id']."'>";
       } else if (isset($data['itemtype']) AND $data['itemtype'] != '') {
          $plu->parseToRrdtool($data['items_id'], $data['itemtype']);
          $to->displayGLPIGraph($data['itemtype'], $data['items_id'], "12h");
          $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=".$data['itemtype']."-".$data['items_id']."-12h.gif'/>";
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php?itemtype=".$data['itemtype']."&items_id=".$data['items_id']."'>";
       }         
-      echo "<a href=''>";
       showToolTip($img, array('img'=>$CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"));
       echo "</a>";
       echo "</td>";
@@ -204,6 +225,60 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
       }
       return $shortstate;
+   }
+   
+   
+   
+   function displayGraphs($itemtype, $items_id) {
+      global $CFG_GLPI;
+
+      $to = new PluginMonitoringRrdtool();
+      $plu = new PluginMonitoringHostevent();
+      
+      $item = new $itemtype();
+      $item->getFromDB($items_id);
+      
+      echo "<table class='tab_cadre_fixe'>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<th>";
+      echo $item->getLink(1);
+      echo "</th>";
+      echo "</tr>";
+
+      $a_list = array();
+      $a_list[] = "12h";
+      $a_list[] = "1d";
+      $a_list[] = "1w";
+      $a_list[] = "1m";
+      $a_list[] = "0y6m";
+      $a_list[] = "1y";
+       
+      foreach ($a_list as $time) {
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<th>";
+      echo $time;
+      echo "</th>";
+      echo "</tr>";
+         
+         echo "<tr class='tab_bg_1'>";
+         echo "<td align='center'>";
+         $img = '';
+         if ($itemtype == 'PluginMonitoringHost_Service') {
+            $plu->parseToRrdtool($items_id, $itemtype);
+            $to->displayGLPIGraph($itemtype, $items_id, $time, 900);
+            $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=".$itemtype."-".$items_id."-".$time.".gif'/>";
+         } else {
+            $plu->parseToRrdtool($items_id, $itemtype);
+            $to->displayGLPIGraph($itemtype, $items_id, $time, 900);
+            $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=".$itemtype."-".$items_id."-".$time.".gif'/>";
+         }         
+         echo $img;
+         echo "</td>";
+         echo "</tr>";
+      }
+      echo "</table>";
    }
 
 }
