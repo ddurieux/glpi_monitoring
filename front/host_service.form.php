@@ -42,23 +42,34 @@ commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugi
 
 $pMonitoringHost_Service = new PluginMonitoringHost_Service();
 
+
 if (isset($_POST['update'])) {
-   foreach ($_POST['id'] as $key=>$id) {
-      $input = array();
-      $input['id'] = $id;
-      $input['plugin_monitoring_services_id'] = $_POST['plugin_monitoring_services_id'][$key];
-      $a_arguments = array();
-      foreach ($_POST as $key=>$value) {
-         if (strstr($key, "arg".$id."||")) {
-            $a_ex = explode("||", $key);
-            $a_arguments[$a_ex[1]] = $value;
+   if (is_array($_POST['id'])) {
+      foreach ($_POST['id'] as $key=>$id) {
+         $input = array();
+         $input['id'] = $id;
+         $input['plugin_monitoring_services_id'] = $_POST['plugin_monitoring_services_id'][$key];
+         $a_arguments = array();
+         foreach ($_POST as $key=>$value) {
+            if (strstr($key, "arg".$id."||")) {
+               $a_ex = explode("||", $key);
+               $a_arguments[$a_ex[1]] = $value;
+            }
          }
+         $input['arguments'] = exportArrayToDB($a_arguments);
+         $pMonitoringHost_Service->update($input);
       }
-      $input['arguments'] = exportArrayToDB($a_arguments);
-      $pMonitoringHost_Service->update($input);
+   } else {
+      $pMonitoringHost_Service->update($_POST);
    }
+   glpi_header($_SERVER['HTTP_REFERER']);
 }
-glpi_header($_SERVER['HTTP_REFERER']);
+
+if (isset($_GET["id"])) {
+   $pMonitoringHost_Service->showForm($_GET["id"]);
+} else {
+   $pMonitoringHost_Service->showForm("");
+}
 
 commonFooter();
 

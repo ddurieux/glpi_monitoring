@@ -45,15 +45,17 @@ $pMonitoringHost_Service = new PluginMonitoringHost_Service();
 $pMonitoringServicesuggest = new PluginMonitoringServicesuggest();
 
 if (isset($_POST['addsuggest'])) {
+   //echo "<pre>";print_r($_POST);echo "</pre>";exit;
    foreach ($_POST['suggestnum'] as $num) {
       $inputHS = array();
-      if ($_POST['plugin_monitoring_services_id'][$num] == '0') {
+      if ($_POST['plugin_monitoring_services_id'][$num] == '0'
+              OR $_POST['plugin_monitoring_services_id'][$num] == '') {
          // Add service
          
       } else {
          // use template service
          $inputHS['plugin_monitoring_services_id'] = $_POST['plugin_monitoring_services_id'][$num];
-      }      
+      }
       $inputHS['plugin_monitoring_hosts_id'] = $_POST['plugin_monitoring_hosts_id'];
       $inputHS['plugin_monitoring_servicesuggests_id'] = $_POST['plugin_monitoring_servicesuggests_id'][$num];
       $inputHS['name'] = '';

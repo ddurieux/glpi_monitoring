@@ -146,12 +146,21 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
    function listSuggests($itemtype, $items_id) {
       global $LANG,$CFG_GLPI;
 
+      
+      
       $pluginMonitoringCommand = new PluginMonitoringCommand();
       $pMonitoringHost = new PluginMonitoringHost();
+      $pMonitoringHost_Service = new PluginMonitoringHost_Service();
       $num = -1;
 
       $a_hosts = current($pMonitoringHost->find("`items_id`='".$items_id."'
                         AND `itemtype`='".$itemtype."'"));
+      
+      $a_host_services = $pMonitoringHost_Service->find("`plugin_monitoring_hosts_id`='".$a_hosts['id']."'");
+      $a_suggest_used = array();
+      foreach ($a_host_services as $data) {
+         $a_suggest_used[] = $data['plugin_monitoring_servicesuggests_id'];
+      }
       
       echo "<form name='form' method='post' 
          action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicesuggest.form.php'>";
@@ -174,7 +183,7 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
 
       if ($itemtype == "Computer") {
          $num = $this->suggestPartitions($items_id, $num);
-         $num = $this->suggestSoftwares($items_id, $num);
+         $num = $this->suggestSoftwares($items_id, $num, $a_suggest_used);
       }
      
       echo "</table>";
@@ -201,34 +210,38 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
       $a_listcommands = $pluginMonitoringCommand->find("`command_name`='check_disk'", "", 1);
       $a_command = current($a_listcommands);
       $pluginMonitoringCommand->getFromDB($a_command['id']);
+      
+      $a_templates = $this->find("`link`='partition'");
 
       $a_list = $computerDisk->find("`computers_id`='".$items_id."'");
-      foreach ($a_list as $data) {
-         $num++;
-         echo "<tr>";
-         echo "<td><input type='checkbox' name='suggestnum[]' value='".$num."' /></td>";
-         echo "<td><strong>".$LANG['computers'][6]." : </strong>".$data['name'];
-         echo "<input type='hidden' name='itemtype[]' value=''/>";
-         echo "<input type='hidden' name='items_id[]' value=''/>";
-         echo "<input type='hidden' name='plugin_monitoring_servicesuggests_id[]' value='0'/>";
-         echo "</td>";
-         echo "<td>Check disk ".$data['mountpoint']."</td>";
-         echo "<td>";
-         echo "<input type='hidden' name='plugin_monitoring_services_id[]' value=''/>";
-         echo "</td>";
-         echo "</tr>";
+      foreach ($a_templates as $datatemplate) {
+         foreach ($a_list as $data) {
+            $num++;
+            echo "<tr>";
+            echo "<td><input type='checkbox' name='suggestnum[]' value='".$num."' /></td>";
+            echo "<td><strong>".$LANG['computers'][6]." : </strong>".$data['name'];
+            echo "<input type='hidden' name='itemtype[]' value='ComputerDisk'/>";
+            echo "<input type='hidden' name='items_id[]' value='".$data['id']."'/>";
+            echo "<input type='hidden' name='plugin_monitoring_servicesuggests_id[]' value='".$datatemplate['id']."'/>";
+            echo "</td>";
+            echo "<td>".$datatemplate['name']." ".$data['mountpoint']."</td>";
+            echo "<td>";
+            echo "<input type='hidden' name='plugin_monitoring_services_id[]' value=''/>";
+            echo "</td>";
+            echo "</tr>";
+         }
       }
       return $num;
    }
 
    
    
-   function suggestSoftwares($items_id, $num) {
+   function suggestSoftwares($items_id, $num, $a_suggest_used) {
       global $DB,$LANG;
       
       $pMonitoringService = new PluginMonitoringService();
       
-      $a_list = $this->find();
+      $a_list = $this->find("`softwares_name` != ''");
       foreach($a_list as $data) {
          $query = "SELECT `glpi_softwares`.`softwarecategories_id`,
                     `glpi_softwares`.`name` AS softname,
@@ -252,25 +265,28 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
          while ($sdata = $DB->fetch_array($result)) {
             $num++;
 
-            echo "<tr>";
-            echo "<td><input type='checkbox' name='suggestnum[]' value='".$num."'/></td>";
-            echo "<td><strong>".$LANG['help'][31]." : </strong>".$sdata['softname'];
-            echo "<input type='hidden' name='itemtype[]' value=''/>";
-            echo "<input type='hidden' name='items_id[]' value=''/>";
-            echo "<input type='hidden' name='plugin_monitoring_servicesuggests_id[]' value='".$data['id']."'/>";
-            echo "</td>";
-            echo "<td>Check mysql</td>";
-            $a_listtemplates = $pMonitoringService->find("`is_template`='1'
-                  AND `plugin_monitoring_commands_id`='".$data['plugin_monitoring_commands_id']."'");
-            $list = array();
-            $list[0] = "------";
-            foreach ($a_listtemplates as $datatemplates) {
-               $list[$datatemplates['id']] = $datatemplates['template_name'];
+            if (!in_array($data['id'], $a_suggest_used)) {
+
+               echo "<tr>";
+               echo "<td><input type='checkbox' name='suggestnum[]' value='".$num."'/></td>";
+               echo "<td><strong>".$LANG['help'][31]." : </strong>".$sdata['softname'];
+               echo "<input type='hidden' name='itemtype[]' value=''/>";
+               echo "<input type='hidden' name='items_id[]' value=''/>";
+               echo "<input type='hidden' name='plugin_monitoring_servicesuggests_id[]' value='".$data['id']."'/>";
+               echo "</td>";
+               echo "<td>Check mysql</td>";
+               $a_listtemplates = $pMonitoringService->find("`is_template`='1'
+                     AND `plugin_monitoring_commands_id`='".$data['plugin_monitoring_commands_id']."'");
+               $list = array();
+               $list[0] = "------";
+               foreach ($a_listtemplates as $datatemplates) {
+                  $list[$datatemplates['id']] = $datatemplates['template_name'];
+               }
+               echo "<td>";
+               Dropdown::showFromArray("plugin_monitoring_services_id[]", $list);
+               echo "</td>";
+               echo "</tr>";
             }
-            echo "<td>";
-            Dropdown::showFromArray("plugin_monitoring_services_id[]", $list);
-            echo "</td>";
-            echo "</tr>";
          }
       }
       return $num;

@@ -39,6 +39,34 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringHost_Service extends CommonDBTM {
 
 
+   function canCreate() {
+      return true;
+   }
+
+
+   
+   function canView() {
+      return true;
+   }
+
+
+   
+   function canCancel() {
+      return true;
+   }
+
+
+   
+   function canUndo() {
+      return true;
+   }
+
+
+   
+   function canValidate() {
+      return true;
+   }
+   
    /**
     * Display services associated with host
     *
@@ -60,7 +88,7 @@ class PluginMonitoringHost_Service extends CommonDBTM {
       echo "<table class='tab_cadre'>";
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
-      echo "<a href='".GLPI_ROOT."/plugins/monitoring/front/service.form.php?items_id=".$items_id."&itemtype=".$itemtype."'>".
+      echo "<a href='".GLPI_ROOT."/plugins/monitoring/front/host_service.form.php?items_id=".$items_id."&itemtype=".$itemtype."'>".
          $LANG['plugin_monitoring']['service'][2]."</a>";
       echo "</td>";
       echo "</tr>";
@@ -92,8 +120,6 @@ class PluginMonitoringHost_Service extends CommonDBTM {
       echo "<th>".$LANG['plugin_monitoring']['command'][1]."</th>";
       echo "<th>".$LANG['plugin_monitoring']['service'][1]."</th>";
       echo "<th>check_interval</th>";
-      echo "<th>Last check</th>";
-      echo "<th>State</th>";
       echo "<th>Arguments</th>";
       echo "</tr>";
 
@@ -109,7 +135,7 @@ class PluginMonitoringHost_Service extends CommonDBTM {
          $this->getFromDB($data['id']);
          
          echo "<td>";
-         echo $this->getName();
+         echo "<a href='".GLPI_ROOT."/plugins/monitoring/front/host_service.form.php?id=".$data['id']."'>".$this->getName()."</a>";
          echo "<input type='hidden' name='id[]' value='".$this->fields['id']."'/>";
          echo "</td>";
          echo "<td>";
@@ -118,7 +144,7 @@ class PluginMonitoringHost_Service extends CommonDBTM {
          $list = array();
          $list[0] = "------";
          foreach ($a_listtemplates as $datatemplates) {
-            $list[$datatemplates['id']] = $datatemplates['template_name'];
+            $list[$datatemplates['id']] = $datatemplates['name'];
          }
          Dropdown::showFromArray("plugin_monitoring_services_id[]", 
                                  $list,
@@ -129,8 +155,6 @@ class PluginMonitoringHost_Service extends CommonDBTM {
          echo "<td></td>";
          $pMonitoringCheck->getFromDB($pMonitoringService->fields['plugin_monitoring_checks_id']);
          echo "<td>".$pMonitoringCheck->getName(1)."</td>";
-         echo "<td>".$this->fields['last_check']."</td>";
-         echo "<td>".$this->fields['event']."</td>";
          // Manage arguments
          
          echo "<td>";
@@ -159,6 +183,224 @@ class PluginMonitoringHost_Service extends CommonDBTM {
       echo "</table>";
 
       echo "</form>";
+   }
+   
+   
+   
+   function showForm($items_id, $options=array(), $itemtype='') {
+      global $DB,$CFG_GLPI,$LANG;
+      
+      $pMonitoringCommand = new PluginMonitoringCommand();
+      $pMonitoringService = new PluginMonitoringService();
+
+      if (isset($_GET['withtemplate']) AND ($_GET['withtemplate'] == '1')) {
+         $options['withtemplate'] = 1;
+      } else {
+         $options['withtemplate'] = 0;
+      }
+
+      $this->getFromDB($items_id);
+      $pMonitoringService->getFromDB($this->fields['plugin_monitoring_services_id']);
+      $template = false;
+
+//      $this->showTabs($options);
+      $this->showFormHeader($options);
+
+      echo "<tr>";
+      echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
+      echo "<td>";
+      $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),
+                             $this->getType());
+      autocompletionTextField($this, 'name', array('value' => $objectName));      
+      echo "</td>";
+      echo "<td>";
+      echo "Gabarit&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      if ($items_id != '0') {
+         echo "<input type='hidden' name='update' value='update'>\n";
+      }
+      Dropdown::show("PluginMonitoringService", array(
+            'name' => 'plugin_monitoring_services_id',
+            'value' => $this->fields['plugin_monitoring_services_id'],
+            'auto_submit' => true,
+            'condition' => '`is_template` = "1"'
+      ));
+      echo "</td>";
+      echo "<td>";
+      echo "<input type='hidden' name='items_id' value='".$this->fields["items_id"]."'>\n";
+      echo "<input type='hidden' name='itemtype' value='".$this->fields["itemtype"]."'>\n";
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr>";
+      echo "<th colspan='4'>&nbsp;</th>";
+      echo "</tr>";
+      
+      echo "<tr>";
+      // * itemtype link
+      if ($this->fields['itemtype'] != '') {
+         $itemtype = $this->fields['itemtype'];
+         $item = new $itemtype();
+         $item->getFromDB($this->fields['items_id']);
+         echo "<td>";
+         echo $item->getTypeName();
+         echo "&nbsp;:</td>";
+         echo "<td>";
+         echo $item->getName();
+         echo "</td>";
+      } else {
+         echo "<td colspan='2' align='center'>";
+         echo "No type associated";
+         echo "</td>";
+      }      
+      // * commande
+      echo "<td>";
+      echo "Commande&nbsp;:";
+      echo "</td>";
+      echo "<td align='center'>";
+      $pMonitoringCommand->getFromDB($pMonitoringService->fields['plugin_monitoring_commands_id']);
+      echo $pMonitoringCommand->getLink(1);
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr>";
+      // * checks
+      echo "<td>".$LANG['plugin_monitoring']['check'][0]."&nbsp;:</td>";
+      echo "<td align='center'>";
+      if ($pMonitoringService->fields['is_template'] == '1') {
+         $pMonitoringCheck = new PluginMonitoringCheck();
+         $pMonitoringCheck->getFromDB($pMonitoringService->fields['plugin_monitoring_checks_id']);
+         echo $pMonitoringCheck->getLink(1);
+      } else {
+         Dropdown::show("PluginMonitoringCheck", 
+                        array('name'=>'plugin_monitoring_checks_id',
+                              'value'=>$pMonitoringService->fields['plugin_monitoring_checks_id']));
+      }
+      echo "</td>";
+      // * active check
+      echo "<td>";
+      echo "Active checks enable&nbsp;:";
+      echo "</td>";
+      echo "<td align='center'>";
+      if ($pMonitoringService->fields['is_template'] == '1') {
+         echo Dropdown::getYesNo($pMonitoringService->fields['active_checks_enabled']);
+      } else {
+         echo Dropdown::showYesNo("active_checks_enabled", $pMonitoringService->fields['active_checks_enabled']);
+      }
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr>";
+      // * passive check
+      echo "<td>";
+      echo "Passive checks enable&nbsp;:";
+      echo "</td>";
+      echo "<td align='center'>";
+      if ($pMonitoringService->fields['is_template'] == '1') {
+         echo Dropdown::getYesNo($pMonitoringService->fields['passive_checks_enabled']);
+      } else {
+         echo Dropdown::showYesNo("passive_checks_enabled", $pMonitoringService->fields['passive_checks_enabled']);
+      }
+      echo "</td>";
+      // * calendar
+      echo "<td>".$LANG['plugin_monitoring']['host'][9]."&nbsp;:</td>";
+      echo "<td align='center'>";
+      if ($pMonitoringService->fields['is_template'] == '1') {
+         $calendar = new Calendar();
+         $calendar->getFromDB($pMonitoringService->fields['calendars_id']);
+         echo $calendar->getLink(1);
+      } else {
+         dropdown::show("Calendar", array('name'=>'calendars_id',
+                                 'value'=>$pMonitoringService->fields['calendars_id']));
+      }
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr>";
+      echo "<th colspan='4'>Remote check</th>";
+      echo "</tr>";
+      
+      echo "<tr>";
+      // * remotesystem
+      echo "<td>";
+      echo "Utility used for remote check&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      $input = array();
+      $input[''] = '------';
+      $input['byssh'] = 'byssh';
+      $input['nrpe'] = 'nrpe';
+      $input['nsca'] = 'nsca';
+      if ($pMonitoringService->fields['is_template'] == '1') {
+         echo $input[$pMonitoringService->fields['removesystem']];
+      } else {
+         Dropdown::showFromArray("remotesystem", 
+                              $input, 
+                              array('value'=>$pMonitoringService->fields['removesystem']));
+      }
+      echo "</td>";      
+      // * is_argument
+      echo "<td>";
+      echo "Use arguments (Only for NRPE)&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      if ($pMonitoringService->fields['is_template'] == '1') {
+         echo Dropdown::getYesNo($pMonitoringService->fields['is_arguments']);
+      } else {
+         Dropdown::showYesNo("is_arguments", $pMonitoringService->fields['is_arguments']);
+      }
+      echo "</td>"; 
+      echo "</tr>";
+      
+      echo "<tr>";
+      // alias command
+      echo "<td>";
+      echo "Alias command if required (Only for NRPE)&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      if ($pMonitoringService->fields['is_template'] == '1') {
+         echo Dropdown::getYesNo($pMonitoringService->fields['alias_command']);
+      } else {
+         Dropdown::showYesNo("alias_command", $pMonitoringService->fields['alias_command']);
+      }
+      echo "</td>"; 
+      echo "<td colspan='2'></td>";
+      echo "</tr>";
+      
+      
+      // * Manage arguments
+      $array = array();
+      $a_displayarg = array();
+      preg_match_all("/\\$[A-Z]+\\$/", $pMonitoringCommand->fields['command_line'], $array);
+      $a_arguments = importArrayFromDB($pMonitoringService->fields['arguments']);
+      foreach ($array[0] as $arg) {
+         if (strstr($arg, "ARG")) {
+            $arg = str_replace('$', '', $arg);
+            if (!isset($a_arguments[$arg])) {
+               $a_arguments[$arg] = '';
+            }
+            $a_displayarg[$arg] = $a_arguments[$arg];
+         }
+      }      
+      
+      if (count($a_displayarg) > 0) {
+         echo "<tr>";
+         echo "<th colspan='4'>Arguments&nbsp;</th>";
+         echo "</tr>";
+
+         echo "<tr>";
+         echo "<td colspan='4'>";            
+         print_r($a_displayarg);
+
+         echo "</td>";
+         echo "</tr>";
+      }
+      
+
+      $this->showFormButtons($options);
+//      $this->addDivForTabs();
+      return true;
    }
    
 }

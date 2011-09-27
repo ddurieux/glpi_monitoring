@@ -267,9 +267,16 @@ class PluginMonitoringCommand extends CommonDBTM {
       $this->add($input);
 
       $input = array();
-      $input['name'] = 'Check local disk';
-      $input['command_name'] = 'check_local_disk';
-      $input['command_line'] = "\$PLUGINSDIR\$/check.sh \$HOSTADDRESS\$ -c \$ARG1\$ SERVICE \$USER1\$";
+      $input['name'] = 'Check disk';
+      $input['command_name'] = 'check_disk';
+      $input['command_line'] = "\$PLUGINSDIR\$/check_disk -w \$ARG1\$ -c \$ARG2\$ -p \$ARG3\$";
+      $arg = array();
+      $arg['ARG1'] = 'INTEGER: WARNING status if less than INTEGER units of disk are free\n
+         PERCENT%: WARNING status if less than PERCENT of disk space is free';
+      $arg['ARG2'] = 'INTEGER: CRITICAL status if less than INTEGER units of disk are free\n
+         PERCENT%: CRITICAL status if less than PERCENT of disk space is free';
+      $arg['ARG3'] = 'Path or partition';
+      $input['arguments'] = exportArrayToDB($arg);
       $this->add($input);
 
       $input = array();

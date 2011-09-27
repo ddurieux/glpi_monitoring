@@ -51,6 +51,10 @@ class PluginMonitoringService extends CommonDBTM {
    }
    
    
+   /*
+    * Add some services templates at install
+    * 
+    */
    function initTemplates() {
       
       
