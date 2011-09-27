@@ -43,6 +43,7 @@ CREATE TABLE `glpi_plugin_monitoring_commands` (
    `regex` text COLLATE utf8_unicode_ci,
    `legend` text COLLATE utf8_unicode_ci,
    `unit` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+   `arguments` text COLLATE utf8_unicode_ci,
    PRIMARY KEY (`id`),
    KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -306,6 +307,9 @@ CREATE TABLE `glpi_plugin_monitoring_services` (
   `active_checks_enabled` tinyint(1) NOT NULL DEFAULT '1',
   `passive_checks_enabled` tinyint(1) NOT NULL DEFAULT '1',
   `calendars_id`  int(11) NOT NULL DEFAULT '0',
+  `removesystem` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_arguments` tinyint(1) NOT NULL DEFAULT '0',
+  `alias_command` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -319,5 +323,6 @@ CREATE TABLE `glpi_plugin_monitoring_servicesuggests` (
   `plugin_monitoring_commands_id` int(11) NOT NULL DEFAULT '0',
   `softwares_name` text COLLATE utf8_unicode_ci,
   `computers_services` text COLLATE utf8_unicode_ci,
+  `link` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
