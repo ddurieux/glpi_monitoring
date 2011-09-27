@@ -76,6 +76,27 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
       $input['softwares_name'] = '[pP][oO][sS][tT][gG][rR][eE][sS][qQ][lL] ';
       $this->add($input);
       
+      // Partitions
+      $input = array();
+      $input['name'] = 'Check disk space';
+      $input['plugin_monitoring_commands_id'] = '23';
+      $input['link'] = 'partition';
+      $this->add($input);
+
+      // Processor - load average
+      $input = array();
+      $input['name'] = 'Check load';
+      $input['plugin_monitoring_commands_id'] = '27';
+      $input['link'] = 'processor';
+      $this->add($input);
+
+      // Processor - cpu usage
+      $input = array();
+      $input['name'] = 'Check cpu usage';
+      $input['plugin_monitoring_commands_id'] = '26';
+      $input['link'] = 'processor';
+      $this->add($input);
+      
    }
    
 
