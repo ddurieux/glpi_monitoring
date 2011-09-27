@@ -42,8 +42,7 @@ header_nocache();
 if (!isset($_POST["id"])) {
    exit();
 }
-
-
+$pMonitoringDisplay = new PluginMonitoringDisplay();
 $pluginMonitoringBusinessrule = new PluginMonitoringBusinessrule();
 
    switch($_POST['glpi_tab']) {
@@ -57,18 +56,15 @@ $pluginMonitoringBusinessrule = new PluginMonitoringBusinessrule();
          break;
       
       case 2:
-         $pMonitoringDisplay = new PluginMonitoringDisplay();
          $pMonitoringDisplay->showBoard("PluginMonitoringHost", 950, 1, 0);
          $pMonitoringDisplay->showBoard("PluginMonitoringHost_Service", 950, 0, 1);
          break;
       
       case 3:
-         $pMonitoringDisplay = new PluginMonitoringDisplay();
          $pMonitoringDisplay->showBoard("PluginMonitoringHost", 950);
          break;
       
       case 4:
-         $pMonitoringDisplay = new PluginMonitoringDisplay();
          $pMonitoringDisplay->showBoard("PluginMonitoringHost_Service", 950);
          break;
 

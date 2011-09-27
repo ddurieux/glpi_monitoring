@@ -231,16 +231,10 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       $ret = rrd_graph(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.".gif", $opts, count($opts));
       if( !is_array($ret)) {
          $err = rrd_error();
-         echo "rrd_graph() ERROR: $err\n";
+         return false;
+         //echo "rrd_graph() ERROR: $err\n";
       }
-
-      
-      
-//      $data = rrd_fetch(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id.".rrd",
-//              $opts, count($opts));
-//print_r($data);      
-//// Use rrd_fetch to get data
-      
+      return true;
    }
    
 }

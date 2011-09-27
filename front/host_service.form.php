@@ -42,6 +42,7 @@ commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugi
 
 $pMonitoringHost_Service = new PluginMonitoringHost_Service();
 
+//echo "<pre>";print_r($_POST);exit;
 
 if (isset($_POST['update'])) {
    if (is_array($_POST['id'])) {
@@ -60,6 +61,23 @@ if (isset($_POST['update'])) {
          $pMonitoringHost_Service->update($input);
       }
    } else {
+      $pMonitoringService = new PluginMonitoringService();
+      if ($_POST['plugin_monitoring_services_id'] == '0') {
+         // Add the service         
+         $_POST['plugin_monitoring_services_id'] = $pMonitoringService->add($_POST);
+      } else {
+         $pMonitoringService->getFromDB($_POST['plugin_monitoring_services_id']);
+         if ($pMonitoringService->fields['is_template'] == '0') {
+            $pMonitoringService->update($_POST);
+         }
+      }
+      if (isset($_POST['arg'])) {
+         $_POST['arguments'] = exportArrayToDB($_POST['arg']);
+      }
+      if (isset($_POST['alias_commandhost_service']) 
+              AND $_POST['alias_commandhost_service'] != '') {
+         $_POST['alias_command'] = $_POST['alias_commandhost_service'];
+      }
       $pMonitoringHost_Service->update($_POST);
    }
    glpi_header($_SERVER['HTTP_REFERER']);

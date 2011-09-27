@@ -141,17 +141,25 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $img = '';
       if ($itemtype == 'PluginMonitoringHost_Service') {
          $plu->parseToRrdtool($data['id'], $itemtype);
-         $to->displayGLPIGraph($itemtype, $data['id'], "12h");
-         $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=".$itemtype."-".$data['id']."-12h.gif'/>";
-         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php?itemtype=".$itemtype."&items_id=".$data['id']."'>";
+         if ($to->displayGLPIGraph($itemtype, $data['id'], "12h")) {
+            $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=".$itemtype."-".$data['id']."-12h.gif'/>";
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php?itemtype=".$itemtype."&items_id=".$data['id']."'>";
+         } else {
+            $img = '';
+         }
       } else if (isset($data['itemtype']) AND $data['itemtype'] != '') {
          $plu->parseToRrdtool($data['items_id'], $data['itemtype']);
-         $to->displayGLPIGraph($data['itemtype'], $data['items_id'], "12h");
-         $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=".$data['itemtype']."-".$data['items_id']."-12h.gif'/>";
-         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php?itemtype=".$data['itemtype']."&items_id=".$data['items_id']."'>";
-      }         
-      showToolTip($img, array('img'=>$CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"));
-      echo "</a>";
+         if ($to->displayGLPIGraph($data['itemtype'], $data['items_id'], "12h")) {
+            $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=".$data['itemtype']."-".$data['items_id']."-12h.gif'/>";
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php?itemtype=".$data['itemtype']."&items_id=".$data['items_id']."'>";
+         } else {
+            $img = '';
+         }
+      }
+      if ($img != '') {
+         showToolTip($img, array('img'=>$CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"));
+         echo "</a>";
+      }
       echo "</td>";
 
       // Mode dégradé
@@ -170,7 +178,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
             <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/></td></tr>";
          foreach ($a_serv as $sdata) {
             $stateserv = self::getState($sdata['state']);
-            $globalserv_state[$stateserv]++;
+            if (isset($globalserv_state[$stateserv])) {
+               $globalserv_state[$stateserv]++;
+            }
             $tooltip .= "<tr class='tab_bg_1'><td>".$sdata['name']." :</td><td>
                      <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$stateserv."_32.png'/></td></tr>";
          }
@@ -279,6 +289,59 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "</tr>";
       }
       echo "</table>";
+   }
+   
+   
+   
+   function displayCounters() {
+      global $CFG_GLPI;
+      
+      $ok = countElementsInTable("glpi_plugin_monitoring_hosts_services", "`state`='OK' OR `state`='UP'");
+      $ok += countElementsInTable("glpi_plugin_monitoring_hosts", "`state`='OK' OR `state`='UP'");
+      
+      $warning = countElementsInTable("glpi_plugin_monitoring_hosts_services", 
+              "`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING'");
+      $warning += countElementsInTable("glpi_plugin_monitoring_hosts", 
+              "`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING'");
+      
+      $critical = countElementsInTable("glpi_plugin_monitoring_hosts_services", 
+              "`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME'");
+      $critical += countElementsInTable("glpi_plugin_monitoring_hosts", 
+              "`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME'");
+    
+      echo "<table class='tab_cadre'>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<th width='70'>";
+      if ($critical > 0) {
+         echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_40.png'/>";
+      }
+      echo "</th>";
+      echo "<th width='70'>";
+      if ($warning > 0) {
+         echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_40.png'/>";
+      }
+      echo "</th>";
+      echo "<th width='70'>";
+      echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_40.png'/>";
+      echo "</th>";      
+      echo "</tr>";
+      
+      echo "<th height='30'>";
+      if ($critical > 0) {
+         echo $critical;
+      }
+      echo "</th>";
+      echo "<th>";
+      if ($warning > 0) {
+         echo $warning;
+      }
+      echo "</th>";
+      echo "<th>";
+      echo $ok;
+      echo "</th>";      
+      echo "</tr>";      
+      echo "</table>";
+      
    }
 
 }

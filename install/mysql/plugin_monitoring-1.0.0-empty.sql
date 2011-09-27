@@ -308,7 +308,7 @@ CREATE TABLE `glpi_plugin_monitoring_services` (
   `active_checks_enabled` tinyint(1) NOT NULL DEFAULT '1',
   `passive_checks_enabled` tinyint(1) NOT NULL DEFAULT '1',
   `calendars_id`  int(11) NOT NULL DEFAULT '0',
-  `removesystem` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `remotesystem` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `is_arguments` tinyint(1) NOT NULL DEFAULT '0',
   `alias_command` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)

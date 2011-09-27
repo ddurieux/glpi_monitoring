@@ -200,7 +200,11 @@ class PluginMonitoringHost_Service extends CommonDBTM {
       }
 
       $this->getFromDB($items_id);
-      $pMonitoringService->getFromDB($this->fields['plugin_monitoring_services_id']);
+      if ($this->fields['plugin_monitoring_services_id'] == '0') {
+         $pMonitoringService->getEmpty();
+      } else {
+         $pMonitoringService->getFromDB($this->fields['plugin_monitoring_services_id']);
+      }
       $template = false;
 
 //      $this->showTabs($options);
@@ -244,10 +248,10 @@ class PluginMonitoringHost_Service extends CommonDBTM {
          $item = new $itemtype();
          $item->getFromDB($this->fields['items_id']);
          echo "<td>";
-         echo $item->getTypeName();
+         echo "Type <i>".$item->getTypeName()."</i>";
          echo "&nbsp;:</td>";
          echo "<td>";
-         echo $item->getName();
+         echo $item->getLink(1);
          echo "</td>";
       } else {
          echo "<td colspan='2' align='center'>";
@@ -259,8 +263,16 @@ class PluginMonitoringHost_Service extends CommonDBTM {
       echo "Commande&nbsp;:";
       echo "</td>";
       echo "<td align='center'>";
-      $pMonitoringCommand->getFromDB($pMonitoringService->fields['plugin_monitoring_commands_id']);
-      echo $pMonitoringCommand->getLink(1);
+      if ($pMonitoringService->fields['is_template'] == '1') {
+         $pMonitoringCommand->getFromDB($pMonitoringService->fields['plugin_monitoring_commands_id']);
+         echo $pMonitoringCommand->getLink(1);         
+      } else {
+         $pMonitoringCommand->getFromDB($pMonitoringService->fields['plugin_monitoring_commands_id']);
+         Dropdown::show("PluginMonitoringCommand", array(
+                              'name' =>'plugin_monitoring_commands_id',
+                              'value'=>$pMonitoringService->fields['plugin_monitoring_commands_id']
+                              ));
+      }
       echo "</td>";
       echo "</tr>";
       
@@ -333,11 +345,11 @@ class PluginMonitoringHost_Service extends CommonDBTM {
       $input['nrpe'] = 'nrpe';
       $input['nsca'] = 'nsca';
       if ($pMonitoringService->fields['is_template'] == '1') {
-         echo $input[$pMonitoringService->fields['removesystem']];
+         echo $input[$pMonitoringService->fields['remotesystem']];
       } else {
          Dropdown::showFromArray("remotesystem", 
                               $input, 
-                              array('value'=>$pMonitoringService->fields['removesystem']));
+                              array('value'=>$pMonitoringService->fields['remotesystem']));
       }
       echo "</td>";      
       // * is_argument
@@ -360,9 +372,9 @@ class PluginMonitoringHost_Service extends CommonDBTM {
       echo "</td>";
       echo "<td>";
       if ($pMonitoringService->fields['is_template'] == '1') {
-         echo Dropdown::getYesNo($pMonitoringService->fields['alias_command']);
+         echo "<input type='text' name='alias_commandhost_service' value='".$this->fields['alias_command']."' />";
       } else {
-         Dropdown::showYesNo("alias_command", $pMonitoringService->fields['alias_command']);
+         echo "<input type='text' name='alias_command' value='".$pMonitoringService->fields['alias_command']."' />";
       }
       echo "</td>"; 
       echo "<td colspan='2'></td>";
@@ -372,32 +384,43 @@ class PluginMonitoringHost_Service extends CommonDBTM {
       // * Manage arguments
       $array = array();
       $a_displayarg = array();
-      preg_match_all("/\\$[A-Z]+\\$/", $pMonitoringCommand->fields['command_line'], $array);
-      $a_arguments = importArrayFromDB($pMonitoringService->fields['arguments']);
-      foreach ($array[0] as $arg) {
-         if (strstr($arg, "ARG")) {
-            $arg = str_replace('$', '', $arg);
-            if (!isset($a_arguments[$arg])) {
-               $a_arguments[$arg] = '';
+      if (isset($pMonitoringCommand->fields['command_line'])) {
+         preg_match_all("/\\$(ARG\d+)\\$/", $pMonitoringCommand->fields['command_line'], $array);
+         $a_arguments = importArrayFromDB($this->fields['arguments']);
+         foreach ($array[0] as $arg) {
+            if (strstr($arg, "ARG")) {
+               $arg = str_replace('$', '', $arg);
+               if (!isset($a_arguments[$arg])) {
+                  $a_arguments[$arg] = '';
+               }
+               $a_displayarg[$arg] = $a_arguments[$arg];
+               
             }
-            $a_displayarg[$arg] = $a_arguments[$arg];
          }
-      }      
-      
+      }
       if (count($a_displayarg) > 0) {
+         $a_argtext = importArrayFromDB($pMonitoringCommand->fields['arguments']);
          echo "<tr>";
          echo "<th colspan='4'>Arguments&nbsp;</th>";
          echo "</tr>";
-
+          
+         foreach ($a_displayarg as $key=>$value) {
          echo "<tr>";
-         echo "<td colspan='4'>";            
-         print_r($a_displayarg);
-
-         echo "</td>";
-         echo "</tr>";
+         echo "<th>".$key."</th>";
+         echo "<td colspan='2'>";
+            if (isset($a_argtext[$key])) {
+               echo nl2br($a_argtext[$key])."&nbsp;:";
+            } else {
+               echo "Argument&nbsp;:";
+            }
+            echo "</td>";
+            echo "<td>";
+            echo "<input type='text' name='arg[".$key."]' value='".$value."'/><br/>";
+            echo "</td>";
+            echo "</tr>";
+         }
       }
       
-
       $this->showFormButtons($options);
 //      $this->addDivForTabs();
       return true;

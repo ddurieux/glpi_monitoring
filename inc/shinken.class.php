@@ -255,7 +255,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             $pMonitoringCommand->getFromDB($pMonitoringService->fields['plugin_monitoring_commands_id']);
             // Manage arguments
             $array = array();
-            preg_match_all("/\\$[A-Z]+\\$/", $pMonitoringCommand->fields['command_line'], $array);
+            preg_match_all("/\\$(ARG\d+)\\$/", $pMonitoringCommand->fields['command_line'], $array);
             $a_arguments = importArrayFromDB($dataHS['arguments']);
             $args = '';
             foreach ($array[0] as $arg) {
@@ -268,6 +268,10 @@ class PluginMonitoringShinken extends CommonDBTM {
                      $args .= '!';
                   } else {
                      $args .= '!'.$a_arguments[$arg];
+                     if ($a_arguments[$arg] == ''
+                             AND $dataHS['alias_command'] != '') {
+                        $args .= $dataHS['alias_command'];
+                     }
                   }
                }
             }
