@@ -305,31 +305,24 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
    function suggestProcessor($items_id, $num) {
       global $LANG;
     
-      
-      $pluginMonitoringCommand = new PluginMonitoringCommand();
-      $a_listcommands = $pluginMonitoringCommand->find("`command_name`='check_load'", "", 1);
-      $a_command = current($a_listcommands);
-      $pluginMonitoringCommand->getFromDB($a_command['id']);
-      
       $a_templates = $this->find("`link`='processor'");
 
       foreach ($a_templates as $datatemplate) {
          $num++;
          echo "<tr>";
          echo "<td><input type='checkbox' name='suggestnum[]' value='".$num."' /></td>";
-         echo "<td><strong>".$LANG['computers'][6]." : </strong>Check load";
+         echo "<td><strong>Processor : </strong>Check load";
          echo "<input type='hidden' name='itemtype[]' value=''/>";
          echo "<input type='hidden' name='items_id[]' value=''/>";
          echo "<input type='hidden' name='plugin_monitoring_servicesuggests_id[]' value='".$datatemplate['id']."'/>";
          echo "</td>";
-         echo "<td>".$datatemplate['name']." ".$data['mountpoint']."</td>";
+         echo "<td>".$datatemplate['name']."</td>";
          echo "<td>";
          echo "<input type='hidden' name='plugin_monitoring_services_id[]' value=''/>";
          echo "</td>";
          echo "</tr>";
       }
       return $num;
-      
    }
    
    

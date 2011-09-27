@@ -297,6 +297,16 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['command_line'] = "\$PLUGINSDIR\$/check_cpu_usage -w \$ARG1\$ -c \$ARG2\$";
       $this->add($input);
       
+      $input = array();
+      $input['name'] = 'Check load';
+      $input['command_name'] = 'check_load';
+      $input['command_line'] = "\$PLUGINSDIR\$/check_load -r -w \$ARG1\$ -c \$ARG2\$";
+      $arg = array();
+      $arg['ARG1'] = 'WARNING status if load average exceeds WLOADn (WLOAD1,WLOAD5,WLOAD15)';
+      $arg['ARG2'] = 'CRITICAL status if load average exceed CLOADn (CLOAD1,CLOAD5,CLOAD15)';
+      $input['arguments'] = exportArrayToDB($arg);
+      $this->add($input);
+      
    }
 
 

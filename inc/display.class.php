@@ -230,6 +230,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          case 'UNKNOWN':
          case 'RECOVERY':
          case 'FLAPPING':
+         case '':
             $shortstate = 'orange';
             break;
 
@@ -300,9 +301,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $ok += countElementsInTable("glpi_plugin_monitoring_hosts", "`state`='OK' OR `state`='UP'");
       
       $warning = countElementsInTable("glpi_plugin_monitoring_hosts_services", 
-              "`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING'");
+              "`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL");
       $warning += countElementsInTable("glpi_plugin_monitoring_hosts", 
-              "`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING'");
+              "`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL");
       
       $critical = countElementsInTable("glpi_plugin_monitoring_hosts_services", 
               "`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME'");
