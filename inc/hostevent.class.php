@@ -234,7 +234,8 @@ class PluginMonitoringHostevent extends CommonDBTM {
          $i++;
          if ($i < count($a_events)) {
             $pluginMonitoringCommand->getFromDB($hdata['plugin_monitoring_commands_id']);
-            if ($pluginMonitoringCommand->fields['legend'] != '') {
+            if (isset($pluginMonitoringCommand->fields['legend']) 
+                    AND $pluginMonitoringCommand->fields['legend'] != '') {
                $perf_data = $edata['perf_data'];
                if ($edata['perf_data'] == '') {
                   $perf_data = $edata['output'];                     
