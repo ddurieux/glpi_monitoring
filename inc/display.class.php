@@ -140,7 +140,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $plu = new PluginMonitoringHostevent();
       $img = '';
       if ($itemtype == 'PluginMonitoringHost_Service') {
-         $plu->parseToRrdtool($data['id'], $itemtype);
+//         $plu->parseToRrdtool($data['id'], $itemtype);
          if ($to->displayGLPIGraph($itemtype, $data['id'], "12h")) {
             $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=".$itemtype."-".$data['id']."-12h.gif'/>";
             echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php?itemtype=".$itemtype."&items_id=".$data['id']."'>";
@@ -148,7 +148,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
             $img = '';
          }
       } else if (isset($data['itemtype']) AND $data['itemtype'] != '') {
-         $plu->parseToRrdtool($data['items_id'], $data['itemtype']);
+//         $plu->parseToRrdtool($data['items_id'], $data['itemtype']);
          if ($to->displayGLPIGraph($data['itemtype'], $data['items_id'], "12h")) {
             $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=".$data['itemtype']."-".$data['items_id']."-12h.gif'/>";
             echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php?itemtype=".$data['itemtype']."&items_id=".$data['items_id']."'>";

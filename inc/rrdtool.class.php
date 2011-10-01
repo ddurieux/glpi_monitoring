@@ -146,15 +146,17 @@ class PluginMonitoringRrdtool extends CommonDBTM {
          $title = 'Ping';
       }
       
-      
-      $a_legend = importArrayFromDB($pluginMonitoringCommand->fields['legend']);
-
+      $a_legend = array();
+      if (isset($pluginMonitoringCommand->fields['legend'])) {
+         $a_legend = importArrayFromDB($pluginMonitoringCommand->fields['legend']);
+      }
       $opts = array();
       $opts[] = '--title';
       $opts[] = $title;
       $opts[] = '--start';
       $opts[] = '-'.$time;
-      if ($pluginMonitoringCommand->fields['unit'] == "ms") {
+      if (isset($pluginMonitoringCommand->fields['unit'])
+              AND $pluginMonitoringCommand->fields['unit'] == "ms") {
          $opts[] = "-v";
          $opts[] = "Time in ms";
       }
