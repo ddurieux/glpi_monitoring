@@ -42,10 +42,10 @@ header_nocache();
 // Make a select box
 if (class_exists($_POST["itemtype"]) && isset($_POST["hosts"])) {
    $table = getTableForItemType($_POST["itemtype"]);
-   $pMonitoringHost_Service = new PluginMonitoringHost_Service();
-   Dropdown::show("PluginMonitoringHost_Service", array(
-                        "name" => "services_id[]",
-                        "condition"=>"`plugin_monitoring_hosts_id`='".$_POST['hosts']."'"
+   $pMonitoringService = new PluginMonitoringService();
+   Dropdown::show("PluginMonitoringService", array(
+                        "name" => "plugin_monitoring_services_id",
+                        "condition"=>"`plugin_monitoring_services_id`='".$_POST['hosts']."'"
                   ));
 
 }

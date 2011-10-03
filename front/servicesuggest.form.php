@@ -41,22 +41,21 @@ commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugi
 
 //echo "<pre>";print_r($_POST); exit;
 $pMonitoringService = new PluginMonitoringService();
-$pMonitoringHost_Service = new PluginMonitoringHost_Service();
 $pMonitoringServicesuggest = new PluginMonitoringServicesuggest();
 
 if (isset($_POST['addsuggest'])) {
    //echo "<pre>";print_r($_POST);echo "</pre>";exit;
    foreach ($_POST['suggestnum'] as $num) {
       $inputHS = array();
-      if ($_POST['plugin_monitoring_services_id'][$num] == '0'
-              OR $_POST['plugin_monitoring_services_id'][$num] == '') {
+      if ($_POST['plugin_monitoring_servicedefs_id'][$num] == '0'
+              OR $_POST['plugin_monitoring_servicedefs_id'][$num] == '') {
          // Add service
          
       } else {
          // use template service
          $inputHS['plugin_monitoring_services_id'] = $_POST['plugin_monitoring_services_id'][$num];
       }
-      $inputHS['plugin_monitoring_hosts_id'] = $_POST['plugin_monitoring_hosts_id'];
+      $inputHS['plugin_monitoring_services_id'] = $_POST['plugin_monitoring_services_id'];
       $inputHS['plugin_monitoring_servicesuggests_id'] = $_POST['plugin_monitoring_servicesuggests_id'][$num];
       $inputHS['name'] = '';
       if ($inputHS['plugin_monitoring_servicesuggests_id'] > 0) {
@@ -70,7 +69,7 @@ if (isset($_POST['addsuggest'])) {
          $inputHS['items_id'] = $_POST['items_id'][$num];
          $inputHS['itemtype'] = $_POST['itemtype'][$num];         
       }      
-      $pMonitoringHost_Service->add($inputHS);
+      $pMonitoringService->add($inputHS);
    }
 }
 

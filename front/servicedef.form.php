@@ -32,20 +32,32 @@
    ----------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   define('GLPI_ROOT', '../../..');
+define('GLPI_ROOT', '../../..');
+
+include (GLPI_ROOT . "/inc/includes.php");
+
+commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
+             "monitoring", "servicedef");
+
+$pluginMonitoringServicedef = new PluginMonitoringServicedef();
+if (isset($_POST["add"])) {
+   $pluginMonitoringServicedef->add($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset ($_POST["update"])) {
+   $pluginMonitoringServicedef->update($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset ($_POST["delete"])) {
+   $pluginMonitoringServicedef->delete($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']);
 }
 
-include (GLPI_ROOT."/inc/includes.php");
 
-popHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"]);
+if (isset($_GET["id"])) {
+   $pluginMonitoringServicedef->showForm($_GET["id"]);
+} else {
+   $pluginMonitoringServicedef->showForm(0);
+}
 
-echo '<meta http-equiv ="refresh" content="30">';
+commonFooter();
 
-$pMonitoringDisplay =new PluginMonitoringDisplay();
-$pMonitoringDisplay->displayCounters();
-$pMonitoringDisplay->showTabs();
-$pMonitoringDisplay->addDivForTabs();
-
-popFooter();
 ?>

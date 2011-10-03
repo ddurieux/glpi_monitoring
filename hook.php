@@ -89,7 +89,6 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
       case 'NetworkEquipment':
          $array = array();
          $array[0] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['state'][0];
-         $array[1] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['host'][8];
          $array[2] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['service'][0];
          return $array;
          break;
@@ -124,7 +123,6 @@ function plugin_headings_actions_monitoring($item) {
       case 'NetworkEquipment':
          $array = array ();
          $array[0] = "plugin_headings_monitoring_status";
-         $array[1] = "plugin_headings_monitoring_hosts";
          $array[2] = "plugin_headings_monitoring_services";
          return $array;
          break;
@@ -165,12 +163,8 @@ $plus->parseToRrdtool($item->fields['id'], get_class($item));
 $to = new PluginMonitoringRrdtool();
 
 echo "<br/>Http :<br/>";
-//$to->displayGLPIGraph("PluginMonitoringHost_Service", 3, "3h");
-//echo "<img src='".GLPI_ROOT."/plugins/monitoring/front/send.php?file=PluginMonitoringHost_Service-3-3h.gif' />";
-//$to->displayGLPIGraph("PluginMonitoringHost_Service", 5, "3h");
-//echo "<img src='".GLPI_ROOT."/plugins/monitoring/front/send.php?file=PluginMonitoringHost_Service-5-3h.gif' />";
 $to->displayGLPIGraph("PluginMonitoringHost_Service", 5, "12h");
-echo "<img src='".GLPI_ROOT."/plugins/monitoring/front/send.php?file=PluginMonitoringHost_Service-5-12h.gif' />";
+echo "<img src='".GLPI_ROOT."/plugins/monitoring/front/send.php?file=PluginMonitoringService-5-12h.gif' />";
 
    
    $pluginMonitoringHostevent = new PluginMonitoringHostevent();
@@ -180,32 +174,10 @@ echo "<img src='".GLPI_ROOT."/plugins/monitoring/front/send.php?file=PluginMonit
 
 
 
-function plugin_headings_monitoring_hosts($item) {
-   
-   $pluginMonitoringHost = new PluginMonitoringHost();
-   $pluginMonitoringHost->showForm('', array(), get_class($item));
-   if ($pluginMonitoringHost->getField('id')
-           AND $pluginMonitoringHost->getField('parenttype') == '1') {
-
-      $pluginMonitoringHost_Host = new PluginMonitoringHost_Host();
-      $pluginMonitoringHost_Host->manageDependencies($pluginMonitoringHost->getField('id'));
-   }
-   if ($pluginMonitoringHost->getField('id')) {
-      $pluginMonitoringHost_Contact = new PluginMonitoringHost_Contact();
-      $pluginMonitoringHost_Contact->manageContacts($pluginMonitoringHost->getField('id'));
-   }
-}
-
-
-
 function plugin_headings_monitoring_services($item) {
 
-   $pMonitoringHost_Service = new PluginMonitoringHost_Service();
-   $pMonitoringHost_Service->listByHost(get_class($item), $item->fields['id']);
-   if (get_class($item) != "PluginMonitoringBusinessapplication") {
-      $pluginMonitoringServicesuggest = new PluginMonitoringServicesuggest();
-      $pluginMonitoringServicesuggest->listSuggests(get_class($item), $item->fields['id']);
-   }
+   $pMonitoringService = new PluginMonitoringService();
+   $pMonitoringService->manageServices(get_class($item), $item->fields['id']);
 }
 
 

@@ -50,12 +50,72 @@ class PluginMonitoringDisplay extends CommonDBTM {
       return $ong;
    }
    
+   
+   
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab['common'] = $LANG['common'][32];
+
+      $tab[1]['table']         = $this->getTable();
+      $tab[1]['field']         = 'name';
+      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['datatype']      = 'itemlink';
+      $tab[1]['itemlink_type'] = $this->getType();
+      $tab[1]['massiveaction'] = false; // implicit key==1
+      
+      $tab[2]['table']         = $this->getTable();
+      $tab[2]['field']         = 'id';
+      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['massiveaction'] = false;
+      
+      $tab[3]['table'] = $this->getTable();
+      $tab[3]['field'] = 'state';
+      $tab[3]['name']  = "Status";
+      
+      $tab[4]['table']         = $this->getTable();
+      $tab[4]['field']         = 'last_check';
+      $tab[4]['name']          = 'last_check';
+      $tab[4]['datatype']      = 'datetime';
+
+      return $tab;
+   }
+
+   
 
    function showBoard($itemtype, $width='', $start=1, $end=1) {
       global $DB,$CFG_GLPI,$LANG;
 
+      $where = '';
+      if (isset($_SESSION['plugin_monitoring']['display']['field'])) {
+         foreach ($_SESSION['plugin_monitoring']['display']['field'] as $key=>$value) {
+            $wheretmp = '';
+            if (isset($_SESSION['plugin_monitoring']['display']['link'][$key])) {
+               $wheretmp.= " ".$_SESSION['plugin_monitoring']['display']['link'][$key]." ";
+            }
+
+            $wheretmp .= Search::addWhere(
+                                   "",
+                                   0,
+                                   "PluginMonitoringDisplay",
+                                   $_SESSION['plugin_monitoring']['display']['field'][$key],
+                                   $_SESSION['plugin_monitoring']['display']['searchtype'][$key],
+                                   $_SESSION['plugin_monitoring']['display']['contains'][$key]);
+            if (!strstr($wheretmp, "``.``")) {
+               $where .= $wheretmp;
+            }
+         }
+      }
+
+      if ($where != '') {
+         $where = " WHERE ".$where;
+         $where = str_replace("`".getTableForItemType("PluginMonitoringDisplay")."`.", 
+                 "", $where);
+         
+      }      
       $item = new $itemtype();
-      $query = "SELECT * FROM `".getTableForItemType($itemtype)."`";
+      $query = "SELECT * FROM `".getTableForItemType($itemtype)."` ".$where;
       $result = $DB->query($query);
       if ($start == '1') {
          if ($width == '') {
@@ -143,7 +203,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
 //         $plu->parseToRrdtool($data['id'], $itemtype);
          if ($to->displayGLPIGraph($itemtype, $data['id'], "12h")) {
             $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=".$itemtype."-".$data['id']."-12h.gif'/>";
-            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php?itemtype=".$itemtype."&items_id=".$data['id']."'>";
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=".$itemtype."&items_id=".$data['id']."'>";
          } else {
             $img = '';
          }
@@ -151,7 +211,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
 //         $plu->parseToRrdtool($data['items_id'], $data['itemtype']);
          if ($to->displayGLPIGraph($data['itemtype'], $data['items_id'], "12h")) {
             $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=".$data['itemtype']."-".$data['items_id']."-12h.gif'/>";
-            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php?itemtype=".$data['itemtype']."&items_id=".$data['items_id']."'>";
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=".$data['itemtype']."&items_id=".$data['items_id']."'>";
          } else {
             $img = '';
          }

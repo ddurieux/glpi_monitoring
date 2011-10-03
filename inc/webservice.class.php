@@ -89,8 +89,8 @@ class PluginMonitoringWebservice {
             break;
 
          case 'hosts.cfg':
-            $array = $pluginMonitoringShinken->generateHostsCfg(1);
-            return array($array[0]=>$array[1]);
+//            $array = $pluginMonitoringShinken->generateHostsCfg(1);
+//            return array($array[0]=>$array[1]);
             break;
 
          case 'contacts.cfg':
@@ -112,8 +112,8 @@ class PluginMonitoringWebservice {
             $output = array();
             $array = $pluginMonitoringShinken->generateCommandsCfg(1);
             $output[$array[0]] = $array[1];
-            $array = $pluginMonitoringShinken->generateHostsCfg(1);
-            $output[$array[0]] = $array[1];
+//            $array = $pluginMonitoringShinken->generateHostsCfg(1);
+//            $output[$array[0]] = $array[1];
             $array = $pluginMonitoringShinken->generateContactsCfg(1);
             $output[$array[0]] = $array[1];
             $array = $pluginMonitoringShinken->generateTimeperiodsCfg(1);

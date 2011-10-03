@@ -41,14 +41,14 @@ header_nocache();
 
 if (class_exists($_POST["itemtype"])) {
    $table = getTableForItemType($_POST["itemtype"]);
-   
 
    $query = "SELECT `$table`.`name`, 
-                    `".getTableForItemType("PluginMonitoringHost")."`.`id`
+                    `".getTableForItemType("PluginMonitoringService")."`.`id`
                         
-             FROM `".getTableForItemType("PluginMonitoringHost")."`
+             FROM `".getTableForItemType("PluginMonitoringService")."`
              LEFT JOIN `$table` ON `$table`.`id` = `items_id`             
              WHERE `itemtype` = '".$_POST["itemtype"]."'
+                AND `plugin_monitoring_services_id`='0' 
              ORDER BY `$table`.`name`";
    $result = $DB->query($query);
    $a_hosts = array();

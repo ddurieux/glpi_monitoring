@@ -41,14 +41,13 @@ include (GLPI_ROOT . "/inc/includes.php");
 commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "businessrules");
 
-$pMonitoringBusinessrule = new PluginMonitoringBusinessrule();
-
+$pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
 if (isset($_POST['update'])) {
-   $pMonitoringBusinessrule->update($_POST);
+   $pMonitoringBusinessrulegroup->update($_POST);
 } else if (isset($_POST['add'])) {
-   $pMonitoringBusinessrule->add($_POST);
+   $pMonitoringBusinessrulegroup->add($_POST);
 } else if (isset($_POST['delete'])) {
-   
+   $pMonitoringBusinessrulegroup->delete($_POST);   
 }
 glpi_header($_SERVER['HTTP_REFERER']);
 

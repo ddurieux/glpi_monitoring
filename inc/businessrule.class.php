@@ -78,14 +78,15 @@ class PluginMonitoringBusinessrule extends CommonDBTM {
    *@return bool true if form is ok
    *
    **/
-   function showForm($businessapplications_id, $options=array()) {
+   function showFormTest($businessapplications_id, $options=array()) {
       global $DB,$CFG_GLPI,$LANG;
 
-
+      $this->showFormTest($businessapplications_id, $options);
+return;
 //      $this->showFormHeader($options);
       
       $first_operator = array();
-      $first_operator[''] = "------";
+      $first_operator['or'] = "------";
       $first_operator['2 of:'] = $LANG['plugin_monitoring']['businessrule'][2];
       $first_operator['3 of:'] = $LANG['plugin_monitoring']['businessrule'][3];
       $first_operator['4 of:'] = $LANG['plugin_monitoring']['businessrule'][4];
@@ -213,8 +214,111 @@ class PluginMonitoringBusinessrule extends CommonDBTM {
       
       echo "</form><br/>";
       
-//      $this->showFormButtons($options);
       return true;
+   }
+   
+   
+   
+   function showForm($businessapplications_id, $options=array()) {
+      global $DB,$CFG_GLPI,$LANG;
+
+      $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
+      
+      // Add group
+      $pMonitoringBusinessrulegroup->showForm(0, $businessapplications_id);
+      
+      // Display each group
+      $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringBusinessrulegroup")."`
+         WHERE `plugin_monitoring_businessapplications_id`='".$businessapplications_id."'
+         ORDER BY `name`";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         $pMonitoringBusinessrulegroup->showForm($data['id'], $businessapplications_id);
+      
+         echo "<table class='tab_cadre' width='600'>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<th>Add service&nbsp;:</th>";
+         echo "</tr>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>";
+         echo "<form name='form' method='post' action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/businessrule.form.php'>";
+         echo "<input type='hidden' name='plugin_monitoring_businessrulegroups_id' value='".$data['id']."' />";
+         self::dropdownService(0, array('name' => 'type'));         
+         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "</form>";
+         echo "</td>";
+         echo "</tr>";
+         echo "</table>";
+         
+         echo "<table class='tab_cadre' width='600'>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<th></th>";
+         echo "<th>Services</th>";
+         echo "</tr>";
+         $a_services = $this->find("`plugin_monitoring_businessrulegroups_id`='".$data['id']."'");
+         foreach ($a_services as $gdata) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo "<input type='checkbox'/>";
+            echo "</td>";
+            echo "<td>";
+            $pMonitoringService = new PluginMonitoringService();
+            $pMonitoringServiceH = new PluginMonitoringService();
+            $pMonitoringService->getFromDB($gdata["plugin_monitoring_services_id"]);
+            $pMonitoringServiceH->getFromDB($pMonitoringService->fields['plugin_monitoring_services_id']);
+            echo $pMonitoringService->getLink(1);
+            echo " ".$LANG['networking'][25]." ";
+            $itemtype2 = $pMonitoringServiceH->fields['itemtype'];
+            $item2 = new $itemtype2();
+            $item2->getFromDB($pMonitoringServiceH->fields['items_id']);
+            echo $item2->getLink(1);
+            echo "</td>";
+            echo "</tr>";
+         }         
+         echo "</table>";
+         echo "<br/>";
+      }
+      return;
+      
+      
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<th>";
+      echo "</th>";
+      echo "<th>";
+      echo "Group";
+      echo "</th>";
+      echo "<th>";
+      echo "operator";
+      echo "</th>";
+      echo "<th>";
+      echo "Service";
+      echo "</th>";
+      echo "</tr>";
+      
+      $query = "SELECT * FROM `".getTableForItemType($this->getType())."`
+         WHERE `plugin_monitoring_businessapplications_id`='".$businessapplications_id."'
+         ORDER BY `group`";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>";
+         echo "<input type='checkbox'/>";
+         echo "</td>";
+         echo "<td>";
+         echo $data['group'];
+         echo "</td>";
+         echo "<td>";
+
+         echo "</td>";
+         echo "<td>";
+
+         
+         echo "</td>";         
+         echo "</tr>";
+      }
+      echo "</table>";
+      
    }
    
    
@@ -223,7 +327,7 @@ class PluginMonitoringBusinessrule extends CommonDBTM {
       global $CFG_GLPI, $LANG;
 
       if (!empty($items_id)) {
-         $pMonitoringHost = new PluginMonitoringHost();
+         $pMonitoringService = new PluginMonitoringService();
          $item = new $itemtype();
          
          $item->getFromDB($items_id);

@@ -109,4 +109,7 @@ $LANG['plugin_monitoring']['businessrule'][11]="";
 $LANG['plugin_monitoring']['businessrule'][12]="";
 $LANG['plugin_monitoring']['businessrule'][13]="";
 
+$LANG['plugin_monitoring']['businessruledefinition'][0] = $LANG['plugin_monitoring']['businessrule'][0];
+
+
 ?>

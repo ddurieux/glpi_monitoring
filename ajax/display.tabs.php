@@ -56,15 +56,30 @@ $pluginMonitoringBusinessrule = new PluginMonitoringBusinessrule();
          break;
       
       case 2:
+         // Manage search
+         $_GET = $_SESSION['plugin_monitoring']['display'];
+         Search::manageGetValues("PluginMonitoringDisplay");
+         Search::showGenericSearch("PluginMonitoringDisplay", $_SESSION['plugin_monitoring']['display']);
+
          $pMonitoringDisplay->showBoard("PluginMonitoringHost", 950, 1, 0);
          $pMonitoringDisplay->showBoard("PluginMonitoringHost_Service", 950, 0, 1);
          break;
       
       case 3:
+         // Manage search
+         $_GET = $_SESSION['plugin_monitoring']['display'];
+         Search::manageGetValues("PluginMonitoringDisplay");
+         Search::showGenericSearch("PluginMonitoringDisplay", $_SESSION['plugin_monitoring']['display']);
+
          $pMonitoringDisplay->showBoard("PluginMonitoringHost", 950);
          break;
       
       case 4:
+         // Manage search
+         $_GET = $_SESSION['plugin_monitoring']['display'];
+         Search::manageGetValues("PluginMonitoringDisplay");
+         Search::showGenericSearch("PluginMonitoringDisplay", $_SESSION['plugin_monitoring']['display']);
+
          $pMonitoringDisplay->showBoard("PluginMonitoringHost_Service", 950);
          break;
 

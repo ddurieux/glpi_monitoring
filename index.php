@@ -40,7 +40,7 @@ include (GLPI_ROOT."/inc/includes.php");
 commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
              "monitoring");
 
-glpi_header(GLPI_ROOT ."/plugins/monitoring/front/menu.php");
+glpi_header(GLPI_ROOT ."/plugins/monitoring/front/display.php");
 commonFooter();
 
 ?>

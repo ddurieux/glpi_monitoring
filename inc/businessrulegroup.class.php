@@ -36,22 +36,15 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginMonitoringHostgroup extends CommonDBTM {
+class PluginMonitoringBusinessrulegroup extends CommonDBTM {
    
-
-   /**
-   * Get name of this type
-   *
-   *@return text name of this type by language of the user connected
-   *
-   **/
-   static function getTypeName() {
+   
+   static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['plugin_monitoring']['hostgroup'][0];
+      return "Groupe";
    }
-
-
+   
 
    function canCreate() {
       return true;
@@ -82,40 +75,8 @@ class PluginMonitoringHostgroup extends CommonDBTM {
    }
 
    
-
-   function getSearchOptions() {
+   function showForm($items_id, $businessapplications_id, $options=array()) {
       global $LANG;
-
-      $tab = array();
-    
-      $tab['common'] = $LANG['plugin_monitoring']['hostgroup'][0];
-
-      return $tab;
-   }
-
-
-
-   function defineTabs($options=array()){
-      global $LANG,$CFG_GLPI;
-
-      $ong = array();
-
-      return $ong;
-   }
-
-
-
-   /**
-   * Display form for agent configuration
-   *
-   * @param $items_id integer ID 
-   * @param $options array
-   *
-   *@return bool true if form is ok
-   *
-   **/
-   function showForm($items_id, $options=array(), $itemtype='') {
-      global $DB,$CFG_GLPI,$LANG;
 
       if ($items_id!='') {
          $this->getFromDB($items_id);
@@ -124,15 +85,34 @@ class PluginMonitoringHostgroup extends CommonDBTM {
       }
 
       $this->showFormHeader($options);
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
-         echo "<td align='center'>";
-         echo "<input name='name' type='text' value='".$this->fields["name"]."'/>";
-         echo "</td>";
-         echo "<td colspan='2'>";
-         echo "</td>";
-         echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo "<input type='hidden' name='plugin_monitoring_businessapplications_id' value='".$businessapplications_id."'/>";
+      echo $LANG['common'][16]."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      echo "<input type='text' name='name' value='".$this->fields["name"]."' size='30'/>";
+      echo "</td>";
+      echo "<td>";
+      echo "Operator&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      $first_operator = array();
+      $first_operator['or'] = "or";
+      $first_operator['2 of:'] = $LANG['plugin_monitoring']['businessrule'][2];
+      $first_operator['3 of:'] = $LANG['plugin_monitoring']['businessrule'][3];
+      $first_operator['4 of:'] = $LANG['plugin_monitoring']['businessrule'][4];
+      $first_operator['5 of:'] = $LANG['plugin_monitoring']['businessrule'][5];
+      $first_operator['6 of:'] = $LANG['plugin_monitoring']['businessrule'][6];
+      $first_operator['7 of:'] = $LANG['plugin_monitoring']['businessrule'][7];
+      $first_operator['8 of:'] = $LANG['plugin_monitoring']['businessrule'][8];
+      $first_operator['9 of:'] = $LANG['plugin_monitoring']['businessrule'][9];
+      $first_operator['10 of:'] = $LANG['plugin_monitoring']['businessrule'][10];
+      Dropdown::showFromArray('operator', $first_operator, array("value"=>$this->fields['operator']));
+      echo "</td>";
+      
+      echo "</tr>";      
 
       $this->showFormButtons($options);
 

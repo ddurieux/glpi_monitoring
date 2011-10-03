@@ -38,16 +38,16 @@ if (!defined('GLPI_ROOT')) {
 
 include (GLPI_ROOT."/inc/includes.php");
 
-popHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"]);
+commonHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plugins",
+             "monitoring", "display");
 
-echo '<meta http-equiv ="refresh" content="30">';
 
-$_SESSION['plugin_monitoring']['display'] = $_GET;
+$pMonitoringDisplay = new PluginMonitoringDisplay();
 
-$pMonitoringDisplay =new PluginMonitoringDisplay();
-$pMonitoringDisplay->displayCounters();
-$pMonitoringDisplay->showTabs();
-$pMonitoringDisplay->addDivForTabs();
+if (isset($_GET['itemtype']) AND isset($_GET['items_id'])) {
+   $pMonitoringDisplay->displayGraphs($_GET['itemtype'], $_GET['items_id']);
+}
 
-popFooter();
+commonFooter();
+
 ?>
