@@ -84,7 +84,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
    
 
-   function showBoard($itemtype, $width='', $start=1, $end=1) {
+   function showBoard($width='') {
       global $DB,$CFG_GLPI,$LANG;
 
       $where = '';
@@ -113,16 +113,13 @@ class PluginMonitoringDisplay extends CommonDBTM {
          $where = str_replace("`".getTableForItemType("PluginMonitoringDisplay")."`.", 
                  "", $where);
          
-      }      
-      $item = new $itemtype();
-      $query = "SELECT * FROM `".getTableForItemType($itemtype)."` ".$where;
+      }
+      $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringService")."` ".$where;
       $result = $DB->query($query);
-      if ($start == '1') {
-         if ($width == '') {
-            echo "<table class='tab_cadrehov'>";
-         } else {
-            echo "<table class='tab_cadrehov' style='width:".$width."px;'>";
-         }
+      if ($width == '') {
+         echo "<table class='tab_cadrehov'>";
+      } else {
+         echo "<table class='tab_cadrehov' style='width:".$width."px;'>";
       }
       
       echo "<tr class='tab_bg_1'>";
@@ -148,33 +145,39 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "</th>";     
       echo "</tr>";
       while ($data=$DB->fetch_array($result)) {
-         echo "<tr class='tab_bg_1'>";
+         if ($data['plugin_monitoring_services_id'] == '0') {
+            echo "<tr class='tab_bg_3'>";
+         } else {
+            echo "<tr class='tab_bg_1'>";
+         }
 
-         $this->displayLine($data, $itemtype);
+         $this->displayLine($data);
          
          echo "</tr>";         
       }
-      if ($end == '1') {
-         echo "</table>";
-      }
+      echo "</table>";
    }
    
    
    
-   static function displayLine($data, $itemtype) {
+   static function displayLine($data) {
       global $DB,$CFG_GLPI,$LANG;
+
+      $pMonitoringService = new PluginMonitoringService();
+      $pMonitoringServiceH = new PluginMonitoringService();
       
-      $pMonitoringHost_Service = new PluginMonitoringHost_Service();
-      $pMonitoringHost = new PluginMonitoringHost();
+      $pMonitoringService->getFromDB($data['id']);
       
       echo "<td width='32'>";
       $shortstate = self::getState($data['state']);
       echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/>";
       echo "</td>";
-      if (isset($data['itemtype']) AND $data['itemtype'] != '') {
-         $itemtypemat = $data['itemtype'];
+      if (isset($pMonitoringService->fields['itemtype']) 
+              AND $pMonitoringService->fields['itemtype'] != '') {
+
+         $itemtypemat = $pMonitoringService->fields['itemtype'];
          $itemmat = new $itemtypemat();
-         $itemmat->getFromDB($data['items_id']);
+         $itemmat->getFromDB($pMonitoringService->fields['items_id']);
          echo "<td>";
          echo $itemmat->getTypeName();
          echo "</td>";
@@ -184,11 +187,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "</td>";
       } else {
          echo "<td>Services</td>";
-         $pMonitoringHost->getFromDB($data['plugin_monitoring_hosts_id']);
-         $itemtypemat = $pMonitoringHost->fields['itemtype'];
+         $pMonitoringServiceH->getFromDB($pMonitoringService->fields['plugin_monitoring_services_id']);
+         $itemtypemat = $pMonitoringServiceH->fields['itemtype'];
          $itemmat = new $itemtypemat();
-         $itemmat->getFromDB($pMonitoringHost->fields['items_id']);
-         echo "<td>".$data['name']." ".$LANG['networking'][25]." ".$itemmat->getLink(1)."</td>";
+         $itemmat->getFromDB($pMonitoringServiceH->fields['items_id']);
+         echo "<td>".$pMonitoringService->getLink(1)." ".$LANG['networking'][25]." ".$itemmat->getLink(1)."</td>";
+         
       }
 
       echo "<td align='center'>";
@@ -197,25 +201,16 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
       echo "<td>";
       $to = new PluginMonitoringRrdtool();
-      $plu = new PluginMonitoringHostevent();
+      $plu = new PluginMonitoringServiceevent();
       $img = '';
-      if ($itemtype == 'PluginMonitoringHost_Service') {
+
 //         $plu->parseToRrdtool($data['id'], $itemtype);
-         if ($to->displayGLPIGraph($itemtype, $data['id'], "12h")) {
+         if ($to->displayGLPIGraph("PluginMonitoringService", $data['id'], "12h")) {
             $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=".$itemtype."-".$data['id']."-12h.gif'/>";
             echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=".$itemtype."&items_id=".$data['id']."'>";
          } else {
             $img = '';
          }
-      } else if (isset($data['itemtype']) AND $data['itemtype'] != '') {
-//         $plu->parseToRrdtool($data['items_id'], $data['itemtype']);
-         if ($to->displayGLPIGraph($data['itemtype'], $data['items_id'], "12h")) {
-            $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=".$data['itemtype']."-".$data['items_id']."-12h.gif'/>";
-            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=".$data['itemtype']."&items_id=".$data['items_id']."'>";
-         } else {
-            $img = '';
-         }
-      }
       if ($img != '') {
          showToolTip($img, array('img'=>$CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"));
          echo "</a>";
@@ -223,12 +218,13 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "</td>";
 
       // Mode dégradé
-      if ($itemtype == 'PluginMonitoringHost_Service') {
+      if ($pMonitoringService->fields['plugin_monitoring_services_id'] > 0) {
          echo "<td></td>";
       } else {
          echo "<td align='center'>";
          // Get all services of this host
-         $a_serv = $pMonitoringHost_Service->find("`plugin_monitoring_hosts_id`='".$data['id']."'");
+         $a_serv = $pMonitoringService->find("`plugin_monitoring_services_id`='".$data['id']."'");
+         $globalserv_state = array();
          $globalserv_state['red'] = 0;
          $globalserv_state['orange'] = 0;
          $globalserv_state['green'] = 0;
@@ -357,17 +353,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
    function displayCounters() {
       global $CFG_GLPI;
       
-      $ok = countElementsInTable("glpi_plugin_monitoring_hosts_services", "`state`='OK' OR `state`='UP'");
-      $ok += countElementsInTable("glpi_plugin_monitoring_hosts", "`state`='OK' OR `state`='UP'");
+      $ok = countElementsInTable("glpi_plugin_monitoring_services", "`state`='OK' OR `state`='UP'");
       
-      $warning = countElementsInTable("glpi_plugin_monitoring_hosts_services", 
-              "`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL");
-      $warning += countElementsInTable("glpi_plugin_monitoring_hosts", 
+      $warning = countElementsInTable("glpi_plugin_monitoring_services", 
               "`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL");
       
-      $critical = countElementsInTable("glpi_plugin_monitoring_hosts_services", 
-              "`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME'");
-      $critical += countElementsInTable("glpi_plugin_monitoring_hosts", 
+      $critical = countElementsInTable("glpi_plugin_monitoring_services", 
               "`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME'");
     
       echo "<table class='tab_cadre'>";

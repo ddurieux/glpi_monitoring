@@ -61,8 +61,7 @@ $pluginMonitoringBusinessrule = new PluginMonitoringBusinessrule();
          Search::manageGetValues("PluginMonitoringDisplay");
          Search::showGenericSearch("PluginMonitoringDisplay", $_SESSION['plugin_monitoring']['display']);
 
-         $pMonitoringDisplay->showBoard("PluginMonitoringHost", 950, 1, 0);
-         $pMonitoringDisplay->showBoard("PluginMonitoringHost_Service", 950, 0, 1);
+         $pMonitoringDisplay->showBoard(950);
          break;
       
       case 3:

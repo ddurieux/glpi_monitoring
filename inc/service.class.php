@@ -137,7 +137,7 @@ class PluginMonitoringService extends CommonDBTM {
       echo "<table class='tab_cadre' width='950' >";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th colspan='4'>";
+      echo "<th colspan='5'>";
       echo "Services";
       echo "&nbsp;<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/service.form.php?services_id=".$a_hosts['id']."'>
          <img src='".$CFG_GLPI['root_doc']."/pics/menu_add.png' /></a>";
@@ -152,6 +152,7 @@ class PluginMonitoringService extends CommonDBTM {
       echo "<th>Check Host</th>";
       echo "<th>".$LANG['common'][13]."</th>";
       echo "<th>Configuration complete</th>";
+      echo "<th>".$LANG['joblist'][0]."</th>";
       echo "</tr>";
 
       foreach ($a_list as $data) {
@@ -199,6 +200,12 @@ class PluginMonitoringService extends CommonDBTM {
          }
          echo "<td align='center' ".$color.">";
          echo Dropdown::getYesNo($complete);
+         echo "</td>";
+         
+         // Status
+         $shortstate = PluginMonitoringDisplay::getState($data['state']);
+         echo "<td class='center'>";
+         echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/>";
          echo "</td>";
          echo "</tr>";
       }

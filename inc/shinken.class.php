@@ -105,6 +105,7 @@ class PluginMonitoringShinken extends CommonDBTM {
    function generateHostsCfg($file=0) {
       
       $pMonitoringService = new PluginMonitoringService();
+      $pMonitoringServicedef = new PluginMonitoringServicedef();
       $pluginMonitoringContact      = new PluginMonitoringContact();
       $pluginMonitoringHost_Contact = new PluginMonitoringHost_Contact();
       $pluginMonitoringCommand      = new PluginMonitoringCommand();
@@ -140,61 +141,62 @@ class PluginMonitoringShinken extends CommonDBTM {
                }
             }
          $a_hosts[$i]['address'] = $ip;
-            $a_parents = array();
-            switch ($data['parenttype']) {
-
-               case 0:
-                  // Disable
-                  break;
-
-               case 1:
-                  // Static
-//                  $a_list_parent = $pluginMonitoringHost_Host->find("`plugin_monitoring_hosts_id_1`='".$data['id']."'");
-//                  foreach ($a_list_parent as $data_parent) {
-//                     $pluginMonitoringHost->getFromDB($data_parent['plugin_monitoring_hosts_id_2']);
-//                     $classnameparent = $pluginMonitoringHost->fields['itemtype'];
-//                     $classparent = new $classnameparent;
-//                     $classparent->getFromDB($pluginMonitoringHost->fields['items_id']);
-//                     $a_parents[] = $classnameparent."-".$data_parent['plugin_monitoring_hosts_id_2']."-".$classparent->fields['name'];
-//                  }
-                  break;
-
-               case 2:
-                  // dynamic
-//                  if ($data['itemtype'] != 'NetworkEquipment') {
-//                     $a_listnetwork = $networkPort->find("`itemtype`='".$data['itemtype']."'
-//                        AND `items_id`='".$data['items_id']."'");
-//                     foreach ($a_listnetwork as $datanetwork) {
-//                        $contact_id = $networkPort->getContact($datanetwork['id']);
-//                        if ($contact_id) {
-//                           $networkPort->getFromDB($contact_id);
-//                           $classnameparent = $networkPort->fields['itemtype'];
-//                           $classparent = new $classnameparent;
-//                           $classparent->getFromDB($networkPort->fields['items_id']);
-//                           $a_listhostt = $pluginMonitoringHost->find("`itemtype`='".$classnameparent."'
-//                              AND `items_id`='".$networkPort->fields['items_id']."'", "", 1);
-//                           if (count($a_listhostt) > 0) {
-//                              $a_hostt = current($a_listhostt);
-//                              $a_parents[] = $classnameparent."-".$a_hostt['id']."-".$classparent->fields['name'];
-//                           }
-//                        }
-//                     }
-//                  }
-                  break;
-
-            }
-         if (count($a_parents) > 0) {
-            $a_hosts[$i]['parents'] = implode(',', $a_parents);
-         } else {
+//            $a_parents = array();
+//            switch ($data['parenttype']) {
+//
+//               case 0:
+//                  // Disable
+//                  break;
+//
+//               case 1:
+//                  // Static
+////                  $a_list_parent = $pluginMonitoringHost_Host->find("`plugin_monitoring_hosts_id_1`='".$data['id']."'");
+////                  foreach ($a_list_parent as $data_parent) {
+////                     $pluginMonitoringHost->getFromDB($data_parent['plugin_monitoring_hosts_id_2']);
+////                     $classnameparent = $pluginMonitoringHost->fields['itemtype'];
+////                     $classparent = new $classnameparent;
+////                     $classparent->getFromDB($pluginMonitoringHost->fields['items_id']);
+////                     $a_parents[] = $classnameparent."-".$data_parent['plugin_monitoring_hosts_id_2']."-".$classparent->fields['name'];
+////                  }
+//                  break;
+//
+//               case 2:
+//                  // dynamic
+////                  if ($data['itemtype'] != 'NetworkEquipment') {
+////                     $a_listnetwork = $networkPort->find("`itemtype`='".$data['itemtype']."'
+////                        AND `items_id`='".$data['items_id']."'");
+////                     foreach ($a_listnetwork as $datanetwork) {
+////                        $contact_id = $networkPort->getContact($datanetwork['id']);
+////                        if ($contact_id) {
+////                           $networkPort->getFromDB($contact_id);
+////                           $classnameparent = $networkPort->fields['itemtype'];
+////                           $classparent = new $classnameparent;
+////                           $classparent->getFromDB($networkPort->fields['items_id']);
+////                           $a_listhostt = $pluginMonitoringHost->find("`itemtype`='".$classnameparent."'
+////                              AND `items_id`='".$networkPort->fields['items_id']."'", "", 1);
+////                           if (count($a_listhostt) > 0) {
+////                              $a_hostt = current($a_listhostt);
+////                              $a_parents[] = $classnameparent."-".$a_hostt['id']."-".$classparent->fields['name'];
+////                           }
+////                        }
+////                     }
+////                  }
+//                  break;
+//
+//            }
+//         if (count($a_parents) > 0) {
+//            $a_hosts[$i]['parents'] = implode(',', $a_parents);
+//         } else {
             $a_hosts[$i]['parents'] = "";
-         }
-            $pluginMonitoringCommand->getFromDB($data['plugin_monitoring_commands_id']);
+//         }
+         $pMonitoringServicedef->getFromDB($data['plugin_monitoring_servicedefs_id']);
+            $pluginMonitoringCommand->getFromDB($pMonitoringServicedef->fields['plugin_monitoring_commands_id']);
          $a_hosts[$i]['check_command'] = $pluginMonitoringCommand->fields['command_name'];
-            $pluginMonitoringCheck->getFromDB($data['plugin_monitoring_checks_id']);
+            $pluginMonitoringCheck->getFromDB($pMonitoringServicedef->fields['plugin_monitoring_checks_id']);
          $a_hosts[$i]['check_interval'] = $pluginMonitoringCheck->fields['check_interval'];
          $a_hosts[$i]['retry_interval'] = $pluginMonitoringCheck->fields['retry_interval'];
          $a_hosts[$i]['max_check_attempts'] = $pluginMonitoringCheck->fields['max_check_attempts'];
-         if ($calendar->getFromDB($data['calendars_id'])) {
+         if ($calendar->getFromDB($pMonitoringServicedef->fields['calendars_id'])) {
             $a_hosts[$i]['check_period'] = $calendar->fields['name'];
          }
             $a_contacts = array();
@@ -236,7 +238,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       $pluginMonitoringBusinessrule = new PluginMonitoringBusinessrule();
       $calendar      = new Calendar();
       $user          = new User();
-      $hostname = '';
+      $hostnamebp = '';
       
       $a_services = array();
       $i=0;
@@ -249,7 +251,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_listHS = $pluginMonitoringService->find("`plugin_monitoring_services_id`='".$data['id']."'");
          foreach ($a_listHS as $dataHS) {
             $a_services[$i]['host_name'] = $classname."-".$data['id']."-".$class->fields['name'];
-            $hostname = $a_services[$i]['host_name']; // For business rules
+            $hostnamebp = $a_services[$i]['host_name']; // For business rules
             $a_services[$i]['service_description'] = $dataHS['name']."-".$dataHS['id'];
             $pMonitoringServicedef->getFromDB($dataHS['plugin_monitoring_servicedefs_id']);
             $pMonitoringCommand->getFromDB($pMonitoringServicedef->fields['plugin_monitoring_commands_id']);
@@ -319,58 +321,87 @@ class PluginMonitoringShinken extends CommonDBTM {
       }
 
       
-//      $a_listBA = $pluginMonitoringBusinessapplication->find();
-//      foreach ($a_listBA as $dataBA) {
-////         $a_services[$i]['use'] = "standard-service";
-//$a_services[$i]['contacts'] = 'ddurieux';
-//$pMonitoringCheck->getFromDB($pMonitoringService->fields['plugin_monitoring_checks_id']);
-//$a_services[$i]['check_interval'] = $pMonitoringCheck->fields['check_interval'];
-//$a_services[$i]['retry_interval'] = $pMonitoringCheck->fields['retry_interval'];
-//$a_services[$i]['max_check_attempts'] = $pMonitoringCheck->fields['max_check_attempts'];
-//if ($calendar->getFromDB($data['calendars_id'])) {
-//   $a_services[$i]['check_period'] = $calendar->fields['name'];            
-//}
-//         $a_services[$i]['host_name'] = 'Computer-3-ddurieux-Extensa-5620';
-//         $a_services[$i]['service_description'] = $dataBA['name']."-".$dataBA['id']."-businessrules";
-//         $command = "bp_rule!";
-//         $a_listBR = $pluginMonitoringBusinessrule->find(
-//                 "`plugin_monitoring_businessapplications_id`='".$dataBA['id']."'",
-//                 "`group`, `position`");
-//         $a_group = array();
-//         foreach ($a_listBR as $dataBR) {
-//            $itemtype = $dataBR['itemtype'];
-//            $item = new $itemtype();
-//            $item->getFromDB($dataBR['items_id']);
-//            $pluginMonitoringService->getFromDB($item->fields['plugin_monitoring_services_id']);
-//               $classname = $pluginMonitoringHost->fields['itemtype'];
-//               $class = new $classname;
-//               $class->getFromDB($pluginMonitoringservices->fields['items_id']);
-//            $hostname = $classname."-".$pluginMonitoringserv->fields['id']."-".$class->fields['name'];
-// 
-//            if ($dataBR['operator'] == 'and'
-//                    OR $dataBR['operator'] == 'or') {
-//               
-//               $operator = '&';
-//               if ($dataBR['operator'] == 'or') {
-//                  $operator = '|';
-//               }
-//               
-//               $a_group[$dataBR['group']] .= $operator.$hostname.",".$item->getName()."-".$item->fields['id'];
-//            } else {
-//               $a_group[$dataBR['group']] = $dataBR['operator']." ".$hostname.",".$item->getName()."-".$item->fields['id'];
-//            }            
-//         }
-//         foreach ($a_group as $key=>$value) {
-//            if (!strstr($value, "&")
-//                    AND !strstr($value, "|")) {
-//               $a_group[$key] = trim($value);
-//            } else {
-//               $a_group[$key] = "(".trim($value).")";
-//            }
-//         }
-//         $a_services[$i]['check_command'] = $command.implode("&", $a_group);
-//         $i++;
-//      }
+      $pluginMonitoringServiceH = new PluginMonitoringService();
+      $a_listBA = $pluginMonitoringBusinessapplication->find();
+      foreach ($a_listBA as $dataBA) {
+
+         $a_services[$i]['contacts'] = 'ddurieux';
+         $pMonitoringCheck->getFromDB($pMonitoringServicedef->fields['plugin_monitoring_checks_id']);
+         $a_services[$i]['check_interval'] = $pMonitoringCheck->fields['check_interval'];
+         $a_services[$i]['retry_interval'] = $pMonitoringCheck->fields['retry_interval'];
+         $a_services[$i]['max_check_attempts'] = $pMonitoringCheck->fields['max_check_attempts'];
+         if ($calendar->getFromDB($pMonitoringServicedef->fields['calendars_id'])) {
+            $a_services[$i]['check_period'] = $calendar->fields['name'];            
+         }
+         $a_services[$i]['host_name'] = $hostnamebp;
+         $a_services[$i]['service_description'] = $dataBA['name']."-".$dataBA['id']."-businessrules";
+         $command = "bp_rule!";
+         $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
+         $a_grouplist = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_businessapplications_id`='".$dataBA['id']."'");
+         $a_group = array();
+         foreach ($a_grouplist as $gdata) {
+            $a_listBR = $pluginMonitoringBusinessrule->find(
+                    "`plugin_monitoring_businessrulegroups_id`='".$gdata['id']."'");
+            foreach ($a_listBR as $dataBR) {
+               $pluginMonitoringService->getFromDB($dataBR['plugin_monitoring_services_id']);
+
+               $pluginMonitoringServiceH->getFromDB($pluginMonitoringService->fields['plugin_monitoring_services_id']);
+               $itemtype = $pluginMonitoringServiceH->fields['itemtype'];
+               $item = new $itemtype();
+               $item->getFromDB($pluginMonitoringServiceH->fields['items_id']);               
+               $hostname = $itemtype."-".$pluginMonitoringServiceH->fields['id']."-".$item->fields['name'];
+
+               if ($gdata['operator'] == 'and'
+                       OR $gdata['operator'] == 'or') {
+
+                  $operator = '&';
+                  if ($gdata['operator'] == 'or') {
+                     $operator = '|';
+                  }
+                  if (!isset($a_group[$gdata['id']])) {
+                     $a_group[$gdata['id']] = $hostname.",".$pluginMonitoringService->fields['name']."-".$pluginMonitoringService->fields['id'];
+                  } else {
+                     $a_group[$gdata['id']] .= $operator.$hostname.",".$pluginMonitoringService->fields['name']."-".$pluginMonitoringService->fields['id'];
+                  }
+               } else {
+                  $a_group[$gdata['id']] = $gdata['operator']." ".$hostname.",".$item->getName()."-".$item->fields['id'];
+               }            
+            }
+         }
+                  
+         
+         
+         foreach ($a_group as $key=>$value) {
+            if (!strstr($value, "&")
+                    AND !strstr($value, "|")) {
+               $a_group[$key] = trim($value);
+            } else {
+               $a_group[$key] = "(".trim($value).")";
+            }
+         }
+         $a_services[$i]['check_command'] = $command.implode("&", $a_group);
+         $a_services[$i]['notification_interval'] = '30';
+         $a_services[$i]['notification_period'] = '24x7';
+         $a_services[$i]['notification_options'] = 'w,c,r';
+         $a_services[$i]['active_checks_enabled'] = '1';
+         $a_services[$i]['process_perf_data'] = '1';
+         $a_services[$i]['active_checks_enabled'] = '1';
+         $a_services[$i]['passive_checks_enabled'] = '1';
+         $a_services[$i]['parallelize_check'] = '1';
+         $a_services[$i]['obsess_over_service'] = '1';
+         $a_services[$i]['check_freshness'] = '1';
+         $a_services[$i]['freshness_threshold'] = '1';
+         $a_services[$i]['notifications_enabled'] = '1';
+         $a_services[$i]['event_handler_enabled'] = '0';
+         $a_services[$i]['event_handler'] = 'super_event_kill_everyone!DIE';
+         $a_services[$i]['flap_detection_enabled'] = '1';
+         $a_services[$i]['failure_prediction_enabled'] = '1';
+         $a_services[$i]['retain_status_information'] = '1';
+         $a_services[$i]['retain_nonstatus_information'] = '1';
+         $a_services[$i]['is_volatile'] = '0';
+         $a_services[$i]['_httpstink'] = 'NO';
+         $i++;
+      }
       
       if ($file == "1") {
          $config = "# Generated by plugin monitoring for GLPI\n# on ".date("Y-m-d H:i:s")."\n\n";

@@ -85,7 +85,7 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
       global $CFG_GLPI,$LANG;
       
       $pMonitoringBusinessrule = new PluginMonitoringBusinessrule();
-      $pMonitoringHost_Service = new PluginMonitoringHost_Service();
+      $pMonitoringService = new PluginMonitoringService();
       echo "<table class='tab_cadre' width='100%'>";
       echo "<tr class='tab_bg_4' style='background: #cececc;'>";
       
@@ -142,9 +142,9 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
             $state['WARNING'] = 0;
             $state['CRITICAL'] = 0;
             foreach ($a_brules as $brulesdata) {
-               if ($brulesdata['itemtype'] == 'PluginMonitoringHost_Service') {
-                  $pMonitoringHost_Service->getFromDB($brulesdata['items_id']);
-                  switch($pMonitoringHost_Service->fields['state']) {
+               if ($brulesdata['itemtype'] == 'PluginMonitoringService') {
+                  $pMonitoringService->getFromDB($brulesdata['items_id']);
+                  switch($pMonitoringService->fields['state']) {
 
                      case 'UP':
                      case 'OK':
@@ -200,7 +200,7 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
       global $CFG_GLPI,$LANG;
       
       $pMonitoringBusinessrule = new PluginMonitoringBusinessrule();
-      $pMonitoringHost_Service = new PluginMonitoringHost_Service();
+      $pMonitoringService = new PluginMonitoringService();
       
       $this->getFromDB($id);
       echo "<table class='tab_cadrehov'>";
@@ -233,12 +233,12 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
          echo "</th>";
          $j = 0;
          foreach ($a_brulesg as $brulesdata) {
-            if ($brulesdata['itemtype'] == 'PluginMonitoringHost_Service') {
+            if ($brulesdata['itemtype'] == 'PluginMonitoringService') {
                if ($j > 0) {
                   echo "<tr class='tab_bg_1'>";
                }
-               $pMonitoringHost_Service->getFromDB($brulesdata['items_id']);
-               PluginMonitoringDisplay::displayLine($pMonitoringHost_Service->fields, $brulesdata['itemtype']);
+               $pMonitoringService->getFromDB($brulesdata['items_id']);
+               PluginMonitoringDisplay::displayLine($pMonitoringService->fields, $brulesdata['itemtype']);
                echo "</tr>";
                $j++;
             }
