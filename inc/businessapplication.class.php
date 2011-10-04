@@ -90,121 +90,120 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
       echo "<table class='tab_cadre' width='100%'>";
       echo "<tr class='tab_bg_4' style='background: #cececc;'>";
       
-         $a_ba = $this->find();
-         foreach ($a_ba as $data) {
-            echo "<td>";
-            
-            echo "<table  class='tab_cadre_fixe' style='width:200px;height:200px'>";
-            echo "<tr class='tab_bg_1'>";
-            echo "<th colspan='2' style='font-size:20px;' height='50'>";
-            echo $data['name'];
-            echo "</th>";
-            echo "</tr>";
-            
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo $LANG['state'][0]."&nbsp;:";
-            echo "</td>";
-            echo "<td width='40'>";
-            switch($data['state']) {
+      $a_ba = $this->find();
+      foreach ($a_ba as $data) {
+         echo "<td>";
 
-               case 'UP':
-               case 'OK':
-                  echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_40.png'/>";
-                  break;
+         echo "<table  class='tab_cadre_fixe' style='width:200px;height:200px'>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<th colspan='2' style='font-size:20px;' height='50'>";
+         echo $data['name'];
+         echo "</th>";
+         echo "</tr>";
 
-               case 'DOWN':
-               case 'UNREACHABLE':
-               case 'CRITICAL':
-               case 'DOWNTIME':
-                  echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_40.png'/>";
-                  break;
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>";
+         echo $LANG['state'][0]."&nbsp;:";
+         echo "</td>";
+         echo "<td width='40'>";
+         switch($data['state']) {
 
-               case 'WARNING':
-               case 'UNKNOWN':
-               case 'RECOVERY':
-               case 'FLAPPING':
-                  echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_40.png'/>";
-                  break;
+            case 'UP':
+            case 'OK':
+               echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_40.png'/>";
+               break;
 
-            }
-            echo "</td>";
-            echo "</tr>";
-   
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo "Mode dégradé&nbsp;:";
-            echo "</td>";
-            echo "<td width='40' align='center'>";
-            $a_group = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_businessapplications_id`='".$data['id']."'");
-            $a_gstate = array();
-            foreach ($a_group as $gdata) {
-               $a_brules = $pMonitoringBusinessrule->find("`plugin_monitoring_businessrulegroups_id`='".$gdata['id']."'");
-               $state = array();
-               $state['OK'] = 0;
-               $state['WARNING'] = 0;
-               $state['CRITICAL'] = 0;
-               foreach ($a_brules as $brulesdata) {
-                  $pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id']);
-                  switch($pMonitoringService->fields['state']) {
+            case 'DOWN':
+            case 'UNREACHABLE':
+            case 'CRITICAL':
+            case 'DOWNTIME':
+               echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_40.png'/>";
+               break;
 
-                     case 'UP':
-                     case 'OK':
-                        $state['OK']++;
-                        break;
+            case 'WARNING':
+            case 'UNKNOWN':
+            case 'RECOVERY':
+            case 'FLAPPING':
+               echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_40.png'/>";
+               break;
 
-                     case 'DOWN':
-                     case 'UNREACHABLE':
-                     case 'CRITICAL':
-                     case 'DOWNTIME':
-                        $state['CRITICAL']++;
-                        break;
+         }
+         echo "</td>";
+         echo "</tr>";
 
-                     case 'WARNING':
-                     case 'UNKNOWN':
-                     case 'RECOVERY':
-                     case 'FLAPPING':
-                        $state['WARNING']++;
-                        break;
-
-                  }
-               }
-               if ($state['CRITICAL'] > 0) {
-                  $a_gstate[$gdata['id']] = "CRITICAL";
-               } else if ($state['WARNING'] > 0) {
-                  $a_gstate[$gdata['id']] = "WARNING";
-               } else {
-                  $a_gstate[$gdata['id']] = "OK";
-               }
-            }
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>";
+         echo "Mode dégradé&nbsp;:";
+         echo "</td>";
+         echo "<td width='40' align='center'>";
+         $a_group = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_businessapplications_id`='".$data['id']."'");
+         $a_gstate = array();
+         foreach ($a_group as $gdata) {
+            $a_brules = $pMonitoringBusinessrule->find("`plugin_monitoring_businessrulegroups_id`='".$gdata['id']."'");
             $state = array();
             $state['OK'] = 0;
             $state['WARNING'] = 0;
             $state['CRITICAL'] = 0;
-            foreach ($a_gstate as $value) {
-               $state[$value]++;
+            foreach ($a_brules as $brulesdata) {
+               $pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id']);
+               switch($pMonitoringService->fields['state']) {
+
+                  case 'UP':
+                  case 'OK':
+                     $state['OK']++;
+                     break;
+
+                  case 'DOWN':
+                  case 'UNREACHABLE':
+                  case 'CRITICAL':
+                  case 'DOWNTIME':
+                     $state['CRITICAL']++;
+                     break;
+
+                  case 'WARNING':
+                  case 'UNKNOWN':
+                  case 'RECOVERY':
+                  case 'FLAPPING':
+                     $state['WARNING']++;
+                     break;
+
+               }
             }
-            $color = 'green';
             if ($state['CRITICAL'] > 0) {
-               $color = 'red';
+               $a_gstate[$gdata['id']] = "CRITICAL";
             } else if ($state['WARNING'] > 0) {
-               $color = 'orange';
+               $a_gstate[$gdata['id']] = "WARNING";
+            } else {
+               $a_gstate[$gdata['id']] = "OK";
             }
-            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$color."_32.png' />";
-            echo "</td>";
-            echo "</tr>";
-            
-            echo "<tr class='tab_bg_1'>";
-            echo "<td colspan='2' align='center'>";
-            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/businessapplication.form.php?id=".$data['id']."&detail=1'>Détail</a>";
-            echo "</td>";
-            echo "</tr>";
-            
-            echo "</table>";
-            
-            echo "</td>";
-         }     
-      
+         }
+         $state = array();
+         $state['OK'] = 0;
+         $state['WARNING'] = 0;
+         $state['CRITICAL'] = 0;
+         foreach ($a_gstate as $value) {
+            $state[$value]++;
+         }
+         $color = 'green';
+         if ($state['CRITICAL'] > 0) {
+            $color = 'red';
+         } else if ($state['WARNING'] > 0) {
+            $color = 'orange';
+         }
+         echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$color."_32.png' />";
+         echo "</td>";
+         echo "</tr>";
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='2' align='center'>";
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/businessapplication.form.php?id=".$data['id']."&detail=1'>Détail</a>";
+         echo "</td>";
+         echo "</tr>";
+
+         echo "</table>";
+
+         echo "</td>";
+      }      
       
       echo "</tr>";
       echo "</table>";      

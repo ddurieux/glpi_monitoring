@@ -38,9 +38,9 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringRrdtool extends CommonDBTM {
 
-   function createGraph($commands_id, $itemtype, $items_id, $timestamp) {
+   function createGraph($commands_id, $items_id, $timestamp) {
       
-      $fname = GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id.".rrd";
+      $fname = GLPI_PLUGIN_DOC_DIR."/monitoring/PluginMonitoringService-".$items_id.".rrd";
       
       $pluginMonitoringCommand = new PluginMonitoringCommand();
       $pluginMonitoringCommand->getFromDB($commands_id);
@@ -75,11 +75,11 @@ class PluginMonitoringRrdtool extends CommonDBTM {
 
    
    
-   function addData($commands_id, $itemtype, $items_id, $timestamp, $perf_data) {
+   function addData($commands_id, $items_id, $timestamp, $perf_data) {
 
-      $fname = GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id.".rrd";
+      $fname = GLPI_PLUGIN_DOC_DIR."/monitoring/PluginMonitoringService-".$items_id.".rrd";
       if (!file_exists($fname)) {
-         $this->createGraph($commands_id, $itemtype, $items_id, $timestamp);
+         $this->createGraph($commands_id, $items_id, $timestamp);
       }
 
       $pluginMonitoringCommand = new PluginMonitoringCommand();
@@ -130,21 +130,13 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       $pluginMonitoringCommand = new PluginMonitoringCommand();
 
       $title = '';
-      if ($itemtype == "PluginMonitoringHost_Service") {
-         $pMonitoringHost_Service = new PluginMonitoringHost_Service();
-         $pMonitoringService = new PluginMonitoringService();
-         $pMonitoringHost_Service->getFromDB($items_id);
-         $pMonitoringService->getFromDB($pMonitoringHost_Service->fields['plugin_monitoring_services_id']);
-         $pluginMonitoringCommand->getFromDB($pMonitoringService->fields['plugin_monitoring_commands_id']);
-         $title = $pMonitoringHost_Service->fields['name'];
-      } else if ($itemtype == "Computer") {
-         $pluginMonitoringHost = new PluginMonitoringHost();
-         $hdata = current($pluginMonitoringHost->find("`items_id`='".$items_id."'
-                  AND `itemtype`='".$itemtype."'", "", 1));
+      $pMonitoringService = new PluginMonitoringService();
+      $pMonitoringServicedef = new PluginMonitoringServicedef();
+      $pMonitoringService->getFromDB($items_id);
+      $pMonitoringServicedef->getFromDB($pMonitoringService->fields['plugin_monitoring_servicedefs_id']);
+      $pluginMonitoringCommand->getFromDB($pMonitoringServicedef->fields['plugin_monitoring_commands_id']);
+      $title = $pMonitoringService->fields['name'];
 
-         $pluginMonitoringCommand->getFromDB($hdata['plugin_monitoring_commands_id']);
-         $title = 'Ping';
-      }
       
       $a_legend = array();
       if (isset($pluginMonitoringCommand->fields['legend'])) {

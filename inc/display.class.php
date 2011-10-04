@@ -203,22 +203,21 @@ class PluginMonitoringDisplay extends CommonDBTM {
       
 
       unset($itemmat);
-      echo "<td align='center'>";
+      echo "<td class='center'>";
       echo $data['state'];
       echo "</td>";
 
-      echo "<td>";
+      echo "<td class='center'>";
       $to = new PluginMonitoringRrdtool();
       $plu = new PluginMonitoringServiceevent();
       $img = '';
 
-//         $plu->parseToRrdtool($data['id'], $itemtype);
-         if ($to->displayGLPIGraph("PluginMonitoringService", $data['id'], "12h")) {
-            $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=".$itemtype."-".$data['id']."-12h.gif'/>";
-            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=".$itemtype."&items_id=".$data['id']."'>";
-         } else {
-            $img = '';
-         }
+      if ($to->displayGLPIGraph("PluginMonitoringService", $data['id'], "12h")) {
+         $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$data['id']."-12h.gif'/>";
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$data['id']."'>";
+      } else {
+         $img = '';
+      }
       if ($img != '') {
          showToolTip($img, array('img'=>$CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"));
          echo "</a>";

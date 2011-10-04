@@ -162,7 +162,7 @@ CREATE TABLE `glpi_plugin_monitoring_serviceevents` (
   `latency` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `execution_time` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `plugin_monitoring_hosts_services_id` (`plugin_monitoring_hosts_services_id`)
+  KEY `plugin_monitoring_services_id` (`plugin_monitoring_services_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -170,7 +170,7 @@ CREATE TABLE `glpi_plugin_monitoring_serviceevents` (
 
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_services`;
 
-CREATE TABLE `glpi_plugin_monitoring_hosts_services` (
+CREATE TABLE `glpi_plugin_monitoring_services` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `plugin_monitoring_services_id` int(11) NOT NULL DEFAULT '0',
@@ -183,8 +183,7 @@ CREATE TABLE `glpi_plugin_monitoring_hosts_services` (
   `items_id` int(11) NOT NULL DEFAULT '0',
   `itemtype` varchar(100) DEFAULT NULL,
   `alias_command` text COLLATE utf8_unicode_ci,
-  PRIMARY KEY (`id`),
-  KEY `plugin_monitoring_hosts_id` (`plugin_monitoring_hosts_id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

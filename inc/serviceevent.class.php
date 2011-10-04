@@ -113,49 +113,56 @@ class PluginMonitoringServiceevent extends CommonDBTM {
    
    
    
-   function parseToRrdtool($items_id, $itemtype) {
+   function parseToRrdtool($plugin_monitoring_services_id) {
+      global $DB;
       
-      $pluginMonitoringHost = new PluginMonitoringHost();
       $pluginMonitoringRrdtool = new PluginMonitoringRrdtool();
       $pluginMonitoringCommand = new PluginMonitoringCommand();
-      $pMonitoringHost_Service = new PluginMonitoringHost_Service();
       $pMonitoringService = new PluginMonitoringService();
+      $pMonitoringServicedef = new PluginMonitoringServicedef();
       
-      $a_hosts = $pluginMonitoringHost->find("`items_id`='".$items_id."'
-               AND `itemtype`='".$itemtype."'", "", 1);
-      foreach ($a_hosts as $hdata) {
-         $a_hostservice = $pMonitoringHost_Service->find("`plugin_monitoring_hosts_id`='".$hdata['id']."'");
-         foreach ($a_hostservice as $datahs) {
+      $pMonitoringService->getFromDB($plugin_monitoring_services_id);
+      $pMonitoringServicedef->getFromDB($pMonitoringService->fields['plugin_monitoring_servicedefs_id']);
+      $pluginMonitoringCommand->getFromDB($pMonitoringServicedef->fields['plugin_monitoring_commands_id']);
+      
+      $query = "SELECT * FROM `".$this->getTable()."`
+         WHERE `plugin_monitoring_services_id`='".$plugin_monitoring_services_id."'
+         ORDER BY `date`";
+      $result = $DB->query($query);
+               
+      $i = 0;
+      while ($edata=$DB->fetch_array($result)) {
+         $i++;
+         if ($i < $DB->numrows($result)) {
 
-            $a_events = $this->find("`plugin_monitoring_hosts_services_id`='".$datahs['id']."'", 
-                           "date");
-            $i = 0;
-            foreach ($a_events as $edata) {
-               $i++;
-               if ($i < count($a_events)) {
-                  $pMonitoringHost_Service->getFromDB($edata['plugin_monitoring_hosts_services_id']);
-                  $pMonitoringService->getFromDB($pMonitoringHost_Service->fields['plugin_monitoring_services_id']);
-
-                  $pluginMonitoringCommand->getFromDB($pMonitoringService->fields['plugin_monitoring_commands_id']);
-                  if ($pluginMonitoringCommand->fields['legend'] != '') {
-                     $perf_data = $edata['perf_data'];
-                     if ($edata['perf_data'] == '') {
-                        $perf_data = $edata['output'];                     
-                     }
-                     $pluginMonitoringRrdtool->addData($pMonitoringService->fields['plugin_monitoring_commands_id'], 
-                                                    'PluginMonitoringHost_Service', 
-                                                    $edata['plugin_monitoring_hosts_services_id'], 
-                                                    $this->convert_datetime_timestamp($edata['date']), 
-                                                    $perf_data);
-   //                  $this->delete($edata);
-                  }
+            if ($pluginMonitoringCommand->fields['legend'] != '') {
+               $perf_data = $edata['perf_data'];
+               if ($edata['perf_data'] == '') {
+                  $perf_data = $edata['output'];                     
                }
-
+               $pluginMonitoringRrdtool->addData($pMonitoringServicedef->fields['plugin_monitoring_commands_id'], 
+                                              $plugin_monitoring_services_id, 
+                                              $this->convert_datetime_timestamp($edata['date']), 
+                                              $perf_data);
             }
+            $this->delete($edata);
          }
       }
    }
+   
+   
+   
+   static function cronUpdaterrd() {
 
+      $pMonitoringServiceevent = new PluginMonitoringServiceevent();
+      $pMonitoringService = new PluginMonitoringService();
+      
+      $a_lisths = $pMonitoringService->find();
+      foreach ($a_lisths as $data) {
+         $pMonitoringServiceevent->parseToRrdtool($data['id']);
+      }
+      return true;
+   }
 }
 
 ?>
