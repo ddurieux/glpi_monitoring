@@ -124,6 +124,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'>";
       echo "<th>";
+      echo $LANG['joblist'][0];
       echo "</th>";
       echo "<th>";
       echo "</th>";
@@ -168,7 +169,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       
       $pMonitoringService->getFromDB($data['id']);
       
-      echo "<td width='32'>";
+      echo "<td width='32' class='center'>";
       $shortstate = self::getState($data['state']);
       echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/>";
       echo "</td>";
@@ -182,19 +183,26 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo $itemmat->getTypeName();
          echo "</td>";
 
-         echo "<td>";
-         echo $itemmat->getLink(1);
-         echo "</td>";
       } else {
          echo "<td>Services</td>";
+      }
+      $nameitem = '';
+      if (isset($itemmat->fields['name'])) {
+         $nameitem = "[".$itemmat->getLink(1)."]";
+      }
+      if ($pMonitoringService->fields['plugin_monitoring_services_id'] == '0') {
+         echo "<td>".$itemmat->getLink(1)."</td>";
+      } else {
          $pMonitoringServiceH->getFromDB($pMonitoringService->fields['plugin_monitoring_services_id']);
          $itemtypemat = $pMonitoringServiceH->fields['itemtype'];
          $itemmat = new $itemtypemat();
          $itemmat->getFromDB($pMonitoringServiceH->fields['items_id']);
-         echo "<td>".$pMonitoringService->getLink(1)." ".$LANG['networking'][25]." ".$itemmat->getLink(1)."</td>";
-         
+         echo "<td>".$pMonitoringService->getLink(1).$nameitem." ".$LANG['networking'][25]." ".$itemmat->getLink(1)."</td>";
       }
+      
+      
 
+      unset($itemmat);
       echo "<td align='center'>";
       echo $data['state'];
       echo "</td>";

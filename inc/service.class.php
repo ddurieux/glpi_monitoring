@@ -152,7 +152,7 @@ class PluginMonitoringService extends CommonDBTM {
       echo "<th>Check Host</th>";
       echo "<th>".$LANG['common'][13]."</th>";
       echo "<th>Configuration complete</th>";
-      echo "<th>".$LANG['joblist'][0]."</th>";
+      echo "<th width='32'>".$LANG['joblist'][0]."</th>";
       echo "</tr>";
 
       foreach ($a_list as $data) {

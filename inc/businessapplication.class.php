@@ -85,6 +85,7 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
       global $CFG_GLPI,$LANG;
       
       $pMonitoringBusinessrule = new PluginMonitoringBusinessrule();
+      $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
       $pMonitoringService = new PluginMonitoringService();
       echo "<table class='tab_cadre' width='100%'>";
       echo "<tr class='tab_bg_4' style='background: #cececc;'>";
@@ -135,15 +136,16 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
             echo "Mode dégradé&nbsp;:";
             echo "</td>";
             echo "<td width='40' align='center'>";
-            
-            $a_brules = $pMonitoringBusinessrule->find("`plugin_monitoring_businessapplications_id`='".$data['id']."'");
-            $state = array();
-            $state['OK'] = 0;
-            $state['WARNING'] = 0;
-            $state['CRITICAL'] = 0;
-            foreach ($a_brules as $brulesdata) {
-               if ($brulesdata['itemtype'] == 'PluginMonitoringService') {
-                  $pMonitoringService->getFromDB($brulesdata['items_id']);
+            $a_group = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_businessapplications_id`='".$data['id']."'");
+            $a_gstate = array();
+            foreach ($a_group as $gdata) {
+               $a_brules = $pMonitoringBusinessrule->find("`plugin_monitoring_businessrulegroups_id`='".$gdata['id']."'");
+               $state = array();
+               $state['OK'] = 0;
+               $state['WARNING'] = 0;
+               $state['CRITICAL'] = 0;
+               foreach ($a_brules as $brulesdata) {
+                  $pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id']);
                   switch($pMonitoringService->fields['state']) {
 
                      case 'UP':
@@ -167,13 +169,26 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
 
                   }
                }
+               if ($state['CRITICAL'] > 0) {
+                  $a_gstate[$gdata['id']] = "CRITICAL";
+               } else if ($state['WARNING'] > 0) {
+                  $a_gstate[$gdata['id']] = "WARNING";
+               } else {
+                  $a_gstate[$gdata['id']] = "OK";
+               }
             }
+            $state = array();
+            $state['OK'] = 0;
+            $state['WARNING'] = 0;
+            $state['CRITICAL'] = 0;
+            foreach ($a_gstate as $value) {
+               $state[$value]++;
+            }
+            $color = 'green';
             if ($state['CRITICAL'] > 0) {
                $color = 'red';
             } else if ($state['WARNING'] > 0) {
                $color = 'orange';
-            } else {
-               $color = 'green';
             }
             echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$color."_32.png' />";
             echo "</td>";
@@ -200,57 +215,42 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
       global $CFG_GLPI,$LANG;
       
       $pMonitoringBusinessrule = new PluginMonitoringBusinessrule();
+      $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
       $pMonitoringService = new PluginMonitoringService();
       
       $this->getFromDB($id);
       echo "<table class='tab_cadrehov'>";
-      $a_brules = $pMonitoringBusinessrule->find("`plugin_monitoring_businessapplications_id`='".$id."'");
-      $a_groups = array();
-      foreach ($a_brules as $brulesdata) {
-         $a_groups[$brulesdata['group']] = '';
-      }
+      $a_groups = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_businessapplications_id`='".$id."'");
       
       echo "<tr class='tab_bg_1'>";
-      echo "<th rowspan='".(count($a_brules) + (count($a_brules) + 1))."' width='200'>";
+      echo "<th rowspan='".count($a_groups)."' width='200'>";
       echo $this->getName();
       echo "</th>";
       
       $i = 0;
-      foreach($a_groups as $group=>$num) {
-         $a_brulesg = $pMonitoringBusinessrule->find("`plugin_monitoring_businessapplications_id`='".$id."'
-            AND `group`='".$group."'");
+      foreach($a_groups as $gdata) {
+         $a_brulesg = $pMonitoringBusinessrule->find("`plugin_monitoring_businessrulegroups_id`='".$gdata['id']."'");
 
          if ($i > 0) {
-            echo "<tr class='tab_bg_4'>";
+            echo "<tr>";
          }
-         echo "<th height='5' colspan='9'></th>";
-         if ($i == '0') {
-            echo "<th rowspan='".(count($a_brules) + (count($a_brules) + 1))."' width='1'></th>";
-         }
-         echo "</tr>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<th rowspan='".count($a_brulesg)."'>Group ".$i;
-         echo "</th>";
-         $j = 0;
-         foreach ($a_brulesg as $brulesdata) {
-            if ($brulesdata['itemtype'] == 'PluginMonitoringService') {
-               if ($j > 0) {
-                  echo "<tr class='tab_bg_1'>";
-               }
-               $pMonitoringService->getFromDB($brulesdata['items_id']);
-               PluginMonitoringDisplay::displayLine($pMonitoringService->fields, $brulesdata['itemtype']);
-               echo "</tr>";
-               $j++;
-            }
-         }         
          
-         if ($j > 0) {
-            echo "</tr>";
-         }
+         echo "<th>";
+         echo $gdata['name'];
+         echo "</th>";
+         echo "<th>";
+            echo "<table>";
+            foreach ($a_brulesg as $brulesdata) {
+               echo "<tr class='tab_bg_1'>";
+               $pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id']);
+               PluginMonitoringDisplay::displayLine($pMonitoringService->fields);
+              echo "</tr>";
+            }
+            echo "</table>";
+         echo "</th>";
+         echo "</tr>";
          $i++;
       }
-      echo "<tr class='tab_bg_4'>";
-      echo "<th height='4' colspan='9'></th>";
       echo "</tr>";
       
       echo "</table>";
