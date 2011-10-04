@@ -53,10 +53,15 @@ class PluginMonitoringDisplay extends CommonDBTM {
    
 
 
-   function showBoard($width='') {
+   function showBoard($width='', $limit='') {
       global $DB,$CFG_GLPI,$LANG;
 
       $where = '';
+      if ($limit == 'hosts') {
+         $where = "`plugin_monitoring_services_id`='0' ";
+      } else if ($limit == 'services') {
+         $where = "`plugin_monitoring_services_id`>0 ";
+      }      
       if (isset($_SESSION['plugin_monitoring']['service']['field'])) {
          foreach ($_SESSION['plugin_monitoring']['service']['field'] as $key=>$value) {
             $wheretmp = '';
@@ -72,6 +77,10 @@ class PluginMonitoringDisplay extends CommonDBTM {
                                    $_SESSION['plugin_monitoring']['service']['searchtype'][$key],
                                    $_SESSION['plugin_monitoring']['service']['contains'][$key]);
             if (!strstr($wheretmp, "``.``")) {
+               if ($where != ''
+                       AND !isset($_SESSION['plugin_monitoring']['service']['link'][$key])) {
+                  $where .= " AND ";
+               }
                $where .= $wheretmp;
             }
          }
