@@ -57,27 +57,27 @@ $pluginMonitoringBusinessrule = new PluginMonitoringBusinessrule();
       
       case 2:
          // Manage search
-         $_GET = $_SESSION['plugin_monitoring']['display'];
-         Search::manageGetValues("PluginMonitoringDisplay");
-         Search::showGenericSearch("PluginMonitoringDisplay", $_SESSION['plugin_monitoring']['display']);
+         $_GET = $_SESSION['plugin_monitoring']['service'];
+         Search::manageGetValues("PluginMonitoringService");
+         Search::showGenericSearch("PluginMonitoringService", $_SESSION['plugin_monitoring']['service']);
 
          $pMonitoringDisplay->showBoard(950);
          break;
       
       case 3:
          // Manage search
-         $_GET = $_SESSION['plugin_monitoring']['display'];
-         Search::manageGetValues("PluginMonitoringDisplay");
-         Search::showGenericSearch("PluginMonitoringDisplay", $_SESSION['plugin_monitoring']['display']);
+         $_GET = $_SESSION['plugin_monitoring']['service'];
+         Search::manageGetValues("PluginMonitoringService");
+         Search::showGenericSearch("PluginMonitoringService", $_SESSION['plugin_monitoring']['service']);
 
          $pMonitoringDisplay->showBoard("PluginMonitoringHost", 950);
          break;
       
       case 4:
          // Manage search
-         $_GET = $_SESSION['plugin_monitoring']['display'];
-         Search::manageGetValues("PluginMonitoringDisplay");
-         Search::showGenericSearch("PluginMonitoringDisplay", $_SESSION['plugin_monitoring']['display']);
+         $_GET = $_SESSION['plugin_monitoring']['service'];
+         Search::manageGetValues("PluginMonitoringService");
+         Search::showGenericSearch("PluginMonitoringService", $_SESSION['plugin_monitoring']['service']);
 
          $pMonitoringDisplay->showBoard("PluginMonitoringHost_Service", 950);
          break;

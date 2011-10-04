@@ -134,6 +134,9 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       $pMonitoringServicedef = new PluginMonitoringServicedef();
       $pMonitoringService->getFromDB($items_id);
       $pMonitoringServicedef->getFromDB($pMonitoringService->fields['plugin_monitoring_servicedefs_id']);
+      if (!isset($pMonitoringServicedef->fields['plugin_monitoring_commands_id'])) {
+         return false;
+      }
       $pluginMonitoringCommand->getFromDB($pMonitoringServicedef->fields['plugin_monitoring_commands_id']);
       $title = $pMonitoringService->fields['name'];
 

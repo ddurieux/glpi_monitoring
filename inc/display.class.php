@@ -51,57 +51,26 @@ class PluginMonitoringDisplay extends CommonDBTM {
    }
    
    
-   
-   function getSearchOptions() {
-      global $LANG;
 
-      $tab = array();
-      $tab['common'] = $LANG['common'][32];
-
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['common'][16];
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = $this->getType();
-      $tab[1]['massiveaction'] = false; // implicit key==1
-      
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = $LANG['common'][2];
-      $tab[2]['massiveaction'] = false;
-      
-      $tab[3]['table'] = $this->getTable();
-      $tab[3]['field'] = 'state';
-      $tab[3]['name']  = "Status";
-      
-      $tab[4]['table']         = $this->getTable();
-      $tab[4]['field']         = 'last_check';
-      $tab[4]['name']          = 'last_check';
-      $tab[4]['datatype']      = 'datetime';
-
-      return $tab;
-   }
-
-   
 
    function showBoard($width='') {
       global $DB,$CFG_GLPI,$LANG;
 
       $where = '';
-      if (isset($_SESSION['plugin_monitoring']['display']['field'])) {
-         foreach ($_SESSION['plugin_monitoring']['display']['field'] as $key=>$value) {
+      if (isset($_SESSION['plugin_monitoring']['service']['field'])) {
+         foreach ($_SESSION['plugin_monitoring']['service']['field'] as $key=>$value) {
             $wheretmp = '';
-            if (isset($_SESSION['plugin_monitoring']['display']['link'][$key])) {
-               $wheretmp.= " ".$_SESSION['plugin_monitoring']['display']['link'][$key]." ";
+            if (isset($_SESSION['plugin_monitoring']['service']['link'][$key])) {
+               $wheretmp.= " ".$_SESSION['plugin_monitoring']['service']['link'][$key]." ";
             }
 
             $wheretmp .= Search::addWhere(
                                    "",
                                    0,
                                    "PluginMonitoringDisplay",
-                                   $_SESSION['plugin_monitoring']['display']['field'][$key],
-                                   $_SESSION['plugin_monitoring']['display']['searchtype'][$key],
-                                   $_SESSION['plugin_monitoring']['display']['contains'][$key]);
+                                   $_SESSION['plugin_monitoring']['service']['field'][$key],
+                                   $_SESSION['plugin_monitoring']['service']['searchtype'][$key],
+                                   $_SESSION['plugin_monitoring']['service']['contains'][$key]);
             if (!strstr($wheretmp, "``.``")) {
                $where .= $wheretmp;
             }
@@ -114,7 +83,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
                  "", $where);
          
       }
-      $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringService")."` ".$where;
+      $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringService")."` ".$where."
+         ORDER BY `plugin_monitoring_services_id`";
       $result = $DB->query($query);
       if ($width == '') {
          echo "<table class='tab_cadrehov'>";

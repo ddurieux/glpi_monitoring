@@ -68,6 +68,40 @@ class PluginMonitoringService extends CommonDBTM {
    }
    
    
+   
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+      $tab['common'] = $LANG['common'][32];
+
+      $tab[1]['table']         = $this->getTable();
+      $tab[1]['field']         = 'name';
+      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['datatype']      = 'itemlink';
+      $tab[1]['itemlink_type'] = $this->getType();
+      $tab[1]['massiveaction'] = false; // implicit key==1
+      
+      $tab[2]['table']         = $this->getTable();
+      $tab[2]['field']         = 'id';
+      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['massiveaction'] = false;
+      
+      $tab[3]['table'] = $this->getTable();
+      $tab[3]['field'] = 'state';
+      $tab[3]['name']  = "Status";
+      
+      $tab[4]['table']         = $this->getTable();
+      $tab[4]['field']         = 'last_check';
+      $tab[4]['name']          = 'last_check';
+      $tab[4]['datatype']      = 'datetime';
+
+      return $tab;
+   }
+
+   
+   
+   
    function manageServices($itemtype, $items_id) {
       global $CFG_GLPI,$LANG;
       
