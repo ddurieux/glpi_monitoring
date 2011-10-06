@@ -123,6 +123,9 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       
       $pMonitoringService->getFromDB($plugin_monitoring_services_id);
       $pMonitoringServicedef->getFromDB($pMonitoringService->fields['plugin_monitoring_servicedefs_id']);
+      if (!isset($pMonitoringServicedef->fields['plugin_monitoring_commands_id'])) {
+         return;
+      }
       $pluginMonitoringCommand->getFromDB($pMonitoringServicedef->fields['plugin_monitoring_commands_id']);
       
       $query = "SELECT * FROM `".$this->getTable()."`

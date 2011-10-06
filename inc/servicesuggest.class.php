@@ -167,7 +167,6 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
    function listSuggests($itemtype, $items_id) {
       global $LANG,$CFG_GLPI;
       
-      $pluginMonitoringCommand = new PluginMonitoringCommand();
       $pMonitoringService = new PluginMonitoringService();
       $num = -1;
 
@@ -210,6 +209,8 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
          $num = $this->suggestPartitions($items_id, $num, $a_suggest_used);
          $num = $this->suggestProcessor($items_id, $num, $a_suggest_used);
          $num = $this->suggestSoftwares($items_id, $num, $a_suggest_used);
+      } else if ($itemtype == "NetworkEquipment") {
+         $num = $this->suggestNetwork($items_id, $itemtype, $num, $a_suggest_used);
       }
      
       echo "</table>";
@@ -363,11 +364,54 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
    
    
    
-   function suggestNetwork($items_id) {
+   function suggestNetwork($items_id, $itemtype, $num, $a_suggest_used) {
       global $LANG;
-      
-   }
    
+      $networkPort = new NetworkPort();
+      $a_networkPort = $networkPort->find("`itemtype`='".$itemtype."'
+            AND `items_id`='".$items_id."'", "`name`");
+      foreach ($a_networkPort as $ndata) {
+/*
+ 
+check_snmp
+ => 8 oid max, soit à proposer : 
+    > bandwith entree 
+    > bandwith sortie
+    > error entrée
+    > error sortie
+    > nb connections on port
+    > 
+    > 
+    >
+*/
+         $num++;
+//         if (!in_array($datatemplate['id'], $a_suggest_used)) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td><input type='checkbox' name='suggestnum[]' value='".$num."' /></td>";
+            echo "<td><strong>Networkport informations : </strong>".$ndata['name'];
+            echo "<input type='hidden' name='itemtype[]' value='NetworkPort'/>";
+            echo "<input type='hidden' name='items_id[]' value='".$ndata['id']."'/>";
+            echo "<input type='hidden' name='plugin_monitoring_servicesuggests_id[]' value='".$ndata['id']."'/>";
+            echo "</td>";
+            echo "<td>".$ndata['name']."</td>";
+            echo "<td>";
+            echo "<input type='hidden' name='plugin_monitoring_servicedefs_id[]' value=''/>";
+            echo "</td>";
+            echo "</tr>";
+//         }
+            
+            
+/* TODO : Manage this            
+check_ifoperstatus
+check_ifstatus
+check_snmp_int.pl
+*/
+
+            
+            
+      }
+      return $num;
+   }   
 }
 
 ?>

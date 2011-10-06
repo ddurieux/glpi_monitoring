@@ -484,7 +484,7 @@ class PluginMonitoringService extends CommonDBTM {
       if (count($a_displayarg) > 0) {
          $a_argtext = importArrayFromDB($pMonitoringCommand->fields['arguments']);
          echo "<tr>";
-         echo "<th colspan='4'>Arguments&nbsp;</th>";
+         echo "<th colspan='4'>Argument ([text:text] is used to get values dynamically)&nbsp;</th>";
          echo "</tr>";
           
          foreach ($a_displayarg as $key=>$value) {
@@ -496,6 +496,16 @@ class PluginMonitoringService extends CommonDBTM {
             } else {
                echo "Argument&nbsp;:";
             }
+            
+            if ($value == '') {
+               $matches = array();
+               preg_match('/(\[\w+\:\w+\])/',
+                              nl2br($a_argtext[$key]), $matches);
+               if (isset($matches[0])) {
+                  $value = $matches[0];
+               }
+            }
+            
             echo "</td>";
             echo "<td>";
             echo "<input type='text' name='arg[".$key."]' value='".$value."'/><br/>";
@@ -506,6 +516,73 @@ class PluginMonitoringService extends CommonDBTM {
       
       $this->showFormButtons($options);
       return true;
+   }
+   
+   
+   static function convertArgument($services_id, $argument) {
+      
+      $pMonitoringService = new PluginMonitoringService();
+      $pMonitoringService->getFromDB($services_id);
+      $itemtype = $pMonitoringService->fields['itemtype'];
+      $item = new $itemtype();
+      $item->getFromDB($pMonitoringService->fields['items_id']);
+
+      $argument = str_replace("[", "", $argument);
+      $argument = str_replace("]", "", $argument);
+      $a_arg = explode(":", $argument);
+      
+      $devicetype = '';
+      $devicedata = array();
+      if ($itemtype == "NetworkPort") {
+         $itemtype2 = $item->fields['itemtype'];
+         $item2 = new $itemtype2();
+         $item2->getFromDB($item->fields['items_id']);
+         $devicetype = $itemtype2;
+         $devicedata = $item2->fields;
+      } else {
+         $devicetype = $itemtype;
+         $devicedata = $item->fields;
+      }
+      
+      if ($devicetype == "NetworkEquipment") {
+      
+         switch ($a_arg[0]) {
+            
+            case 'OID':
+               // Load SNMP model and get oid.portnum
+               $pFusinvsnmpModel = new PluginFusinvsnmpModel();
+               
+               
+               return '';
+               break;
+            
+            case 'SNMP':
+               $PluginFusinvsnmpNetworkEquipment = new PluginFusinvsnmpCommonDBTM("glpi_plugin_fusinvsnmp_networkequipments");
+               $PluginFusinvsnmpNetworkEquipment->load($devicedata['id']); 
+               $pFusinvsnmpConfigSecurity = new PluginFusinvsnmpConfigSecurity();
+               $pFusinvsnmpConfigSecurity->getFromDB($PluginFusinvsnmpNetworkEquipment->getValue("plugin_fusinvsnmp_configsecurities_id"));
+
+               switch ($a_arg[1]) {
+               
+                  case 'version':
+                     if ($pFusinvsnmpConfigSecurity->fields['snmpversion'] == '2') {
+                        $pFusinvsnmpConfigSecurity->fields['snmpversion'] = '2c';
+                     }
+                     return $pFusinvsnmpConfigSecurity->fields['snmpversion'];
+                     break;
+                  
+                  case 'authentication':
+                     return $pFusinvsnmpConfigSecurity->fields['community'];
+                     break;
+
+               }
+               
+               
+               break;
+               
+         }
+      }
+      return $argument;
    }
    
 }

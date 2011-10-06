@@ -307,6 +307,24 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['arguments'] = exportArrayToDB($arg);
       $this->add($input);
       
+      $input = array();
+      $input['name'] = 'Check snmp';
+      $input['command_name'] = 'check_snmp';
+      $input['command_line'] = "\$PLUGINSDIR\$/check_SNMP -H \$HOSTADDRESS\$ -P \$ARG1\$ -C \$ARG2\$ -o \$ARG3\$,\$ARG4\$,\$ARG5\$,\$ARG6\$,\$ARG7\$,\$ARG8\$,\$ARG9\$,\$ARG10\$";
+      $arg = array();
+      $arg['ARG1'] = 'SNMP protocol version (1|2c|3) [SNMP:version]';
+      $arg['ARG2'] = 'Community string for SNMP communication [SNMP:authentication]';
+      $arg['ARG3'] = 'oid [OID:ifinoctets]';
+      $arg['ARG4'] = 'oid [OID:ifoutoctets]';
+      $arg['ARG5'] = 'oid [OID:ifinerrors]';
+      $arg['ARG6'] = 'oid [OID:ifouterrors]';
+      $arg['ARG7'] = 'oid';
+      $arg['ARG8'] = 'oid';
+      $arg['ARG9'] = 'oid';
+      $arg['ARG10'] = 'oid';
+      $input['arguments'] = exportArrayToDB($arg);
+      $this->add($input);
+      
    }
 
 
