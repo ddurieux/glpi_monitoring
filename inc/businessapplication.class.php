@@ -124,6 +124,7 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
             case 'UNKNOWN':
             case 'RECOVERY':
             case 'FLAPPING':
+            case '':
                echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_40.png'/>";
                break;
 
