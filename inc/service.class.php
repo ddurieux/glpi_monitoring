@@ -520,6 +520,7 @@ class PluginMonitoringService extends CommonDBTM {
    
    
    static function convertArgument($services_id, $argument) {
+      global $DB;
       
       $pMonitoringService = new PluginMonitoringService();
       $pMonitoringService->getFromDB($services_id);
@@ -545,20 +546,34 @@ class PluginMonitoringService extends CommonDBTM {
       }
       
       if ($devicetype == "NetworkEquipment") {
-      
+         $PluginFusinvsnmpNetworkEquipment = new PluginFusinvsnmpCommonDBTM("glpi_plugin_fusinvsnmp_networkequipments");
+         $PluginFusinvsnmpNetworkEquipment->load($devicedata['id']); 
          switch ($a_arg[0]) {
             
             case 'OID':
                // Load SNMP model and get oid.portnum
-               $pFusinvsnmpModel = new PluginFusinvsnmpModel();
-               
+               $query = "SELECT `glpi_plugin_fusioninventory_mappings`.`name` AS `mapping_name`,
+                                `glpi_plugin_fusinvsnmp_modelmibs`.*
+                         FROM `glpi_plugin_fusinvsnmp_modelmibs`
+                              LEFT JOIN `glpi_plugin_fusioninventory_mappings`
+                                        ON `glpi_plugin_fusinvsnmp_modelmibs`.`plugin_fusioninventory_mappings_id`=
+                                           `glpi_plugin_fusioninventory_mappings`.`id`
+                         WHERE `plugin_fusinvsnmp_models_id`='".$PluginFusinvsnmpNetworkEquipment->getValue("plugin_fusinvsnmp_models_id")."'
+                           AND `is_active`='1'
+                           AND `oid_port_counter`='0'
+                           AND `glpi_plugin_fusioninventory_mappings`.`name`='".$a_arg[1]."'";
+
+               $result=$DB->query($query);
+               while ($data=$DB->fetch_array($result)) {
+                  return Dropdown::getDropdownName('glpi_plugin_fusinvsnmp_miboids',$data['plugin_fusinvsnmp_miboids_id']).
+                       ".".$item->fields['logical_number'];
+               }
+
                
                return '';
                break;
             
             case 'SNMP':
-               $PluginFusinvsnmpNetworkEquipment = new PluginFusinvsnmpCommonDBTM("glpi_plugin_fusinvsnmp_networkequipments");
-               $PluginFusinvsnmpNetworkEquipment->load($devicedata['id']); 
                $pFusinvsnmpConfigSecurity = new PluginFusinvsnmpConfigSecurity();
                $pFusinvsnmpConfigSecurity->getFromDB($PluginFusinvsnmpNetworkEquipment->getValue("plugin_fusinvsnmp_configsecurities_id"));
 
