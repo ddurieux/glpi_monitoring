@@ -207,6 +207,10 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_contacts[] = $user->fields['name'];
             }
          $a_hosts[$i]['contacts'] = implode(',', $a_contacts);
+         $a_hosts[$i]['process_perf_data'] = '1';
+         $a_hosts[$i]['notification_interval'] = '30';
+         $a_hosts[$i]['notification_period'] = '24x7';
+         $a_hosts[$i]['notification_options'] = 'd,u,r';
          $i++;
       }
       
@@ -323,7 +327,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          }         
       }
 
-      
+      // Business rules....
       $pluginMonitoringServiceH = new PluginMonitoringService();
       $a_listBA = $pluginMonitoringBusinessapplication->find();
       foreach ($a_listBA as $dataBA) {
@@ -355,14 +359,19 @@ class PluginMonitoringShinken extends CommonDBTM {
                $hostname = $itemtype."-".$pluginMonitoringServiceH->fields['id']."-".$item->fields['name'];
 
                if ($gdata['operator'] == 'and'
-                       OR $gdata['operator'] == 'or') {
+                       OR $gdata['operator'] == 'or'
+                       OR strstr($gdata['operator'], ' of:')) {
 
-                  $operator = '&';
-                  if ($gdata['operator'] == 'or') {
-                     $operator = '|';
+                  $operator = '|';
+                  if ($gdata['operator'] == 'and') {
+                     $operator = '&';
                   }
                   if (!isset($a_group[$gdata['id']])) {
-                     $a_group[$gdata['id']] = $hostname.",".$pluginMonitoringService->fields['name']."-".$pluginMonitoringService->fields['id'];
+                     $a_group[$gdata['id']] = '';
+                     if (strstr($gdata['operator'], ' of:')) {
+                        $a_group[$gdata['id']] = $gdata['operator'];
+                     }
+                     $a_group[$gdata['id']] .= $hostname.",".$pluginMonitoringService->fields['name']."-".$pluginMonitoringService->fields['id'];
                   } else {
                      $a_group[$gdata['id']] .= $operator.$hostname.",".$pluginMonitoringService->fields['name']."-".$pluginMonitoringService->fields['id'];
                   }
@@ -371,9 +380,6 @@ class PluginMonitoringShinken extends CommonDBTM {
                }            
             }
          }
-                  
-         
-         
          foreach ($a_group as $key=>$value) {
             if (!strstr($value, "&")
                     AND !strstr($value, "|")) {
