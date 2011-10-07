@@ -243,9 +243,12 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
       $a_groups = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_businessapplications_id`='".$id."'");
       
       echo "<tr class='tab_bg_1'>";
-      echo "<th rowspan='".count($a_groups)."' width='200'>";
-      echo $this->getName();
-      echo "</th>";
+      
+      $color = PluginMonitoringDisplay::getState($this->fields['state']);
+      
+      echo "<td rowspan='".count($a_groups)."' class='center' width='200' bgcolor='".$color."'>";
+      echo "<strong>".$this->getName()."</strong>";
+      echo "</td>";
       
       $i = 0;
       foreach($a_groups as $gdata) {
