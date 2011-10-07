@@ -169,13 +169,34 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
 
                }
             }
-            if ($state['CRITICAL'] > 0) {
-               $a_gstate[$gdata['id']] = "CRITICAL";
-            } else if ($state['WARNING'] > 0) {
-               $a_gstate[$gdata['id']] = "WARNING";
+            if ($gdata['operator'] == 'or') {
+               if ($state['OK'] >= 1) {
+                  $a_gstate[$gdata['id']] = "OK";
+               } else if ($state['WARNING'] >= 1) {
+                  $a_gstate[$gdata['id']] = "WARNING";
+               } else {
+                  $a_gstate[$gdata['id']] = "CRITICAL";
+               }            
             } else {
-               $a_gstate[$gdata['id']] = "OK";
+               $num_min = str_replace(" of:", "", $gdata['operator']);
+               if ($state['OK'] >= $num_min) {
+                  $a_gstate[$gdata['id']] = "OK";
+               } else if ($state['WARNING'] >= $num_min) {
+                  $a_gstate[$gdata['id']] = "WARNING";
+               } else {
+                  $a_gstate[$gdata['id']] = "CRITICAL";
+               } 
             }
+//            
+//            
+//            
+//            if ($state['CRITICAL'] > 0) {
+//               $a_gstate[$gdata['id']] = "CRITICAL";
+//            } else if ($state['WARNING'] > 0) {
+//               $a_gstate[$gdata['id']] = "WARNING";
+//            } else {
+//               $a_gstate[$gdata['id']] = "OK";
+//            }
          }
          $state = array();
          $state['OK'] = 0;
@@ -234,9 +255,37 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
             echo "<tr>";
          }
          
-         echo "<th>";
-         echo $gdata['name'];
-         echo "</th>";
+         $state = array();
+         $state['red'] = 0;
+         $state['orange'] = 0;
+         $state['green'] = 0;
+         foreach ($a_brulesg as $brulesdata) {
+            $pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id']);
+            $state[PluginMonitoringDisplay::getState($pMonitoringService->fields['state'])]++;
+         }
+         $color = "";
+         if ($gdata['operator'] == 'or') {
+            if ($state['green'] >= 1) {
+               $color = "green";
+            } else if ($state['orange'] >= 1) {
+               $color = "orange";
+            } else {
+               $color = "red";
+            }            
+         } else {
+            $num_min = str_replace(" of:", "", $gdata['operator']);
+            if ($state['green'] >= $num_min) {
+               $color = "green";
+            } else if ($state['orange'] >= $num_min) {
+               $color = "orange";
+            } else {
+               $color = "red";
+            } 
+         }
+         
+         echo "<td class='center' bgcolor='".$color."'>";
+         echo $gdata['name']."<br/>[ ".$gdata['operator']." ]";
+         echo "</td>";
          echo "<th>";
             echo "<table>";
             foreach ($a_brulesg as $brulesdata) {
