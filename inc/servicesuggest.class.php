@@ -178,7 +178,8 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
       foreach ($a_host_services as $data) {
          if ($data['plugin_monitoring_servicesuggests_id'] != '0') {
             $this->getFromDB($data['plugin_monitoring_servicesuggests_id']);
-            if ($this->fields['link'] == 'partition') {
+            if (isset($this->fields['link'])
+                    AND $this->fields['link'] == 'partition') {
                $a_suggest_used[] = $data['itemtype']."||".$data['items_id'];
             } else {
                $a_suggest_used[] = $data['plugin_monitoring_servicesuggests_id'];
@@ -366,7 +367,7 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
    
    function suggestNetwork($items_id, $itemtype, $num, $a_suggest_used) {
       global $LANG;
-   
+      
       $networkPort = new NetworkPort();
       $a_networkPort = $networkPort->find("`itemtype`='".$itemtype."'
             AND `items_id`='".$items_id."'", "`name`");
@@ -385,7 +386,7 @@ check_snmp
     >
 */
          $num++;
-//         if (!in_array($datatemplate['id'], $a_suggest_used)) {
+         if (!in_array("NetworkPort||".$ndata['id'], $a_suggest_used)) {
             echo "<tr class='tab_bg_1'>";
             echo "<td><input type='checkbox' name='suggestnum[]' value='".$num."' /></td>";
             echo "<td><strong>Networkport informations : </strong>".$ndata['name'];
@@ -398,7 +399,7 @@ check_snmp
             echo "<input type='hidden' name='plugin_monitoring_servicedefs_id[]' value=''/>";
             echo "</td>";
             echo "</tr>";
-//         }
+         }
             
             
 /* TODO : Manage this            
