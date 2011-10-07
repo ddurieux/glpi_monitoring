@@ -289,7 +289,7 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
          echo "<td class='center' bgcolor='".$color."'>";
          echo $gdata['name']."<br/>[ ".$gdata['operator']." ]";
          echo "</td>";
-         echo "<th>";
+         echo "<td bgcolor='".$color."'>";
             echo "<table>";
             foreach ($a_brulesg as $brulesdata) {
                echo "<tr class='tab_bg_1'>";
