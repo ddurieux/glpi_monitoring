@@ -310,7 +310,7 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input = array();
       $input['name'] = 'Check snmp';
       $input['command_name'] = 'check_snmp';
-      $input['command_line'] = "\$PLUGINSDIR\$/check_SNMP -H \$HOSTADDRESS\$ -P \$ARG1\$ -C \$ARG2\$ -o \$ARG3\$,\$ARG4\$,\$ARG5\$,\$ARG6\$,\$ARG7\$,\$ARG8\$,\$ARG9\$,\$ARG10\$";
+      $input['command_line'] = "\$PLUGINSDIR\$/check_snmp -H \$HOSTADDRESS\$ -P \$ARG1\$ -C \$ARG2\$ -o \$ARG3\$,\$ARG4\$,\$ARG5\$,\$ARG6\$,\$ARG7\$,\$ARG8\$,\$ARG9\$,\$ARG10\$";
       $arg = array();
       $arg['ARG1'] = 'SNMP protocol version (1|2c|3) [SNMP:version]';
       $arg['ARG2'] = 'Community string for SNMP communication [SNMP:authentication]';

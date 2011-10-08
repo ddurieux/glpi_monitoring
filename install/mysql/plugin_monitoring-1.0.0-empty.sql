@@ -156,7 +156,7 @@ CREATE TABLE `glpi_plugin_monitoring_serviceevents` (
   `plugin_monitoring_services_id` int(11) NOT NULL DEFAULT '0',
   `date` datetime DEFAULT NULL,
   `event` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `perf_data` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `perf_data` text COLLATE utf8_unicode_ci,
   `output` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `state` varchar(255) COLLATE utf8_unicode_ci DEFAULT '0',
   `latency` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,

@@ -198,6 +198,8 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_hosts[$i]['max_check_attempts'] = $pluginMonitoringCheck->fields['max_check_attempts'];
          if ($calendar->getFromDB($pMonitoringServicedef->fields['calendars_id'])) {
             $a_hosts[$i]['check_period'] = $calendar->fields['name'];
+         } else {
+            $a_hosts[$i]['check_period'] = "24x7";
          }
             $a_contacts = array();
             $a_list_contact = $pluginMonitoringHost_Contact->find("`plugin_monitoring_hosts_id`='".$data['id']."'");
@@ -517,48 +519,46 @@ class PluginMonitoringShinken extends CommonDBTM {
       
       $a_listcalendar = $calendar->find();
       foreach ($a_listcalendar as $datacalendar) {
-         //if ($datacalendar['name'] != "Default") {
-//            $a_timeperiods[$i]['timeperiod_name'] = $datacalendar['name'];
-//            $a_timeperiods[$i]['alias'] = $datacalendar['name'];
-//            $a_listsegment = $calendarSegment->find("`calendars_id`='".$datacalendar['id']."'");
-//            foreach ($a_listsegment as $datasegment) {
-//               $begin = preg_replace("/:00$/", "", $datasegment['begin']);
-//               $end = preg_replace("/:00$/", "", $datasegment['end']);
-//               switch ($datasegment['day']) {
-//
-//                  case "0":
-//                     $day = "sunday";
-//                     break;
-//
-//                  case "1":
-//                     $day = "monday";
-//                     break;
-//
-//                  case "2":
-//                     $day = "tuesday";
-//                     break;
-//
-//                  case "3":
-//                     $day = "wednesday";
-//                     break;
-//
-//                  case "4":
-//                     $day = "thursday";
-//                     break;
-//
-//                  case "5":
-//                     $day = "friday";
-//                     break;
-//
-//                  case "6":
-//                     $day = "saturday";
-//                     break;
-//
-//               }
-//               $a_timeperiods[$i][$day] = $begin."-".$end;
-//            }
-//            $i++;
-         //}
+         $a_timeperiods[$i]['timeperiod_name'] = $datacalendar['name'];
+         $a_timeperiods[$i]['alias'] = $datacalendar['name'];
+         $a_listsegment = $calendarSegment->find("`calendars_id`='".$datacalendar['id']."'");
+         foreach ($a_listsegment as $datasegment) {
+            $begin = preg_replace("/:00$/", "", $datasegment['begin']);
+            $end = preg_replace("/:00$/", "", $datasegment['end']);
+            switch ($datasegment['day']) {
+
+               case "0":
+                  $day = "sunday";
+                  break;
+
+               case "1":
+                  $day = "monday";
+                  break;
+
+               case "2":
+                  $day = "tuesday";
+                  break;
+
+               case "3":
+                  $day = "wednesday";
+                  break;
+
+               case "4":
+                  $day = "thursday";
+                  break;
+
+               case "5":
+                  $day = "friday";
+                  break;
+
+               case "6":
+                  $day = "saturday";
+                  break;
+
+            }
+            $a_timeperiods[$i][$day] = $begin."-".$end;
+         }
+         $i++;
       }
 
       if ($file == "1") {
