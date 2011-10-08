@@ -149,7 +149,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $pMonitoringService->getFromDB($data['id']);
       
       echo "<td width='32' class='center'>";
-      $shortstate = self::getState($data['state']);
+      $shortstate = self::getState($data['state'], $data['state_type']);
       echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/>";
       echo "</td>";
       if (isset($pMonitoringService->fields['itemtype']) 
@@ -212,14 +212,16 @@ class PluginMonitoringDisplay extends CommonDBTM {
          $a_serv = $pMonitoringService->find("`plugin_monitoring_services_id`='".$data['id']."'");
          $globalserv_state = array();
          $globalserv_state['red'] = 0;
+         $globalserv_state['red_soft'] = 0;
          $globalserv_state['orange'] = 0;
+         $globalserv_state['orange_soft'] = 0;
          $globalserv_state['green'] = 0;
          $tooltip = "<table class='tab_cadrehov' width='300'>";
          $tooltip .= "<tr class='tab_bg_1'>
             <td width='200'><strong>Host</strong> :</td><td>
             <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/></td></tr>";
          foreach ($a_serv as $sdata) {
-            $stateserv = self::getState($sdata['state']);
+            $stateserv = self::getState($sdata['state'], $data['state_type']);
             if (isset($globalserv_state[$stateserv])) {
                $globalserv_state[$stateserv]++;
             }
@@ -232,8 +234,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
          $img = '';
          if ($globalserv_state['red'] > 0) {
             $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_32.png";
+         } else if ($globalserv_state['red_soft'] > 0) {
+            $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_32_soft.png";
          } else if ($globalserv_state['orange'] > 0) {
             $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_32.png";
+         } else if ($globalserv_state['orange_soft'] > 0) {
+            $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_32_soft.png";
          } else {
             $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_32.png";
          }
@@ -252,7 +258,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
    }
 
    
-   static function getState($state) {
+   static function getState($state, $state_type) {
       $shortstate = '';
       switch($state) {
 
@@ -276,6 +282,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
             $shortstate = 'orange';
             break;
 
+      }
+      if ($state_type == 'SOFT') {
+         $shortstate.= '_soft';
       }
       return $shortstate;
    }
@@ -339,45 +348,92 @@ class PluginMonitoringDisplay extends CommonDBTM {
    function displayCounters() {
       global $CFG_GLPI;
       
-      $ok = countElementsInTable("glpi_plugin_monitoring_services", "`state`='OK' OR `state`='UP'");
+      $ok = countElementsInTable("glpi_plugin_monitoring_services", 
+              "(`state`='OK' OR `state`='UP') AND `state_type`='HARD'");
       
       $warning = countElementsInTable("glpi_plugin_monitoring_services", 
-              "`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL");
+              "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
+                 AND `state_type`='HARD'");
       
       $critical = countElementsInTable("glpi_plugin_monitoring_services", 
-              "`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME'");
+              "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
+                 AND `state_type`='HARD'");
     
-      echo "<table class='tab_cadre'>";
-      echo "<tr class='tab_bg_1'>";
-      echo "<th width='70'>";
-      if ($critical > 0) {
-         echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_40.png'/>";
-      }
-      echo "</th>";
-      echo "<th width='70'>";
-      if ($warning > 0) {
-         echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_40.png'/>";
-      }
-      echo "</th>";
-      echo "<th width='70'>";
-      echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_40.png'/>";
-      echo "</th>";      
-      echo "</tr>";
+      $warning_soft = countElementsInTable("glpi_plugin_monitoring_services", 
+              "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
+                 AND `state_type`='SOFT'");
       
-      echo "<th height='30'>";
-      if ($critical > 0) {
-         echo $critical;
-      }
-      echo "</th>";
-      echo "<th>";
-      if ($warning > 0) {
-         echo $warning;
-      }
-      echo "</th>";
-      echo "<th>";
-      echo $ok;
-      echo "</th>";      
-      echo "</tr>";      
+      $critical_soft = countElementsInTable("glpi_plugin_monitoring_services", 
+              "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
+                 AND `state_type`='SOFT'");
+    
+      echo "<table align='center'>";
+      echo "<tr>";
+      echo "<td>";
+         echo "<table class='tab_cadre'>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<th width='70'>";
+         if ($critical > 0) {
+            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_40.png'/>";
+         }
+         echo "</th>";
+         echo "<th width='70'>";
+         if ($warning > 0) {
+            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_40.png'/>";
+         }
+         echo "</th>";
+         echo "<th width='70'>";
+         echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_40.png'/>";
+         echo "</th>";
+         echo "</tr>";
+
+         echo "<th height='30'>";
+         if ($critical > 0) {
+            echo $critical;
+         }
+         echo "</th>";
+         echo "<th>";
+         if ($warning > 0) {
+            echo $warning;
+         }
+         echo "</th>";
+         echo "<th>";
+         echo $ok;
+         echo "</th>";
+         echo "</tr>";      
+         echo "</table>";
+      echo "</td>";
+      echo "<td width='100'>";
+      
+      echo "</td>";
+      echo "<td>";
+         echo "<table class='tab_cadre'>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<th width='70' height='40'>";
+         if ($critical_soft > 0) {
+            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_40_soft.png'/>";
+         }
+         echo "</th>";
+         echo "<th width='70'>";
+         if ($warning_soft > 0) {
+            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_40_soft.png'/>";
+         }
+         echo "</th>";
+         echo "</tr>";
+         echo "<th height='30'>";
+         if ($critical_soft > 0) {
+            echo $critical_soft;
+         }
+         echo "</th>";
+         echo "<th>";
+         if ($warning_soft > 0) {
+            echo $warning_soft;
+         }
+         echo "</th>";
+         echo "</tr>";      
+         echo "</table>";
+      echo "</td>";
+      echo "</tr>";
       echo "</table>";
       
    }

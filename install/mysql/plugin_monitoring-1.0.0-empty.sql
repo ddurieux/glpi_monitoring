@@ -8,6 +8,7 @@ CREATE TABLE `glpi_plugin_monitoring_businessapplications` (
    `comment` text COLLATE utf8_unicode_ci,
    `last_check` datetime DEFAULT NULL,
    `state` varchar(255) COLLATE utf8_unicode_ci DEFAULT '0',
+   `state_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT '0',
    PRIMARY KEY (`id`),
    KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -159,6 +160,7 @@ CREATE TABLE `glpi_plugin_monitoring_serviceevents` (
   `perf_data` text COLLATE utf8_unicode_ci,
   `output` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `state` varchar(255) COLLATE utf8_unicode_ci DEFAULT '0',
+  `state_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT '0',
   `latency` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `execution_time` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -179,6 +181,7 @@ CREATE TABLE `glpi_plugin_monitoring_services` (
   `last_check` datetime DEFAULT NULL,
   `event` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `state` varchar(255) COLLATE utf8_unicode_ci DEFAULT '0',
+  `state_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT '0',
   `arguments` text COLLATE utf8_unicode_ci,
   `items_id` int(11) NOT NULL DEFAULT '0',
   `itemtype` varchar(100) DEFAULT NULL,

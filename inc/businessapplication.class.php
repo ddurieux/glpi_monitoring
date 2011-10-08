@@ -245,7 +245,7 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
       
       echo "<tr class='tab_bg_1'>";
       
-      $color = PluginMonitoringDisplay::getState($this->fields['state']);
+      $color = PluginMonitoringDisplay::getState($this->fields['state'], $this->fields['state_type']);
       
       echo "<td rowspan='".count($a_groups)."' class='center' width='200' bgcolor='".$color."'>";
       echo "<strong>".$this->getName()."</strong>";
@@ -265,7 +265,7 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
          $state['green'] = 0;
          foreach ($a_brulesg as $brulesdata) {
             $pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id']);
-            $state[PluginMonitoringDisplay::getState($pMonitoringService->fields['state'])]++;
+            $state[PluginMonitoringDisplay::getState($pMonitoringService->fields['state'], $pMonitoringService->fields['state_type'])]++;
          }
          $color = "";
          if ($gdata['operator'] == 'or') {

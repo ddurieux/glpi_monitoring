@@ -237,7 +237,7 @@ class PluginMonitoringService extends CommonDBTM {
          echo "</td>";
          
          // Status
-         $shortstate = PluginMonitoringDisplay::getState($data['state']);
+         $shortstate = PluginMonitoringDisplay::getState($data['state'], $data['state_type']);
          echo "<td class='center'>";
          echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/>";
          echo "</td>";
