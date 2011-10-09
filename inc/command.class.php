@@ -270,6 +270,13 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['name'] = 'Check disk';
       $input['command_name'] = 'check_disk';
       $input['command_line'] = "\$PLUGINSDIR\$/check_disk -w \$ARG1\$ -c \$ARG2\$ -p \$ARG3\$";
+      $input['regex'] = addslashes('(.*)=(\\d+)\\w+;(\\d+);(\\d+);(\\d+);(\\d+)');
+      $legend = array();
+      $legend[2] = "Used";
+      $legend[3] = "Warning";
+      $legend[4] = "Critical";
+      $legend[6] = "Total_capacity";
+      $input['legend'] = exportArrayToDB($legend);
       $arg = array();
       $arg['ARG1'] = 'INTEGER: WARNING status if less than INTEGER units of disk are free\n
          PERCENT%: WARNING status if less than PERCENT of disk space is free';

@@ -132,9 +132,11 @@ class PluginMonitoringShinken extends CommonDBTM {
                }
             } else {
                $a_listnetwork = $networkPort->find("`itemtype`='".$data['itemtype']."'
-                  AND `items_id`='".$data['items_id']."'");
+                  AND `items_id`='".$data['items_id']."'", "`id`");
                foreach ($a_listnetwork as $datanetwork) {
-                  if ($datanetwork['ip'] != '' AND $datanetwork['ip'] != '127.0.0.1') {
+                  if ($datanetwork['ip'] != '' 
+                          AND $datanetwork['ip'] != '127.0.0.1'
+                          AND $ip != '') {
                      $ip = $datanetwork['ip'];
                      break;
                   }

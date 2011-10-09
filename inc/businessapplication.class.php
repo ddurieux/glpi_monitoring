@@ -246,9 +246,12 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
       echo "<tr class='tab_bg_1'>";
       
       $color = PluginMonitoringDisplay::getState($this->fields['state'], $this->fields['state_type']);
+      $pic = $color;
+      $color = str_replace("_soft", "", $color);
       
       echo "<td rowspan='".count($a_groups)."' class='center' width='200' bgcolor='".$color."'>";
-      echo "<strong>".$this->getName()."</strong>";
+      echo "<strong style='font-size: 20px'>".$this->getName()."</strong><br/>";
+      echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$pic."_40.png'/>";
       echo "</td>";
       
       $i = 0;
@@ -261,7 +264,9 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
          
          $state = array();
          $state['red'] = 0;
+         $state['red_soft'] = 0;
          $state['orange'] = 0;
+         $state['orange_soft'] = 0;
          $state['green'] = 0;
          foreach ($a_brulesg as $brulesdata) {
             $pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id']);

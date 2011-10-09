@@ -45,7 +45,7 @@ if (!isset($_POST["id"])) {
 $pMonitoringDisplay = new PluginMonitoringDisplay();
 $pluginMonitoringBusinessrule = new PluginMonitoringBusinessrule();
 
-   switch($_POST['glpi_tab']) {
+   switch($_REQUEST['glpi_tab']) {
       case -1 :
 
          break;

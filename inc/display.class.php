@@ -72,7 +72,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
             $wheretmp .= Search::addWhere(
                                    "",
                                    0,
-                                   "PluginMonitoringDisplay",
+                                   "PluginMonitoringService",
                                    $_SESSION['plugin_monitoring']['service']['field'][$key],
                                    $_SESSION['plugin_monitoring']['service']['searchtype'][$key],
                                    $_SESSION['plugin_monitoring']['service']['contains'][$key]);
@@ -374,7 +374,14 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<th width='70'>";
          if ($critical > 0) {
-            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_40.png'/>";
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php?".
+               "field[0]=3&searchtype[0]=contains&contains[0]=CRITICAL".
+                  "&link[1]=OR&field[1]=3&searchtype[1]=contains&contains[1]=DOWN".
+                  "&link[2]=OR&field[2]=3&searchtype[2]=contains&contains[2]=UNREACHABLE".
+                  "&link[3]=AND&field[3]=3&searchtype[3]=contains&contains[3]=DOWNTIME".
+                  "&itemtype=PluginMonitoringService&start=0&glpi_tab=2'>
+               <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_40.png'/>
+                  </a>";
          }
          echo "</th>";
          echo "<th width='70'>";

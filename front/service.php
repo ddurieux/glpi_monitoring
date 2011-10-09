@@ -32,22 +32,10 @@
    ----------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
+if(!defined('GLPI_ROOT')) {
    define('GLPI_ROOT', '../../..');
 }
 
-require_once GLPI_ROOT."/inc/includes.php";
+include_once(GLPI_ROOT."/plugins/monitoring/front/display.php");
 
-popHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"]);
-
-echo '<meta http-equiv ="refresh" content="30">';
-
-$_SESSION['plugin_monitoring']['service'] = $_GET;
-
-$pMonitoringDisplay = new PluginMonitoringDisplay();
-$pMonitoringDisplay->displayCounters();
-$pMonitoringDisplay->showTabs();
-$pMonitoringDisplay->addDivForTabs();
-
-popFooter();
 ?>

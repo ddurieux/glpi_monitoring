@@ -96,6 +96,10 @@ class PluginMonitoringService extends CommonDBTM {
       $tab[4]['name']          = 'last_check';
       $tab[4]['datatype']      = 'datetime';
 
+      $tab[5]['table'] = $this->getTable();
+      $tab[5]['field'] = 'state_type';
+      $tab[5]['name']  = "Type de status";
+      
       return $tab;
    }
 
@@ -599,7 +603,6 @@ class PluginMonitoringService extends CommonDBTM {
       }
       return $argument;
    }
-   
 }
 
 ?>
