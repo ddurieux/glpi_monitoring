@@ -161,7 +161,7 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       }
       $opts[] = "--width";
       $opts[] = $width;
-      if (count($a_legend) > 3) {
+      if (count($a_legend) > 4) {
          $opts[] = "--height";
          $opts[] = "200";
       }
