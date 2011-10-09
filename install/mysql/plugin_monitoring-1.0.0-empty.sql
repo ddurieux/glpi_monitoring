@@ -208,6 +208,7 @@ CREATE TABLE `glpi_plugin_monitoring_servicedefs` (
   `remotesystem` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `is_arguments` tinyint(1) NOT NULL DEFAULT '0',
   `alias_command` text COLLATE utf8_unicode_ci,
+  `aliasperfdata_commands_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

@@ -134,6 +134,10 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       $pMonitoringServicedef = new PluginMonitoringServicedef();
       $pMonitoringService->getFromDB($items_id);
       $pMonitoringServicedef->getFromDB($pMonitoringService->fields['plugin_monitoring_servicedefs_id']);
+      if (isset($pMonitoringServicedef->fields['aliasperfdata_commands_id'])
+              AND $pMonitoringServicedef->fields['aliasperfdata_commands_id'] > 0) {
+         $pMonitoringServicedef->fields['plugin_monitoring_commands_id'] = $pMonitoringServicedef->fields['aliasperfdata_commands_id'];
+      }
       if (!isset($pMonitoringServicedef->fields['plugin_monitoring_commands_id'])) {
          return false;
       }

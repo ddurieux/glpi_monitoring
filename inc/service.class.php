@@ -464,7 +464,23 @@ class PluginMonitoringService extends CommonDBTM {
          echo "<input type='text' name='alias_command' value='".$pMonitoringServicedef->fields['alias_command']."' />";
       }
       echo "</td>"; 
-      echo "<td colspan='2'></td>";
+
+      echo "<td>";
+      echo "Command link (used for graphs generation)&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      if ($pMonitoringServicedef->fields['is_template'] == '1') {
+         $pMonitoringCommand->getEmpty();
+         $pMonitoringCommand->getFromDB($pMonitoringServicedef->fields['aliasperfdata_commands_id']);
+         echo $pMonitoringCommand->getLink(1);         
+      } else {
+         $pMonitoringCommand->getFromDB($pMonitoringServicedef->fields['aliasperfdata_commands_id']);
+         Dropdown::show("PluginMonitoringCommand", array(
+                              'name' =>'aliasperfdata_commands_id',
+                              'value'=>$pMonitoringServicedef->fields['aliasperfdata_commands_id']
+                              ));
+      }
+      echo "</td>"; 
       echo "</tr>";
       
       
