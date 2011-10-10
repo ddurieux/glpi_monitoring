@@ -268,6 +268,7 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
          $state['orange'] = 0;
          $state['orange_soft'] = 0;
          $state['green'] = 0;
+         $state['green_soft'] = 0;
          foreach ($a_brulesg as $brulesdata) {
             $pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id']);
             $state[PluginMonitoringDisplay::getState($pMonitoringService->fields['state'], $pMonitoringService->fields['state_type'])]++;

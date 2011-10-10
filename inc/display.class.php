@@ -216,6 +216,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          $globalserv_state['orange'] = 0;
          $globalserv_state['orange_soft'] = 0;
          $globalserv_state['green'] = 0;
+         $globalserv_state['green_soft'] = 0;
          $tooltip = "<table class='tab_cadrehov' width='300'>";
          $tooltip .= "<tr class='tab_bg_1'>
             <td width='200'><strong>Host</strong> :</td><td>
@@ -240,8 +241,10 @@ class PluginMonitoringDisplay extends CommonDBTM {
             $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_32.png";
          } else if ($globalserv_state['orange_soft'] > 0) {
             $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_32_soft.png";
-         } else {
+         } else if ($globalserv_state['green'] > 0) {
             $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_32.png";
+         } else if ($globalserv_state['green_soft'] > 0) {
+            $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_32_soft.png";
          }
          showToolTip($tooltip, array('img'=>$img));
          echo "</td>";
@@ -366,6 +369,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $critical_soft = countElementsInTable("glpi_plugin_monitoring_services", 
               "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
                  AND `state_type`='SOFT'");
+      
+      $ok_soft = countElementsInTable("glpi_plugin_monitoring_services", 
+              "(`state`='OK' OR `state`='UP') AND `state_type`='SOFT'");
     
       echo "<table align='center'>";
       echo "<tr>";
@@ -426,6 +432,11 @@ class PluginMonitoringDisplay extends CommonDBTM {
             echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_40_soft.png'/>";
          }
          echo "</th>";
+         echo "<th width='70'>";
+         if ($ok_soft > 0) {
+            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_40_soft.png'/>";
+         }
+         echo "</th>";
          echo "</tr>";
          echo "<th height='30'>";
          if ($critical_soft > 0) {
@@ -435,6 +446,11 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<th>";
          if ($warning_soft > 0) {
             echo $warning_soft;
+         }
+         echo "</th>";
+         echo "<th>";
+         if ($ok_soft > 0) {
+            echo $ok_soft;
          }
          echo "</th>";
          echo "</tr>";      
