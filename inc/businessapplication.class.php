@@ -279,7 +279,11 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
                $color = "green";
             } else if ($state['orange'] >= 1) {
                $color = "orange";
-            } else {
+            } else if ($state['orange_soft'] >= 1) {
+               $color = "orange";
+            } else if ($state['red'] >= 1) {
+               $color = "red";
+            } else if ($state['red_soft'] >= 1) {
                $color = "red";
             }            
          } else {
@@ -288,7 +292,11 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
                $color = "green";
             } else if ($state['orange'] >= $num_min) {
                $color = "orange";
-            } else {
+            } else if ($state['orange_soft'] >= $num_min) {
+               $color = "orange";
+            } else if ($state['red'] >= $num_min) {
+               $color = "red";
+            } else if ($state['red_soft'] >= $num_min) {
                $color = "red";
             } 
          }
