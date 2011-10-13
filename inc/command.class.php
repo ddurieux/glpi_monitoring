@@ -347,6 +347,22 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['arguments'] = exportArrayToDB($arg);
       $this->add($input);
       
+      
+      $input = array();
+      $input['name'] = 'Check users connected';
+      $input['command_name'] = 'check_users';
+      $input['command_line'] = "\$PLUGINSDIR\$/check_users -w \$ARG1\$ -c \$ARG2\$";
+      $input['regex'] = addslashes('users=(\\d+);(\\d+);(\\d+);(\\d+)');
+      $legend = array();
+      $legend[1] = "users";
+      $legend[2] = "warning";
+      $legend[3] = "critical";
+      $input['legend'] = exportArrayToDB($legend);
+      $arg = array();
+      $arg['ARG1'] = 'Set WARNING status if more than INTEGER users are logged in';
+      $arg['ARG2'] = 'Set CRITICAL status if more than INTEGER users are logged in';
+      $input['arguments'] = exportArrayToDB($arg);
+      $this->add($input);
    }
 
 
