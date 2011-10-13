@@ -38,6 +38,8 @@ if (!defined('GLPI_ROOT')) {
 
 require_once GLPI_ROOT."/inc/includes.php";
 
+checkLoginUser();
+
 popHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"]);
 
 echo '<meta http-equiv ="refresh" content="30">';
