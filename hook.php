@@ -364,7 +364,8 @@ function plugin_monitoring_registerMethods() {
 function plugin_monitoring_getDropdown(){
    global $LANG;
 
-   return array('PluginMonitoringBusinessapplication'  => "Business application");
+   return array('PluginMonitoringBusinessapplication' => "Business application",
+                'PluginMonitoringCheck'               => "Check definition");
 }
 
 ?>
