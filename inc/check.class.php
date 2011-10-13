@@ -121,6 +121,21 @@ class PluginMonitoringCheck extends CommonDBTM {
 
       return $ong;
    }
+   
+   
+   
+   function getComments() {
+
+      $comment = 'Max check attempts : '.$this->fields['max_check_attempts'].'<br/>
+         Temps entre 2 checks : '.$this->fields['check_interval'].' minutes<br/>
+         Temps entre 2 retry : '.$this->fields['retry_interval'].' minutes';
+      
+      if (!empty($comment)) {
+         return showToolTip($comment, array('display' => false));
+      }
+
+      return $comment;
+   }
 
 
 
