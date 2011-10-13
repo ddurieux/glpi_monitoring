@@ -434,7 +434,84 @@ class PluginMonitoringCommand extends CommonDBTM {
       $this->showTabs($options);
       $this->showFormHeader($options);
 
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][16]." :</td>";
+      echo "<td align='center'>";
+      echo "<input type='text' name='name' value='".$this->fields["name"]."' size='30'/>";
+      echo "</td>";
+      echo "<td>Command_name :</td>";
+      echo "<td align='center'>";
+      echo "<input type='text' name='command_name' value='".$this->fields["command_name"]."' size='30'/>";
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>Command line :</td>";
+      echo "<td align='center' colspan='3'>";
+      echo "<input type='text' name='command_line' value='".$this->fields["command_line"]."' size='91'/>";
+      echo "</td>";
+      echo "</tr>";
 
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>Arguments description :</td>";
+      echo "<td colspan='3'>";
+         $arguments = array();
+         preg_match_all("/\\$(ARG\d+)\\$/", $this->fields['command_line'], $arguments);
+         $arrayargument = importArrayFromDB($this->fields["arguments"]);
+         echo "<table>";
+         foreach ($arguments[0] as $adata) {
+            $adata = str_replace('$', '', $adata);
+            echo "<tr>";
+            echo "<td>";
+            echo " ".$adata. " : ";
+            echo "</td>";
+            echo "<td>";
+            if (!isset($arrayargument[$adata])) {
+               $arrayargument[$adata] = '';
+            }
+            echo "<textarea cols='90' rows='2' name='argument_".$adata."' >".$arrayargument[$adata]."</textarea>";
+            echo "</td>";
+            echo "</tr>";
+         }
+         echo "</table>";
+      
+      echo "</td>";
+      echo "</tr>";
+      
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>Regex (for perf_data) :</td>";
+      echo "<td align='center' colspan='3'>";
+      echo "<input type='text' name='regex' value='".$this->fields["regex"]."' size='91'/>";
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>Legend (for perf_data graph) :</td>";
+      echo "<td colspan='3'>";
+         $split = explode("(", $this->fields["regex"]);
+         echo "<input type='hidden' name='legendnb' value='".(count($split) - 1)."' />";
+         $arraylegend = importArrayFromDB($this->fields["legend"]);
+         echo "<table>";
+         $i = 0;
+         for ($i = 0; $i < count($split); $i++) {
+            if ($i > 0) {
+               echo "<tr>";
+               echo "<td>";
+               echo "Data ".$i. " : ";
+               echo "</td>";
+               echo "<td>";
+               if (!isset($arraylegend[$i])) {
+                  $arraylegend[$i] = '';
+               }
+               echo "<input type='text' name='legend_".$i."' value='".$arraylegend[$i]."' />";
+               echo "</td>";
+               echo "</tr>";
+            }
+         }
+         echo "</table>";
+      echo "</td>";
+      echo "</tr>";
       
       $this->showFormButtons($options);
       $this->addDivForTabs();
@@ -443,6 +520,28 @@ class PluginMonitoringCommand extends CommonDBTM {
    }
 
 
+   function convertPostdata($data) {
+      
+      // Convert Legend datas
+      $legendnb = $data['legendnb'];
+      $larray = array();
+      for ($i = 1;$i <= $legendnb; $i++) {
+         $larray[$i] = $_POST['legend_'.$i];
+      }
+      $data['legend'] = exportArrayToDB($larray);
+      
+      // Convert arguments descriptions
+      $a_arguments = array();
+      foreach ($data as $name=>$value) {
+         if (strstr($name, "argument_")) {
+            $name = str_replace("argument_", "", $name);
+            $a_arguments[$name] = $value;            
+         }
+      }
+      $data['arguments'] = exportArrayToDB($a_arguments);      
+      return $data;
+   }
+   
 }
 
 ?>

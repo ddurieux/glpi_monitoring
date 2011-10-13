@@ -52,8 +52,10 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       $opts[] = '--start';
       $opts[] = ($timestamp - 300);
       foreach ($a_legend as $legend){
-         if (!strstr($legend, "timeout")) {
-            $opts[] = "DS:".$legend.":GAUGE:600:U:U";
+         if ($legend != '') {
+            if (!strstr($legend, "timeout")) {
+               $opts[] = "DS:".$legend.":GAUGE:600:U:U";
+            }
          }
       }
       $opts[] = "RRA:AVERAGE:0.5:1:600";
@@ -91,21 +93,22 @@ class PluginMonitoringRrdtool extends CommonDBTM {
             $perf_data, $matches);
       $value = $timestamp;
       foreach($a_legend as $key=>$data) {
-         if (!empty($matches[$key])) {
-            if (strstr($matches[$key], "ms")) {
-               $value .= ':'. round(str_replace("ms", "", $matches[$key]));
-            } else if (strstr($matches[$key], "s")) {
-               $value .= ':'. round((str_replace("s", "", $matches[$key]) * 1000));
-            } else if (!strstr($data, "timeout")){
-               $value .= ':'.round($matches[$key]);
+         if ($data != '') {
+            if (!empty($matches[$key])) {
+               if (strstr($matches[$key], "ms")) {
+                  $value .= ':'. round(str_replace("ms", "", $matches[$key]));
+               } else if (strstr($matches[$key], "s")) {
+                  $value .= ':'. round((str_replace("s", "", $matches[$key]) * 1000));
+               } else if (!strstr($data, "timeout")){
+                  $value .= ':'.round($matches[$key]);
+               }
+
+            } else {
+               if (!strstr($data, "timeout")) {
+                  $value .= ':U';
+               }
             }
-            
-         } else {
-            if (!strstr($data, "timeout")) {
-               $value .= ':U';
-            }
-         }
-                  
+         }    
       }
       $ret = rrd_update($fname, $value);
 
@@ -148,6 +151,11 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       $a_legend = array();
       if (isset($pluginMonitoringCommand->fields['legend'])) {
          $a_legend = importArrayFromDB($pluginMonitoringCommand->fields['legend']);
+         foreach ($a_legend as $key=>$value) {
+            if ($value == '') {
+               unset($a_legend['$key']);
+            }
+         }
       }
       $opts = array();
       $opts[] = '--title';
