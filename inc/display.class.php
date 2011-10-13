@@ -95,6 +95,25 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringService")."` ".$where."
          ORDER BY `plugin_monitoring_services_id`";
       $result = $DB->query($query);
+      
+      $start = 0;
+      if (isset($_REQUEST["start"])) {
+         $start = $_REQUEST["start"];
+      }
+      
+      $numrows = $DB->numrows($result);
+      $parameters = '';
+      
+      printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php", $parameters);
+
+      $limit = $numrows;
+      if ($_SESSION["glpilist_limit"] < $numrows) {
+         $limit = $_SESSION["glpilist_limit"];
+      }
+      $query .= " LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
+      
+      $result = $DB->query($query);      
+      
       if ($width == '') {
          echo "<table class='tab_cadrehov'>";
       } else {
@@ -136,6 +155,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "</tr>";         
       }
       echo "</table>";
+      echo "<br/>";
+      printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php", $parameters);
+
    }
    
    
