@@ -170,34 +170,14 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
 
                }
             }
-            if ($gdata['operator'] == 'or') {
-               if ($state['OK'] >= 1) {
-                  $a_gstate[$gdata['id']] = "OK";
-               } else if ($state['WARNING'] >= 1) {
-                  $a_gstate[$gdata['id']] = "WARNING";
-               } else {
-                  $a_gstate[$gdata['id']] = "CRITICAL";
-               }            
+            if ($state['CRITICAL'] >= 1) {
+               $a_gstate[$gdata['id']] = "CRITICAL";
+            } else if ($state['WARNING'] >= 1) {
+               $a_gstate[$gdata['id']] = "WARNING";
             } else {
-               $num_min = str_replace(" of:", "", $gdata['operator']);
-               if ($state['OK'] >= $num_min) {
-                  $a_gstate[$gdata['id']] = "OK";
-               } else if ($state['WARNING'] >= $num_min) {
-                  $a_gstate[$gdata['id']] = "WARNING";
-               } else {
-                  $a_gstate[$gdata['id']] = "CRITICAL";
-               } 
-            }
-//            
-//            
-//            
-//            if ($state['CRITICAL'] > 0) {
-//               $a_gstate[$gdata['id']] = "CRITICAL";
-//            } else if ($state['WARNING'] > 0) {
-//               $a_gstate[$gdata['id']] = "WARNING";
-//            } else {
-//               $a_gstate[$gdata['id']] = "OK";
-//            }
+               $a_gstate[$gdata['id']] = "OK";
+            }            
+
          }
          $state = array();
          $state['OK'] = 0;
