@@ -96,6 +96,9 @@ class PluginMonitoringCommand extends CommonDBTM {
       $legend[4] = "timeout_time";
       $input['legend'] = exportArrayToDB($legend);
       $input['unit'] = "ms";
+      $arg = array();
+      $arg['ARG1'] = 'Machine name to lookup';
+      $input['arguments'] = exportArrayToDB($arg);
       $this->add($input);
 
       $input = array();
@@ -302,6 +305,18 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['name'] = 'Check local cpu';
       $input['command_name'] = 'check_cpu_usage';
       $input['command_line'] = "\$PLUGINSDIR\$/check_cpu_usage -w \$ARG1\$ -c \$ARG2\$";
+      $input['regex'] = addslashes('cpu_usage=(\\d+)%;(\\d+);(\\d+); cpu_user=(\\d+)%; cpu_system=(\\d+)%;');
+      $legend = array();
+      $legend[1] = "cpu_usage";
+      $legend[2] = "warning";
+      $legend[3] = "critical";
+      $legend[4] = "cpu_user";
+      $legend[5] = "cpu_system";
+      $input['legend'] = exportArrayToDB($legend);
+      $arg = array();
+      $arg['ARG1'] = 'Percentage of CPU for warning';
+      $arg['ARG2'] = 'Percentage of CPU for critical';
+      $input['arguments'] = exportArrayToDB($arg);
       $this->add($input);
       
       $input = array();
