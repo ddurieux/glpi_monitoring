@@ -416,73 +416,76 @@ class PluginMonitoringService extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
       
-      echo "<tr>";
-      echo "<th colspan='4'>Remote check</th>";
-      echo "</tr>";
+      if (!($pMonitoringServicedef->fields['is_template'] == '1'
+              AND $pMonitoringServicedef->fields['remotesystem'] == '')) {
       
-      echo "<tr>";
-      // * remotesystem
-      echo "<td>";
-      echo "Utility used for remote check&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      $input = array();
-      $input[''] = '------';
-      $input['byssh'] = 'byssh';
-      $input['nrpe'] = 'nrpe';
-      $input['nsca'] = 'nsca';
-      if ($pMonitoringServicedef->fields['is_template'] == '1') {
-         echo $input[$pMonitoringServicedef->fields['remotesystem']];
-      } else {
-         Dropdown::showFromArray("remotesystem", 
-                              $input, 
-                              array('value'=>$pMonitoringServicedef->fields['remotesystem']));
-      }
-      echo "</td>";      
-      // * is_argument
-      echo "<td>";
-      echo "Use arguments (Only for NRPE)&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      if ($pMonitoringServicedef->fields['is_template'] == '1') {
-         echo Dropdown::getYesNo($pMonitoringServicedef->fields['is_arguments']);
-      } else {
-         Dropdown::showYesNo("is_arguments", $pMonitoringServicedef->fields['is_arguments']);
-      }
-      echo "</td>"; 
-      echo "</tr>";
-      
-      echo "<tr>";
-      // alias command
-      echo "<td>";
-      echo "Alias command if required (Only for NRPE)&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      if ($pMonitoringServicedef->fields['is_template'] == '1') {
-         echo "<input type='text' name='alias_commandservice' value='".$this->fields['alias_command']."' />";
-      } else {
-         echo "<input type='text' name='alias_command' value='".$pMonitoringServicedef->fields['alias_command']."' />";
-      }
-      echo "</td>"; 
+         echo "<tr>";
+         echo "<th colspan='4'>Remote check</th>";
+         echo "</tr>";
 
-      echo "<td>";
-      echo "Command link (used for graphs generation)&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      if ($pMonitoringServicedef->fields['is_template'] == '1') {
-         $pMonitoringCommand->getEmpty();
-         $pMonitoringCommand->getFromDB($pMonitoringServicedef->fields['aliasperfdata_commands_id']);
-         echo $pMonitoringCommand->getLink(1);         
-      } else {
-         $pMonitoringCommand->getFromDB($pMonitoringServicedef->fields['aliasperfdata_commands_id']);
-         Dropdown::show("PluginMonitoringCommand", array(
-                              'name' =>'aliasperfdata_commands_id',
-                              'value'=>$pMonitoringServicedef->fields['aliasperfdata_commands_id']
-                              ));
+         echo "<tr>";
+         // * remotesystem
+         echo "<td>";
+         echo "Utility used for remote check&nbsp;:";
+         echo "</td>";
+         echo "<td>";
+         $input = array();
+         $input[''] = '------';
+         $input['byssh'] = 'byssh';
+         $input['nrpe'] = 'nrpe';
+         $input['nsca'] = 'nsca';
+         if ($pMonitoringServicedef->fields['is_template'] == '1') {
+            echo $input[$pMonitoringServicedef->fields['remotesystem']];
+         } else {
+            Dropdown::showFromArray("remotesystem", 
+                                 $input, 
+                                 array('value'=>$pMonitoringServicedef->fields['remotesystem']));
+         }
+         echo "</td>";      
+         // * is_argument
+         echo "<td>";
+         echo "Use arguments (Only for NRPE)&nbsp;:";
+         echo "</td>";
+         echo "<td>";
+         if ($pMonitoringServicedef->fields['is_template'] == '1') {
+            echo Dropdown::getYesNo($pMonitoringServicedef->fields['is_arguments']);
+         } else {
+            Dropdown::showYesNo("is_arguments", $pMonitoringServicedef->fields['is_arguments']);
+         }
+         echo "</td>"; 
+         echo "</tr>";
+
+         echo "<tr>";
+         // alias command
+         echo "<td>";
+         echo "Alias command if required (Only for NRPE)&nbsp;:";
+         echo "</td>";
+         echo "<td>";
+         if ($pMonitoringServicedef->fields['is_template'] == '1') {
+            echo "<input type='text' name='alias_commandservice' value='".$this->fields['alias_command']."' />";
+         } else {
+            echo "<input type='text' name='alias_command' value='".$pMonitoringServicedef->fields['alias_command']."' />";
+         }
+         echo "</td>"; 
+
+         echo "<td>";
+         echo "Command link (used for graphs generation)&nbsp;:";
+         echo "</td>";
+         echo "<td>";
+         if ($pMonitoringServicedef->fields['is_template'] == '1') {
+            $pMonitoringCommand->getEmpty();
+            $pMonitoringCommand->getFromDB($pMonitoringServicedef->fields['aliasperfdata_commands_id']);
+            echo $pMonitoringCommand->getLink(1);         
+         } else {
+            $pMonitoringCommand->getFromDB($pMonitoringServicedef->fields['aliasperfdata_commands_id']);
+            Dropdown::show("PluginMonitoringCommand", array(
+                                 'name' =>'aliasperfdata_commands_id',
+                                 'value'=>$pMonitoringServicedef->fields['aliasperfdata_commands_id']
+                                 ));
+         }
+         echo "</td>"; 
+         echo "</tr>";
       }
-      echo "</td>"; 
-      echo "</tr>";
-      
       
       // * Manage arguments
       $array = array();
