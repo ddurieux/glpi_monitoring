@@ -145,7 +145,27 @@ class PluginMonitoringCheck extends CommonDBTM {
       $this->showTabs($options);
       $this->showFormHeader($options);
 
-
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][16]." :</td>";
+      echo "<td align='center'>";
+      echo "<input type='text' name='name' value='".$this->fields["name"]."' size='30'/>";
+      echo "</td>";
+      echo "<td>Max check attemtps :</td>";
+      echo "<td align='center'>";
+      echo "<input type='text' name='max_check_attempts' value='".$this->fields["max_check_attempts"]."' size='30'/>";
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>Temps en minutes entre 2 checks :</td>";
+      echo "<td align='center'>";
+      Dropdown::showInteger("check_interval", $this->fields["check_interval"], 1, 100);
+      echo "</td>";
+      echo "<td>Temps en minutes entre 2 retry :</td>";
+      echo "<td align='center'>";
+      Dropdown::showInteger("retry_interval", $this->fields["retry_interval"], 1, 100);
+      echo "</td>";
+      echo "</tr>";
       
       $this->showFormButtons($options);
       $this->addDivForTabs();
