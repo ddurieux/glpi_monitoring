@@ -406,6 +406,9 @@ check_snmp
 check_ifoperstatus
 check_ifstatus
 check_snmp_int.pl
+ 
+cpu (oid présent dans le modèle)
+port en mode trunk
 */
 
             
