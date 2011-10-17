@@ -51,7 +51,7 @@ $pMonitoringDisplay->displayCounters();
 $pMonitoringDisplay->showTabs();
 echo "<style type='text/css'>
 div#tabcontent {
-   width:100%;
+   width:99%;
 }
 
 </style>";
