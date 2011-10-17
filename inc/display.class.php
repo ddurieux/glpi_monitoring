@@ -268,8 +268,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $result = $DB->query($query);
       
       $start = 0;
-      if (isset($_REQUEST["start"])) {
-         $start = $_REQUEST["start"];
+      if (isset($_GET["start"])) {
+         $start = $_GET["start"];
       }
       
       $numrows = $DB->numrows($result);
