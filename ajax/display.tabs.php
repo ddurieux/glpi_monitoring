@@ -45,48 +45,46 @@ if (!isset($_POST["id"])) {
 $pMonitoringDisplay = new PluginMonitoringDisplay();
 $pluginMonitoringBusinessrule = new PluginMonitoringBusinessrule();
 
-   switch($_REQUEST['glpi_tab']) {
-      case -1 :
+switch($_REQUEST['glpi_tab']) {
+   case -1 :
 
-         break;
+      break;
 
-      case 1 :
-         $pluginMonitoringBusinessapplication = new PluginMonitoringBusinessapplication();
-         $pluginMonitoringBusinessapplication->showBAChecks();
-         break;
-      
-      case 2:
-         // Manage search
-         $_GET = $_SESSION['plugin_monitoring']['service'];
-         Search::manageGetValues("PluginMonitoringService");
-         Search::showGenericSearch("PluginMonitoringService", $_SESSION['plugin_monitoring']['service']);
+   case 1 :
+      $pluginMonitoringBusinessapplication = new PluginMonitoringBusinessapplication();
+      $pluginMonitoringBusinessapplication->showBAChecks();
+      break;
 
-         $pMonitoringDisplay->showBoard(950);
-         break;
-      
-      case 3:
-         // Manage search
-         $_GET = $_SESSION['plugin_monitoring']['service'];
-         Search::manageGetValues("PluginMonitoringService");
-         Search::showGenericSearch("PluginMonitoringService", $_SESSION['plugin_monitoring']['service']);
+   case 2:
+      // Manage search
+      $_GET = $_SESSION['plugin_monitoring']['service'];
+      Search::manageGetValues("PluginMonitoringService");
+      Search::showGenericSearch("PluginMonitoringService", $_SESSION['plugin_monitoring']['service']);
 
-         $pMonitoringDisplay->showBoard("PluginMonitoringHost", 'hosts');
-         break;
-      
-      case 4:
-         // Manage search
-         $_GET = $_SESSION['plugin_monitoring']['service'];
-         Search::manageGetValues("PluginMonitoringService");
-         Search::showGenericSearch("PluginMonitoringService", $_SESSION['plugin_monitoring']['service']);
+      $pMonitoringDisplay->showBoard(950);
+      break;
 
-         $pMonitoringDisplay->showBoard("PluginMonitoringHost_Service", 'services');
-         break;
+   case 3:
+      // Manage search
+      $_GET = $_SESSION['plugin_monitoring']['service'];
+      Search::manageGetValues("PluginMonitoringService");
+      Search::showGenericSearch("PluginMonitoringService", $_SESSION['plugin_monitoring']['service']);
 
-      default :
+      $pMonitoringDisplay->showBoard("PluginMonitoringHost", 'hosts');
+      break;
 
-   }
+   case 4:
+      // Manage search
+      $_GET = $_SESSION['plugin_monitoring']['service'];
+      Search::manageGetValues("PluginMonitoringService");
+      Search::showGenericSearch("PluginMonitoringService", $_SESSION['plugin_monitoring']['service']);
 
-//}
+      $pMonitoringDisplay->showBoard("PluginMonitoringHost_Service", 'services');
+      break;
+
+   default :
+
+}
 
 ajaxFooter();
 

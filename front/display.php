@@ -49,6 +49,12 @@ $_SESSION['plugin_monitoring']['service'] = $_GET;
 $pMonitoringDisplay = new PluginMonitoringDisplay();
 $pMonitoringDisplay->displayCounters();
 $pMonitoringDisplay->showTabs();
+echo "<style type='text/css'>
+div#tabcontent {
+   width:100%;
+}
+
+</style>";
 $pMonitoringDisplay->addDivForTabs();
 
 popFooter();
