@@ -301,7 +301,7 @@ class PluginMonitoringService extends CommonDBTM {
       autocompletionTextField($this, 'name', array('value' => $objectName));      
       echo "</td>";
       echo "<td>";
-      echo "Gabarit&nbsp;:";
+      echo $LANG['common'][13]."&nbsp;:";
       echo "</td>";
       echo "<td>";
       if ($items_id != '0') {
@@ -339,7 +339,7 @@ class PluginMonitoringService extends CommonDBTM {
          $item = new $itemtype();
          $item->getFromDB($this->fields['items_id']);
          echo "<td>";
-         echo "Type <i>".$item->getTypeName()."</i>";
+         echo $LANG['state'][6]." <i>".$item->getTypeName()."</i>";
          echo "&nbsp;:</td>";
          echo "<td>";
          echo $item->getLink(1);
@@ -349,9 +349,9 @@ class PluginMonitoringService extends CommonDBTM {
          echo "No type associated";
          echo "</td>";
       }      
-      // * commande
+      // * command
       echo "<td>";
-      echo "Commande&nbsp;:";
+      echo $LANG['plugin_monitoring']['service'][5]."&nbsp;:";
       echo "</td>";
       echo "<td align='center'>";
       if ($pMonitoringServicedef->fields['is_template'] == '1') {
@@ -383,7 +383,7 @@ class PluginMonitoringService extends CommonDBTM {
       echo "</td>";
       // * active check
       echo "<td>";
-      echo "Active checks enable&nbsp;:";
+      echo $LANG['plugin_monitoring']['service'][6]."&nbsp;:";
       echo "</td>";
       echo "<td align='center'>";
       if ($pMonitoringServicedef->fields['is_template'] == '1') {
@@ -397,7 +397,7 @@ class PluginMonitoringService extends CommonDBTM {
       echo "<tr>";
       // * passive check
       echo "<td>";
-      echo "Passive checks enable&nbsp;:";
+      echo $LANG['plugin_monitoring']['service'][7]."&nbsp;:";
       echo "</td>";
       echo "<td align='center'>";
       if ($pMonitoringServicedef->fields['is_template'] == '1') {
@@ -424,13 +424,13 @@ class PluginMonitoringService extends CommonDBTM {
               AND $pMonitoringServicedef->fields['remotesystem'] == '')) {
       
          echo "<tr>";
-         echo "<th colspan='4'>Remote check</th>";
+         echo "<th colspan='4'>".$LANG['plugin_monitoring']['service'][8]."</th>";
          echo "</tr>";
 
          echo "<tr>";
          // * remotesystem
          echo "<td>";
-         echo "Utility used for remote check&nbsp;:";
+         echo $LANG['plugin_monitoring']['service'][9]."&nbsp;:";
          echo "</td>";
          echo "<td>";
          $input = array();
@@ -448,7 +448,7 @@ class PluginMonitoringService extends CommonDBTM {
          echo "</td>";      
          // * is_argument
          echo "<td>";
-         echo "Use arguments (Only for NRPE)&nbsp;:";
+         echo $LANG['plugin_monitoring']['service'][10]."&nbsp;:";
          echo "</td>";
          echo "<td>";
          if ($pMonitoringServicedef->fields['is_template'] == '1') {
@@ -462,7 +462,7 @@ class PluginMonitoringService extends CommonDBTM {
          echo "<tr>";
          // alias command
          echo "<td>";
-         echo "Alias command if required (Only for NRPE)&nbsp;:";
+         echo $LANG['plugin_monitoring']['service'][11]."&nbsp;:";
          echo "</td>";
          echo "<td>";
          if ($pMonitoringServicedef->fields['is_template'] == '1') {
@@ -473,7 +473,7 @@ class PluginMonitoringService extends CommonDBTM {
          echo "</td>"; 
 
          echo "<td>";
-         echo "Command link (used for graphs generation)&nbsp;:";
+         echo $LANG['plugin_monitoring']['service'][12]."&nbsp;:";
          echo "</td>";
          echo "<td>";
          if ($pMonitoringServicedef->fields['is_template'] == '1') {
@@ -511,7 +511,7 @@ class PluginMonitoringService extends CommonDBTM {
       if (count($a_displayarg) > 0) {
          $a_argtext = importArrayFromDB($pMonitoringCommand->fields['arguments']);
          echo "<tr>";
-         echo "<th colspan='4'>Argument ([text:text] is used to get values dynamically)&nbsp;</th>";
+         echo "<th colspan='4'>".$LANG['plugin_monitoring']['service'][13]."&nbsp;</th>";
          echo "</tr>";
           
          foreach ($a_displayarg as $key=>$value) {
@@ -521,7 +521,7 @@ class PluginMonitoringService extends CommonDBTM {
             if (isset($a_argtext[$key])) {
                echo nl2br($a_argtext[$key])."&nbsp;:";
             } else {
-               echo "Argument&nbsp;:";
+               echo $LANG['plugin_monitoring']['service'][14]."&nbsp;:";
             }
             
             if ($value == '') {

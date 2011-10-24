@@ -93,7 +93,16 @@ $LANG['plugin_monitoring']['service'][1]="Criticity";
 $LANG['plugin_monitoring']['service'][2]="Add a service";
 $LANG['plugin_monitoring']['service'][3]="or/and define these values";
 $LANG['plugin_monitoring']['service'][4]="Arguments";
-$LANG['plugin_monitoring']['service'][5]="";
+$LANG['plugin_monitoring']['service'][5]="Commande";
+$LANG['plugin_monitoring']['service'][6]="Active check";
+$LANG['plugin_monitoring']['service'][7]="Passive check";
+$LANG['plugin_monitoring']['service'][8]="Remote check";
+$LANG['plugin_monitoring']['service'][9]="Utility used for remote check";
+$LANG['plugin_monitoring']['service'][10]="Use arguments (Only for NRPE)";
+$LANG['plugin_monitoring']['service'][11]="Alias command if required (Only for NRPE)";
+$LANG['plugin_monitoring']['service'][12]="Command link (used for graphs generation)";
+$LANG['plugin_monitoring']['service'][13]="Argument ([text:text] is used to get values dynamically)";
+$LANG['plugin_monitoring']['service'][14]="Argument";
 
 $LANG['plugin_monitoring']['servicesuggest'][0]="Suggests";
 
