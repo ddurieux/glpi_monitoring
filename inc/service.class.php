@@ -307,6 +307,10 @@ class PluginMonitoringService extends CommonDBTM {
       if ($items_id != '0') {
          echo "<input type='hidden' name='update' value='update'>\n";
       }
+      echo "<input type='hidden' name='plugin_monitoring_servicedefs_id_s' value='".$this->fields['plugin_monitoring_servicedefs_id']."'>\n";
+      if ($pMonitoringServicedef->fields['is_template'] == '0') {
+         $this->fields['plugin_monitoring_servicedefs_id'] = 0;
+      }      
       Dropdown::show("PluginMonitoringServicedef", array(
             'name' => 'plugin_monitoring_servicedefs_id',
             'value' => $this->fields['plugin_monitoring_servicedefs_id'],

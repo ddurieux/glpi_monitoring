@@ -54,6 +54,9 @@ if (isset($_POST['add'])) {
    if (isset($_POST['alias_commandservice'])) {
       $_POST['alias_command'] = $_POST['alias_commandservice'];
    }
+   if ($_POST['plugin_monitoring_servicedefs_id'] == '0') {
+      $_POST['plugin_monitoring_servicedefs_id'] = $_POST['plugin_monitoring_servicedefs_id_s'];
+   }
    $pMonitoringService->add($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST['update'])) {
