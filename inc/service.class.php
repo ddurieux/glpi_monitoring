@@ -93,12 +93,12 @@ class PluginMonitoringService extends CommonDBTM {
       
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'last_check';
-      $tab[4]['name']          = 'last_check';
+      $tab[4]['name']          = $LANG['plugin_monitoring']['service'][18];
       $tab[4]['datatype']      = 'datetime';
 
       $tab[5]['table'] = $this->getTable();
       $tab[5]['field'] = 'state_type';
-      $tab[5]['name']  = "Type de status";
+      $tab[5]['name']  = $LANG['plugin_monitoring']['service'][19];
       
       return $tab;
    }
@@ -121,7 +121,7 @@ class PluginMonitoringService extends CommonDBTM {
          // Button to activate 
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'>";
-         echo "<th>Add this host to be monitored</th>";
+         echo "<th>".$LANG['plugin_monitoring']['service'][15]."</th>";
          echo "</tr>";
          echo "<tr class='tab_bg_1'>";
          echo "<td align='center'>";
@@ -176,7 +176,7 @@ class PluginMonitoringService extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='5'>";
-      echo "Services";
+      echo $LANG['plugin_monitoring']['service'][0];
       echo "&nbsp;<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/service.form.php?services_id=".$a_hosts['id']."'>
          <img src='".$CFG_GLPI['root_doc']."/pics/menu_add.png' /></a>";
       
@@ -187,9 +187,9 @@ class PluginMonitoringService extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'>";
       echo "<th>".$LANG['common'][16]."</th>";
-      echo "<th>Check Host</th>";
+      echo "<th>".$LANG['plugin_monitoring']['service'][16]."</th>";
       echo "<th>".$LANG['common'][13]."</th>";
-      echo "<th>Configuration complete</th>";
+      echo "<th>".$LANG['plugin_monitoring']['service'][17]."</th>";
       echo "<th width='32'>".$LANG['joblist'][0]."</th>";
       echo "</tr>";
 

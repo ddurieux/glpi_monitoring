@@ -61,8 +61,16 @@ $LANG['plugin_monitoring']['grouphost'][1]="hosts group";
 
 $LANG['plugin_monitoring']['command'][0]="Commands";
 $LANG['plugin_monitoring']['command'][1]="Command check";
+$LANG['plugin_monitoring']['command'][2]="Command name";
+$LANG['plugin_monitoring']['command'][3]="Command line";
+$LANG['plugin_monitoring']['command'][4]="Arguments description";
+$LANG['plugin_monitoring']['command'][5]="Regex (for perf_data)";
+$LANG['plugin_monitoring']['command'][6]="Legend (for perf_data graph)";
 
 $LANG['plugin_monitoring']['check'][0]="Check definition";
+$LANG['plugin_monitoring']['check'][1]="Max check attempts";
+$LANG['plugin_monitoring']['check'][2]="Time in minutes between 2 checks";
+$LANG['plugin_monitoring']['check'][3]="Time in minutes between 2 retry";
 
 $LANG['plugin_monitoring']['contact'][0]="Contact";
 $LANG['plugin_monitoring']['contact'][1]="Manage this user for monitoring system";
@@ -101,8 +109,19 @@ $LANG['plugin_monitoring']['service'][11]="Alias command if required (Only for N
 $LANG['plugin_monitoring']['service'][12]="Command link (used for graphs generation)";
 $LANG['plugin_monitoring']['service'][13]="Argument ([text:text] is used to get values dynamically)";
 $LANG['plugin_monitoring']['service'][14]="Argument";
+$LANG['plugin_monitoring']['service'][15]="Add this host to be monitored";
+$LANG['plugin_monitoring']['service'][16]="Check Host";
+$LANG['plugin_monitoring']['service'][17]="Configuration complete";
+$LANG['plugin_monitoring']['service'][18]="Last check";
+$LANG['plugin_monitoring']['service'][19]="State type";
+$LANG['plugin_monitoring']['service'][20]="Service";
+$LANG['plugin_monitoring']['service'][21]="All services";
+$LANG['plugin_monitoring']['service'][22]="Time in ms";
 
 $LANG['plugin_monitoring']['servicesuggest'][0]="Suggests";
+
+$LANG['plugin_monitoring']['businessapplication'][0]="Business application";
+$LANG['plugin_monitoring']['businessapplication'][1]="Degraded mode";
 
 $LANG['plugin_monitoring']['businessrule'][0]="Business rules";
 $LANG['plugin_monitoring']['businessrule'][2]="2 of";
@@ -114,7 +133,7 @@ $LANG['plugin_monitoring']['businessrule'][7]="7 of";
 $LANG['plugin_monitoring']['businessrule'][8]="8 of";
 $LANG['plugin_monitoring']['businessrule'][9]="9 of";
 $LANG['plugin_monitoring']['businessrule'][10]="10 of";
-$LANG['plugin_monitoring']['businessrule'][11]="";
+$LANG['plugin_monitoring']['businessrule'][11]="Group";
 $LANG['plugin_monitoring']['businessrule'][12]="";
 $LANG['plugin_monitoring']['businessrule'][13]="";
 

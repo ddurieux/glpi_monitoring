@@ -42,7 +42,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      return "Groupe";
+      return $LANG['plugin_monitoring']['businessrule'][11];
    }
    
 
@@ -95,7 +95,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
       echo "<input type='text' name='name' value='".$this->fields["name"]."' size='30'/>";
       echo "</td>";
       echo "<td>";
-      echo "Operator&nbsp;:";
+      echo $LANG['rulesengine'][9]."&nbsp;:";
       echo "</td>";
       echo "<td>";
       $first_operator = array();

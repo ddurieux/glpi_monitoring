@@ -470,21 +470,21 @@ class PluginMonitoringCommand extends CommonDBTM {
       echo "<td align='center'>";
       echo "<input type='text' name='name' value='".$this->fields["name"]."' size='30'/>";
       echo "</td>";
-      echo "<td>Command_name :</td>";
+      echo "<td>".$LANG['plugin_monitoring']['command'][2]."&nbsp;:</td>";
       echo "<td align='center'>";
       echo "<input type='text' name='command_name' value='".$this->fields["command_name"]."' size='30'/>";
       echo "</td>";
       echo "</tr>";
       
       echo "<tr class='tab_bg_1'>";
-      echo "<td>Command line :</td>";
+      echo "<td>".$LANG['plugin_monitoring']['command'][3]."&nbsp;:</td>";
       echo "<td align='center' colspan='3'>";
       echo "<input type='text' name='command_line' value='".$this->fields["command_line"]."' size='91'/>";
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>Arguments description :</td>";
+      echo "<td>".$LANG['plugin_monitoring']['command'][4]."&nbsp;:</td>";
       echo "<td colspan='3'>";
          $arguments = array();
          preg_match_all("/\\$(ARG\d+)\\$/", $this->fields['command_line'], $arguments);
@@ -511,14 +511,14 @@ class PluginMonitoringCommand extends CommonDBTM {
       
       
       echo "<tr class='tab_bg_1'>";
-      echo "<td>Regex (for perf_data) :</td>";
+      echo "<td>".$LANG['plugin_monitoring']['command'][5]."&nbsp;:</td>";
       echo "<td align='center' colspan='3'>";
       echo "<input type='text' name='regex' value='".$this->fields["regex"]."' size='91'/>";
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>Legend (for perf_data graph) :</td>";
+      echo "<td>".$LANG['plugin_monitoring']['command'][6]."&nbsp;:</td>";
       echo "<td colspan='3'>";
          $split = explode("(", $this->fields["regex"]);
          echo "<input type='hidden' name='legendnb' value='".(count($split) - 1)."' />";

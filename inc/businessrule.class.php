@@ -237,7 +237,7 @@ return;
       
          echo "<table class='tab_cadre' width='600'>";
          echo "<tr class='tab_bg_1'>";
-         echo "<th>Add service&nbsp;:</th>";
+         echo "<th>".$LANG['plugin_monitoring']['service'][2]."&nbsp;:</th>";
          echo "</tr>";
          echo "<tr class='tab_bg_1'>";
          echo "<td>";
@@ -253,7 +253,7 @@ return;
          echo "<table class='tab_cadre' width='600'>";
          echo "<tr class='tab_bg_1'>";
          echo "<th></th>";
-         echo "<th>Services</th>";
+         echo "<th>".$LANG['plugin_monitoring']['service'][0]."</th>";
          echo "</tr>";
          $a_services = $this->find("`plugin_monitoring_businessrulegroups_id`='".$data['id']."'");
          foreach ($a_services as $gdata) {
@@ -286,13 +286,13 @@ return;
       echo "<th>";
       echo "</th>";
       echo "<th>";
-      echo "Group";
+      echo $LANG['plugin_monitoring']['businessrule'][11];
       echo "</th>";
       echo "<th>";
-      echo "operator";
+      echo $LANG['rulesengine'][9];
       echo "</th>";
       echo "<th>";
-      echo "Service";
+      echo $LANG['plugin_monitoring']['service'][20];
       echo "</th>";
       echo "</tr>";
       

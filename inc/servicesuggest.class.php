@@ -196,7 +196,7 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
       echo "<table class='tab_cadre' width='950'>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<th colspan='7'>Suggests</th>";
+      echo "<th colspan='7'>".$LANG['plugin_monitoring']['servicesuggest'][0]."</th>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";

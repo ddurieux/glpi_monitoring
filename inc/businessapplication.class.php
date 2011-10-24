@@ -47,7 +47,7 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
    static function getTypeName() {
       global $LANG;
 
-      return "Business application";
+      return $LANG['plugin_monitoring']['businessapplication'][0];
    }
 
 
@@ -134,7 +134,7 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
 
          echo "<tr class='tab_bg_1'>";
          echo "<td>";
-         echo "Mode dégradé&nbsp;:";
+         echo $LANG['plugin_monitoring']['businessapplication'][1]."&nbsp;:";
          echo "</td>";
          echo "<td width='40' align='center'>";
          $a_group = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_businessapplications_id`='".$data['id']."'");

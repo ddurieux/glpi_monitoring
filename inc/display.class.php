@@ -43,10 +43,10 @@ class PluginMonitoringDisplay extends CommonDBTM {
       global $LANG,$CFG_GLPI;
 
       $ong = array();
-      $ong[1] = "Business Rules";
-      $ong[2] = "All services";
-      $ong[3] = "Hosts";
-      $ong[4] = "Services";
+      $ong[1] = $LANG['plugin_monitoring']['businessrule'][0];
+      $ong[2] = $LANG['plugin_monitoring']['service'][21];
+      $ong[3] = $LANG['plugin_monitoring']['host'][0];
+      $ong[4] = $LANG['plugin_monitoring']['service'][0];
       return $ong;
    }
    
@@ -299,16 +299,16 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "<th>";
       echo "</th>";
       echo "<th>";
-      echo "Status";
+      echo $LANG['state'][0];
       echo "</th>";
       echo "<th>";
-      echo "Graphs";
+      echo $LANG['stats'][7];
       echo "</th>";
       echo "<th>";
-      echo "Dégradé";
+      echo $LANG['plugin_monitoring']['businessapplication'][1];
       echo "</th>";
       echo "<th>";
-      echo "Last check";
+      echo $LANG['plugin_monitoring']['service'][18];
       echo "</th>";
       echo "<th>";
       echo "</th>";     
@@ -355,7 +355,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "</td>";
 
       } else {
-         echo "<td>Services</td>";
+         echo "<td>".$LANG['plugin_monitoring']['service'][0]."</td>";
       }
       $nameitem = '';
       if (isset($itemmat->fields['name'])) {
@@ -411,7 +411,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          $globalserv_state['green_soft'] = 0;
          $tooltip = "<table class='tab_cadrehov' width='300'>";
          $tooltip .= "<tr class='tab_bg_1'>
-            <td width='200'><strong>Host</strong> :</td><td>
+            <td width='200'><strong>".$LANG['plugin_monitoring']['host'][8]."</strong> :</td><td>
             <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/></td></tr>";
          foreach ($a_serv as $sdata) {
             $stateserv = self::getState($sdata['state'], $data['state_type']);

@@ -126,9 +126,9 @@ class PluginMonitoringCheck extends CommonDBTM {
    
    function getComments() {
 
-      $comment = 'Max check attempts : '.$this->fields['max_check_attempts'].'<br/>
-         Temps entre 2 checks : '.$this->fields['check_interval'].' minutes<br/>
-         Temps entre 2 retry : '.$this->fields['retry_interval'].' minutes';
+      $comment = $LANG['plugin_monitoring']['check'][1].' : '.$this->fields['max_check_attempts'].'<br/>
+         '.$LANG['plugin_monitoring']['check'][2].' : '.$this->fields['check_interval'].' minutes<br/>
+         '.$LANG['plugin_monitoring']['check'][3].' : '.$this->fields['retry_interval'].' minutes';
       
       if (!empty($comment)) {
          return showToolTip($comment, array('display' => false));
@@ -165,18 +165,18 @@ class PluginMonitoringCheck extends CommonDBTM {
       echo "<td align='center'>";
       echo "<input type='text' name='name' value='".$this->fields["name"]."' size='30'/>";
       echo "</td>";
-      echo "<td>Max check attemtps :</td>";
+      echo "<td>".$LANG['plugin_monitoring']['check'][1]."&nbsp;:</td>";
       echo "<td align='center'>";
       echo "<input type='text' name='max_check_attempts' value='".$this->fields["max_check_attempts"]."' size='30'/>";
       echo "</td>";
       echo "</tr>";
       
       echo "<tr class='tab_bg_1'>";
-      echo "<td>Temps en minutes entre 2 checks :</td>";
+      echo "<td>".$LANG['plugin_monitoring']['check'][2]."&nbsp;:</td>";
       echo "<td align='center'>";
       Dropdown::showInteger("check_interval", $this->fields["check_interval"], 1, 100);
       echo "</td>";
-      echo "<td>Temps en minutes entre 2 retry :</td>";
+      echo "<td>".$LANG['plugin_monitoring']['check'][3]."&nbsp;:</td>";
       echo "<td align='center'>";
       Dropdown::showInteger("retry_interval", $this->fields["retry_interval"], 1, 100);
       echo "</td>";

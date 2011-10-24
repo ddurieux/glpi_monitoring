@@ -129,6 +129,7 @@ class PluginMonitoringRrdtool extends CommonDBTM {
     * @param type $time 
     */
    function displayGLPIGraph($itemtype, $items_id, $time='1d', $width='470') {
+      global $LANG;
       
       $pluginMonitoringCommand = new PluginMonitoringCommand();
 
@@ -165,7 +166,7 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       if (isset($pluginMonitoringCommand->fields['unit'])
               AND $pluginMonitoringCommand->fields['unit'] == "ms") {
          $opts[] = "-v";
-         $opts[] = "Time in ms";
+         $opts[] = $LANG['plugin_monitoring']['service'][22];
       }
       $opts[] = "--width";
       $opts[] = $width;
