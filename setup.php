@@ -52,7 +52,10 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['headings']['monitoring'] = 'plugin_get_headings_monitoring';
          $PLUGIN_HOOKS['headings_action']['monitoring'] = 'plugin_headings_actions_monitoring';
          
-         
+         // Icons add, search...
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['commands'] = 'front/command.form.php?add=1';
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['commands'] = 'front/command.php';
+
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['service'] = 'front/display.php';
       }
 
