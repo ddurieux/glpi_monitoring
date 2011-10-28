@@ -125,6 +125,7 @@ class PluginMonitoringCheck extends CommonDBTM {
    
    
    function getComments() {
+      global $LANG;
 
       $comment = $LANG['plugin_monitoring']['check'][1].' : '.$this->fields['max_check_attempts'].'<br/>
          '.$LANG['plugin_monitoring']['check'][2].' : '.$this->fields['check_interval'].' minutes<br/>
