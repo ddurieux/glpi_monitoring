@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginMonitoringServicedef extends CommonDBTM {
+class PluginMonitoringServicetemplate extends CommonDBTM {
    
    /**
    * Get name of this type
@@ -126,21 +126,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
       return $ong;
    }
 
-   
-   
-   function maybeTemplate() {
-
-      if (!isset($this->fields['id'])) {
-         $this->getEmpty();
-      }
-      if (strstr($_SERVER['PHP_SELF'], 'service.form.php')) {
-         return false;
-      } else {
-         return isset($this->fields['is_template']);
-      }
-   }
-
-   
+  
    
    /**
    * Display form for service configuration
@@ -176,75 +162,64 @@ class PluginMonitoringServicedef extends CommonDBTM {
                              $this->getType());
       autocompletionTextField($this, 'name', array('value' => $objectName));      
       echo "</td>";
-
-      // * commande
-      echo "<td>";
-      echo "Commande&nbsp;:";
-      echo "</td>";
-      echo "<td align='center'>";
-      if ($this->fields['is_template'] == '1') {
-         $pMonitoringCommand->getFromDB($this->fields['plugin_monitoring_commands_id']);
-         echo $pMonitoringCommand->getLink(1);         
-      } else {
-         $pMonitoringCommand->getFromDB($this->fields['plugin_monitoring_commands_id']);
-         Dropdown::show("PluginMonitoringCommand", array(
-                              'name' =>'plugin_monitoring_commands_id',
-                              'value'=>$this->fields['plugin_monitoring_commands_id']
-                              ));
-      }
-      echo "</td>";
-      echo "</tr>";
-      
-      echo "<tr>";
       // * checks
       echo "<td>".$LANG['plugin_monitoring']['check'][0]."&nbsp;:</td>";
       echo "<td align='center'>";
-      if ($this->fields['is_template'] == '1') {
-         $pMonitoringCheck = new PluginMonitoringCheck();
-         $pMonitoringCheck->getFromDB($this->fields['plugin_monitoring_checks_id']);
-         echo $pMonitoringCheck->getLink(1);
-      } else {
-         Dropdown::show("PluginMonitoringCheck", 
+      Dropdown::show("PluginMonitoringCheck", 
                         array('name'=>'plugin_monitoring_checks_id',
                               'value'=>$this->fields['plugin_monitoring_checks_id']));
-      }
+      echo "</td>";
+      echo "</tr>";
+      
+      // * Link
+      echo "<tr>";
+      echo "<td>";
+      echo "Type of template&nbsp;:";
+      echo "</td>";
+      echo "<td align='center'>";
+      $a_types = array();
+      $a_types[''] = DROPDOWN_EMPTY_VALUE;
+      $a_types['partition'] = "Partition";
+      $a_types['processor'] = "Processor";
+      Dropdown::showFromArray("link", $a_types, array('value'=>$this->fields['link']));
       echo "</td>";
       // * active check
       echo "<td>";
       echo "Active checks enable&nbsp;:";
       echo "</td>";
       echo "<td align='center'>";
-      if ($this->fields['is_template'] == '1') {
-         echo Dropdown::getYesNo($this->fields['active_checks_enabled']);
-      } else {
-         echo Dropdown::showYesNo("active_checks_enabled", $this->fields['active_checks_enabled']);
-      }
+      echo Dropdown::showYesNo("active_checks_enabled", $this->fields['active_checks_enabled']);
       echo "</td>";
       echo "</tr>";
       
+      // * command
       echo "<tr>";
+      echo "<td>";
+      echo "Commande&nbsp;:";
+      echo "</td>";
+      echo "<td align='center'>";
+      $pMonitoringCommand->getFromDB($this->fields['plugin_monitoring_commands_id']);
+      Dropdown::show("PluginMonitoringCommand", array(
+                             'name' =>'plugin_monitoring_commands_id',
+                              'value'=>$this->fields['plugin_monitoring_commands_id']
+                              ));
+      echo "</td>";
       // * passive check
       echo "<td>";
       echo "Passive checks enable&nbsp;:";
       echo "</td>";
       echo "<td align='center'>";
-      if ($this->fields['is_template'] == '1') {
-         echo Dropdown::getYesNo($this->fields['passive_checks_enabled']);
-      } else {
-         echo Dropdown::showYesNo("passive_checks_enabled", $this->fields['passive_checks_enabled']);
-      }
+      echo Dropdown::showYesNo("passive_checks_enabled", $this->fields['passive_checks_enabled']);
       echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr>";
+      echo "<td colspan='2'></td>";
       // * calendar
       echo "<td>".$LANG['plugin_monitoring']['host'][9]."&nbsp;:</td>";
       echo "<td align='center'>";
-      if ($this->fields['is_template'] == '1') {
-         $calendar = new Calendar();
-         $calendar->getFromDB($this->fields['calendars_id']);
-         echo $calendar->getLink(1);
-      } else {
-         dropdown::show("Calendar", array('name'=>'calendars_id',
+      dropdown::show("Calendar", array('name'=>'calendars_id',
                                  'value'=>$this->fields['calendars_id']));
-      }
       echo "</td>";
       echo "</tr>";
       
@@ -263,24 +238,16 @@ class PluginMonitoringServicedef extends CommonDBTM {
       $input['byssh'] = 'byssh';
       $input['nrpe'] = 'nrpe';
       $input['nsca'] = 'nsca';
-      if ($this->fields['is_template'] == '1') {
-         echo $input[$this->fields['remotesystem']];
-      } else {
-         Dropdown::showFromArray("remotesystem", 
+      Dropdown::showFromArray("remotesystem", 
                               $input, 
                               array('value'=>$this->fields['remotesystem']));
-      }
       echo "</td>";      
       // * is_argument
       echo "<td>";
       echo "Use arguments (Only for NRPE)&nbsp;:";
       echo "</td>";
       echo "<td>";
-      if ($this->fields['is_template'] == '1') {
-         echo Dropdown::getYesNo($this->fields['is_arguments']);
-      } else {
-         Dropdown::showYesNo("is_arguments", $this->fields['is_arguments']);
-      }
+      Dropdown::showYesNo("is_arguments", $this->fields['is_arguments']);
       echo "</td>"; 
       echo "</tr>";
       
@@ -290,26 +257,17 @@ class PluginMonitoringServicedef extends CommonDBTM {
       echo "Alias command if required (Only for NRPE)&nbsp;:";
       echo "</td>";
       echo "<td>";
-      if ($this->fields['is_template'] == '1') {
-         echo "<input type='text' name='alias_commandservice' value='".$this->fields['alias_command']."' />";
-      } else {
-         echo "<input type='text' name='alias_command' value='".$this->fields['alias_command']."' />";
-      }
+      echo "<input type='text' name='alias_command' value='".$this->fields['alias_command']."' />";
       echo "</td>"; 
       echo "<td>";
       echo "Command link (used for graphs generation)&nbsp;:";
       echo "</td>";
       echo "<td>";
-      if ($this->fields['is_template'] == '1') {
-         $pMonitoringCommand->getFromDB($this->fields['aliasperfdata_commands_id']);
-         echo $pMonitoringCommand->getLink(1);         
-      } else {
-         $pMonitoringCommand->getFromDB($this->fields['aliasperfdata_commands_id']);
-         Dropdown::show("PluginMonitoringCommand", array(
+      $pMonitoringCommand->getFromDB($this->fields['aliasperfdata_commands_id']);
+      Dropdown::show("PluginMonitoringCommand", array(
                               'name' =>'aliasperfdata_commands_id',
                               'value'=>$this->fields['aliasperfdata_commands_id']
                               ));
-      }
       echo "</td>"; 
       echo "</tr>";
       

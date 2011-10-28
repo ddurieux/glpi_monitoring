@@ -156,6 +156,7 @@ class PluginMonitoringService extends CommonDBTM {
       global $LANG,$CFG_GLPI;
 
       $pMonitoringServicedef = new PluginMonitoringServicedef();
+      $pMonitoringServicetemplate = new PluginMonitoringServicetemplate();
 
       $a_hosts = current($this->find("`items_id`='".$items_id."'
                         AND `itemtype`='".$itemtype."'"));
@@ -209,27 +210,28 @@ class PluginMonitoringService extends CommonDBTM {
          echo "</td>";
          echo "<td class='center'>";
          // Template
-         $a_listtemplates = $pMonitoringServicedef->find("`is_template`='1'");
-         $list = array();
-         $list[0] = "------";
-         foreach ($a_listtemplates as $datatemplates) {
-            $list[$datatemplates['id']] = $datatemplates['name'];
-         }
-         $pMonitoringServicedef->getFromDB($data['plugin_monitoring_servicedefs_id']);
-         echo $pMonitoringServicedef->getName(1);
+         $pMonitoringServicetemplate->getFromDB($data['plugin_monitoring_servicetemplates_id']);
+         echo $pMonitoringServicetemplate->getName(1);
          echo "</td>";
          $complete = 1;
+         $a_fields = array();
+         if ($data['plugin_monitoring_servicetemplates_id'] > 0) {
+            $a_fields = $pMonitoringServicetemplate->fields;
+         } else {
+            $pMonitoringServicedef->getFromDB($data['plugin_monitoring_servicedefs_id']);
+            $a_fields = $pMonitoringServicedef->fields;
+         }
          
-         if (!isset($pMonitoringServicedef->fields['plugin_monitoring_commands_id'])
-                 OR empty($pMonitoringServicedef->fields['plugin_monitoring_commands_id'])) {
+         if (!isset($a_fields['plugin_monitoring_commands_id'])
+                 OR empty($a_fields['plugin_monitoring_commands_id'])) {
             $complete = 0;
          }
-         if (!isset($pMonitoringServicedef->fields['plugin_monitoring_checks_id'])
-                 OR empty($pMonitoringServicedef->fields['plugin_monitoring_checks_id'])) {
+         if (!isset($a_fields['plugin_monitoring_checks_id'])
+                 OR empty($a_fields['plugin_monitoring_checks_id'])) {
             $complete = 0;
          }
-         if (!isset($pMonitoringServicedef->fields['calendars_id'])
-                 OR empty($pMonitoringServicedef->fields['calendars_id'])) {
+         if (!isset($a_fields['calendars_id'])
+                 OR empty($a_fields['calendars_id'])) {
             $complete = 0;
          }
          $color = " bgcolor='#00FF00'";
@@ -311,11 +313,10 @@ class PluginMonitoringService extends CommonDBTM {
       if ($pMonitoringServicedef->fields['is_template'] == '0') {
          $this->fields['plugin_monitoring_servicedefs_id'] = 0;
       }      
-      Dropdown::show("PluginMonitoringServicedef", array(
-            'name' => 'plugin_monitoring_servicedefs_id',
-            'value' => $this->fields['plugin_monitoring_servicedefs_id'],
-            'auto_submit' => true,
-            'condition' => '`is_template` = "1"'
+      Dropdown::show("PluginMonitoringServicetemplate", array(
+            'name' => 'plugin_monitoring_servicetemplates_id',
+            'value' => $this->fields['plugin_monitoring_servicetemplates_id'],
+            'auto_submit' => true
       ));
       echo "</td>";
       echo "<td>";
@@ -354,8 +355,10 @@ class PluginMonitoringService extends CommonDBTM {
       echo $LANG['plugin_monitoring']['service'][5]."&nbsp;:";
       echo "</td>";
       echo "<td align='center'>";
-      if ($pMonitoringServicedef->fields['is_template'] == '1') {
-         $pMonitoringCommand->getFromDB($pMonitoringServicedef->fields['plugin_monitoring_commands_id']);
+      if ($this->fields['plugin_monitoring_servicetemplates_id'] > 0) {
+         $pMonitoringServicetemplate = new PluginMonitoringServicetemplate();
+         $pMonitoringServicetemplate->getFromDB($this->fields['plugin_monitoring_servicetemplates_id']);
+         $pMonitoringCommand->getFromDB($pMonitoringServicetemplate->fields['plugin_monitoring_commands_id']);
          echo $pMonitoringCommand->getLink(1);         
       } else {
          $pMonitoringCommand->getFromDB($pMonitoringServicedef->fields['plugin_monitoring_commands_id']);
@@ -371,9 +374,9 @@ class PluginMonitoringService extends CommonDBTM {
       // * checks
       echo "<td>".$LANG['plugin_monitoring']['check'][0]."&nbsp;:</td>";
       echo "<td align='center'>";
-      if ($pMonitoringServicedef->fields['is_template'] == '1') {
+      if ($this->fields['plugin_monitoring_servicetemplates_id'] > 0) {
          $pMonitoringCheck = new PluginMonitoringCheck();
-         $pMonitoringCheck->getFromDB($pMonitoringServicedef->fields['plugin_monitoring_checks_id']);
+         $pMonitoringCheck->getFromDB($pMonitoringServicetemplate->fields['plugin_monitoring_checks_id']);
          echo $pMonitoringCheck->getLink(1);
       } else {
          Dropdown::show("PluginMonitoringCheck", 
@@ -386,8 +389,8 @@ class PluginMonitoringService extends CommonDBTM {
       echo $LANG['plugin_monitoring']['service'][6]."&nbsp;:";
       echo "</td>";
       echo "<td align='center'>";
-      if ($pMonitoringServicedef->fields['is_template'] == '1') {
-         echo Dropdown::getYesNo($pMonitoringServicedef->fields['active_checks_enabled']);
+      if ($this->fields['plugin_monitoring_servicetemplates_id'] > 0) {
+         echo Dropdown::getYesNo($pMonitoringServicetemplate->fields['active_checks_enabled']);
       } else {
          echo Dropdown::showYesNo("active_checks_enabled", $pMonitoringServicedef->fields['active_checks_enabled']);
       }
@@ -400,8 +403,8 @@ class PluginMonitoringService extends CommonDBTM {
       echo $LANG['plugin_monitoring']['service'][7]."&nbsp;:";
       echo "</td>";
       echo "<td align='center'>";
-      if ($pMonitoringServicedef->fields['is_template'] == '1') {
-         echo Dropdown::getYesNo($pMonitoringServicedef->fields['passive_checks_enabled']);
+      if ($this->fields['plugin_monitoring_servicetemplates_id'] > 0) {
+         echo Dropdown::getYesNo($pMonitoringServicetemplate->fields['passive_checks_enabled']);
       } else {
          echo Dropdown::showYesNo("passive_checks_enabled", $pMonitoringServicedef->fields['passive_checks_enabled']);
       }
@@ -409,9 +412,9 @@ class PluginMonitoringService extends CommonDBTM {
       // * calendar
       echo "<td>".$LANG['plugin_monitoring']['host'][9]."&nbsp;:</td>";
       echo "<td align='center'>";
-      if ($pMonitoringServicedef->fields['is_template'] == '1') {
+      if ($this->fields['plugin_monitoring_servicetemplates_id'] > 0) {
          $calendar = new Calendar();
-         $calendar->getFromDB($pMonitoringServicedef->fields['calendars_id']);
+         $calendar->getFromDB($pMonitoringServicetemplate->fields['calendars_id']);
          echo $calendar->getLink(1);
       } else {
          dropdown::show("Calendar", array('name'=>'calendars_id',
@@ -420,8 +423,8 @@ class PluginMonitoringService extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
       
-      if (!($pMonitoringServicedef->fields['is_template'] == '1'
-              AND $pMonitoringServicedef->fields['remotesystem'] == '')) {
+      if (!($this->fields['plugin_monitoring_servicetemplates_id'] > 0
+              AND $pMonitoringServicetemplate->fields['remotesystem'] == '')) {
       
          echo "<tr>";
          echo "<th colspan='4'>".$LANG['plugin_monitoring']['service'][8]."</th>";
@@ -438,8 +441,8 @@ class PluginMonitoringService extends CommonDBTM {
          $input['byssh'] = 'byssh';
          $input['nrpe'] = 'nrpe';
          $input['nsca'] = 'nsca';
-         if ($pMonitoringServicedef->fields['is_template'] == '1') {
-            echo $input[$pMonitoringServicedef->fields['remotesystem']];
+         if ($this->fields['plugin_monitoring_servicetemplates_id'] > 0) {
+            echo $input[$pMonitoringServicetemplate->fields['remotesystem']];
          } else {
             Dropdown::showFromArray("remotesystem", 
                                  $input, 
@@ -451,8 +454,8 @@ class PluginMonitoringService extends CommonDBTM {
          echo $LANG['plugin_monitoring']['service'][10]."&nbsp;:";
          echo "</td>";
          echo "<td>";
-         if ($pMonitoringServicedef->fields['is_template'] == '1') {
-            echo Dropdown::getYesNo($pMonitoringServicedef->fields['is_arguments']);
+         if ($this->fields['plugin_monitoring_servicetemplates_id'] > 0) {
+            echo Dropdown::getYesNo($pMonitoringServicetemplate->fields['is_arguments']);
          } else {
             Dropdown::showYesNo("is_arguments", $pMonitoringServicedef->fields['is_arguments']);
          }
@@ -465,7 +468,7 @@ class PluginMonitoringService extends CommonDBTM {
          echo $LANG['plugin_monitoring']['service'][11]."&nbsp;:";
          echo "</td>";
          echo "<td>";
-         if ($pMonitoringServicedef->fields['is_template'] == '1') {
+         if ($this->fields['plugin_monitoring_servicetemplates_id'] > 0) {
             echo "<input type='text' name='alias_commandservice' value='".$this->fields['alias_command']."' />";
          } else {
             echo "<input type='text' name='alias_command' value='".$pMonitoringServicedef->fields['alias_command']."' />";
@@ -476,9 +479,9 @@ class PluginMonitoringService extends CommonDBTM {
          echo $LANG['plugin_monitoring']['service'][12]."&nbsp;:";
          echo "</td>";
          echo "<td>";
-         if ($pMonitoringServicedef->fields['is_template'] == '1') {
+         if ($this->fields['plugin_monitoring_servicetemplates_id'] > 0) {
             $pMonitoringCommand->getEmpty();
-            $pMonitoringCommand->getFromDB($pMonitoringServicedef->fields['aliasperfdata_commands_id']);
+            $pMonitoringCommand->getFromDB($pMonitoringServicetemplate->fields['aliasperfdata_commands_id']);
             echo $pMonitoringCommand->getLink(1);         
          } else {
             $pMonitoringCommand->getFromDB($pMonitoringServicedef->fields['aliasperfdata_commands_id']);

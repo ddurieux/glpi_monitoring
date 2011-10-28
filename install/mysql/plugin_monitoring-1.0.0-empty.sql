@@ -177,6 +177,7 @@ CREATE TABLE `glpi_plugin_monitoring_services` (
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `plugin_monitoring_services_id` int(11) NOT NULL DEFAULT '0',
   `plugin_monitoring_servicedefs_id` int(11) NOT NULL DEFAULT '0',
+  `plugin_monitoring_servicetemplates_id` int(11) NOT NULL DEFAULT '0',
   `plugin_monitoring_servicesuggests_id` int(11) NOT NULL DEFAULT '0',
   `last_check` datetime DEFAULT NULL,
   `event` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -190,6 +191,25 @@ CREATE TABLE `glpi_plugin_monitoring_services` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_servicedefs`;
+
+CREATE TABLE `glpi_plugin_monitoring_servicedefs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `plugin_monitoring_commands_id` int(11) NOT NULL DEFAULT '0',
+  `arguments` text COLLATE utf8_unicode_ci,
+  `plugin_monitoring_checks_id` int(11) NOT NULL DEFAULT '0',
+  `active_checks_enabled` tinyint(1) NOT NULL DEFAULT '1',
+  `passive_checks_enabled` tinyint(1) NOT NULL DEFAULT '1',
+  `calendars_id`  int(11) NOT NULL DEFAULT '0',
+  `remotesystem` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_arguments` tinyint(1) NOT NULL DEFAULT '0',
+  `alias_command` text COLLATE utf8_unicode_ci,
+  `aliasperfdata_commands_id` int(11) NOT NULL DEFAULT '0',
+  `link` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_servicedefs`;
@@ -209,6 +229,27 @@ CREATE TABLE `glpi_plugin_monitoring_servicedefs` (
   `is_arguments` tinyint(1) NOT NULL DEFAULT '0',
   `alias_command` text COLLATE utf8_unicode_ci,
   `aliasperfdata_commands_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_servicetemplates`;
+
+CREATE TABLE `glpi_plugin_monitoring_servicetemplates` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `plugin_monitoring_commands_id` int(11) NOT NULL DEFAULT '0',
+  `arguments` text COLLATE utf8_unicode_ci,
+  `plugin_monitoring_checks_id` int(11) NOT NULL DEFAULT '0',
+  `active_checks_enabled` tinyint(1) NOT NULL DEFAULT '1',
+  `passive_checks_enabled` tinyint(1) NOT NULL DEFAULT '1',
+  `calendars_id`  int(11) NOT NULL DEFAULT '0',
+  `remotesystem` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_arguments` tinyint(1) NOT NULL DEFAULT '0',
+  `alias_command` text COLLATE utf8_unicode_ci,
+  `aliasperfdata_commands_id` int(11) NOT NULL DEFAULT '0',
+  `link` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

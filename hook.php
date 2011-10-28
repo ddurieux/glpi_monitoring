@@ -316,7 +316,7 @@ function plugin_monitoring_addOrderBy($type,$id,$order,$key=0) {
 
 
 function plugin_monitoring_addDefaultWhere($type) {
-
+ 
 }
 
 
@@ -366,7 +366,8 @@ function plugin_monitoring_getDropdown(){
 
    return array('PluginMonitoringBusinessapplication' => "Business application",
                 'PluginMonitoringCheck'               => "Check definition",
-                'PluginMonitoringCommand'             => "List of commands");
+                'PluginMonitoringCommand'             => "List of commands",
+                'PluginMonitoringServicetemplate'     => "Services templates");
 }
 
 ?>

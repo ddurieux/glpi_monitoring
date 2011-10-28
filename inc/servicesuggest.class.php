@@ -255,7 +255,7 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
                echo "</td>";
                echo "<td>".$datatemplate['name']." ".$data['mountpoint']."</td>";
                echo "<td>";
-               echo "<input type='hidden' name='plugin_monitoring_servicedefs_id[]' value=''/>";
+               $this->getTemplateFor('partition');
                echo "</td>";
                echo "</tr>";
             }
@@ -348,7 +348,7 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
             echo "</td>";
             echo "<td>".$datatemplate['name']."</td>";
             echo "<td>";
-            echo "<input type='hidden' name='plugin_monitoring_servicedefs_id[]' value=''/>";
+            $this->getTemplateFor('processor');
             echo "</td>";
             echo "</tr>";
          }
@@ -415,7 +415,17 @@ port en mode trunk
             
       }
       return $num;
-   }   
+   }
+   
+   
+   function getTemplateFor($link) {
+      Dropdown::show("PluginMonitoringServicetemplate", 
+                     array(
+                         'name'      => 'plugin_monitoring_servicetemplates_id[]',
+                         'condition' => '`link`="'.$link.'"'
+                     ));
+      
+   }
 }
 
 ?>

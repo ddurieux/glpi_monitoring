@@ -47,13 +47,13 @@ if (isset($_POST['addsuggest'])) {
    //echo "<pre>";print_r($_POST);echo "</pre>";exit;
    foreach ($_POST['suggestnum'] as $num) {
       $inputHS = array();
-      if ($_POST['plugin_monitoring_servicedefs_id'][$num] == '0'
-              OR $_POST['plugin_monitoring_servicedefs_id'][$num] == '') {
+      if ($_POST['plugin_monitoring_servicetemplates_id'][$num] == '0'
+              OR $_POST['plugin_monitoring_servicetemplates_id'][$num] == '') {
          // Add service
          
       } else {
          // use template service
-         $inputHS['plugin_monitoring_servicedefs_id'] = $_POST['plugin_monitoring_servicedefs_id'][$num];
+         $inputHS['plugin_monitoring_servicetemplates_id'] = $_POST['plugin_monitoring_servicetemplates_id'][$num];
       }
       $inputHS['plugin_monitoring_services_id'] = $_POST['plugin_monitoring_services_id'];
       $inputHS['plugin_monitoring_servicesuggests_id'] = $_POST['plugin_monitoring_servicesuggests_id'][$num];
