@@ -576,55 +576,57 @@ class PluginMonitoringService extends CommonDBTM {
       }
       
       if ($devicetype == "NetworkEquipment") {
-         $PluginFusinvsnmpNetworkEquipment = new PluginFusinvsnmpCommonDBTM("glpi_plugin_fusinvsnmp_networkequipments");
-         $PluginFusinvsnmpNetworkEquipment->load($devicedata['id']); 
-         switch ($a_arg[0]) {
-            
-            case 'OID':
-               // Load SNMP model and get oid.portnum
-               $query = "SELECT `glpi_plugin_fusioninventory_mappings`.`name` AS `mapping_name`,
-                                `glpi_plugin_fusinvsnmp_modelmibs`.*
-                         FROM `glpi_plugin_fusinvsnmp_modelmibs`
-                              LEFT JOIN `glpi_plugin_fusioninventory_mappings`
-                                        ON `glpi_plugin_fusinvsnmp_modelmibs`.`plugin_fusioninventory_mappings_id`=
-                                           `glpi_plugin_fusioninventory_mappings`.`id`
-                         WHERE `plugin_fusinvsnmp_models_id`='".$PluginFusinvsnmpNetworkEquipment->getValue("plugin_fusinvsnmp_models_id")."'
-                           AND `is_active`='1'
-                           AND `oid_port_counter`='0'
-                           AND `glpi_plugin_fusioninventory_mappings`.`name`='".$a_arg[1]."'";
+         if (class_exists("PluginFusinvsnmpCommonDBTM")) {
+            $PluginFusinvsnmpNetworkEquipment = new PluginFusinvsnmpCommonDBTM("glpi_plugin_fusinvsnmp_networkequipments");
+            $PluginFusinvsnmpNetworkEquipment->load($devicedata['id']); 
+            switch ($a_arg[0]) {
 
-               $result=$DB->query($query);
-               while ($data=$DB->fetch_array($result)) {
-                  return Dropdown::getDropdownName('glpi_plugin_fusinvsnmp_miboids',$data['plugin_fusinvsnmp_miboids_id']).
-                       ".".$item->fields['logical_number'];
-               }
+               case 'OID':
+                  // Load SNMP model and get oid.portnum
+                  $query = "SELECT `glpi_plugin_fusioninventory_mappings`.`name` AS `mapping_name`,
+                                   `glpi_plugin_fusinvsnmp_modelmibs`.*
+                            FROM `glpi_plugin_fusinvsnmp_modelmibs`
+                                 LEFT JOIN `glpi_plugin_fusioninventory_mappings`
+                                           ON `glpi_plugin_fusinvsnmp_modelmibs`.`plugin_fusioninventory_mappings_id`=
+                                              `glpi_plugin_fusioninventory_mappings`.`id`
+                            WHERE `plugin_fusinvsnmp_models_id`='".$PluginFusinvsnmpNetworkEquipment->getValue("plugin_fusinvsnmp_models_id")."'
+                              AND `is_active`='1'
+                              AND `oid_port_counter`='0'
+                              AND `glpi_plugin_fusioninventory_mappings`.`name`='".$a_arg[1]."'";
 
-               
-               return '';
-               break;
-            
-            case 'SNMP':
-               $pFusinvsnmpConfigSecurity = new PluginFusinvsnmpConfigSecurity();
-               $pFusinvsnmpConfigSecurity->getFromDB($PluginFusinvsnmpNetworkEquipment->getValue("plugin_fusinvsnmp_configsecurities_id"));
+                  $result=$DB->query($query);
+                  while ($data=$DB->fetch_array($result)) {
+                     return Dropdown::getDropdownName('glpi_plugin_fusinvsnmp_miboids',$data['plugin_fusinvsnmp_miboids_id']).
+                          ".".$item->fields['logical_number'];
+                  }
 
-               switch ($a_arg[1]) {
-               
-                  case 'version':
-                     if ($pFusinvsnmpConfigSecurity->fields['snmpversion'] == '2') {
-                        $pFusinvsnmpConfigSecurity->fields['snmpversion'] = '2c';
-                     }
-                     return $pFusinvsnmpConfigSecurity->fields['snmpversion'];
-                     break;
-                  
-                  case 'authentication':
-                     return $pFusinvsnmpConfigSecurity->fields['community'];
-                     break;
 
-               }
-               
-               
-               break;
-               
+                  return '';
+                  break;
+
+               case 'SNMP':
+                  $pFusinvsnmpConfigSecurity = new PluginFusinvsnmpConfigSecurity();
+                  $pFusinvsnmpConfigSecurity->getFromDB($PluginFusinvsnmpNetworkEquipment->getValue("plugin_fusinvsnmp_configsecurities_id"));
+
+                  switch ($a_arg[1]) {
+
+                     case 'version':
+                        if ($pFusinvsnmpConfigSecurity->fields['snmpversion'] == '2') {
+                           $pFusinvsnmpConfigSecurity->fields['snmpversion'] = '2c';
+                        }
+                        return $pFusinvsnmpConfigSecurity->fields['snmpversion'];
+                        break;
+
+                     case 'authentication':
+                        return $pFusinvsnmpConfigSecurity->fields['community'];
+                        break;
+
+                  }
+
+
+                  break;
+
+            }
          }
       }
       return $argument;
