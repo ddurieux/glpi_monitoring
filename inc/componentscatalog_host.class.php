@@ -79,6 +79,8 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
    function showStatichosts($componentscatalogs_id) {
       global $DB;
       
+      $this->addHost($componentscatalogs_id);      
+      
       $query = "SELECT * FROM `".$this->getTable()."`
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'
             AND `is_static`='1'";
@@ -100,7 +102,41 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
       }
       echo "</table>";
       
-   }   
+   }
+   
+   
+   function addHost($componentscatalogs_id) {
+      global $DB,$LANG;
+      
+      $this->getEmpty();
+      
+      $pmComponent = new PluginMonitoringComponent();
+
+      $this->showFormHeader();      
+
+      $used = array();
+      $query = "SELECT * FROM `".$this->getTable()."`
+         WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         
+      }      
+     
+      echo "<tr>";
+      echo "<td colspan='2'>";
+      echo $LANG['plugin_monitoring']['component'][1]."&nbsp;:";
+      echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$componentscatalogs_id."'/>";
+      echo "<input type='hidden' name='static' value='1'/>";
+      echo "</td>";
+      echo "<td colspan='2'>";
+      Dropdown::showAllItems('items_id');
+      echo "</td>";
+      echo "</tr>";
+      
+      $this->showFormButtons();
+   }
+   
+   
 }
 
 ?>
