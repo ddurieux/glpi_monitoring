@@ -77,29 +77,59 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
    
    
    function showStatichosts($componentscatalogs_id) {
-      global $DB;
+      global $DB,$LANG;
       
       $this->addHost($componentscatalogs_id);      
-      
+
       $query = "SELECT * FROM `".$this->getTable()."`
-         WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'
-            AND `is_static`='1'";
+         WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
       $result = $DB->query($query);
+      
       echo "<table class='tab_cadre_fixe'>";
+      echo "<tr>";
+      echo "<th colspan='5'>";
+      if ($DB->numrows($result)==0) {
+         echo $LANG['document'][13];
+      } else {
+         echo $LANG['document'][19];
+      }
+      echo "</th>";
+      echo "</tr>";
+      echo "</table>";
+      
+      
+      echo "<table class='tab_cadre_fixe'>";     
+      
+      echo "<tr>";
+      echo "<th>".$LANG['common'][17]."</th>";
+      echo "<th>".$LANG['entity'][0]."</th>";
+      echo "<th>".$LANG['common'][16]."</th>";
+      echo "<th>".$LANG['common'][19]."</th>";
+      echo "<th>".$LANG['common'][20]."</th>";
+      echo "</tr>";
+      
       while ($data=$DB->fetch_array($result)) {
+         
          $itemtype = $data['itemtype'];
          $item = new $itemtype();
          $item->getFromDB($data['items_id']);
-         echo "<tr class='tab_bg_1'>";
-         echo "<td></td>";
-         echo "<td>";
+         echo "<tr>";      
+         echo "<td class='center'>";
          echo $item->getTypeName();
          echo "</td>";
-         echo "<td>";
-         echo $item->getLink(1);
-         echo "</td>";
+         echo "<td class='center'>";
+         echo Dropdown::getDropdownName("glpi_entities",$item->fields['entity'])."</td>";
+         echo "<td class='center".
+               (isset($item->fields['is_deleted']) && $item->fields['is_deleted'] ? " tab_bg_2_2'" : "'");
+         echo ">".$item->getLink()."</td>";
+         echo "<td class='center'>".
+               (isset($item->fields["serial"])? "".$item->fields["serial"]."" :"-")."</td>";
+         echo "<td class='center'>".
+               (isset($item->fields["otherserial"])? "".$item->fields["otherserial"]."" :"-")."</td>";
+         
          echo "</tr>";
-      }
+      }      
+      
       echo "</table>";
       
    }
@@ -126,7 +156,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
       echo "<td colspan='2'>";
       echo $LANG['plugin_monitoring']['component'][1]."&nbsp;:";
       echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$componentscatalogs_id."'/>";
-      echo "<input type='hidden' name='static' value='1'/>";
+      echo "<input type='hidden' name='is_static' value='1'/>";
       echo "</td>";
       echo "<td colspan='2'>";
       Dropdown::showAllItems('items_id');

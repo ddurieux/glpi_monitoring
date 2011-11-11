@@ -82,8 +82,11 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
       $this->addComponent($componentscatalogs_id);
       
       $pmComponent = new PluginMonitoringComponent();
-
-      echo "<table class='tab_cadre_fixe'>";     
+      $pmCommand   = new PluginMonitoringCommand();
+      $pmCheck   = new PluginMonitoringCheck();
+      $calendar = new Calendar();
+      
+      echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr>";
       echo "<th>";
@@ -91,18 +94,50 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
       echo "</th>";
       echo "</tr>";
       
+      echo "</table>";
+      
+      echo "<table class='tab_cadre_fixe'>";
+      
+      echo "<tr>";
+      echo "<th>".$LANG['common'][16]."</th>";
+      echo "<th>".$LANG['plugin_monitoring']['command'][2]."</th>";
+      echo "<th>".$LANG['plugin_monitoring']['check'][0]."</th>";      
+      echo "<th>".$LANG['plugin_monitoring']['host'][9]."</th>";
+      echo "<th>".$LANG['plugin_monitoring']['service'][8]."</th>";
+      echo "</tr>";
+      
       $used = array();
       $query = "SELECT * FROM `".$this->getTable()."`
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
-         echo "<tr>";      
-         echo "<td>";
          $used[] = $data['plugin_monitoring_components_id'];
          $pmComponent->getFromDB($data['plugin_monitoring_components_id']);
-         echo $pmComponent->getLink(1);
+         echo "<tr>";      
+         echo "<td class='center'>";
+         echo $pmComponent->getLink(1);         
+         echo "</td>";
+         echo "<td class='center'>";
+         $pmCommand->getFromDB($pmComponent->fields['plugin_monitoring_commands_id']);
+         echo $pmCommand->getLink();
+         echo "</td>";
+         echo "<td class='center'>";
+         $pmCheck->getFromDB($pmComponent->fields['plugin_monitoring_checks_id']);
+         echo $pmCheck->getLink();
+         echo "</td>";
+         echo "<td class='center'>";
+         $calendar->getFromDB($pmComponent->fields['calendars_id']);
+         echo $calendar->getLink();
+         echo "</td>";
+         echo "<td class='center'>";
+         if ($pmComponent->fields['remotesystem'] == '') {
+            echo "-";
+         } else {
+            echo $pmComponent->fields['remotesystem'];
+         }
          
          echo "</td>";
+         
          echo "</tr>";
       }      
       
