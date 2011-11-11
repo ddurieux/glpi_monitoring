@@ -279,7 +279,7 @@ class PluginMonitoringService extends CommonDBTM {
       } else {
          $this->getFromDB($items_id);
       }
-
+      $this->showTabs($options);
       $this->showFormHeader($options);
       if (!isset($this->fields['plugin_monitoring_servicedefs_id'])
               OR empty($this->fields['plugin_monitoring_servicedefs_id'])) {

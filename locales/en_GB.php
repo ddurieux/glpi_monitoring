@@ -94,7 +94,7 @@ $LANG['plugin_monitoring']['contact'][18]="The contact will not receive any type
 $LANG['plugin_monitoring']['contact'][19]="Notification command";
 $LANG['plugin_monitoring']['contact'][20]="Contacts";
 
-$LANG['plugin_monitoring']['service'][0]="Services";
+$LANG['plugin_monitoring']['service'][0]="Resources";
 $LANG['plugin_monitoring']['service'][1]="Criticity";
 $LANG['plugin_monitoring']['service'][2]="Add a service";
 $LANG['plugin_monitoring']['service'][3]="or/and define these values";
@@ -114,8 +114,8 @@ $LANG['plugin_monitoring']['service'][16]="Check Host";
 $LANG['plugin_monitoring']['service'][17]="Configuration complete";
 $LANG['plugin_monitoring']['service'][18]="Last check";
 $LANG['plugin_monitoring']['service'][19]="State type";
-$LANG['plugin_monitoring']['service'][20]="Service";
-$LANG['plugin_monitoring']['service'][21]="All services";
+$LANG['plugin_monitoring']['service'][20]="Resource";
+$LANG['plugin_monitoring']['service'][21]="All resources";
 $LANG['plugin_monitoring']['service'][22]="Time in ms";
 
 $LANG['plugin_monitoring']['servicesuggest'][0]="Suggests";

@@ -415,6 +415,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_services[$i]['check_command'] = $command.implode("&", $a_group);
          $a_services[$i]['notification_interval'] = '30';
          $a_services[$i]['notification_period'] = '24x7';
+         $a_services[$i]['check_period'] = '24x7';
          $a_services[$i]['notification_options'] = 'w,c,r';
          $a_services[$i]['active_checks_enabled'] = '1';
          $a_services[$i]['process_perf_data'] = '1';
@@ -433,6 +434,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_services[$i]['retain_nonstatus_information'] = '1';
          $a_services[$i]['is_volatile'] = '0';
          $a_services[$i]['_httpstink'] = 'NO';
+         $a_services[$i]['contacts'] = 'ddurieux';
          $i++;
       }
       

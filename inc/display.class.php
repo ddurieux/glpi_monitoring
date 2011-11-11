@@ -422,6 +422,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
                      <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$stateserv."_32.png'/></td></tr>";
          }
          $tooltip .= "</table>";
+         if (!isset($globalserv_state[$shortstate])) {
+            $globalserv_state[$shortstate] = 0;
+         }
          $globalserv_state[$shortstate]++;
          
          $img = '';

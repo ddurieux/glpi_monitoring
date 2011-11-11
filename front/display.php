@@ -40,7 +40,9 @@ require_once GLPI_ROOT."/inc/includes.php";
 
 checkLoginUser();
 
-popHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"]);
+commonHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plugins",
+             "monitoring", "display");
+//popHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"]);
 
 echo '<meta http-equiv ="refresh" content="30">';
 
