@@ -142,5 +142,6 @@ $LANG['plugin_monitoring']['businessruledefinition'][0] = $LANG['plugin_monitori
 
 $LANG['plugin_monitoring']['component'][0]="Components";
 $LANG['plugin_monitoring']['component'][1]="Add a new component";
+$LANG['plugin_monitoring']['component'][2]="Associated components";
 
 ?>

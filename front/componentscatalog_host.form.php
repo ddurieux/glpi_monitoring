@@ -42,8 +42,10 @@ $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
 if (isset ($_POST["add"])) {
    $pmComponentscatalog_Host->add($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset ($_POST["delete"])) {
-   $pmComponentscatalog_Host->delete($_POST);
+} else if (isset($_POST["deleteitem"])) {
+   foreach ($_POST["item"] as $id) {
+      $pmComponentscatalog_Host->delete(array('id'=>$id));
+   }
    glpi_header($_SERVER['HTTP_REFERER']);
 }
 

@@ -77,20 +77,25 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
    
    
    function showComponents($componentscatalogs_id) {
-      global $DB,$LANG;
+      global $DB,$LANG,$CFG_GLPI;
 
       $this->addComponent($componentscatalogs_id);
       
+      $rand = mt_rand();
+      
       $pmComponent = new PluginMonitoringComponent();
       $pmCommand   = new PluginMonitoringCommand();
-      $pmCheck   = new PluginMonitoringCheck();
-      $calendar = new Calendar();
+      $pmCheck     = new PluginMonitoringCheck();
+      $calendar    = new Calendar();
+      
+      echo "<form method='post' name='componentscatalog_component_form$rand' id='componentscatalog_component_form$rand' action=\"".
+                $CFG_GLPI["root_doc"]."/plugins/monitoring/front/componentscatalog_component.form.php\">";
       
       echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr>";
       echo "<th>";
-      echo $LANG['plugin_monitoring']['component'][0];
+      echo $LANG['plugin_monitoring']['component'][2];
       echo "</th>";
       echo "</tr>";
       
@@ -99,6 +104,7 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       
       echo "<tr>";
+      echo "<th width='10'>&nbsp;</th>";
       echo "<th>".$LANG['common'][16]."</th>";
       echo "<th>".$LANG['plugin_monitoring']['command'][2]."</th>";
       echo "<th>".$LANG['plugin_monitoring']['check'][0]."</th>";      
@@ -113,7 +119,10 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
       while ($data=$DB->fetch_array($result)) {
          $used[] = $data['plugin_monitoring_components_id'];
          $pmComponent->getFromDB($data['plugin_monitoring_components_id']);
-         echo "<tr>";      
+         echo "<tr>";
+         echo "<td>";
+         echo "<input type='checkbox' name='item[".$data["id"]."]' value='1'>";
+         echo "</td>";
          echo "<td class='center'>";
          echo $pmComponent->getLink(1);         
          echo "</td>";
@@ -134,12 +143,14 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
             echo "-";
          } else {
             echo $pmComponent->fields['remotesystem'];
-         }
-         
+         }         
          echo "</td>";
          
          echo "</tr>";
-      }      
+      }
+      
+      openArrowMassive("componentscatalog_host_form$rand", true);
+      closeArrowMassive('deleteitem', $LANG['buttons'][6]);
       
       echo "</table>";
       

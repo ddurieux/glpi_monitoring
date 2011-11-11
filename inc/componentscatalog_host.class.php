@@ -77,13 +77,18 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
    
    
    function showStatichosts($componentscatalogs_id) {
-      global $DB,$LANG;
+      global $DB,$LANG,$CFG_GLPI;
       
-      $this->addHost($componentscatalogs_id);      
+      $this->addHost($componentscatalogs_id);
+      
+      $rand = mt_rand();
 
       $query = "SELECT * FROM `".$this->getTable()."`
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
       $result = $DB->query($query);
+      
+      echo "<form method='post' name='componentscatalog_host_form$rand' id='componentscatalog_host_form$rand' action=\"".
+                $CFG_GLPI["root_doc"]."/plugins/monitoring/front/componentscatalog_host.form.php\">";
       
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
@@ -101,6 +106,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";     
       
       echo "<tr>";
+      echo "<th width='10'>&nbsp;</th>";
       echo "<th>".$LANG['common'][17]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
       echo "<th>".$LANG['common'][16]."</th>";
@@ -113,7 +119,10 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
          $itemtype = $data['itemtype'];
          $item = new $itemtype();
          $item->getFromDB($data['items_id']);
-         echo "<tr>";      
+         echo "<tr>";
+         echo "<td>";
+         echo "<input type='checkbox' name='item[".$data["id"]."]' value='1'>";
+         echo "</td>";
          echo "<td class='center'>";
          echo $item->getTypeName();
          echo "</td>";
@@ -128,7 +137,10 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
                (isset($item->fields["otherserial"])? "".$item->fields["otherserial"]."" :"-")."</td>";
          
          echo "</tr>";
-      }      
+      }
+      
+      openArrowMassive("componentscatalog_host_form$rand", true);
+      closeArrowMassive('deleteitem', $LANG['buttons'][6]);
       
       echo "</table>";
       
