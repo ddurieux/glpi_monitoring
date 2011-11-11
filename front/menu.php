@@ -41,6 +41,8 @@ include (GLPI_ROOT."/inc/includes.php");
 commonHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plugins",
              "monitoring", "menu");
 
+PluginMonitoringNotification::test();
+
 echo "<table class='tab_cadre' width='300'>";
 
 echo "<tr class='tab_bg_1'>";
