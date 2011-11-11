@@ -120,8 +120,8 @@ $LANG['plugin_monitoring']['service'][22]="Time in ms";
 
 $LANG['plugin_monitoring']['servicesuggest'][0]="Suggests";
 
-$LANG['plugin_monitoring']['businessapplication'][0]="Business application";
-$LANG['plugin_monitoring']['businessapplication'][1]="Degraded mode";
+$LANG['plugin_monitoring']['servicescatalog'][0]="Services catalog";
+$LANG['plugin_monitoring']['servicescatalog'][1]="Degraded mode";
 
 $LANG['plugin_monitoring']['businessrule'][0]="Business rules";
 $LANG['plugin_monitoring']['businessrule'][2]="2 of";

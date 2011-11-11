@@ -253,7 +253,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       $pluginMonitoringHost_Contact = new PluginMonitoringHost_Contact();
       $pMonitoringCommand      = new PluginMonitoringCommand();
       $pMonitoringCheck        = new PluginMonitoringCheck();
-      $pluginMonitoringBusinessapplication = new PluginMonitoringBusinessapplication();
+      $pluginMonitoringServicescatalog = new PluginMonitoringServicescatalog();
       $pluginMonitoringBusinessrule = new PluginMonitoringBusinessrule();
       $calendar      = new Calendar();
       $user          = new User();
@@ -352,7 +352,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
       // Business rules....
       $pluginMonitoringServiceH = new PluginMonitoringService();
-      $a_listBA = $pluginMonitoringBusinessapplication->find();
+      $a_listBA = $pluginMonitoringServicescatalog->find();
       foreach ($a_listBA as $dataBA) {
 
          $a_services[$i]['contacts'] = 'ddurieux';
@@ -367,7 +367,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9]/","",$dataBA['name'])."-".$dataBA['id']."-businessrules";
          $command = "bp_rule!";
          $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
-         $a_grouplist = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_businessapplications_id`='".$dataBA['id']."'");
+         $a_grouplist = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_servicescatalogs_id`='".$dataBA['id']."'");
          $a_group = array();
          foreach ($a_grouplist as $gdata) {
             $a_listBR = $pluginMonitoringBusinessrule->find(

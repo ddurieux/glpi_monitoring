@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginMonitoringBusinessapplication extends CommonDropdown {
+class PluginMonitoringServicescatalog extends CommonDropdown {
    
    /**
    * Get name of this type
@@ -47,7 +47,7 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
    static function getTypeName() {
       global $LANG;
 
-      return $LANG['plugin_monitoring']['businessapplication'][0];
+      return $LANG['plugin_monitoring']['servicescatalog'][0];
    }
 
 
@@ -134,10 +134,10 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
 
          echo "<tr class='tab_bg_1'>";
          echo "<td>";
-         echo $LANG['plugin_monitoring']['businessapplication'][1]."&nbsp;:";
+         echo $LANG['plugin_monitoring']['servicescatalog'][1]."&nbsp;:";
          echo "</td>";
          echo "<td width='40' align='center'>";
-         $a_group = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_businessapplications_id`='".$data['id']."'");
+         $a_group = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_servicescatalogs_id`='".$data['id']."'");
          $a_gstate = array();
          foreach ($a_group as $gdata) {
             $a_brules = $pMonitoringBusinessrule->find("`plugin_monitoring_businessrulegroups_id`='".$gdata['id']."'");
@@ -198,7 +198,7 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
 
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2' align='center'>";
-         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/businessapplication.form.php?id=".$data['id']."&detail=1'>Détail</a>";
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicescatalog.form.php?id=".$data['id']."&detail=1'>Détail</a>";
          echo "</td>";
          echo "</tr>";
 
@@ -221,7 +221,7 @@ class PluginMonitoringBusinessapplication extends CommonDropdown {
       
       $this->getFromDB($id);
       echo "<table class='tab_cadrehov'>";
-      $a_groups = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_businessapplications_id`='".$id."'");
+      $a_groups = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_servicescatalogs_id`='".$id."'");
       
       echo "<tr class='tab_bg_1'>";
       

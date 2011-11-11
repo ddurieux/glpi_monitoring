@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$dropdown = new PluginMonitoringBusinessapplication();
+$dropdown = new PluginMonitoringServicescatalog();
 include (GLPI_ROOT . "/ajax/dropdown.common.tabs.php");
 
 ?>

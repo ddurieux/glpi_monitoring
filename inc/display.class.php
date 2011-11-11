@@ -305,7 +305,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo $LANG['stats'][7];
       echo "</th>";
       echo "<th>";
-      echo $LANG['plugin_monitoring']['businessapplication'][1];
+      echo $LANG['plugin_monitoring']['servicescatalog'][1];
       echo "</th>";
       echo "<th>";
       echo $LANG['plugin_monitoring']['service'][18];

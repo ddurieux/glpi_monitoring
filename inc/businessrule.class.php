@@ -78,10 +78,10 @@ class PluginMonitoringBusinessrule extends CommonDBTM {
    *@return bool true if form is ok
    *
    **/
-   function showFormTest($businessapplications_id, $options=array()) {
+   function showFormTest($servicescatalogs_id, $options=array()) {
       global $DB,$CFG_GLPI,$LANG;
 
-      $this->showFormTest($businessapplications_id, $options);
+      $this->showFormTest($servicescatalogs_id, $options);
 return;
 //      $this->showFormHeader($options);
       
@@ -103,9 +103,9 @@ return;
       
       echo "<form name='form' method='post' 
          action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/businessrule.form.php'>";
-      echo "<input type='hidden' name='businessapplications_id' value='".$businessapplications_id."'/>";
+      echo "<input type='hidden' name='servicescatalogs_id' value='".$servicescatalogs_id."'/>";
 
-      $a_list = $this->find("`plugin_monitoring_businessapplications_id`='".$businessapplications_id."'", 
+      $a_list = $this->find("`plugin_monitoring_servicescatalogs_id`='".$servicescatalogs_id."'", 
               "`group`, `position`");
 
       $groupnum = 0;
@@ -219,21 +219,21 @@ return;
    
    
    
-   function showForm($businessapplications_id, $options=array()) {
+   function showForm($servicescatalogs_id, $options=array()) {
       global $DB,$CFG_GLPI,$LANG;
 
       $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
       
       // Add group
-      $pMonitoringBusinessrulegroup->showForm(0, $businessapplications_id);
+      $pMonitoringBusinessrulegroup->showForm(0, $servicescatalogs_id);
       
       // Display each group
       $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringBusinessrulegroup")."`
-         WHERE `plugin_monitoring_businessapplications_id`='".$businessapplications_id."'
+         WHERE `plugin_monitoring_servicescatalogs_id`='".$servicescatalogs_id."'
          ORDER BY `name`";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
-         $pMonitoringBusinessrulegroup->showForm($data['id'], $businessapplications_id);
+         $pMonitoringBusinessrulegroup->showForm($data['id'], $servicescatalogs_id);
       
          echo "<table class='tab_cadre' width='600'>";
          echo "<tr class='tab_bg_1'>";
@@ -297,7 +297,7 @@ return;
       echo "</tr>";
       
       $query = "SELECT * FROM `".getTableForItemType($this->getType())."`
-         WHERE `plugin_monitoring_businessapplications_id`='".$businessapplications_id."'
+         WHERE `plugin_monitoring_servicescatalogs_id`='".$servicescatalogs_id."'
          ORDER BY `group`";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {

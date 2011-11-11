@@ -51,8 +51,8 @@ switch($_REQUEST['glpi_tab']) {
       break;
 
    case 1 :
-      $pluginMonitoringBusinessapplication = new PluginMonitoringBusinessapplication();
-      $pluginMonitoringBusinessapplication->showBAChecks();
+      $pluginMonitoringServicescatalog = new PluginMonitoringServicescatalog();
+      $pluginMonitoringServicescatalog->showBAChecks();
       break;
 
    case 2:

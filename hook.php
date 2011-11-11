@@ -100,7 +100,7 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
          return $array;
          break;
       
-      case 'PluginMonitoringBusinessapplication':
+      case 'PluginMonitoringServicescatalog':
          $array = array();
          $array[0] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['businessrule'][0];
          return $array;
@@ -134,7 +134,7 @@ function plugin_headings_actions_monitoring($item) {
          return $array;
          break;
       
-      case 'PluginMonitoringBusinessapplication':
+      case 'PluginMonitoringServicescatalog':
          $array = array ();
          $array[0] = "plugin_headings_monitoring_businessrules";
          return $array;
@@ -364,7 +364,7 @@ function plugin_monitoring_registerMethods() {
 function plugin_monitoring_getDropdown(){
    global $LANG;
 
-   return array('PluginMonitoringBusinessapplication' => "Business application",
+   return array('PluginMonitoringServicescatalog'     => $LANG['plugin_monitoring']['servicescatalog'][0],
                 'PluginMonitoringCheck'               => "Check definition",
                 'PluginMonitoringCommand'             => "List of commands",
                 'PluginMonitoringServicetemplate'     => "Services templates");

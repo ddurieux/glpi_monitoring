@@ -75,7 +75,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
    }
 
    
-   function showForm($items_id, $businessapplications_id, $options=array()) {
+   function showForm($items_id, $servicescatalogs_id, $options=array()) {
       global $LANG;
 
       if ($items_id!='') {
@@ -88,7 +88,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
-      echo "<input type='hidden' name='plugin_monitoring_businessapplications_id' value='".$businessapplications_id."'/>";
+      echo "<input type='hidden' name='plugin_monitoring_servicescatalogs_id' value='".$servicescatalogs_id."'/>";
       echo $LANG['common'][16]."&nbsp;:";
       echo "</td>";
       echo "<td>";

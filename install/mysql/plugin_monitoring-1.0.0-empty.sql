@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_businessapplications`;
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_servicescatalogs`;
 
-CREATE TABLE `glpi_plugin_monitoring_businessapplications` (
+CREATE TABLE `glpi_plugin_monitoring_servicescatalogs` (
    `id` int(11) NOT NULL AUTO_INCREMENT,
    `name` varchar(255) DEFAULT NULL,
    `entities_id` int(11) NOT NULL DEFAULT '0',
@@ -31,7 +31,7 @@ DROP TABLE IF EXISTS `glpi_plugin_monitoring_businessrulegroups`;
 CREATE TABLE `glpi_plugin_monitoring_businessrulegroups` (
    `id` int(11) NOT NULL AUTO_INCREMENT,
    `name` varchar(255) DEFAULT NULL,
-   `plugin_monitoring_businessapplications_id` int(11) NOT NULL DEFAULT '0',
+   `plugin_monitoring_servicescatalogs_id` int(11) NOT NULL DEFAULT '0',
    `operator` varchar(255) DEFAULT NULL,
    PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
