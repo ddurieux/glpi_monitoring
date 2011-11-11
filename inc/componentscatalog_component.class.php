@@ -36,13 +36,13 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginMonitoringComponentscatalog_Component extends CommonDBRelation {
+class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
    
 
    static function getTypeName() {
       global $LANG;
 
-      return "Components";
+      return $LANG['plugin_monitoring']['component'][0];
    }
 
 
@@ -77,29 +77,69 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBRelation {
    
    
    function showComponents($componentscatalogs_id) {
-      global $DB;
-    
-      $this->getEmpty();
+      global $DB,$LANG;
+
+      $this->addComponent($componentscatalogs_id);
       
-      $this->showFormHeader();
-      
+      $pmComponent = new PluginMonitoringComponent();
+
+      echo "<table class='tab_cadre_fixe'>";     
+
       echo "<tr>";
-      echo "<td colspan='2'>";
-      Dropdown::show("PluginMonitoringComponent");
-      echo "</td>";
-      echo "<td colspan='2'>";
+      echo "<th>";
+      echo $LANG['plugin_monitoring']['component'][0];
+      echo "</th>";
+      echo "</tr>";
+      
+      $used = array();
       $query = "SELECT * FROM `".$this->getTable()."`
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
+         echo "<tr>";      
+         echo "<td>";
+         $used[] = $data['plugin_monitoring_components_id'];
+         $pmComponent->getFromDB($data['plugin_monitoring_components_id']);
+         echo $pmComponent->getLink(1);
+         
+         echo "</td>";
+         echo "</tr>";
+      }      
       
-      }
+      echo "</table>";
       
+   }
+   
+   
+   function addComponent($componentscatalogs_id) {
+      global $DB,$LANG;
+      
+      $this->getEmpty();
+      
+      $pmComponent = new PluginMonitoringComponent();
+
+      $this->showFormHeader();      
+
+      $used = array();
+      $query = "SELECT * FROM `".$this->getTable()."`
+         WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         $used[] = $data['plugin_monitoring_components_id'];
+      }      
+     
+      echo "<tr>";
+      echo "<td colspan='2'>";
+      echo $LANG['plugin_monitoring']['component'][1]."&nbsp;:";
+      echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$componentscatalogs_id."'/>";
+      echo "</td>";
+      echo "<td colspan='2'>";
+      Dropdown::show("PluginMonitoringComponent", array('name'=>'plugin_monitoring_components_id',
+                                                        'used'=>$used));
       echo "</td>";
       echo "</tr>";
       
       $this->showFormButtons();
-      
    }
    
 }

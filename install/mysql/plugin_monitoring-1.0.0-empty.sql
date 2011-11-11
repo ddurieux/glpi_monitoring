@@ -75,6 +75,20 @@ CREATE TABLE `glpi_plugin_monitoring_componentscatalogs_hosts` (
 
 
 
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_rules`;
+
+CREATE TABLE `glpi_plugin_monitoring_rules` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `plugin_monitoring_componentscalalog_id` int(11) NOT NULL DEFAULT '0',
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `condition` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
 
 
 
