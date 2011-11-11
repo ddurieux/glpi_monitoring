@@ -49,6 +49,19 @@ CREATE TABLE `glpi_plugin_monitoring_components` (
 
 
 
+DROP TABLE IF EXISTS `glpi_componentscatalogs_components`;
+
+CREATE TABLE `glpi_componentscatalogs_components` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `plugin_monitoring_componentscalalog_id` int(11) NOT NULL DEFAULT '0',
+  `plugin_monitoring_components_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unicity` (`plugin_monitoring_componentscalalog_id`,`plugin_monitoring_components_id`),
+  KEY `plugin_monitoring_componentscalalog_id` (`plugin_monitoring_componentscalalog_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
 
 
 
