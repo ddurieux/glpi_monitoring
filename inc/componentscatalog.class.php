@@ -79,6 +79,23 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    function canValidate() {
       return true;
    }
+   
+   
+   
+   function defineTabs($options=array()){
+      global $LANG,$CFG_GLPI;
+
+      $ong = array();
+
+      $ong[1] = "Components"; 
+      $ong[2] = "Static hosts";
+      $ong[3] = "Rules";
+      $ong[4] = "Dynamic hosts";
+      
+      
+      return $ong;
+   }
+   
 }
 
 ?>

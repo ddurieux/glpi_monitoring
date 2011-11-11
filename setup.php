@@ -66,6 +66,12 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['components'] = 'front/component.php';
          
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['service'] = 'front/display.php';
+         
+         // Fil ariane
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['components']['title'] = "Components";
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['components']['page']  = '/plugins/monitoring/front/component.php';
+
+         
       }
 
    $PLUGIN_HOOKS['webservices']['monitoring'] = 'plugin_monitoring_registerMethods';

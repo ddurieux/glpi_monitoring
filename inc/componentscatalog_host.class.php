@@ -36,13 +36,13 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginMonitoringComponentscatalog_Component extends CommonDBRelation {
+class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
    
 
    static function getTypeName() {
       global $LANG;
 
-      return "Components";
+      return "Hosts";
    }
 
 
@@ -76,32 +76,31 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBRelation {
 
    
    
-   function showComponents($componentscatalogs_id) {
+   function showStatichosts($componentscatalogs_id) {
       global $DB;
-    
-      $this->getEmpty();
       
-      $this->showFormHeader();
-      
-      echo "<tr>";
-      echo "<td colspan='2'>";
-      Dropdown::show("PluginMonitoringComponent");
-      echo "</td>";
-      echo "<td colspan='2'>";
       $query = "SELECT * FROM `".$this->getTable()."`
-         WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
+         WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'
+            AND `is_static`='1'";
       $result = $DB->query($query);
+      echo "<table class='tab_cadre_fixe'>";
       while ($data=$DB->fetch_array($result)) {
-      
+         $itemtype = $data['itemtype'];
+         $item = new $itemtype();
+         $item->getFromDB($data['items_id']);
+         echo "<tr class='tab_bg_1'>";
+         echo "<td></td>";
+         echo "<td>";
+         echo $item->getTypeName();
+         echo "</td>";
+         echo "<td>";
+         echo $item->getLink(1);
+         echo "</td>";
+         echo "</tr>";
       }
+      echo "</table>";
       
-      echo "</td>";
-      echo "</tr>";
-      
-      $this->showFormButtons();
-      
-   }
-   
+   }   
 }
 
 ?>
