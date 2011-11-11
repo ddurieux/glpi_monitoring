@@ -152,8 +152,6 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
       
       $this->getEmpty();
       
-      $pmComponent = new PluginMonitoringComponent();
-
       $this->showFormHeader();      
 
       $used = array();
@@ -179,6 +177,38 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
    }
    
    
+   
+   function linkComponentsToItem($componentscatalogs_id, $componentscatalogs_hosts_id) {
+      global $DB;
+      
+      $pmService = new PluginMonitoringService();
+      
+      $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_components`
+         WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         $input = array();
+         $input['plugin_monitoring_componentscatalogs_hosts_id'] = $componentscatalogs_hosts_id;
+         $input['plugin_monitoring_components_id'] = $data['plugin_monitoring_components_id'];
+         $input['name'] = Dropdown::getDropdownName("glpi_plugin_monitoring_components", $data['plugin_monitoring_components_id']);
+         $pmService->add($input);
+      }      
+   }
+   
+   
+   
+   function unlinkComponentsToItem($componentscatalogs_hosts_id) {
+      global $DB;
+      
+      $pmService = new PluginMonitoringService();
+      
+      $query = "SELECT * FROM `glpi_plugin_monitoring_services`
+         WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$componentscatalogs_hosts_id."'";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         $pmService->delete(array('id'=>$data['id']));
+      }      
+   }
 }
 
 ?>

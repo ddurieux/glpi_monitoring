@@ -40,11 +40,14 @@ include (GLPI_ROOT . "/inc/includes.php");
 $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
 
 if (isset ($_POST["add"])) {
-   $pmComponentscatalog_Host->add($_POST);
+   $componentscatalogs_hosts_id = $pmComponentscatalog_Host->add($_POST);
+   $pmComponentscatalog_Host->linkComponentsToItem($_POST['plugin_monitoring_componentscalalog_id'], 
+                                                   $componentscatalogs_hosts_id);
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["deleteitem"])) {
-   foreach ($_POST["item"] as $id) {
+   foreach ($_POST["item"] as $id=>$num) {
       $pmComponentscatalog_Host->delete(array('id'=>$id));
+      $pmComponentscatalog_Host->unlinkComponentsToItem($id);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 }

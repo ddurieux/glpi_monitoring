@@ -96,6 +96,7 @@ CREATE TABLE `glpi_plugin_monitoring_services` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `plugin_monitoring_components_id` int(11) NOT NULL DEFAULT '0',
+  `plugin_monitoring_componentscatalogs_hosts_id` int(11) NOT NULL DEFAULT '0',
   `event` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `state` varchar(255) COLLATE utf8_unicode_ci DEFAULT '0',
   `state_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT '0',
