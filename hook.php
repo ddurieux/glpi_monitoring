@@ -367,7 +367,8 @@ function plugin_monitoring_getDropdown(){
    return array('PluginMonitoringServicescatalog'     => $LANG['plugin_monitoring']['servicescatalog'][0],
                 'PluginMonitoringCheck'               => "Check definition",
                 'PluginMonitoringCommand'             => "List of commands",
-                'PluginMonitoringServicetemplate'     => "Services templates");
+                'PluginMonitoringComponentscatalog'   => "Components catalog",
+                'PluginMonitoringComponent'           => "Components");
 }
 
 ?>

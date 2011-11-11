@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginMonitoringServicetemplate extends CommonDBTM {
+class PluginMonitoringComponent extends CommonDBTM {
    
    /**
    * Get name of this type
@@ -47,15 +47,15 @@ class PluginMonitoringServicetemplate extends CommonDBTM {
    static function getTypeName() {
       global $LANG;
 
-      return "Service template";
+      return "Components";
    }
    
    
    /*
-    * Add some services templates at install
+    * Add some services Component at install
     * 
     */
-   function initTemplates() {
+   function initComponents() {
       
       
       

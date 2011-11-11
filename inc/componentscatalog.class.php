@@ -32,34 +32,53 @@
    ----------------------------------------------------------------------
  */
 
-
-define('GLPI_ROOT', '../../..');
-include (GLPI_ROOT . "/inc/includes.php");
-
-commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins", 
-             "monitoring", "servicetemplate");
-
-
-$pMonitoringServicetemplate = new PluginMonitoringServicetemplate();
-
-if (isset ($_POST["add"])) {
-   $pMonitoringServicetemplate->add($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset ($_POST["update"])) {
-   $pMonitoringServicetemplate->update($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset ($_POST["delete"])) {
-   $pMonitoringServicetemplate->delete($_POST);
-   $pMonitoringServicetemplate->redirectToList();
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
 }
 
+class PluginMonitoringComponentscatalog extends CommonDropdown {
+   
+   /**
+   * Get name of this type
+   *
+   *@return text name of this type by language of the user connected
+   *
+   **/
+   static function getTypeName() {
+      global $LANG;
 
-if (isset($_GET["id"])) {
-   $pMonitoringServicetemplate->showForm($_GET["id"]);
-} else {
-   $pMonitoringServicetemplate->showForm(0);
+      return "Components catalog";
+   }
+
+
+
+   function canCreate() {
+      return true;
+   }
+
+
+   
+   function canView() {
+      return true;
+   }
+
+
+   
+   function canCancel() {
+      return true;
+   }
+
+
+   
+   function canUndo() {
+      return true;
+   }
+
+
+   
+   function canValidate() {
+      return true;
+   }
 }
-
-commonFooter();
 
 ?>

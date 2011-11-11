@@ -59,8 +59,11 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['checks'] = 'front/check.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['mo/me nitoring']['search']['checks'] = 'front/check.php';
 
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['servicetemplate'] = 'front/servicetemplate.form.php?add=1';
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['servicetemplate'] = 'front/servicetemplate.php';
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['componentscatalog'] = 'front/componentscatalog.form.php?add=1';
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['componentscatalog'] = 'front/componentscatalog.php';
+
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['components'] = 'front/component.form.php?add=1';
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['components'] = 'front/component.php';
          
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['service'] = 'front/display.php';
       }

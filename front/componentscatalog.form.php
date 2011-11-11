@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: computermodel.php 14684 2011-06-11 06:32:40Z remi $
+ * @version $Id: computermodel.form.php 14684 2011-06-11 06:32:40Z remi $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2011 by the INDEPNET Development Team.
@@ -29,7 +29,7 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Remi collet
+// Original Author of file: Remi Collet
 // Purpose of file:
 // ----------------------------------------------------------------------
 
@@ -37,11 +37,6 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "servicetemplate");
-
-
-Search::show('PluginMonitoringServicetemplate');
-
-commonFooter();
+$dropdown = new PluginMonitoringComponentscatalog();
+include (GLPI_ROOT . "/front/dropdown.common.form.php");
 ?>
