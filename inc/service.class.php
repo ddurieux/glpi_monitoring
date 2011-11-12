@@ -110,34 +110,34 @@ class PluginMonitoringService extends CommonDBTM {
       global $CFG_GLPI,$LANG;
       
       // Check if host service exist
-      $a_serv = $this->find("`items_id` = '".$items_id."'
-                        AND `itemtype`='".$itemtype."'", "", 1); 
-      if (count($a_serv) > 0) {
-         // Manage and display services
+//      $a_serv = $this->find("`items_id` = '".$items_id."'
+//                        AND `itemtype`='".$itemtype."'", "", 1); 
+//      if (count($a_serv) > 0) {
+//         // Manage and display services
          $this->listByHost($itemtype, $items_id);
-         $pluginMonitoringServicesuggest = new PluginMonitoringServicesuggest();
-         $pluginMonitoringServicesuggest->listSuggests($itemtype, $items_id);
-      } else {
-         // Button to activate 
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<th>".$LANG['plugin_monitoring']['service'][15]."</th>";
-         echo "</tr>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<td align='center'>";
-         echo "<form name='form' method='post' action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/service.form.php'>";
-         echo "<input type='hidden' name='itemtype' value='".$itemtype."' />";
-         echo "<input type='hidden' name='items_id' value='".$items_id."' />";
-         echo "<input type='hidden' name='name' value='Check host alive' />";
-         echo "<input type='hidden' name='plugin_monitoring_services_id' value='0' />";
-         // TODO : Use a check ping
-         	
-         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-         echo "</form>";
-         echo "</td>";
-         echo "</tr>";
-         echo "</table>";
-      }
+//         $pluginMonitoringServicesuggest = new PluginMonitoringServicesuggest();
+//         $pluginMonitoringServicesuggest->listSuggests($itemtype, $items_id);
+//      } else {
+//         // Button to activate 
+//         echo "<table class='tab_cadre_fixe'>";
+//         echo "<tr class='tab_bg_1'>";
+//         echo "<th>".$LANG['plugin_monitoring']['service'][15]."</th>";
+//         echo "</tr>";
+//         echo "<tr class='tab_bg_1'>";
+//         echo "<td align='center'>";
+//         echo "<form name='form' method='post' action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/service.form.php'>";
+//         echo "<input type='hidden' name='itemtype' value='".$itemtype."' />";
+//         echo "<input type='hidden' name='items_id' value='".$items_id."' />";
+//         echo "<input type='hidden' name='name' value='Check host alive' />";
+//         echo "<input type='hidden' name='plugin_monitoring_services_id' value='0' />";
+//         // TODO : Use a check ping
+//         	
+//         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+//         echo "</form>";
+//         echo "</td>";
+//         echo "</tr>";
+//         echo "</table>";
+//      }
       
       
    }
@@ -153,102 +153,114 @@ class PluginMonitoringService extends CommonDBTM {
     *
     **/
    function listByHost($itemtype, $items_id) {
-      global $LANG,$CFG_GLPI;
+      global $LANG,$CFG_GLPI,$DB;
 
-      $pMonitoringServicedef = new PluginMonitoringServicedef();
-      $pMonitoringServicetemplate = new PluginMonitoringServicetemplate();
-
-      $a_hosts = current($this->find("`items_id`='".$items_id."'
-                        AND `itemtype`='".$itemtype."'"));
+      $pmComponentscatalog = new PluginMonitoringComponentscatalog();
       
-      $start = 0;
-      if (isset($_REQUEST["start"])) {
-         $start = $_REQUEST["start"];
-      }
+      $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+         WHERE `items_id`='".$items_id."'
+            AND `itemtype`='".$itemtype."'";
+      $result = $DB->query($query);
 
-      $a_list = $this->find("`plugin_monitoring_services_id`='".$a_hosts['id']."'
-         OR `id`='".$a_hosts['id']."'");
-
-      $number = count($a_list);
       echo "<form name='form' method='post' 
          action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/service.form.php'>";
 
-      echo "<table class='tab_cadre' width='950' >";
+      echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='5'>";
       echo $LANG['plugin_monitoring']['service'][0];
-      echo "&nbsp;<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/service.form.php?services_id=".$a_hosts['id']."'>
-         <img src='".$CFG_GLPI['root_doc']."/pics/menu_add.png' /></a>";
-      
-      echo "&nbsp;<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicedef.form.php?add_template=1'>
-         <img src='".$CFG_GLPI['root_doc']."/pics/menu_addtemplate.png' /></a>";
+//      echo "&nbsp;<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/service.form.php?services_id=".$a_hosts['id']."'>
+//         <img src='".$CFG_GLPI['root_doc']."/pics/menu_add.png' /></a>";
+//      
+//      echo "&nbsp;<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicedef.form.php?add_template=1'>
+//         <img src='".$CFG_GLPI['root_doc']."/pics/menu_addtemplate.png' /></a>";
       echo "</th>";
       echo "</tr>";
       
-      echo "<tr class='tab_bg_1'>";
-      echo "<th>".$LANG['common'][16]."</th>";
-      echo "<th>".$LANG['plugin_monitoring']['service'][16]."</th>";
-      echo "<th>".$LANG['common'][13]."</th>";
-      echo "<th>".$LANG['plugin_monitoring']['service'][17]."</th>";
-      echo "<th width='32'>".$LANG['joblist'][0]."</th>";
-      echo "</tr>";
+      echo "<table>";
 
-      foreach ($a_list as $data) {
-         $pMonitoringServicedef->getEmpty();
+      while ($data=$DB->fetch_array($result)) {
+         $pmComponentscatalog->getFromDB($data['plugin_monitoring_componentscalalog_id']);
+         
+         echo "<table class='tab_cadre_fixe'>";
+         
          echo "<tr class='tab_bg_1'>";
-         $this->getFromDB($data['id']);
-         
-         echo "<td>";
-         echo "<a href='".GLPI_ROOT."/plugins/monitoring/front/service.form.php?id=".$data['id']."'>".$this->getName()."</a>";
-         echo "<input type='hidden' name='id[]' value='".$this->fields['id']."'/>";
-         echo "</td>";
-         echo "<td align='center'>";
-         if ($data['plugin_monitoring_services_id'] == '0') {
-            echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok.png' width='20' height='20' />";
-         }         
-         echo "</td>";
-         echo "<td class='center'>";
-         // Template
-         $pMonitoringServicetemplate->getFromDB($data['plugin_monitoring_servicetemplates_id']);
-         echo $pMonitoringServicetemplate->getName(1);
-         echo "</td>";
-         $complete = 1;
-         $a_fields = array();
-         if ($data['plugin_monitoring_servicetemplates_id'] > 0) {
-            $a_fields = $pMonitoringServicetemplate->fields;
-         } else {
-            $pMonitoringServicedef->getFromDB($data['plugin_monitoring_servicedefs_id']);
-            $a_fields = $pMonitoringServicedef->fields;
-         }
-         
-         if (!isset($a_fields['plugin_monitoring_commands_id'])
-                 OR empty($a_fields['plugin_monitoring_commands_id'])) {
-            $complete = 0;
-         }
-         if (!isset($a_fields['plugin_monitoring_checks_id'])
-                 OR empty($a_fields['plugin_monitoring_checks_id'])) {
-            $complete = 0;
-         }
-         if (!isset($a_fields['calendars_id'])
-                 OR empty($a_fields['calendars_id'])) {
-            $complete = 0;
-         }
-         $color = " bgcolor='#00FF00'";
-         if ($complete == '0') {
-            $color = " bgcolor='#FF0000'";
-         }
-         echo "<td align='center' ".$color.">";
-         echo Dropdown::getYesNo($complete);
-         echo "</td>";
-         
-         // Status
-         $shortstate = PluginMonitoringDisplay::getState($data['state'], $data['state_type']);
-         echo "<td class='center'>";
-         echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/>";
-         echo "</td>";
+         echo "<th colspan='5'>".$pmComponentscatalog->getTypeName()."&nbsp;:&nbsp;".$pmComponentscatalog->getLink()."</th>";
          echo "</tr>";
+         
+         echo "<tr class='tab_bg_1'>";
+         echo "<th>".$LANG['common'][16]."</th>";
+         echo "<th>".$LANG['plugin_monitoring']['service'][16]."</th>";
+         echo "<th>".$LANG['common'][13]."</th>";
+         echo "<th>".$LANG['plugin_monitoring']['service'][17]."</th>";
+         echo "<th width='32'>".$LANG['joblist'][0]."</th>";
+         echo "</tr>";
+         
+         $querys = "SELECT * FROM `glpi_plugin_monitoring_services`
+            WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$data['id']."'";
+         $results = $DB->query($querys);
+         while ($datas=$DB->fetch_array($results)) {
+            $this->getFromDB($datas['id']);
+            
+            
+            echo "<tr class='tab_bg_1'>";
+
+            echo "<td>";
+            echo "<a href='".GLPI_ROOT."/plugins/monitoring/front/service.form.php?id=".$datas['id']."'>".$this->getName()."</a>";
+            echo "<input type='hidden' name='id[]' value='".$this->fields['id']."'/>";
+            echo "</td>";
+            echo "<td align='center'>";
+            if ($data['plugin_monitoring_services_id'] == '0') {
+               echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok.png' width='20' height='20' />";
+            }         
+            echo "</td>";
+            echo "<td class='center'>";
+//            // Template
+//            $pMonitoringServicetemplate->getFromDB($data['plugin_monitoring_servicetemplates_id']);
+//            echo $pMonitoringServicetemplate->getName(1);
+            echo "</td>";
+//            $complete = 1;
+//            $a_fields = array();
+//            if ($data['plugin_monitoring_servicetemplates_id'] > 0) {
+//               $a_fields = $pMonitoringServicetemplate->fields;
+//            } else {
+//               $pMonitoringServicedef->getFromDB($data['plugin_monitoring_servicedefs_id']);
+//               $a_fields = $pMonitoringServicedef->fields;
+//            }
+//
+//            if (!isset($a_fields['plugin_monitoring_commands_id'])
+//                    OR empty($a_fields['plugin_monitoring_commands_id'])) {
+//               $complete = 0;
+//            }
+//            if (!isset($a_fields['plugin_monitoring_checks_id'])
+//                    OR empty($a_fields['plugin_monitoring_checks_id'])) {
+//               $complete = 0;
+//            }
+//            if (!isset($a_fields['calendars_id'])
+//                    OR empty($a_fields['calendars_id'])) {
+//               $complete = 0;
+//            }
+//            $color = " bgcolor='#00FF00'";
+//            if ($complete == '0') {
+//               $color = " bgcolor='#FF0000'";
+//            }
+            echo "<td align='center' ".$color.">";
+//            echo Dropdown::getYesNo($complete);
+            echo "</td>";
+
+            // Status
+            $shortstate = PluginMonitoringDisplay::getState($data['state'], $data['state_type']);
+            echo "<td class='center'>";
+            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/>";
+            echo "</td>";
+            echo "</tr>";
+            
+         }
+         echo "</table>";
+         
       }
+
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='8' align='center'>";
       echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][7]."'>";
