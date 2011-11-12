@@ -147,6 +147,19 @@ CREATE TABLE `glpi_plugin_monitoring_contacts` (
 
 
 
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_contacts_items`;
+
+CREATE TABLE `glpi_plugin_monitoring_contacts_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  `groups_id` int(11) NOT NULL DEFAULT '0',
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
 
 
 

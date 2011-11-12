@@ -243,22 +243,31 @@ class PluginMonitoringShinken extends CommonDBTM {
    
    
    function generateServicesCfg($file=0) {
+      global $DB;
       
       $pluginMonitoringService = new PluginMonitoringService();
-      $pMonitoringServicedef = new PluginMonitoringServicedef();
-      $pMonitoringServicetemplate = new PluginMonitoringServicetemplate();
-      $pluginMonitoringContact      = new PluginMonitoringContact();
-      $pluginMonitoringHost_Contact = new PluginMonitoringHost_Contact();
-      $pMonitoringCommand      = new PluginMonitoringCommand();
-      $pMonitoringCheck        = new PluginMonitoringCheck();
-      $pluginMonitoringServicescatalog = new PluginMonitoringServicescatalog();
-      $pluginMonitoringBusinessrule = new PluginMonitoringBusinessrule();
-      $calendar      = new Calendar();
-      $user          = new User();
+//      $pluginMonitoringContact      = new PluginMonitoringContact();
+//      $pluginMonitoringHost_Contact = new PluginMonitoringHost_Contact();
+//      $pMonitoringCommand      = new PluginMonitoringCommand();
+//      $pMonitoringCheck        = new PluginMonitoringCheck();
+//      $pluginMonitoringServicescatalog = new PluginMonitoringServicescatalog();
+//      $pluginMonitoringBusinessrule = new PluginMonitoringBusinessrule();
+//      $calendar      = new Calendar();
+//      $user          = new User();
       $hostnamebp = '';
       
       $a_services = array();
       $i=0;
+      
+      $query = "SELECT * FROM `glpi_plugin_monitoring_components`";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         // Select services to get host associated
+         
+         
+      }
+      
+      
       
       $a_listH = $pluginMonitoringService->find("`plugin_monitoring_services_id`='0'");
       foreach ($a_listH as $data) {

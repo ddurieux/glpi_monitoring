@@ -32,70 +32,23 @@
    ----------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   die("Sorry. You can't access directly to this file");
+
+define('GLPI_ROOT', '../../..');
+include (GLPI_ROOT . "/inc/includes.php");
+
+
+$pmContact_Item = new PluginMonitoringContact_Item();
+
+if (isset ($_POST["add"])) {
+   $pmContact_Item->add($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset($_POST["deleteitem"])) {
+   foreach ($_POST["item"] as $id=>$num) {
+      $pmContact_Item->delete(array('id'=>$id));
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
 }
 
-class PluginMonitoringComponentscatalog extends CommonDropdown {
-   
-   /**
-   * Get name of this type
-   *
-   *@return text name of this type by language of the user connected
-   *
-   **/
-   static function getTypeName() {
-      global $LANG;
-
-      return "Components catalog";
-   }
-
-
-
-   function canCreate() {
-      return true;
-   }
-
-
-   
-   function canView() {
-      return true;
-   }
-
-
-   
-   function canCancel() {
-      return true;
-   }
-
-
-   
-   function canUndo() {
-      return true;
-   }
-
-
-   
-   function canValidate() {
-      return true;
-   }
-   
-   
-   
-   function defineTabs($options=array()){
-      global $LANG;
-
-      $ong = array();
-
-      $ong[1] = "Components"; 
-      $ong[2] = "Static hosts";
-      $ong[3] = "Rules";
-      $ong[4] = "Dynamic hosts";
-      $ong[5] = $LANG['plugin_monitoring']['contact'][20];
-      
-      return $ong;
-   }
-   
-}
+commonFooter();
 
 ?>

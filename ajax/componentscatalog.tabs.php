@@ -88,6 +88,11 @@ if ($_POST["id"]>0 && $pluginMonitoringComponentscatalog->can($_POST["id"],'r'))
       case 4 :
 
          break;
+      
+      case 5 : 
+         $pmContact_Item = new PluginMonitoringContact_Item();
+         $pmContact_Item->showContacts("PluginMonitoringComponentscatalog", $_POST['id']);
+         break;
 
       default :
 
