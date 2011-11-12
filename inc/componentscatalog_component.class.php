@@ -188,6 +188,45 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
       $this->showFormButtons();
    }
    
+   
+   
+   function addComponentToItems($componentscatalogs_id, $components_id) {
+      global $DB;
+      
+      $pmService = new PluginMonitoringService();
+      
+      $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+         WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         $input = array();
+         $input['plugin_monitoring_componentscatalogs_hosts_id'] = $data['id'];
+         $input['plugin_monitoring_components_id'] = $components_id;
+         $input['name'] = Dropdown::getDropdownName("glpi_plugin_monitoring_components", $components_id);
+         $pmService->add($input);         
+      }
+   }
+   
+   
+   function removeComponentToItems($componentscatalogs_id, $components_id) {
+      global $DB;
+      
+      $pmService = new PluginMonitoringService();
+      
+      $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+         WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         $querys = "SELECT * FROM `glpi_plugin_monitoring_services`
+            WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$data['id']."'
+               AND `plugin_monitoring_components_id`='".$components_id."'";
+         $results = $DB->query($querys);
+         while ($datas=$DB->fetch_array($results)) {
+            $pmService->delete(array('id'=>$datas['id']));
+         } 
+      }
+   }
+   
 }
 
 ?>

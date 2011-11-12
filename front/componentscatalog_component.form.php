@@ -41,10 +41,19 @@ $pmComponentscatalog_Component = new PluginMonitoringComponentscatalog_Component
 
 if (isset ($_POST["add"])) {
    $pmComponentscatalog_Component->add($_POST);
+   $pmComponentscatalog_Component->addComponentToItems($_POST['plugin_monitoring_componentscalalog_id'],
+                                                       $_POST['plugin_monitoring_components_id']);
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["deleteitem"])) {
    foreach ($_POST["item"] as $id=>$num) {
+      $fields = array();
+      $pmComponentscatalog_Component->getFromDB($id);
+      $fields = $pmComponentscatalog_Component->fields;
+      
       $pmComponentscatalog_Component->delete(array('id'=>$id));
+      $pmComponentscatalog_Component->addComponentToItems($fields['plugin_monitoring_componentscalalog_id'],
+                                                          $fields['plugin_monitoring_components_id']);
+   
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 }
