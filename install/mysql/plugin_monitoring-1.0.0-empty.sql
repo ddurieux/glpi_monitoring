@@ -107,6 +107,46 @@ CREATE TABLE `glpi_plugin_monitoring_services` (
 
 
 
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_contacttemplates`;
+
+CREATE TABLE `glpi_plugin_monitoring_contacttemplates` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_default` tinyint(1) NOT NULL DEFAULT '0',
+  `host_notifications_enabled` tinyint(1) NOT NULL DEFAULT '1',
+  `service_notifications_enabled` tinyint(1) NOT NULL DEFAULT '1',
+  `service_notification_period` int(11) NOT NULL DEFAULT '0',
+  `host_notification_period` int(11) NOT NULL DEFAULT '0',
+  `service_notification_options_w` tinyint(1) NOT NULL DEFAULT '1',
+  `service_notification_options_u` tinyint(1) NOT NULL DEFAULT '1',
+  `service_notification_options_c` tinyint(1) NOT NULL DEFAULT '1',
+  `service_notification_options_r` tinyint(1) NOT NULL DEFAULT '1',
+  `service_notification_options_f` tinyint(1) NOT NULL DEFAULT '0',
+  `service_notification_options_n` tinyint(1) NOT NULL DEFAULT '0',
+  `host_notification_options_d` tinyint(1) NOT NULL DEFAULT '1',
+  `host_notification_options_u` tinyint(1) NOT NULL DEFAULT '1',
+  `host_notification_options_r` tinyint(1) NOT NULL DEFAULT '1',
+  `host_notification_options_f` tinyint(1) NOT NULL DEFAULT '0',
+  `host_notification_options_s` tinyint(1) NOT NULL DEFAULT '0',
+  `host_notification_options_n` tinyint(1) NOT NULL DEFAULT '0',
+  `service_notification_commands` int(11) NOT NULL DEFAULT '0',
+  `host_notification_commands` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_contacts`;
+
+CREATE TABLE `glpi_plugin_monitoring_contacts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  `plugin_monitoring_contacttemplates_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
 
 
 
@@ -194,32 +234,6 @@ CREATE TABLE `glpi_plugin_monitoring_notificationcommands` (
 
 
 
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_contacts`;
-
-CREATE TABLE `glpi_plugin_monitoring_contacts` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `users_id` int(11) NOT NULL DEFAULT '0',
-  `pager` varchar(255) DEFAULT NULL,
-  `host_notifications_enabled` tinyint(1) NOT NULL DEFAULT '1',
-  `service_notifications_enabled` tinyint(1) NOT NULL DEFAULT '1',
-  `service_notification_period` int(11) NOT NULL DEFAULT '0',
-  `host_notification_period` int(11) NOT NULL DEFAULT '0',
-  `service_notification_options_w` tinyint(1) NOT NULL DEFAULT '1',
-  `service_notification_options_u` tinyint(1) NOT NULL DEFAULT '1',
-  `service_notification_options_c` tinyint(1) NOT NULL DEFAULT '1',
-  `service_notification_options_r` tinyint(1) NOT NULL DEFAULT '1',
-  `service_notification_options_f` tinyint(1) NOT NULL DEFAULT '0',
-  `service_notification_options_n` tinyint(1) NOT NULL DEFAULT '0',
-  `host_notification_options_d` tinyint(1) NOT NULL DEFAULT '1',
-  `host_notification_options_u` tinyint(1) NOT NULL DEFAULT '1',
-  `host_notification_options_r` tinyint(1) NOT NULL DEFAULT '1',
-  `host_notification_options_f` tinyint(1) NOT NULL DEFAULT '0',
-  `host_notification_options_s` tinyint(1) NOT NULL DEFAULT '0',
-  `host_notification_options_n` tinyint(1) NOT NULL DEFAULT '0',
-  `service_notification_commands` int(11) NOT NULL DEFAULT '0',
-  `host_notification_commands` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 

@@ -105,8 +105,6 @@ class PluginMonitoringShinken extends CommonDBTM {
    function generateHostsCfg($file=0) {
       
       $pMonitoringService           = new PluginMonitoringService();
-      $pMonitoringServicedef        = new PluginMonitoringServicedef();
-      $pMonitoringServicetemplate   = new PluginMonitoringServicetemplate();
       $pluginMonitoringContact      = new PluginMonitoringContact();
       $pluginMonitoringHost_Contact = new PluginMonitoringHost_Contact();
       $pluginMonitoringCommand      = new PluginMonitoringCommand();

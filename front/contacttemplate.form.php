@@ -32,52 +32,33 @@
    ----------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   define('GLPI_ROOT', '../../..');
+define('GLPI_ROOT', '../../..');
+
+include (GLPI_ROOT . "/inc/includes.php");
+
+commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
+             "monitoring", "contacttemplates");
+
+$pmContacttemplate = new PluginMonitoringContacttemplate();
+if (isset($_POST["add"])) {
+   if ($_POST['users_id'] != "0") {
+      $pmContacttemplate->add($_POST);
+   }
+   glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset ($_POST["update"])) {
+   $pmContacttemplate->update($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset ($_POST["delete"])) {
+   $pmContacttemplate->delete($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']);
 }
 
-include (GLPI_ROOT."/inc/includes.php");
 
-commonHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "menu");
-
-PluginMonitoringNotification::test();
-
-echo "<table class='tab_cadre' width='300'>";
-
-echo "<tr class='tab_bg_1'>";
-echo "<th>";
-echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php'>DashBoard</a>";
-echo "</th>";
-echo "</tr>";
-
-echo "<tr class='tab_bg_1'>";
-echo "<th>";
-echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicescatalog.php'>Services catalog</a>";
-echo "</th>";
-echo "</tr>";
-
-echo "<tr class='tab_bg_1'>";
-echo "<th>";
-echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.php'>Components catalog</a>";
-echo "</th>";
-echo "</tr>";
-
-echo "<tr class='tab_bg_1'>";
-echo "<th>";
-echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/component.php'>Components</a>";
-echo "</th>";
-echo "</tr>";
-
-echo "<tr class='tab_bg_1'>";
-echo "<th>";
-echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/contacttemplate.php'>".$LANG['plugin_monitoring']['contacttemplate'][0]."</a>";
-echo "</th>";
-echo "</tr>";
-
-
-echo "</table>";
-
+if (isset($_GET["id"])) {
+   $pmContacttemplate->showForm($_GET["id"]);
+} else {
+   $pmContacttemplate->showForm("");
+}
 
 commonFooter();
 

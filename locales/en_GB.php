@@ -95,6 +95,9 @@ $LANG['plugin_monitoring']['contact'][18]="The contact will not receive any type
 $LANG['plugin_monitoring']['contact'][19]="Notification command";
 $LANG['plugin_monitoring']['contact'][20]="Contacts";
 
+$LANG['plugin_monitoring']['contacttemplate'][0]="Contact templates";
+$LANG['plugin_monitoring']['contacttemplate'][1]="Default template";
+
 $LANG['plugin_monitoring']['service'][0]="Resources";
 $LANG['plugin_monitoring']['service'][1]="Criticity";
 $LANG['plugin_monitoring']['service'][2]="Add a service";

@@ -57,7 +57,7 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['commands'] = 'front/command.php';
 
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['checks'] = 'front/check.form.php?add=1';
-         $PLUGIN_HOOKS['submenu_entry']['mo/me nitoring']['search']['checks'] = 'front/check.php';
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['checks'] = 'front/check.php';
 
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['componentscatalog'] = 'front/componentscatalog.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['componentscatalog'] = 'front/componentscatalog.php';
@@ -65,13 +65,19 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['components'] = 'front/component.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['components'] = 'front/component.php';
          
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['contacttemplates'] = 'front/contacttemplate.form.php?add=1';
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['contacttemplates'] = 'front/contacttemplate.php';
+         
+         
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['service'] = 'front/display.php';
          
          // Fil ariane
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['components']['title'] = "Components";
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['components']['page']  = '/plugins/monitoring/front/component.php';
 
-         
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['contacttemplates']['title'] = "Contacttemplates";
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['contacttemplates']['page']  = '/plugins/monitoring/front/contacttemplate.php';
+        
       }
 
    $PLUGIN_HOOKS['webservices']['monitoring'] = 'plugin_monitoring_registerMethods';
