@@ -69,7 +69,7 @@ if ($_POST["id"]>0 && $pluginMonitoringComponentscatalog->can($_POST["id"],'r'))
       
       case 2 :
          $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
-         $pmComponentscatalog_Host->showStatichosts($_POST['id']);
+         $pmComponentscatalog_Host->showHosts($_POST['id'], 1);
          break;
       
       case 3 :
@@ -78,7 +78,8 @@ if ($_POST["id"]>0 && $pluginMonitoringComponentscatalog->can($_POST["id"],'r'))
          break;
       
       case 4 :
-
+         $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+         $pmComponentscatalog_Host->showHosts($_POST['id'], 0);
          break;
       
       case 5 : 

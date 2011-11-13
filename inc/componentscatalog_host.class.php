@@ -76,15 +76,18 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
 
    
    
-   function showStatichosts($componentscatalogs_id) {
+   function showHosts($componentscatalogs_id, $static) {
       global $DB,$LANG,$CFG_GLPI;
       
-      $this->addHost($componentscatalogs_id);
+      if ($static == '1') {
+         $this->addHost($componentscatalogs_id);
+      }
       
       $rand = mt_rand();
 
       $query = "SELECT * FROM `".$this->getTable()."`
-         WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
+         WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'
+            AND `is_static`='".$static."'";
       $result = $DB->query($query);
       
       echo "<form method='post' name='componentscatalog_host_form$rand' id='componentscatalog_host_form$rand' action=\"".
@@ -145,6 +148,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
       echo "</table>";
       
    }
+   
    
    
    function addHost($componentscatalogs_id) {

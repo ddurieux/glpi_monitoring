@@ -78,6 +78,23 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['contacttemplates']['title'] = "Contacttemplates";
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['contacttemplates']['page']  = '/plugins/monitoring/front/contacttemplate.php';
         
+         
+         // Define hook item
+         $rule_check = array('PluginMonitoringComponentscatalog_rule','isThisItemCheckRule');
+         $PLUGIN_HOOKS['item_add']['monitoring'] = 
+                                 array('Computer'         => $rule_check,
+                                       'NetworkEquipment' => $rule_check,
+                                       'Printer'          => $rule_check,
+                                       'Peripheral'       => $rule_check,
+                                       'Phone'            => $rule_check);
+         $PLUGIN_HOOKS['item_update']['monitoring'] = 
+                                 array('Computer'         => $rule_check,
+                                       'NetworkEquipment' => $rule_check,
+                                       'Printer'          => $rule_check,
+                                       'Peripheral'       => $rule_check,
+                                       'Phone'            => $rule_check);
+
+
       }
 
    $PLUGIN_HOOKS['webservices']['monitoring'] = 'plugin_monitoring_registerMethods';
