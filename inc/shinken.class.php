@@ -103,7 +103,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
    
    function generateHostsCfg($file=0) {
-      
+      return array();
       $pMonitoringService           = new PluginMonitoringService();
       $pluginMonitoringContact      = new PluginMonitoringContact();
       $pluginMonitoringHost_Contact = new PluginMonitoringHost_Contact();
@@ -453,66 +453,34 @@ class PluginMonitoringShinken extends CommonDBTM {
 
 
    function generateContactsCfg($file=0) {
+      global $DB;
       
-      $pluginMonitoringContact             = new PluginMonitoringContact();
-      $pluginMonitoringNotificationcommand = new PluginMonitoringNotificationcommand();
-      $user = new User();
-      $calendar = new Calendar();
-
       $a_contacts = array();
       $i=0;
 
-      $a_listmcontacts = $pluginMonitoringContact->find();
-      foreach ($a_listmcontacts as $data) {
-         $user->getFromDB($data['users_id']);
-
-         $a_contacts[$i]['contact_name'] = $user->fields['name'];
-         $a_contacts[$i]['alias'] = $user->getName();
-         $a_contacts[$i]['host_notifications_enabled'] = $data['host_notifications_enabled'];
-         $a_contacts[$i]['service_notifications_enabled'] = $data['service_notifications_enabled'];
-            $calendar->getFromDB($data['service_notification_period']);
-         $a_contacts[$i]['service_notification_period'] = $calendar->fields['name'];
-            $calendar->getFromDB($data['host_notification_period']);
-         $a_contacts[$i]['host_notification_period'] = $calendar->fields['name'];
-            $a_servicenotif = array();
-            if ($data['service_notification_options_w'] == '1')
-               $a_servicenotif[] = "w";
-            if ($data['service_notification_options_u'] == '1')
-               $a_servicenotif[] = "u";
-            if ($data['service_notification_options_c'] == '1')
-               $a_servicenotif[] = "c";
-            if ($data['service_notification_options_r'] == '1')
-               $a_servicenotif[] = "r";
-            if ($data['service_notification_options_f'] == '1')
-               $a_servicenotif[] = "f";
-            if ($data['service_notification_options_n'] == '1')
-               $a_servicenotif = array("n");
-            if (count($a_servicenotif) == "0")
-               $a_servicenotif = array("n");
-         $a_contacts[$i]['service_notification_options'] = implode(",", $a_servicenotif);
-            $a_hostnotif = array();
-            if ($data['host_notification_options_d'] == '1')
-               $a_hostnotif[] = "d";
-            if ($data['host_notification_options_u'] == '1')
-               $a_hostnotif[] = "u";
-            if ($data['host_notification_options_r'] == '1')
-               $a_hostnotif[] = "r";
-            if ($data['host_notification_options_f'] == '1')
-               $a_hostnotif[] = "f";
-            if ($data['host_notification_options_s'] == '1')
-               $a_hostnotif[] = "s";
-            if ($data['host_notification_options_n'] == '1')
-               $a_hostnotif = array("n");
-            if (count($a_hostnotif) == "0")
-               $a_hostnotif = array("n");
-         $a_contacts[$i]['host_notification_options'] = implode(",", $a_hostnotif);
-            $pluginMonitoringNotificationcommand->getFromDB($data['service_notification_commands']);
-         $a_contacts[$i]['service_notification_commands'] = $pluginMonitoringNotificationcommand->fields['command_name'];
-            $pluginMonitoringNotificationcommand->getFromDB($data['host_notification_commands']);
-         $a_contacts[$i]['host_notification_commands'] = $pluginMonitoringNotificationcommand->fields['command_name'];
-         $a_contacts[$i]['email'] = $user->fields['email'];
-         $a_contacts[$i]['pager'] = $data['pager'];
-         $i++;
+      $query = "SELECT * FROM `glpi_plugin_monitoring_contacts_items`";
+      $result = $DB->query($query);
+      $a_users_used = array();
+      while ($data=$DB->fetch_array($result)) {
+         if ($data['users_id'] > 0) {
+            if ((!isset($a_users_used[$data['users_id']]))) {
+               $a_contacts = $this->_addContactUser($a_contacts, $data['users_id'], $i);
+               $i++;  
+               $a_users_used[$data['users_id']] = 1;
+            }
+         } else if ($data['groups_id'] > 0) {
+            $queryg = "SELECT * FROM `glpi_groups_users`
+               WHERE `groups_id`='".$data['groups_id']."'";
+            $resultg = $DB->query($queryg);
+            while ($datag=$DB->fetch_array($resultg)) {
+               if ((!isset($a_users_used[$data['users_id']]))) {
+                  $a_contacts = $this->_addContactUser($a_contacts, $datag['users_id'], $i);
+                  $i++;
+                  $a_users_used[$data['users_id']] = 1;
+               }
+            }
+         }        
+      
       }
 
       if ($file == "1") {
@@ -526,6 +494,74 @@ class PluginMonitoringShinken extends CommonDBTM {
       } else {
          return $a_contacts;
       }
+   }
+   
+   
+   
+   function _addContactUser($a_contacts, $users_id, $i) {
+      global $DB; 
+      
+      $pluginMonitoringContact             = new PluginMonitoringContact();
+      $pluginMonitoringNotificationcommand = new PluginMonitoringNotificationcommand();
+      $pmContacttemplate = new PluginMonitoringContacttemplate();
+      $user     = new User();
+      $calendar = new Calendar();
+      
+      $user->getFromDB($users_id);
+      
+      // Get template
+      $a_pmcontact = current($pluginMonitoringContact->find("`users_id='".$users_id."'", "", 1));
+      if (empty($a_pmcontact)) {
+         $a_pmcontact = current($pmContacttemplate->find("`is_default`='1'", "", 1));
+      }      
+      
+      $a_contacts[$i]['contact_name'] = $user->fields['name'];
+      $a_contacts[$i]['alias'] = $user->getName();
+      $a_contacts[$i]['host_notifications_enabled'] = $a_pmcontact['host_notifications_enabled'];
+      $a_contacts[$i]['service_notifications_enabled'] = $a_pmcontact['service_notifications_enabled'];
+         $calendar->getFromDB($a_pmcontact['service_notification_period']);
+      $a_contacts[$i]['service_notification_period'] = $calendar->fields['name'];
+         $calendar->getFromDB($a_pmcontact['host_notification_period']);
+      $a_contacts[$i]['host_notification_period'] = $calendar->fields['name'];
+         $a_servicenotif = array();
+         if ($a_pmcontact['service_notification_options_w'] == '1')
+            $a_servicenotif[] = "w";
+         if ($a_pmcontact['service_notification_options_u'] == '1')
+            $a_servicenotif[] = "u";
+         if ($a_pmcontact['service_notification_options_c'] == '1')
+            $a_servicenotif[] = "c";
+         if ($a_pmcontact['service_notification_options_r'] == '1')
+            $a_servicenotif[] = "r";
+         if ($a_pmcontact['service_notification_options_f'] == '1')
+            $a_servicenotif[] = "f";
+         if ($a_pmcontact['service_notification_options_n'] == '1')
+            $a_servicenotif = array("n");
+         if (count($a_servicenotif) == "0")
+            $a_servicenotif = array("n");
+      $a_contacts[$i]['service_notification_options'] = implode(",", $a_servicenotif);
+         $a_hostnotif = array();
+         if ($a_pmcontact['host_notification_options_d'] == '1')
+            $a_hostnotif[] = "d";
+         if ($a_pmcontact['host_notification_options_u'] == '1')
+            $a_hostnotif[] = "u";
+         if ($a_pmcontact['host_notification_options_r'] == '1')
+            $a_hostnotif[] = "r";
+         if ($a_pmcontact['host_notification_options_f'] == '1')
+            $a_hostnotif[] = "f";
+         if ($a_pmcontact['host_notification_options_s'] == '1')
+            $a_hostnotif[] = "s";
+         if ($a_pmcontact['host_notification_options_n'] == '1')
+            $a_hostnotif = array("n");
+         if (count($a_hostnotif) == "0")
+            $a_hostnotif = array("n");
+      $a_contacts[$i]['host_notification_options'] = implode(",", $a_hostnotif);
+         $pluginMonitoringNotificationcommand->getFromDB($a_pmcontact['service_notification_commands']);
+      $a_contacts[$i]['service_notification_commands'] = $pluginMonitoringNotificationcommand->fields['command_name'];
+         $pluginMonitoringNotificationcommand->getFromDB($a_pmcontact['host_notification_commands']);
+      $a_contacts[$i]['host_notification_commands'] = $pluginMonitoringNotificationcommand->fields['command_name'];
+      $a_contacts[$i]['email'] = $user->fields['email'];
+      $a_contacts[$i]['pager'] = $user->fields['phone'];
+      return $a_contacts;
    }
 
 
