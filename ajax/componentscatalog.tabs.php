@@ -76,13 +76,8 @@ if ($_POST["id"]>0 && $pluginMonitoringComponentscatalog->can($_POST["id"],'r'))
          /*
           * Rules
           */
-         
-         /*
-          * 
-          *
-          *
-          */
-
+         $pmComponentscatalog_rule = new PluginMonitoringComponentscatalog_rule();
+         $pmComponentscatalog_rule->showRules(0);
          break;
       
       case 4 :
