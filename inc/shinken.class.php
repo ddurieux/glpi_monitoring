@@ -473,7 +473,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                WHERE `groups_id`='".$data['groups_id']."'";
             $resultg = $DB->query($queryg);
             while ($datag=$DB->fetch_array($resultg)) {
-               if ((!isset($a_users_used[$data['users_id']]))) {
+               if ((!isset($a_users_used[$datag['users_id']]))) {
                   $a_contacts = $this->_addContactUser($a_contacts, $datag['users_id'], $i);
                   $i++;
                   $a_users_used[$data['users_id']] = 1;
