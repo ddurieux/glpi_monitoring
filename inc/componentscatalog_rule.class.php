@@ -83,32 +83,83 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
 
    
 
-   function showRules($items_id, $options=array()) {
+   function showRules($componentscatalogs_id) {
       global $DB,$CFG_GLPI,$LANG;
 
-      $itemtype = "Computer";
+      $this->addRule($componentscatalogs_id);
 
+      $rand = mt_rand();
+
+      $query = "SELECT * FROM `".$this->getTable()."`
+         WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
+      $result = $DB->query($query);
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr>";
+      echo "<th>";
+      echo $LANG['plugin_monitoring']['rule'][0];
+      echo "</th>";
+      echo "</tr>";
+      echo "</table>";
+
+      echo "<table class='tab_cadre_fixe'>";     
+      
+      echo "<tr>";
+      echo "<th width='10'>&nbsp;</th>";
+      echo "<th>".$LANG['common'][17]."</th>";
+      echo "<th>".$LANG['entity'][0]."</th>";
+      echo "<th>".$LANG['common'][16]."</th>";
+      echo "</tr>";
+      
+      while ($data=$DB->fetch_array($result)) {         
+         echo "<tr>";
+         echo "<td>";
+         echo "<input type='checkbox' name='item[".$data["id"]."]' value='1'>";
+         echo "</td>";
+         echo "<td class='center'>";
+         echo $data['itemtype'];
+         echo "</td>";
+         echo "<td class='center'>";
+
+         echo "</td>";
+         echo "<td class='center'>";
+         echo $data['name'];
+         echo "</td>";
+         echo "</tr>";         
+      }
+      
+      echo "</table>";
+
+      return true;
+   }
+   
+   
+   
+   function addRule($componentscatalogs_id) {
+      
       $param = array();
       if (isset($_SESSION['plugin_monitoring_rules'])) {
          $param = $_SESSION['plugin_monitoring_rules'];
-         //unset($_SESSION['plugin_monitoring_rules']);
       }
       $_GET = $param;
       if (isset($_SESSION['plugin_monitoring_rules_REQUEST_URI'])) {
          $_SERVER['REQUEST_URI'] = $_SESSION['plugin_monitoring_rules_REQUEST_URI'];
       }
+      $itemtype = 'Computer';
+      if (isset($_SESSION['plugin_monitoring_rules']['itemtype'])) {
+         $itemtype = $_SESSION['plugin_monitoring_rules']['itemtype'];
+      }
       Search::manageGetValues($itemtype);
       $this->showGenericSearch($itemtype, $param);
-
-      return true;
+      
    }
+   
 
    
    
    /*
     * Cloned Core function to display with our require.
     */
-   static function showGenericSearch($itemtype, $params) {
+   function showGenericSearch($itemtype, $params) {
       global $LANG, $CFG_GLPI;
 
       // Default values of parameters
@@ -138,12 +189,29 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       }
 
       $linked =  Search::getMetaItemtypeAvailable($itemtype);
-
-      echo "<form name='searchform$itemtype' method='get' action=\"".
-              $CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog_rule.form.php\">";
-      echo "<table class='tab_cadre_fixe'>";
+      $this->showFormHeader();
+//      echo "<form name='searchform$itemtype' method='get' action=\"".
+//              $CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog_rule.form.php\">";
+//      echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
+      echo $LANG['common'][16]."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      echo "<input type='text' name='name' value='".$_SESSION['plugin_monitoring_rules']['name']."'/>";
+      echo "</td>";
+      echo "<td>";
+      echo $LANG['state'][6]."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      Dropdown::dropdownTypes("itemtype", 
+                              $_SESSION['plugin_monitoring_rules']['itemtype'],
+                              $CFG_GLPI['networkport_types']);
+      echo "</td>";
+      echo "</tr>";
+      if (isset($_SESSION['plugin_monitoring_rules']['itemtype'])) {
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='3'>";      
       echo "<table>";
 
       // Display normal search parameters
@@ -444,7 +512,8 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
 
       echo "</td></tr>";
       echo "<tr>";
-      echo "<td colspan='2' class='center'>";
+      }
+      echo "<td colspan='4' class='center'>";
       echo "<input type='submit' name='addrule' value=\"Add this rule\" class='submit' >";
       echo "</td>";
       echo "</tr>";

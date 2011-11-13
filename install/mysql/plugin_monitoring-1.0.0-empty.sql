@@ -75,9 +75,9 @@ CREATE TABLE `glpi_plugin_monitoring_componentscatalogs_hosts` (
 
 
 
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_rules`;
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_componentscatalogs_rules`;
 
-CREATE TABLE `glpi_plugin_monitoring_rules` (
+CREATE TABLE `glpi_plugin_monitoring_componentscatalogs_rules` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `plugin_monitoring_componentscalalog_id` int(11) NOT NULL DEFAULT '0',
   `entities_id` int(11) NOT NULL DEFAULT '0',
