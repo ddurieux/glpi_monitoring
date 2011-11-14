@@ -52,10 +52,13 @@ if (isset($_POST['addrule'])) {
       $input['is_recursive'] = $_POST['is_recursive'];
       $input['name'] = $_POST['name'];
       $input['itemtype'] = $_POST['itemtype'];
+      $input['plugin_monitoring_componentscalalog_id'] = $_POST['plugin_monitoring_componentscalalog_id'];
       unset($_POST['entities_id']);
       unset($_POST['is_recursive']);
       unset($_POST['name']);
       unset($_POST['addrule']);
+      unset($_POST['itemtypen']);
+      unset($_POST['plugin_monitoring_componentscalalog_id']);
       $input['condition'] = exportArrayToDB($_POST);
       $rules_id = $pmComponentscatalog_rule->add($input);
       unset($_SESSION['plugin_monitoring_rules']);
