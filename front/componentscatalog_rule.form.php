@@ -36,21 +36,30 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+if (isset($_POST['itemtypen'])) {
+   $_POST['itemtype'] = $_POST['itemtypen'];
+}
+
 if (isset($_POST['addrule'])) {
-   $pmComponentscatalog_rule = new PluginMonitoringComponentscatalog_rule();
-   $input = array();
-   $input['entities_id'] = $_POST['entities_id'];
-   $input['is_recursive'] = $_POST['is_recursive'];
-   $input['name'] = $_POST['name'];
-   $input['itemtype'] = $_POST['itemtype'];
-   unset($_POST['entities_id']);
-   unset($_POST['is_recursive']);
-   unset($_POST['name']);
-   unset($_POST['addrule']);
-   $input['condition'] = exportArrayToDB($_POST);
-   $pmComponentscatalog_rule->add($input);
-   unset($_SESSION['plugin_monitoring_rules']);
-   
+   if (!isset($_POST['contains'])
+        AND !isset($_POST['reset'])) {
+      $_SESSION['plugin_monitoring_rules'] = $_POST;
+      glpi_header($_SERVER['HTTP_REFERER']);
+   } else {   
+      $pmComponentscatalog_rule = new PluginMonitoringComponentscatalog_rule();
+      $input = array();
+      $input['entities_id'] = $_POST['entities_id'];
+      $input['is_recursive'] = $_POST['is_recursive'];
+      $input['name'] = $_POST['name'];
+      $input['itemtype'] = $_POST['itemtype'];
+      unset($_POST['entities_id']);
+      unset($_POST['is_recursive']);
+      unset($_POST['name']);
+      unset($_POST['addrule']);
+      $input['condition'] = exportArrayToDB($_POST);
+      $pmComponentscatalog_rule->add($input);
+      unset($_SESSION['plugin_monitoring_rules']);
+   }
 } else if (isset($_POST['contains'])
         OR isset($_POST['reset'])) {
    if (isset($_SESSION['plugin_monitoring_rules'])) {

@@ -145,9 +145,10 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
          $_SERVER['REQUEST_URI'] = $_SESSION['plugin_monitoring_rules_REQUEST_URI'];
       }
       $itemtype = 'Computer';
-      if (isset($_SESSION['plugin_monitoring_rules']['itemtype'])) {
-         $itemtype = $_SESSION['plugin_monitoring_rules']['itemtype'];
+      if (isset($param['itemtype'])) {
+         $itemtype = $param['itemtype'];
       }
+      $_POST['plugin_monitoring_componentscalalog_id'] = $componentscatalogs_id;
       Search::manageGetValues($itemtype);
       $this->showGenericSearch($itemtype, $param);
       
@@ -314,7 +315,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       echo $LANG['state'][6]."&nbsp;:";
       echo "</td>";
       echo "<td>";
-      Dropdown::dropdownTypes("itemtype", 
+      Dropdown::dropdownTypes("itemtypen", 
                               $_SESSION['plugin_monitoring_rules']['itemtype'],
                               $CFG_GLPI['networkport_types']);
       echo "</td>";
@@ -624,6 +625,8 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       echo "<tr>";
       }
       echo "<td colspan='4' class='center'>";
+
+      echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$_POST['plugin_monitoring_componentscalalog_id']."' >";
       echo "<input type='submit' name='addrule' value=\"Add this rule\" class='submit' >";
       echo "</td>";
       echo "</tr>";
