@@ -57,8 +57,9 @@ if (isset($_POST['addrule'])) {
       unset($_POST['name']);
       unset($_POST['addrule']);
       $input['condition'] = exportArrayToDB($_POST);
-      $pmComponentscatalog_rule->add($input);
+      $rules_id = $pmComponentscatalog_rule->add($input);
       unset($_SESSION['plugin_monitoring_rules']);
+      $pmComponentscatalog_rule->getItemsDynamicly($rules_id);
    }
 } else if (isset($_POST['contains'])
         OR isset($_POST['reset'])) {

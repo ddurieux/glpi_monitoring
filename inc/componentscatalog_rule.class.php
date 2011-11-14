@@ -159,8 +159,58 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
    /*
     * Use when add a rule, caclculate for all items in GLPI DB
     */
-   function getItemsDynamicly() {
+   function getItemsDynamicly($rules_id) {
+      global $DB;
       
+      $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+      
+      $this->getFromDB($rules_id);
+      
+      $get_tmp = '';
+      
+      $itemtype = $this->fields['itemtype'];
+      if (isset($_GET)) {
+          $get_tmp = $_GET;  
+      }
+      if (isset($_SESSION["glpisearchcount"][$this->fields['itemtype']])) {
+         unset($_SESSION["glpisearchcount"][$this->fields['itemtype']]);
+      }
+      if (isset($_SESSION["glpisearchcount2"][$this->fields['itemtype']])) {
+         unset($_SESSION["glpisearchcount2"][$this->fields['itemtype']]);
+      }
+
+      $_GET = importArrayFromDB($this->fields['condition']);
+
+      $_GET["glpisearchcount"] = count($_GET['field']);
+      if (isset($_GET['field2'])) {
+         $_GET["glpisearchcount2"] = count($_GET['field2']);
+      }
+
+      Search::manageGetValues($this->fields['itemtype']);
+
+      $result = $this->constructSQL($itemtype, 
+                                     $_GET);
+      while ($data=$DB->fetch_array($result)) {
+         $queryh = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+            WHERE `plugin_monitoring_componentscalalog_id`='".$this->fields["plugin_monitoring_componentscalalog_id"]."'
+               AND `itemtype`='".$this->fields['itemtype']."'
+               AND `items_id`='".$data['id']."'";
+         $resulth = $DB->query($queryh);
+         if ($DB->numrows($resulth) == '0') {
+            $input = array();
+            $input['plugin_monitoring_componentscalalog_id'] = $this->fields["plugin_monitoring_componentscalalog_id"];
+            $input['is_static'] = '0';
+            $input['items_id'] = $data['id'];
+            $input['itemtype'] = $this->fields['itemtype'];
+            $componentscatalogs_hosts_id = $pmComponentscatalog_Host->add($input);
+            $pmComponentscatalog_Host->linkComponentsToItem($this->fields["plugin_monitoring_componentscalalog_id"], 
+                                                            $componentscatalogs_hosts_id);
+         } 
+      }      
+      
+      if (count($get_tmp) > 0) {
+         $_GET = $get_tmp; 
+      }
    }
    
    
@@ -247,13 +297,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                                                                $componentscatalogs_hosts_id);
             }            
          }
-         
-         
       }
-      // If find, check if set in static
-      
-      // if not find, delete in dynamic if is present
-      
    }
    
    
