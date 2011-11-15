@@ -100,6 +100,7 @@ CREATE TABLE `glpi_plugin_monitoring_services` (
   `event` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `state` varchar(255) COLLATE utf8_unicode_ci DEFAULT '0',
   `state_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT '0',
+  `last_check` datetime DEFAULT NULL,
   `arguments` text COLLATE utf8_unicode_ci,
   `alias_command` text COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
