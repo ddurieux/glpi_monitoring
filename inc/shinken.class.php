@@ -199,6 +199,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 //      $pluginMonitoringHost_Contact = new PluginMonitoringHost_Contact();
       $pMonitoringCommand      = new PluginMonitoringCommand();
       $pMonitoringCheck        = new PluginMonitoringCheck();
+      $pmComponent = new PluginMonitoringComponent();
 //      $pluginMonitoringServicescatalog = new PluginMonitoringServicescatalog();
 //      $pluginMonitoringBusinessrule = new PluginMonitoringBusinessrule();
       $calendar      = new Calendar();
@@ -208,16 +209,15 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_services = array();
       $i=0;
       
-      $query = "SELECT * FROM `glpi_plugin_monitoring_components`";
+      $query = "SELECT * FROM `glpi_plugin_monitoring_services`";
       $result = $DB->query($query);
       $a_itemused = array();
       while ($data=$DB->fetch_array($result)) {
-         // Select services to get host associated
+         $a_component = current($pmComponent->find("`id`='".$data['plugin_monitoring_components_id']."'", "", 1));
          $a_hostname = array();
-         $queryh = "SELECT `glpi_plugin_monitoring_componentscatalogs_hosts`.* FROM `glpi_plugin_monitoring_services`
-            LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts` 
-               ON `plugin_monitoring_componentscatalogs_hosts_id`=`glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
-            WHERE `plugin_monitoring_components_id`='".$data['id']."'";
+         $queryh = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts` 
+            WHERE `id` = '".$data['plugin_monitoring_componentscatalogs_hosts_id']."'
+            LIMIT 1";
          $resulth = $DB->query($queryh);
          while ($datah=$DB->fetch_array($resulth)) {
             $itemtype = $datah['itemtype'];
@@ -230,13 +230,13 @@ class PluginMonitoringShinken extends CommonDBTM {
             $a_services[$i]['host_name'] = implode(",", array_unique($a_hostname));
             $hostnamebp = $a_services[$i]['host_name']; // For business rules
 
-            $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9]/","",$data['name'])."-".$data['id'];
+            $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9]/","",$a_component['name'])."-".$data['id'];
             $a_fields = array();
-            $pMonitoringCommand->getFromDB($data['plugin_monitoring_commands_id']);
+            $pMonitoringCommand->getFromDB($a_component['plugin_monitoring_commands_id']);
             // Manage arguments
             $array = array();
             preg_match_all("/\\$(ARG\d+)\\$/", $pMonitoringCommand->fields['command_line'], $array);
-            $a_arguments = importArrayFromDB($data['arguments']);
+            $a_arguments = importArrayFromDB($a_component['arguments']);
             $args = '';
             foreach ($array[0] as $arg) {
                if ($arg != '$PLUGINSDIR$'
@@ -248,23 +248,23 @@ class PluginMonitoringShinken extends CommonDBTM {
                      $args .= '!';
                   } else {
                      if (strstr($a_arguments[$arg], "[")) {
-                        $a_arguments[$arg] = pluginMonitoringService::convertArgument($data['id'], $a_arguments[$arg]);
+                        $a_arguments[$arg] = pluginMonitoringService::convertArgument($a_component['id'], $a_arguments[$arg]);
                      }
                      $args .= '!'.$a_arguments[$arg];
                      if ($a_arguments[$arg] == ''
-                             AND $data['alias_command'] != '') {
-                        $args .= $data['alias_command'];
+                             AND $a_component['alias_command'] != '') {
+                        $args .= $a_component['alias_command'];
                      }
                   }
                }
             }
             // End manage arguments
             $a_services[$i]['check_command'] = $pMonitoringCommand->fields['command_name'].$args;
-               $pMonitoringCheck->getFromDB($data['plugin_monitoring_checks_id']);
+               $pMonitoringCheck->getFromDB($a_component['plugin_monitoring_checks_id']);
             $a_services[$i]['check_interval'] = $pMonitoringCheck->fields['check_interval'];
             $a_services[$i]['retry_interval'] = $pMonitoringCheck->fields['retry_interval'];
             $a_services[$i]['max_check_attempts'] = $pMonitoringCheck->fields['max_check_attempts'];
-            if ($calendar->getFromDB($data['calendars_id'])) {
+            if ($calendar->getFromDB($a_component['calendars_id'])) {
                $a_services[$i]['check_period'] = $calendar->fields['name'];            
             }
                $a_contacts = array();
