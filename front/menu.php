@@ -53,19 +53,19 @@ echo "</tr>";
 
 echo "<tr class='tab_bg_1'>";
 echo "<th>";
-echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicescatalog.php'>Services catalog</a>";
+echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicescatalog.php'>".$LANG['plugin_monitoring']['servicescatalog'][0]."</a>";
 echo "</th>";
 echo "</tr>";
 
 echo "<tr class='tab_bg_1'>";
 echo "<th>";
-echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.php'>Components catalog</a>";
+echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.php'>".$LANG['plugin_monitoring']['componentscatalog'][0]."</a>";
 echo "</th>";
 echo "</tr>";
 
 echo "<tr class='tab_bg_1'>";
 echo "<th>";
-echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/component.php'>Components</a>";
+echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/component.php'>".$LANG['plugin_monitoring']['component'][0]."</a>";
 echo "</th>";
 echo "</tr>";
 
