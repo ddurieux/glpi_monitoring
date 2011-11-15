@@ -119,17 +119,17 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       $pluginMonitoringRrdtool = new PluginMonitoringRrdtool();
       $pluginMonitoringCommand = new PluginMonitoringCommand();
       $pMonitoringService = new PluginMonitoringService();
-      $pMonitoringServicedef = new PluginMonitoringServicedef();
+      $pmComponent = new PluginMonitoringComponent();
       
       $pMonitoringService->getFromDB($plugin_monitoring_services_id);
-      $pMonitoringServicedef->getFromDB($pMonitoringService->fields['plugin_monitoring_servicedefs_id']);
-      if (!isset($pMonitoringServicedef->fields['plugin_monitoring_commands_id'])) {
+      $pmComponent->getFromDB($pMonitoringService->fields['plugin_monitoring_components_id']);
+      if (!isset($pmComponent->fields['plugin_monitoring_commands_id'])) {
          return;
       }
-      if ($pMonitoringServicedef->fields['aliasperfdata_commands_id'] > 0) {
-         $pluginMonitoringCommand->getFromDB($pMonitoringServicedef->fields['aliasperfdata_commands_id']);
+      if ($pmComponent->fields['aliasperfdata_commands_id'] > 0) {
+         $pluginMonitoringCommand->getFromDB($pmComponent->fields['aliasperfdata_commands_id']);
       } else {
-         $pluginMonitoringCommand->getFromDB($pMonitoringServicedef->fields['plugin_monitoring_commands_id']);
+         $pluginMonitoringCommand->getFromDB($pmComponent->fields['plugin_monitoring_commands_id']);
       }   
       
       $query = "SELECT * FROM `".$this->getTable()."`
