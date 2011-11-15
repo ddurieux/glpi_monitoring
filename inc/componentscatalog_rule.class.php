@@ -86,8 +86,8 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
    function showRules($componentscatalogs_id) {
       global $DB,$CFG_GLPI,$LANG;
 
-      $this->addRule($componentscatalogs_id);
-
+      $this->preaddRule($componentscatalogs_id);
+      
       $rand = mt_rand();
 
       $query = "SELECT * FROM `".$this->getTable()."`
@@ -133,24 +133,66 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
    }
    
    
-   
-   function addRule($componentscatalogs_id) {
+   function preaddRule($componentscatalogs_id) {
+      global $LANG,$CFG_GLPI,$DB;
       
-      $param = array();
-      if (isset($_SESSION['plugin_monitoring_rules'])) {
-         $param = $_SESSION['plugin_monitoring_rules'];
+      $a_usedItemtypes = array();
+      $query = "SELECT * FROM `".$this->getTable()."`
+         WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         $a_usedItemtypes[$data['itemtype']] = $data['itemtype'];
       }
-      $_GET = $param;
-      if (isset($_SESSION['plugin_monitoring_rules_REQUEST_URI'])) {
-         $_SERVER['REQUEST_URI'] = $_SESSION['plugin_monitoring_rules_REQUEST_URI'];
+      
+      if (count($a_usedItemtypes) == count($CFG_GLPI['networkport_types'])) {
+         return;
       }
-      $itemtype = 'Computer';
-      if (isset($param['itemtype'])) {
-         $itemtype = $param['itemtype'];
-      }
-      $_POST['plugin_monitoring_componentscalalog_id'] = $componentscatalogs_id;
-      Search::manageGetValues($itemtype);
-      $this->showGenericSearch($itemtype, $param);
+      
+      $this->getEmpty();
+      
+      $this->showFormHeader();
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo $LANG['common'][16]."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      echo "<input type='text' name='name' value=''/>";
+      echo "</td>";
+      echo "<td>";
+      echo $LANG['state'][6]."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      Dropdown::dropdownTypes("itemtypen", 
+                              "",
+                              $CFG_GLPI['networkport_types'],
+                              $a_usedItemtypes);
+      echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$componentscatalogs_id."' >";
+      echo "</td>";
+      echo "</tr>";
+      
+      $this->showFormButtons();
+     
+   }
+   
+   
+   
+   function addRule() {
+      
+//      $param = array();
+//      if (isset($_SESSION['plugin_monitoring_rules'])) {
+//         $param = $_SESSION['plugin_monitoring_rules'];
+//      }
+//      if (isset($_GET)) {
+//         unset($_GET);
+//      }
+//      $_GET = $_POST;
+//      if (isset($_SESSION['plugin_monitoring_rules_REQUEST_URI'])) {
+//         $_SERVER['REQUEST_URI'] = $_SESSION['plugin_monitoring_rules_REQUEST_URI'];
+//      }
+      
+      Search::manageGetValues($_GET['itemtype']);
+      $this->showGenericSearch($_GET['itemtype'], $_GET);
       
    }
    
@@ -344,7 +386,16 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       }
 
       $linked =  Search::getMetaItemtypeAvailable($itemtype);
+      if (!isset($_GET['id'])) {
+         $this->getEmpty();
+      }
+      
+echo "<form name='searchform$itemtype' method='get' action=\"".
+              $CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog_rule.form.php\">";
+
+      
       $this->showFormHeader();
+
 //      echo "<form name='searchform$itemtype' method='get' action=\"".
 //              $CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog_rule.form.php\">";
 //      echo "<table class='tab_cadre_fixe'>";
@@ -353,18 +404,16 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       echo $LANG['common'][16]."&nbsp;:";
       echo "</td>";
       echo "<td>";
-      echo "<input type='text' name='name' value='".$_SESSION['plugin_monitoring_rules']['name']."'/>";
+      echo "<input type='text' name='name' value='".$_GET['name']."'/>";
       echo "</td>";
       echo "<td>";
       echo $LANG['state'][6]."&nbsp;:";
       echo "</td>";
       echo "<td>";
-      Dropdown::dropdownTypes("itemtypen", 
-                              $_SESSION['plugin_monitoring_rules']['itemtype'],
-                              $CFG_GLPI['networkport_types']);
+      echo $_GET['itemtype'];
       echo "</td>";
       echo "</tr>";
-      if (isset($_SESSION['plugin_monitoring_rules']['itemtype'])) {
+      if (isset($_GET['itemtype'])) {
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='3'>";      
       echo "<table>";
@@ -393,7 +442,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                echo "<input type='hidden' disabled id='add_search_count2' name='add_search_count2'
                       value='1'>";
                echo "<a href='#' onClick=\"document.getElementById('add_search_count2').disabled=false;
-                      document.forms['searchform$itemtype'].submit();\">";
+                      document.forms['form'].submit();\">";
                echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_plus.png\" alt='+' title=\"".
                       $LANG['search'][19]."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 
@@ -401,7 +450,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                   echo "<input type='hidden' disabled id='delete_search_count2'
                          name='delete_search_count2' value='1'>";
                   echo "<a href='#' onClick=\"document.getElementById('delete_search_count2').disabled=false;
-                         document.forms['searchform$itemtype'].submit();\">";
+                         document.forms['form'].submit();\">";
                   echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_moins.png\" alt='-' title=\"".
                         $LANG['search'][20]."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
                }
@@ -670,7 +719,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       }
       echo "<td colspan='4' class='center'>";
 
-      echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$_POST['plugin_monitoring_componentscalalog_id']."' >";
+      echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$_GET['plugin_monitoring_componentscalalog_id']."' >";
       echo "<input type='submit' name='addrule' value=\"Add this rule\" class='submit' >";
       echo "</td>";
       echo "</tr>";
