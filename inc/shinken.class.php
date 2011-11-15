@@ -221,80 +221,83 @@ class PluginMonitoringShinken extends CommonDBTM {
          while ($datah=$DB->fetch_array($resulth)) {
             $itemtype = $datah['itemtype'];
             $item = new $itemtype();
-            $item->getFromDB($datah['items_id']);
-            $a_hostname[] = $itemtype."-".$datah['items_id']."-".preg_replace("/[^A-Za-z0-9]/","",$item->fields['name']);
-         }         
-         $a_services[$i]['host_name'] = implode(",", array_unique($a_hostname));
-         $hostnamebp = $a_services[$i]['host_name']; // For business rules
-         
-         $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9]/","",$data['name'])."-".$data['id'];
-         $a_fields = array();
-         $pMonitoringCommand->getFromDB($data['plugin_monitoring_commands_id']);
-         // Manage arguments
-         $array = array();
-         preg_match_all("/\\$(ARG\d+)\\$/", $pMonitoringCommand->fields['command_line'], $array);
-         $a_arguments = importArrayFromDB($data['arguments']);
-         $args = '';
-         foreach ($array[0] as $arg) {
-            if ($arg != '$PLUGINSDIR$'
-                    AND $arg != '$HOSTADDRESS$'
-                    AND $arg != '$MYSQLUSER$'
-                    AND $arg != '$MYSQLPASSWORD$') {
-               $arg = str_replace('$', '', $arg);
-               if (!isset($a_arguments[$arg])) {
-                  $args .= '!';
-               } else {
-                  if (strstr($a_arguments[$arg], "[")) {
-                     $a_arguments[$arg] = pluginMonitoringService::convertArgument($data['id'], $a_arguments[$arg]);
-                  }
-                  $args .= '!'.$a_arguments[$arg];
-                  if ($a_arguments[$arg] == ''
-                          AND $data['alias_command'] != '') {
-                     $args .= $data['alias_command'];
+            if ($item->getFromDB($datah['items_id'])) {
+               $a_hostname[] = $itemtype."-".$datah['items_id']."-".preg_replace("/[^A-Za-z0-9]/","",$item->fields['name']);
+            }
+         }
+         if (count($a_hostname) > 0) {
+            $a_services[$i]['host_name'] = implode(",", array_unique($a_hostname));
+            $hostnamebp = $a_services[$i]['host_name']; // For business rules
+
+            $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9]/","",$data['name'])."-".$data['id'];
+            $a_fields = array();
+            $pMonitoringCommand->getFromDB($data['plugin_monitoring_commands_id']);
+            // Manage arguments
+            $array = array();
+            preg_match_all("/\\$(ARG\d+)\\$/", $pMonitoringCommand->fields['command_line'], $array);
+            $a_arguments = importArrayFromDB($data['arguments']);
+            $args = '';
+            foreach ($array[0] as $arg) {
+               if ($arg != '$PLUGINSDIR$'
+                       AND $arg != '$HOSTADDRESS$'
+                       AND $arg != '$MYSQLUSER$'
+                       AND $arg != '$MYSQLPASSWORD$') {
+                  $arg = str_replace('$', '', $arg);
+                  if (!isset($a_arguments[$arg])) {
+                     $args .= '!';
+                  } else {
+                     if (strstr($a_arguments[$arg], "[")) {
+                        $a_arguments[$arg] = pluginMonitoringService::convertArgument($data['id'], $a_arguments[$arg]);
+                     }
+                     $args .= '!'.$a_arguments[$arg];
+                     if ($a_arguments[$arg] == ''
+                             AND $data['alias_command'] != '') {
+                        $args .= $data['alias_command'];
+                     }
                   }
                }
             }
-         }
-         // End manage arguments
-         $a_services[$i]['check_command'] = $pMonitoringCommand->fields['command_name'].$args;
-            $pMonitoringCheck->getFromDB($data['plugin_monitoring_checks_id']);
-         $a_services[$i]['check_interval'] = $pMonitoringCheck->fields['check_interval'];
-         $a_services[$i]['retry_interval'] = $pMonitoringCheck->fields['retry_interval'];
-         $a_services[$i]['max_check_attempts'] = $pMonitoringCheck->fields['max_check_attempts'];
-         if ($calendar->getFromDB($data['calendars_id'])) {
-            $a_services[$i]['check_period'] = $calendar->fields['name'];            
-         }
-            $a_contacts = array();
-//            $a_list_contact = $pluginMonitoringHost_Contact->find("`plugin_monitoring_hosts_id`='".$data['id']."'");
-//            foreach ($a_list_contact as $data_contact) {
-//               $pluginMonitoringContact->getFromDB($data_contact['plugin_monitoring_contacts_id']);
-//               $user->getFromDB($pluginMonitoringContact->fields['users_id']);
-//               $a_contacts[] = $user->fields['name'];
-//            }
-         $a_services[$i]['contacts'] = implode(',', $a_contacts);
+            // End manage arguments
+            $a_services[$i]['check_command'] = $pMonitoringCommand->fields['command_name'].$args;
+               $pMonitoringCheck->getFromDB($data['plugin_monitoring_checks_id']);
+            $a_services[$i]['check_interval'] = $pMonitoringCheck->fields['check_interval'];
+            $a_services[$i]['retry_interval'] = $pMonitoringCheck->fields['retry_interval'];
+            $a_services[$i]['max_check_attempts'] = $pMonitoringCheck->fields['max_check_attempts'];
+            if ($calendar->getFromDB($data['calendars_id'])) {
+               $a_services[$i]['check_period'] = $calendar->fields['name'];            
+            }
+               $a_contacts = array();
+   //            $a_list_contact = $pluginMonitoringHost_Contact->find("`plugin_monitoring_hosts_id`='".$data['id']."'");
+   //            foreach ($a_list_contact as $data_contact) {
+   //               $pluginMonitoringContact->getFromDB($data_contact['plugin_monitoring_contacts_id']);
+   //               $user->getFromDB($pluginMonitoringContact->fields['users_id']);
+   //               $a_contacts[] = $user->fields['name'];
+   //            }
+            $a_services[$i]['contacts'] = implode(',', $a_contacts);
 
-         $a_services[$i]['notification_interval'] = '30';
-         $a_services[$i]['notification_period'] = '24x7';
-         $a_services[$i]['notification_options'] = 'w,c,r';
-         $a_services[$i]['active_checks_enabled'] = '1';
-         $a_services[$i]['process_perf_data'] = '1';
-         $a_services[$i]['active_checks_enabled'] = '1';
-         $a_services[$i]['passive_checks_enabled'] = '1';
-         $a_services[$i]['parallelize_check'] = '1';
-         $a_services[$i]['obsess_over_service'] = '1';
-         $a_services[$i]['check_freshness'] = '1';
-         $a_services[$i]['freshness_threshold'] = '1';
-         $a_services[$i]['notifications_enabled'] = '1';
-         $a_services[$i]['event_handler_enabled'] = '0';
-         $a_services[$i]['event_handler'] = 'super_event_kill_everyone!DIE';
-         $a_services[$i]['flap_detection_enabled'] = '1';
-         $a_services[$i]['failure_prediction_enabled'] = '1';
-         $a_services[$i]['retain_status_information'] = '1';
-         $a_services[$i]['retain_nonstatus_information'] = '1';
-         $a_services[$i]['is_volatile'] = '0';
-         $a_services[$i]['_httpstink'] = 'NO';
+            $a_services[$i]['notification_interval'] = '30';
+            $a_services[$i]['notification_period'] = '24x7';
+            $a_services[$i]['notification_options'] = 'w,c,r';
+            $a_services[$i]['active_checks_enabled'] = '1';
+            $a_services[$i]['process_perf_data'] = '1';
+            $a_services[$i]['active_checks_enabled'] = '1';
+            $a_services[$i]['passive_checks_enabled'] = '1';
+            $a_services[$i]['parallelize_check'] = '1';
+            $a_services[$i]['obsess_over_service'] = '1';
+            $a_services[$i]['check_freshness'] = '1';
+            $a_services[$i]['freshness_threshold'] = '1';
+            $a_services[$i]['notifications_enabled'] = '1';
+            $a_services[$i]['event_handler_enabled'] = '0';
+            $a_services[$i]['event_handler'] = 'super_event_kill_everyone!DIE';
+            $a_services[$i]['flap_detection_enabled'] = '1';
+            $a_services[$i]['failure_prediction_enabled'] = '1';
+            $a_services[$i]['retain_status_information'] = '1';
+            $a_services[$i]['retain_nonstatus_information'] = '1';
+            $a_services[$i]['is_volatile'] = '0';
+            $a_services[$i]['_httpstink'] = 'NO';
 
-         $i++;
+            $i++;
+         }
       }
 
 //      // Business rules....
