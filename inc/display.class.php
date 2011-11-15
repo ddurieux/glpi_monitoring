@@ -264,7 +264,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          
       }
       $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringService")."` ".$where."
-         ORDER BY `plugin_monitoring_services_id`";
+         ORDER BY `name`";
       $result = $DB->query($query);
       
       $start = 0;
@@ -314,11 +314,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "</th>";     
       echo "</tr>";
       while ($data=$DB->fetch_array($result)) {
-         if ($data['plugin_monitoring_services_id'] == '0') {
-            echo "<tr class='tab_bg_3'>";
-         } else {
-            echo "<tr class='tab_bg_1'>";
-         }
+         echo "<tr class='tab_bg_3'>";
 
          $this->displayLine($data);
          
@@ -361,15 +357,15 @@ class PluginMonitoringDisplay extends CommonDBTM {
       if (isset($itemmat->fields['name'])) {
          $nameitem = "[".$itemmat->getLink(1)."]";
       }
-      if ($pMonitoringService->fields['plugin_monitoring_services_id'] == '0') {
-         echo "<td>".$itemmat->getLink(1)."</td>";
-      } else {
-         $pMonitoringServiceH->getFromDB($pMonitoringService->fields['plugin_monitoring_services_id']);
-         $itemtypemat = $pMonitoringServiceH->fields['itemtype'];
-         $itemmat = new $itemtypemat();
-         $itemmat->getFromDB($pMonitoringServiceH->fields['items_id']);
-         echo "<td>".$pMonitoringService->getLink(1).$nameitem." ".$LANG['networking'][25]." ".$itemmat->getLink(1)."</td>";
-      }
+      //if ($pMonitoringService->fields['plugin_monitoring_services_id'] == '0') {
+         //echo "<td>".$itemmat->getLink(1)."</td>";
+//      } else {
+//         $pMonitoringServiceH->getFromDB($pMonitoringService->fields['plugin_monitoring_services_id']);
+//         $itemtypemat = $pMonitoringServiceH->fields['itemtype'];
+//         $itemmat = new $itemtypemat();
+//         $itemmat->getFromDB($pMonitoringServiceH->fields['items_id']);
+//         echo "<td>".$pMonitoringService->getLink(1).$nameitem." ".$LANG['networking'][25]." ".$itemmat->getLink(1)."</td>";
+//      }
       
       
 
@@ -396,55 +392,50 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "</td>";
 
       // Mode dégradé
-      if ($pMonitoringService->fields['plugin_monitoring_services_id'] > 0) {
-         echo "<td></td>";
-      } else {
-         echo "<td align='center'>";
-         // Get all services of this host
-         $a_serv = $pMonitoringService->find("`plugin_monitoring_services_id`='".$data['id']."'");
-         $globalserv_state = array();
-         $globalserv_state['red'] = 0;
-         $globalserv_state['red_soft'] = 0;
-         $globalserv_state['orange'] = 0;
-         $globalserv_state['orange_soft'] = 0;
-         $globalserv_state['green'] = 0;
-         $globalserv_state['green_soft'] = 0;
-         $tooltip = "<table class='tab_cadrehov' width='300'>";
-         $tooltip .= "<tr class='tab_bg_1'>
-            <td width='200'><strong>".$LANG['plugin_monitoring']['host'][8]."</strong> :</td><td>
-            <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/></td></tr>";
-         foreach ($a_serv as $sdata) {
-            $stateserv = self::getState($sdata['state'], $data['state_type']);
-            if (isset($globalserv_state[$stateserv])) {
-               $globalserv_state[$stateserv]++;
-            }
-            $tooltip .= "<tr class='tab_bg_1'><td>".$sdata['name']." :</td><td>
-                     <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$stateserv."_32.png'/></td></tr>";
+      echo "<td align='center'>";
+      // Get all services of this host
+      $a_serv = $pMonitoringService->find("`plugin_monitoring_services_id`='".$data['id']."'");
+      $globalserv_state = array();
+      $globalserv_state['red'] = 0;
+      $globalserv_state['red_soft'] = 0;
+      $globalserv_state['orange'] = 0;
+      $globalserv_state['orange_soft'] = 0;
+      $globalserv_state['green'] = 0;
+      $globalserv_state['green_soft'] = 0;
+      $tooltip = "<table class='tab_cadrehov' width='300'>";
+      $tooltip .= "<tr class='tab_bg_1'>
+         <td width='200'><strong>".$LANG['plugin_monitoring']['host'][8]."</strong> :</td><td>
+         <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/></td></tr>";
+      foreach ($a_serv as $sdata) {
+         $stateserv = self::getState($sdata['state'], $data['state_type']);
+         if (isset($globalserv_state[$stateserv])) {
+            $globalserv_state[$stateserv]++;
          }
-         $tooltip .= "</table>";
-         if (!isset($globalserv_state[$shortstate])) {
-            $globalserv_state[$shortstate] = 0;
-         }
-         $globalserv_state[$shortstate]++;
-         
-         $img = '';
-         if ($globalserv_state['red'] > 0) {
-            $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_32.png";
-         } else if ($globalserv_state['red_soft'] > 0) {
-            $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_32_soft.png";
-         } else if ($globalserv_state['orange'] > 0) {
-            $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_32.png";
-         } else if ($globalserv_state['orange_soft'] > 0) {
-            $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_32_soft.png";
-         } else if ($globalserv_state['green'] > 0) {
-            $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_32.png";
-         } else if ($globalserv_state['green_soft'] > 0) {
-            $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_32_soft.png";
-         }
-         showToolTip($tooltip, array('img'=>$img));
-         echo "</td>";
+         $tooltip .= "<tr class='tab_bg_1'><td>".$sdata['name']." :</td><td>
+                  <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$stateserv."_32.png'/></td></tr>";
       }
+      $tooltip .= "</table>";
+      if (!isset($globalserv_state[$shortstate])) {
+         $globalserv_state[$shortstate] = 0;
+      }
+      $globalserv_state[$shortstate]++;
 
+      $img = '';
+      if ($globalserv_state['red'] > 0) {
+         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_32.png";
+      } else if ($globalserv_state['red_soft'] > 0) {
+         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_32_soft.png";
+      } else if ($globalserv_state['orange'] > 0) {
+         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_32.png";
+      } else if ($globalserv_state['orange_soft'] > 0) {
+         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_32_soft.png";
+      } else if ($globalserv_state['green'] > 0) {
+         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_32.png";
+      } else if ($globalserv_state['green_soft'] > 0) {
+         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_32_soft.png";
+      }
+      showToolTip($tooltip, array('img'=>$img));
+      echo "</td>";
 
       echo "<td>";
       echo convDate($data['last_check']).' '. substr($data['last_check'], 11, 8);
