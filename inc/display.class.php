@@ -45,8 +45,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $ong = array();
       $ong[1] = $LANG['plugin_monitoring']['businessrule'][0];
       $ong[2] = $LANG['plugin_monitoring']['service'][21];
-      $ong[3] = $LANG['plugin_monitoring']['host'][0];
-      $ong[4] = $LANG['plugin_monitoring']['service'][0];
+//      $ong[3] = $LANG['plugin_monitoring']['host'][0];
+//      $ong[4] = $LANG['plugin_monitoring']['service'][0];
       return $ong;
    }
    

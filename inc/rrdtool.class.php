@@ -135,18 +135,18 @@ class PluginMonitoringRrdtool extends CommonDBTM {
 
       $title = '';
       $pMonitoringService = new PluginMonitoringService();
-      $pMonitoringServicedef = new PluginMonitoringServicedef();
+      $pmComponent = new PluginMonitoringComponent();
       $pMonitoringService->getFromDB($items_id);
-      $pMonitoringServicedef->getFromDB($pMonitoringService->fields['plugin_monitoring_servicedefs_id']);
-      if (isset($pMonitoringServicedef->fields['aliasperfdata_commands_id'])
-              AND $pMonitoringServicedef->fields['aliasperfdata_commands_id'] > 0) {
-         $pMonitoringServicedef->fields['plugin_monitoring_commands_id'] = $pMonitoringServicedef->fields['aliasperfdata_commands_id'];
+      $pmComponent->getFromDB($pMonitoringService->fields['plugin_monitoring_components_id']);
+      if (isset($pmComponent->fields['aliasperfdata_commands_id'])
+              AND $pmComponent->fields['aliasperfdata_commands_id'] > 0) {
+         $pmComponent->fields['plugin_monitoring_commands_id'] = $pmComponent->fields['aliasperfdata_commands_id'];
       }
-      if (!isset($pMonitoringServicedef->fields['plugin_monitoring_commands_id'])) {
+      if (!isset($pmComponent->fields['plugin_monitoring_commands_id'])) {
          return false;
       }
-      $pluginMonitoringCommand->getFromDB($pMonitoringServicedef->fields['plugin_monitoring_commands_id']);
-      $title = $pMonitoringService->fields['name'];
+      $pluginMonitoringCommand->getFromDB($pmComponent->fields['plugin_monitoring_commands_id']);
+      $title = $pmComponent->fields['name'];
 
       
       $a_legend = array();
