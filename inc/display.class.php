@@ -297,8 +297,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "<th>";
       echo "</th>";
       echo "<th>";
-      echo "</th>";
-      echo "<th>";
       echo $LANG['state'][0];
       echo "</th>";
       echo "<th>";
@@ -333,6 +331,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
       $pMonitoringService = new PluginMonitoringService();
       $pMonitoringServiceH = new PluginMonitoringService();
+      $pMonitoringComponent = new PluginMonitoringComponent();
       
       $pMonitoringService->getFromDB($data['id']);
       
@@ -394,7 +393,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       // Mode dégradé
       echo "<td align='center'>";
       // Get all services of this host
-      $a_serv = $pMonitoringService->find("`plugin_monitoring_services_id`='".$data['id']."'");
+      $a_serv = $pMonitoringComponent->find("`id`='".$data['plugin_monitoring_components_id']."'");
       $globalserv_state = array();
       $globalserv_state['red'] = 0;
       $globalserv_state['red_soft'] = 0;
@@ -407,12 +406,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
          <td width='200'><strong>".$LANG['plugin_monitoring']['host'][8]."</strong> :</td><td>
          <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/></td></tr>";
       foreach ($a_serv as $sdata) {
-         $stateserv = self::getState($sdata['state'], $data['state_type']);
-         if (isset($globalserv_state[$stateserv])) {
-            $globalserv_state[$stateserv]++;
-         }
-         $tooltip .= "<tr class='tab_bg_1'><td>".$sdata['name']." :</td><td>
-                  <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$stateserv."_32.png'/></td></tr>";
+//         $stateserv = self::getState($sdata['state'], $data['state_type']);
+//         if (isset($globalserv_state[$stateserv])) {
+//            $globalserv_state[$stateserv]++;
+//         }
+//         $tooltip .= "<tr class='tab_bg_1'><td>".$sdata['name']." :</td><td>
+//                  <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$stateserv."_32.png'/></td></tr>";
       }
       $tooltip .= "</table>";
       if (!isset($globalserv_state[$shortstate])) {
