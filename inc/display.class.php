@@ -297,6 +297,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "<th>";
       echo "</th>";
       echo "<th>";
+      echo "</th>";
+      echo "<th>";
       echo $LANG['state'][0];
       echo "</th>";
       echo "<th>";
@@ -352,6 +354,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
       } else {
          echo "<td>".$LANG['plugin_monitoring']['service'][0]."</td>";
       }
+      $pMonitoringComponent->getFromDB($data['plugin_monitoring_components_id']);
+      echo "<td>".$pMonitoringComponent->getLink()."</td>";
       $nameitem = '';
       if (isset($itemmat->fields['name'])) {
          $nameitem = "[".$itemmat->getLink(1)."]";
