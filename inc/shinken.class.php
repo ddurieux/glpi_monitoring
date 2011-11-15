@@ -568,6 +568,27 @@ class PluginMonitoringShinken extends CommonDBTM {
             }
             $a_timeperiods[$i][$day] = $begin."-".$end;
          }
+         if (!isset($a_timeperiods[$i]["sunday"])) {
+            $a_timeperiods[$i]["sunday"]= '';
+         }
+         if (!isset($a_timeperiods[$i]["monday"])) {
+            $a_timeperiods[$i]["monday"]= '';
+         }
+         if (!isset($a_timeperiods[$i]["tuesday"])) {
+            $a_timeperiods[$i]["tuesday"]= '';
+         }
+         if (!isset($a_timeperiods[$i]["wednesday"])) {
+            $a_timeperiods[$i]["wednesday"]= '';
+         }
+         if (!isset($a_timeperiods[$i]["thursday"])) {
+            $a_timeperiods[$i]["thursday"]= '';
+         }
+         if (!isset($a_timeperiods[$i]["friday"])) {
+            $a_timeperiods[$i]["friday"]= '';
+         }
+         if (!isset($a_timeperiods[$i]["saturday"])) {
+            $a_timeperiods[$i]["saturday"]= '';
+         }
          $i++;
       }
 
