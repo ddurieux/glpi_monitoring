@@ -129,7 +129,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $classname = $data['itemtype'];
          $class = new $classname;
          if ($class->getFromDB($data['items_id'])) {
-            $a_hosts[$i]['host_name'] = $classname."-".$data['id']."-".preg_replace("/[^A-Za-z0-9]/","",$class->fields['name']);
+            $a_hosts[$i]['host_name'] = $classname."-".$data['items_id']."-".preg_replace("/[^A-Za-z0-9]/","",$class->fields['name']);
             $a_hosts[$i]['alias'] = $a_hosts[$i]['host_name'];
                $ip = $class->fields['name'];
                if ($data['itemtype'] == 'NetworkEquipment') {
@@ -210,6 +210,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       
       $query = "SELECT * FROM `glpi_plugin_monitoring_components`";
       $result = $DB->query($query);
+      $a_itemused = array();
       while ($data=$DB->fetch_array($result)) {
          // Select services to get host associated
          $a_hostname = array();
@@ -222,7 +223,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             $itemtype = $datah['itemtype'];
             $item = new $itemtype();
             if ($item->getFromDB($datah['items_id'])) {
-               $a_hostname[] = $itemtype."-".$datah['id']."-".preg_replace("/[^A-Za-z0-9]/","",$item->fields['name']);
+               $a_hostname[] = $itemtype."-".$datah['items_id']."-".preg_replace("/[^A-Za-z0-9]/","",$item->fields['name']);
             }
          }
          if (count($a_hostname) > 0) {
