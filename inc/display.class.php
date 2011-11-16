@@ -385,16 +385,16 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $plu = new PluginMonitoringServiceevent();
       $img = '';
 
-      if ($to->displayGLPIGraph("PluginMonitoringService", $data['id'], "12h")) {
-         $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$data['id']."-12h.gif'/>";
+//      if ($to->displayGLPIGraph("PluginMonitoringService", $data['id'], "12h")) {
+//         $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$data['id']."-12h.gif'/>";
          echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$data['id']."'>";
-      } else {
-         $img = '';
-      }
-      if ($img != '') {
+//      } else {
+//         $img = '';
+//      }
+//      if ($img != '') {
          showToolTip($img, array('img'=>$CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"));
          echo "</a>";
-      }
+//      }
       echo "</td>";
 
       // Mode dégradé
