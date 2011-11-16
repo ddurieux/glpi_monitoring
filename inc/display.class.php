@@ -44,9 +44,10 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
       $ong = array();
       $ong[1] = $LANG['plugin_monitoring']['servicescatalog'][0];
-      $ong[2] = $LANG['plugin_monitoring']['service'][21];
-//      $ong[3] = $LANG['plugin_monitoring']['host'][0];
-//      $ong[4] = $LANG['plugin_monitoring']['service'][0];
+      $ong[2] = $LANG['plugin_monitoring']['componentscatalog'][0];
+      $ong[3] = $LANG['plugin_monitoring']['service'][21];
+//      $ong[4] = $LANG['plugin_monitoring']['host'][0];
+//      $ong[5] = $LANG['plugin_monitoring']['service'][0];
       return $ong;
    }
    
@@ -334,6 +335,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $pMonitoringService = new PluginMonitoringService();
       $pMonitoringServiceH = new PluginMonitoringService();
       $pMonitoringComponent = new PluginMonitoringComponent();
+      $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
       
       $pMonitoringService->getFromDB($data['id']);
       
@@ -341,14 +343,15 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $shortstate = self::getState($data['state'], $data['state_type']);
       echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/>";
       echo "</td>";
-      if (isset($pMonitoringService->fields['itemtype']) 
-              AND $pMonitoringService->fields['itemtype'] != '') {
+      $pmComponentscatalog_Host->getFromDB($data["plugin_monitoring_componentscatalogs_hosts_id"]);
+      if (isset($pmComponentscatalog_Host->fields['itemtype']) 
+              AND $pmComponentscatalog_Host->fields['itemtype'] != '') {
 
-         $itemtypemat = $pMonitoringService->fields['itemtype'];
-         $itemmat = new $itemtypemat();
-         $itemmat->getFromDB($pMonitoringService->fields['items_id']);
+         $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
+         $item = new $itemtype();
+         $item->getFromDB($pmComponentscatalog_Host->fields['items_id']);
          echo "<td>";
-         echo $itemmat->getTypeName();
+         echo $item->getTypeName()." : ".$item->getLink();
          echo "</td>";
 
       } else {

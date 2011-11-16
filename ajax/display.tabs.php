@@ -54,14 +54,9 @@ switch($_REQUEST['glpi_tab']) {
       $pluginMonitoringServicescatalog = new PluginMonitoringServicescatalog();
       $pluginMonitoringServicescatalog->showBAChecks();
       break;
-
+   
    case 2:
-      // Manage search
-      $_GET = $_SESSION['plugin_monitoring']['service'];
-      Search::manageGetValues("PluginMonitoringService");
-      Search::showGenericSearch("PluginMonitoringService", $_SESSION['plugin_monitoring']['service']);
-
-      $pMonitoringDisplay->showBoard(950);
+      
       break;
 
    case 3:
@@ -70,10 +65,19 @@ switch($_REQUEST['glpi_tab']) {
       Search::manageGetValues("PluginMonitoringService");
       Search::showGenericSearch("PluginMonitoringService", $_SESSION['plugin_monitoring']['service']);
 
-      $pMonitoringDisplay->showBoard("PluginMonitoringHost", 'hosts');
+      $pMonitoringDisplay->showBoard(950);
       break;
 
    case 4:
+      // Manage search
+      $_GET = $_SESSION['plugin_monitoring']['service'];
+      Search::manageGetValues("PluginMonitoringService");
+      Search::showGenericSearch("PluginMonitoringService", $_SESSION['plugin_monitoring']['service']);
+
+      $pMonitoringDisplay->showBoard("PluginMonitoringHost", 'hosts');
+      break;
+
+   case 5:
       // Manage search
       $_GET = $_SESSION['plugin_monitoring']['service'];
       Search::manageGetValues("PluginMonitoringService");
