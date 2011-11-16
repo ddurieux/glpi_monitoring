@@ -67,7 +67,7 @@ if (isset($_GET['addrule'])) {
       $rules_id = $pmComponentscatalog_rule->add($input);
       unset($_SESSION['plugin_monitoring_rules']);
       $pmComponentscatalog_rule->getItemsDynamicly($rules_id);
-      glpi_header($CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.form.php?id=".$_POST['plugin_monitoring_componentscalalog_id']);
+      glpi_header($CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.form.php?id=".$input['plugin_monitoring_componentscalalog_id']);
 
    }
 } else if (isset($_GET['contains'])
