@@ -130,7 +130,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
          echo $item->getTypeName();
          echo "</td>";
          echo "<td class='center'>";
-         echo Dropdown::getDropdownName("glpi_entities",$item->fields['entity'])."</td>";
+         echo Dropdown::getDropdownName("glpi_entities",$item->fields['entities_id'])."</td>";
          echo "<td class='center".
                (isset($item->fields['is_deleted']) && $item->fields['is_deleted'] ? " tab_bg_2_2'" : "'");
          echo ">".$item->getLink()."</td>";
