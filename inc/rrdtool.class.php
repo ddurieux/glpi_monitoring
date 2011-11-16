@@ -46,32 +46,32 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       $pluginMonitoringCommand->getFromDB($commands_id);
       $a_legend = importArrayFromDB($pluginMonitoringCommand->fields['legend']);
 
-      $opts = array();
-      $opts[] = '--step';
-      $opts[] = '300';
-      $opts[] = '--start';
-      $opts[] = ($timestamp - 300);
+      $opts = '';
+      $opts .= ' --start '.($timestamp - 300);
+      $opts .= ' --step 300';
+
       foreach ($a_legend as $legend){
          if ($legend != '') {
             if (!strstr($legend, "timeout")) {
-               $opts[] = "DS:".$legend.":GAUGE:600:U:U";
+               $opts .= " DS:".$legend.":GAUGE:600:U:U";
             }
          }
       }
-      $opts[] = "RRA:AVERAGE:0.5:1:600";
-      $opts[] = "RRA:AVERAGE:0.5:6:700";
-      $opts[] = "RRA:AVERAGE:0.5:24:775";
-      $opts[] = "RRA:AVERAGE:0.5:288:797";
-      $opts[] = "RRA:MAX:0.5:1:600";
-      $opts[] = "RRA:MAX:0.5:6:700";
-      $opts[] = "RRA:MAX:0.5:24:775";
-      $opts[] = "RRA:MAX:0.5:288:797";
+      $opts .= " RRA:AVERAGE:0.5:1:600";
+      $opts .= " RRA:AVERAGE:0.5:6:700";
+      $opts .= " RRA:AVERAGE:0.5:24:775";
+      $opts .= " RRA:AVERAGE:0.5:288:797";
+      $opts .= " RRA:MAX:0.5:1:600";
+      $opts .= " RRA:MAX:0.5:6:700";
+      $opts .= " RRA:MAX:0.5:24:775";
+      $opts .= " RRA:MAX:0.5:288:797";
 
-      $ret = rrd_create($fname, $opts, count($opts));
+      //$ret = rrd_create($fname, $opts, count($opts));
 
-      if( $ret == 0 ) {
-       $err = rrd_error();
-       echo "Create error: $err\n";
+      system('/usr/local/bin/rrdtool create '.$fname.$opts, $ret);
+      if (isset($ret) 
+              AND $ret != '0' ) {
+         echo "Create error: $ret for /usr/local/bin/rrdtool create ".$fname.$opts."\n";
       }
    }
 
@@ -110,13 +110,13 @@ class PluginMonitoringRrdtool extends CommonDBTM {
             }
          }    
       }
-      $ret = rrd_update($fname, $value);
+      //$ret = rrd_update($fname, $value);
 
-      if( $ret == 0 ) {
-         $err = rrd_error();
-         echo "ERROR occurred: $err\n";
-      }
-  
+      system("/usr/local/bin/rrdtool update ".$fname." ".$value, $ret);
+      if (isset($ret) 
+              AND $ret != '0' ) {
+         echo "Create error: $ret for /usr/local/bin/rrdtool update ".$fname." ".$value."\n";
+      }  
    }
    
    
@@ -158,30 +158,23 @@ class PluginMonitoringRrdtool extends CommonDBTM {
             }
          }
       }
-      $opts = array();
-      $opts[] = '--title';
-      $opts[] = $title;
-      $opts[] = '--start';
-      $opts[] = '-'.$time;
+      $opts = "";
+      $opts .= ' --start -'.$time;
+      $opts .= " --title '".$title."'";
       if (isset($pluginMonitoringCommand->fields['unit'])
               AND $pluginMonitoringCommand->fields['unit'] == "ms") {
-         $opts[] = "-v";
-         $opts[] = $LANG['plugin_monitoring']['service'][22];
+         $opts .= " --vertical-label '".$LANG['plugin_monitoring']['service'][22]."'";
       }
-      $opts[] = "--width";
-      $opts[] = $width;
+      $opts .= " --width ".$width;
       if (count($a_legend) > 4) {
-         $opts[] = "--height";
-         $opts[] = "200";
+         $opts .= " --height 200";
       }
-      $opts[] = "-c";
-      $opts[] = "BACK#e1cc7b";
-      $opts[] = "-c";
-      $opts[] = "CANVAS#f1f1f1";
+      $opts .= " --color BACK#e1cc7b";
+      $opts .= " --color CANVAS#f1f1f1";
 
       foreach ($a_legend as $legend){
           if (!strstr($legend, "timeout")) {
-            $opts[] = "DEF:".$legend."=".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id.".rrd:".$legend.":AVERAGE";
+            $opts .= " DEF:'".$legend."'=".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id.".rrd:'".$legend."':AVERAGE";
           }
       }
       $a_colors = array();
@@ -197,8 +190,8 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       
       $j = 0;
       foreach ($a_legend as $legend){
-         #$type = "AREA";
-         $type = "LINE";
+         $type = "AREA";
+         #$type = "LINE";
          if (strstr($legend, "warning")) {
             $type = "LINE";
             $color = "#0000FF";
@@ -212,38 +205,41 @@ class PluginMonitoringRrdtool extends CommonDBTM {
             $color = $a_colors[$j];
          }
          if (strstr($legend, "packet_loss")) {
-            $opts[] = $type.":".$legend.$color.":".$legend;
-            $opts[] = "GPRINT:".$legend.":LAST:Last\: %2.0lf";
-            $opts[] = "GPRINT:".$legend.":MIN:Min\: %2.0lf";
-            $opts[] = "GPRINT:".$legend.":MAX:Max\: %2.0lf";
-            $opts[] = "GPRINT:".$legend.":AVERAGE:Avg\: %2.0lf\l";
+            $opts .= " ".$type.":'".$legend.$color."':'".$legend."'";
+            $opts .= " GPRINT:'".$legend."':LAST:'Last\: %2.0lf'";
+            $opts .= " GPRINT:'".$legend."':MIN:'Min\: %2.0lf'";
+            $opts .= " GPRINT:'".$legend."':MAX:'Max\: %2.0lf'";
+            $opts .= " GPRINT:'".$legend."':AVERAGE:'Avg\: %2.0lf\l'";
          } else if (!strstr($legend, "timeout") 
                  AND $pluginMonitoringCommand->fields['unit'] == "ms") {
-            $opts[] = $type.":".$legend.$color.":".$legend;
-            $opts[] = "GPRINT:".$legend.":LAST:Last\: %2.2lf ms";
-            $opts[] = "GPRINT:".$legend.":MIN:Min\: %2.2lf ms";
-            $opts[] = "GPRINT:".$legend.":MAX:Max\: %2.2lf ms";
-            $opts[] = "GPRINT:".$legend.":AVERAGE:Avg\: %2.2lf ms\l";
+            $opts .= " ".$type.":'".$legend.$color."':'".$legend."'";
+            $opts .= " GPRINT:'".$legend."':LAST:'Last\: %2.2lf ms'";
+            $opts .= " GPRINT:'".$legend."':MIN:'Min\: %2.2lf ms'";
+            $opts .= " GPRINT:'".$legend."':MAX:'Max\: %2.2lf ms'";
+            $opts .= " GPRINT:'".$legend."':AVERAGE:'Avg\: %2.2lf ms\l'";
          } else if (!strstr($legend, "timeout")) {
-            $opts[] = $type.":".$legend.$color.":".$legend;
-            $opts[] = "GPRINT:".$legend.":LAST:Last\: %2.0lf";
-            $opts[] = "GPRINT:".$legend.":MIN:Min\: %2.0lf";
-            $opts[] = "GPRINT:".$legend.":MAX:Max\: %2.0lf";
-            $opts[] = "GPRINT:".$legend.":AVERAGE:Avg\: %2.0lf\l";
+            $opts .= " ".$type.":'".$legend.$color."':'".$legend."'";
+            $opts .= " GPRINT:'".$legend."':LAST:'Last\: %2.0lf'";
+            $opts .= " GPRINT:'".$legend."':MIN:'Min\: %2.0lf'";
+            $opts .= " GPRINT:'".$legend."':MAX:'Max\: %2.0lf'";
+            $opts .= " GPRINT:'".$legend."':AVERAGE:'Avg\: %2.0lf\l'";
          }
          $j++;
       }
       foreach ($a_legend as $legend){
          if (!strstr($legend, "timeout")) {
-            $opts[] = "CDEF:1".$legend."=".$legend.",0.98,*";
+            $opts .= " CDEF:'1".$legend."'='".$legend."',0.98,*";
          }
       }
-      $ret = rrd_graph(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.".gif", $opts, count($opts));
-      if( !is_array($ret)) {
-         $err = rrd_error();
-         return false;
-         //echo "rrd_graph() ERROR: $err\n";
-      }
+      //$ret = rrd_graph(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.".gif", $opts, count($opts));
+      
+      system("/usr/local/bin/rrdtool graph ".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.".gif ".
+                  $opts, $ret);
+      if (isset($ret) 
+              AND $ret != '0' ) {
+         echo "Create error: $ret for /usr/local/bin/rrdtool graph ".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.".gif ".
+                  $opts."\n";
+      }  
       return true;
    }
    
