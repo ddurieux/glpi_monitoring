@@ -86,12 +86,14 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       global $LANG;
 
       $ong = array();
-
-      $ong[1] = "Components"; 
-      $ong[2] = "Static hosts";
-      $ong[3] = "Rules";
-      $ong[4] = "Dynamic hosts";
-      $ong[5] = $LANG['plugin_monitoring']['contact'][20];
+      
+      if ($_GET['id'] > 0) {
+         $ong[1] = $LANG['plugin_monitoring']['component'][0];
+         $ong[2] = "Static hosts";
+         $ong[3] = "Rules";
+         $ong[4] = "Dynamic hosts";
+         $ong[5] = $LANG['plugin_monitoring']['contact'][20];
+      }
       
       return $ong;
    }
