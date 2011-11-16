@@ -232,14 +232,15 @@ class PluginMonitoringRrdtool extends CommonDBTM {
          }
       }
       //$ret = rrd_graph(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.".gif", $opts, count($opts));
-      
-      system("/usr/local/bin/rrdtool graph ".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.".gif ".
-                  $opts, $ret);
-      if (isset($ret) 
-              AND $ret != '0' ) {
-         echo "Create error: $ret for /usr/local/bin/rrdtool graph ".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.".gif ".
-                  $opts."\n";
-      }  
+      if (file_exists(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id.".rrd")) {
+         system("/usr/local/bin/rrdtool graph ".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.".gif ".
+                     $opts, $ret);
+         if (isset($ret) 
+                 AND $ret != '0' ) {
+            echo "Create error: $ret for /usr/local/bin/rrdtool graph ".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.".gif ".
+                     $opts."\n";
+         }
+      }
       return true;
    }
    
