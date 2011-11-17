@@ -259,7 +259,15 @@ class PluginMonitoringShinken extends CommonDBTM {
                }
             }
             // End manage arguments
-            $a_services[$i]['check_command'] = $pMonitoringCommand->fields['command_name'].$args;
+            if ($a_component['remotesystem'] == 'nrpe') {
+               if ($a_component['alias_command'] != '') {
+                  $a_services[$i]['check_command'] = "check_nrpe!".$a_component['alias_command'];
+               } else {
+                  $a_services[$i]['check_command'] = "check_nrpe!".$pMonitoringCommand->fields['command_name'];
+               }
+            } else {
+               $a_services[$i]['check_command'] = $pMonitoringCommand->fields['command_name'].$args;
+            }
                $pMonitoringCheck->getFromDB($a_component['plugin_monitoring_checks_id']);
             $a_services[$i]['check_interval'] = $pMonitoringCheck->fields['check_interval'];
             $a_services[$i]['retry_interval'] = $pMonitoringCheck->fields['retry_interval'];
