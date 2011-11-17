@@ -146,6 +146,8 @@ class PluginMonitoringComponent extends CommonDBTM {
 
       if ($items_id == '0') {
          $this->getEmpty();
+         $this->fields['active_checks_enabled']  = 1;
+         $this->fields['passive_checks_enabled'] = 1;
       } else {
          $this->getFromDB($items_id);
       }
@@ -174,14 +176,14 @@ class PluginMonitoringComponent extends CommonDBTM {
       // * Link
       echo "<tr>";
       echo "<td>";
-      echo "Type of template&nbsp;:";
+//      echo "Type of template&nbsp;:";
       echo "</td>";
       echo "<td align='center'>";
-      $a_types = array();
-      $a_types[''] = DROPDOWN_EMPTY_VALUE;
-      $a_types['partition'] = "Partition";
-      $a_types['processor'] = "Processor";
-      Dropdown::showFromArray("link", $a_types, array('value'=>$this->fields['link']));
+//      $a_types = array();
+//      $a_types[''] = DROPDOWN_EMPTY_VALUE;
+//      $a_types['partition'] = "Partition";
+//      $a_types['processor'] = "Processor";
+//      Dropdown::showFromArray("link", $a_types, array('value'=>$this->fields['link']));
       echo "</td>";
       // * active check
       echo "<td>";
