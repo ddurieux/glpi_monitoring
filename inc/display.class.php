@@ -399,48 +399,48 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
       // Mode dégradé
       echo "<td align='center'>";
-      // Get all services of this host
-      $a_serv = $pMonitoringComponent->find("`id`='".$data['plugin_monitoring_components_id']."'");
-      $globalserv_state = array();
-      $globalserv_state['red'] = 0;
-      $globalserv_state['red_soft'] = 0;
-      $globalserv_state['orange'] = 0;
-      $globalserv_state['orange_soft'] = 0;
-      $globalserv_state['green'] = 0;
-      $globalserv_state['green_soft'] = 0;
-      $tooltip = "<table class='tab_cadrehov' width='300'>";
-      $tooltip .= "<tr class='tab_bg_1'>
-         <td width='200'><strong>".$LANG['plugin_monitoring']['host'][8]."</strong> :</td><td>
-         <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/></td></tr>";
-      foreach ($a_serv as $sdata) {
-//         $stateserv = self::getState($sdata['state'], $data['state_type']);
-//         if (isset($globalserv_state[$stateserv])) {
-//            $globalserv_state[$stateserv]++;
-//         }
-//         $tooltip .= "<tr class='tab_bg_1'><td>".$sdata['name']." :</td><td>
-//                  <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$stateserv."_32.png'/></td></tr>";
-      }
-      $tooltip .= "</table>";
-      if (!isset($globalserv_state[$shortstate])) {
-         $globalserv_state[$shortstate] = 0;
-      }
-      $globalserv_state[$shortstate]++;
-
-      $img = '';
-      if ($globalserv_state['red'] > 0) {
-         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_32.png";
-      } else if ($globalserv_state['red_soft'] > 0) {
-         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_32_soft.png";
-      } else if ($globalserv_state['orange'] > 0) {
-         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_32.png";
-      } else if ($globalserv_state['orange_soft'] > 0) {
-         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_32_soft.png";
-      } else if ($globalserv_state['green'] > 0) {
-         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_32.png";
-      } else if ($globalserv_state['green_soft'] > 0) {
-         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_32_soft.png";
-      }
-      showToolTip($tooltip, array('img'=>$img));
+//      // Get all services of this host
+//      $a_serv = $pMonitoringComponent->find("`id`='".$data['plugin_monitoring_components_id']."'");
+//      $globalserv_state = array();
+//      $globalserv_state['red'] = 0;
+//      $globalserv_state['red_soft'] = 0;
+//      $globalserv_state['orange'] = 0;
+//      $globalserv_state['orange_soft'] = 0;
+//      $globalserv_state['green'] = 0;
+//      $globalserv_state['green_soft'] = 0;
+//      $tooltip = "<table class='tab_cadrehov' width='300'>";
+//      $tooltip .= "<tr class='tab_bg_1'>
+//         <td width='200'><strong>".$LANG['plugin_monitoring']['host'][8]."</strong> :</td><td>
+//         <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/></td></tr>";
+//      foreach ($a_serv as $sdata) {
+////         $stateserv = self::getState($sdata['state'], $data['state_type']);
+////         if (isset($globalserv_state[$stateserv])) {
+////            $globalserv_state[$stateserv]++;
+////         }
+////         $tooltip .= "<tr class='tab_bg_1'><td>".$sdata['name']." :</td><td>
+////                  <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$stateserv."_32.png'/></td></tr>";
+//      }
+//      $tooltip .= "</table>";
+//      if (!isset($globalserv_state[$shortstate])) {
+//         $globalserv_state[$shortstate] = 0;
+//      }
+//      $globalserv_state[$shortstate]++;
+//
+//      $img = '';
+//      if ($globalserv_state['red'] > 0) {
+//         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_32.png";
+//      } else if ($globalserv_state['red_soft'] > 0) {
+//         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_32_soft.png";
+//      } else if ($globalserv_state['orange'] > 0) {
+//         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_32.png";
+//      } else if ($globalserv_state['orange_soft'] > 0) {
+//         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_32_soft.png";
+//      } else if ($globalserv_state['green'] > 0) {
+//         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_32.png";
+//      } else if ($globalserv_state['green_soft'] > 0) {
+//         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_32_soft.png";
+//      }
+//      showToolTip($tooltip, array('img'=>$img));
       echo "</td>";
 
       echo "<td>";
