@@ -161,6 +161,28 @@ CREATE TABLE `glpi_plugin_monitoring_contacts_items` (
 
 
 
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_commandtemplates`;
+
+CREATE TABLE `glpi_plugin_monitoring_commandtemplates` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `plugin_monitoring_commands_id` int(11) NOT NULL DEFAULT '0',
+  `name` varchar(255) DEFAULT NULL,
+  `key` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_rrdtooltemplates`;
+
+CREATE TABLE `glpi_plugin_monitoring_commandtemplates` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `plugin_monitoring_commands_id` int(11) NOT NULL DEFAULT '0',
+  `name` varchar(255) DEFAULT NULL,
+  `key` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 
 
 
