@@ -245,12 +245,13 @@ class PluginMonitoringService extends CommonDBTM {
 //            if ($complete == '0') {
 //               $color = " bgcolor='#FF0000'";
 //            }
+            $color = "";
             echo "<td align='center' ".$color.">";
 //            echo Dropdown::getYesNo($complete);
             echo "</td>";
 
             // Status
-            $shortstate = PluginMonitoringDisplay::getState($data['state'], $data['state_type']);
+            $shortstate = PluginMonitoringDisplay::getState($datas['state'], $datas['state_type']);
             echo "<td class='center'>";
             echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/>";
             echo "</td>";
