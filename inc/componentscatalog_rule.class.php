@@ -718,14 +718,20 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
 
       echo "</td></tr>";
       echo "<tr>";
-      }
-      echo "<td colspan='4' class='center'>";
+      }     
 
-      echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$_GET['plugin_monitoring_componentscalalog_id']."' >";
       if (isset($_GET['id'])) {
+         echo "<td colspan='2' class='center'>";
+         echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$_GET['plugin_monitoring_componentscalalog_id']."' >";
          echo "<input type='hidden' name='id' value='".$_GET['id']."' >";
          echo "<input type='submit' name='updaterule' value=\"Update this rule\" class='submit' >";
+         echo "</td>";
+         echo "<td colspan='2' class='center'>";
+         echo "<input type='submit' name='deleterule' value=\"Delete this rule\" class='submit' >";
+
       } else {
+         echo "<td colspan='4' class='center'>";
+         echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$_GET['plugin_monitoring_componentscalalog_id']."' >";
          echo "<input type='submit' name='addrule' value=\"Add this rule\" class='submit' >";
       }
       echo "</td>";

@@ -99,6 +99,10 @@ if (isset($_GET['addrule'])) {
       glpi_header($CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.form.php?id=".$input['plugin_monitoring_componentscalalog_id']);
 
    }
+} else if (isset($_GET['deleterule'])) {
+   $_POST = $_GET;
+   $pmComponentscatalog_rule->delete($_POST);
+   glpi_header($CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.form.php?id=".$_POST['plugin_monitoring_componentscalalog_id']);
 } else if (isset($_GET['contains'])
         OR isset($_GET['reset'])) {
 //   if (isset($_SESSION['plugin_monitoring_rules'])) {
