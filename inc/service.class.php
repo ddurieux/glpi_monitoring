@@ -109,6 +109,11 @@ class PluginMonitoringService extends CommonDBTM {
    function manageServices($itemtype, $items_id) {
       global $CFG_GLPI,$LANG;
       
+      if ($itemtype == 'Computer') {
+         $pmHostaddress = new PluginMonitoringHostaddress();
+         $pmHostaddress->showForm($items_id, $itemtype);
+      }
+      
       // Check if host service exist
 //      $a_serv = $this->find("`items_id` = '".$items_id."'
 //                        AND `itemtype`='".$itemtype."'", "", 1); 

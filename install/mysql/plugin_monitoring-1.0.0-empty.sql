@@ -195,6 +195,18 @@ CREATE TABLE `glpi_plugin_monitoring_configs` (
 
 
 
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_hostaddresses`;
+
+CREATE TABLE `glpi_plugin_monitoring_hostaddresses` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(100) DEFAULT NULL,
+  `networkports_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
 
 
 

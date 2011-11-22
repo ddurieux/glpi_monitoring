@@ -131,23 +131,8 @@ class PluginMonitoringShinken extends CommonDBTM {
          if ($class->getFromDB($data['items_id'])) {
             $a_hosts[$i]['host_name'] = $classname."-".$data['items_id']."-".preg_replace("/[^A-Za-z0-9]/","",$class->fields['name']);
             $a_hosts[$i]['alias'] = $a_hosts[$i]['host_name'];
-               $ip = $class->fields['name'];
-               if ($data['itemtype'] == 'NetworkEquipment') {
-                  if ($class->fields['ip'] != '') {
-                     $ip = $class->fields['ip'];
-                  }
-               } else {
-                  $a_listnetwork = $networkPort->find("`itemtype`='".$data['itemtype']."'
-                     AND `items_id`='".$data['items_id']."'", "`id`");
-                  foreach ($a_listnetwork as $datanetwork) {
-                     if ($datanetwork['ip'] != '' 
-                             AND $datanetwork['ip'] != '127.0.0.1'
-                             AND $ip != '') {
-                        $ip = $datanetwork['ip'];
-                        break;
-                     }
-                  }
-               }
+            $ip = PluginMonitoringHostaddress::getIp($data['items_id'], $data['itemtype'], $class->fields['name']);
+               
             $a_hosts[$i]['address'] = $ip;
             $a_hosts[$i]['parents'] = "";
 
