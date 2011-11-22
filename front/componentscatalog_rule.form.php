@@ -49,7 +49,7 @@ if (isset($_GET['addrule'])) {
    if (!isset($_GET['contains'])
         AND !isset($_GET['reset'])) {
 //      $_SESSION['plugin_monitoring_rules'] = $_POST;
-         } else {
+   } else {
       $_POST = $_GET;
       $input = array();
       $input['entities_id'] = $_POST['entities_id'];
@@ -66,7 +66,36 @@ if (isset($_GET['addrule'])) {
       $input['condition'] = exportArrayToDB($_POST);
       $rules_id = $pmComponentscatalog_rule->add($input);
       unset($_SESSION['plugin_monitoring_rules']);
+      unset($_SESSION["glpisearch"][$input['itemtype']]);
       $pmComponentscatalog_rule->getItemsDynamicly($rules_id);
+      glpi_header($CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.form.php?id=".$input['plugin_monitoring_componentscalalog_id']);
+
+   }
+} else if (isset($_GET['updaterule'])) {
+   if (!isset($_GET['contains'])
+        AND !isset($_GET['reset'])) {
+//      $_SESSION['plugin_monitoring_rules'] = $_POST;
+   } else {
+      $_POST = $_GET;
+      $input = array();
+      $input['id'] = $_POST['id'];
+      $input['entities_id'] = $_POST['entities_id'];
+      $input['is_recursive'] = $_POST['is_recursive'];
+      $input['name'] = $_POST['name'];
+      $input['itemtype'] = $_POST['itemtype'];
+      $input['plugin_monitoring_componentscalalog_id'] = $_POST['plugin_monitoring_componentscalalog_id'];
+      unset($_POST['entities_id']);
+      unset($_POST['is_recursive']);
+      unset($_POST['name']);
+      unset($_POST['updaterule']);
+      unset($_POST['itemtypen']);
+      unset($_POST['plugin_monitoring_componentscalalog_id']);
+      unset($_POST['id']);
+      $input['condition'] = exportArrayToDB($_POST);
+      $pmComponentscatalog_rule->update($input);
+      unset($_SESSION['plugin_monitoring_rules']);
+      unset($_SESSION["glpisearch"][$input['itemtype']]);
+      $pmComponentscatalog_rule->getItemsDynamicly($input['id']);
       glpi_header($CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.form.php?id=".$input['plugin_monitoring_componentscalalog_id']);
 
    }
@@ -78,6 +107,33 @@ if (isset($_GET['addrule'])) {
 //   $_SESSION['plugin_monitoring_rules'] = $_POST;
 //   $_SESSION['plugin_monitoring_rules_REQUEST_URI'] = $_SERVER['REQUEST_URI'];
    //glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset($_GET['id'])
+        AND !isset($_GET['itemtype'])) {
+   $pmComponentscatalog_rule->getFromDB($_GET['id']);
+   
+   $val = importArrayFromDB($pmComponentscatalog_rule->fields['condition']);
+   $nbfields = 1;
+   $nbfields = count($val['field']);
+   foreach ($val as $name=>$data) {
+      if (is_array($data)) {
+         $i =0;
+         foreach ($data as $key => $value) {
+            $val[$name."[".$key."]"] = $value;
+         }
+         unset($val[$name]);
+      }
+   }
+   $_POST = $val;
+   $_POST["glpisearchcount"] = $nbfields;
+   $_POST['id'] = $_GET['id'];
+   $_POST['name'] = $pmComponentscatalog_rule->fields['name'];
+   $_POST['itemtype'] = $pmComponentscatalog_rule->fields['itemtype'];
+   $_POST['plugin_monitoring_componentscalalog_id'] = $pmComponentscatalog_rule->fields['plugin_monitoring_componentscalalog_id'];
+   $_SERVER['REQUEST_URI'] = str_replace("?id=".$_GET['id'], "", $_SERVER['REQUEST_URI']);
+   
+   
+   unset($_SESSION["glpisearchcount"][$_POST['itemtype']]);
+   unset($_SESSION["glpisearch"]);
 }
 
 if (isset($_POST['name'])) {      

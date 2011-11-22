@@ -119,10 +119,11 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
          echo $data['itemtype'];
          echo "</td>";
          echo "<td class='center'>";
-
+         $this->getFromDB($data['id']);
+         echo Dropdown::getDropdownName(getTableForItemType("Entity"), $this->getEntityID());
          echo "</td>";
          echo "<td class='center'>";
-         echo $data['name'];
+         echo $this->getLink();
          echo "</td>";
          echo "</tr>";
       }
@@ -193,7 +194,6 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       
       Search::manageGetValues($_GET['itemtype']);
       $this->showGenericSearch($_GET['itemtype'], $_GET);
-      
    }
    
 
@@ -388,6 +388,8 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       $linked =  Search::getMetaItemtypeAvailable($itemtype);
       if (!isset($_GET['id'])) {
          $this->getEmpty();
+      } else {
+         $this->getFromDB($_GET['id']);
       }
       
 echo "<form name='searchform$itemtype' method='get' action=\"".
@@ -720,7 +722,12 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
       echo "<td colspan='4' class='center'>";
 
       echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$_GET['plugin_monitoring_componentscalalog_id']."' >";
-      echo "<input type='submit' name='addrule' value=\"Add this rule\" class='submit' >";
+      if (isset($_GET['id'])) {
+         echo "<input type='hidden' name='id' value='".$_GET['id']."' >";
+         echo "<input type='submit' name='updaterule' value=\"Update this rule\" class='submit' >";
+      } else {
+         echo "<input type='submit' name='addrule' value=\"Add this rule\" class='submit' >";
+      }
       echo "</td>";
       echo "</tr>";
       echo "</table>\n";

@@ -211,9 +211,9 @@ class PluginMonitoringService extends CommonDBTM {
             echo "<input type='hidden' name='id[]' value='".$this->fields['id']."'/>";
             echo "</td>";
             echo "<td align='center'>";
-            if ($data['plugin_monitoring_services_id'] == '0') {
-               echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok.png' width='20' height='20' />";
-            }         
+//            if ($data['plugin_monitoring_services_id'] == '0') {
+//               echo "<img src='".$CFG_GLPI['root_doc']."/pics/ok.png' width='20' height='20' />";
+//            }         
             echo "</td>";
             echo "<td class='center'>";
 //            // Template
