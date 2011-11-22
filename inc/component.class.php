@@ -152,6 +152,7 @@ class PluginMonitoringComponent extends CommonDBTM {
          $this->getFromDB($items_id);
       }
 
+      $this->showTabs($options);
       $this->showFormHeader($options);
       
       echo "<tr>";
