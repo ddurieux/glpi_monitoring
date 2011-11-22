@@ -48,6 +48,9 @@ function plugin_init_monitoring() {
             $PLUGIN_HOOKS['menu_entry']['monitoring'] = true;
          }
 
+         $PLUGIN_HOOKS['config_page']['monitoring'] = 'front/config.form.php';
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['config'] = 'front/config.form.php';
+         
          // Tabs for each type
          $PLUGIN_HOOKS['headings']['monitoring'] = 'plugin_get_headings_monitoring';
          $PLUGIN_HOOKS['headings_action']['monitoring'] = 'plugin_headings_actions_monitoring';

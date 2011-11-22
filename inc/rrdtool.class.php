@@ -68,10 +68,10 @@ class PluginMonitoringRrdtool extends CommonDBTM {
 
       //$ret = rrd_create($fname, $opts, count($opts));
 
-      system('/usr/local/bin/rrdtool create '.$fname.$opts, $ret);
+      system(PluginMonitoringConfig::getRRDPath().'/rrdtool create '.$fname.$opts, $ret);
       if (isset($ret) 
               AND $ret != '0' ) {
-         echo "Create error: $ret for /usr/local/bin/rrdtool create ".$fname.$opts."\n";
+         echo "Create error: $ret for ".PluginMonitoringConfig::getRRDPath()."/rrdtool create ".$fname.$opts."\n";
       }
    }
 
@@ -112,10 +112,10 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       }
       //$ret = rrd_update($fname, $value);
 
-      system("/usr/local/bin/rrdtool update ".$fname." ".$value, $ret);
+      system(PluginMonitoringConfig::getRRDPath()."/rrdtool update ".$fname." ".$value, $ret);
       if (isset($ret) 
               AND $ret != '0' ) {
-         echo "Create error: $ret for /usr/local/bin/rrdtool update ".$fname." ".$value."\n";
+         echo "Create error: $ret for ".PluginMonitoringConfig::getRRDPath()."/rrdtool update ".$fname." ".$value."\n";
       }  
    }
    
@@ -233,11 +233,11 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       }
       //$ret = rrd_graph(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.".gif", $opts, count($opts));
       if (file_exists(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id.".rrd")) {
-         system("/usr/local/bin/rrdtool graph ".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.".gif ".
+         system(PluginMonitoringConfig::getRRDPath()."/rrdtool graph ".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.".gif ".
                      $opts, $ret);
          if (isset($ret) 
                  AND $ret != '0' ) {
-            echo "Create error: $ret for /usr/local/bin/rrdtool graph ".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.".gif ".
+            echo "Create error: $ret for ".PluginMonitoringConfig::getRRDPath()."/rrdtool graph ".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.".gif ".
                      $opts."\n";
          }
       }
