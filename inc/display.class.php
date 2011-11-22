@@ -329,7 +329,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
    
    
    
-   static function displayLine($data) {
+   static function displayLine($data, $displayhost=1) {
       global $DB,$CFG_GLPI,$LANG;
 
       $pMonitoringService = new PluginMonitoringService();
@@ -343,19 +343,21 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $shortstate = self::getState($data['state'], $data['state_type']);
       echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/>";
       echo "</td>";
-      $pmComponentscatalog_Host->getFromDB($data["plugin_monitoring_componentscatalogs_hosts_id"]);
-      if (isset($pmComponentscatalog_Host->fields['itemtype']) 
-              AND $pmComponentscatalog_Host->fields['itemtype'] != '') {
+      if ($displayhost == '1') {
+         $pmComponentscatalog_Host->getFromDB($data["plugin_monitoring_componentscatalogs_hosts_id"]);
+         if (isset($pmComponentscatalog_Host->fields['itemtype']) 
+                 AND $pmComponentscatalog_Host->fields['itemtype'] != '') {
 
-         $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
-         $item = new $itemtype();
-         $item->getFromDB($pmComponentscatalog_Host->fields['items_id']);
-         echo "<td>";
-         echo $item->getTypeName()." : ".$item->getLink();
-         echo "</td>";
+            $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
+            $item = new $itemtype();
+            $item->getFromDB($pmComponentscatalog_Host->fields['items_id']);
+            echo "<td>";
+            echo $item->getTypeName()." : ".$item->getLink();
+            echo "</td>";
 
-      } else {
-         echo "<td>".$LANG['plugin_monitoring']['service'][0]."</td>";
+         } else {
+            echo "<td>".$LANG['plugin_monitoring']['service'][0]."</td>";
+         }
       }
       $pMonitoringComponent->getFromDB($data['plugin_monitoring_components_id']);
       echo "<td>".$pMonitoringComponent->getLink()."</td>";
