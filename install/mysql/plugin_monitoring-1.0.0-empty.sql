@@ -44,7 +44,8 @@ CREATE TABLE `glpi_plugin_monitoring_components` (
   `alias_command` text COLLATE utf8_unicode_ci,
   `aliasperfdata_commands_id` int(11) NOT NULL DEFAULT '0',
   `link` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+   KEY `plugin_monitoring_commands_id` (`plugin_monitoring_commands_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -70,7 +71,8 @@ CREATE TABLE `glpi_plugin_monitoring_componentscatalogs_hosts` (
   `is_static` tinyint(1) NOT NULL DEFAULT '1',
   `items_id` int(11) NOT NULL DEFAULT '0',
   `itemtype` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `itemtype` (`itemtype`,`items_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -274,7 +276,8 @@ CREATE TABLE `glpi_plugin_monitoring_commands` (
    `unit` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
    `arguments` text COLLATE utf8_unicode_ci,
    PRIMARY KEY (`id`),
-   KEY `name` (`name`)
+   KEY `name` (`name`),
+   KEY `command_name` (`command_name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
