@@ -229,14 +229,26 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       }
 
       Search::manageGetValues($this->fields['itemtype']);
-
+      
+      $devices_present = array();
+      $queryd = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+         WHERE `plugin_monitoring_componentscalalog_id`='".$this->fields["plugin_monitoring_componentscalalog_id"]."'
+            AND `itemtype`='".$this->fields['itemtype']."'
+            AND `is_static`='0'";
+      $result = $DB->query($queryd);
+      while ($data=$DB->fetch_array($result)) {
+         $devices_present[$data['id']] = 1;
+      }
+      
       $result = $this->constructSQL($itemtype, 
                                      $_GET);
+      
       while ($data=$DB->fetch_array($result)) {
          $queryh = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
             WHERE `plugin_monitoring_componentscalalog_id`='".$this->fields["plugin_monitoring_componentscalalog_id"]."'
                AND `itemtype`='".$this->fields['itemtype']."'
-               AND `items_id`='".$data['id']."'";
+               AND `items_id`='".$data['id']."'
+                  LIMIT 1";
          $resulth = $DB->query($queryh);
          if ($DB->numrows($resulth) == '0') {
             $input = array();
@@ -247,8 +259,14 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
             $componentscatalogs_hosts_id = $pmComponentscatalog_Host->add($input);
             $pmComponentscatalog_Host->linkComponentsToItem($this->fields["plugin_monitoring_componentscalalog_id"], 
                                                             $componentscatalogs_hosts_id);
-         } 
-      }      
+         } else {
+            $data2 = $DB->fetch_assoc($resulth);
+            unset($devices_present[$data2['id']]);
+         }
+      }
+      foreach ($devices_present as $id => $num) {
+         $pmComponentscatalog_Host->delete(array('id'=>$id));
+      }
       
       if (count($get_tmp) > 0) {
          $_GET = $get_tmp; 
