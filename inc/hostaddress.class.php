@@ -115,7 +115,7 @@ class PluginMonitoringHostaddress extends CommonDBTM {
       echo "<td align='center'>";
       echo "<input type='hidden' name='itemtype' value='".$itemtype."'/>";
       echo "<input type='hidden' name='items_id' value='".$items_id."'/>";
-      Dropdown::show("Networkport", array('name' =>'networkports_id',
+      Dropdown::show("NetworkPort", array('name' =>'networkports_id',
                                           'value'=>$this->fields['networkports_id'],
                                           'condition'=>"`items_id`='".$items_id."' 
                                              AND `itemtype`='".$itemtype."'
