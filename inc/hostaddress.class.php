@@ -120,7 +120,8 @@ class PluginMonitoringHostaddress extends CommonDBTM {
                                           'condition'=>"`items_id`='".$items_id."' 
                                              AND `itemtype`='".$itemtype."'
                                              AND `ip` IS NOT NULL
-                                             AND `ip` != '127.0.0.1'"));
+                                             AND `ip` != '127.0.0.1'
+                                             AND `ip` != ''"));
       echo "</td>";
       echo "<td colspan='2'>";
       echo "</td>";
