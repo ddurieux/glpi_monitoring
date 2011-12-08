@@ -152,6 +152,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                                               $plugin_monitoring_services_id, 
                                               $this->convert_datetime_timestamp($edata['date']), 
                                               $perf_data);
+               $pluginMonitoringRrdtool->displayGLPIGraph("PluginMonitoringService", $plugin_monitoring_services_id, "12h");
             }
             $this->delete($edata);
          }
