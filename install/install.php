@@ -85,6 +85,7 @@ function pluginMonitoringUninstall() {
          $DB->query($query_delete) or die($DB->error());
       }
    }
+   return true;
 }
 
 ?>
