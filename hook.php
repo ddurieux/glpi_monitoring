@@ -58,15 +58,15 @@ function cron_plugin_monitoring() {
 function plugin_monitoring_install() {
    global $DB, $LANG;
 
-//   include (GLPI_ROOT . "/plugins/fusioninventory/install/update.php");
-//   $version_detected = pluginFusioninventoryGetCurrentVersion(PLUGIN_FUSIONINVENTORY_VERSION);
-//   if ((isset($version_detected)) AND ($version_detected != PLUGIN_FUSIONINVENTORY_VERSION)) {
-//      pluginFusioninventoryUpdate($version_detected);
-//   } else {
+   include (GLPI_ROOT . "/plugins/fusioninventory/install/update.php");
+   $version_detected = pluginMonitoringGetCurrentVersion(PLUGIN_MONITORING_VERSION);
+   if ((isset($version_detected)) AND ($version_detected != PLUGIN_MONITORING_VERSION)) {
+//      pluginMonitoringUpdate($version_detected);
+   } else {
       include (GLPI_ROOT . "/plugins/monitoring/install/install.php");
       pluginMonitoringInstall(PLUGIN_MONITORING_VERSION);
-//   }
-
+   }
+      
    return true;
 }
 

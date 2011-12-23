@@ -72,7 +72,7 @@ class PluginMonitoringServicesuggest extends CommonDBTM {
       // PostgreSQL
       $input = array();
       $input['name'] = 'PostgreSQL';
-      $input['plugin_monitoring_commands_id'] = '';
+      $input['plugin_monitoring_commands_id'] = '0';
       $input['softwares_name'] = '[pP][oO][sS][tT][gG][rR][eE][sS][qQ][lL] ';
       $this->add($input);
       
