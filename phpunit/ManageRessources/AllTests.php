@@ -52,6 +52,7 @@ class ManageRessources extends PHPUnit_Framework_TestCase {
       $pmComponentscatalog_Component = new PluginMonitoringComponentscatalog_Component();
       $pmComponentscatalog_rule = new PluginMonitoringComponentscatalog_rule();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+      $pmService = new PluginMonitoringService();
       $computer = new Computer();
       
       // Add components
@@ -92,7 +93,12 @@ class ManageRessources extends PHPUnit_Framework_TestCase {
       // Check computer pc1 not added in ressources
          $a_hosts = $pmComponentscatalog_Host->find("`plugin_monitoring_componentscalalog_id`='".$catalogs_id."'");
          $this->assertEquals(count($a_hosts), '1', '[f2] Computer may be in component catalog'); 
-      
+
+      // Check service of this computer created
+         $a_services = $pmService->find();
+         $this->assertEquals(count($a_services), '1', '[s2] One service may be created'); 
+
+         
       // Add Computer
          $input = array();
          $input['name'] = 'pc2';
@@ -102,6 +108,11 @@ class ManageRessources extends PHPUnit_Framework_TestCase {
       // Check computer pc1 not added in ressources
          $a_hosts = $pmComponentscatalog_Host->find("`plugin_monitoring_componentscalalog_id`='".$catalogs_id."'");
          $this->assertEquals(count($a_hosts), '2', '[f3] 2 computers may be in component catalog'); 
+         
+      // Check service of this computer created
+         $a_services = $pmService->find();
+         $this->assertEquals(count($a_services), '2', '[s3] 2 services may be created'); 
+
       
       // Remove pc2
          $computer->delete(array('id'=>$pc2), 1);
@@ -109,7 +120,12 @@ class ManageRessources extends PHPUnit_Framework_TestCase {
       // Check computer pc1 added in ressources
          $a_hosts = $pmComponentscatalog_Host->find("`plugin_monitoring_componentscalalog_id`='".$catalogs_id."'");
          $this->assertEquals(count($a_hosts), '1', '[f4] Computer may be unique in component catalog'); 
-      
+
+      // Check service of this computer created
+         $a_services = $pmService->find();
+         $this->assertEquals(count($a_services), '1', '[s4] One service may be created'); 
+
+         
       // Modify rule
          $input['id'] = $rules_id;
          $input['condition'] = '{"field":["1"],"searchtype":["contains"],"contains":["tc"],"itemtype":"Computer","start":"0"}';
@@ -119,6 +135,11 @@ class ManageRessources extends PHPUnit_Framework_TestCase {
          $a_hosts = $pmComponentscatalog_Host->find("`plugin_monitoring_componentscalalog_id`='".$catalogs_id."'");
          $this->assertEquals(count($a_hosts), '0', '[f5] Computer may be deleted on rule update'); 
 
+      // Check service
+         $a_services = $pmService->find();
+         $this->assertEquals(count($a_services), '0', '[s5] No service may be created'); 
+
+         
       // Modify rule
          $input['id'] = $rules_id;
          $input['condition'] = '{"field":["1"],"searchtype":["contains"],"contains":["pc"],"itemtype":"Computer","start":"0"}';
@@ -131,10 +152,14 @@ class ManageRessources extends PHPUnit_Framework_TestCase {
       // Delete rule
          $pmComponentscatalog_rule->delete(array('id'=>$rules_id), 1);
 
-      // Check not have rcompute in ressources
+      // Check not have computer in ressources
          $a_hosts = $pmComponentscatalog_Host->find("`plugin_monitoring_componentscalalog_id`='".$catalogs_id."'");
          $this->assertEquals(count($a_hosts), '0', '[f7] must have no computer in component catalog'); 
-         
+
+      // Check service
+         $a_services = $pmService->find();
+         $this->assertEquals(count($a_services), '0', '[s7] No service may be created'); 
+
          
    }
    

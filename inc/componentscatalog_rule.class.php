@@ -345,7 +345,6 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
             $result = $DB->query($query);
             while ($data=$DB->fetch_array($result)) {
                $pmComponentscatalog_Host->delete(array('id'=>$data['id']));
-               $pmComponentscatalog_Host->unlinkComponentsToItem($data['id']);
             }
          } else { //  add if not present
             $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`

@@ -201,13 +201,13 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
    
    
    
-   function unlinkComponentsToItem($componentscatalogs_hosts_id) {
+   static function unlinkComponentsToItem($parm) {
       global $DB;
       
       $pmService = new PluginMonitoringService();
       
       $query = "SELECT * FROM `glpi_plugin_monitoring_services`
-         WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$componentscatalogs_hosts_id."'";
+         WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$parm->fields['id']."'";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
          $pmService->delete(array('id'=>$data['id']));

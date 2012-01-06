@@ -47,7 +47,6 @@ if (isset ($_POST["add"])) {
 } else if (isset($_POST["deleteitem"])) {
    foreach ($_POST["item"] as $id=>$num) {
       $pmComponentscatalog_Host->delete(array('id'=>$id));
-      $pmComponentscatalog_Host->unlinkComponentsToItem($id);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 }
