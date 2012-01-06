@@ -58,7 +58,7 @@ function cron_plugin_monitoring() {
 function plugin_monitoring_install() {
    global $DB, $LANG;
 
-   include (GLPI_ROOT . "/plugins/fusioninventory/install/update.php");
+   include (GLPI_ROOT . "/plugins/monitoring/install/update.php");
    $version_detected = pluginMonitoringGetCurrentVersion(PLUGIN_MONITORING_VERSION);
    if ((isset($version_detected)) AND ($version_detected != PLUGIN_MONITORING_VERSION)) {
 //      pluginMonitoringUpdate($version_detected);
