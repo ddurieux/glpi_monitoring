@@ -37,9 +37,9 @@ define ("PLUGIN_MONITORING_VERSION","0.80+1.0");
 // Init the hooks of monitoring
 function plugin_init_monitoring() {
    global $PLUGIN_HOOKS,$CFG_GLPI,$LANG;
-
+   
       if (isset($_SESSION["glpiID"])) {
-
+         
          $PLUGIN_HOOKS['use_massive_action']['monitoring']=1;
 
          $plugin = new Plugin();
@@ -89,18 +89,29 @@ function plugin_init_monitoring() {
                                        'NetworkEquipment' => $rule_check,
                                        'Printer'          => $rule_check,
                                        'Peripheral'       => $rule_check,
-                                       'Phone'            => $rule_check);
+                                       'Phone'            => $rule_check,
+                                       'PluginMonitoringComponentscatalog_rule' =>
+                                             array('PluginMonitoringComponentscatalog_rule','getItemsDynamicly'));
          $PLUGIN_HOOKS['item_update']['monitoring'] = 
+                                 array('Computer'         => $rule_check,
+                                       'NetworkEquipment' => $rule_check,
+                                       'Printer'          => $rule_check,
+                                       'Peripheral'       => $rule_check,
+                                       'Phone'            => $rule_check,
+                                       'PluginMonitoringComponentscatalog_rule' =>
+                                             array('PluginMonitoringComponentscatalog_rule','getItemsDynamicly'));
+         $PLUGIN_HOOKS['item_purge']['monitoring'] = 
                                  array('Computer'         => $rule_check,
                                        'NetworkEquipment' => $rule_check,
                                        'Printer'          => $rule_check,
                                        'Peripheral'       => $rule_check,
                                        'Phone'            => $rule_check);
 
-
+         
       }
 
    $PLUGIN_HOOKS['webservices']['monitoring'] = 'plugin_monitoring_registerMethods';
+   return $PLUGIN_HOOKS;
 }
 
 // Name and Version of the plugin

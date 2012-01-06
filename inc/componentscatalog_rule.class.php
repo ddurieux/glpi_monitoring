@@ -201,63 +201,64 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
    /*
     * Use when add a rule, caclculate for all items in GLPI DB
     */
-   function getItemsDynamicly($rules_id) {
+   static function getItemsDynamicly($parm) {
       global $DB;
-      
+
+      $pmCc_Rule                = new PluginMonitoringComponentscatalog_rule();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
       
-      $this->getFromDB($rules_id);
+      $pmCc_Rule->getFromDB($parm->fields['id']);
       
       $get_tmp = '';
       
-      $itemtype = $this->fields['itemtype'];
+      $itemtype = $pmCc_Rule->fields['itemtype'];
       if (isset($_GET)) {
           $get_tmp = $_GET;  
       }
-      if (isset($_SESSION["glpisearchcount"][$this->fields['itemtype']])) {
-         unset($_SESSION["glpisearchcount"][$this->fields['itemtype']]);
+      if (isset($_SESSION["glpisearchcount"][$pmCc_Rule->fields['itemtype']])) {
+         unset($_SESSION["glpisearchcount"][$pmCc_Rule->fields['itemtype']]);
       }
-      if (isset($_SESSION["glpisearchcount2"][$this->fields['itemtype']])) {
-         unset($_SESSION["glpisearchcount2"][$this->fields['itemtype']]);
+      if (isset($_SESSION["glpisearchcount2"][$pmCc_Rule->fields['itemtype']])) {
+         unset($_SESSION["glpisearchcount2"][$pmCc_Rule->fields['itemtype']]);
       }
 
-      $_GET = importArrayFromDB($this->fields['condition']);
+      $_GET = importArrayFromDB($pmCc_Rule->fields['condition']);
 
       $_GET["glpisearchcount"] = count($_GET['field']);
       if (isset($_GET['field2'])) {
          $_GET["glpisearchcount2"] = count($_GET['field2']);
       }
 
-      Search::manageGetValues($this->fields['itemtype']);
+      Search::manageGetValues($pmCc_Rule->fields['itemtype']);
       
       $devices_present = array();
       $queryd = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
-         WHERE `plugin_monitoring_componentscalalog_id`='".$this->fields["plugin_monitoring_componentscalalog_id"]."'
-            AND `itemtype`='".$this->fields['itemtype']."'
+         WHERE `plugin_monitoring_componentscalalog_id`='".$pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"]."'
+            AND `itemtype`='".$pmCc_Rule->fields['itemtype']."'
             AND `is_static`='0'";
       $result = $DB->query($queryd);
       while ($data=$DB->fetch_array($result)) {
          $devices_present[$data['id']] = 1;
       }
       
-      $result = $this->constructSQL($itemtype, 
+      $result = $pmCc_Rule->constructSQL($itemtype, 
                                      $_GET);
       
       while ($data=$DB->fetch_array($result)) {
          $queryh = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
-            WHERE `plugin_monitoring_componentscalalog_id`='".$this->fields["plugin_monitoring_componentscalalog_id"]."'
-               AND `itemtype`='".$this->fields['itemtype']."'
+            WHERE `plugin_monitoring_componentscalalog_id`='".$pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"]."'
+               AND `itemtype`='".$pmCc_Rule->fields['itemtype']."'
                AND `items_id`='".$data['id']."'
                   LIMIT 1";
          $resulth = $DB->query($queryh);
          if ($DB->numrows($resulth) == '0') {
             $input = array();
-            $input['plugin_monitoring_componentscalalog_id'] = $this->fields["plugin_monitoring_componentscalalog_id"];
+            $input['plugin_monitoring_componentscalalog_id'] = $pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"];
             $input['is_static'] = '0';
             $input['items_id'] = $data['id'];
-            $input['itemtype'] = $this->fields['itemtype'];
+            $input['itemtype'] = $pmCc_Rule->fields['itemtype'];
             $componentscatalogs_hosts_id = $pmComponentscatalog_Host->add($input);
-            $pmComponentscatalog_Host->linkComponentsToItem($this->fields["plugin_monitoring_componentscalalog_id"], 
+            $pmComponentscatalog_Host->linkComponentsToItem($pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"], 
                                                             $componentscatalogs_hosts_id);
          } else {
             $data2 = $DB->fetch_assoc($resulth);

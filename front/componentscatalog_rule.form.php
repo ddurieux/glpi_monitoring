@@ -67,7 +67,6 @@ if (isset($_GET['addrule'])) {
       $rules_id = $pmComponentscatalog_rule->add($input);
       unset($_SESSION['plugin_monitoring_rules']);
       unset($_SESSION["glpisearch"][$input['itemtype']]);
-      $pmComponentscatalog_rule->getItemsDynamicly($rules_id);
       glpi_header($CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.form.php?id=".$input['plugin_monitoring_componentscalalog_id']);
 
    }
@@ -95,7 +94,6 @@ if (isset($_GET['addrule'])) {
       $pmComponentscatalog_rule->update($input);
       unset($_SESSION['plugin_monitoring_rules']);
       unset($_SESSION["glpisearch"][$input['itemtype']]);
-      $pmComponentscatalog_rule->getItemsDynamicly($input['id']);
       glpi_header($CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.form.php?id=".$input['plugin_monitoring_componentscalalog_id']);
 
    }

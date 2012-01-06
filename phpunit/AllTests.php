@@ -119,12 +119,14 @@ ini_set("max_execution_time", "0");
 require_once 'GLPIInstall/AllTests.php';
 require_once 'MonitoringInstall/AllTests.php';
 require_once 'GLPIlogs/AllTests.php';
+require_once 'ManageRessources/AllTests.php';
 
 class AllTests {
    public static function suite() {
       $suite = new PHPUnit_Framework_TestSuite('Monitoring');
       $suite->addTest(GLPIInstall_AllTests::suite());
       $suite->addTest(MonitoringInstall_AllTests::suite());
+      $suite->addTest(ManageRessources_AllTests::suite());
       return $suite;
    }
 }
