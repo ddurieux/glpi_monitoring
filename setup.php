@@ -105,7 +105,9 @@ function plugin_init_monitoring() {
                                        'NetworkEquipment' => $rule_check,
                                        'Printer'          => $rule_check,
                                        'Peripheral'       => $rule_check,
-                                       'Phone'            => $rule_check);
+                                       'Phone'            => $rule_check,
+                                       'PluginMonitoringComponentscatalog_rule' =>
+                                             array('PluginMonitoringComponentscatalog_rule','getItemsDynamicly'));
 
          
       }

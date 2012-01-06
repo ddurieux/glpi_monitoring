@@ -207,70 +207,76 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       $pmCc_Rule                = new PluginMonitoringComponentscatalog_rule();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
       
-      $pmCc_Rule->getFromDB($parm->fields['id']);
+      if ($pmCc_Rule->getFromDB($parm->fields['id'])) {
       
-      $get_tmp = '';
-      
-      $itemtype = $pmCc_Rule->fields['itemtype'];
-      if (isset($_GET)) {
-          $get_tmp = $_GET;  
-      }
-      if (isset($_SESSION["glpisearchcount"][$pmCc_Rule->fields['itemtype']])) {
-         unset($_SESSION["glpisearchcount"][$pmCc_Rule->fields['itemtype']]);
-      }
-      if (isset($_SESSION["glpisearchcount2"][$pmCc_Rule->fields['itemtype']])) {
-         unset($_SESSION["glpisearchcount2"][$pmCc_Rule->fields['itemtype']]);
-      }
+         $get_tmp = '';
+         $itemtype = $pmCc_Rule->fields['itemtype'];
+         if (isset($_GET)) {
+             $get_tmp = $_GET;  
+         }
+         if (isset($_SESSION["glpisearchcount"][$pmCc_Rule->fields['itemtype']])) {
+            unset($_SESSION["glpisearchcount"][$pmCc_Rule->fields['itemtype']]);
+         }
+         if (isset($_SESSION["glpisearchcount2"][$pmCc_Rule->fields['itemtype']])) {
+            unset($_SESSION["glpisearchcount2"][$pmCc_Rule->fields['itemtype']]);
+         }
 
-      $_GET = importArrayFromDB($pmCc_Rule->fields['condition']);
+         $_GET = importArrayFromDB($pmCc_Rule->fields['condition']);
 
-      $_GET["glpisearchcount"] = count($_GET['field']);
-      if (isset($_GET['field2'])) {
-         $_GET["glpisearchcount2"] = count($_GET['field2']);
-      }
+         $_GET["glpisearchcount"] = count($_GET['field']);
+         if (isset($_GET['field2'])) {
+            $_GET["glpisearchcount2"] = count($_GET['field2']);
+         }
 
-      Search::manageGetValues($pmCc_Rule->fields['itemtype']);
-      
-      $devices_present = array();
-      $queryd = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
-         WHERE `plugin_monitoring_componentscalalog_id`='".$pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"]."'
-            AND `itemtype`='".$pmCc_Rule->fields['itemtype']."'
-            AND `is_static`='0'";
-      $result = $DB->query($queryd);
-      while ($data=$DB->fetch_array($result)) {
-         $devices_present[$data['id']] = 1;
-      }
-      
-      $result = $pmCc_Rule->constructSQL($itemtype, 
-                                     $_GET);
-      
-      while ($data=$DB->fetch_array($result)) {
-         $queryh = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+         Search::manageGetValues($pmCc_Rule->fields['itemtype']);
+
+         $devices_present = array();
+         $queryd = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
             WHERE `plugin_monitoring_componentscalalog_id`='".$pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"]."'
                AND `itemtype`='".$pmCc_Rule->fields['itemtype']."'
-               AND `items_id`='".$data['id']."'
-                  LIMIT 1";
-         $resulth = $DB->query($queryh);
-         if ($DB->numrows($resulth) == '0') {
-            $input = array();
-            $input['plugin_monitoring_componentscalalog_id'] = $pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"];
-            $input['is_static'] = '0';
-            $input['items_id'] = $data['id'];
-            $input['itemtype'] = $pmCc_Rule->fields['itemtype'];
-            $componentscatalogs_hosts_id = $pmComponentscatalog_Host->add($input);
-            $pmComponentscatalog_Host->linkComponentsToItem($pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"], 
-                                                            $componentscatalogs_hosts_id);
-         } else {
-            $data2 = $DB->fetch_assoc($resulth);
-            unset($devices_present[$data2['id']]);
+               AND `is_static`='0'";
+         $result = $DB->query($queryd);
+         while ($data=$DB->fetch_array($result)) {
+            $devices_present[$data['id']] = 1;
+         }
+
+         $result = $pmCc_Rule->constructSQL($itemtype, 
+                                        $_GET);
+
+         while ($data=$DB->fetch_array($result)) {
+            $queryh = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+               WHERE `plugin_monitoring_componentscalalog_id`='".$pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"]."'
+                  AND `itemtype`='".$pmCc_Rule->fields['itemtype']."'
+                  AND `items_id`='".$data['id']."'
+                     LIMIT 1";
+            $resulth = $DB->query($queryh);
+            if ($DB->numrows($resulth) == '0') {
+               $input = array();
+               $input['plugin_monitoring_componentscalalog_id'] = $pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"];
+               $input['is_static'] = '0';
+               $input['items_id'] = $data['id'];
+               $input['itemtype'] = $pmCc_Rule->fields['itemtype'];
+               $componentscatalogs_hosts_id = $pmComponentscatalog_Host->add($input);
+               $pmComponentscatalog_Host->linkComponentsToItem($pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"], 
+                                                               $componentscatalogs_hosts_id);
+            } else {
+               $data2 = $DB->fetch_assoc($resulth);
+               unset($devices_present[$data2['id']]);
+            }
+         }
+      } else { // Purge
+         $devices_present = array();
+         $queryd = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+            WHERE `plugin_monitoring_componentscalalog_id`='".$parm->fields["plugin_monitoring_componentscalalog_id"]."'
+               AND `itemtype`='".$parm->fields['itemtype']."'
+               AND `is_static`='0'";
+         $result = $DB->query($queryd);
+         while ($data=$DB->fetch_array($result)) {
+            $devices_present[$data['id']] = 1;
          }
       }
       foreach ($devices_present as $id => $num) {
          $pmComponentscatalog_Host->delete(array('id'=>$id));
-      }
-      
-      if (count($get_tmp) > 0) {
-         $_GET = $get_tmp; 
       }
    }
    

@@ -87,7 +87,7 @@ class ManageRessources extends PHPUnit_Framework_TestCase {
       $input['name'] = 'all have name';
       $input['itemtype'] = 'Computer';
       $input['condition'] = '{"field":["1"],"searchtype":["contains"],"contains":["pc"],"itemtype":"Computer","start":"0"}';
-      $pmComponentscatalog_rule->add($input);
+      $rules_id = $pmComponentscatalog_rule->add($input);
       
       // Check computer pc1 not added in ressources
          $a_hosts = $pmComponentscatalog_Host->find("`plugin_monitoring_componentscalalog_id`='".$catalogs_id."'");
@@ -106,11 +106,35 @@ class ManageRessources extends PHPUnit_Framework_TestCase {
       // Remove pc2
          $computer->delete(array('id'=>$pc2), 1);
          
-      // Check computer pc1 not added in ressources
+      // Check computer pc1 added in ressources
          $a_hosts = $pmComponentscatalog_Host->find("`plugin_monitoring_componentscalalog_id`='".$catalogs_id."'");
          $this->assertEquals(count($a_hosts), '1', '[f4] Computer may be unique in component catalog'); 
       
-      
+      // Modify rule
+         $input['id'] = $rules_id;
+         $input['condition'] = '{"field":["1"],"searchtype":["contains"],"contains":["tc"],"itemtype":"Computer","start":"0"}';
+         $pmComponentscatalog_rule->update($input);
+
+      // Check no computer in ressources
+         $a_hosts = $pmComponentscatalog_Host->find("`plugin_monitoring_componentscalalog_id`='".$catalogs_id."'");
+         $this->assertEquals(count($a_hosts), '0', '[f5] Computer may be deleted on rule update'); 
+
+      // Modify rule
+         $input['id'] = $rules_id;
+         $input['condition'] = '{"field":["1"],"searchtype":["contains"],"contains":["pc"],"itemtype":"Computer","start":"0"}';
+         $pmComponentscatalog_rule->update($input);
+
+      // Check computer pc1 added in ressources
+         $a_hosts = $pmComponentscatalog_Host->find("`plugin_monitoring_componentscalalog_id`='".$catalogs_id."'");
+         $this->assertEquals(count($a_hosts), '1', '[f6] Computer may be unique in component catalog'); 
+
+      // Delete rule
+         $pmComponentscatalog_rule->delete(array('id'=>$rules_id), 1);
+
+      // Check not have rcompute in ressources
+         $a_hosts = $pmComponentscatalog_Host->find("`plugin_monitoring_componentscalalog_id`='".$catalogs_id."'");
+         $this->assertEquals(count($a_hosts), '0', '[f7] must have no computer in component catalog'); 
+         
          
    }
    
