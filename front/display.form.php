@@ -42,6 +42,11 @@ commonHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plug
              "monitoring", "display");
 
 
+if (isset ($_POST["plugin_monitoring_timezone"])) {
+   $_SESSION['plugin_monitoring_timezone'] = $_POST["plugin_monitoring_timezone"];
+   glpi_header($_SERVER['HTTP_REFERER']);
+} 
+
 $pMonitoringDisplay = new PluginMonitoringDisplay();
 
 if (isset($_GET['itemtype']) AND isset($_GET['items_id'])) {

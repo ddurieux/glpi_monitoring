@@ -491,7 +491,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
    
    
    function displayGraphs($itemtype, $items_id) {
-      global $CFG_GLPI;
+      global $CFG_GLPI,$LANG;
 
       $to = new PluginMonitoringRrdtool();
       $plu = new PluginMonitoringServiceevent();
@@ -508,6 +508,18 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "<th>";
       echo $item->getLink(1);
       echo "</th>";
+      echo "<th width='200'>";
+      echo "<form method='post'>";
+      $a_timezones = PluginMonitoringConfig::getTimezones();
+       if (!isset($_SESSION['plugin_monitoring_timezone'])) {
+         $_SESSION['plugin_monitoring_timezone'] = '0';
+      }
+      Dropdown::showFromArray('plugin_monitoring_timezone', 
+                              $a_timezones, 
+                              array('value'=>$_SESSION['plugin_monitoring_timezone']));
+      echo "&nbsp;<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+      echo "</form>";
+      echo "</th>";
       echo "</tr>";
 
       $a_list = array();
@@ -522,20 +534,18 @@ class PluginMonitoringDisplay extends CommonDBTM {
       foreach ($a_list as $time) {
       
       echo "<tr class='tab_bg_1'>";
-      echo "<th>";
+      echo "<th colspan='2'>";
       echo $time;
       echo "</th>";
       echo "</tr>";
          
          echo "<tr class='tab_bg_1'>";
-         echo "<td align='center'>";
+         echo "<td align='center' colspan='2'>";
          $img = '';
-//         $plu->parseToRrdtool($items_id);
          $timezone = '0';
          if (isset($_SESSION['plugin_monitoring_timezone'])) {
             $timezone = $_SESSION['plugin_monitoring_timezone'];
          }
-         $timezone = "+1";
          $timezone_file = str_replace("+", ".", $timezone);
          
          $to->displayGLPIGraph($pmComponent->fields['graph_template'], 
