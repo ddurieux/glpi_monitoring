@@ -599,92 +599,158 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $ok_soft = countElementsInTable("glpi_plugin_monitoring_services", 
               "(`state`='OK' OR `state`='UP') AND `state_type`='SOFT'");
     
+//      echo "<table align='center'>";
+//      echo "<tr>";
+//      echo "<td>";
+//         echo "<table class='tab_cadre'>";
+//         echo "<tr class='tab_bg_1'>";
+//         echo "<th width='70'>";
+//         if ($critical > 0) {
+//            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php?".
+//               "field[0]=3&searchtype[0]=contains&contains[0]=CRITICAL".
+//                  "&link[1]=OR&field[1]=3&searchtype[1]=contains&contains[1]=DOWN".
+//                  "&link[2]=OR&field[2]=3&searchtype[2]=contains&contains[2]=UNREACHABLE".
+//                  "&link[3]=AND&field[3]=3&searchtype[3]=contains&contains[3]=DOWNTIME".
+//                  "&itemtype=PluginMonitoringService&start=0&glpi_tab=2'>
+//               <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_40.png'/>
+//                  </a>";
+//         }
+//         echo "</th>";
+//         echo "<th width='70'>";
+//         if ($warning > 0) {
+//            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_40.png'/>";
+//         }
+//         echo "</th>";
+//         echo "<th width='70'>";
+//         echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_40.png'/>";
+//         echo "</th>";
+//         echo "</tr>";
+//
+//         echo "<th height='30'>";
+//         if ($critical > 0) {
+//            echo $critical;
+//         }
+//         echo "</th>";
+//         echo "<th>";
+//         if ($warning > 0) {
+//            echo $warning;
+//         }
+//         echo "</th>";
+//         echo "<th>";
+//         echo $ok;
+//         echo "</th>";
+//         echo "</tr>";      
+//         echo "</table>";
+//      echo "</td>";
+//      echo "<td width='100'>";
+//      
+//      echo "</td>";
+//      echo "<td>";
+//         echo "<table class='tab_cadre'>";
+//         echo "<tr class='tab_bg_1'>";
+//         echo "<th width='70' height='40'>";
+//         if ($critical_soft > 0) {
+//            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_40_soft.png'/>";
+//         }
+//         echo "</th>";
+//         echo "<th width='70'>";
+//         if ($warning_soft > 0) {
+//            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_40_soft.png'/>";
+//         }
+//         echo "</th>";
+//         echo "<th width='70'>";
+//         if ($ok_soft > 0) {
+//            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_40_soft.png'/>";
+//         }
+//         echo "</th>";
+//         echo "</tr>";
+//         echo "<th height='30'>";
+//         if ($critical_soft > 0) {
+//            echo $critical_soft;
+//         }
+//         echo "</th>";
+//         echo "<th>";
+//         if ($warning_soft > 0) {
+//            echo $warning_soft;
+//         }
+//         echo "</th>";
+//         echo "<th>";
+//         if ($ok_soft > 0) {
+//            echo $ok_soft;
+//         }
+//         echo "</th>";
+//         echo "</tr>";      
+//         echo "</table>";
+//      echo "</td>";
+//      echo "</tr>";
+//      echo "</table>";
+      
+      
+      // *** Test new presentation
+      
       echo "<table align='center'>";
       echo "<tr>";
       echo "<td>";
-         echo "<table class='tab_cadre'>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<th width='70'>";
+         $background = '';
          if ($critical > 0) {
-            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php?".
-               "field[0]=3&searchtype[0]=contains&contains[0]=CRITICAL".
-                  "&link[1]=OR&field[1]=3&searchtype[1]=contains&contains[1]=DOWN".
-                  "&link[2]=OR&field[2]=3&searchtype[2]=contains&contains[2]=UNREACHABLE".
-                  "&link[3]=AND&field[3]=3&searchtype[3]=contains&contains[3]=DOWNTIME".
-                  "&itemtype=PluginMonitoringService&start=0&glpi_tab=2'>
-               <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_40.png'/>
-                  </a>";
+            $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_critical.png"';
          }
-         echo "</th>";
-         echo "<th width='70'>";
-         if ($warning > 0) {
-            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_40.png'/>";
-         }
-         echo "</th>";
-         echo "<th width='70'>";
-         echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_40.png'/>";
+         echo "<table class='tab_cadre' width='474' height='100' ".$background." >";
+         echo "<tr>";
+         echo "<th style='background-color:transparent;'>";
+         echo "<font style='font-size: 52px;'>".$critical."</font>";         
          echo "</th>";
          echo "</tr>";
-
-         echo "<th height='30'>";
-         if ($critical > 0) {
-            echo $critical;
-         }
+         echo "<tr>";
+         echo "<th style='background-color:transparent;'>";
+         echo "<font style='font-size: 11px;'>Soft : ".$critical_soft."</font>";         
          echo "</th>";
-         echo "<th>";
-         if ($warning > 0) {
-            echo $warning;
-         }
-         echo "</th>";
-         echo "<th>";
-         echo $ok;
-         echo "</th>";
-         echo "</tr>";      
-         echo "</table>";
+         echo "</tr>";
+         echo "</table>";         
       echo "</td>";
-      echo "<td width='100'>";
       
-      echo "</td>";
       echo "<td>";
-         echo "<table class='tab_cadre'>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<th width='70' height='40'>";
-         if ($critical_soft > 0) {
-            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_40_soft.png'/>";
+         $background = '';
+         if ($warning > 0) {
+            $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_warning.png"';
          }
-         echo "</th>";
-         echo "<th width='70'>";
-         if ($warning_soft > 0) {
-            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_40_soft.png'/>";
-         }
-         echo "</th>";
-         echo "<th width='70'>";
-         if ($ok_soft > 0) {
-            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_40_soft.png'/>";
-         }
+         echo "<table class='tab_cadre' width='316' height='100' ".$background." >";
+         echo "<tr>";
+         echo "<th style='background-color:transparent;'>";
+         echo "<font style='font-size: 52px;'>".$warning."</font>";         
          echo "</th>";
          echo "</tr>";
-         echo "<th height='30'>";
-         if ($critical_soft > 0) {
-            echo $critical_soft;
-         }
+         echo "<tr>";
+         echo "<th style='background-color:transparent;'>";
+         echo "<font style='font-size: 11px;'>Soft : ".$warning_soft."</font>";         
          echo "</th>";
-         echo "<th>";
-         if ($warning_soft > 0) {
-            echo $warning_soft;
-         }
-         echo "</th>";
-         echo "<th>";
-         if ($ok_soft > 0) {
-            echo $ok_soft;
-         }
-         echo "</th>";
-         echo "</tr>";      
-         echo "</table>";
+         echo "</tr>";
+         echo "</table>";         
       echo "</td>";
+      
+      echo "<td>";
+         $background = '';
+         if ($ok > 0) {
+            $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_ok.png"';
+         }
+         echo "<table class='tab_cadre' width='158' height='100' ".$background." >";
+         echo "<tr>";
+         echo "<th style='background-color:transparent;'>";
+         echo "<font style='font-size: 52px;'>".$ok."</font>";         
+         echo "</th>";
+         echo "</tr>";
+         echo "<tr>";
+         echo "<th style='background-color:transparent;'>";
+         echo "<font style='font-size: 11px;'>Soft : ".$ok_soft."</font>";         
+         echo "</th>";
+         echo "</tr>";
+         echo "</table>";         
+      echo "</td>";
+      
       echo "</tr>";
       echo "</table>";
-      
+         
+         
    }
 
 }
