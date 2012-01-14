@@ -78,10 +78,6 @@ echo "</tr>";
 
 echo "</table>";
 
-$r = new PluginMonitoringRrdtool();
-$r->perfdataToRRDTool();
-
-
 commonFooter();
 
 ?>
