@@ -189,11 +189,15 @@ class PluginMonitoringRrdtool extends CommonDBTM {
          if (strstr($time, "d") OR  strstr($time, "h")) {
             $data = str_replace("AVERAGE", "LAST", $data);
          }
-         if (strstr($data, "DEF") AND $converttimezone != '0') {
+         if (strstr($data, "DEF") 
+                 AND !strstr($data, "CDEF")
+                 AND $converttimezone != '0') {
             $data = $data.':start=-'.$time.$timezone.'h:end='.$timezone.'h';            
          }
          $opts .= " ".$data;
-         if (strstr($data, "DEF") AND $converttimezone != '0') {
+         if (strstr($data, "DEF") 
+                 AND !strstr($data, "CDEF")
+                 AND $converttimezone != '0') {
             $a_explode = explode(":", $data);
             $a_name = explode("=", $a_explode[1]);
             $opts .= " SHIFT:".$a_name[0].":".$converttimezone;
