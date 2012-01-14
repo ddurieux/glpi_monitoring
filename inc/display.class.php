@@ -501,7 +501,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $item->getFromDB($items_id);
  
       $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
-      
+
       echo "<table class='tab_cadre_fixe'>";
       
       echo "<tr class='tab_bg_1'>";
@@ -531,8 +531,19 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<td align='center'>";
          $img = '';
 //         $plu->parseToRrdtool($items_id);
-         $to->displayGLPIGraph($pmComponent->fields['graph_template'], $itemtype, $items_id, $time);
-         $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=".$itemtype."-".$items_id."-".$time.".gif'/>";
+         $timezone = '0';
+         if (isset($_SESSION['plugin_monitoring_timezone'])) {
+            $timezone = $_SESSION['plugin_monitoring_timezone'];
+         }
+         $timezone = "+1";
+         $timezone_file = str_replace("+", ".", $timezone);
+         
+         $to->displayGLPIGraph($pmComponent->fields['graph_template'], 
+                               $itemtype, 
+                               $items_id, 
+                               $timezone, 
+                               $time);
+         $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=".$itemtype."-".$items_id."-".$time.$timezone_file.".gif'/>";
          echo $img;
          echo "</td>";
          echo "</tr>";

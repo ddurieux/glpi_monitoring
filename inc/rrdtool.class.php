@@ -147,7 +147,7 @@ class PluginMonitoringRrdtool extends CommonDBTM {
     * @param type $items_id
     * @param type $time 
     */
-   function displayGLPIGraph($rrdtool_template, $itemtype, $items_id, $time='1d', $width='470') {
+   function displayGLPIGraph($rrdtool_template, $itemtype, $items_id, $timezone, $time='1d', $width='470') {
       global $LANG;
 
       $filename = GLPI_PLUGIN_DOC_DIR."/monitoring/templates/".$rrdtool_template."_graph.json";
@@ -156,7 +156,22 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       }
       $a_json = json_decode(file_get_contents($filename));
 
+      $timezonefile = str_replace("+", ".", $timezone);
+      // Manage timezones
+      $converttimezone = '0';
+      if (strstr($timezone, '-')) {
+         $timezone_temp = str_replace("-", "", $timezone);
+         $converttimezone = ($timezone_temp * 3600);
+         $timezone = str_replace("-", "+", $timezone);
+      } else if (strstr($timezone, '+')) {
+         $timezone_temp = str_replace("+", "", $timezone);
+         $converttimezone = ($timezone_temp * 3600);
+         $timezone = str_replace("+", "-", $timezone);
+      }
+      
+      
       $opts = "";
+
       $opts .= ' --start -'.$time;
       $opts .= " --title '".$a_json->data[0]->labels[0]->title."'";
 //      $opts .= " --vertical-label '".$a_json->data->labels->vertical-label."'";
@@ -174,17 +189,25 @@ class PluginMonitoringRrdtool extends CommonDBTM {
          if (strstr($time, "d") OR  strstr($time, "h")) {
             $data = str_replace("AVERAGE", "LAST", $data);
          }
+         if (strstr($data, "DEF") AND $converttimezone != '0') {
+            $data = $data.':start=-'.$time.$timezone.'h:end='.$timezone.'h';            
+         }
          $opts .= " ".$data;
+         if (strstr($data, "DEF") AND $converttimezone != '0') {
+            $a_explode = explode(":", $data);
+            $a_name = explode("=", $a_explode[1]);
+            $opts .= " SHIFT:".$a_name[0].":".$converttimezone;
+         }
       }
 
       //$ret = rrd_graph(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.".gif", $opts, count($opts));
       if (file_exists(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id.".rrd")) {
          ob_start();
-         system(PluginMonitoringConfig::getRRDPath()."/rrdtool graph ".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.".gif ".$opts, $ret);
+         system(PluginMonitoringConfig::getRRDPath()."/rrdtool graph ".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.$timezonefile.".gif ".$opts, $ret);
          ob_end_clean();
          if (isset($ret) 
                  AND $ret != '0' ) {
-            echo "Create error: $ret for ".PluginMonitoringConfig::getRRDPath()."/rrdtool graph ".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.".gif ".
+            echo "Create error: $ret for ".PluginMonitoringConfig::getRRDPath()."/rrdtool graph ".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.$timezonefile.".gif ".
                      $opts."\n";
          }
       }

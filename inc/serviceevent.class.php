@@ -163,11 +163,19 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       $a_list[] = "1m";
       $a_list[] = "0y6m";
       $a_list[] = "1y";
+      
+      $pmConfig = new PluginMonitoringConfig();
+      $pmConfig->getFromDB(1);
+      $a_timezones = importArrayFromDB($pmConfig->fields['timezones']);
+      
       foreach ($a_list as $time) {
-         $pluginMonitoringRrdtool->displayGLPIGraph($pmComponent->fields['graph_template'],
-                                                    "PluginMonitoringService", 
-                                                    $plugin_monitoring_services_id, 
-                                                    $time);
+         foreach ($a_timezones as $timezone) {
+            $pluginMonitoringRrdtool->displayGLPIGraph($pmComponent->fields['graph_template'],
+                                                       "PluginMonitoringService", 
+                                                       $plugin_monitoring_services_id, 
+                                                       $timezone,
+                                                       $time);
+         }
       }
    }
    

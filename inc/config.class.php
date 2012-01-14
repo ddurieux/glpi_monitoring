@@ -115,7 +115,60 @@ class PluginMonitoringConfig extends CommonDBTM {
       echo "<td align='center'>";
       echo "<input name='rrdtoolpath' type='text' value='".$this->fields['rrdtoolpath']."' />";
       echo "</td>";
-      echo "<td colspan='2'>";
+      echo "<td>";
+      echo $LANG['plugin_monitoring']['config'][0]."&nbsp:";
+      echo "</td>";
+      echo "<td>";
+         $a_timezones = $this->getTimezones();
+      
+         $a_timezones_selected = importArrayFromDB($this->fields['timezones']);
+         $a_timezones_selected2 = array();
+         foreach ($a_timezones_selected as $timezone) {
+            $a_timezones_selected2[$timezone] = $a_timezones[$timezone];
+            unset($a_timezones[$timezone]);
+         }
+         ksort($a_timezones_selected2);
+            
+            echo "<table>";
+            echo "<tr>";
+            echo "<td class='right'>";
+
+            if (count($a_timezones)) {
+               echo "<select name='timezones_to_add[]' multiple size='5'>";
+
+               foreach ($a_timezones as $key => $val) {
+                  echo "<option value='$key'>".$val."</option>";
+               }
+
+               echo "</select>";
+            }
+
+            echo "</td><td class='center'>";
+
+            if (count($a_timezones)) {
+               echo "<input type='submit' class='submit' name='timezones_add' value='".
+                     $LANG['buttons'][8]." >>'>";
+            }
+            echo "<br><br>";
+
+            if (count($a_timezones_selected2)) {
+               echo "<input type='submit' class='submit' name='timezones_delete' value='<< ".
+                     $LANG['buttons'][6]."'>";
+            }
+            echo "</td><td>";
+
+         if (count($a_timezones_selected2)) {
+            echo "<select name='timezones_to_delete[]' multiple size='5'>";
+            foreach ($a_timezones_selected2 as $key => $val) {
+               echo "<option value='$key'>".$val."</option>";
+            }
+            echo "</select>";
+         } else {
+            echo "&nbsp;";
+         }
+         echo "</td>";
+         echo "</tr>";
+         echo "</table>";
       echo "</td>";
       echo "</tr>";
 
@@ -131,6 +184,39 @@ class PluginMonitoringConfig extends CommonDBTM {
       $pmConfig = new PluginMonitoringConfig();
       $pmConfig->getFromDB("1");
       return $pmConfig->getField("rrdtoolpath");
+   }
+   
+   
+   static function getTimezones() {
+      $a_timezones = array();
+      $a_timezones['0'] = "GMT";
+      $a_timezones['+1'] = "GMT+1";
+      $a_timezones['+2'] = "GMT+2";
+      $a_timezones['+3'] = "GMT+3";
+      $a_timezones['+4'] = "GMT+4";
+      $a_timezones['+5'] = "GMT+5";
+      $a_timezones['+6'] = "GMT+6";
+      $a_timezones['+7'] = "GMT+7";
+      $a_timezones['+8'] = "GMT+8";
+      $a_timezones['+9'] = "GMT+9";
+      $a_timezones['+10'] = "GMT+10";
+      $a_timezones['+11'] = "GMT+11";
+      $a_timezones['+12'] = "GMT+12";
+      $a_timezones['-1'] = "GMT-1";
+      $a_timezones['-2'] = "GMT-2";
+      $a_timezones['-3'] = "GMT-3";
+      $a_timezones['-4'] = "GMT-4";
+      $a_timezones['-5'] = "GMT-5";
+      $a_timezones['-6'] = "GMT-6";
+      $a_timezones['-7'] = "GMT-7";
+      $a_timezones['-8'] = "GMT-8";
+      $a_timezones['-9'] = "GMT-9";
+      $a_timezones['-10'] = "GMT-10";
+      $a_timezones['-11'] = "GMT-11";
+      
+      ksort($a_timezones);
+      return $a_timezones;
+      
    }
 
 }

@@ -39,9 +39,33 @@ include (GLPI_ROOT . "/inc/includes.php");
 commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "config");
 
+
 $pmConfig = new PluginMonitoringConfig();
 if (isset ($_POST["update"])) {
    $pmConfig->update($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset($_POST['timezones_add'])) {
+   $input = array();
+   $pmConfig->getFromDB($_POST['id']);
+   $input['id'] = $_POST['id'];
+   $a_timezones = importArrayFromDB($pmConfig->fields['timezones']);
+   foreach ($_POST['timezones_to_add'] as $timezone) {
+      $a_timezones[] = $timezone;
+   }
+   $input['timezones'] = exportArrayToDB($a_timezones);
+   $pmConfig->update($input); 
+   glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset($_POST['timezones_delete'])) {
+   $input = array();
+   $pmConfig->getFromDB($_POST['id']);
+   $input['id'] = $_POST['id'];
+   $a_timezones = importArrayFromDB($pmConfig->fields['timezones']);
+    foreach ($_POST['timezones_to_delete'] as $timezone) {
+      $key = array_search($timezone, $a_timezones);
+      unset($a_timezones[$key]);
+   }
+   $input['timezones'] = exportArrayToDB($a_timezones);
+   $pmConfig->update($input); 
    glpi_header($_SERVER['HTTP_REFERER']);
 }
 

@@ -57,6 +57,8 @@ $LANG['plugin_monitoring']['host'][17]="temps";
 $LANG['plugin_monitoring']['host'][18]="Add these hosts to monitoring";
 $LANG['plugin_monitoring']['host'][19]="Equipments";
 
+$LANG['plugin_monitoring']['config'][0]="Timezones (for graph)";
+
 $LANG['plugin_monitoring']['grouphost'][0]="hosts groups";
 $LANG['plugin_monitoring']['grouphost'][1]="hosts group";
 
