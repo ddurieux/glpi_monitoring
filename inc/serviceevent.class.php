@@ -126,11 +126,10 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       if (!isset($pmComponent->fields['plugin_monitoring_commands_id'])) {
          return;
       }
-      if ($pmComponent->fields['aliasperfdata_commands_id'] > 0) {
-         $pluginMonitoringCommand->getFromDB($pmComponent->fields['aliasperfdata_commands_id']);
-      } else {
-         $pluginMonitoringCommand->getFromDB($pmComponent->fields['plugin_monitoring_commands_id']);
-      }   
+      if (is_null($pmComponent->fields['graph_template'])) {
+         return;
+      }
+      $pluginMonitoringCommand->getFromDB($pmComponent->fields['plugin_monitoring_commands_id']);
       
       $query = "SELECT * FROM `".$this->getTable()."`
          WHERE `plugin_monitoring_services_id`='".$plugin_monitoring_services_id."'
@@ -142,20 +141,33 @@ class PluginMonitoringServiceevent extends CommonDBTM {
          $i++;
          if ($i < $DB->numrows($result)) {
 
-            if (isset($pluginMonitoringCommand->fields['legend'])
-                    AND $pluginMonitoringCommand->fields['legend'] != '') {
+            if (!is_null($pmComponent->fields['graph_template'])) {
                $perf_data = $edata['perf_data'];
                if ($edata['perf_data'] == '') {
                   $perf_data = $edata['output'];                     
                }
-               $pluginMonitoringRrdtool->addData($pluginMonitoringCommand->getID(), 
+               $pluginMonitoringRrdtool->addData($pmComponent->fields['graph_template'], 
                                               $plugin_monitoring_services_id, 
                                               $this->convert_datetime_timestamp($edata['date']), 
                                               $perf_data);
-               $pluginMonitoringRrdtool->displayGLPIGraph("PluginMonitoringService", $plugin_monitoring_services_id, "12h");
+
             }
             $this->delete($edata);
          }
+      }
+      $a_list = array();
+      $a_list[] = "2h";
+      $a_list[] = "12h";
+      $a_list[] = "1d";
+      $a_list[] = "1w";
+      $a_list[] = "1m";
+      $a_list[] = "0y6m";
+      $a_list[] = "1y";
+      foreach ($a_list as $time) {
+         $pluginMonitoringRrdtool->displayGLPIGraph($pmComponent->fields['graph_template'],
+                                                    "PluginMonitoringService", 
+                                                    $plugin_monitoring_services_id, 
+                                                    $time);
       }
    }
    

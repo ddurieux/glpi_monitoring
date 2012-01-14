@@ -495,9 +495,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
       $to = new PluginMonitoringRrdtool();
       $plu = new PluginMonitoringServiceevent();
-      
+      $pmComponent = new PluginMonitoringComponent();
+
       $item = new $itemtype();
       $item->getFromDB($items_id);
+ 
+      $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
       
       echo "<table class='tab_cadre_fixe'>";
       
@@ -508,6 +511,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "</tr>";
 
       $a_list = array();
+      $a_list[] = "2h";
       $a_list[] = "12h";
       $a_list[] = "1d";
       $a_list[] = "1w";
@@ -526,15 +530,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td align='center'>";
          $img = '';
-         if ($itemtype == 'PluginMonitoringService') {
-            $plu->parseToRrdtool($items_id, $itemtype);
-            $to->displayGLPIGraph($itemtype, $items_id, $time, 900);
-            $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=".$itemtype."-".$items_id."-".$time.".gif'/>";
-         } else {
-            $plu->parseToRrdtool($items_id, $itemtype);
-            $to->displayGLPIGraph($itemtype, $items_id, $time, 900);
-            $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=".$itemtype."-".$items_id."-".$time.".gif'/>";
-         }         
+//         $plu->parseToRrdtool($items_id);
+         $to->displayGLPIGraph($pmComponent->fields['graph_template'], $itemtype, $items_id, $time);
+         $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=".$itemtype."-".$items_id."-".$time.".gif'/>";
          echo $img;
          echo "</td>";
          echo "</tr>";

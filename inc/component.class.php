@@ -217,7 +217,27 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "</tr>";
       
       echo "<tr>";
-      echo "<td colspan='2'></td>";
+      echo "<td>";
+      echo $LANG['plugin_monitoring']['service'][12]."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      $a_templates = array();
+      $a_templates[''] = DROPDOWN_EMPTY_VALUE;
+      if ($handle = opendir(GLPI_PLUGIN_DOC_DIR."/monitoring/templates/")) {
+          while (false !== ($entry = readdir($handle))) {
+              if ($entry != "." && $entry != "..") {
+                 if (strstr($entry, "_graph.json")) {
+                    $entry = str_replace("_graph.json", "", $entry);
+                    $a_templates[$entry] = $entry;
+                 }
+              }
+          }
+          closedir($handle);
+      }
+      Dropdown::showFromArray("graph_template", 
+                              $a_templates, 
+                              array('value'=>$this->fields['graph_template']));
+      echo "</td>";
       // * calendar
       echo "<td>".$LANG['plugin_monitoring']['host'][9]."&nbsp;:</td>";
       echo "<td align='center'>";
@@ -262,16 +282,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "<td>";
       echo "<input type='text' name='alias_command' value='".$this->fields['alias_command']."' />";
       echo "</td>"; 
-      echo "<td>";
-      echo "Command link (used for graphs generation)&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      $pMonitoringCommand->getFromDB($this->fields['aliasperfdata_commands_id']);
-      Dropdown::show("PluginMonitoringCommand", array(
-                              'name' =>'aliasperfdata_commands_id',
-                              'value'=>$this->fields['aliasperfdata_commands_id']
-                              ));
-      echo "</td>"; 
+      echo "<td colspan='2'></td>";
       echo "</tr>";
       
       

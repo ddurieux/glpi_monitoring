@@ -458,7 +458,7 @@ class PluginMonitoringService extends CommonDBTM {
          echo "</td>"; 
 
          echo "<td>";
-         echo $LANG['plugin_monitoring']['service'][12]."&nbsp;:";
+         echo $LANG['plugin_monitoring']['service'][12]."&nbsp;:GHJKL";
          echo "</td>";
          echo "<td>";
          if ($this->fields['plugin_monitoring_servicetemplates_id'] > 0) {

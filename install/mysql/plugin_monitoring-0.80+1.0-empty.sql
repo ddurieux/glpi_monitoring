@@ -42,7 +42,7 @@ CREATE TABLE `glpi_plugin_monitoring_components` (
   `remotesystem` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `is_arguments` tinyint(1) NOT NULL DEFAULT '0',
   `alias_command` text DEFAULT NULL COLLATE utf8_unicode_ci,
-  `aliasperfdata_commands_id` int(11) NOT NULL DEFAULT '0',
+  `graph_template` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `link` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
    KEY `plugin_monitoring_commands_id` (`plugin_monitoring_commands_id`)

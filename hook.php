@@ -152,21 +152,21 @@ function plugin_headings_monitoring_status($item) {
 $plu = new PluginMonitoringHostevent();
 $plu->parseToRrdtool($item->fields['id'], get_class($item));
 $to = new PluginMonitoringRrdtool();
-$to->displayGLPIGraph("Computer", $item->fields['id'], "3h");
-$to->displayGLPIGraph("Computer", $item->fields['id']);
-$to->displayGLPIGraph("Computer", $item->fields['id'], "1w");
+//$to->displayGLPIGraph("Computer", $item->fields['id'], "3h");
+//$to->displayGLPIGraph("Computer", $item->fields['id']);
+//$to->displayGLPIGraph("Computer", $item->fields['id'], "1w");
 
-echo "<img src='".GLPI_ROOT."/plugins/monitoring/front/send.php?file=Computer-".$item->fields['id']."-3h.gif' />";
-echo "<br/>";
-echo "<img src='".GLPI_ROOT."/plugins/monitoring/front/send.php?file=Computer-".$item->fields['id']."-1d.gif' />";
+//echo "<img src='".GLPI_ROOT."/plugins/monitoring/front/send.php?file=Computer-".$item->fields['id']."-3h.gif' />";
+//echo "<br/>";
+//echo "<img src='".GLPI_ROOT."/plugins/monitoring/front/send.php?file=Computer-".$item->fields['id']."-1d.gif' />";
 
 $plus = new PluginMonitoringServiceevent();
 $plus->parseToRrdtool($item->fields['id'], get_class($item));
 $to = new PluginMonitoringRrdtool();
 
 echo "<br/>Http :<br/>";
-$to->displayGLPIGraph("PluginMonitoringHost_Service", 5, "12h");
-echo "<img src='".GLPI_ROOT."/plugins/monitoring/front/send.php?file=PluginMonitoringService-5-12h.gif' />";
+//$to->displayGLPIGraph("PluginMonitoringHost_Service", 5, "12h");
+//echo "<img src='".GLPI_ROOT."/plugins/monitoring/front/send.php?file=PluginMonitoringService-5-12h.gif' />";
 
    
    $pluginMonitoringHostevent = new PluginMonitoringHostevent();
