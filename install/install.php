@@ -59,6 +59,11 @@ function pluginMonitoringInstall($version) {
    if (!is_dir(GLPI_PLUGIN_DOC_DIR.'/monitoring')) {
       mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring");
    }
+   if (!is_dir(GLPI_PLUGIN_DOC_DIR.'/monitoring/templates')) {
+      mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring/templates");
+   }
+   
+   
    
    // initialise services suggests
    if (!class_exists('PluginMonitoringServicesuggest')) { // if plugin is unactive

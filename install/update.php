@@ -48,6 +48,17 @@ function pluginMonitoringGetCurrentVersion($version) {
 function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    global $DB;
    
+   
+   if (!is_dir(GLPI_PLUGIN_DOC_DIR.'/monitoring')) {
+      mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring");
+   }
+   if (!is_dir(GLPI_PLUGIN_DOC_DIR.'/monitoring/templates')) {
+      mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring/templates");
+   }
+   
+   
+   
+   
 }
 
 ?>
