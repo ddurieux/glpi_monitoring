@@ -496,6 +496,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $to = new PluginMonitoringRrdtool();
       $plu = new PluginMonitoringServiceevent();
       $pmComponent = new PluginMonitoringComponent();
+      $pmConfig = new PluginMonitoringConfig();
 
       $item = new $itemtype();
       $item->getFromDB($items_id);
@@ -514,8 +515,18 @@ class PluginMonitoringDisplay extends CommonDBTM {
        if (!isset($_SESSION['plugin_monitoring_timezone'])) {
          $_SESSION['plugin_monitoring_timezone'] = '0';
       }
+      $a_timezones_allowed = array();
+      $pmConfig->getFromDB(1);
+      $a_temp = importArrayFromDB($pmConfig->fields['timezones']);
+      foreach ($a_temp as $key) {
+         $a_timezones_allowed[$key] = $a_timezones[$key];
+      }
+      if (count($a_timezones_allowed) == '0') {
+         $a_timezones_allowed['0'] = $a_timezones['0'];
+      }
+      
       Dropdown::showFromArray('plugin_monitoring_timezone', 
-                              $a_timezones, 
+                              $a_timezones_allowed, 
                               array('value'=>$_SESSION['plugin_monitoring_timezone']));
       echo "&nbsp;<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
       echo "</form>";
