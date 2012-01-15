@@ -386,19 +386,20 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $to = new PluginMonitoringRrdtool();
       $plu = new PluginMonitoringServiceevent();
       $img = '';
-
-//      if ($to->displayGLPIGraph("PluginMonitoringService", $data['id'], "12h")) {
-         if (file_exists(GLPI_ROOT."/files/_plugins/monitoring/PluginMonitoringService-".$data['id']."-12h.gif")) {
-            $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$data['id']."-12h.gif'/>";
-         }
-        echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$data['id']."'>";
-//      } else {
-//         $img = '';
-//      }
-//      if ($img != '') {
-         showToolTip($img, array('img'=>$CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"));
-         echo "</a>";
-//      }
+      $timezone = '0';
+      if (isset($_SESSION['plugin_monitoring_timezone'])) {
+         $timezone = $_SESSION['plugin_monitoring_timezone'];
+      }
+      $timezone_file = str_replace("+", ".", $timezone);
+         
+      $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$data['id']."-2h".$timezone_file.".gif'/>";
+         
+      if (file_exists(GLPI_ROOT."/files/_plugins/monitoring/PluginMonitoringService-".$data['id']."-2h".$timezone_file.".gif")) {
+         $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$data['id']."-2h".$timezone_file.".gif'/>";
+      }
+      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$data['id']."'>";
+      showToolTip($img, array('img'=>$CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"));
+      echo "</a>";
       echo "</td>";
 
       // Mode dégradé
