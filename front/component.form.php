@@ -46,6 +46,9 @@ if (isset ($_POST["add"])) {
    $pMonitoringComponent->add($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["update"])) {
+   if (isset($_POST['arg'])) {
+      $_POST['arguments'] = exportArrayToDB($_POST['arg']);
+   }
    $pMonitoringComponent->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["delete"])) {
