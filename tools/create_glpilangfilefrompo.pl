@@ -3,7 +3,7 @@ use Data::Dumper;
 use IO::File;
 use Path::Class;
 
-if (not defined $ARGV[1]) {
+if (not defined $ARGV[0]) {
    print "Error !
 Use : perl create_glpilangfilefrompo.pl 0/1
 O/1 => complete file with english(1) or keep empty (0) for word not translated
