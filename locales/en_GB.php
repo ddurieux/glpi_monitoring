@@ -32,9 +32,7 @@
    ----------------------------------------------------------------------
  */
 
-$title="Monitoring";
-
-$LANG['plugin_monitoring']['title'][0]="$title";
+$LANG['plugin_monitoring']['title'][0]="Monitoring";
 
 $LANG['plugin_monitoring']['host'][0]="hosts";
 $LANG['plugin_monitoring']['host'][1]="Dependencies";
@@ -140,10 +138,6 @@ $LANG['plugin_monitoring']['businessrule'][8]="8 of";
 $LANG['plugin_monitoring']['businessrule'][9]="9 of";
 $LANG['plugin_monitoring']['businessrule'][10]="10 of";
 $LANG['plugin_monitoring']['businessrule'][11]="Group";
-$LANG['plugin_monitoring']['businessrule'][12]="";
-$LANG['plugin_monitoring']['businessrule'][13]="";
-
-$LANG['plugin_monitoring']['businessruledefinition'][0] = $LANG['plugin_monitoring']['businessrule'][0];
 
 $LANG['plugin_monitoring']['component'][0]="Components";
 $LANG['plugin_monitoring']['component'][1]="Add a new component";
@@ -152,4 +146,5 @@ $LANG['plugin_monitoring']['component'][2]="Associated components";
 $LANG['plugin_monitoring']['componentscatalog'][0]="Components catalog";
 
 $LANG['plugin_monitoring']['rule'][0]="Rules";
+
 ?>
