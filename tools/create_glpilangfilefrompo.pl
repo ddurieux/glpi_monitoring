@@ -83,10 +83,10 @@ foreach my $filename (@filesdir) {
    while (my ($key, $po) = each %{$aref}) {
       @split = split /\|/ , $po->reference;
       if (@split > 1) {
-         if ($po->msgstr eq '""' && $ARGV[1] eq '1') {
-            push @lines, "\$LANG['plugin_".$ARGV[0]."']['".$split[0]."'][".$split[1]."]=".$po->msgid.";\n";
+         if ($po->msgstr eq '""' && $ARGV[0] eq '1') {
+            push @lines, "\$LANG['plugin_monitoring']['".$split[0]."'][".$split[1]."]=".$po->msgid.";\n";
          } else {
-            push @lines, "\$LANG['plugin_".$ARGV[0]."']['".$split[0]."'][".$split[1]."]=".$po->msgstr.";\n";
+            push @lines, "\$LANG['plugin_monitoring']['".$split[0]."'][".$split[1]."]=".$po->msgstr.";\n";
          }
       }
    }
