@@ -72,7 +72,8 @@ CREATE TABLE `glpi_plugin_monitoring_componentscatalogs_hosts` (
   `items_id` int(11) NOT NULL DEFAULT '0',
   `itemtype` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `itemtype` (`itemtype`,`items_id`)
+  KEY `itemtype` (`itemtype`,`items_id`),
+  KEY `plugin_monitoring_componentscalalog_id` (`plugin_monitoring_componentscalalog_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -105,7 +106,9 @@ CREATE TABLE `glpi_plugin_monitoring_services` (
   `last_check` datetime DEFAULT NULL,
   `arguments` text DEFAULT NULL COLLATE utf8_unicode_ci,
   `alias_command` text DEFAULT NULL COLLATE utf8_unicode_ci,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `state` (`state`,`state_type`,`plugin_monitoring_componentscatalogs_hosts_id`),
+  KEY `plugin_monitoring_componentscatalogs_hosts_id` (`plugin_monitoring_componentscatalogs_hosts_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
