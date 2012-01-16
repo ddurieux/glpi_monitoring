@@ -52,15 +52,18 @@ switch($_REQUEST['glpi_tab']) {
 
    case 1 :
       $pluginMonitoringServicescatalog = new PluginMonitoringServicescatalog();
+      $pMonitoringDisplay->displayCounters("Businessrules");
       $pluginMonitoringServicescatalog->showBAChecks();
       break;
    
    case 2:
       $pmComponentscatalog = new PluginMonitoringComponentscatalog();
+      $pMonitoringDisplay->displayCounters("Componentscatalog");
       $pmComponentscatalog->showChecks();
       break;
 
    case 3:
+      $pMonitoringDisplay->displayCounters("Ressources");
       // Manage search
       $_GET = $_SESSION['plugin_monitoring']['service'];
       Search::manageGetValues("PluginMonitoringService");

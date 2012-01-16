@@ -575,117 +575,100 @@ class PluginMonitoringDisplay extends CommonDBTM {
    
    
    
-   function displayCounters() {
-      global $CFG_GLPI;
+   function displayCounters($type) {
+      global $DB,$CFG_GLPI;
       
-      $ok = countElementsInTable("glpi_plugin_monitoring_services", 
-              "(`state`='OK' OR `state`='UP') AND `state_type`='HARD'");
+      $ok = 0;
+      $warning = 0;
+      $critical = 0;
+      $ok_soft = 0;
+      $warning_soft = 0;
+      $critical_soft = 0;
       
-      $warning = countElementsInTable("glpi_plugin_monitoring_services", 
-              "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
-                 AND `state_type`='HARD'");
-      
-      $critical = countElementsInTable("glpi_plugin_monitoring_services", 
-              "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
-                 AND `state_type`='HARD'");
-    
-      $warning_soft = countElementsInTable("glpi_plugin_monitoring_services", 
-              "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
-                 AND `state_type`='SOFT'");
-      
-      $critical_soft = countElementsInTable("glpi_plugin_monitoring_services", 
-              "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
-                 AND `state_type`='SOFT'");
-      
-      $ok_soft = countElementsInTable("glpi_plugin_monitoring_services", 
-              "(`state`='OK' OR `state`='UP') AND `state_type`='SOFT'");
-    
-//      echo "<table align='center'>";
-//      echo "<tr>";
-//      echo "<td>";
-//         echo "<table class='tab_cadre'>";
-//         echo "<tr class='tab_bg_1'>";
-//         echo "<th width='70'>";
-//         if ($critical > 0) {
-//            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php?".
-//               "field[0]=3&searchtype[0]=contains&contains[0]=CRITICAL".
-//                  "&link[1]=OR&field[1]=3&searchtype[1]=contains&contains[1]=DOWN".
-//                  "&link[2]=OR&field[2]=3&searchtype[2]=contains&contains[2]=UNREACHABLE".
-//                  "&link[3]=AND&field[3]=3&searchtype[3]=contains&contains[3]=DOWNTIME".
-//                  "&itemtype=PluginMonitoringService&start=0&glpi_tab=2'>
-//               <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_40.png'/>
-//                  </a>";
-//         }
-//         echo "</th>";
-//         echo "<th width='70'>";
-//         if ($warning > 0) {
-//            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_40.png'/>";
-//         }
-//         echo "</th>";
-//         echo "<th width='70'>";
-//         echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_40.png'/>";
-//         echo "</th>";
-//         echo "</tr>";
-//
-//         echo "<th height='30'>";
-//         if ($critical > 0) {
-//            echo $critical;
-//         }
-//         echo "</th>";
-//         echo "<th>";
-//         if ($warning > 0) {
-//            echo $warning;
-//         }
-//         echo "</th>";
-//         echo "<th>";
-//         echo $ok;
-//         echo "</th>";
-//         echo "</tr>";      
-//         echo "</table>";
-//      echo "</td>";
-//      echo "<td width='100'>";
-//      
-//      echo "</td>";
-//      echo "<td>";
-//         echo "<table class='tab_cadre'>";
-//         echo "<tr class='tab_bg_1'>";
-//         echo "<th width='70' height='40'>";
-//         if ($critical_soft > 0) {
-//            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_40_soft.png'/>";
-//         }
-//         echo "</th>";
-//         echo "<th width='70'>";
-//         if ($warning_soft > 0) {
-//            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_40_soft.png'/>";
-//         }
-//         echo "</th>";
-//         echo "<th width='70'>";
-//         if ($ok_soft > 0) {
-//            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_40_soft.png'/>";
-//         }
-//         echo "</th>";
-//         echo "</tr>";
-//         echo "<th height='30'>";
-//         if ($critical_soft > 0) {
-//            echo $critical_soft;
-//         }
-//         echo "</th>";
-//         echo "<th>";
-//         if ($warning_soft > 0) {
-//            echo $warning_soft;
-//         }
-//         echo "</th>";
-//         echo "<th>";
-//         if ($ok_soft > 0) {
-//            echo $ok_soft;
-//         }
-//         echo "</th>";
-//         echo "</tr>";      
-//         echo "</table>";
-//      echo "</td>";
-//      echo "</tr>";
-//      echo "</table>";
-      
+      if ($type == 'Ressources') {
+
+         $ok = countElementsInTable("glpi_plugin_monitoring_services", 
+                 "(`state`='OK' OR `state`='UP') AND `state_type`='HARD'");
+
+         $warning = countElementsInTable("glpi_plugin_monitoring_services", 
+                 "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
+                    AND `state_type`='HARD'");
+
+         $critical = countElementsInTable("glpi_plugin_monitoring_services", 
+                 "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
+                    AND `state_type`='HARD'");
+
+         $warning_soft = countElementsInTable("glpi_plugin_monitoring_services", 
+                 "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
+                    AND `state_type`='SOFT'");
+
+         $critical_soft = countElementsInTable("glpi_plugin_monitoring_services", 
+                 "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
+                    AND `state_type`='SOFT'");
+
+         $ok_soft = countElementsInTable("glpi_plugin_monitoring_services", 
+                 "(`state`='OK' OR `state`='UP') AND `state_type`='SOFT'");
+      } else if ($type == 'Componentscatalog') {
+         $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+         $pmService = new PluginMonitoringService();
+         $query = "SELECT * FROM `".$pmComponentscatalog_Host->getTable()."`";
+         $result = $DB->query($query);
+         $state = array();
+         $state['ok'] = 0;
+         $state['warning'] = 0;
+         $state['critical'] = 0;
+         $state['ok_soft'] = 0;
+         $state['warning_soft'] = 0;
+         $state['critical_soft'] = 0;
+         while ($dataComponentscatalog_Host=$DB->fetch_array($result)) {            
+
+            $state['ok'] += countElementsInTable("glpi_plugin_monitoring_services", 
+                    "(`state`='OK' OR `state`='UP') AND `state_type`='HARD'
+                       AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
+
+
+            $state['warning'] += countElementsInTable("glpi_plugin_monitoring_services", 
+                    "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
+                       AND `state_type`='HARD'
+                       AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
+
+            $state['critical'] += countElementsInTable("glpi_plugin_monitoring_services", 
+                    "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
+                       AND `state_type`='HARD'
+                       AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
+
+            $state['warning_soft'] += countElementsInTable("glpi_plugin_monitoring_services", 
+                    "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
+                       AND `state_type`='SOFT'
+                       AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
+
+            $state['critical_soft'] += countElementsInTable("glpi_plugin_monitoring_services", 
+                    "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
+                       AND `state_type`='SOFT'
+                       AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
+
+            $state['ok_soft'] += countElementsInTable("glpi_plugin_monitoring_services", 
+                    "(`state`='OK' OR `state`='UP') AND `state_type`='SOFT'
+                       AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
+
+         }
+         if ($state['critical'] > 0) {
+            $critical++;
+         } else if ($state['warning'] > 0) {
+            $warning++;
+         } else if ($state['ok'] > 0) {
+            $ok++;
+         }
+         if ($state['critical_soft'] > 0) {
+            $critical_soft++;
+         } else if ($state['warning_soft'] > 0) {
+            $warning_soft++;
+         } else if ($state['ok_soft'] > 0) {
+            $ok_soft++;
+         }
+      } else if ($type == 'Businessrules') {
+         
+      }
       
       // *** Test new presentation
       
@@ -749,7 +732,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "</td>";
       
       echo "</tr>";
-      echo "</table>";
+      echo "</table><br/>";
          
          
    }

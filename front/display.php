@@ -49,7 +49,6 @@ echo '<meta http-equiv ="refresh" content="30">';
 $_SESSION['plugin_monitoring']['service'] = $_GET;
 
 $pMonitoringDisplay = new PluginMonitoringDisplay();
-$pMonitoringDisplay->displayCounters();
 $pMonitoringDisplay->showTabs();
 echo "<style type='text/css'>
 div#tabcontent {
