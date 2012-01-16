@@ -611,60 +611,66 @@ class PluginMonitoringDisplay extends CommonDBTM {
       } else if ($type == 'Componentscatalog') {
          $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
          $pmService = new PluginMonitoringService();
-         $query = "SELECT * FROM `".$pmComponentscatalog_Host->getTable()."`";
-         $result = $DB->query($query);
-         $state = array();
-         $state['ok'] = 0;
-         $state['warning'] = 0;
-         $state['critical'] = 0;
-         $state['ok_soft'] = 0;
-         $state['warning_soft'] = 0;
-         $state['critical_soft'] = 0;
-         while ($dataComponentscatalog_Host=$DB->fetch_array($result)) {            
+         $queryCat = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs`";
+         $resultCat = $DB->query($queryCat);
+         while ($data=$DB->fetch_array($resultCat)) { 
 
-            $state['ok'] += countElementsInTable("glpi_plugin_monitoring_services", 
-                    "(`state`='OK' OR `state`='UP') AND `state_type`='HARD'
-                       AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
+            $query = "SELECT * FROM `".$pmComponentscatalog_Host->getTable()."`
+               WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'";
+            $result = $DB->query($query);
+            $state = array();
+            $state['ok'] = 0;
+            $state['warning'] = 0;
+            $state['critical'] = 0;
+            $state['ok_soft'] = 0;
+            $state['warning_soft'] = 0;
+            $state['critical_soft'] = 0;
+            while ($dataComponentscatalog_Host=$DB->fetch_array($result)) {            
+
+               $state['ok'] += countElementsInTable("glpi_plugin_monitoring_services", 
+                       "(`state`='OK' OR `state`='UP') AND `state_type`='HARD'
+                          AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
 
 
-            $state['warning'] += countElementsInTable("glpi_plugin_monitoring_services", 
-                    "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
-                       AND `state_type`='HARD'
-                       AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
+               $state['warning'] += countElementsInTable("glpi_plugin_monitoring_services", 
+                       "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
+                          AND `state_type`='HARD'
+                          AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
 
-            $state['critical'] += countElementsInTable("glpi_plugin_monitoring_services", 
-                    "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
-                       AND `state_type`='HARD'
-                       AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
+               $state['critical'] += countElementsInTable("glpi_plugin_monitoring_services", 
+                       "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
+                          AND `state_type`='HARD'
+                          AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
 
-            $state['warning_soft'] += countElementsInTable("glpi_plugin_monitoring_services", 
-                    "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
-                       AND `state_type`='SOFT'
-                       AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
+               $state['warning_soft'] += countElementsInTable("glpi_plugin_monitoring_services", 
+                       "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
+                          AND `state_type`='SOFT'
+                          AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
 
-            $state['critical_soft'] += countElementsInTable("glpi_plugin_monitoring_services", 
-                    "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
-                       AND `state_type`='SOFT'
-                       AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
+               $state['critical_soft'] += countElementsInTable("glpi_plugin_monitoring_services", 
+                       "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
+                          AND `state_type`='SOFT'
+                          AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
 
-            $state['ok_soft'] += countElementsInTable("glpi_plugin_monitoring_services", 
-                    "(`state`='OK' OR `state`='UP') AND `state_type`='SOFT'
-                       AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
+               $state['ok_soft'] += countElementsInTable("glpi_plugin_monitoring_services", 
+                       "(`state`='OK' OR `state`='UP') AND `state_type`='SOFT'
+                          AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
 
-         }
-         if ($state['critical'] > 0) {
-            $critical++;
-         } else if ($state['warning'] > 0) {
-            $warning++;
-         } else if ($state['ok'] > 0) {
-            $ok++;
-         }
-         if ($state['critical_soft'] > 0) {
-            $critical_soft++;
-         } else if ($state['warning_soft'] > 0) {
-            $warning_soft++;
-         } else if ($state['ok_soft'] > 0) {
-            $ok_soft++;
+            }
+            if ($state['critical'] > 0) {
+               $critical++;
+            } else if ($state['warning'] > 0) {
+               $warning++;
+            } else if ($state['ok'] > 0) {
+               $ok++;
+            }
+            if ($state['critical_soft'] > 0) {
+               $critical_soft++;
+            } else if ($state['warning_soft'] > 0) {
+               $warning_soft++;
+            } else if ($state['ok_soft'] > 0) {
+               $ok_soft++;
+            }
          }
       } else if ($type == 'Businessrules') {
          
