@@ -98,6 +98,133 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       return $ong;
    }
    
+   
+   
+   function showChecks() {
+      global $DB,$CFG_GLPI,$LANG;
+      
+      $pmService = new PluginMonitoringService();
+      $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+      
+      echo "<table class='tab_cadre' width='100%'>";
+      echo "<tr class='tab_bg_4' style='background: #cececc;'>";
+      
+      $a_componentscatalogs = $this->find();
+      $i = 0;
+      foreach ($a_componentscatalogs as $data) {
+         echo "<td>";
+
+         echo "<table  class='tab_cadre_fixe' style='width:158px;'>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<th colspan='2' style='font-size:18px;' height='60'>";
+         echo $data['name'];
+         echo "</th>";
+         echo "</tr>";
+         
+         $nb_ressources = 0;
+         $query = "SELECT * FROM `".$pmComponentscatalog_Host->getTable()."`
+            WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'";
+         $result = $DB->query($query);
+         while ($dataComponentscatalog_Host=$DB->fetch_array($result)) {
+            $a_gstate = array();
+            
+            $queryService = "SELECT * FROM `".$pmService->getTable()."`
+               WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'";
+            $resultService = $DB->query($queryService);
+            while ($dataService=$DB->fetch_array($resultService)) {
+               $nb_ressources++;
+               $state = array();
+               $state['OK'] = 0;
+               $state['WARNING'] = 0;
+               $state['CRITICAL'] = 0;
+               if ($dataService['state_type'] != "HARD") {
+                  $a_gstate[$dataService['id']] = "OK";
+               } else {
+                  switch($dataService['state']) {
+
+                     case 'UP':
+                     case 'OK':
+                        $state['OK']++;
+                        break;
+
+                     case 'DOWN':
+                     case 'UNREACHABLE':
+                     case 'CRITICAL':
+                     case 'DOWNTIME':
+                        $state['CRITICAL']++;
+                        break;
+
+                     case 'WARNING':
+                     case 'UNKNOWN':
+                     case 'RECOVERY':
+                     case 'FLAPPING':
+                        $state['WARNING']++;
+                        break;
+
+                  }
+                  if ($state['CRITICAL'] >= 1) {
+                     $a_gstate[$dataService['id']] = "CRITICAL";
+                  } else if ($state['WARNING'] >= 1) {
+                     $a_gstate[$dataService['id']] = "WARNING";
+                  } else {
+                     $a_gstate[$dataService['id']] = "OK";
+                  }
+               }
+            }
+         }
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>";
+         echo $LANG['plugin_monitoring']['service'][0]."&nbsp;:";
+         echo "</td>";
+         echo "<th align='center' height='40' width='50%'>";
+         echo $nb_ressources;
+         echo "</th>";
+         echo "</tr>";
+         
+         $state = array();
+         $state['OK'] = 0;
+         $state['WARNING'] = 0;
+         $state['CRITICAL'] = 0;
+         foreach ($a_gstate as $value) {
+            $state[$value]++;
+         }
+          
+         $background = '';
+         $count = 0;
+         if ($state['CRITICAL'] > 0) {
+            $count = $state['CRITICAL'];
+            $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_critical.png"';
+         } else if ($state['WARNING'] > 0) {
+            $count = $state['WARNING'];
+            $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_warning.png"';
+         } else if ($state['OK'] > 0) {
+            $count = $state['OK'];
+            $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_ok.png"';
+         }
+         echo "<tr ".$background.">";
+         echo "<th style='background-color:transparent;' colspan='2' height='100'>";
+         echo "<font style='font-size: 52px;'>".$count."</font>";         
+         echo "</th>";
+         echo "</tr>";
+
+         echo "</table>";
+
+         echo "</td>";
+         
+         $i++;
+         if ($i == '6') {
+            echo "</tr>";
+            echo "<tr class='tab_bg_4' style='background: #cececc;'>";
+            $i = 0;
+         }
+      }      
+      
+      echo "</tr>";
+      echo "</table>";      
+   }
+  
+   
 }
 
 ?>

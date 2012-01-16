@@ -56,7 +56,8 @@ switch($_REQUEST['glpi_tab']) {
       break;
    
    case 2:
-      
+      $pmComponentscatalog = new PluginMonitoringComponentscatalog();
+      $pmComponentscatalog->showChecks();
       break;
 
    case 3:
