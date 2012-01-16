@@ -51,7 +51,6 @@ $LANG['plugin_monitoring']['host'][13]="State ok";
 $LANG['plugin_monitoring']['host'][14]="State critical";
 $LANG['plugin_monitoring']['host'][15]="Last day";
 $LANG['plugin_monitoring']['host'][16]="Last week";
-$LANG['plugin_monitoring']['host'][17]="temps";
 $LANG['plugin_monitoring']['host'][18]="Add these hosts to monitoring";
 $LANG['plugin_monitoring']['host'][19]="Equipments";
 
