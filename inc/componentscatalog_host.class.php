@@ -42,7 +42,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
    static function getTypeName() {
       global $LANG;
 
-      return "Hosts";
+      return $LANG['plugin_monitoring']['host'][0];
    }
 
 

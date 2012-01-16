@@ -23,7 +23,7 @@ $po = new Locale::PO(-msgid=>'', -msgstr=>
          "Report-Msgid-Bugs-To: http://forge.indepnet.net/projects/monitoring/\\n" .
          "POT-Creation-Date: 2012-01-16 22:45+0200\\n" .
          "PO-Revision-Date: 2012-01-16 22:45+0200\\n" . 
-         "Last-Translator: promotux <d.durieux@siprossii.com>\\n" .
+         "Last-Translator: David Durieux <d.durieux@siprossii.com>\\n" .
          "Language-Team: - \\n" .
          "MIME-Version: 1.0\\n" .
          "Content-Type: text/plain; charset=UTF-8\\n" .

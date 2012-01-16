@@ -47,7 +47,7 @@ class PluginMonitoringComponent extends CommonDBTM {
    static function getTypeName() {
       global $LANG;
 
-      return "Components";
+      return $LANG['plugin_monitoring']['component'][0];
    }
    
    
@@ -188,7 +188,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "</td>";
       // * active check
       echo "<td>";
-      echo "Active checks enable&nbsp;:";
+      echo $LANG['plugin_monitoring']['host'][5]."&nbsp;:";
       echo "</td>";
       echo "<td align='center'>";
       echo Dropdown::showYesNo("active_checks_enabled", $this->fields['active_checks_enabled']);
@@ -198,7 +198,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       // * command
       echo "<tr>";
       echo "<td>";
-      echo "Commande&nbsp;:";
+      echo $LANG['plugin_monitoring']['service'][5]."&nbsp;:";
       echo "</td>";
       echo "<td align='center'>";
       $pMonitoringCommand->getFromDB($this->fields['plugin_monitoring_commands_id']);
@@ -209,7 +209,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "</td>";
       // * passive check
       echo "<td>";
-      echo "Passive checks enable&nbsp;:";
+      echo $LANG['plugin_monitoring']['service'][7]."&nbsp;:";
       echo "</td>";
       echo "<td align='center'>";
       echo Dropdown::showYesNo("passive_checks_enabled", $this->fields['passive_checks_enabled']);
@@ -247,13 +247,13 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "</tr>";
       
       echo "<tr>";
-      echo "<th colspan='4'>Remote check</th>";
+      echo "<th colspan='4'>".$LANG['plugin_monitoring']['service'][8]."</th>";
       echo "</tr>";
       
       echo "<tr>";
       // * remotesystem
       echo "<td>";
-      echo "Utility used for remote check&nbsp;:";
+      echo $LANG['plugin_monitoring']['service'][9]."&nbsp;:";
       echo "</td>";
       echo "<td>";
       $input = array();
@@ -267,7 +267,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "</td>";      
       // * is_argument
       echo "<td>";
-      echo "Use arguments (Only for NRPE)&nbsp;:";
+      echo $LANG['plugin_monitoring']['service'][10]."&nbsp;:";
       echo "</td>";
       echo "<td>";
       Dropdown::showYesNo("is_arguments", $this->fields['is_arguments']);
@@ -277,7 +277,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "<tr>";
       // alias command
       echo "<td>";
-      echo "Alias command if required (Only for NRPE)&nbsp;:";
+      echo $LANG['plugin_monitoring']['service'][11]."&nbsp;:";
       echo "</td>";
       echo "<td>";
       echo "<input type='text' name='alias_command' value='".$this->fields['alias_command']."' />";
@@ -306,7 +306,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       if (count($a_displayarg) > 0) {
          $a_argtext = importArrayFromDB($pMonitoringCommand->fields['arguments']);
          echo "<tr>";
-         echo "<th colspan='4'>Arguments&nbsp;</th>";
+         echo "<th colspan='4'>".$LANG['plugin_monitoring']['service'][4]."&nbsp;</th>";
          echo "</tr>";
           
          foreach ($a_displayarg as $key=>$value) {
@@ -316,7 +316,7 @@ class PluginMonitoringComponent extends CommonDBTM {
             if (isset($a_argtext[$key])) {
                echo nl2br($a_argtext[$key])."&nbsp;:";
             } else {
-               echo "Argument&nbsp;:";
+               echo $LANG['plugin_monitoring']['service'][14]."&nbsp;:";
             }
             echo "</td>";
             echo "<td>";

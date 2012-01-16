@@ -56,6 +56,7 @@ $LANG['plugin_monitoring']['host'][18]="Add these hosts to monitoring";
 $LANG['plugin_monitoring']['host'][19]="Equipments";
 
 $LANG['plugin_monitoring']['config'][0]="Timezones (for graph)";
+$LANG['plugin_monitoring']['config'][1]="Configuration";
 
 $LANG['plugin_monitoring']['grouphost'][0]="hosts groups";
 $LANG['plugin_monitoring']['grouphost'][1]="hosts group";
@@ -142,9 +143,9 @@ $LANG['plugin_monitoring']['businessrule'][11]="Group";
 $LANG['plugin_monitoring']['component'][0]="Components";
 $LANG['plugin_monitoring']['component'][1]="Add a new component";
 $LANG['plugin_monitoring']['component'][2]="Associated components";
+$LANG['plugin_monitoring']['component'][3]="Static hosts";
+$LANG['plugin_monitoring']['component'][4]="Dynmic hosts";
 
 $LANG['plugin_monitoring']['componentscatalog'][0]="Components catalog";
-
-$LANG['plugin_monitoring']['rule'][0]="Rules";
 
 ?>

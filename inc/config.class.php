@@ -48,7 +48,7 @@ class PluginMonitoringConfig extends CommonDBTM {
    static function getTypeName() {
       global $LANG;
 
-      return "Configuration";
+      return $LANG['plugin_monitoring']['config'][1];
    }
 
 

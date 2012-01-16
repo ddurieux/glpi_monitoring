@@ -47,7 +47,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    static function getTypeName() {
       global $LANG;
 
-      return "Components catalog";
+      return $LANG['plugin_monitoring']['componentscatalog'][0];
    }
 
 
@@ -89,9 +89,9 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       
       if ($_GET['id'] > 0) {
          $ong[1] = $LANG['plugin_monitoring']['component'][0];
-         $ong[2] = "Static hosts";
-         $ong[3] = "Rules";
-         $ong[4] = "Dynamic hosts";
+         $ong[2] = $LANG['plugin_monitoring']['component'][3];
+         $ong[3] = $LANG['rulesengine'][17];
+         $ong[4] = $LANG['plugin_monitoring']['component'][4];
          $ong[5] = $LANG['plugin_monitoring']['contact'][20];
       }
       
