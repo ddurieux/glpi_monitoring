@@ -209,7 +209,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             $itemtype = $datah['itemtype'];
             $item = new $itemtype();
             if ($item->getFromDB($datah['items_id'])) {
-               $a_hostname[] = $itemtype."-".$datah['items_id']."-".preg_replace("/[^A-Za-z0-9]/","",$item->fields['name']);
+               $a_hostname[] = $itemtype."-0-".preg_replace("/[^A-Za-z0-9]/","",$item->fields['name']);
                $hostname = $item->fields['name'];
             }
          }
