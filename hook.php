@@ -1,35 +1,43 @@
 <?php
 
 /*
-   ----------------------------------------------------------------------
-   Monitoring plugin for GLPI
-   Copyright (C) 2010-2011 by the GLPI plugin monitoring Team.
+   ------------------------------------------------------------------------
+   Plugin Monitoring for GLPI
+   Copyright (C) 2011-2012 by the Plugin Monitoring for GLPI Development Team.
 
    https://forge.indepnet.net/projects/monitoring/
-   ----------------------------------------------------------------------
+   ------------------------------------------------------------------------
 
    LICENSE
 
-   This file is part of Monitoring plugin for GLPI.
+   This file is part of Plugin Monitoring project.
 
-   Monitoring plugin for GLPI is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 2 of the License, or
-   any later version.
+   Plugin Monitoring for GLPI is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Affero General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-   Monitoring plugin for GLPI is distributed in the hope that it will be useful,
+   Plugin Monitoring for GLPI is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+   GNU Affero General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with Monitoring plugin for GLPI.  If not, see <http://www.gnu.org/licenses/>.
+   You should have received a copy of the GNU Affero General Public License
+   along with Behaviors. If not, see <http://www.gnu.org/licenses/>.
 
    ------------------------------------------------------------------------
-   Original Author of file: David DURIEUX
-   Co-authors of file:
-   Purpose of file:
-   ----------------------------------------------------------------------
+
+   @package   Plugin Monitoring for GLPI
+   @author    David Durieux
+   @co-author 
+   @comment   
+   @copyright Copyright (c) 2011-2012 Plugin Monitoring for GLPI team
+   @license   AGPL License 3.0 or (at your option) any later version
+              http://www.gnu.org/licenses/agpl-3.0-standalone.html
+   @link      https://forge.indepnet.net/projects/monitoring/
+   @since     2011
+ 
+   ------------------------------------------------------------------------
  */
 
 function plugin_monitoring_giveItem($type,$id,$data,$num) {
