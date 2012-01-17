@@ -223,6 +223,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             // Manage arguments
             $array = array();
             preg_match_all("/\\$(ARG\d+)\\$/", $pMonitoringCommand->fields['command_line'], $array);
+            sort($array[0]);
             $a_arguments = importArrayFromDB($a_component['arguments']);
             $args = '';
             foreach ($array[0] as $arg) {
