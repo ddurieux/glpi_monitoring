@@ -204,11 +204,13 @@ class PluginMonitoringShinken extends CommonDBTM {
             WHERE `id` = '".$data['plugin_monitoring_componentscatalogs_hosts_id']."'
             LIMIT 1";
          $resulth = $DB->query($queryh);
+         $hostname = '';
          while ($datah=$DB->fetch_array($resulth)) {
             $itemtype = $datah['itemtype'];
             $item = new $itemtype();
             if ($item->getFromDB($datah['items_id'])) {
                $a_hostname[] = $itemtype."-".$datah['items_id']."-".preg_replace("/[^A-Za-z0-9]/","",$item->fields['name']);
+               $hostname = $item->fields['name'];
             }
          }
          if (count($a_hostname) > 0) {
@@ -232,7 +234,9 @@ class PluginMonitoringShinken extends CommonDBTM {
                   if (!isset($a_arguments[$arg])) {
                      $args .= '!';
                   } else {
-                     if (strstr($a_arguments[$arg], "[")) {
+                     if ($a_arguments[$arg] == "[[HOSTNAME]]") {
+                        $a_arguments[$arg] = $hostname;
+                     } else if (strstr($a_arguments[$arg], "[")) {
                         $a_arguments[$arg] = pluginMonitoringService::convertArgument($a_component['id'], $a_arguments[$arg]);
                      }
                      $args .= '!'.$a_arguments[$arg];
