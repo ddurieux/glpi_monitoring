@@ -583,7 +583,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
    
    
    
-   function displayCounters($type) {
+   function displayCounters($type, $display=1) {
       global $DB,$CFG_GLPI;
       
       $ok = 0;
@@ -683,7 +683,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
       } else if ($type == 'Businessrules') {
          
       }
-      
+      if ($display == '0') {
+         return $state;
+      }
       // *** Test new presentation
       
       echo "<table align='center'>";

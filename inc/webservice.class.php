@@ -191,28 +191,12 @@ class PluginMonitoringWebservice {
    static function methodDashboard($params, $protocol) {
       $array = array();
       
-      $array['ok'] = countElementsInTable("glpi_plugin_monitoring_services", 
-                 "(`state`='OK' OR `state`='UP') AND `state_type`='HARD'");
+      if (!isset($params['view'])) {
+         return array();
+      }
       
-      $array['ok_soft'] = countElementsInTable("glpi_plugin_monitoring_services", 
-                 "(`state`='OK' OR `state`='UP') AND `state_type`='SOFT'");
-
-      $array['warning'] = countElementsInTable("glpi_plugin_monitoring_services", 
-                 "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
-                    AND `state_type`='HARD'");
-
-      $array['warning_soft'] = countElementsInTable("glpi_plugin_monitoring_services", 
-                 "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
-                    AND `state_type`='SOFT'");
-      
-      $array['critical'] = countElementsInTable("glpi_plugin_monitoring_services", 
-                 "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
-                    AND `state_type`='HARD'");
-      
-      $array['critical_soft'] = countElementsInTable("glpi_plugin_monitoring_services", 
-                 "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
-                    AND `state_type`='SOFT'");
-      
+      $pm = new PluginMonitoringDisplay();
+      $array = $pm->displayCounters($params['view'], 0);
             
       return $array;
    }
