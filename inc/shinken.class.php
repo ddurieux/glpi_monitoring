@@ -129,7 +129,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $classname = $data['itemtype'];
          $class = new $classname;
          if ($class->getFromDB($data['items_id'])) {
-            $a_hosts[$i]['host_name'] = $classname."-".$data['items_id']."-".preg_replace("/[^A-Za-z0-9]/","",$class->fields['name']);
+            $a_hosts[$i]['host_name'] = $classname."-0-".preg_replace("/[^A-Za-z0-9]/","",$class->fields['name']);
             $a_hosts[$i]['alias'] = $a_hosts[$i]['host_name'];
             $ip = PluginMonitoringHostaddress::getIp($data['items_id'], $data['itemtype'], $class->fields['name']);
                
