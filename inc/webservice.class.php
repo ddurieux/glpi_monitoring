@@ -177,6 +177,25 @@ class PluginMonitoringWebservice {
       $array = $pluginMonitoringShinken->generateTimeperiodsCfg();
       return $array;
    }
+   
+   
+   
+   static function methodDashboard($params, $protocol) {
+      $array = array();
+      
+      $array['ok'] = countElementsInTable("glpi_plugin_monitoring_services", 
+                 "(`state`='OK' OR `state`='UP') AND `state_type`='HARD'");
+
+      $array['warning'] = countElementsInTable("glpi_plugin_monitoring_services", 
+                 "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
+                    AND `state_type`='HARD'");
+
+      $array['critical'] = countElementsInTable("glpi_plugin_monitoring_services", 
+                 "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
+                    AND `state_type`='HARD'");
+            
+      return $array;
+   }
 
 }
 
