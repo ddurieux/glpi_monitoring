@@ -618,7 +618,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
                  "(`state`='OK' OR `state`='UP') AND `state_type`='SOFT'");
       } else if ($type == 'Componentscatalog') {
          $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
-         $pmService = new PluginMonitoringService();
          $queryCat = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs`";
          $resultCat = $DB->query($queryCat);
          while ($data=$DB->fetch_array($resultCat)) { 
