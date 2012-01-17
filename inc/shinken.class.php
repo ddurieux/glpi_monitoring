@@ -236,7 +236,6 @@ class PluginMonitoringShinken extends CommonDBTM {
                   } else {
                      if (strstr($a_arguments[$arg], "[[HOSTNAME]]")) {
                         $a_arguments[$arg] = str_replace("[[HOSTNAME]]", $hostname, $a_arguments[$arg]);
-                        $a_arguments[$arg] = $hostname;
                      } else if (strstr($a_arguments[$arg], "[")) {
                         $a_arguments[$arg] = pluginMonitoringService::convertArgument($a_component['id'], $a_arguments[$arg]);
                      }
