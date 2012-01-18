@@ -177,11 +177,11 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       foreach ($a_json->data[0]->miscellaneous[0]->color as $color) {
          $opts .= " --color ".$color;
       }
-      if ($a_json->data[0]->limits[0]->{upper-limit} != "") {
-         $opts .= " --upper-limit ".$a_json->data[0]->limits[0]->{upper-limit};
+      if ($a_json->data[0]->limits[0]->{"upper-limit"} != "") {
+         $opts .= " --upper-limit ".$a_json->data[0]->limits[0]->{"upper-limit"};
       }
-      if ($a_json->data[0]->limits[0]->{lower-limit} != "") {
-         $opts .= " --upper-limit ".$a_json->data[0]->limits[0]->{lower-limit};
+      if ($a_json->data[0]->limits[0]->{"lower-limit"} != "") {
+         $opts .= " --upper-limit ".$a_json->data[0]->limits[0]->{"lower-limit"};
       }
       
       foreach ($a_json->data[0]->data as $data) {
