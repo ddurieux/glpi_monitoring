@@ -181,7 +181,7 @@ class PluginMonitoringRrdtool extends CommonDBTM {
          $opts .= " --upper-limit ".$a_json->data[0]->limits[0]->{"upper-limit"};
       }
       if ($a_json->data[0]->limits[0]->{"lower-limit"} != "") {
-         $opts .= " --upper-limit ".$a_json->data[0]->limits[0]->{"lower-limit"};
+         $opts .= " --lower-limit ".$a_json->data[0]->limits[0]->{"lower-limit"};
       }
       
       foreach ($a_json->data[0]->data as $data) {
