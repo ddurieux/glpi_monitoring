@@ -684,13 +684,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       if ($display == '0') {
          $a_return = array();
-         $a_return['ok'] = $ok;
-         $a_return['ok_soft'] = $ok_soft;
-         $a_return['warning'] = $warning;
-         $a_return['warning_soft'] = $warning_soft;
-         $a_return['critical'] = $critical;
-         $a_return['critical_soft'] = $critical_soft;
-         
+         $a_return['ok'] = strval($ok);
+         $a_return['ok_soft'] = strval($ok_soft);
+         $a_return['warning'] = strval($warning);
+         $a_return['warning_soft'] = strval($warning_soft);
+         $a_return['critical'] = strval($critical);
+         $a_return['critical_soft'] = strval($critical_soft);
          return $a_return;
       }
       // *** Test new presentation
