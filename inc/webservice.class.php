@@ -200,7 +200,17 @@ class PluginMonitoringWebservice {
             
       return $array;
    }
-
+   
+   
+   
+   static function methodGetServicesList($params, $protocol) {
+      
+      $array = array();
+      $array[] = "Computer xxxx : checkmem";
+      $array[] = "Computer tttt : checkcpu";
+      
+      return $array;
+   }
 }
 
 ?>
