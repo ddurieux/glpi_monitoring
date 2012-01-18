@@ -69,17 +69,6 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       
       $opts .= " RRA:LAST:0.5:1:1400";
       $opts .= " RRA:AVERAGE:0.5:5:1016";
-      
-//      $opts .= " RRA:AVERAGE:0.5:1:600";
-//      $opts .= " RRA:AVERAGE:0.5:6:700";
-//      $opts .= " RRA:AVERAGE:0.5:24:775";
-//      $opts .= " RRA:AVERAGE:0.5:288:797";
-//      $opts .= " RRA:MAX:0.5:1:600";
-//      $opts .= " RRA:MAX:0.5:6:700";
-//      $opts .= " RRA:MAX:0.5:24:775";
-//      $opts .= " RRA:MAX:0.5:288:797";
-
-      //$ret = rrd_create($fname, $opts, count($opts));
 
       system(PluginMonitoringConfig::getRRDPath().'/rrdtool create '.$fname.$opts, $ret);
       if (isset($ret) 
@@ -184,12 +173,17 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       $opts .= " --title '".$a_json->data[0]->labels[0]->title."'";
 //      $opts .= " --vertical-label '".$a_json->data->labels->vertical-label."'";
       $opts .= " --width ".$width;
-//      if (count($a_legend) > 4) {
-         $opts .= " --height 200";
-//      }
+      $opts .= " --height 200";
       foreach ($a_json->data[0]->miscellaneous[0]->color as $color) {
          $opts .= " --color ".$color;
       }
+      if ($a_json->data[0]->limits[0]->{upper-limit} != "") {
+         $opts .= " --upper-limit ".$a_json->data[0]->limits[0]->{upper-limit};
+      }
+      if ($a_json->data[0]->limits[0]->{lower-limit} != "") {
+         $opts .= " --upper-limit ".$a_json->data[0]->limits[0]->{lower-limit};
+      }
+      
       foreach ($a_json->data[0]->data as $data) {
          $data = str_replace("[[RRDFILE]]", 
                              GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id.".rrd", 
