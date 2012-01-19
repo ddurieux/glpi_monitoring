@@ -1073,6 +1073,12 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'arguments', 
                                  'arguments', 
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->dropField($newTable, 
+                                 'regex');
+         $migration->dropField($newTable, 
+                                 'legend');
+         $migration->dropField($newTable, 
+                                 'unit');
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable, 
                                  'is_active', 
@@ -1345,6 +1351,48 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       
       
+    /*
+    * Table glpi_plugin_monitoring_contactgroups_contactgroups
+    */
+      $newTable = "glpi_plugin_monitoring_contactgroups_contactgroups";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+         $DB->query($query);
+      }
+         $migration->changeField($newTable, 
+                                 'id', 
+                                 'id', 
+                                 "int(11) NOT NULL AUTO_INCREMENT");
+         $migration->changeField($newTable, 
+                                 'plugin_monitoring_contactgroups_id_1', 
+                                 'plugin_monitoring_contactgroups_id_1', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'plugin_monitoring_contactgroups_id_2', 
+                                 'plugin_monitoring_contactgroups_id_2', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+      $migration->migrationOneTable($newTable);
+
+         $migration->addField($newTable, 
+                                 'plugin_monitoring_contactgroups_id_1', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'plugin_monitoring_contactgroups_id_2', 
+                                 "int(11) NOT NULL DEFAULT '0'");         
+         $migration->addKey($newTable,
+                            array('plugin_monitoring_contactgroups_id_1',
+                                  'plugin_monitoring_contactgroups_id_2'),
+                            "unicity",
+                            "UNIQUE");
+         $migration->addKey($newTable,
+                            "plugin_monitoring_contactgroups_id_2"); 
+      $migration->migrationOneTable($newTable);
+
+      
+      
       
       
       
@@ -1360,13 +1408,6 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       }
       
       
-      // in table commands, remove : 
-      /*
-   `regex` text DEFAULT NULL COLLATE utf8_unicode_ci,
-   `legend` text DEFAULT NULL COLLATE utf8_unicode_ci,
-   `unit` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-
-       */
       
 }
 
