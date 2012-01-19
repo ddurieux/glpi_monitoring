@@ -38,7 +38,7 @@ CREATE TABLE `glpi_plugin_monitoring_components` (
   `plugin_monitoring_checks_id` int(11) NOT NULL DEFAULT '0',
   `active_checks_enabled` tinyint(1) NOT NULL DEFAULT '1',
   `passive_checks_enabled` tinyint(1) NOT NULL DEFAULT '1',
-  `calendars_id`  int(11) NOT NULL DEFAULT '0',
+  `calendars_id` int(11) NOT NULL DEFAULT '0',
   `remotesystem` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `is_arguments` tinyint(1) NOT NULL DEFAULT '0',
   `alias_command` text DEFAULT NULL COLLATE utf8_unicode_ci,
@@ -88,7 +88,8 @@ CREATE TABLE `glpi_plugin_monitoring_componentscatalogs_rules` (
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `condition` text DEFAULT NULL COLLATE utf8_unicode_ci,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `plugin_monitoring_componentscalalog_id` (`plugin_monitoring_componentscalalog_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
