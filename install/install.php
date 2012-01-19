@@ -72,14 +72,6 @@ function pluginMonitoringInstall($version) {
    }
    
    
-   
-   // initialise services suggests
-   if (!class_exists('PluginMonitoringServicesuggest')) { // if plugin is unactive
-      include(GLPI_ROOT . "/plugins/monitoring/inc/servicesuggest.class.php");
-   }
-   $pMonitoringServicesuggest = new PluginMonitoringServicesuggest();
-   $pMonitoringServicesuggest->initSuggest();
-   
    CronTask::Register('PluginMonitoringServiceevent', 'updaterrd', '300', 
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
   

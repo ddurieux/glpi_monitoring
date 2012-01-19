@@ -389,15 +389,3 @@ CREATE TABLE `glpi_plugin_monitoring_servicedefs` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_servicesuggests`;
-
-CREATE TABLE `glpi_plugin_monitoring_servicesuggests` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `plugin_monitoring_commands_id` int(11) NOT NULL DEFAULT '0',
-  `softwares_name` text DEFAULT NULL COLLATE utf8_unicode_ci,
-  `computers_services` text DEFAULT NULL COLLATE utf8_unicode_ci,
-  `link` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

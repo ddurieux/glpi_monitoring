@@ -113,7 +113,6 @@ class PluginMonitoringService extends CommonDBTM {
 
    
    
-   
    function manageServices($itemtype, $items_id) {
       global $CFG_GLPI,$LANG;
       
@@ -121,40 +120,7 @@ class PluginMonitoringService extends CommonDBTM {
          $pmHostaddress = new PluginMonitoringHostaddress();
          $pmHostaddress->showForm($items_id, $itemtype);
       }
-      
-      // Check if host service exist
-//      $a_serv = $this->find("`items_id` = '".$items_id."'
-//                        AND `itemtype`='".$itemtype."'", "", 1); 
-//      if (count($a_serv) > 0) {
-//         // Manage and display services
-         $this->listByHost($itemtype, $items_id);
-//         $pluginMonitoringServicesuggest = new PluginMonitoringServicesuggest();
-//         $pluginMonitoringServicesuggest->listSuggests($itemtype, $items_id);
-//      } else {
-//         // Button to activate 
-//         echo "<table class='tab_cadre_fixe'>";
-//         echo "<tr class='tab_bg_1'>";
-//         echo "<th>".$LANG['plugin_monitoring']['service'][15]."</th>";
-//         echo "</tr>";
-//         echo "<tr class='tab_bg_1'>";
-//         echo "<td align='center'>";
-//         echo "<form name='form' method='post' action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/service.form.php'>";
-//         echo "<input type='hidden' name='itemtype' value='".$itemtype."' />";
-//         echo "<input type='hidden' name='items_id' value='".$items_id."' />";
-//         echo "<input type='hidden' name='name' value='Check host alive' />";
-//         echo "<input type='hidden' name='plugin_monitoring_services_id' value='0' />";
-//         // TODO : Use a check ping
-//         	
-//         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-//         echo "</form>";
-//         echo "</td>";
-//         echo "</tr>";
-//         echo "</table>";
-//      }
-      
-      
    }
-   
    
    
    
