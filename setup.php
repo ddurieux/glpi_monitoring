@@ -46,6 +46,8 @@ define ("PLUGIN_MONITORING_VERSION","0.80+1.0");
 function plugin_init_monitoring() {
    global $PLUGIN_HOOKS,$CFG_GLPI,$LANG;
    
+   $Plugin = new Plugin();
+   if ($Plugin->isActivated('monitoring')) {
       if (isset($_SESSION["glpiID"])) {
          
          $PLUGIN_HOOKS['use_massive_action']['monitoring']=1;
@@ -125,7 +127,9 @@ function plugin_init_monitoring() {
          
       }
 
-   $PLUGIN_HOOKS['webservices']['monitoring'] = 'plugin_monitoring_registerMethods';
+      $PLUGIN_HOOKS['webservices']['monitoring'] = 'plugin_monitoring_registerMethods';
+      
+   }
    return $PLUGIN_HOOKS;
 }
 

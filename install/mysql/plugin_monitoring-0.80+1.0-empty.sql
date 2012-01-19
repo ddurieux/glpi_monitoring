@@ -28,6 +28,7 @@ CREATE TABLE `glpi_plugin_monitoring_componentscatalogs` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_components`;
 
 CREATE TABLE `glpi_plugin_monitoring_components` (
@@ -102,8 +103,8 @@ CREATE TABLE `glpi_plugin_monitoring_services` (
   `plugin_monitoring_components_id` int(11) NOT NULL DEFAULT '0',
   `plugin_monitoring_componentscatalogs_hosts_id` int(11) NOT NULL DEFAULT '0',
   `event` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `state` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
-  `state_type` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
+  `state` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `state_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `last_check` datetime DEFAULT NULL,
   `arguments` text DEFAULT NULL COLLATE utf8_unicode_ci,
   `alias_command` text DEFAULT NULL COLLATE utf8_unicode_ci,
@@ -196,7 +197,7 @@ DROP TABLE IF EXISTS `glpi_plugin_monitoring_configs`;
 CREATE TABLE `glpi_plugin_monitoring_configs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `rrdtoolpath` varchar(255) DEFAULT NULL,
-  `timezones` text COLLATE utf8_unicode_ci,
+  `timezones` text DEFAULT NULL COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -211,7 +212,6 @@ CREATE TABLE `glpi_plugin_monitoring_hostaddresses` (
   `networkports_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
 
 
 
@@ -265,30 +265,6 @@ CREATE TABLE `glpi_plugin_monitoring_checks` (
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_businessrules`;
 
 CREATE TABLE `glpi_plugin_monitoring_businessrules` (
@@ -323,9 +299,6 @@ CREATE TABLE `glpi_plugin_monitoring_notificationcommands` (
    PRIMARY KEY (`id`),
    KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-
 
 
 
@@ -364,6 +337,7 @@ CREATE TABLE `glpi_plugin_monitoring_contactgroups_contactgroups` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_servicedefs`;
 
 CREATE TABLE `glpi_plugin_monitoring_servicedefs` (
@@ -382,5 +356,3 @@ CREATE TABLE `glpi_plugin_monitoring_servicedefs` (
   `link` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-

@@ -76,7 +76,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
          $migration->changeField($newTable, 
@@ -98,7 +98,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->changeField($newTable, 
                                  'comment', 
                                  'comment', 
-                                 "DEFAULT NULL COLLATE utf8_unicode_ci");
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
          $migration->changeField($newTable, 
                                  'last_check', 
                                  'last_check', 
@@ -124,7 +124,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                                  'comment', 
-                                 "DEFAULT NULL COLLATE utf8_unicode_ci");
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
          $migration->addField($newTable, 
                                  'last_check', 
                                  "datetime DEFAULT NULL");
@@ -148,7 +148,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
          $migration->changeField($newTable, 
@@ -170,7 +170,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->changeField($newTable, 
                                  'comment', 
                                  'comment', 
-                                 "DEFAULT NULL COLLATE utf8_unicode_ci");
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable, 
                                  'name', 
@@ -183,7 +183,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                                  'comment', 
-                                 "DEFAULT NULL COLLATE utf8_unicode_ci");
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
          $migration->addKey($newTable, 
                             "name");
       $migration->migrationOneTable($newTable);
@@ -198,7 +198,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
          $migration->changeField($newTable, 
@@ -307,7 +307,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
          $migration->changeField($newTable, 
@@ -348,7 +348,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
          $migration->changeField($newTable, 
@@ -401,7 +401,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
          $migration->changeField($newTable, 
@@ -431,7 +431,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->changeField($newTable,
                                  'condition', 
                                  'condition', 
-                                 "ext DEFAULT NULL COLLATE utf8_unicode_ci");
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable, 
                                  'plugin_monitoring_componentscalalog_id', 
@@ -450,7 +450,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable,
                                  'condition', 
-                                 "ext DEFAULT NULL COLLATE utf8_unicode_ci");
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
          $migration->addKey($newTable,
                             'plugin_monitoring_componentscalalog_id');
       $migration->migrationOneTable($newTable);
@@ -465,7 +465,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
          $migration->changeField($newTable, 
@@ -555,7 +555,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
          $migration->changeField($newTable, 
@@ -715,7 +715,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
          $migration->changeField($newTable, 
@@ -749,7 +749,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
          $migration->changeField($newTable, 
@@ -797,7 +797,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
          $migration->changeField($newTable, 
@@ -838,7 +838,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
          $migration->changeField($newTable, 
@@ -879,7 +879,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
          $migration->changeField($newTable, 
@@ -893,7 +893,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->changeField($newTable, 
                                  'timezones', 
                                  'timezones', 
-                                 "text COLLATE utf8_unicode_ci");
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable, 
                                  'rrdtoolpath', 
@@ -913,7 +913,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
          $migration->changeField($newTable, 
@@ -951,9 +951,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $newTable = "glpi_plugin_monitoring_serviceevents";
       if (!TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
-                        bigint(30) NOT NULL AUTO_INCREMENT,
+                        `id` bigint(30) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
          $migration->changeField($newTable, 
@@ -1038,7 +1038,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
          $migration->changeField($newTable, 
@@ -1117,7 +1117,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
          $migration->changeField($newTable, 
@@ -1165,7 +1165,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
          $migration->changeField($newTable, 
@@ -1199,7 +1199,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
          $migration->changeField($newTable, 
@@ -1240,7 +1240,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
          $migration->changeField($newTable, 
@@ -1290,7 +1290,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
          $migration->changeField($newTable, 
@@ -1317,7 +1317,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
          $migration->changeField($newTable, 
@@ -1359,7 +1359,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
          $migration->changeField($newTable, 
@@ -1401,7 +1401,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
          $migration->changeField($newTable, 
@@ -1505,6 +1505,21 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       }
       
       
+      
+      
+   if (!is_dir(GLPI_PLUGIN_DOC_DIR.'/monitoring')) {
+      mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring");
+   }
+   if (!is_dir(GLPI_PLUGIN_DOC_DIR.'/monitoring/templates')) {
+      mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring/templates");
+   }
+      
+      
+   $crontask = new CronTask();
+   if (!$crontask->getFromDBbyName('PluginMonitoringServiceevent', 'updaterrd')) {
+      CronTask::Register('PluginMonitoringServiceevent', 'updaterrd', '300', 
+                   array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
+   }
       
 }
 
