@@ -215,6 +215,26 @@ CREATE TABLE `glpi_plugin_monitoring_hostaddresses` (
 
 
 
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_serviceevents`;
+
+CREATE TABLE `glpi_plugin_monitoring_serviceevents` (
+  `id` bigint(30) NOT NULL AUTO_INCREMENT,
+  `plugin_monitoring_services_id` int(11) NOT NULL DEFAULT '0',
+  `date` datetime DEFAULT NULL,
+  `event` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `perf_data` text DEFAULT NULL COLLATE utf8_unicode_ci,
+  `output` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `state` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
+  `state_type` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
+  `latency` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `execution_time` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `plugin_monitoring_services_id` (`plugin_monitoring_services_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+
 
 
 
@@ -348,26 +368,6 @@ CREATE TABLE `glpi_plugin_monitoring_checks` (
   `retry_interval` int(5) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_serviceevents`;
-
-CREATE TABLE `glpi_plugin_monitoring_serviceevents` (
-  `id` int(30) NOT NULL AUTO_INCREMENT,
-  `plugin_monitoring_services_id` int(11) NOT NULL DEFAULT '0',
-  `date` datetime DEFAULT NULL,
-  `event` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `perf_data` text DEFAULT NULL COLLATE utf8_unicode_ci,
-  `output` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `state` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
-  `state_type` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
-  `latency` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `execution_time` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `plugin_monitoring_services_id` (`plugin_monitoring_services_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
 
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_servicedefs`;
 

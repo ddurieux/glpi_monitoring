@@ -945,6 +945,93 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $migration->migrationOneTable($newTable);
 
       
+    /*
+    * Table glpi_plugin_monitoring_serviceevents
+    */
+      $newTable = "glpi_plugin_monitoring_serviceevents";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        bigint(30) NOT NULL AUTO_INCREMENT,
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+         $DB->query($query);
+      }
+         $migration->changeField($newTable, 
+                                 'id', 
+                                 'id', 
+                                 "bigint(30) NOT NULL AUTO_INCREMENT");
+         $migration->changeField($newTable, 
+                                 'plugin_monitoring_services_id', 
+                                 'plugin_monitoring_services_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'date', 
+                                 'date', 
+                                 "datetime DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'event', 
+                                 'event', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'perf_data', 
+                                 'perf_data', 
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->changeField($newTable, 
+                                 'output', 
+                                 'output', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'state', 
+                                 'state', 
+                                 "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'state_type', 
+                                 'state_type', 
+                                 "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'latency', 
+                                 'latency', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'execution_time', 
+                                 'execution_time', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+      $migration->migrationOneTable($newTable);
+         $migration->addField($newTable, 
+                                 'plugin_monitoring_services_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'date', 
+                                 "datetime DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'event', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'perf_data', 
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->addField($newTable, 
+                                 'output', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'state', 
+                                 "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'state_type', 
+                                 "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'latency', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'execution_time', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addKey($newTable, 
+                            "plugin_monitoring_services_id");
+      $migration->migrationOneTable($newTable);
+
+      
+      
+      
+      
          
    /*
     * Table Delete old table not used
