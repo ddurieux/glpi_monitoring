@@ -545,6 +545,204 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                             'plugin_monitoring_componentscatalogs_hosts_id');
       $migration->migrationOneTable($newTable);
 
+
+      
+    /*
+    * Table glpi_plugin_monitoring_contacttemplates
+    */
+      $newTable = "glpi_plugin_monitoring_contacttemplates";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+         $DB->query($query);
+      }
+         $migration->changeField($newTable, 
+                                 'id', 
+                                 'id', 
+                                 "int(11) NOT NULL AUTO_INCREMENT");
+         $migration->changeField($newTable,
+                                 'name', 
+                                 'name', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->changeField($newTable,
+                                 'is_default', 
+                                 'is_default', 
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable,
+                                 'host_notifications_enabled', 
+                                 'host_notifications_enabled', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->changeField($newTable,
+                                 'service_notifications_enabled', 
+                                 'service_notifications_enabled', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->changeField($newTable,
+                                 'service_notification_period', 
+                                 'service_notification_period', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable,
+                                 'host_notification_period', 
+                                 'host_notification_period', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable,
+                                 'service_notification_options_w', 
+                                 'service_notification_options_w', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->changeField($newTable,
+                                 'service_notification_options_u', 
+                                 'service_notification_options_u', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->changeField($newTable,
+                                 'service_notification_options_c', 
+                                 'service_notification_options_c', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->changeField($newTable,
+                                 'service_notification_options_r', 
+                                 'service_notification_options_r', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->changeField($newTable,
+                                 'service_notification_options_f', 
+                                 'service_notification_options_f', 
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable,
+                                 'service_notification_options_n', 
+                                 'service_notification_options_n', 
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable,
+                                 'host_notification_options_d', 
+                                 'host_notification_options_d', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->changeField($newTable,
+                                 'host_notification_options_u', 
+                                 'host_notification_options_u', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->changeField($newTable,
+                                 'host_notification_options_r', 
+                                 'host_notification_options_r', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->changeField($newTable,
+                                 'host_notification_options_f', 
+                                 'host_notification_options_f', 
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable,
+                                 'host_notification_options_s', 
+                                 'host_notification_options_s', 
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable,
+                                 'host_notification_options_n', 
+                                 'host_notification_options_n', 
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable,
+                                 'service_notification_commands', 
+                                 'service_notification_commands', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable,
+                                 'host_notification_commands', 
+                                 'host_notification_commands', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+       $migration->migrationOneTable($newTable);
+         $migration->addField($newTable,
+                                 'name', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable,
+                                 'is_default', 
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                                 'host_notifications_enabled', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->addField($newTable,
+                                 'service_notifications_enabled', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->addField($newTable,
+                                 'service_notification_period', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                                 'host_notification_period', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                                 'service_notification_options_w', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->addField($newTable,
+                                 'service_notification_options_u', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->addField($newTable,
+                                 'service_notification_options_c', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->addField($newTable,
+                                 'service_notification_options_r', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->addField($newTable,
+                                 'service_notification_options_f', 
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                                 'service_notification_options_n', 
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                                 'host_notification_options_d', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->addField($newTable,
+                                 'host_notification_options_u', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->addField($newTable,
+                                 'host_notification_options_r', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->addField($newTable,
+                                 'host_notification_options_f', 
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                                 'host_notification_options_s', 
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                                 'host_notification_options_n', 
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                                 'service_notification_commands', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                                 'host_notification_commands', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+      $migration->migrationOneTable($newTable);
+
+
+      
+    /*
+    * Table glpi_plugin_monitoring_contacts
+    */
+      $newTable = "glpi_plugin_monitoring_contacts";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+         $DB->query($query);
+      }
+         $migration->changeField($newTable, 
+                                 'id', 
+                                 'id', 
+                                 "int(11) NOT NULL AUTO_INCREMENT");
+         $migration->changeField($newTable, 
+                                 'users_id', 
+                                 'users_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'plugin_monitoring_contacttemplates_id', 
+                                 'plugin_monitoring_contacttemplates_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+      $migration->migrationOneTable($newTable);
+         $migration->addField($newTable, 
+                                 'users_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'plugin_monitoring_contacttemplates_id', 
+                                 "int(11) NOT NULL DEFAULT '0'"); 
+         $migration->migrationOneTable($newTable);
+
+      
+      
+      
+      
       
       
       // in table commands, remove : 
