@@ -104,10 +104,12 @@ class PluginMonitoringContacttemplate extends CommonDBTM {
       global $DB,$CFG_GLPI,$LANG;
 
       if ($items_id == '') {
-         $a_list = $this->find("`users_id`='".$_POST['id']."'", '', 1);
-         if (count($a_list)) {
-            $array = current($a_list);
-            $items_id = $array['id'];
+         if (isset($_POST['id'])) {
+            $a_list = $this->find("`users_id`='".$_POST['id']."'", '', 1);
+            if (count($a_list)) {
+               $array = current($a_list);
+               $items_id = $array['id'];
+            }
          }
       }
 
