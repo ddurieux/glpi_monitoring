@@ -147,4 +147,6 @@ $LANG['plugin_monitoring']['component'][4]="Dynmic hosts";
 
 $LANG['plugin_monitoring']['componentscatalog'][0]="Components catalog";
 
+$LANG['plugin_monitoring']['display'][0]="Dashboard";
+
 ?>

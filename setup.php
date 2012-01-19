@@ -83,11 +83,14 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['service'] = 'front/display.php';
          
          // Fil ariane
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['components']['title'] = "Components";
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['components']['title'] = $LANG['plugin_monitoring']['component'][0];
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['components']['page']  = '/plugins/monitoring/front/component.php';
 
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['contacttemplates']['title'] = "Contacttemplates";
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['contacttemplates']['title'] = $LANG['plugin_monitoring']['contacttemplate'][0];
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['contacttemplates']['page']  = '/plugins/monitoring/front/contacttemplate.php';
+        
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['display']['title'] = $LANG['plugin_monitoring']['display'][0];
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['display']['page']  = '/plugins/monitoring/front/display.php';
         
          
          // Define hook item

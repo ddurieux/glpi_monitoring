@@ -156,4 +156,7 @@ $LANG['plugin_monitoring']['servicescatalog'][1]="Mode dégradé";
 $LANG['plugin_monitoring']['servicesuggest'][0]="Suggestions";
 
 $LANG['plugin_monitoring']['title'][0]="Monitoring";
+
+$LANG['plugin_monitoring']['display'][0]="Tableau de bord";
+
 ?>
