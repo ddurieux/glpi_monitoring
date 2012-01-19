@@ -1393,10 +1393,107 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       
       
-      
-      
-      
-      
+    /*
+    * Table glpi_plugin_monitoring_servicedefs
+    */
+      $newTable = "glpi_plugin_monitoring_servicedefs";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+         $DB->query($query);
+      }
+         $migration->changeField($newTable, 
+                                 'id', 
+                                 'id', 
+                                 "int(11) NOT NULL AUTO_INCREMENT");
+         $migration->changeField($newTable, 
+                                 'name', 
+                                 'name', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'plugin_monitoring_commands_id', 
+                                 'plugin_monitoring_commands_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'arguments', 
+                                 'arguments', 
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->changeField($newTable, 
+                                 'plugin_monitoring_checks_id', 
+                                 'plugin_monitoring_checks_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'active_checks_enabled', 
+                                 'active_checks_enabled', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->changeField($newTable, 
+                                 'passive_checks_enabled', 
+                                 'passive_checks_enabled', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->changeField($newTable, 
+                                 'calendars_id', 
+                                 'calendars_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'remotesystem', 
+                                 'remotesystem', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'is_arguments', 
+                                 'is_arguments', 
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'alias_command', 
+                                 'alias_command', 
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->changeField($newTable, 
+                                 'aliasperfdata_commands_id', 
+                                 'aliasperfdata_commands_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'link', 
+                                 'link', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+      $migration->migrationOneTable($newTable);
+         $migration->addField($newTable, 
+                                 'name', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'plugin_monitoring_commands_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'arguments', 
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->addField($newTable, 
+                                 'plugin_monitoring_checks_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'active_checks_enabled', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->addField($newTable, 
+                                 'passive_checks_enabled', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->addField($newTable, 
+                                 'calendars_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'remotesystem', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'is_arguments', 
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'alias_command', 
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->addField($newTable, 
+                                 'aliasperfdata_commands_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'link', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL"); 
+      $migration->migrationOneTable($newTable);
       
       
          
