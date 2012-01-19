@@ -1030,6 +1030,127 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       
       
+    /*
+    * Table glpi_plugin_monitoring_commands
+    */
+      $newTable = "glpi_plugin_monitoring_commands";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+         $DB->query($query);
+      }
+         $migration->changeField($newTable, 
+                                 'id', 
+                                 'id', 
+                                 "int(11) NOT NULL AUTO_INCREMENT");
+         $migration->changeField($newTable, 
+                                 'is_active', 
+                                 'is_active', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->changeField($newTable, 
+                                 'name', 
+                                 'name', 
+                                 "varchar(255) DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'command_name', 
+                                 'command_name', 
+                                 "varchar(255) DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'command_line', 
+                                 'command_line', 
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->changeField($newTable, 
+                                 'poller_tag', 
+                                 'poller_tag', 
+                                 "varchar(255) DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'module_type', 
+                                 'module_type', 
+                                 "varchar(255) DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'arguments', 
+                                 'arguments', 
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
+      $migration->migrationOneTable($newTable);
+         $migration->addField($newTable, 
+                                 'is_active', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->addField($newTable, 
+                                 'name', 
+                                 "varchar(255) DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'command_name', 
+                                 "varchar(255) DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'command_line', 
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->addField($newTable, 
+                                 'poller_tag', 
+                                 "varchar(255) DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'module_type', 
+                                 "varchar(255) DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'arguments', 
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->addKey($newTable, 
+                            "name");
+         $migration->addKey($newTable, 
+                            "command_name");
+      $migration->migrationOneTable($newTable);
+
+      
+      
+    /*
+    * Table glpi_plugin_monitoring_checks
+    */
+      $newTable = "glpi_plugin_monitoring_checks";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+         $DB->query($query);
+      }
+         $migration->changeField($newTable, 
+                                 'id', 
+                                 'id', 
+                                 "int(11) NOT NULL AUTO_INCREMENT");
+         $migration->changeField($newTable, 
+                                 'name', 
+                                 'name', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'max_check_attempts', 
+                                 'max_check_attempts', 
+                                 "int(2) NOT NULL DEFAULT '1'");
+         $migration->changeField($newTable, 
+                                 'check_interval', 
+                                 'check_interval', 
+                                 "int(5) NOT NULL DEFAULT '1'");
+         $migration->changeField($newTable, 
+                                 'retry_interval', 
+                                 'retry_interval', 
+                                 "int(5) NOT NULL DEFAULT '1'");
+      $migration->migrationOneTable($newTable);
+         $migration->addField($newTable, 
+                                 'name', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'max_check_attempts', 
+                                 "int(2) NOT NULL DEFAULT '1'");
+         $migration->addField($newTable, 
+                                 'check_interval', 
+                                 "int(5) NOT NULL DEFAULT '1'");
+         $migration->addField($newTable, 
+                                 'retry_interval', 
+                                 "int(5) NOT NULL DEFAULT '1'");
+      $migration->migrationOneTable($newTable);
+
+      
+      
       
       
          
