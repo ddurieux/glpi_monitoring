@@ -50,7 +50,6 @@ header_nocache();
 if (class_exists($_POST["itemtype"]) && isset($_POST["hosts"])) {
    $table = getTableForItemType($_POST["itemtype"]);
    $pmService = new PluginMonitoringService();
-   print_r($_POST);
    $a_services = array();
    $a_services[] = DROPDOWN_EMPTY_VALUE;
    $query = "SELECT `".getTableForItemType("PluginMonitoringService")."`.*
