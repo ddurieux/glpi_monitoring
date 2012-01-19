@@ -61,12 +61,11 @@ if (class_exists($_POST["itemtype"]) && isset($_POST["hosts"])) {
                 AND `items_id`='".$_POST['hosts']."'
              ORDER BY `".getTableForItemType("PluginMonitoringService")."`.`name`";
    $result = $DB->query($query);
-   echo $query;
    while ($data = $DB->fetch_array($result)) {
       $a_services[$data['id']] = $data['name'];
    }
    
-   Dropdown::showFromArray("PluginMonitoringService", $a_services);
+   Dropdown::showFromArray("plugin_monitoring_services_id", $a_services);
 
 }
 
