@@ -49,11 +49,25 @@ header_nocache();
 // Make a select box
 if (class_exists($_POST["itemtype"]) && isset($_POST["hosts"])) {
    $table = getTableForItemType($_POST["itemtype"]);
-   $pMonitoringService = new PluginMonitoringService();
-   Dropdown::show("PluginMonitoringService", array(
-                        "name" => "plugin_monitoring_services_id",
-                        "condition"=>"`plugin_monitoring_services_id`='".$_POST['hosts']."'"
-                  ));
+   $pmService = new PluginMonitoringService();
+   print_r($_POST);
+   $a_services = array();
+   $a_services[] = DROPDOWN_EMPTY_VALUE;
+   $query = "SELECT `".getTableForItemType("PluginMonitoringService")."`.*
+             FROM `".getTableForItemType("PluginMonitoringService")."`
+             LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts` 
+                  ON `plugin_monitoring_componentscatalogs_hosts_id` 
+                      = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
+             WHERE `itemtype` = '".$_POST["itemtype"]."'
+                AND `items_id`='".$_POST['hosts']."'
+             ORDER BY `".getTableForItemType("PluginMonitoringService")."`.`name`";
+   $result = $DB->query($query);
+   echo $query;
+   while ($data = $DB->fetch_array($result)) {
+      $a_services[$data['id']] = $data['name'];
+   }
+   
+   Dropdown::showFromArray("PluginMonitoringService", $a_services);
 
 }
 

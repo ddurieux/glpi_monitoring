@@ -98,7 +98,7 @@ $LANG['plugin_monitoring']['contacttemplate'][1]="Default template";
 
 $LANG['plugin_monitoring']['service'][0]="Resources";
 $LANG['plugin_monitoring']['service'][1]="Criticity";
-$LANG['plugin_monitoring']['service'][2]="Add a service";
+$LANG['plugin_monitoring']['service'][2]="Add a resource";
 $LANG['plugin_monitoring']['service'][3]="or/and define these values";
 $LANG['plugin_monitoring']['service'][4]="Arguments";
 $LANG['plugin_monitoring']['service'][5]="Command";

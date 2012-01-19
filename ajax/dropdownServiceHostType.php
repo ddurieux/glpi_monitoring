@@ -50,12 +50,14 @@ if (class_exists($_POST["itemtype"])) {
    $table = getTableForItemType($_POST["itemtype"]);
 
    $query = "SELECT `$table`.`name`, 
-                    `".getTableForItemType("PluginMonitoringService")."`.`id`
+                    `".$table."`.`id`
                         
              FROM `".getTableForItemType("PluginMonitoringService")."`
-             LEFT JOIN `$table` ON `$table`.`id` = `items_id`             
+             LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts` 
+                  ON `plugin_monitoring_componentscatalogs_hosts_id` 
+                      = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
+             LEFT JOIN `$table` ON `$table`.`id` = `items_id`          
              WHERE `itemtype` = '".$_POST["itemtype"]."'
-                AND `plugin_monitoring_services_id`='0' 
              ORDER BY `$table`.`name`";
    $result = $DB->query($query);
    $a_hosts = array();
