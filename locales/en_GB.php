@@ -65,8 +65,6 @@ $LANG['plugin_monitoring']['command'][1]="Command check";
 $LANG['plugin_monitoring']['command'][2]="Command name";
 $LANG['plugin_monitoring']['command'][3]="Command line";
 $LANG['plugin_monitoring']['command'][4]="Arguments description";
-$LANG['plugin_monitoring']['command'][5]="Regex (for perf_data)";
-$LANG['plugin_monitoring']['command'][6]="Legend (for perf_data graph)";
 
 $LANG['plugin_monitoring']['check'][0]="Check definition";
 $LANG['plugin_monitoring']['check'][1]="Max check attempts";

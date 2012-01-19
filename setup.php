@@ -91,7 +91,7 @@ function plugin_init_monitoring() {
         
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['display']['title'] = $LANG['plugin_monitoring']['display'][0];
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['display']['page']  = '/plugins/monitoring/front/display.php';
-        
+
          
          // Define hook item
          $rule_check = array('PluginMonitoringComponentscatalog_rule','isThisItemCheckRule');

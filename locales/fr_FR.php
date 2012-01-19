@@ -63,8 +63,6 @@ $LANG['plugin_monitoring']['command'][1]="Commande de contrôle";
 $LANG['plugin_monitoring']['command'][2]="Nom de commande";
 $LANG['plugin_monitoring']['command'][3]="Ligne de commande";
 $LANG['plugin_monitoring']['command'][4]="Description des arguments";
-$LANG['plugin_monitoring']['command'][5]="Expression rationnelle (pour les perf_data)";
-$LANG['plugin_monitoring']['command'][6]="Légende (pour les perf_data)";
 
 $LANG['plugin_monitoring']['component'][0]="Elements de contrôle";
 $LANG['plugin_monitoring']['component'][1]="Ajouter un nouvel élément de contrôle";

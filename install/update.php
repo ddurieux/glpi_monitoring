@@ -547,7 +547,13 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       
       
-      
+      // in table commands, remove : 
+      /*
+   `regex` text DEFAULT NULL COLLATE utf8_unicode_ci,
+   `legend` text DEFAULT NULL COLLATE utf8_unicode_ci,
+   `unit` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+
+       */
       
 }
 
