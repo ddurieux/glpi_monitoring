@@ -1520,6 +1520,21 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       CronTask::Register('PluginMonitoringServiceevent', 'updaterrd', '300', 
                    array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
    }
+
+   
+   /*
+    * Clean services not have host
+    */
+   $query = "SELECT `glpi_plugin_monitoring_services`.* FROM `glpi_plugin_monitoring_services`
+      LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
+         ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`id` = `plugin_monitoring_componentscatalogs_hosts_id`
+   WHERE `is_static` IS NULL";
+   $result = $DB->query($query);
+   while ($data=$DB->fetch_array($result)) {
+      $queryd = "DELETE FROM `glpi_plugin_monitoring_services`
+         WHERE `id`='".$data['id']."'";
+      $DB->query($queryd);
+   }
    
       
 }
