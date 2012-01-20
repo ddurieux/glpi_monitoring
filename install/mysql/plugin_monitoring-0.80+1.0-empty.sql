@@ -196,7 +196,7 @@ DROP TABLE IF EXISTS `glpi_plugin_monitoring_configs`;
 
 CREATE TABLE `glpi_plugin_monitoring_configs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `rrdtoolpath` varchar(2c55) DEFAULT NULL,
+  `rrdtoolpath` varchar(255) DEFAULT NULL,
   `timezones` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '["0"]',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
