@@ -893,14 +893,14 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->changeField($newTable, 
                                  'timezones', 
                                  'timezones', 
-                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
+                                 "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '[\"0\"]'");
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable, 
                                  'rrdtoolpath', 
                                  "varchar(255) DEFAULT NULL");
          $migration->addField($newTable, 
                                  'timezones', 
-                                 "text COLLATE utf8_unicode_ci");
+                                 "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '[\"0\"]'");
       $migration->migrationOneTable($newTable);
 
       
@@ -1520,6 +1520,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       CronTask::Register('PluginMonitoringServiceevent', 'updaterrd', '300', 
                    array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
    }
+   
       
 }
 
