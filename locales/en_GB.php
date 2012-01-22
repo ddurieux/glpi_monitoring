@@ -53,6 +53,7 @@ $LANG['plugin_monitoring']['host'][15]="Last day";
 $LANG['plugin_monitoring']['host'][16]="Last week";
 $LANG['plugin_monitoring']['host'][18]="Add these hosts to monitoring";
 $LANG['plugin_monitoring']['host'][19]="Equipments";
+$LANG['plugin_monitoring']['host'][20]="Preview";
 
 $LANG['plugin_monitoring']['config'][0]="Timezones (for graph)";
 $LANG['plugin_monitoring']['config'][1]="Configuration";

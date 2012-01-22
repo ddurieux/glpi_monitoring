@@ -187,6 +187,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
    
    
    function addRule() {
+      global $LANG;
       
 //      $param = array();
 //      if (isset($_SESSION['plugin_monitoring_rules'])) {
@@ -202,6 +203,24 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       
       Search::manageGetValues($_GET['itemtype']);
       $this->showGenericSearch($_GET['itemtype'], $_GET);
+      
+      echo "<br/><br/>";
+      echo "<table class='tab_cadre_fixe'>";
+
+      echo "<tr>";
+      echo "<th>";
+      echo $LANG['plugin_monitoring']['host'][20];
+      echo "</th>";
+      echo "</tr>";
+      
+      echo "<tr>";
+      echo "<td>";
+      Search::showList($_GET['itemtype'], $_GET);
+      echo "</td>";
+      echo "</tr>";
+      echo "</table>";
+      
+
    }
    
 
