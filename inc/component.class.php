@@ -165,7 +165,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       
       echo "<tr>";
       echo "<td>";
-      echo $LANG['common'][6]."&nbsp;:";
+      echo $LANG['common'][16]."&nbsp;:";
       echo "</td>";
       echo "<td>";
       echo "<input type='hidden' name='is_template' value='1' />";
