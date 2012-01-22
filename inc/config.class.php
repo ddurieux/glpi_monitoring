@@ -119,7 +119,7 @@ class PluginMonitoringConfig extends CommonDBTM {
       $this->getFromDB($items_id);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>path of RRDTOOL&nbsp;:</td>";
+      echo "<td>".$LANG['plugin_monitoring']['config'][2]."&nbsp;:</td>";
       echo "<td align='center'>";
       echo "<input name='rrdtoolpath' type='text' value='".$this->fields['rrdtoolpath']."' />";
       echo "</td>";

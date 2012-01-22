@@ -57,6 +57,7 @@ $LANG['plugin_monitoring']['host'][20]="Preview";
 
 $LANG['plugin_monitoring']['config'][0]="Timezones (for graph)";
 $LANG['plugin_monitoring']['config'][1]="Configuration";
+$LANG['plugin_monitoring']['config'][2]="Path of RRDTOOL";
 
 $LANG['plugin_monitoring']['grouphost'][0]="hosts groups";
 $LANG['plugin_monitoring']['grouphost'][1]="hosts group";
