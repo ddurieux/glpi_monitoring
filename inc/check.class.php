@@ -51,8 +51,22 @@ class PluginMonitoringCheck extends CommonDBTM {
       global $DB;
 
       $input = array();
-      $input['name'] = '5 checks / 1 retry';
+      $input['name'] = '5 minutes / 5 retry';
       $input['max_check_attempts'] = '5';
+      $input['check_interval']     = '5';
+      $input['retry_interval']     = '1';
+      $this->add($input);
+      
+      $input = array();
+      $input['name'] = '5 minutes / 3 retry';
+      $input['max_check_attempts'] = '3';
+      $input['check_interval']     = '5';
+      $input['retry_interval']     = '1';
+      $this->add($input);
+      
+      $input = array();
+      $input['name'] = '15 minutes / 3 retry';
+      $input['max_check_attempts'] = '3';
       $input['check_interval']     = '5';
       $input['retry_interval']     = '1';
       $this->add($input);
@@ -176,7 +190,7 @@ class PluginMonitoringCheck extends CommonDBTM {
       echo "</td>";
       echo "<td>".$LANG['plugin_monitoring']['check'][1]."&nbsp;:</td>";
       echo "<td align='center'>";
-      echo "<input type='text' name='max_check_attempts' value='".$this->fields["max_check_attempts"]."' size='30'/>";
+      Dropdown::showInteger("max_check_attempts", $this->fields["max_check_attempts"], 1, 100);
       echo "</td>";
       echo "</tr>";
       
