@@ -120,6 +120,8 @@ class PluginMonitoringService extends CommonDBTM {
          $pmHostaddress = new PluginMonitoringHostaddress();
          $pmHostaddress->showForm($items_id, $itemtype);
       }
+      $pmServices = new PluginMonitoringService();
+      $pmServices->listByHost($itemtype, $items_id);
    }
    
    

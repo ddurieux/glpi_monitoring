@@ -133,7 +133,7 @@ function plugin_headings_actions_monitoring($item) {
       case 'NetworkEquipment':
          $array = array ();
          $array[0] = "plugin_headings_monitoring_status";
-         $array[2] = "plugin_headings_monitoring_services";
+         $array[2] = "plugin_headings_monitoring_resources";
          return $array;
          break;
       
@@ -184,7 +184,7 @@ echo "<br/>Http :<br/>";
 
 
 
-function plugin_headings_monitoring_services($item) {
+function plugin_headings_monitoring_resources($item) {
 
    $pMonitoringService = new PluginMonitoringService();
    $pMonitoringService->manageServices(get_class($item), $item->fields['id']);
