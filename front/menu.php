@@ -51,36 +51,46 @@ commonHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plug
 
 PluginMonitoringNotification::test();
 
-echo "<table class='tab_cadre' width='300'>";
+echo "<table class='tab_cadre' width='950'>";
 
 echo "<tr class='tab_bg_1'>";
-echo "<th>";
+echo "<th height='80'>";
 echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php'>".$LANG['plugin_monitoring']['display'][0]."</a>";
 echo "</th>";
 echo "</tr>";
+echo "</table>";
 
+echo "<table class='tab_cadre' width='950'>";
 echo "<tr class='tab_bg_1'>";
-echo "<th>";
+echo "<th height='50' width='50%'>";
 echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicescatalog.php'>".$LANG['plugin_monitoring']['servicescatalog'][0]."</a>";
 echo "</th>";
-echo "</tr>";
 
-echo "<tr class='tab_bg_1'>";
 echo "<th>";
 echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.php'>".$LANG['plugin_monitoring']['componentscatalog'][0]."</a>";
 echo "</th>";
 echo "</tr>";
+echo "</table>";
 
+echo "<table class='tab_cadre' width='950'>";
 echo "<tr class='tab_bg_1'>";
-echo "<th>";
+echo "<th height='25' width='25%'>";
 echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/component.php'>".$LANG['plugin_monitoring']['component'][0]."</a>";
 echo "</th>";
-echo "</tr>";
 
-echo "<tr class='tab_bg_1'>";
-echo "<th>";
+echo "<th width='25%'>";
+echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/command.php'>".$LANG['plugin_monitoring']['command'][0]."</a>";
+echo "</th>";
+
+echo "<th width='25%'>";
+echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/check.php'>".$LANG['plugin_monitoring']['check'][0]."</a>";
+echo "</th>";
+
+echo "<th width='25%'>";
 echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/contacttemplate.php'>".$LANG['plugin_monitoring']['contacttemplate'][0]."</a>";
 echo "</th>";
+
+
 echo "</tr>";
 
 
