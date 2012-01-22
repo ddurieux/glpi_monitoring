@@ -49,7 +49,7 @@ include (GLPI_ROOT."/inc/includes.php");
 commonHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plugins",
              "monitoring", "menu");
 
-PluginMonitoringNotification::test();
+//PluginMonitoringNotification::test();
 
 echo "<table class='tab_cadre' width='950'>";
 
@@ -89,10 +89,7 @@ echo "</th>";
 echo "<th width='25%'>";
 echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/contacttemplate.php'>".$LANG['plugin_monitoring']['contacttemplate'][0]."</a>";
 echo "</th>";
-
-
 echo "</tr>";
-
 
 echo "</table>";
 
