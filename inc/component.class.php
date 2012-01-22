@@ -175,7 +175,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "</td>";
       // * checks
       echo "<td>".$LANG['plugin_monitoring']['check'][0]."&nbsp;:</td>";
-      echo "<td align='center'>";
+      echo "<td>";
       Dropdown::show("PluginMonitoringCheck", 
                         array('name'=>'plugin_monitoring_checks_id',
                               'value'=>$this->fields['plugin_monitoring_checks_id']));
@@ -187,7 +187,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "<td>";
 //      echo "Type of template&nbsp;:";
       echo "</td>";
-      echo "<td align='center'>";
+      echo "<td>";
 //      $a_types = array();
 //      $a_types[''] = DROPDOWN_EMPTY_VALUE;
 //      $a_types['partition'] = "Partition";
@@ -198,7 +198,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "<td>";
       echo $LANG['plugin_monitoring']['host'][5]."&nbsp;:";
       echo "</td>";
-      echo "<td align='center'>";
+      echo "<td>";
       echo Dropdown::showYesNo("active_checks_enabled", $this->fields['active_checks_enabled']);
       echo "</td>";
       echo "</tr>";
@@ -208,7 +208,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "<td>";
       echo $LANG['plugin_monitoring']['service'][5]."&nbsp;:";
       echo "</td>";
-      echo "<td align='center'>";
+      echo "<td>";
       $pMonitoringCommand->getFromDB($this->fields['plugin_monitoring_commands_id']);
       Dropdown::show("PluginMonitoringCommand", array(
                              'name' =>'plugin_monitoring_commands_id',
@@ -219,7 +219,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "<td>";
       echo $LANG['plugin_monitoring']['service'][7]."&nbsp;:";
       echo "</td>";
-      echo "<td align='center'>";
+      echo "<td>";
       echo Dropdown::showYesNo("passive_checks_enabled", $this->fields['passive_checks_enabled']);
       echo "</td>";
       echo "</tr>";
@@ -248,7 +248,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "</td>";
       // * calendar
       echo "<td>".$LANG['plugin_monitoring']['host'][9]."&nbsp;:</td>";
-      echo "<td align='center'>";
+      echo "<td>";
       dropdown::show("Calendar", array('name'=>'calendars_id',
                                  'value'=>$this->fields['calendars_id']));
       echo "</td>";

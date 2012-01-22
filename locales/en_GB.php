@@ -69,7 +69,7 @@ $LANG['plugin_monitoring']['command'][4]="Arguments description";
 $LANG['plugin_monitoring']['check'][0]="Check definition";
 $LANG['plugin_monitoring']['check'][1]="Max check attempts (number of retries)";
 $LANG['plugin_monitoring']['check'][2]="Time in minutes between 2 checks";
-$LANG['plugin_monitoring']['check'][3]="Time in minutes between 2 retry";
+$LANG['plugin_monitoring']['check'][3]="Time in minutes between 2 retries";
 
 $LANG['plugin_monitoring']['contact'][0]="Contact";
 $LANG['plugin_monitoring']['contact'][1]="Manage this user for monitoring system";

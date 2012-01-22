@@ -362,19 +362,19 @@ class PluginMonitoringCommand extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['common'][16]." :</td>";
-      echo "<td align='center'>";
+      echo "<td>";
       echo "<input type='text' name='name' value='".$this->fields["name"]."' size='30'/>";
       echo "</td>";
       echo "<td>".$LANG['plugin_monitoring']['command'][2]."&nbsp;:</td>";
-      echo "<td align='center'>";
+      echo "<td>";
       echo "<input type='text' name='command_name' value='".$this->fields["command_name"]."' size='30'/>";
       echo "</td>";
       echo "</tr>";
       
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['plugin_monitoring']['command'][3]."&nbsp;:</td>";
-      echo "<td align='center' colspan='3'>";
-      echo "<input type='text' name='command_line' value='".$this->fields["command_line"]."' size='91'/>";
+      echo "<td colspan='3'>";
+      echo "<input type='text' name='command_line' value='".$this->fields["command_line"]."' size='97'/>";
       echo "</td>";
       echo "</tr>";
 
