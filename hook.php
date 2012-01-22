@@ -379,10 +379,10 @@ function plugin_monitoring_getDropdown(){
    global $LANG;
 
    return array('PluginMonitoringServicescatalog'     => $LANG['plugin_monitoring']['servicescatalog'][0],
-                'PluginMonitoringCheck'               => "Check definition",
-                'PluginMonitoringCommand'             => "List of commands",
-                'PluginMonitoringComponentscatalog'   => "Components catalog",
-                'PluginMonitoringComponent'           => "Components");
+                'PluginMonitoringCheck'               => $LANG['plugin_monitoring']['check'][0],
+                'PluginMonitoringCommand'             => $LANG['plugin_monitoring']['command'][0],
+                'PluginMonitoringComponentscatalog'   => $LANG['plugin_monitoring']['componentscatalog'][0],
+                'PluginMonitoringComponent'           => $LANG['plugin_monitoring']['component'][0]);
 }
 
 ?>
