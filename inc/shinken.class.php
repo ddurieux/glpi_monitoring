@@ -288,9 +288,9 @@ class PluginMonitoringShinken extends CommonDBTM {
 
             $a_services[$i]['notification_interval'] = '30';
             if ($calendar->getFromDB($a_component['calendars_id'])) {
-               $a_hosts[$i]['notification_period'] = $calendar->fields['name'];
+               $a_services[$i]['notification_period'] = $calendar->fields['name'];
             } else {
-               $a_hosts[$i]['notification_period'] = "24x7";
+               $a_services[$i]['notification_period'] = "24x7";
             }
             $a_services[$i]['notification_options'] = 'w,c,r';
             $a_services[$i]['active_checks_enabled'] = '1';
