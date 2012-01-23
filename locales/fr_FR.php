@@ -54,7 +54,7 @@ $LANG['plugin_monitoring']['businessrule'][8]="8 sur";
 $LANG['plugin_monitoring']['businessrule'][9]="9 sur";
 
 $LANG['plugin_monitoring']['check'][0]="Définition d'un contrôle";
-$LANG['plugin_monitoring']['check'][1]="Tentatives de contrôles maximum";
+$LANG['plugin_monitoring']['check'][1]="Nombre  maximum de tentatives (nombre d'essais)";
 $LANG['plugin_monitoring']['check'][2]="Temps en minutes entre 2 contrôles";
 $LANG['plugin_monitoring']['check'][3]="Temps en minutes entre 2 essais";
 
@@ -64,16 +64,17 @@ $LANG['plugin_monitoring']['command'][2]="Nom de commande";
 $LANG['plugin_monitoring']['command'][3]="Ligne de commande";
 $LANG['plugin_monitoring']['command'][4]="Description des arguments";
 
-$LANG['plugin_monitoring']['component'][0]="Elements de contrôle";
-$LANG['plugin_monitoring']['component'][1]="Ajouter un nouvel élément de contrôle";
-$LANG['plugin_monitoring']['component'][2]="Elements de contrôle associés";
+$LANG['plugin_monitoring']['component'][0]="Composants";
+$LANG['plugin_monitoring']['component'][1]="Ajouter un nouveeau composant";
+$LANG['plugin_monitoring']['component'][2]="Composants associés";
 $LANG['plugin_monitoring']['component'][3]="Hôtes statiques";
 $LANG['plugin_monitoring']['component'][4]="Hôtes dynamiques";
 
-$LANG['plugin_monitoring']['componentscatalog'][0]="Catalogue d'éléments de contrôle";
+$LANG['plugin_monitoring']['componentscatalog'][0]="Catalogue de composants";
 
 $LANG['plugin_monitoring']['config'][0]="Fuseau horaire (pour les graphiques)";
 $LANG['plugin_monitoring']['config'][1]="Configuration";
+$LANG['plugin_monitoring']['config'][2]="Chemin de l'exécutable RRDTOOL";
 
 $LANG['plugin_monitoring']['contact'][0]="Contact";
 $LANG['plugin_monitoring']['contact'][10]="Notifier quand l'état des services est UNKNOWN";
@@ -100,6 +101,8 @@ $LANG['plugin_monitoring']['contact'][9]="Notifier quand l'état des hôtes est 
 $LANG['plugin_monitoring']['contacttemplate'][0]="Gabarit de contact";
 $LANG['plugin_monitoring']['contacttemplate'][1]="Gabarit par défaut";
 
+$LANG['plugin_monitoring']['display'][0]="Tableau de bord";
+
 $LANG['plugin_monitoring']['grouphost'][0]="Groupes d'hôtes";
 $LANG['plugin_monitoring']['grouphost'][1]="Groupe d'hôtes";
 
@@ -111,10 +114,10 @@ $LANG['plugin_monitoring']['host'][13]="Etat ok";
 $LANG['plugin_monitoring']['host'][14]="Etat critique";
 $LANG['plugin_monitoring']['host'][15]="Dernier jour";
 $LANG['plugin_monitoring']['host'][16]="Dernière semaine";
-$LANG['plugin_monitoring']['host'][17]="temps";
 $LANG['plugin_monitoring']['host'][18]="Ajouter ces hôtes à monitorer";
 $LANG['plugin_monitoring']['host'][19]="Matériels";
 $LANG['plugin_monitoring']['host'][1]="Dépendances";
+$LANG['plugin_monitoring']['host'][20]="Prévisualisation";
 $LANG['plugin_monitoring']['host'][2]="Gestion dynamique";
 $LANG['plugin_monitoring']['host'][3]="gestion statique";
 $LANG['plugin_monitoring']['host'][4]="Dépendances des hôtes";
@@ -139,7 +142,7 @@ $LANG['plugin_monitoring']['service'][1]="Criticité";
 $LANG['plugin_monitoring']['service'][20]="Ressource";
 $LANG['plugin_monitoring']['service'][21]="Toutes les ressources";
 $LANG['plugin_monitoring']['service'][22]="Temps en ms";
-$LANG['plugin_monitoring']['service'][2]="Ajouter un service";
+$LANG['plugin_monitoring']['service'][2]="Ajouter une ressource";
 $LANG['plugin_monitoring']['service'][3]="ou/et définir ces valeurs";
 $LANG['plugin_monitoring']['service'][4]="Arguments";
 $LANG['plugin_monitoring']['service'][5]="Commande";
@@ -154,7 +157,4 @@ $LANG['plugin_monitoring']['servicescatalog'][1]="Mode dégradé";
 $LANG['plugin_monitoring']['servicesuggest'][0]="Suggestions";
 
 $LANG['plugin_monitoring']['title'][0]="Monitoring";
-
-$LANG['plugin_monitoring']['display'][0]="Tableau de bord";
-
 ?>
