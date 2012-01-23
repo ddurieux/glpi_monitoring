@@ -350,8 +350,6 @@ function plugin_monitoring_addWhere($link,$nott,$type,$id,$val) {
 function plugin_monitoring_registerMethods() {
    global $WEBSERVICES_METHOD;
 
-   $WEBSERVICES_METHOD['monitoring.test'] = array('PluginMonitoringWebservice',
-                                                       'methodTest');
    $WEBSERVICES_METHOD['monitoring.shinkenGetConffiles'] = array('PluginMonitoringWebservice',
                                                        'methodShinkenGetConffiles');
    # Get commands for arbiter
@@ -370,6 +368,10 @@ function plugin_monitoring_registerMethods() {
                                                        'methodDashboard');
    $WEBSERVICES_METHOD['monitoring.getServicesList'] = array('PluginMonitoringWebservice',
                                                              'methodGetServicesList');
+   $WEBSERVICES_METHOD['monitoring.doLogin'] = array('PluginWebservicesMethodSession',
+                                                     'methodLogin');
+   $WEBSERVICES_METHOD['monitoring.doLogout'] = array('PluginWebservicesMethodSession',
+                                                     'methodLogout');
 }
 
 /**

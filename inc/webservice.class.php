@@ -47,39 +47,6 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringWebservice {
 
 
-   /**
-   * Method for import XML by webservice
-   *
-   * @param $params array ID of the agent
-   * @param $protocol value the communication protocol used
-   *
-   *@return array or error value
-   *
-   **/
-   static function methodTest($params, $protocol) {
-      global $LANG, $CFG_GLPI;
-
-      if (isset ($params['help'])) {
-         return array('base64'  => 'string,mandatory',
-                      'help'    => 'bool,optional');
-      }
-      if (!isset ($_SESSION['glpiID'])) {
-         return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_NOTAUTHENTICATED);
-      }
-
-      print_r($params);
-//      $content = base64_decode($params['base64']);
-
-      
-
-//      $PluginFusinvinventoryImportXML = new PluginFusinvinventoryImportXML();
-//      $PluginFusinvinventoryImportXML->importXMLContent($content);
-
-//      $msg = $LANG['plugin_fusinvinventory']['importxml'][1];
-//      return PluginWebservicesMethodCommon::Error($protocol, WEBSERVICES_ERROR_FAILED, '', $msg);
-   }
-
-   
    static function methodShinkenGetConffiles($params, $protocol) {
       global $LANG, $CFG_GLPI;
 
