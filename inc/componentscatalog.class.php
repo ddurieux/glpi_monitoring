@@ -129,6 +129,10 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          echo "</th>";
          echo "</tr>";
          
+         $stateg = array();
+         $stateg['OK'] = 0;
+         $stateg['WARNING'] = 0;
+         $stateg['CRITICAL'] = 0;
          $nb_ressources = 0;
          $query = "SELECT * FROM `".$pmComponentscatalog_Host->getTable()."`
             WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'";
@@ -178,6 +182,9 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                      $a_gstate[$dataService['id']] = "OK";
                   }
                }
+               foreach ($a_gstate as $value) {
+                  $stateg[$value]++;
+               }
             }
          }
 
@@ -190,24 +197,16 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          echo "</th>";
          echo "</tr>";
          
-         $state = array();
-         $state['OK'] = 0;
-         $state['WARNING'] = 0;
-         $state['CRITICAL'] = 0;
-         foreach ($a_gstate as $value) {
-            $state[$value]++;
-         }
-          
          $background = '';
          $count = 0;
-         if ($state['CRITICAL'] > 0) {
-            $count = $state['CRITICAL'];
+         if ($stateg['CRITICAL'] > 0) {
+            $count = $stateg['CRITICAL'];
             $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_critical.png"';
-         } else if ($state['WARNING'] > 0) {
-            $count = $state['WARNING'];
+         } else if ($stateg['WARNING'] > 0) {
+            $count = $stateg['WARNING'];
             $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_warning.png"';
-         } else if ($state['OK'] > 0) {
-            $count = $state['OK'];
+         } else if ($stateg['OK'] > 0) {
+            $count = $stateg['OK'];
             $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_ok.png"';
          }
          echo "<tr ".$background.">";
