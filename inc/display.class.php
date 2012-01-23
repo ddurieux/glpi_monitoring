@@ -51,7 +51,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       global $LANG,$CFG_GLPI;
 
       $ong = array();
-      $ong[1] = $LANG['plugin_monitoring']['servicescatalog'][0];
+//      $ong[1] = $LANG['plugin_monitoring']['servicescatalog'][0];
       $ong[2] = $LANG['plugin_monitoring']['componentscatalog'][0];
       $ong[3] = $LANG['plugin_monitoring']['service'][21];
 //      $ong[4] = $LANG['plugin_monitoring']['host'][0];
