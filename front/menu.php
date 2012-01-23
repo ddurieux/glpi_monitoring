@@ -64,10 +64,10 @@ echo "</table>";
 
 echo "<table class='tab_cadre' width='950'>";
 echo "<tr class='tab_bg_1'>";
-echo "<th height='50' width='50%'>";
+echo "<td align='center' height='50' width='50%'>";
 //echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicescatalog.php'>".$LANG['plugin_monitoring']['servicescatalog'][0]."</a>";
 echo $LANG['plugin_monitoring']['servicescatalog'][0]." (not yet ready)";
-echo "</th>";
+echo "</td>";
 
 echo "<th>";
 echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.php'>".$LANG['plugin_monitoring']['componentscatalog'][0]."</a>";
