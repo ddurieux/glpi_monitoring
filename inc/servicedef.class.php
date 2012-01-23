@@ -72,25 +72,25 @@ class PluginMonitoringServicedef extends CommonDBTM {
 
 
    function canCreate() {
-      return true;
+      return haveRight('computer', 'w');
    }
 
 
    
    function canView() {
-      return true;
+      return haveRight('computer', 'r');
    }
 
 
    
    function canCancel() {
-      return true;
+      return haveRight('computer', 'w');
    }
 
 
    
    function canUndo() {
-      return true;
+      return haveRight('computer', 'w');
    }
 
 
