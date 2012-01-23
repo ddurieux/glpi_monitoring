@@ -43,6 +43,7 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+checkCentralAccess();
 
 $pmContact_Item = new PluginMonitoringContact_Item();
 

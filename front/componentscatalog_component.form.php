@@ -43,6 +43,7 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+checkCentralAccess();
 
 $pmComponentscatalog_Component = new PluginMonitoringComponentscatalog_Component();
 

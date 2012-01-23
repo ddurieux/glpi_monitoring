@@ -43,6 +43,8 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+checkCentralAccess();
+
 $dropdown = new PluginMonitoringServicescatalog();
 if (isset($_GET['detail']) AND isset($_GET['id'])) {
    commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
