@@ -133,13 +133,12 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          $stateg['OK'] = 0;
          $stateg['WARNING'] = 0;
          $stateg['CRITICAL'] = 0;
+         $a_gstate = array();
          $nb_ressources = 0;
          $query = "SELECT * FROM `".$pmComponentscatalog_Host->getTable()."`
             WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'";
          $result = $DB->query($query);
          while ($dataComponentscatalog_Host=$DB->fetch_array($result)) {
-            $a_gstate = array();
-            
             $queryService = "SELECT * FROM `".$pmService->getTable()."`
                WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'";
             $resultService = $DB->query($queryService);
@@ -182,12 +181,11 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                      $a_gstate[$dataService['id']] = "OK";
                   }
                }
-               foreach ($a_gstate as $value) {
-                  $stateg[$value]++;
-               }
             }
          }
-
+         foreach ($a_gstate as $value) {
+            $stateg[$value]++;
+         }
          echo "<tr class='tab_bg_1'>";
          echo "<td>";
          echo $LANG['plugin_monitoring']['service'][0]."&nbsp;:";
