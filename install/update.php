@@ -538,8 +538,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
          $migration->addKey($newTable,
                             array('state',
-                                  'state_type',
-                                  'plugin_monitoring_componentscatalogs_hosts_id'),
+                                  'state_type'),
                             'state');
          $migration->addKey($newTable,
                             'plugin_monitoring_componentscatalogs_hosts_id');
