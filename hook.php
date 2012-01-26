@@ -132,14 +132,14 @@ function plugin_headings_actions_monitoring($item) {
       case 'Printer':
       case 'NetworkEquipment':
          $array = array ();
-         $array[0] = "plugin_headings_monitoring_status";
+//         $array[0] = "plugin_headings_monitoring_status";
          $array[2] = "plugin_headings_monitoring_resources";
          return $array;
          break;
       
       case 'User':
          $array = array ();
-         $array[0] = "plugin_headings_monitoring_status";
+//         $array[0] = "plugin_headings_monitoring_status";
          $array[1] = "plugin_headings_monitoring_contacts";
          return $array;
          break;
