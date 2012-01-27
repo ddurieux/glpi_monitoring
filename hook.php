@@ -202,7 +202,7 @@ function plugin_headings_monitoring_businessrules($item) {
 function plugin_headings_monitoring_contacts($item) {
 
    $pluginMonitoringContact = new PluginMonitoringContact();
-   $pluginMonitoringContact->showForm('');
+   $pluginMonitoringContact->showForm(0);
 }
 
 

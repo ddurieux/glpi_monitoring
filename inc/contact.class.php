@@ -103,7 +103,7 @@ class PluginMonitoringContact extends CommonDBTM {
    function showForm($items_id, $options=array()) {
       global $DB,$CFG_GLPI,$LANG;
 
-      if ($items_id == '') {
+      if ($items_id == '0') {
          $a_list = $this->find("`users_id`='".$_POST['id']."'", '', 1);
          if (count($a_list)) {
             $array = current($a_list);
@@ -111,7 +111,7 @@ class PluginMonitoringContact extends CommonDBTM {
          }
       }
 
-      if ($items_id!='') {
+      if ($items_id != '0') {
          $this->getFromDB($items_id);
       } else {
          $this->getEmpty();
@@ -123,121 +123,16 @@ class PluginMonitoringContact extends CommonDBTM {
          $this->getFromDB($items_id);
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['plugin_monitoring']['contact'][2]."&nbsp;:</td>";
+         echo "<td>".$LANG['common'][13]."&nbsp;:</td>";
          echo "<td align='center'>";
-         echo "<input name='pager' type='text' value='".$this->fields['pager']."' />";
+         Dropdown::show("PluginMonitoringContacttemplate", 
+                 array('name' => 'plugin_monitoring_contacttemplates_id',
+                       'value'=> $this->fields['plugin_monitoring_contacttemplates_id']));
          echo "</td>";
          echo "<td colspan='2'>";
          echo "</td>";
          echo "</tr>";
 
-         echo "<tr class='tab_bg_1'>";
-         echo "<th colspan='2'>".$LANG['plugin_monitoring']['contact'][3]."</th>";
-         echo "<th colspan='2'>".$LANG['plugin_monitoring']['contact'][4]."</th>";
-         echo "</tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['plugin_monitoring']['contact'][5]."&nbsp;:</td>";
-         echo "<td align='center'>";
-         Dropdown::showYesNo('host_notifications_enabled', $this->fields['host_notifications_enabled']);
-         echo "</td>";
-         echo "<td>".$LANG['plugin_monitoring']['contact'][5]."&nbsp;:</td>";
-         echo "<td align='center'>";
-         Dropdown::showYesNo('service_notifications_enabled', $this->fields['service_notifications_enabled']);
-         echo "</td>";
-         echo "</tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['plugin_monitoring']['contact'][19]."&nbsp;:</td>";
-         echo "<td align='center'>";
-         dropdown::show("PluginMonitoringNotificationcommand", array('name'=>'host_notification_commands',
-                                    'value'=>$this->fields['host_notification_commands']));
-         echo "</td>";
-         echo "<td>".$LANG['plugin_monitoring']['contact'][19]."&nbsp;:</td>";
-         echo "<td align='center'>";
-         dropdown::show("PluginMonitoringNotificationcommand", array('name'=>'service_notification_commands',
-                                    'value'=>$this->fields['service_notification_commands']));
-         echo "</td>";
-         echo "</tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['plugin_monitoring']['contact'][6]."&nbsp;:</td>";
-         echo "<td align='center'>";
-         dropdown::show("Calendar", array('name'=>'host_notification_period',
-                                    'value'=>$this->fields['host_notification_period']));
-         echo "</td>";
-         echo "<td>".$LANG['plugin_monitoring']['contact'][6]."&nbsp;:</td>";
-         echo "<td align='center'>";
-         dropdown::show("Calendar", array('name'=>'service_notification_period',
-                                    'value'=>$this->fields['service_notification_period']));
-         echo "</td>";
-         echo "</tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['plugin_monitoring']['contact'][7]."&nbsp;:</td>";
-         echo "<td align='center'>";
-         Dropdown::showYesNo('host_notification_options_d', $this->fields['host_notification_options_d']);
-         echo "</td>";
-         echo "<td>".$LANG['plugin_monitoring']['contact'][8]."&nbsp;:</td>";
-         echo "<td align='center'>";
-         Dropdown::showYesNo('service_notification_options_w', $this->fields['service_notification_options_w']);
-         echo "</td>";
-         echo "</tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['plugin_monitoring']['contact'][9]."&nbsp;:</td>";
-         echo "<td align='center'>";
-         Dropdown::showYesNo('host_notification_options_u', $this->fields['host_notification_options_u']);
-         echo "</td>";
-         echo "<td>".$LANG['plugin_monitoring']['contact'][10]."&nbsp;:</td>";
-         echo "<td align='center'>";
-         Dropdown::showYesNo('service_notification_options_u', $this->fields['service_notification_options_u']);
-         echo "</td>";
-         echo "</tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['plugin_monitoring']['contact'][11]."&nbsp;:</td>";
-         echo "<td align='center'>";
-         Dropdown::showYesNo('host_notification_options_r', $this->fields['host_notification_options_r']);
-         echo "</td>";
-         echo "<td>".$LANG['plugin_monitoring']['contact'][12]."&nbsp;:</td>";
-         echo "<td align='center'>";
-         Dropdown::showYesNo('service_notification_options_c', $this->fields['service_notification_options_c']);
-         echo "</td>";
-         echo "</tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['plugin_monitoring']['contact'][13]."&nbsp;:</td>";
-         echo "<td align='center'>";
-         Dropdown::showYesNo('host_notification_options_f', $this->fields['host_notification_options_f']);
-         echo "</td>";
-         echo "<td>".$LANG['plugin_monitoring']['contact'][14]."&nbsp;:</td>";
-         echo "<td align='center'>";
-         Dropdown::showYesNo('service_notification_options_r', $this->fields['service_notification_options_r']);
-         echo "</td>";
-         echo "</tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['plugin_monitoring']['contact'][15]."&nbsp;:</td>";
-         echo "<td align='center'>";
-         Dropdown::showYesNo('host_notification_options_s', $this->fields['host_notification_options_s']);
-         echo "</td>";
-         echo "<td>".$LANG['plugin_monitoring']['contact'][16]."&nbsp;:</td>";
-         echo "<td align='center'>";
-         Dropdown::showYesNo('service_notification_options_f', $this->fields['service_notification_options_f']);
-         echo "</td>";
-         echo "</tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['plugin_monitoring']['contact'][17]."&nbsp;:</td>";
-         echo "<td align='center'>";
-         Dropdown::showYesNo('host_notification_options_n', $this->fields['host_notification_options_n']);
-         echo "</td>";
-         echo "<td>".$LANG['plugin_monitoring']['contact'][18]."&nbsp;:</td>";
-         echo "<td align='center'>";
-         Dropdown::showYesNo('service_notification_options_n', $this->fields['service_notification_options_n']);
-         echo "</td>";
-         echo "</tr>";
 
          $this->showFormButtons($options);
       } else {

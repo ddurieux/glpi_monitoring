@@ -483,7 +483,9 @@ class PluginMonitoringShinken extends CommonDBTM {
               (isset($a_pmcontact['plugin_monitoring_contacttemplates_id'])
               AND $a_pmcontact['plugin_monitoring_contacttemplates_id'] == '0')) {
          $a_pmcontact = current($pmContacttemplate->find("`is_default`='1'", "", 1));
-      }      
+      } else {
+         $a_pmcontact = current($pmContacttemplate->find("`id`='".$a_pmcontact['plugin_monitoring_contacttemplates_id']."'", "", 1));
+      }     
       $a_contacts[$i]['contact_name'] = $user->fields['name'];
       $a_contacts[$i]['alias'] = $user->getName();
       $a_contacts[$i]['host_notifications_enabled'] = $a_pmcontact['host_notifications_enabled'];

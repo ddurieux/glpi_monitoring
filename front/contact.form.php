@@ -52,6 +52,11 @@ commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugi
 $pluginMonitoringContact = new PluginMonitoringContact();
 if (isset($_POST["add"])) {
    if ($_POST['users_id'] != "0") {
+      $pmContacttemplate = new PluginMonitoringContacttemplate();
+      $a_template = current($pmContacttemplate->find("`is_default`='1'", '', 1));
+      if (isset($a_template['id'])) {
+         $_POST['plugin_monitoring_contacttemplates_id'] = $a_template['id'];
+      }
       $pluginMonitoringContact->add($_POST);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
@@ -63,12 +68,11 @@ if (isset($_POST["add"])) {
    glpi_header($_SERVER['HTTP_REFERER']);
 }
 
-
-if (isset($_GET["id"])) {
-   $pluginMonitoringHost->showForm($_GET["id"]);
-} else {
-   $pluginMonitoringHost->showForm("");
-}
+//if (isset($_GET["id"])) {
+//   $pluginMonitoringHost->showForm($_GET["id"]);
+//} else {
+//   $pluginMonitoringHost->showForm("");
+//}
 
 commonFooter();
 
