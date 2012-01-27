@@ -99,14 +99,18 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
       case 'NetworkEquipment':
          $array = array();
          //$array[0] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['state'][0];
-         $array[2] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['service'][0];
+         if ($_GET['id'] > 0) {
+            $array[2] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['service'][0];
+         }
          return $array;
          break;
       
       case 'User':
          $array = array();
          //$array[0] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['state'][0];
-         $array[1] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['contact'][0];
+         if ($_GET['id'] > 0) {
+            $array[1] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['contact'][0];
+         }
          return $array;
          break;
       
