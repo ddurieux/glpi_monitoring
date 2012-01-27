@@ -51,6 +51,11 @@ checkCentralAccess();
 commonHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plugins",
              "monitoring", "display");
 
+if (isset($_POST['sessionupdate'])) {
+   $_SESSION['glpi_plugin_monitoring']['_refresh'] = $_POST['_refresh'];
+   glpi_header($_SERVER['HTTP_REFERER']);
+   exit;
+}
 
 if (isset ($_POST["plugin_monitoring_timezone"])) {
    $_SESSION['plugin_monitoring_timezone'] = $_POST["plugin_monitoring_timezone"];
@@ -60,6 +65,10 @@ if (isset ($_POST["plugin_monitoring_timezone"])) {
 $pMonitoringDisplay = new PluginMonitoringDisplay();
 
 if (isset($_GET['itemtype']) AND isset($_GET['items_id'])) {
+   $pMonitoringDisplay->refreshPage();
+   
+   echo '<meta http-equiv ="refresh" content="'.$_SESSION['glpi_plugin_monitoring']['_refresh'].'">';
+   
    $pMonitoringDisplay->displayGraphs($_GET['itemtype'], $_GET['items_id']);
 }
 
