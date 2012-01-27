@@ -314,9 +314,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo $LANG['stats'][7];
       echo "</th>";
       echo "<th>";
-      echo $LANG['plugin_monitoring']['servicescatalog'][1];
-      echo "</th>";
-      echo "<th>";
       echo $LANG['plugin_monitoring']['service'][18];
       echo "</th>";
       echo "<th>";
@@ -414,7 +411,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "</td>";
 
       // Mode dégradé
-      echo "<td align='center'>";
+//      echo "<td align='center'>";
 //      // Get all services of this host
 //      $a_serv = $pMonitoringComponent->find("`id`='".$data['plugin_monitoring_components_id']."'");
 //      $globalserv_state = array();
@@ -457,7 +454,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
 //         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_32_soft.png";
 //      }
 //      showToolTip($tooltip, array('img'=>$img));
-      echo "</td>";
+//      echo "</td>";
 
       echo "<td>";
       echo convDate($data['last_check']).' '. substr($data['last_check'], 11, 8);
