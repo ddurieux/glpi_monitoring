@@ -49,6 +49,7 @@ function plugin_init_monitoring() {
    $Plugin = new Plugin();
    if ($Plugin->isActivated('monitoring')) {
       if (isset($_SESSION["glpiID"])) {
+         Plugin::loadLang("monitoring");
          
          $PLUGIN_HOOKS['use_massive_action']['monitoring']=1;
 
