@@ -48,9 +48,22 @@ function pluginMonitoringGetCurrentVersion($version) {
    } else if (!FieldExists("glpi_plugin_monitoring_configs", "timezones")) {
       // Version before 0.80+1.0 (test version)
       return "1.0.0";
+   } else if (!FieldExists("glpi_plugin_monitoring_configs", "version")) {
+      return "0.80+1.0";
+   } else if (FieldExists("glpi_plugin_monitoring_configs", "version")) {
+      
+      $query = "SELECT `version`
+          FROM `glpi_plugin_monitoring_configs`
+          WHERE `id` = '1'";
+      $result = $DB->query($query);
+      $data = $DB->fetch_assoc($result);
+      if ($data['version'] != $version) {
+         return $data['version'];
+      }
    } else {
       return $version;
    }
+   return $version;
 }
 
 
@@ -893,13 +906,20 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'timezones', 
                                  'timezones', 
                                  "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '[\"0\"]'");
+         $migration->changeField($newTable, 
+                                 'version', 
+                                 'version', 
+                                 "varchar(255) DEFAULT NULL");
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable, 
-                                 'rrdtoolpath', 
-                                 "varchar(255) DEFAULT NULL");
+                              'rrdtoolpath', 
+                              "varchar(255) DEFAULT NULL");
          $migration->addField($newTable, 
-                                 'timezones', 
-                                 "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '[\"0\"]'");
+                              'timezones', 
+                              "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '[\"0\"]'");
+         $migration->addField($newTable, 
+                              'version', 
+                              "varchar(255) DEFAULT NULL");
       $migration->migrationOneTable($newTable);
 
       
@@ -1535,7 +1555,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $DB->query($queryd);
    }
    
-      
+   $query = "UPDATE `glpi_plugin_monitoring_configs`
+      SET `version`='".PLUGIN_MONITORING_VERSION."'
+         WHERE `id`='1'";
+   $DB->query($query);
 }
 
 ?>
