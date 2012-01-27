@@ -755,10 +755,30 @@ class PluginMonitoringDisplay extends CommonDBTM {
       
       echo "</tr>";
       echo "</table><br/>";
-         
-         
    }
 
+   
+   
+   function refreshPage() {
+      global $LANG;
+      
+      echo "<form name='form' method='post' action='".$_SERVER["PHP_SELF"]."' >";
+         echo "<table width='100%'>";
+         echo "<tr>";
+         echo "<td align='right'>";
+         echo $LANG['plugin_monitoring']['display'][1]." : ";
+         echo "&nbsp;";
+         Dropdown::showInteger("_refresh", $_SESSION['glpi_plugin_monitoring']['_refresh'], 30, 1000, 10);
+         echo "&nbsp;";
+         echo "<input type='submit' name='sessionupdate' class='submit' value=\"".$LANG['buttons'][2]."\">";
+         echo "</td>";
+         echo "</tr>";
+         echo "</table>";
+      echo "</form>";
+      
+   }
+   
+   
 }
 
 ?>

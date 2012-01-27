@@ -124,7 +124,9 @@ function plugin_init_monitoring() {
                                        'PluginMonitoringComponentscatalog_Host' =>
                                              array('PluginMonitoringComponentscatalog_Host','unlinkComponentsToItem'));
 
-         
+         if (!isset($_SESSION['glpi_plugin_monitoring']['_refresh'])) {
+            $_SESSION['glpi_plugin_monitoring']['_refresh'] = '60';
+         }
       }
 
       $PLUGIN_HOOKS['webservices']['monitoring'] = 'plugin_monitoring_registerMethods';

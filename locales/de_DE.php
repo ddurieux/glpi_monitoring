@@ -29,7 +29,7 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author Mathieu Simon
+   @co-author 
    @comment   Not translate this file, use https://www.transifex.net/projects/p/GLPI_monitoring/
    @copyright Copyright (c) 2011-2012 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
@@ -102,6 +102,7 @@ $LANG['plugin_monitoring']['contacttemplate'][0]="Kontaktvorlage";
 $LANG['plugin_monitoring']['contacttemplate'][1]="Standardvorlage";
 
 $LANG['plugin_monitoring']['display'][0]="Dasboard";
+$LANG['plugin_monitoring']['display'][1]="Autom. Seite aktualisieren (Sekunden)";
 
 $LANG['plugin_monitoring']['grouphost'][0]="Hostgruppen";
 $LANG['plugin_monitoring']['grouphost'][1]="Hostgruppe";

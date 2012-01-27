@@ -102,6 +102,7 @@ $LANG['plugin_monitoring']['contacttemplate'][0]="Gabarit de contact";
 $LANG['plugin_monitoring']['contacttemplate'][1]="Gabarit par défaut";
 
 $LANG['plugin_monitoring']['display'][0]="Tableau de bord";
+$LANG['plugin_monitoring']['display'][1]="Rafraîchissement (en secondes)";
 
 $LANG['plugin_monitoring']['grouphost'][0]="Groupes d'hôtes";
 $LANG['plugin_monitoring']['grouphost'][1]="Groupe d'hôtes";
