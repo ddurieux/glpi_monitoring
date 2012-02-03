@@ -192,15 +192,10 @@ class PluginMonitoringShinken extends CommonDBTM {
    function generateServicesCfg($file=0) {
       global $DB;
       
-//      $pluginMonitoringContact      = new PluginMonitoringContact();
-//      $pluginMonitoringHost_Contact = new PluginMonitoringHost_Contact();
       $pMonitoringCommand      = new PluginMonitoringCommand();
       $pMonitoringCheck        = new PluginMonitoringCheck();
       $pmComponent = new PluginMonitoringComponent();
-//      $pluginMonitoringServicescatalog = new PluginMonitoringServicescatalog();
-//      $pluginMonitoringBusinessrule = new PluginMonitoringBusinessrule();
       $calendar      = new Calendar();
-//      $user          = new User();
       $hostnamebp = '';
       
       $a_services = array();
@@ -230,6 +225,9 @@ class PluginMonitoringShinken extends CommonDBTM {
             $hostnamebp = $a_services[$i]['host_name']; // For business rules
 
             $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9]/","",$a_component['name'])."-".$data['id'];
+            
+            $a_services[$i]['use'] = $_SESSION['plugin_monitoring']['servicetemplates'][$a_component['id']];
+            
             $a_fields = array();
             $pMonitoringCommand->getFromDB($a_component['plugin_monitoring_commands_id']);
             // Manage arguments
@@ -270,13 +268,6 @@ class PluginMonitoringShinken extends CommonDBTM {
             } else {
                $a_services[$i]['check_command'] = $pMonitoringCommand->fields['command_name'].$args;
             }
-               $pMonitoringCheck->getFromDB($a_component['plugin_monitoring_checks_id']);
-            $a_services[$i]['check_interval'] = $pMonitoringCheck->fields['check_interval'];
-            $a_services[$i]['retry_interval'] = $pMonitoringCheck->fields['retry_interval'];
-            $a_services[$i]['max_check_attempts'] = $pMonitoringCheck->fields['max_check_attempts'];
-            if ($calendar->getFromDB($a_component['calendars_id'])) {
-               $a_services[$i]['check_period'] = $calendar->fields['name'];            
-            }
                $a_contacts = array();
    //            $a_list_contact = $pluginMonitoringHost_Contact->find("`plugin_monitoring_hosts_id`='".$data['id']."'");
    //            foreach ($a_list_contact as $data_contact) {
@@ -285,31 +276,6 @@ class PluginMonitoringShinken extends CommonDBTM {
    //               $a_contacts[] = $user->fields['name'];
    //            }
             $a_services[$i]['contacts'] = implode(',', $a_contacts);
-
-            $a_services[$i]['notification_interval'] = '30';
-            if ($calendar->getFromDB($a_component['calendars_id'])) {
-               $a_services[$i]['notification_period'] = $calendar->fields['name'];
-            } else {
-               $a_services[$i]['notification_period'] = "24x7";
-            }
-            $a_services[$i]['notification_options'] = 'w,c,r';
-            $a_services[$i]['active_checks_enabled'] = '1';
-            $a_services[$i]['process_perf_data'] = '1';
-            $a_services[$i]['active_checks_enabled'] = '1';
-            $a_services[$i]['passive_checks_enabled'] = '1';
-            $a_services[$i]['parallelize_check'] = '1';
-            $a_services[$i]['obsess_over_service'] = '1';
-            $a_services[$i]['check_freshness'] = '1';
-            $a_services[$i]['freshness_threshold'] = '1';
-            $a_services[$i]['notifications_enabled'] = '1';
-            $a_services[$i]['event_handler_enabled'] = '0';
-            $a_services[$i]['event_handler'] = 'super_event_kill_everyone!DIE';
-            $a_services[$i]['flap_detection_enabled'] = '1';
-            $a_services[$i]['failure_prediction_enabled'] = '1';
-            $a_services[$i]['retain_status_information'] = '1';
-            $a_services[$i]['retain_nonstatus_information'] = '1';
-            $a_services[$i]['is_volatile'] = '0';
-            $a_services[$i]['_httpstink'] = 'NO';
 
             $i++;
          }
@@ -418,7 +384,82 @@ class PluginMonitoringShinken extends CommonDBTM {
 
    
    
+   function generateServiceTemplatesCfg($file=0) {
+      global $DB;
+      
+      $pMonitoringCheck        = new PluginMonitoringCheck();
+      $calendar      = new Calendar();
+      $a_servicetemplates = array();
+      $i=0;
+      $a_templatesdef = array();
+      
+      $query = "SELECT * FROM `glpi_plugin_monitoring_components`
+         GROUP BY `plugin_monitoring_checks_id`, `active_checks_enabled`, 
+            `passive_checks_enabled`, `calendars_id`
+         ORDER BY `id`";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
 
+         $a_servicetemplates[$i]['name'] = 'template'.$data['id'].'-service';
+            $pMonitoringCheck->getFromDB($data['plugin_monitoring_checks_id']);
+         $a_servicetemplates[$i]['check_interval'] = $pMonitoringCheck->fields['check_interval'];
+         $a_servicetemplates[$i]['retry_interval'] = $pMonitoringCheck->fields['retry_interval'];
+         $a_servicetemplates[$i]['max_check_attempts'] = $pMonitoringCheck->fields['max_check_attempts'];
+         if ($calendar->getFromDB($data['calendars_id'])) {
+            $a_servicetemplates[$i]['check_period'] = $calendar->fields['name'];            
+         }
+         $a_servicetemplates[$i]['notification_interval'] = '30';
+         if ($calendar->getFromDB($data['calendars_id'])) {
+            $a_servicetemplates[$i]['notification_period'] = $calendar->fields['name'];
+         } else {
+            $a_servicetemplates[$i]['notification_period'] = "24x7";
+         }
+         $a_servicetemplates[$i]['notification_options'] = 'w,c,r';
+         $a_servicetemplates[$i]['active_checks_enabled'] = '1';
+         $a_servicetemplates[$i]['process_perf_data'] = '1';
+         $a_servicetemplates[$i]['active_checks_enabled'] = '1';
+         $a_servicetemplates[$i]['passive_checks_enabled'] = '1';
+         $a_servicetemplates[$i]['parallelize_check'] = '1';
+         $a_servicetemplates[$i]['obsess_over_service'] = '1';
+         $a_servicetemplates[$i]['check_freshness'] = '1';
+         $a_servicetemplates[$i]['freshness_threshold'] = '1';
+         $a_servicetemplates[$i]['notifications_enabled'] = '1';
+         $a_servicetemplates[$i]['event_handler_enabled'] = '0';
+         $a_servicetemplates[$i]['event_handler'] = 'super_event_kill_everyone!DIE';
+         $a_servicetemplates[$i]['flap_detection_enabled'] = '1';
+         $a_servicetemplates[$i]['failure_prediction_enabled'] = '1';
+         $a_servicetemplates[$i]['retain_status_information'] = '1';
+         $a_servicetemplates[$i]['retain_nonstatus_information'] = '1';
+         $a_servicetemplates[$i]['is_volatile'] = '0';
+         $a_servicetemplates[$i]['_httpstink'] = 'NO';
+
+         $queryc = "SELECT * FROM `glpi_plugin_monitoring_components`
+            WHERE `plugin_monitoring_checks_id`='".$data['plugin_monitoring_checks_id']."'  
+               AND `active_checks_enabled`='".$data['active_checks_enabled']."' 
+               AND `passive_checks_enabled`='".$data['passive_checks_enabled']."'
+               AND `calendars_id`='".$data['calendars_id']."'";
+         $resultc = $DB->query($queryc);
+         while ($datac=$DB->fetch_array($resultc)) {
+            $a_templatesdef[$datac['id']] = $a_servicetemplates[$i]['name'];
+         }
+         $i++;
+      }
+      $_SESSION['plugin_monitoring']['servicetemplates'] = $a_templatesdef;
+      if ($file == "1") {
+         $config = "# Generated by plugin monitoring for GLPI\n# on ".date("Y-m-d H:i:s")."\n\n";
+
+         foreach ($a_servicetemplates as $data) {
+            $config .= $this->constructFile("service", $data);
+         }
+         return array('servicetemplates.cfg', $config);
+
+      } else {
+         return $a_servicetemplates;
+      }
+   }
+
+
+   
 
    function generateContactsCfg($file=0) {
       global $DB;
