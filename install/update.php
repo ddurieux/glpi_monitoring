@@ -425,14 +425,6 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'plugin_monitoring_componentscalalog_id', 
                                  'plugin_monitoring_componentscalalog_id', 
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'entities_id', 
-                                 'entities_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'is_recursive', 
-                                 'is_recursive', 
-                                 "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->changeField($newTable,
                                  'name', 
                                  'name', 
@@ -445,16 +437,14 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'condition', 
                                  'condition', 
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->dropField($newTable, 
+                               'entities_id');
+         $migration->dropField($newTable, 
+                               'is_recursive');
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable, 
                                  'plugin_monitoring_componentscalalog_id', 
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'entities_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'is_recursive', 
-                                 "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
                                  'name', 
                                  "varchar(255) DEFAULT NULL");
