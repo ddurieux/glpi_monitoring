@@ -584,7 +584,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
    
    
    function displayCounters($type, $display=1) {
-      global $DB,$CFG_GLPI;
+      global $DB,$CFG_GLPI,$LANG;
       
       $ok = 0;
       $warning = 0;
@@ -704,6 +704,11 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<table class='tab_cadre' width='474' height='100' ".$background." >";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
+         echo $LANG['plugin_monitoring']['display'][2];
+         echo "</td>";
+         echo "</tr>";
+         echo "<tr>";
+         echo "<th style='background-color:transparent;'>";
          echo "<font style='font-size: 52px;'>".$critical."</font>";         
          echo "</th>";
          echo "</tr>";
@@ -723,6 +728,11 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<table class='tab_cadre' width='316' height='100' ".$background." >";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
+         echo $LANG['plugin_monitoring']['display'][3];
+         echo "</td>";
+         echo "</tr>";
+         echo "<tr>";
+         echo "<th style='background-color:transparent;'>";
          echo "<font style='font-size: 52px;'>".$warning."</font>";         
          echo "</th>";
          echo "</tr>";
@@ -740,6 +750,11 @@ class PluginMonitoringDisplay extends CommonDBTM {
             $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_ok.png"';
          }
          echo "<table class='tab_cadre' width='158' height='100' ".$background." >";
+         echo "<tr>";
+         echo "<th style='background-color:transparent;'>";
+         echo $LANG['plugin_monitoring']['display'][4];
+         echo "</td>";
+         echo "</tr>";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
          echo "<font style='font-size: 52px;'>".$ok."</font>";         

@@ -149,5 +149,8 @@ $LANG['plugin_monitoring']['componentscatalog'][0]="Components catalog";
 
 $LANG['plugin_monitoring']['display'][0]="Dashboard";
 $LANG['plugin_monitoring']['display'][1]="Page refresh (in seconds)";
+$LANG['plugin_monitoring']['display'][2]="Critical";
+$LANG['plugin_monitoring']['display'][3]="Warning";
+$LANG['plugin_monitoring']['display'][4]="OK";
 
 ?>
