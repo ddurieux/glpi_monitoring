@@ -62,6 +62,8 @@ echo "</th>";
 echo "</tr>";
 echo "</table>";
 
+echo "<br/>";
+
 echo "<table class='tab_cadre' width='950'>";
 echo "<tr class='tab_bg_1'>";
 echo "<td align='center' height='50' width='50%'>";
@@ -75,24 +77,32 @@ echo "</th>";
 echo "</tr>";
 echo "</table>";
 
+echo "<br/>";
+
 echo "<table class='tab_cadre' width='950'>";
 echo "<tr class='tab_bg_1'>";
-echo "<th height='25' width='25%'>";
+echo "<th colspan='4' height='30' width='66%'>";
 echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/component.php'>".$LANG['plugin_monitoring']['component'][0]."</a>";
 echo "</th>";
 
-echo "<th width='25%'>";
-echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/command.php'>".$LANG['plugin_monitoring']['command'][0]."</a>";
-echo "</th>";
-
-echo "<th width='25%'>";
-echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/check.php'>".$LANG['plugin_monitoring']['check'][0]."</a>";
-echo "</th>";
-
-echo "<th width='25%'>";
+echo "<th rowspan='2'>";
 echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/contacttemplate.php'>".$LANG['plugin_monitoring']['contacttemplate'][0]."</a>";
 echo "</th>";
 echo "</tr>";
+
+echo "<tr class='tab_bg_1'>";
+echo "<th width='22%' height='25'>";
+echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/command.php'>".$LANG['plugin_monitoring']['command'][0]."</a>";
+echo "</th>";
+
+echo "<th width='22%'>";
+echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/check.php'>".$LANG['plugin_monitoring']['check'][0]."</a>";
+echo "</th>";
+
+echo "<th width='22%'>";
+echo "<a href='".$CFG_GLPI['root_doc']."/front/calendar.php'>".$LANG['buttons'][15]."</a>";
+echo "</th>";
+
 
 echo "</table>";
 
