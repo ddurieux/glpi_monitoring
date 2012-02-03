@@ -319,8 +319,7 @@ class PluginMonitoringComponent extends CommonDBTM {
           
          foreach ($a_displayarg as $key=>$value) {
          echo "<tr>";
-         echo "<th>".$key."</th>";
-         echo "<td colspan='2'>";
+         echo "<td>";
             if (isset($a_argtext[$key])) {
                echo nl2br($a_argtext[$key])."&nbsp;:";
             } else {
@@ -330,6 +329,7 @@ class PluginMonitoringComponent extends CommonDBTM {
             echo "<td>";
             echo "<input type='text' name='arg[".$key."]' value='".$value."'/><br/>";
             echo "</td>";
+            echo "<td colspan='2'></td>";
             echo "</tr>";
          }
       }
