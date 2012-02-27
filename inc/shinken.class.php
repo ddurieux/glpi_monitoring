@@ -137,7 +137,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $classname = $data['itemtype'];
          $class = new $classname;
          if ($class->getFromDB($data['items_id'])) {
-            $a_hosts[$i]['host_name'] = $classname."-0-".preg_replace("/[^A-Za-z0-9]/","",$class->fields['name']);
+            $a_hosts[$i]['host_name'] = $classname."-".$data['id']."-".preg_replace("/[^A-Za-z0-9]/","",$class->fields['name']);
             $a_hosts[$i]['alias'] = $a_hosts[$i]['host_name'];
             $ip = PluginMonitoringHostaddress::getIp($data['items_id'], $data['itemtype'], $class->fields['name']);
                
@@ -216,18 +216,18 @@ class PluginMonitoringShinken extends CommonDBTM {
             $itemtype = $datah['itemtype'];
             $item = new $itemtype();
             if ($item->getFromDB($datah['items_id'])) {
-               $a_hostname[] = $itemtype."-0-".preg_replace("/[^A-Za-z0-9]/","",$item->fields['name']);
+               $a_hostname[] = $itemtype."-".$datah['id']."-".preg_replace("/[^A-Za-z0-9]/","",$item->fields['name']);
                $hostname = $item->fields['name'];
             }
          }
          if (count($a_hostname) > 0) {
+            if (isset($_SESSION['plugin_monitoring']['servicetemplates'][$a_component['id']])) {
+               $a_services[$i]['use'] = $_SESSION['plugin_monitoring']['servicetemplates'][$a_component['id']];
+            }         
             $a_services[$i]['host_name'] = implode(",", array_unique($a_hostname));
             $hostnamebp = $a_services[$i]['host_name']; // For business rules
 
             $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9]/","",$a_component['name'])."-".$data['id'];
-            
-            $a_services[$i]['use'] = $_SESSION['plugin_monitoring']['servicetemplates'][$a_component['id']];
-            
             $a_fields = array();
             $pMonitoringCommand->getFromDB($a_component['plugin_monitoring_commands_id']);
             // Manage arguments
@@ -277,6 +277,41 @@ class PluginMonitoringShinken extends CommonDBTM {
    //            }
             $a_services[$i]['contacts'] = implode(',', $a_contacts);
 
+            // ** If shinken not use templates or template not defined : 
+            if (isset($_SESSION['plugin_monitoring']['servicetemplates'][$a_component['id']])) {
+                  $pMonitoringCheck->getFromDB($a_component['plugin_monitoring_checks_id']);
+               $a_services[$i]['check_interval'] = $pMonitoringCheck->fields['check_interval'];
+               $a_services[$i]['retry_interval'] = $pMonitoringCheck->fields['retry_interval'];
+               $a_services[$i]['max_check_attempts'] = $pMonitoringCheck->fields['max_check_attempts'];
+               if ($calendar->getFromDB($a_component['calendars_id'])) {
+                  $a_services[$i]['check_period'] = $calendar->fields['name'];            
+               }
+               $a_services[$i]['notification_interval'] = '30';
+               if ($calendar->getFromDB($a_component['calendars_id'])) {
+                  $a_services[$i]['notification_period'] = $calendar->fields['name'];
+               } else {
+                  $a_services[$i]['notification_period'] = "24x7";
+               }
+               $a_services[$i]['notification_options'] = 'w,c,r';
+               $a_services[$i]['active_checks_enabled'] = '1';
+               $a_services[$i]['process_perf_data'] = '1';
+               $a_services[$i]['active_checks_enabled'] = '1';
+               $a_services[$i]['passive_checks_enabled'] = '1';
+               $a_services[$i]['parallelize_check'] = '1';
+               $a_services[$i]['obsess_over_service'] = '1';
+               $a_services[$i]['check_freshness'] = '1';
+               $a_services[$i]['freshness_threshold'] = '1';
+               $a_services[$i]['notifications_enabled'] = '1';
+               $a_services[$i]['event_handler_enabled'] = '0';
+               $a_services[$i]['event_handler'] = 'super_event_kill_everyone!DIE';
+               $a_services[$i]['flap_detection_enabled'] = '1';
+               $a_services[$i]['failure_prediction_enabled'] = '1';
+               $a_services[$i]['retain_status_information'] = '1';
+               $a_services[$i]['retain_nonstatus_information'] = '1';
+               $a_services[$i]['is_volatile'] = '0';
+               $a_services[$i]['_httpstink'] = 'NO';
+            }
+            
             $i++;
          }
       }
@@ -384,7 +419,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
    
    
-   function generateServiceTemplatesCfg($file=0) {
+   function generateTemplatesCfg($file=0) {
       global $DB;
       
       $pMonitoringCheck        = new PluginMonitoringCheck();
@@ -432,7 +467,8 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_servicetemplates[$i]['retain_nonstatus_information'] = '1';
          $a_servicetemplates[$i]['is_volatile'] = '0';
          $a_servicetemplates[$i]['_httpstink'] = 'NO';
-
+         $a_servicetemplates[$i]['register'] = '0';
+                  
          $queryc = "SELECT * FROM `glpi_plugin_monitoring_components`
             WHERE `plugin_monitoring_checks_id`='".$data['plugin_monitoring_checks_id']."'  
                AND `active_checks_enabled`='".$data['active_checks_enabled']."' 

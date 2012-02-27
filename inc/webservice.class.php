@@ -85,8 +85,8 @@ class PluginMonitoringWebservice {
             return array($array[0]=>$array[1]);
             break;
          
-         case 'servicetemplates.cfg':
-            $array = $pluginMonitoringShinken->generateServiceTemplatesCfg(1);
+         case 'templates.cfg':
+            $array = $pluginMonitoringShinken->generateTemplatesCfg(1);
             return array($array[0]=>$array[1]);
             break;
 
@@ -100,7 +100,7 @@ class PluginMonitoringWebservice {
             $output[$array[0]] = $array[1];
             $array = $pluginMonitoringShinken->generateTimeperiodsCfg(1);
             $output[$array[0]] = $array[1];
-            $array = $pluginMonitoringShinken->generateServicetemplatesCfg(1);
+            $array = $pluginMonitoringShinken->generateTemplatesCfg(1);
             $output[$array[0]] = $array[1];
             $array = $pluginMonitoringShinken->generateServicesCfg(1);
             $output[$array[0]] = $array[1];
@@ -141,11 +141,11 @@ class PluginMonitoringWebservice {
 
 
 
-   static function methodShinkenServiceTemplates($params, $protocol) {
+   static function methodShinkenTemplates($params, $protocol) {
       global $LANG, $CFG_GLPI;
 
       $pluginMonitoringShinken = new PluginMonitoringShinken();
-      $array = $pluginMonitoringShinken->generateServiceTemplatesCfg();
+      $array = $pluginMonitoringShinken->generateTemplatesCfg();
       return $array;
    }
    

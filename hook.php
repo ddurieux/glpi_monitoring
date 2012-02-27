@@ -368,8 +368,8 @@ function plugin_monitoring_registerMethods() {
    
    $WEBSERVICES_METHOD['monitoring.shinkenServices'] = array('PluginMonitoringWebservice',
                                                        'methodShinkenServices');
-   $WEBSERVICES_METHOD['monitoring.shinkenServices'] = array('PluginMonitoringWebservice',
-                                                       'methodShinkenServiceTemplates');
+   $WEBSERVICES_METHOD['monitoring.shinkenTemplates'] = array('PluginMonitoringWebservice',
+                                                       'methodShinkenTemplates');
    $WEBSERVICES_METHOD['monitoring.dashboard'] = array('PluginMonitoringWebservice',
                                                        'methodDashboard');
    $WEBSERVICES_METHOD['monitoring.getServicesList'] = array('PluginMonitoringWebservice',

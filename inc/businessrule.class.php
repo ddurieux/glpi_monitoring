@@ -232,8 +232,8 @@ return;
 
       $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
       
-      // Add group
-      $pMonitoringBusinessrulegroup->showForm(0, $servicescatalogs_id);
+//      // Add group
+//      $pMonitoringBusinessrulegroup->showForm(0, $servicescatalogs_id);
       
       // Display each group
       $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringBusinessrulegroup")."`
@@ -242,49 +242,49 @@ return;
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
          $pMonitoringBusinessrulegroup->showForm($data['id'], $servicescatalogs_id);
-      
-         echo "<table class='tab_cadre' width='600'>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<th>".$LANG['plugin_monitoring']['service'][2]."&nbsp;:</th>";
-         echo "</tr>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>";
-         echo "<form name='form' method='post' action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/businessrule.form.php'>";
-         echo "<input type='hidden' name='plugin_monitoring_businessrulegroups_id' value='".$data['id']."' />";
-         self::dropdownService(0, array('name' => 'type'));         
-         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-         echo "</form>";
-         echo "</td>";
-         echo "</tr>";
-         echo "</table>";
-         
-         echo "<table class='tab_cadre' width='600'>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<th></th>";
-         echo "<th>".$LANG['plugin_monitoring']['service'][0]."</th>";
-         echo "</tr>";
-         $a_services = $this->find("`plugin_monitoring_businessrulegroups_id`='".$data['id']."'");
-         foreach ($a_services as $gdata) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo "<input type='checkbox'/>";
-            echo "</td>";
-            echo "<td>";
-            $pMonitoringService = new PluginMonitoringService();
-            $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
-            $pMonitoringService->getFromDB($gdata["plugin_monitoring_services_id"]);
-            $pmComponentscatalog_Host->getFromDB($pMonitoringService->fields['plugin_monitoring_componentscatalogs_hosts_id']);
-            echo $pMonitoringService->getLink(1);
-            echo " ".$LANG['networking'][25]." ";
-            $itemtype2 = $pmComponentscatalog_Host->fields['itemtype'];
-            $item2 = new $itemtype2();
-            $item2->getFromDB($pmComponentscatalog_Host->fields['items_id']);
-            echo $item2->getLink(1);
-            echo "</td>";
-            echo "</tr>";
-         }         
-         echo "</table>";
-         echo "<br/>";
+//      
+//         echo "<table class='tab_cadre' width='600'>";
+//         echo "<tr class='tab_bg_1'>";
+//         echo "<th>".$LANG['plugin_monitoring']['service'][2]."&nbsp;:</th>";
+//         echo "</tr>";
+//         echo "<tr class='tab_bg_1'>";
+//         echo "<td>";
+//         echo "<form name='form' method='post' action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/businessrule.form.php'>";
+//         echo "<input type='hidden' name='plugin_monitoring_businessrulegroups_id' value='".$data['id']."' />";
+//         self::dropdownService(0, array('name' => 'type'));         
+//         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+//         echo "</form>";
+//         echo "</td>";
+//         echo "</tr>";
+//         echo "</table>";
+//         
+//         echo "<table class='tab_cadre' width='600'>";
+//         echo "<tr class='tab_bg_1'>";
+//         echo "<th></th>";
+//         echo "<th>".$LANG['plugin_monitoring']['service'][0]."</th>";
+//         echo "</tr>";
+//         $a_services = $this->find("`plugin_monitoring_businessrulegroups_id`='".$data['id']."'");
+//         foreach ($a_services as $gdata) {
+//            echo "<tr class='tab_bg_1'>";
+//            echo "<td>";
+//            echo "<input type='checkbox'/>";
+//            echo "</td>";
+//            echo "<td>";
+//            $pMonitoringService = new PluginMonitoringService();
+//            $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+//            $pMonitoringService->getFromDB($gdata["plugin_monitoring_services_id"]);
+//            $pmComponentscatalog_Host->getFromDB($pMonitoringService->fields['plugin_monitoring_componentscatalogs_hosts_id']);
+//            echo $pMonitoringService->getLink(1);
+//            echo " ".$LANG['networking'][25]." ";
+//            $itemtype2 = $pmComponentscatalog_Host->fields['itemtype'];
+//            $item2 = new $itemtype2();
+//            $item2->getFromDB($pmComponentscatalog_Host->fields['items_id']);
+//            echo $item2->getLink(1);
+//            echo "</td>";
+//            echo "</tr>";
+//         }         
+//         echo "</table>";
+//         echo "<br/>";
       }
       return;
       
