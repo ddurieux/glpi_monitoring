@@ -219,7 +219,116 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       }
       return true;
    }
+   
+   
+   
+   function showRRDTemplates() {
+      global $LANG;
+      
+      $a_templates = array();
+      $a_perfdata= array();
+      if ($handle = opendir(GLPI_PLUGIN_DOC_DIR."/monitoring/templates/")) {
+          while (false !== ($entry = readdir($handle))) {
+              if ($entry != "." && $entry != "..") {
+                 if (strstr($entry, "-perfdata.json")) {
+                    $entry = str_replace("-perfdata.json", "", $entry);
+                    $a_templates[$entry] = array();
+                    $a_perfdata[$entry] = 1;
+                 }
+              }
+          }
+          closedir($handle);
+      }
+      if ($handle = opendir(GLPI_PLUGIN_DOC_DIR."/monitoring/templates/")) {
+          while (false !== ($entry = readdir($handle))) {
+              if ($entry != "." && $entry != "..") {
+                 if (strstr($entry, "_graph.json")) {
+                    $graph = $entry;
+                    $a_entry = explode("-", $entry);
+                    $a_templates[$a_entry[0]][] = $graph;
+                 }
+              }
+          }
+          closedir($handle);
+      }
+      
+      echo "<table class='tab_cadre_fixe'>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<th colspan='2'>";
+      echo $LANG['plugin_monitoring']['rrdtemplates'][0];
+      echo "</th>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<th>";
+      echo "perfdata";
+      echo "</th>";
+      echo "<th>";
+      echo "Graphs";
+      echo "</th>";
+      echo "</tr>";
+      
+      foreach ($a_templates as $name=>$data) {         
+         echo "<tr class='tab_bg_3'>";
+         echo "<td rowspan='".count($data)."'>";
+         echo $name;
+         
+         if (!isset($a_perfdata[$name])) {
+            echo "*";
+         }
+         echo "</td>";
+         
+         $i = 0;
+         foreach ($data as $graphname) {
+            if ($i > 0) {
+               echo "<tr class='tab_bg_3'>";
+            }
+            echo "<td>";
+            echo $graphname;
+            echo "</td>";
+            echo "</tr>";
+            $i++;
+         }         
+      }
+      echo "</table>";
+   }
 
+   
+   
+   function addTemplate() {
+      global $LANG,$CFG_GLPI;
+      
+      echo "<form name='form' method='post' enctype='multipart/form-data'
+         action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/rrdtemplate.form.php'>";
+     
+      echo "<table class='tab_cadre_fixe'>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<th colspan='2'>";
+      echo $LANG['plugin_monitoring']['rrdtemplates'][0]." (".$LANG['plugin_monitoring']['rrdtemplates'][2]."
+          <a href='https://github.com/rrdtooltemplates/rrdtool_templates'>github</a>)";
+      echo "</th>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo $LANG['plugin_monitoring']['rrdtemplates'][1]."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      echo "<input type='file' name='filename' value='' size='39'>";
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='2' align='center'>";
+      echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "</table>";
+      echo "</form>";
+   }
 }
 
 ?>

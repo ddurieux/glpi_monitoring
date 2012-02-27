@@ -154,5 +154,7 @@ $LANG['plugin_monitoring']['display'][3]="Warning";
 $LANG['plugin_monitoring']['display'][4]="OK";
 
 $LANG['plugin_monitoring']['rrdtemplates'][0]="RRDTOOL templates";
+$LANG['plugin_monitoring']['rrdtemplates'][1]="Upload perfdata and graph files";
+$LANG['plugin_monitoring']['rrdtemplates'][2]="Find files on";
 
 ?>

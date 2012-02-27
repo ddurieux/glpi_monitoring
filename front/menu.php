@@ -104,7 +104,7 @@ echo "<a href='".$CFG_GLPI['root_doc']."/front/calendar.php'>".$LANG['buttons'][
 echo "</th>";
 
 echo "<th width='18%'>";
-echo "<a href='".$CFG_GLPI['root_doc']."/front/rrdtemplates.php'>".$LANG['plugin_monitoring']['rrdtemplates'][0]."</a>";
+echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/rrdtemplate.php'>".$LANG['plugin_monitoring']['rrdtemplates'][0]."</a>";
 echo "</th>";
 
 echo "</table>";
