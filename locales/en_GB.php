@@ -153,4 +153,6 @@ $LANG['plugin_monitoring']['display'][2]="Critical";
 $LANG['plugin_monitoring']['display'][3]="Warning";
 $LANG['plugin_monitoring']['display'][4]="OK";
 
+$LANG['plugin_monitoring']['rrdtemplates'][0]="RRDTOOL templates";
+
 ?>

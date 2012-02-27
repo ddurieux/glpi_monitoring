@@ -81,7 +81,7 @@ echo "<br/>";
 
 echo "<table class='tab_cadre' width='950'>";
 echo "<tr class='tab_bg_1'>";
-echo "<th colspan='4' height='30' width='66%'>";
+echo "<th colspan='4' height='30' width='75%'>";
 echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/component.php'>".$LANG['plugin_monitoring']['component'][0]."</a>";
 echo "</th>";
 
@@ -91,18 +91,21 @@ echo "</th>";
 echo "</tr>";
 
 echo "<tr class='tab_bg_1'>";
-echo "<th width='22%' height='25'>";
+echo "<th width='18%' height='25'>";
 echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/command.php'>".$LANG['plugin_monitoring']['command'][0]."</a>";
 echo "</th>";
 
-echo "<th width='22%'>";
+echo "<th width='18%'>";
 echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/check.php'>".$LANG['plugin_monitoring']['check'][0]."</a>";
 echo "</th>";
 
-echo "<th width='22%'>";
+echo "<th width='18%'>";
 echo "<a href='".$CFG_GLPI['root_doc']."/front/calendar.php'>".$LANG['buttons'][15]."</a>";
 echo "</th>";
 
+echo "<th width='18%'>";
+echo "<a href='".$CFG_GLPI['root_doc']."/front/rrdtemplates.php'>".$LANG['plugin_monitoring']['rrdtemplates'][0]."</a>";
+echo "</th>";
 
 echo "</table>";
 
