@@ -593,6 +593,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $warning_soft = 0;
       $critical_soft = 0;
       
+      $play_sound = 0;
+      
       if ($type == 'Ressources') {
 
          $ok = countElementsInTable("glpi_plugin_monitoring_services", 
@@ -616,6 +618,15 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
          $ok_soft = countElementsInTable("glpi_plugin_monitoring_services", 
                  "(`state`='OK' OR `state`='UP') AND `state_type`='SOFT'");
+         
+         // ** Manage play sound if critical increase since last refresh
+            if (isset($_SESSION['plugin_monitoring_dashboard_Ressources'])) {
+               if ($critical > $_SESSION['plugin_monitoring_dashboard_Ressources']) {
+                  $play_sound = 1;
+               }            
+            }
+            $_SESSION['plugin_monitoring_dashboard_Ressources'] = $critical;
+         
       } else if ($type == 'Componentscatalog') {
          $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
          $queryCat = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs`";
@@ -679,6 +690,15 @@ class PluginMonitoringDisplay extends CommonDBTM {
                $ok_soft++;
             }
          }
+         
+         // ** Manage play sound if critical increase since last refresh
+            if (isset($_SESSION['plugin_monitoring_dashboard_Componentscatalog'])) {
+               if ($critical > $_SESSION['plugin_monitoring_dashboard_Componentscatalog']) {
+                  $play_sound = 1;
+               }            
+            }
+            $_SESSION['plugin_monitoring_dashboard_Componentscatalog'] = $critical;
+            
       } else if ($type == 'Businessrules') {
          $ok = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
                  "(`state`='OK' OR `state`='UP') AND `state_type`='HARD'");
@@ -701,6 +721,14 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
          $ok_soft = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
                  "(`state`='OK' OR `state`='UP') AND `state_type`='SOFT'");
+         
+         // ** Manage play sound if critical increase since last refresh
+            if (isset($_SESSION['plugin_monitoring_dashboard_Businessrules'])) {
+               if ($critical > $_SESSION['plugin_monitoring_dashboard_Businessrules']) {
+                  $play_sound = 1;
+               }            
+            }
+            $_SESSION['plugin_monitoring_dashboard_Businessrules'] = $critical;
          
       }
       if ($display == '0') {
@@ -791,6 +819,14 @@ class PluginMonitoringDisplay extends CommonDBTM {
       
       echo "</tr>";
       echo "</table><br/>";
+      
+      // ** play sound
+      if ($play_sound == '1') {
+         echo '<audio autoplay="autoplay">
+                 <source src="../audio/star-trek.ogg" type="audio/ogg" />
+                 Your browser does not support the audio element.
+               </audio>';
+      }
    }
 
    
