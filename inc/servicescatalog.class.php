@@ -87,7 +87,53 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    function canValidate() {
       return true;
    }
+   
+   
+   
+   function showForm($items_id, $options=array()) {
+      global $DB,$CFG_GLPI,$LANG;
 
+      if ($items_id!='') {
+         $this->getFromDB($items_id);
+      } else {
+         $this->getEmpty();
+      }
+
+      $this->showTabs($options);
+      $this->showFormHeader($options);
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][16]." :</td>";
+      echo "<td>";
+      echo "<input type='text' name='name' value='".$this->fields["name"]."' size='30'/>";
+      echo "</td>";
+      echo "<td>".$LANG['plugin_monitoring']['check'][0]."&nbsp;:</td>";
+      echo "<td>";
+      Dropdown::show("PluginMonitoringCheck", 
+                        array('name'=>'plugin_monitoring_checks_id',
+                              'value'=>$this->fields['plugin_monitoring_checks_id']));
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][25]."&nbsp;: </td>";
+      echo "<td>";
+      echo "<textarea cols='45' rows='2' name='comment'>".$this->fields["comment"]."</textarea>";
+      echo "</td>";
+      echo "<td>".$LANG['plugin_monitoring']['host'][9]."&nbsp;:</td>";
+      echo "<td>";
+      dropdown::show("Calendar", array('name'=>'calendars_id',
+                                 'value'=>$this->fields['calendars_id']));
+      echo "</td>";
+      echo "</tr>";
+      
+      $this->showFormButtons($options);
+      $this->addDivForTabs();
+
+      return true;
+   }
+
+   
    
    function showBAChecks() {
       global $CFG_GLPI,$LANG;
@@ -310,10 +356,6 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       echo "</table>";
       
       $state = "OK";
-      
-      
-
-      
    }
    
    

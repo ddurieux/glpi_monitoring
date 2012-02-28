@@ -9,6 +9,8 @@ CREATE TABLE `glpi_plugin_monitoring_servicescatalogs` (
    `last_check` datetime DEFAULT NULL,
    `state` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
    `state_type` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
+   `plugin_monitoring_checks_id` int(11) NOT NULL DEFAULT '0',
+   `calendars_id` int(11) NOT NULL DEFAULT '0',
    PRIMARY KEY (`id`),
    KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

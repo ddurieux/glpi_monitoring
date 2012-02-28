@@ -680,6 +680,27 @@ class PluginMonitoringDisplay extends CommonDBTM {
             }
          }
       } else if ($type == 'Businessrules') {
+         $ok = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
+                 "(`state`='OK' OR `state`='UP') AND `state_type`='HARD'");
+
+         $warning = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
+                 "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
+                    AND `state_type`='HARD'");
+
+         $critical = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
+                 "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
+                    AND `state_type`='HARD'");
+
+         $warning_soft = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
+                 "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
+                    AND `state_type`='SOFT'");
+
+         $critical_soft = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
+                 "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
+                    AND `state_type`='SOFT'");
+
+         $ok_soft = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
+                 "(`state`='OK' OR `state`='UP') AND `state_type`='SOFT'");
          
       }
       if ($display == '0') {

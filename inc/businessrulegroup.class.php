@@ -94,6 +94,8 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
 
       $this->showFormHeader($options);
       
+      $rand = mt_rand();
+      
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
       echo "<input type='hidden' name='plugin_monitoring_servicescatalogs_id' value='".$servicescatalogs_id."'/>";
@@ -102,17 +104,19 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
       echo "<td>";
       echo "<input type='text' name='name' value='".$this->fields["name"]."' size='30'/>";
       echo "</td>";
-      echo "<th colspan='2' width='60%'>"; 
-      echo $LANG['plugin_monitoring']['service'][0];      
-      echo "&nbsp;";
-      echo "<img onClick=\"Ext.get('ressources').setDisplayed('block')\"
-                 title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
-                 class='pointer'  src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+      if ($items_id!='') {
+         echo "<th colspan='2' width='60%'>"; 
+         echo $LANG['plugin_monitoring']['service'][0];      
+         echo "&nbsp;";
+         echo "<img onClick=\"Ext.get('ressources".$rand."').setDisplayed('block')\"
+                    title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
+                    class='pointer'  src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
       
-      echo "</th>";
-      echo "</tr>";  
-      
-      echo "<tr>";      
+         echo "</th>";
+         echo "</tr>";  
+
+         echo "<tr>";
+      }
       echo "<td valign='top'>";
       echo $LANG['rulesengine'][9]."&nbsp;:";
       echo "</td>";
@@ -130,51 +134,53 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
       $first_operator['10 of:'] = $LANG['plugin_monitoring']['businessrule'][10];
       Dropdown::showFromArray('operator', $first_operator, array("value"=>$this->fields['operator']));
       echo "</td>";
-      echo "<td colspan='2'>";
-      // ** Dropdown to display
-         echo "<div style='display:none' id='ressources' >";
-         echo "<table>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>";
-         echo "<form name='form' method='post' action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/businessrule.form.php'>";
-         echo "<input type='hidden' name='plugin_monitoring_businessrulegroups_id' value='".$items_id."' />";
-         PluginMonitoringBusinessrule::dropdownService(0, array('name' => 'type'));         
-         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-         echo "</form>";
-         echo "</td>";
+      if ($items_id!='') {
+         echo "<td colspan='2'>";
+         // ** Dropdown to display
+            echo "<div style='display:none' id='ressources".$rand."' >";
+            echo "<table>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo "<form name='form' method='post' action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/businessrule.form.php'>";
+            echo "<input type='hidden' name='plugin_monitoring_businessrulegroups_id' value='".$items_id."' />";
+            PluginMonitoringBusinessrule::dropdownService(0, array('name' => 'type'));         
+            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+            echo "</form>";
+            echo "</td>";
+            echo "</tr>";
+            echo "</table>";
+            echo "<hr>";
+            echo "</div>";
+
+
+            echo "<table>";
+         $pmBusinessrule = new PluginMonitoringBusinessrule();
+         $pmService = new PluginMonitoringService();
+         $a_services = $pmBusinessrule->find("`plugin_monitoring_businessrulegroups_id`='".$servicescatalogs_id."'");
+         foreach ($a_services as $gdata) {
+            $pmService->getFromDB($gdata['plugin_monitoring_services_id']);
+
+            $shortstate = PluginMonitoringDisplay::getState($pmService->fields['state'], $pmService->fields['state_type']);
+
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/>";
+            echo "</td>";
+            echo "<td>";
+            $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+            $pmService->getFromDB($gdata["plugin_monitoring_services_id"]);
+            $pmComponentscatalog_Host->getFromDB($pmService->fields['plugin_monitoring_componentscatalogs_hosts_id']);
+            echo $pmService->getLink(1);
+            echo " ".$LANG['networking'][25]." ";
+            $itemtype2 = $pmComponentscatalog_Host->fields['itemtype'];
+            $item2 = new $itemtype2();
+            $item2->getFromDB($pmComponentscatalog_Host->fields['items_id']);
+            echo $item2->getLink(1);
+            echo "</td>";
+         }
          echo "</tr>";
-         echo "</table>";
-         echo "<hr>";
-         echo "</div>";
-      
-      
-         echo "<table>";
-$pmBusinessrule = new PluginMonitoringBusinessrule();
-$pmService = new PluginMonitoringService();
-$a_services = $pmBusinessrule->find("`plugin_monitoring_businessrulegroups_id`='".$servicescatalogs_id."'");
-foreach ($a_services as $gdata) {
-   $pmService->getFromDB($gdata['plugin_monitoring_services_id']);
-   
-   $shortstate = PluginMonitoringDisplay::getState($pmService->fields['state'], $pmService->fields['state_type']);
-   
-   echo "<tr class='tab_bg_1'>";
-   echo "<td>";
-   echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/>";
-   echo "</td>";
-   echo "<td>";
-   $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
-   $pmService->getFromDB($gdata["plugin_monitoring_services_id"]);
-   $pmComponentscatalog_Host->getFromDB($pmService->fields['plugin_monitoring_componentscatalogs_hosts_id']);
-   echo $pmService->getLink(1);
-   echo " ".$LANG['networking'][25]." ";
-   $itemtype2 = $pmComponentscatalog_Host->fields['itemtype'];
-   $item2 = new $itemtype2();
-   $item2->getFromDB($pmComponentscatalog_Host->fields['items_id']);
-   echo $item2->getLink(1);
-   echo "</td>";
-   echo "</tr>";
-}  
-         echo "</table>";
+      }  
+      echo "</table>";
       
       echo "</td>";      
       echo "</tr>";  

@@ -233,7 +233,7 @@ return;
       $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
       
 //      // Add group
-//      $pMonitoringBusinessrulegroup->showForm(0, $servicescatalogs_id);
+      $pMonitoringBusinessrulegroup->showForm(0, $servicescatalogs_id);
       
       // Display each group
       $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringBusinessrulegroup")."`

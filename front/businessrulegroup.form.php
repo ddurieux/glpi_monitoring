@@ -52,6 +52,15 @@ commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugi
 $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
 if (isset($_POST['update'])) {
    $pMonitoringBusinessrulegroup->update($_POST);
+} else if (isset($_POST['add'])
+        AND isset($_POST['id'])) {
+   
+   if (isset($_POST['plugin_monitoring_services_id'])) {
+      $pmBusinessrule = new PluginMonitoringBusinessrule();
+      $pmBusinessrule->add(array('plugin_monitoring_businessrulegroups_id'=>$_POST['plugin_monitoring_businessrulegroups_id'],
+                                 'plugin_monitoring_services_id'=>$_POST['plugin_monitoring_services_id']));
+      
+   }   
 } else if (isset($_POST['add'])) {
    $pMonitoringBusinessrulegroup->add($_POST);
 } else if (isset($_POST['delete'])) {

@@ -124,6 +124,14 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'state_type', 
                                  'state_type', 
                                  "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'plugin_monitoring_checks_id', 
+                                 'plugin_monitoring_checks_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'calendars_id', 
+                                 'calendars_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
       
          $migration->addField($newTable, 
@@ -147,6 +155,12 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                                  'state_type', 
                                  "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'plugin_monitoring_checks_id', 
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'calendars_id', 
+                              "int(11) NOT NULL DEFAULT '0'");
          $migration->addKey($newTable, 
                             "name");
       $migration->migrationOneTable($newTable);
