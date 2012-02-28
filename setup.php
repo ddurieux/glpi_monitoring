@@ -40,7 +40,7 @@
    ------------------------------------------------------------------------
  */
 
-define ("PLUGIN_MONITORING_VERSION","0.80+1.1");
+define ("PLUGIN_MONITORING_VERSION","0.80+1.2");
 
 // Init the hooks of monitoring
 function plugin_init_monitoring() {
@@ -143,7 +143,6 @@ function plugin_version_monitoring() {
    return array('name'           => 'Monitoring',
                 'shortname'      => 'monitoring',
                 'version'        => PLUGIN_MONITORING_VERSION,
-                'oldname'        => 'tracker',
                 'author'         =>'<a href="mailto:d.durieux@siprossii.com">David DURIEUX</a>',
                 'homepage'       =>'https://forge.indepnet.net/projects/monitoring/',
                 'minGlpiVersion' => '0.80'
