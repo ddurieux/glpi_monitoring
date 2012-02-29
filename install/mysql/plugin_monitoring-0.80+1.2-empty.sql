@@ -204,6 +204,19 @@ CREATE TABLE `glpi_plugin_monitoring_configs` (
 
 
 
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_entities`;
+
+CREATE TABLE `glpi_plugin_monitoring_entities` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
+  `tag` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `tag` (`tag`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_hostaddresses`;
 
 CREATE TABLE `glpi_plugin_monitoring_hostaddresses` (

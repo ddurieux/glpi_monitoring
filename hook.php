@@ -120,6 +120,12 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
          return $array;
          break;
       
+      case 'Entity':
+         $array = array();
+         $array[0] = $LANG['plugin_monitoring']['title'][0];
+         return $array;
+         break;
+      
    }
 
    return false;
@@ -151,6 +157,12 @@ function plugin_headings_actions_monitoring($item) {
       case 'PluginMonitoringServicescatalog':
          $array = array ();
          $array[0] = "plugin_headings_monitoring_businessrules";
+         return $array;
+         break;
+      
+      case 'Entity':
+         $array = array();
+         $array[0] = "plugin_headings_monitoring_entitytag";
          return $array;
          break;
       
@@ -208,6 +220,14 @@ function plugin_headings_monitoring_contacts($item) {
    $pluginMonitoringContact = new PluginMonitoringContact();
    $pluginMonitoringContact->showForm(0);
 }
+
+
+
+function plugin_headings_monitoring_entitytag($item) {
+   $pmEntity = new PluginMonitoringEntity();
+   $pmEntity->showForm($item->fields['id']);
+}
+
 
 
 function plugin_headings_monitoring_tasks($item, $itemtype='', $items_id=0) {

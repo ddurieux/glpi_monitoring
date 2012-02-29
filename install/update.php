@@ -928,6 +928,43 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       
       
+   /*
+    * Table glpi_plugin_monitoring_entities
+    */
+      $newTable = "glpi_plugin_monitoring_entities";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+         $DB->query($query);
+      }
+         $migration->changeField($newTable, 
+                                 'id', 
+                                 'id', 
+                                 "int(11) NOT NULL AUTO_INCREMENT");
+         $migration->changeField($newTable, 
+                                 'entities_id', 
+                                 'entities_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'tag', 
+                                 'tag', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+      $migration->migrationOneTable($newTable);
+         $migration->addField($newTable, 
+                              'entities_id', 
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'tag', 
+                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addKey($newTable, 
+                            "entities_id");
+         $migration->addKey($newTable, 
+                            "tag");
+      $migration->migrationOneTable($newTable);
+         
+      
     /*
     * Table glpi_plugin_monitoring_hostaddresses
     */

@@ -157,4 +157,7 @@ $LANG['plugin_monitoring']['rrdtemplates'][0]="RRDTOOL templates";
 $LANG['plugin_monitoring']['rrdtemplates'][1]="Upload perfdata and graph files";
 $LANG['plugin_monitoring']['rrdtemplates'][2]="Find files on";
 
+$LANG['plugin_monitoring']['entity'][0]="Tag";
+$LANG['plugin_monitoring']['entity'][1]="Set tag to link entity with a specific shinken server";
+
 ?>
