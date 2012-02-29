@@ -119,17 +119,22 @@ class PluginMonitoringHostaddress extends CommonDBTM {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>Interface to query IP (only if have many IPs)&nbsp;:</td>";
-      echo "<td align='center'>";
+      echo "<td width='350'>Interface to query IP (only if have many IPs)&nbsp;:</td>";
+      echo "<td>";
       echo "<input type='hidden' name='itemtype' value='".$itemtype."'/>";
       echo "<input type='hidden' name='items_id' value='".$items_id."'/>";
-      Dropdown::show("NetworkPort", array('name' =>'networkports_id',
-                                          'value'=>$this->fields['networkports_id'],
-                                          'condition'=>"`items_id`='".$items_id."' 
-                                             AND `itemtype`='".$itemtype."'
-                                             AND `ip` IS NOT NULL
-                                             AND `ip` != '127.0.0.1'
-                                             AND `ip` != ''"));
+      if ($this->fields['networkports_id'] != '') {
+         Dropdown::show("NetworkPort", array('name' =>'networkports_id',
+                                             'value'=>$this->fields['networkports_id'],
+                                             'condition'=>"`items_id`='".$items_id."' 
+                                                AND `itemtype`='".$itemtype."'
+                                                AND `ip` IS NOT NULL
+                                                AND `ip` != '127.0.0.1'
+                                                AND `ip` != ''"));
+      } else {
+         echo NOT_AVAILABLE;
+         $options['canedit'] = false;
+      }
       echo "</td>";
       echo "<td colspan='2'>";
       echo "</td>";
