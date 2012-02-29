@@ -110,21 +110,19 @@ class PluginMonitoringShinken extends CommonDBTM {
 
 
    
-   function generateHostsCfg($file=0) {
+   function generateHostsCfg($file=0, $tag='') {
       global $DB;
 
-      $pMonitoringService           = new PluginMonitoringService();
-      $pluginMonitoringContact      = new PluginMonitoringContact();
-      $pluginMonitoringHost_Contact = new PluginMonitoringHost_Contact();
-      $pluginMonitoringCommand      = new PluginMonitoringCommand();
-      $pluginMonitoringCheck        = new PluginMonitoringCheck();
-      $pmComponent           = new PluginMonitoringComponent();
-      $calendar      = new Calendar();
-      $user          = new User();
-      $networkPort   = new NetworkPort();
+      $pluginMonitoringCommand   = new PluginMonitoringCommand();
+      $pluginMonitoringCheck     = new PluginMonitoringCheck();
+      $pmComponent               = new PluginMonitoringComponent();
+      $pmEntity                  = new PluginMonitoringEntity();
+      $calendar                  = new Calendar();
 
       $a_hosts = array();
       $i=0;
+      
+      $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
       
       $command_ping = current($pluginMonitoringCommand->find("`command_name`='check_host_alive'", "", 1));
       $a_component = current($pmComponent->find("`plugin_monitoring_commands_id`='".$command_ping['id']."'", "", 1));
@@ -137,39 +135,44 @@ class PluginMonitoringShinken extends CommonDBTM {
          $classname = $data['itemtype'];
          $class = new $classname;
          if ($class->getFromDB($data['items_id'])) {
-            $a_hosts[$i]['host_name'] = $classname."-".$data['id']."-".preg_replace("/[^A-Za-z0-9]/","",$class->fields['name']);
-            $a_hosts[$i]['alias'] = $a_hosts[$i]['host_name'];
-            $ip = PluginMonitoringHostaddress::getIp($data['items_id'], $data['itemtype'], $class->fields['name']);
-               
-            $a_hosts[$i]['address'] = $ip;
-            $a_hosts[$i]['parents'] = "";
+            
+            if (isset($a_entities_allowed['-1'])
+                    OR isset($a_entities_allowed[$class->fields['entities_id']])) {
 
-            $a_fields = array();
+               $a_hosts[$i]['host_name'] = $classname."-".$data['id']."-".preg_replace("/[^A-Za-z0-9]/","",$class->fields['name']);
+               $a_hosts[$i]['alias'] = $a_hosts[$i]['host_name'];
+               $ip = PluginMonitoringHostaddress::getIp($data['items_id'], $data['itemtype'], $class->fields['name']);
 
-            $a_fields = $a_component;
+               $a_hosts[$i]['address'] = $ip;
+               $a_hosts[$i]['parents'] = "";
 
-               $pluginMonitoringCommand->getFromDB($a_fields['plugin_monitoring_commands_id']);
-            $a_hosts[$i]['check_command'] = $pluginMonitoringCommand->fields['command_name'];
-               $pluginMonitoringCheck->getFromDB($a_fields['plugin_monitoring_checks_id']);
-            $a_hosts[$i]['check_interval'] = $pluginMonitoringCheck->fields['check_interval'];
-            $a_hosts[$i]['retry_interval'] = $pluginMonitoringCheck->fields['retry_interval'];
-            $a_hosts[$i]['max_check_attempts'] = $pluginMonitoringCheck->fields['max_check_attempts'];
-            if ($calendar->getFromDB($a_fields['calendars_id'])) {
-               $a_hosts[$i]['check_period'] = $calendar->fields['name'];
-            } else {
-               $a_hosts[$i]['check_period'] = "24x7";
+               $a_fields = array();
+
+               $a_fields = $a_component;
+
+                  $pluginMonitoringCommand->getFromDB($a_fields['plugin_monitoring_commands_id']);
+               $a_hosts[$i]['check_command'] = $pluginMonitoringCommand->fields['command_name'];
+                  $pluginMonitoringCheck->getFromDB($a_fields['plugin_monitoring_checks_id']);
+               $a_hosts[$i]['check_interval'] = $pluginMonitoringCheck->fields['check_interval'];
+               $a_hosts[$i]['retry_interval'] = $pluginMonitoringCheck->fields['retry_interval'];
+               $a_hosts[$i]['max_check_attempts'] = $pluginMonitoringCheck->fields['max_check_attempts'];
+               if ($calendar->getFromDB($a_fields['calendars_id'])) {
+                  $a_hosts[$i]['check_period'] = $calendar->fields['name'];
+               } else {
+                  $a_hosts[$i]['check_period'] = "24x7";
+               }
+
+               $a_hosts[$i]['contacts'] = '';
+               $a_hosts[$i]['process_perf_data'] = '1';
+               $a_hosts[$i]['notification_interval'] = '30';
+               if ($calendar->getFromDB($a_fields['calendars_id'])) {
+                  $a_hosts[$i]['notification_period'] = $calendar->fields['name'];
+               } else {
+                  $a_hosts[$i]['notification_period'] = "24x7";
+               }
+               $a_hosts[$i]['notification_options'] = 'd,u,r';
+               $i++;
             }
-
-            $a_hosts[$i]['contacts'] = '';
-            $a_hosts[$i]['process_perf_data'] = '1';
-            $a_hosts[$i]['notification_interval'] = '30';
-            if ($calendar->getFromDB($a_fields['calendars_id'])) {
-               $a_hosts[$i]['notification_period'] = $calendar->fields['name'];
-            } else {
-               $a_hosts[$i]['notification_period'] = "24x7";
-            }
-            $a_hosts[$i]['notification_options'] = 'd,u,r';
-            $i++;
          }
       }
       
@@ -189,17 +192,20 @@ class PluginMonitoringShinken extends CommonDBTM {
 
    
    
-   function generateServicesCfg($file=0) {
+   function generateServicesCfg($file=0, $tag='') {
       global $DB;
       
       $pMonitoringCommand      = new PluginMonitoringCommand();
       $pMonitoringCheck        = new PluginMonitoringCheck();
-      $pmComponent = new PluginMonitoringComponent();
-      $calendar      = new Calendar();
+      $pmComponent             = new PluginMonitoringComponent();
+      $pmEntity                = new PluginMonitoringEntity();
+      $calendar                = new Calendar();
       $hostnamebp = '';
       
       $a_services = array();
       $i=0;
+      
+      $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
       
       $query = "SELECT * FROM `glpi_plugin_monitoring_services`";
       $result = $DB->query($query);
@@ -216,8 +222,12 @@ class PluginMonitoringShinken extends CommonDBTM {
             $itemtype = $datah['itemtype'];
             $item = new $itemtype();
             if ($item->getFromDB($datah['items_id'])) {
-               $a_hostname[] = $itemtype."-".$datah['id']."-".preg_replace("/[^A-Za-z0-9]/","",$item->fields['name']);
-               $hostname = $item->fields['name'];
+               if (isset($a_entities_allowed['-1'])
+                       OR isset($a_entities_allowed[$item->fields['entities_id']])) {
+               
+                  $a_hostname[] = $itemtype."-".$datah['id']."-".preg_replace("/[^A-Za-z0-9]/","",$item->fields['name']);
+                  $hostname = $item->fields['name'];
+               }
             }
          }
          if (count($a_hostname) > 0) {
@@ -326,88 +336,93 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_listBA = $pluginMonitoringServicescatalog->find();
       foreach ($a_listBA as $dataBA) {
 
-            $pMonitoringCheck->getFromDB($dataBA['plugin_monitoring_checks_id']);
-         $a_services[$i]['check_interval'] = $pMonitoringCheck->fields['check_interval'];
-         $a_services[$i]['retry_interval'] = $pMonitoringCheck->fields['retry_interval'];
-         $a_services[$i]['max_check_attempts'] = $pMonitoringCheck->fields['max_check_attempts'];
-         if ($calendar->getFromDB($dataBA['calendars_id'])) {
-            $a_services[$i]['check_period'] = $calendar->fields['name'];            
-         }
-         $a_services[$i]['host_name'] = $hostnamebp;
-         $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9]/","",$dataBA['name'])."-".$dataBA['id']."-businessrules";
-         $command = "bp_rule!";
-         
-         $a_grouplist = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_servicescatalogs_id`='".$dataBA['id']."'");
-         $a_group = array();
-         foreach ($a_grouplist as $gdata) {
-            $a_listBR = $pmBusinessrule->find(
-                    "`plugin_monitoring_businessrulegroups_id`='".$gdata['id']."'");
-            foreach ($a_listBR as $dataBR) {
-               $pluginMonitoringService->getFromDB($dataBR['plugin_monitoring_services_id']);
-               $pmComponentscatalog_Host->getFromDB($pluginMonitoringService->fields['plugin_monitoring_componentscatalogs_hosts_id']);
-               $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
-               $item = new $itemtype();
-               if ($item->getFromDB($pmComponentscatalog_Host->fields['items_id'])) {           
-                  $hostname = $itemtype."-".$pmComponentscatalog_Host->fields['id']."-".preg_replace("/[^A-Za-z0-9]/","",$item->fields['name']);
+         if (isset($a_entities_allowed['-1'])
+                 OR isset($a_entities_allowed[$dataBA['entities_id']])) {
+               
+            
+               $pMonitoringCheck->getFromDB($dataBA['plugin_monitoring_checks_id']);
+            $a_services[$i]['check_interval'] = $pMonitoringCheck->fields['check_interval'];
+            $a_services[$i]['retry_interval'] = $pMonitoringCheck->fields['retry_interval'];
+            $a_services[$i]['max_check_attempts'] = $pMonitoringCheck->fields['max_check_attempts'];
+            if ($calendar->getFromDB($dataBA['calendars_id'])) {
+               $a_services[$i]['check_period'] = $calendar->fields['name'];            
+            }
+            $a_services[$i]['host_name'] = $hostnamebp;
+            $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9]/","",$dataBA['name'])."-".$dataBA['id']."-businessrules";
+            $command = "bp_rule!";
 
-                  if ($gdata['operator'] == 'and'
-                          OR $gdata['operator'] == 'or'
-                          OR strstr($gdata['operator'], ' of:')) {
+            $a_grouplist = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_servicescatalogs_id`='".$dataBA['id']."'");
+            $a_group = array();
+            foreach ($a_grouplist as $gdata) {
+               $a_listBR = $pmBusinessrule->find(
+                       "`plugin_monitoring_businessrulegroups_id`='".$gdata['id']."'");
+               foreach ($a_listBR as $dataBR) {
+                  $pluginMonitoringService->getFromDB($dataBR['plugin_monitoring_services_id']);
+                  $pmComponentscatalog_Host->getFromDB($pluginMonitoringService->fields['plugin_monitoring_componentscatalogs_hosts_id']);
+                  $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
+                  $item = new $itemtype();
+                  if ($item->getFromDB($pmComponentscatalog_Host->fields['items_id'])) {           
+                     $hostname = $itemtype."-".$pmComponentscatalog_Host->fields['id']."-".preg_replace("/[^A-Za-z0-9]/","",$item->fields['name']);
 
-                     $operator = '|';
-                     if ($gdata['operator'] == 'and') {
-                        $operator = '&';
-                     }
-                     if (!isset($a_group[$gdata['id']])) {
-                        $a_group[$gdata['id']] = '';
-                        if (strstr($gdata['operator'], ' of:')) {
-                           $a_group[$gdata['id']] = $gdata['operator'];
+                     if ($gdata['operator'] == 'and'
+                             OR $gdata['operator'] == 'or'
+                             OR strstr($gdata['operator'], ' of:')) {
+
+                        $operator = '|';
+                        if ($gdata['operator'] == 'and') {
+                           $operator = '&';
                         }
-                        $a_group[$gdata['id']] .= $hostname.",".preg_replace("/[^A-Za-z0-9]/","",$pluginMonitoringService->fields['name'])."-".$pluginMonitoringService->fields['id'];
+                        if (!isset($a_group[$gdata['id']])) {
+                           $a_group[$gdata['id']] = '';
+                           if (strstr($gdata['operator'], ' of:')) {
+                              $a_group[$gdata['id']] = $gdata['operator'];
+                           }
+                           $a_group[$gdata['id']] .= $hostname.",".preg_replace("/[^A-Za-z0-9]/","",$pluginMonitoringService->fields['name'])."-".$pluginMonitoringService->fields['id'];
+                        } else {
+                           $a_group[$gdata['id']] .= $operator.$hostname.",".preg_replace("/[^A-Za-z0-9]/","",$pluginMonitoringService->fields['name'])."-".$pluginMonitoringService->fields['id'];
+                        }
                      } else {
-                        $a_group[$gdata['id']] .= $operator.$hostname.",".preg_replace("/[^A-Za-z0-9]/","",$pluginMonitoringService->fields['name'])."-".$pluginMonitoringService->fields['id'];
+                        $a_group[$gdata['id']] = $gdata['operator']." ".$hostname.",".preg_replace("/[^A-Za-z0-9]/","",$item->getName())."-".$item->fields['id'];
                      }
-                  } else {
-                     $a_group[$gdata['id']] = $gdata['operator']." ".$hostname.",".preg_replace("/[^A-Za-z0-9]/","",$item->getName())."-".$item->fields['id'];
                   }
                }
             }
-         }
-         foreach ($a_group as $key=>$value) {
-            if (!strstr($value, "&")
-                    AND !strstr($value, "|")) {
-               $a_group[$key] = trim($value);
-            } else {
-               $a_group[$key] = "(".trim($value).")";
+            foreach ($a_group as $key=>$value) {
+               if (!strstr($value, "&")
+                       AND !strstr($value, "|")) {
+                  $a_group[$key] = trim($value);
+               } else {
+                  $a_group[$key] = "(".trim($value).")";
+               }
             }
+            $a_services[$i]['check_command'] = $command.implode("&", $a_group);
+            $a_services[$i]['notification_interval'] = '30';
+            if ($calendar->getFromDB($dataBA['calendars_id'])) {
+               $a_services[$i]['notification_period'] = $calendar->fields['name'];
+            } else {
+               $a_services[$i]['notification_period'] = "24x7";
+            }
+            $a_services[$i]['notification_options'] = 'w,c,r';
+            $a_services[$i]['active_checks_enabled'] = '1';
+            $a_services[$i]['process_perf_data'] = '1';
+            $a_services[$i]['active_checks_enabled'] = '1';
+            $a_services[$i]['passive_checks_enabled'] = '1';
+            $a_services[$i]['parallelize_check'] = '1';
+            $a_services[$i]['obsess_over_service'] = '1';
+            $a_services[$i]['check_freshness'] = '1';
+            $a_services[$i]['freshness_threshold'] = '1';
+            $a_services[$i]['notifications_enabled'] = '1';
+            $a_services[$i]['event_handler_enabled'] = '0';
+            $a_services[$i]['event_handler'] = 'super_event_kill_everyone!DIE';
+            $a_services[$i]['flap_detection_enabled'] = '1';
+            $a_services[$i]['failure_prediction_enabled'] = '1';
+            $a_services[$i]['retain_status_information'] = '1';
+            $a_services[$i]['retain_nonstatus_information'] = '1';
+            $a_services[$i]['is_volatile'] = '0';
+            $a_services[$i]['_httpstink'] = 'NO';
+            $a_services[$i]['contacts'] = '';
+            $i++;
          }
-         $a_services[$i]['check_command'] = $command.implode("&", $a_group);
-         $a_services[$i]['notification_interval'] = '30';
-         if ($calendar->getFromDB($dataBA['calendars_id'])) {
-            $a_services[$i]['notification_period'] = $calendar->fields['name'];
-         } else {
-            $a_services[$i]['notification_period'] = "24x7";
-         }
-         $a_services[$i]['notification_options'] = 'w,c,r';
-         $a_services[$i]['active_checks_enabled'] = '1';
-         $a_services[$i]['process_perf_data'] = '1';
-         $a_services[$i]['active_checks_enabled'] = '1';
-         $a_services[$i]['passive_checks_enabled'] = '1';
-         $a_services[$i]['parallelize_check'] = '1';
-         $a_services[$i]['obsess_over_service'] = '1';
-         $a_services[$i]['check_freshness'] = '1';
-         $a_services[$i]['freshness_threshold'] = '1';
-         $a_services[$i]['notifications_enabled'] = '1';
-         $a_services[$i]['event_handler_enabled'] = '0';
-         $a_services[$i]['event_handler'] = 'super_event_kill_everyone!DIE';
-         $a_services[$i]['flap_detection_enabled'] = '1';
-         $a_services[$i]['failure_prediction_enabled'] = '1';
-         $a_services[$i]['retain_status_information'] = '1';
-         $a_services[$i]['retain_nonstatus_information'] = '1';
-         $a_services[$i]['is_volatile'] = '0';
-         $a_services[$i]['_httpstink'] = 'NO';
-         $a_services[$i]['contacts'] = '';
-         $i++;
       }
       
       if ($file == "1") {
@@ -425,7 +440,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
    
    
-   function generateTemplatesCfg($file=0) {
+   function generateTemplatesCfg($file=0, $tag='') {
       global $DB;
       
       $pMonitoringCheck        = new PluginMonitoringCheck();

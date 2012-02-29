@@ -54,6 +54,10 @@ class PluginMonitoringWebservice {
          return array('file'  => 'config filename to get : commands.cfg, hosts.cfg',
                       'help'    => 'bool,optional');
       }
+      
+      if (!isset($params['tag'])) {
+         $params['tag'] = '';
+      }
 
       ini_set("max_execution_time", "0");
       ini_set("memory_limit", "-1");
@@ -66,7 +70,7 @@ class PluginMonitoringWebservice {
             break;
 
          case 'hosts.cfg':
-            $array = $pluginMonitoringShinken->generateHostsCfg(1);
+            $array = $pluginMonitoringShinken->generateHostsCfg(1, $params['tag']);
             return array($array[0]=>$array[1]);
             break;
 
@@ -81,12 +85,12 @@ class PluginMonitoringWebservice {
             break;
          
          case 'services.cfg':
-            $array = $pluginMonitoringShinken->generateServicesCfg(1);
+            $array = $pluginMonitoringShinken->generateServicesCfg(1, $params['tag']);
             return array($array[0]=>$array[1]);
             break;
          
          case 'templates.cfg':
-            $array = $pluginMonitoringShinken->generateTemplatesCfg(1);
+            $array = $pluginMonitoringShinken->generateTemplatesCfg(1, $params['tag']);
             return array($array[0]=>$array[1]);
             break;
 
@@ -94,15 +98,15 @@ class PluginMonitoringWebservice {
             $output = array();
             $array = $pluginMonitoringShinken->generateCommandsCfg(1);
             $output[$array[0]] = $array[1];
-            $array = $pluginMonitoringShinken->generateHostsCfg(1);
+            $array = $pluginMonitoringShinken->generateHostsCfg(1, $params['tag']);
             $output[$array[0]] = $array[1];
             $array = $pluginMonitoringShinken->generateContactsCfg(1);
             $output[$array[0]] = $array[1];
             $array = $pluginMonitoringShinken->generateTimeperiodsCfg(1);
             $output[$array[0]] = $array[1];
-            $array = $pluginMonitoringShinken->generateTemplatesCfg(1);
+            $array = $pluginMonitoringShinken->generateTemplatesCfg(1, $params['tag']);
             $output[$array[0]] = $array[1];
-            $array = $pluginMonitoringShinken->generateServicesCfg(1);
+            $array = $pluginMonitoringShinken->generateServicesCfg(1, $params['tag']);
             $output[$array[0]] = $array[1];
             return $output;
             break;
@@ -113,7 +117,7 @@ class PluginMonitoringWebservice {
 
    static function methodShinkenCommands($params, $protocol) {
       global $LANG, $CFG_GLPI;
-
+      
       $pluginMonitoringShinken = new PluginMonitoringShinken();
       $array = $pluginMonitoringShinken->generateCommandsCfg();
       return $array;
@@ -124,8 +128,12 @@ class PluginMonitoringWebservice {
    static function methodShinkenHosts($params, $protocol) {
       global $LANG, $CFG_GLPI;
 
-      $pluginMonitoringShinken = new PluginMonitoringShinken();
-      $array = $pluginMonitoringShinken->generateHostsCfg();
+      if (!isset($params['tag'])) {
+         $params['tag'] = '';
+      }
+      
+      $pmShinken = new PluginMonitoringShinken();
+      $array = $pmShinken->generateHostsCfg(0, $params['tag']);
       return $array;
    }
    
@@ -134,6 +142,10 @@ class PluginMonitoringWebservice {
    static function methodShinkenServices($params, $protocol) {
       global $LANG, $CFG_GLPI;
 
+      if (!isset($params['tag'])) {
+         $params['tag'] = '';
+      }
+      
       $pluginMonitoringShinken = new PluginMonitoringShinken();
       $array = $pluginMonitoringShinken->generateServicesCfg();
       return $array;
@@ -144,6 +156,10 @@ class PluginMonitoringWebservice {
    static function methodShinkenTemplates($params, $protocol) {
       global $LANG, $CFG_GLPI;
 
+      if (!isset($params['tag'])) {
+         $params['tag'] = '';
+      }
+      
       $pluginMonitoringShinken = new PluginMonitoringShinken();
       $array = $pluginMonitoringShinken->generateTemplatesCfg();
       return $array;

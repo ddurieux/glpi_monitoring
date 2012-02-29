@@ -146,6 +146,26 @@ class PluginMonitoringEntity extends CommonDBTM {
 
       return true;
    }
+   
+   
+   
+   function getEntitiesByTag($tag = '') {
+      global $DB;
+      
+      if ($tag == '') {
+         return array('-1' => "-1");
+      } else {
+         $output = array();
+         $query = "SELECT * FROM `".$this->getTable()."`
+            WHERE `tag`='".$tag."'";
+         $result = $DB->query($query);
+         while ($data=$DB->fetch_array($result)) {
+            $output[$data['entities_id']] = $data['entities_id'];
+         }
+         return $output;
+      }
+   }
+   
 }
 
 ?>
