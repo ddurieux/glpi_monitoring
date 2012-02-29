@@ -755,7 +755,9 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
       echo "<input type='submit' value=\"".$LANG['buttons'][0]."\" class='submit' >";
       echo "</td><td>";
 //      Bookmark::showSaveButton(BOOKMARK_SEARCH,$itemtype);
-      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog_rule.form.php?reset=reset' >";
+      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog_rule.form.php?reset=reset&".
+         "name=".$_GET['name']."&plugin_monitoring_componentscalalog_id=".$_GET['plugin_monitoring_componentscalalog_id'].
+              "&itemtype=".$_GET['itemtype']."' >";
       echo "&nbsp;&nbsp;<img title=\"".$LANG['buttons'][16]."\" alt=\"".$LANG['buttons'][16]."\" src='".
             $CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
 
