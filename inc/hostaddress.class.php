@@ -123,18 +123,23 @@ class PluginMonitoringHostaddress extends CommonDBTM {
       echo "<td>";
       echo "<input type='hidden' name='itemtype' value='".$itemtype."'/>";
       echo "<input type='hidden' name='items_id' value='".$items_id."'/>";
-      if ($this->fields['networkports_id'] != '') {
-         Dropdown::show("NetworkPort", array('name' =>'networkports_id',
-                                             'value'=>$this->fields['networkports_id'],
-                                             'condition'=>"`items_id`='".$items_id."' 
-                                                AND `itemtype`='".$itemtype."'
-                                                AND `ip` IS NOT NULL
-                                                AND `ip` != '127.0.0.1'
-                                                AND `ip` != ''"));
-      } else {
-         echo NOT_AVAILABLE;
-         $options['canedit'] = false;
+      if ($this->fields['networkports_id'] == '') {
+         $this->fields['networkports_id'] = 0;
       }
+      $a_networkport = array();
+      $a_networkport['0'] = DROPDOWN_EMPTY_VALUE;
+      $query = "SELECT * FROM `".getTableForItemType("NetworkPort")."`
+         WHERE `items_id`='".$items_id."' 
+            AND `itemtype`='".$itemtype."'
+            AND `ip` IS NOT NULL
+            AND `ip` != '127.0.0.1'
+            AND `ip` != ''
+         ORDER BY `name`";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         $a_networkport[$data['id']] = $data['name'];
+      }      
+      Dropdown::showFromArray("networkports_id", $a_networkport, array('value'=>$this->fields['networkports_id']));
       echo "</td>";
       echo "<td colspan='2'>";
       echo "</td>";
