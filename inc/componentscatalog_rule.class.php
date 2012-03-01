@@ -221,7 +221,8 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
          $default_entity = $_SESSION['glpidefault_entity'];
       }
       $entities_isrecursive = 0;
-      if (count($_SESSION['glpiactiveentities']) > 1) {
+      if (isset($_SESSION['glpiactiveentities'])
+              AND count($_SESSION['glpiactiveentities']) > 1) {
          $entities_isrecursive = 1;
       }
       
@@ -261,7 +262,8 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                $default_entity = $_SESSION['glpidefault_entity'];
             }
             $entities_isrecursive = 0;
-            if (count($_SESSION['glpiactiveentities']) > 1) {
+            if (isset($_SESSION['glpiactiveentities'])
+                    AND count($_SESSION['glpiactiveentities']) > 1) {
                $entities_isrecursive = 1;
             }
             changeActiveEntities($pmComponentscatalog->fields['entities_id'], 
