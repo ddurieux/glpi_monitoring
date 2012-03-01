@@ -214,11 +214,11 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       
       $pmComponentscatalog = new PluginMonitoringComponentscatalog();
       $pmComponentscatalog->getFromDB($_GET['plugin_monitoring_componentscalalog_id']);
-      
-      if (!isset($_SESSION['glpidefault_entity'])) {
+     
+      if (!isset($_SESSION['glpiactive_entity'])) {
          $default_entity = 0;
       } else {
-         $default_entity = $_SESSION['glpidefault_entity'];
+         $default_entity = $_SESSION['glpiactive_entity'];
       }
       $entities_isrecursive = 0;
       if (isset($_SESSION['glpiactiveentities'])
@@ -230,7 +230,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                            $pmComponentscatalog->fields['is_recursive']);
       
       Search::showList($_GET['itemtype'], $_GET);
-      
+
       changeActiveEntities($default_entity,
                            $entities_isrecursive);
       echo "</td>";
@@ -256,10 +256,10 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       
          // Load right entity
             $pmComponentscatalog->getFromDB($pmCc_Rule->fields['plugin_monitoring_componentscalalog_id']);
-            if (!isset($_SESSION['glpidefault_entity'])) {
+            if (!isset($_SESSION['glpiactive_entity'])) {
                $default_entity = 0;
             } else {
-               $default_entity = $_SESSION['glpidefault_entity'];
+               $default_entity = $_SESSION['glpiactive_entity'];
             }
             $entities_isrecursive = 0;
             if (isset($_SESSION['glpiactiveentities'])
