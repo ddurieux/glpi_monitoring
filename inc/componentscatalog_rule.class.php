@@ -211,7 +211,23 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       
       echo "<tr>";
       echo "<td>";
+      
+      $pmComponentscatalog = new PluginMonitoringComponentscatalog();
+      $pmComponentscatalog->getFromDB($_GET['plugin_monitoring_componentscalalog_id']);
+      
+      $default_entity = $_SESSION['glpidefault_entity'];
+      $entities_isrecursive = 0;
+      if (count($_SESSION['glpiactiveentities']) > 1) {
+         $entities_isrecursive = 1;
+      }
+      
+      changeActiveEntities($pmComponentscatalog->fields['entities_id'], 
+                           $pmComponentscatalog->fields['is_recursive']);
+      
       Search::showList($_GET['itemtype'], $_GET);
+      
+      changeActiveEntities($default_entity,
+                           $entities_isrecursive);
       echo "</td>";
       echo "</tr>";
       echo "</table>";
@@ -229,9 +245,21 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
 
       $pmCc_Rule                = new PluginMonitoringComponentscatalog_rule();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+      $pmComponentscatalog = new PluginMonitoringComponentscatalog();
       
       if ($pmCc_Rule->getFromDB($parm->fields['id'])) {
       
+         // Load right entity
+            $pmComponentscatalog->getFromDB($pmCc_Rule->fields['plugin_monitoring_componentscalalog_id']);
+            $default_entity = $_SESSION['glpidefault_entity'];
+            $entities_isrecursive = 0;
+            if (count($_SESSION['glpiactiveentities']) > 1) {
+               $entities_isrecursive = 1;
+            }
+            changeActiveEntities($pmComponentscatalog->fields['entities_id'], 
+                                 $pmComponentscatalog->fields['is_recursive']);
+         
+         
          $get_tmp = '';
          $itemtype = $pmCc_Rule->fields['itemtype'];
          if (isset($_GET)) {
@@ -287,6 +315,10 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                unset($devices_present[$data2['id']]);
             }
          }
+         
+         // Reload current entity
+            changeActiveEntities($default_entity,
+                                 $entities_isrecursive);
       } else { // Purge
          $devices_present = array();
          $queryd = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
@@ -1010,16 +1042,14 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
          }
 
          if ($itemtype == 'Entity') {
-            $COMMONWHERE .= $this->getEntitiesRestrictRequest($LINK, $itemtable, 'id', '', true);
+            $COMMONWHERE .= getEntitiesRestrictRequest($LINK, $itemtable, 'id', '', true);
 
          } else if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
             // Will be replace below in Union/Recursivity Hack
             $COMMONWHERE .= $LINK." ENTITYRESTRICT ";
          } else {
-//            $COMMONWHERE .= $this->getEntitiesRestrictRequest($LINK, $itemtable, '', '',
-//                                                       $item->maybeRecursive());
-            $COMMONWHERE .= $this->getEntitiesRestrictRequest($LINK, $this->getTable(), '', '',
-                    $this->maybeRecursive());
+            $COMMONWHERE .= getEntitiesRestrictRequest($LINK, $itemtable, '', '',
+                                                       $item->maybeRecursive());
          }
       }
       $WHERE  = "";
@@ -1370,7 +1400,7 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
                                               $query_num);
                   }
                   $query_num = str_replace("ENTITYRESTRICT",
-                                           $this->getEntitiesRestrictRequest('', $ctable, '', '',
+                                           getEntitiesRestrictRequest('', $ctable, '', '',
                                                                       $citem->maybeRecursive()),
                                            $query_num);
                   $result_num = $DBread->query($query_num);
@@ -1457,7 +1487,7 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
                                           $tmpquery);
                }
                $tmpquery = str_replace("ENTITYRESTRICT",
-                                       $this->getEntitiesRestrictRequest('', $ctable, '', '',
+                                       getEntitiesRestrictRequest('', $ctable, '', '',
                                                                   $citem->maybeRecursive()),
                                        $tmpquery);
 
@@ -1505,83 +1535,6 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
       }      
    }
    
-   
-   
-   function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = "",$value='',
-                                       $is_recursive=false) {
-
-      // * Add for plugin monitoring
-      $pmComponentscatalog = new PluginMonitoringComponentscatalog();
-      $pmComponentscatalog->getFromDB($this->fields['plugin_monitoring_componentscalalog_id']);
-      // * end add
-      $query = $separator ." ( ";
-
-      // !='0' needed because consider as empty
-      if ($value!='0'
-          && empty($value)) {
-
-         // Not ADD "AND 1" if not needed
-         if (trim($separator)=="AND") {
-            return "";
-         }
-         return $query." 1 ) ";
-      }
-
-      if (!empty ($table)) {
-         $query .= "`$table`.";
-      }
-      if (empty($field)) {
-         if ($table=='glpi_entities') {
-            $field = "id";
-         } else {
-            $field = "entities_id";
-         }
-      }
-
-      $query .= "`$field`";
-
-      if (is_array($value)) {
-         $query .= " IN ('" . implode("','",$value) . "') ";
-      } else {
-         if (strlen($value)==0) {
-            $query .= " IN (".$pmComponentscatalog->fields['entities_id'].") ";
-         } else {
-            $query .= " = '$value' ";
-         }
-      }
-
-      if (($is_recursive)
-         OR ($pmComponentscatalog->fields['is_recursive'] == '1')) {
-         
-         $ancestors = array();
-         if (is_array($value)) {
-            foreach ($value as $val) {
-               $ancestors = array_unique(array_merge(getAncestorsOf("glpi_entities", $val),
-                                                     $ancestors));
-            }
-            $ancestors = array_diff($ancestors, $value);
-
-         } else if (strlen($value)==0) {
-//            $ancestors = $_SESSION['glpiparententities'];
-
-         } else {
-            $ancestors = getAncestorsOf("glpi_entities", $value);
-         }
-
-         if (count($ancestors)) {
-            if ($table=='glpi_entities') {
-               $query .= " OR `$table`.`$field` IN ('" . implode("','",$ancestors) . "')";
-            } else {
-               $query .= " OR (`$table`.`is_recursive`='1'
-                               AND `$table`.`$field` IN ('" . implode("','",$ancestors) . "'))";
-            }
-         }
-      }
-      $query .= " ) ";
-
-      return $query;
-   }
-
 }
 
 ?>

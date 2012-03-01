@@ -53,6 +53,8 @@ if (isset($_POST['itemtypen'])) {
 }
 
 $pmComponentscatalog_rule = new PluginMonitoringComponentscatalog_rule();
+$pmComponentscatalog = new PluginMonitoringComponentscatalog();
+
 
 if (isset($_GET['addrule'])) {
    if (!isset($_GET['contains'])
@@ -61,8 +63,9 @@ if (isset($_GET['addrule'])) {
    } else {
       $_POST = $_GET;
       $input = array();
-      $input['entities_id'] = $_POST['entities_id'];
-      $input['is_recursive'] = $_POST['is_recursive'];
+      $pmComponentscatalog->getFromDB($_POST['plugin_monitoring_componentscalalog_id']);
+      $input['entities_id'] = $pmComponentscatalog->fields['entities_id'];
+      $input['is_recursive'] = $pmComponentscatalog->fields['is_recursive'];
       $input['name'] = $_POST['name'];
       $input['itemtype'] = $_POST['itemtype'];
       $input['plugin_monitoring_componentscalalog_id'] = $_POST['plugin_monitoring_componentscalalog_id'];
@@ -86,9 +89,10 @@ if (isset($_GET['addrule'])) {
    } else {
       $_POST = $_GET;
       $input = array();
+      $pmComponentscatalog->getFromDB($_POST['plugin_monitoring_componentscalalog_id']);
       $input['id'] = $_POST['id'];
-      $input['entities_id'] = $_POST['entities_id'];
-      $input['is_recursive'] = $_POST['is_recursive'];
+      $input['entities_id'] = $pmComponentscatalog->fields['entities_id'];
+      $input['is_recursive'] = $pmComponentscatalog->fields['is_recursive'];
       $input['name'] = $_POST['name'];
       $input['itemtype'] = $_POST['itemtype'];
       $input['plugin_monitoring_componentscalalog_id'] = $_POST['plugin_monitoring_componentscalalog_id'];
