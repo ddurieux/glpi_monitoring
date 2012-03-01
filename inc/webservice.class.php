@@ -147,7 +147,7 @@ class PluginMonitoringWebservice {
       }
       
       $pluginMonitoringShinken = new PluginMonitoringShinken();
-      $array = $pluginMonitoringShinken->generateServicesCfg();
+      $array = $pluginMonitoringShinken->generateServicesCfg(0, $params['tag']);
       return $array;
    }
 
@@ -161,7 +161,7 @@ class PluginMonitoringWebservice {
       }
       
       $pluginMonitoringShinken = new PluginMonitoringShinken();
-      $array = $pluginMonitoringShinken->generateTemplatesCfg();
+      $array = $pluginMonitoringShinken->generateTemplatesCfg(0, $params['tag']);
       return $array;
    }
    

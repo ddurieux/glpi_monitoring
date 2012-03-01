@@ -204,7 +204,7 @@ class PluginMonitoringShinken extends CommonDBTM {
    
    function generateServicesCfg($file=0, $tag='') {
       global $DB;
-      
+
       $pMonitoringCommand      = new PluginMonitoringCommand();
       $pMonitoringCheck        = new PluginMonitoringCheck();
       $pmComponent             = new PluginMonitoringComponent();
