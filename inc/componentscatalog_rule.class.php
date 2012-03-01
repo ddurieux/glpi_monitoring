@@ -300,9 +300,11 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
          while ($data=$DB->fetch_array($result)) {
             $devices_present[$data['id']] = 1;
          }
-
+         $glpilist_limit = $_SESSION['glpilist_limit'];
+         $_SESSION['glpilist_limit'] = 500000;
          $result = $pmCc_Rule->constructSQL($itemtype, 
                                         $_GET);
+         $_SESSION['glpilist_limit'] = $glpilist_limit;
 
          while ($data=$DB->fetch_array($result)) {
             $queryh = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
