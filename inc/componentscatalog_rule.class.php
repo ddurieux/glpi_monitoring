@@ -215,7 +215,11 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       $pmComponentscatalog = new PluginMonitoringComponentscatalog();
       $pmComponentscatalog->getFromDB($_GET['plugin_monitoring_componentscalalog_id']);
       
-      $default_entity = $_SESSION['glpidefault_entity'];
+      if (!isset($_SESSION['glpidefault_entity'])) {
+         $default_entity = 0;
+      } else {
+         $default_entity = $_SESSION['glpidefault_entity'];
+      }
       $entities_isrecursive = 0;
       if (count($_SESSION['glpiactiveentities']) > 1) {
          $entities_isrecursive = 1;
@@ -251,7 +255,11 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       
          // Load right entity
             $pmComponentscatalog->getFromDB($pmCc_Rule->fields['plugin_monitoring_componentscalalog_id']);
-            $default_entity = $_SESSION['glpidefault_entity'];
+            if (!isset($_SESSION['glpidefault_entity'])) {
+               $default_entity = 0;
+            } else {
+               $default_entity = $_SESSION['glpidefault_entity'];
+            }
             $entities_isrecursive = 0;
             if (count($_SESSION['glpiactiveentities']) > 1) {
                $entities_isrecursive = 1;
