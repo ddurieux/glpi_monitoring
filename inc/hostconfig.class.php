@@ -1,0 +1,396 @@
+<?php
+
+/*
+   ------------------------------------------------------------------------
+   Plugin Monitoring for GLPI
+   Copyright (C) 2011-2012 by the Plugin Monitoring for GLPI Development Team.
+
+   https://forge.indepnet.net/projects/monitoring/
+   ------------------------------------------------------------------------
+
+   LICENSE
+
+   This file is part of Plugin Monitoring project.
+
+   Plugin Monitoring for GLPI is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Affero General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   Plugin Monitoring for GLPI is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+   GNU Affero General Public License for more details.
+
+   You should have received a copy of the GNU Affero General Public License
+   along with Behaviors. If not, see <http://www.gnu.org/licenses/>.
+
+   ------------------------------------------------------------------------
+
+   @package   Plugin Monitoring for GLPI
+   @author    David Durieux
+   @co-author 
+   @comment   
+   @copyright Copyright (c) 2011-2012 Plugin Monitoring for GLPI team
+   @license   AGPL License 3.0 or (at your option) any later version
+              http://www.gnu.org/licenses/agpl-3.0-standalone.html
+   @link      https://forge.indepnet.net/projects/monitoring/
+   @since     2011
+ 
+   ------------------------------------------------------------------------
+ */
+
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
+}
+
+class PluginMonitoringHostconfig extends CommonDBTM {
+
+   
+   function initConfig() {
+      global $DB;
+      
+      $query = "SELECT * FROM `".$this->getTable()."`
+         WHERE `items_id`='0'
+            AND `itemtype`='Entity'
+         LIMIT 1";
+      
+      $result = $DB->query($query);
+      if ($DB->numrows($result) == '0') {
+         $input = array();
+         $input['itemtype'] = 'Entity';
+         $input['items_id'] = 0;
+         
+         $query2 = "SELECT * FROM `glpi_plugin_monitoring_commands`
+            WHERE `command_name`='check_host_alive'
+            LIMIT 1";
+         $result2 = $DB->query($query2);
+         if ($DB->numrows($result) == '1') {
+            $data = $DB->fetch_assoc($result);
+            $input['plugin_monitoring_commands_id'] = $data['id'];
+         }
+         
+         $query2 = "SELECT * FROM `glpi_plugin_monitoring_checks`
+            LIMIT 1";
+         $result2 = $DB->query($query2);
+         if ($DB->numrows($result) == '1') {
+            $data = $DB->fetch_assoc($result);
+            $input['plugin_monitoring_checks_id'] = $data['id'];
+         }
+         
+         $query2 = "SELECT * FROM `glpi_calendars`
+            WHERE `entities_id`='0'
+            LIMIT 1";
+         $result2 = $DB->query($query2);
+         if ($DB->numrows($result) == '1') {
+            $data = $DB->fetch_assoc($result);
+            $input['calendars_id'] = $data['id'];
+         }
+         $this->add($input);         
+      }
+   }
+   
+   
+
+   /**
+   * Get name of this type
+   *
+   *@return text name of this type by language of the user connected
+   *
+   **/
+   static function getTypeName() {
+      global $LANG;
+
+      return "Host config";
+   }
+
+
+
+   function canCreate() {
+      return haveRight('computer', 'w');
+   }
+
+
+   
+   function canView() {
+      return haveRight('computer', 'r');
+   }
+
+
+   
+   function canCancel() {
+      return haveRight('computer', 'w');
+   }
+
+
+   
+   function canUndo() {
+      return haveRight('computer', 'w');
+   }
+
+
+   
+   function canValidate() {
+      return true;
+   }
+
+   
+   /**
+   *
+   * @param $items_id integer ID 
+   * @param $options array
+   *
+   *@return bool true if form is ok
+   *
+   **/
+   function showForm($items_id, $itemtype, $options=array()) {
+      global $DB,$CFG_GLPI,$LANG;
+      
+      $pmCommand = new PluginMonitoringCommand();
+      $pmCheck = new PluginMonitoringCheck();
+      $calendar = new Calendar();
+      
+      $entities_id = 0;
+      if ($itemtype == "Entity") {
+         $entities_id = $items_id;
+      } else {
+         $item = new $itemtype();
+         $item->getFromDB($items_id);
+         $entities_id = $item->fields['entities_id'];
+      }      
+
+      $query = "SELECT * FROM `".$this->getTable()."`
+         WHERE `items_id`='".$items_id."'
+            AND `itemtype`='".$itemtype."'
+         LIMIT 1";
+      
+      $result = $DB->query($query);
+      if ($DB->numrows($result) == '0') {
+         $this->getEmpty();
+         if ($entities_id != '0'
+              OR $itemtype != 'Entity') {
+            $this->fields['plugin_monitoring_commands_id'] = -1;
+            $this->fields['plugin_monitoring_checks_id'] = -1;
+            $this->fields['calendars_id'] = -1;
+         }
+      } else {
+         $data = $DB->fetch_assoc($result);
+         $this->getFromDB($data['id']);
+      }
+
+      echo "<form name='form' method='post' 
+         action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/hostconfig.form.php'>";
+      
+      echo "<table class='tab_cadre_fixe'";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<th colspan='4'>";
+      echo $LANG['plugin_monitoring']['hostconfig'][0];
+      echo "</th>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+      echo $LANG['plugin_monitoring']['service'][5]."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      $input = array();
+
+      if ($entities_id != '0'
+              OR $itemtype != 'Entity') {
+         $input["-1"] = $LANG['common'][102];
+      }
+      $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringCommand")."`
+         ORDER BY `name`";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         $input[$data['id']] = $data['name'];
+      }
+      Dropdown::showFromArray('plugin_monitoring_commands_id', $input, array(
+          'value'=>$this->fields['plugin_monitoring_commands_id']));
+
+      echo "</td>";
+      echo "<td>".$LANG['plugin_monitoring']['check'][0]."&nbsp;:</td>";
+      echo "<td>";
+      $input = array();
+      if ($entities_id != '0'
+              OR $itemtype != 'Entity') {
+         $input["-1"] = $LANG['common'][102];
+      }
+      $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringCheck")."`
+         ORDER BY `name`";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         $input[$data['id']] = $data['name'];
+      }
+      Dropdown::showFromArray('plugin_monitoring_checks_id', $input, array(
+          'value'=>$this->fields['plugin_monitoring_checks_id']));
+      
+      echo "</td>";
+      echo "</tr>";
+      
+      // Inheritance
+      if ($this->fields['plugin_monitoring_commands_id'] == '-1'
+              OR $this->fields['plugin_monitoring_checks_id'] == '-1') {
+         
+         echo "<tr class='tab_bg_1'>";
+         if ($this->fields['plugin_monitoring_commands_id'] == '-1') {
+            echo "<td colspan='2' class='green center'>";
+            echo $LANG['common'][102]."&nbsp;:&nbsp;";
+            $pmCommand->getFromDB($this->getValueAncestor("plugin_monitoring_commands_id", $entities_id));
+            echo $pmCommand->fields['name'];
+            echo "</td>";
+         } else {
+            echo "<td colspan='2'>";
+            echo "</td>";
+         }
+         if ($this->fields['plugin_monitoring_checks_id'] == '-1') {
+            echo "<td colspan='2' class='green center'>";
+            echo $LANG['common'][102]."&nbsp;:&nbsp;";
+            $pmCheck->getFromDB($this->getValueAncestor("plugin_monitoring_checks_id", $entities_id));
+            echo $pmCheck->fields['name'];
+            echo "</td>";
+         } else {
+            echo "<td colspan='2'>";
+            echo "</td>";
+         }
+         echo "</tr>";
+      }
+      
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='2'>";
+      echo "</td>";
+      echo "<td>".$LANG['plugin_monitoring']['host'][9]."&nbsp;:</td>";
+      echo "<td>";
+      $input = array();
+      if ($entities_id != '0'
+              OR $itemtype != 'Entity') {
+         $input["-1"] = $LANG['common'][102];
+      }
+      $entities_ancestors = getAncestorsOf("glpi_entities", $entities_id);
+      if (!isset($entities_ancestors[$entities_id])) {
+         $entities_ancestors[$entities_id] = $entities_id;
+      }
+
+      $query = "SELECT * FROM `".getTableForItemType("Calendar")."`
+         WHERE `entities_id` IN ('".implode(",", $entities_ancestors)."') AND `is_recursive`='1'
+         ORDER BY `name`";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         $input[$data['id']] = $data['name'];
+      }
+      Dropdown::showFromArray('calendars_id', $input, array(
+          'value'=>$this->fields['calendars_id']));
+
+      echo "</td>";
+      echo "</tr>";
+      
+      // Inheritance
+      if ($this->fields['calendars_id'] == '-1') {
+         
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='2'>";         
+         echo "<td colspan='2' class='green center'>";
+         echo $LANG['common'][102]."&nbsp;:&nbsp;";
+         $calendar->getFromDB($this->getValueAncestor("calendars_id", $entities_id));
+         echo $calendar->fields['name'];
+         echo "</td>";
+         echo "</tr>";
+      }
+      
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='4' align='center'>";
+      if (isset($this->fields['id']) AND $this->fields['id'] != '') {
+         echo "<input type='hidden' name='id' value='".$this->fields['id']."'/>";
+      }
+      echo "<input type='hidden' name='itemtype' value='".$itemtype."'/>";
+      echo "<input type='hidden' name='items_id' value='".$items_id."'/>";
+      echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "</table>";
+      echo "</form>";
+
+      return true;
+   }
+   
+   
+   
+   function getValueAncestor($fieldname, $entities_id, $itemtype='', $items_id='') {
+      global $DB;
+      
+      if ($itemtype != ''
+              AND $items_id != '') {
+         
+         $query = "SELECT * FROM `".$this->getTable()."`
+            WHERE `items_id`='".$items_id."'
+               AND `itemtype`='".$itemtype."'
+            LIMIT 1";
+         $result = $DB->query($query);
+         if ($DB->numrows($result) == '1') {
+            $data = $DB->fetch_assoc($result);
+            if ($data[$fieldname] != '-1') {
+               return $data[$fieldname];
+            } 
+         }
+      }
+      
+      
+      
+      $query = "SELECT * FROM `".$this->getTable()."`
+         WHERE `items_id`='".$entities_id."'
+            AND `itemtype`='Entity'
+         LIMIT 1";
+      
+      $result = $DB->query($query);
+      if ($DB->numrows($result) == '0') {
+         $entities_ancestors = getAncestorsOf("glpi_entities", $entities_id);
+         
+         $nbentities = count($entities_ancestors);
+         for ($i=0; $i<$nbentities; $i++) {
+            $entity = array_pop($entities_ancestors);
+            $query = "SELECT * FROM `".$this->getTable()."`
+               WHERE `items_id`='".$entity."'
+                  AND `itemtype`='Entity'
+               LIMIT 1";
+            $result = $DB->query($query);
+            if ($DB->numrows($result) != '0') {
+               $data = $DB->fetch_assoc($result);
+               if ($data[$fieldname] != '-1') {
+                  return $data[$fieldname];
+               }
+            }
+         }         
+      } else {
+         $data = $DB->fetch_assoc($result);
+         if ($data[$fieldname] != '-1') {
+            return $data[$fieldname];
+         } else {
+            $entities_ancestors = getAncestorsOf("glpi_entities", $entities_id);
+
+            $nbentities = count($entities_ancestors);
+            for ($i=0; $i<$nbentities; $i++) {
+               $entity = array_pop($entities_ancestors);
+               $query = "SELECT * FROM `".$this->getTable()."`
+                  WHERE `items_id`='".$entity."'
+                     AND `itemtype`='Entity'
+                  LIMIT 1";
+               $result = $DB->query($query);
+               if ($DB->numrows($result) != '0') {
+                  $data = $DB->fetch_assoc($result);
+                  if ($data[$fieldname] != '-1') {
+                     return $data[$fieldname];
+                  }
+               }
+            } 
+         }
+      }
+
+   }
+   
+}
+
+?>

@@ -160,4 +160,6 @@ $LANG['plugin_monitoring']['rrdtemplates'][2]="Find files on";
 $LANG['plugin_monitoring']['entity'][0]="Tag";
 $LANG['plugin_monitoring']['entity'][1]="Set tag to link entity with a specific shinken server";
 
+$LANG['plugin_monitoring']['hostconfig'][0]="Hosts configuration";
+
 ?>

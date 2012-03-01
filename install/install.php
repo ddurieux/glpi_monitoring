@@ -64,6 +64,11 @@ function pluginMonitoringInstall($version) {
    $pluginMonitoringCheck = new PluginMonitoringCheck();
    $pluginMonitoringCheck->initChecks();
    
+   include (GLPI_ROOT . "/plugins/monitoring/inc/hostconfig.class.php");
+   $pmHostconfig = new PluginMonitoringHostconfig();
+   $pmHostconfig->initConfig();
+   
+   
    if (!is_dir(GLPI_PLUGIN_DOC_DIR.'/monitoring')) {
       mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring");
    }

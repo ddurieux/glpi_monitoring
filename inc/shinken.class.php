@@ -117,6 +117,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       $pluginMonitoringCheck     = new PluginMonitoringCheck();
       $pmComponent               = new PluginMonitoringComponent();
       $pmEntity                  = new PluginMonitoringEntity();
+      $pmHostconfig              = new PluginMonitoringHostconfig();
       $calendar                  = new Calendar();
 
       $a_hosts = array();
@@ -150,13 +151,22 @@ class PluginMonitoringShinken extends CommonDBTM {
 
                $a_fields = $a_component;
 
-                  $pluginMonitoringCommand->getFromDB($a_fields['plugin_monitoring_commands_id']);
+                  $pluginMonitoringCommand->getFromDB($pmHostconfig->getValueAncestor('plugin_monitoring_commands_id', 
+                                                                                       $class->fields['entities_id'],
+                                                                                       $classname,
+                                                                                       $class->getID()));
                $a_hosts[$i]['check_command'] = $pluginMonitoringCommand->fields['command_name'];
-                  $pluginMonitoringCheck->getFromDB($a_fields['plugin_monitoring_checks_id']);
+                  $pluginMonitoringCheck->getFromDB($pmHostconfig->getValueAncestor('plugin_monitoring_checks_id', 
+                                                                                     $class->fields['entities_id'],
+                                                                                     $classname,
+                                                                                     $class->getID()));
                $a_hosts[$i]['check_interval'] = $pluginMonitoringCheck->fields['check_interval'];
                $a_hosts[$i]['retry_interval'] = $pluginMonitoringCheck->fields['retry_interval'];
                $a_hosts[$i]['max_check_attempts'] = $pluginMonitoringCheck->fields['max_check_attempts'];
-               if ($calendar->getFromDB($a_fields['calendars_id'])) {
+               if ($calendar->getFromDB($pmHostconfig->getValueAncestor('calendars_id', 
+                                                                        $class->fields['entities_id'],
+                                                                        $classname,
+                                                                        $class->getID()))) {
                   $a_hosts[$i]['check_period'] = $calendar->fields['name'];
                } else {
                   $a_hosts[$i]['check_period'] = "24x7";
@@ -443,8 +453,9 @@ class PluginMonitoringShinken extends CommonDBTM {
    function generateTemplatesCfg($file=0, $tag='') {
       global $DB;
       
-      $pMonitoringCheck        = new PluginMonitoringCheck();
-      $calendar      = new Calendar();
+      $pMonitoringCheck = new PluginMonitoringCheck();
+      $calendar         = new Calendar();
+      
       $a_servicetemplates = array();
       $i=0;
       $a_templatesdef = array();

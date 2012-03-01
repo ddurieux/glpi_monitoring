@@ -229,6 +229,20 @@ CREATE TABLE `glpi_plugin_monitoring_hostaddresses` (
 
 
 
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_hostconfigs`;
+
+CREATE TABLE `glpi_plugin_monitoring_hostconfigs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(100) DEFAULT NULL,
+  `plugin_monitoring_commands_id` int(11) NOT NULL DEFAULT '0',
+  `plugin_monitoring_checks_id` int(11) NOT NULL DEFAULT '0',
+  `calendars_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_serviceevents`;
 
 CREATE TABLE `glpi_plugin_monitoring_serviceevents` (

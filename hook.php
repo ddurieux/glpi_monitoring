@@ -202,8 +202,10 @@ echo "<br/>Http :<br/>";
 
 function plugin_headings_monitoring_resources($item) {
 
-   $pMonitoringService = new PluginMonitoringService();
-   $pMonitoringService->manageServices(get_class($item), $item->fields['id']);
+   $pmService = new PluginMonitoringService();
+   $pmService->manageServices(get_class($item), $item->fields['id']);
+   $pmHostconfig = new PluginMonitoringHostconfig();
+   $pmHostconfig->showForm($item->getID(), get_class($item));
 }
 
 
@@ -225,6 +227,9 @@ function plugin_headings_monitoring_contacts($item) {
 
 function plugin_headings_monitoring_entitytag($item) {
    $pmEntity = new PluginMonitoringEntity();
+   $pmHostconfig = new PluginMonitoringHostconfig();
+   
+   $pmHostconfig->showForm($item->getID(), "Entity");
    $pmEntity->showForm($item->fields['id']);
 }
 
