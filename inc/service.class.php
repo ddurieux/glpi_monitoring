@@ -114,7 +114,6 @@ class PluginMonitoringService extends CommonDBTM {
    
    
    function manageServices($itemtype, $items_id) {
-      global $CFG_GLPI,$LANG;
       
       if ($itemtype == 'Computer') {
          $pmHostaddress = new PluginMonitoringHostaddress();
@@ -221,7 +220,7 @@ class PluginMonitoringService extends CommonDBTM {
    
    
    function showForm($items_id, $options=array(), $services_id='') {
-      global $DB,$CFG_GLPI,$LANG;
+      global $LANG;
       
       $pMonitoringCommand = new PluginMonitoringCommand();
       $pMonitoringServicedef = new PluginMonitoringServicedef();

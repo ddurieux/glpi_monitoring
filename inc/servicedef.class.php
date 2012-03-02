@@ -53,7 +53,6 @@ class PluginMonitoringServicedef extends CommonDBTM {
    *
    **/
    static function getTypeName() {
-      global $LANG;
 
       return "Service template";
    }
@@ -125,7 +124,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
    
 
    function defineTabs($options=array()){
-      global $LANG,$CFG_GLPI;
+      global $LANG;
 
       $ong = array();
 
@@ -160,7 +159,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
    *
    **/
    function showForm($items_id, $options=array()) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $LANG;
 
 
       $pMonitoringCommand = new PluginMonitoringCommand();

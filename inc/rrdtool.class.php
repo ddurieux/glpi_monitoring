@@ -145,7 +145,6 @@ class PluginMonitoringRrdtool extends CommonDBTM {
     * @param type $time 
     */
    function displayGLPIGraph($rrdtool_template, $itemtype, $items_id, $timezone, $time='1d', $width='470') {
-      global $LANG;
 
       $filename = GLPI_PLUGIN_DOC_DIR."/monitoring/templates/".$rrdtool_template."_graph.json";
       if (!file_exists($filename)) {

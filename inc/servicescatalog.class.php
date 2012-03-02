@@ -91,7 +91,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    
    
    function showForm($items_id, $options=array()) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $LANG;
 
       if ($items_id!='') {
          $this->getFromDB($items_id);
@@ -267,7 +267,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    
    
    function showBADetail($id) {
-      global $CFG_GLPI,$LANG;
+      global $CFG_GLPI;
       
       $pMonitoringBusinessrule = new PluginMonitoringBusinessrule();
       $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
