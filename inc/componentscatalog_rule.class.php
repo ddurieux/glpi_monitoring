@@ -92,11 +92,9 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
    
 
    function showRules($componentscatalogs_id) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $DB,$LANG;
 
       $this->preaddRule($componentscatalogs_id);
-      
-      $rand = mt_rand();
 
       $query = "SELECT * FROM `".$this->getTable()."`
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
@@ -468,7 +466,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       }
 
       $options = Search::getCleanedOptions($itemtype);
-      $target  = getItemTypeSearchURL($itemtype);
+//      $target  = getItemTypeSearchURL($itemtype);
 
       // Instanciate an object to access method
       $item = NULL;
@@ -549,7 +547,7 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
                }
             }
 
-            $itemtable = getTableForItemType($itemtype);
+//            $itemtable = getTableForItemType($itemtype);
 //            if ($item && $item->maybeDeleted()) {
 //               echo "<input type='hidden' id='is_deleted' name='is_deleted' value='".
 //                      $p['is_deleted']."'>";
@@ -846,7 +844,7 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
     * Clone of Search::showList but only to have SQL query
     */
    function constructSQL($itemtype,$params, $items_id_check=0) {
-      global $DB, $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       // Instanciate an object to access method
       $item = NULL;
@@ -896,7 +894,7 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
          }
       }
 
-      $target = getItemTypeSearchURL($itemtype);
+//      $target = getItemTypeSearchURL($itemtype);
 
       $limitsearchopt = Search::getCleanedOptions($itemtype);
 
@@ -924,7 +922,7 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
          $entity_restrict = $item->isEntityAssign();
       }
 
-      $metanames = array();
+//      $metanames = array();
 
       // Get the items to display
 //      $toview = Search::addDefaultToView($itemtype);
@@ -968,7 +966,7 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
          }
       }
 
-      $toview_count = count($toview);
+//      $toview_count = count($toview);
 
       // Construct the request
 
