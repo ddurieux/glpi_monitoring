@@ -41,7 +41,6 @@
  */
 
 function plugin_monitoring_giveItem($type,$id,$data,$num) {
-   global $CFG_GLPI, $LANG;
 
    $searchopt = &Search::getOptions($type);
    $table = $searchopt[$id]["table"];
@@ -64,7 +63,6 @@ function cron_plugin_monitoring() {
 
 
 function plugin_monitoring_install() {
-   global $DB, $LANG;
 
    include (GLPI_ROOT . "/plugins/monitoring/install/update.php");
    $version_detected = pluginMonitoringGetCurrentVersion(PLUGIN_MONITORING_VERSION);
@@ -242,14 +240,12 @@ function plugin_headings_monitoring_tasks($item, $itemtype='', $items_id=0) {
 
 
 function plugin_headings_monitoring($item, $withtemplate=0) {
-	global $CFG_GLPI;
 
 }
 
 
 
 function plugin_monitoring_MassiveActionsFieldsDisplay($options=array()) {
-   global $LANG;
 
    return false;
 }
@@ -273,7 +269,7 @@ function plugin_monitoring_MassiveActions($type) {
 
 
 function plugin_monitoring_MassiveActionsDisplay($options=array()) {
-   global $LANG, $CFG_GLPI, $DB;
+   global $LANG, $CFG_GLPI;
 
    switch ($options['itemtype']) {
       case "Computer":
@@ -303,7 +299,6 @@ function plugin_monitoring_MassiveActionsDisplay($options=array()) {
 
 
 function plugin_monitoring_MassiveActionsProcess($data) {
-   global $LANG;
 
    switch ($data['action']) {
       case "plugin_monitoring_activatehosts" :
@@ -322,15 +317,14 @@ function plugin_monitoring_MassiveActionsProcess($data) {
 
 
 function plugin_monitoring_addSelect($type,$id,$num) {
-	global $SEARCH_OPTION;
 
-   $searchopt = &Search::getOptions($type);
-   $table = $searchopt[$id]["table"];
-   $field = $searchopt[$id]["field"];
-
-   switch ($type) {
-
-   }
+//   $searchopt = &Search::getOptions($type);
+//   $table = $searchopt[$id]["table"];
+//   $field = $searchopt[$id]["field"];
+//
+//   switch ($type) {
+//
+//   }
    return "";
 }
 

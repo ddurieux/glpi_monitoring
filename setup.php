@@ -44,7 +44,7 @@ define ("PLUGIN_MONITORING_VERSION","0.80+1.2");
 
 // Init the hooks of monitoring
 function plugin_init_monitoring() {
-   global $PLUGIN_HOOKS,$CFG_GLPI,$LANG;
+   global $PLUGIN_HOOKS,$LANG;
    
    $Plugin = new Plugin();
    if ($Plugin->isActivated('monitoring')) {
@@ -154,7 +154,7 @@ function plugin_version_monitoring() {
 
 // Optional : check prerequisites before install : may print errors or add to message after redirect
 function plugin_monitoring_check_prerequisites() {
-   global $LANG;
+
    if (version_compare(GLPI_VERSION,'0.80','lt') || version_compare(GLPI_VERSION,'0.81','ge')) {
       echo "error";
    } else {
