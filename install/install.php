@@ -55,14 +55,14 @@ function pluginMonitoringInstall($version) {
    }
 
    include (GLPI_ROOT . "/plugins/monitoring/inc/command.class.php");
-   $pluginMonitoringCommand = new PluginMonitoringCommand();
-   $pluginMonitoringCommand->initCommands();
+   $pmCommand = new PluginMonitoringCommand();
+   $pmCommand->initCommands();
    include (GLPI_ROOT . "/plugins/monitoring/inc/notificationcommand.class.php");
-   $pluginMonitoringNotificationcommand = new PluginMonitoringNotificationcommand();
-   $pluginMonitoringNotificationcommand->initCommands();
+   $pmNotificationcommand = new PluginMonitoringNotificationcommand();
+   $pmNotificationcommand->initCommands();
    include (GLPI_ROOT . "/plugins/monitoring/inc/check.class.php");
-   $pluginMonitoringCheck = new PluginMonitoringCheck();
-   $pluginMonitoringCheck->initChecks();
+   $pmCheck = new PluginMonitoringCheck();
+   $pmCheck->initChecks();
    
    include (GLPI_ROOT . "/plugins/monitoring/inc/hostconfig.class.php");
    $pmHostconfig = new PluginMonitoringHostconfig();

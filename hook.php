@@ -42,13 +42,13 @@
 
 function plugin_monitoring_giveItem($type,$id,$data,$num) {
 
-   $searchopt = &Search::getOptions($type);
-   $table = $searchopt[$id]["table"];
-   $field = $searchopt[$id]["field"];
-         
-   switch ($table.'.'.$field) {
-
-   }
+//   $searchopt = &Search::getOptions($type);
+//   $table = $searchopt[$id]["table"];
+//   $field = $searchopt[$id]["field"];
+//         
+//   switch ($table.'.'.$field) {
+//
+//   }
 
    return "";
 }
@@ -191,8 +191,8 @@ echo "<br/>Http :<br/>";
 //echo "<img src='".GLPI_ROOT."/plugins/monitoring/front/send.php?file=PluginMonitoringService-5-12h.gif' />";
 
    
-   $pluginMonitoringHostevent = new PluginMonitoringHostevent();
-   $pluginMonitoringHostevent->showForm($item);
+   $pmHostevent = new PluginMonitoringHostevent();
+   $pmHostevent->showForm($item);
 
 }
 
@@ -217,8 +217,8 @@ function plugin_headings_monitoring_businessrules($item) {
 
 function plugin_headings_monitoring_contacts($item) {
 
-   $pluginMonitoringContact = new PluginMonitoringContact();
-   $pluginMonitoringContact->showForm(0);
+   $pmContact = new PluginMonitoringContact();
+   $pmContact->showForm(0);
 }
 
 
@@ -275,8 +275,8 @@ function plugin_monitoring_MassiveActionsDisplay($options=array()) {
       case "Computer":
          switch ($options['action']) {
             case "plugin_monitoring_activatehosts" :
-               $pluginMonitoringHost = new PluginMonitoringHost();
-               $a_list = $pluginMonitoringHost->find("`is_template`='1'");
+               $pmHost = new PluginMonitoringHost();
+               $a_list = $pmHost->find("`is_template`='1'");
                $a_elements = array();
                foreach ($a_list as $data) {
                   $a_elements[$data['id']] = $data['template_name'];
@@ -284,7 +284,7 @@ function plugin_monitoring_MassiveActionsDisplay($options=array()) {
                $rand = Dropdown::showFromArray("template_id", $a_elements);
                echo "<img alt='' title=\"".$LANG['buttons'][8]."\" src='".$CFG_GLPI["root_doc"].
                      "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
-                     onClick=\"var w = window.open('".$pluginMonitoringHost->getFormURL()."?withtemplate=1&popup=1&amp;rand=".
+                     onClick=\"var w = window.open('".$pmHost->getFormURL()."?withtemplate=1&popup=1&amp;rand=".
                      $rand."' ,'glpipopup', 'height=400, ".
                      "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
                echo "<input name='add' value='Post' class='submit' type='submit'>";
@@ -303,10 +303,10 @@ function plugin_monitoring_MassiveActionsProcess($data) {
    switch ($data['action']) {
       case "plugin_monitoring_activatehosts" :
          if ($data['itemtype'] == "Computer") {
-            $pluginMonitoringHost = new PluginMonitoringHost();
+            $pmHost = new PluginMonitoringHost();
             foreach ($data['item'] as $key => $val) {
                if ($val == '1') {
-                  $pluginMonitoringHost->massiveactionAddHost($data['itemtype'], $key, $data['template_id']);
+                  $pmHost->massiveactionAddHost($data['itemtype'], $key, $data['template_id']);
                }
             }
          }
@@ -356,13 +356,13 @@ function plugin_monitoring_addDefaultWhere($type) {
 function plugin_monitoring_addWhere($link,$nott,$type,$id,$val) {
 	global $SEARCH_OPTION;
 
-   $searchopt = &Search::getOptions($type);
-   $table = $searchopt[$id]["table"];
-   $field = $searchopt[$id]["field"];
-
-   switch ($type) {
-
-   }
+//   $searchopt = &Search::getOptions($type);
+//   $table = $searchopt[$id]["table"];
+//   $field = $searchopt[$id]["field"];
+//
+//   switch ($type) {
+//
+//   }
    return "";
 }
 
