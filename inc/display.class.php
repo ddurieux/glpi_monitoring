@@ -632,62 +632,75 @@ class PluginMonitoringDisplay extends CommonDBTM {
          $queryCat = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs`";
          $resultCat = $DB->query($queryCat);
          while ($data=$DB->fetch_array($resultCat)) { 
-
-            $query = "SELECT * FROM `".$pmComponentscatalog_Host->getTable()."`
-               WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'";
+            
+            $query = "SELECT COUNT(*) AS cpt FROM `".$pmComponentscatalog_Host->getTable()."`
+               LEFT JOIN `glpi_plugin_monitoring_services` 
+                  ON `plugin_monitoring_componentscatalogs_hosts_id`=`".$pmComponentscatalog_Host->getTable()."`.`id`
+               WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'
+                  AND (`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
+                          AND `state_type`='HARD'";
             $result = $DB->query($query);
-            $state = array();
-            $state['ok'] = 0;
-            $state['warning'] = 0;
-            $state['critical'] = 0;
-            $state['ok_soft'] = 0;
-            $state['warning_soft'] = 0;
-            $state['critical_soft'] = 0;
-            while ($dataComponentscatalog_Host=$DB->fetch_array($result)) {            
-
-               $state['ok'] += countElementsInTable("glpi_plugin_monitoring_services", 
-                       "(`state`='OK' OR `state`='UP') AND `state_type`='HARD'
-                          AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
-
-
-               $state['warning'] += countElementsInTable("glpi_plugin_monitoring_services", 
-                       "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
-                          AND `state_type`='HARD'
-                          AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
-
-               $state['critical'] += countElementsInTable("glpi_plugin_monitoring_services", 
-                       "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
-                          AND `state_type`='HARD'
-                          AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
-
-               $state['warning_soft'] += countElementsInTable("glpi_plugin_monitoring_services", 
-                       "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
-                          AND `state_type`='SOFT'
-                          AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
-
-               $state['critical_soft'] += countElementsInTable("glpi_plugin_monitoring_services", 
-                       "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
-                          AND `state_type`='SOFT'
-                          AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
-
-               $state['ok_soft'] += countElementsInTable("glpi_plugin_monitoring_services", 
-                       "(`state`='OK' OR `state`='UP') AND `state_type`='SOFT'
-                          AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
-
-            }
-            if ($state['critical'] > 0) {
+            $data2 = $DB->fetch_assoc($result);
+            if ($data2['cpt'] > 0) {
                $critical++;
-            } else if ($state['warning'] > 0) {
-               $warning++;
-            } else if ($state['ok'] > 0) {
-               $ok++;
+            } else {
+               $query = "SELECT COUNT(*) AS cpt FROM `".$pmComponentscatalog_Host->getTable()."`
+                  LEFT JOIN `glpi_plugin_monitoring_services` 
+                     ON `plugin_monitoring_componentscatalogs_hosts_id`=`".$pmComponentscatalog_Host->getTable()."`.`id`
+                  WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'
+                     AND (`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
+                             AND `state_type`='HARD'";
+               $result = $DB->query($query);
+               $data2 = $DB->fetch_assoc($result);
+               if ($data2['cpt'] > 0) {
+                  $warning++;
+               } else {
+                  $query = "SELECT COUNT(*) AS cpt FROM `".$pmComponentscatalog_Host->getTable()."`
+                     LEFT JOIN `glpi_plugin_monitoring_services` 
+                        ON `plugin_monitoring_componentscatalogs_hosts_id`=`".$pmComponentscatalog_Host->getTable()."`.`id`
+                     WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'
+                        AND (`state`='OK' OR `state`='UP') AND `state_type`='HARD'";
+                  $result = $DB->query($query);
+                  $data2 = $DB->fetch_assoc($result);
+                  if ($data2['cpt'] > 0) {
+                     $ok++;
+                  }
+               }
             }
-            if ($state['critical_soft'] > 0) {
+            
+           $query = "SELECT COUNT(*) AS cpt FROM `".$pmComponentscatalog_Host->getTable()."`
+               LEFT JOIN `glpi_plugin_monitoring_services` 
+                  ON `plugin_monitoring_componentscatalogs_hosts_id`=`".$pmComponentscatalog_Host->getTable()."`.`id`
+               WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'
+                  AND (`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
+                          AND `state_type`='SOFT'";
+            $result = $DB->query($query);
+            $data2 = $DB->fetch_assoc($result);
+            if ($data2['cpt'] > 0) {
                $critical_soft++;
-            } else if ($state['warning_soft'] > 0) {
-               $warning_soft++;
-            } else if ($state['ok_soft'] > 0) {
-               $ok_soft++;
+            } else {
+               $query = "SELECT COUNT(*) AS cpt FROM `".$pmComponentscatalog_Host->getTable()."`
+                  LEFT JOIN `glpi_plugin_monitoring_services` 
+                     ON `plugin_monitoring_componentscatalogs_hosts_id`=`".$pmComponentscatalog_Host->getTable()."`.`id`
+                  WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'
+                     AND (`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
+                             AND `state_type`='SOFT'";
+               $result = $DB->query($query);
+               $data2 = $DB->fetch_assoc($result);
+               if ($data2['cpt'] > 0) {
+                  $warning_soft++;
+               } else {
+                  $query = "SELECT COUNT(*) AS cpt FROM `".$pmComponentscatalog_Host->getTable()."`
+                     LEFT JOIN `glpi_plugin_monitoring_services` 
+                        ON `plugin_monitoring_componentscatalogs_hosts_id`=`".$pmComponentscatalog_Host->getTable()."`.`id`
+                     WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'
+                        AND (`state`='OK' OR `state`='UP') AND `state_type`='SOFT'";
+                  $result = $DB->query($query);
+                  $data2 = $DB->fetch_assoc($result);
+                  if ($data2['cpt'] > 0) {
+                     $ok_soft++;
+                  }
+               }
             }
          }
          
