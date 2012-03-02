@@ -87,7 +87,7 @@ class PluginMonitoringBusinessrule extends CommonDBTM {
    *
    **/
    function showFormTest($servicescatalogs_id, $options=array()) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $CFG_GLPI,$LANG;
 
       $this->showFormTest($servicescatalogs_id, $options);
 return;
@@ -228,7 +228,7 @@ return;
    
    
    function showForm($servicescatalogs_id, $options=array()) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $DB,$LANG;
 
       $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
       
@@ -332,7 +332,7 @@ return;
    
    
    static function showService($items_id, $itemtype, $businessrules_id=0) {
-      global $CFG_GLPI, $LANG;
+      global $LANG;
 
       if (!empty($items_id)) {
          $pMonitoringService = new PluginMonitoringService();
@@ -369,7 +369,7 @@ return;
    
    
    static function dropdownService($ID,$options=array()) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $p['name']        = 'networkports_id';
       $p['comments']    = 1;
@@ -395,7 +395,7 @@ return;
       echo "<select name='itemtype[$ID]' id='itemtype$rand'>";
       echo "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option>";
 
-      $a_types =array();
+//      $a_types =array();
       echo "<option value='Computer'>".Computer::getTypeName()."</option>";
       echo "<option value='NetworkEquipment'>".NetworkEquipment::getTypeName()."</option>";
       echo "</select>";
