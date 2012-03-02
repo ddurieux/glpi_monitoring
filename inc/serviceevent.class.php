@@ -67,6 +67,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       $a_list_before = $this->find("`plugin_monitoring_hosts_id`='".$hosts_id."'
          AND `date` < '".date("Y-m-d H:i:s", $startDate)."'", "date DESC", 1);
 
+      $state_before = '';
       if (count($a_list_before) == '0') {
          $state_before = 'OK';
       } else {
@@ -124,20 +125,20 @@ class PluginMonitoringServiceevent extends CommonDBTM {
    function parseToRrdtool($plugin_monitoring_services_id) {
       global $DB;
       
-      $pluginMonitoringRrdtool = new PluginMonitoringRrdtool();
-      $pluginMonitoringCommand = new PluginMonitoringCommand();
-      $pMonitoringService = new PluginMonitoringService();
+      $pmRrdtool = new PluginMonitoringRrdtool();
+      $pmCommand = new PluginMonitoringCommand();
+      $pmService = new PluginMonitoringService();
       $pmComponent = new PluginMonitoringComponent();
       
-      $pMonitoringService->getFromDB($plugin_monitoring_services_id);
-      $pmComponent->getFromDB($pMonitoringService->fields['plugin_monitoring_components_id']);
+      $pmService->getFromDB($plugin_monitoring_services_id);
+      $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
       if (!isset($pmComponent->fields['plugin_monitoring_commands_id'])) {
          return;
       }
       if (is_null($pmComponent->fields['graph_template'])) {
          return;
       }
-      $pluginMonitoringCommand->getFromDB($pmComponent->fields['plugin_monitoring_commands_id']);
+      $pmCommand->getFromDB($pmComponent->fields['plugin_monitoring_commands_id']);
       
       $query = "SELECT * FROM `".$this->getTable()."`
          WHERE `plugin_monitoring_services_id`='".$plugin_monitoring_services_id."'
@@ -154,7 +155,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                if ($edata['perf_data'] == '') {
                   $perf_data = $edata['output'];                     
                }
-               $pluginMonitoringRrdtool->addData($pmComponent->fields['graph_template'], 
+               $pmRrdtool->addData($pmComponent->fields['graph_template'], 
                                               $plugin_monitoring_services_id, 
                                               $this->convert_datetime_timestamp($edata['date']), 
                                               $perf_data);
@@ -178,7 +179,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       
       foreach ($a_list as $time) {
          foreach ($a_timezones as $timezone) {
-            $pluginMonitoringRrdtool->displayGLPIGraph($pmComponent->fields['graph_template'],
+            $pmRrdtool->displayGLPIGraph($pmComponent->fields['graph_template'],
                                                        "PluginMonitoringService", 
                                                        $plugin_monitoring_services_id, 
                                                        $timezone,
@@ -191,12 +192,12 @@ class PluginMonitoringServiceevent extends CommonDBTM {
    
    static function cronUpdaterrd() {
 
-      $pMonitoringServiceevent = new PluginMonitoringServiceevent();
-      $pMonitoringService = new PluginMonitoringService();
+      $pmServiceevent = new PluginMonitoringServiceevent();
+      $pmService = new PluginMonitoringService();
       
-      $a_lisths = $pMonitoringService->find();
+      $a_lisths = $pmService->find();
       foreach ($a_lisths as $data) {
-         $pMonitoringServiceevent->parseToRrdtool($data['id']);
+         $pmServiceevent->parseToRrdtool($data['id']);
       }
       return true;
    }

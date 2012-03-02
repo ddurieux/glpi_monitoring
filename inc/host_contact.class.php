@@ -61,8 +61,7 @@ class PluginMonitoringHost_Contact extends CommonDBRelation {
    function manageContacts($items_id) {
       global $LANG;
 
-      $pluginMonitoringHost = new PluginMonitoringHost();
-      $pluginMonitoringContact = new PluginMonitoringContact();
+      $pmContact = new PluginMonitoringContact();
       $user = new User();
 
       $a_list = $this->find("`plugin_monitoring_hosts_id`='".$items_id."'");
@@ -80,7 +79,7 @@ class PluginMonitoringHost_Contact extends CommonDBRelation {
       echo "<tr class='tab_bg_1'>";
       echo "<td class='right'>";
 
-      $a_contacts = $pluginMonitoringContact->find();
+      $a_contacts = $pmContact->find();
       $a_elements = array();
       foreach ($a_contacts as $data) {
          $user->getFromDB($data['users_id']);
@@ -103,8 +102,8 @@ class PluginMonitoringHost_Contact extends CommonDBRelation {
       if ($a_list) {
          echo "<select name='parent_to_delete[]' multiple size='5'>";
          foreach ($a_list as $data) {
-            $pluginMonitoringContact->getFromDB($data['plugin_monitoring_contacts_id']);
-            $user->getFromDB($pluginMonitoringContact->fields['users_id']);
+            $pmContact->getFromDB($data['plugin_monitoring_contacts_id']);
+            $user->getFromDB($pmContact->fields['users_id']);
             echo "<option value='".$data['plugin_monitoring_contacts_id']."'>".$user->getName()."</option>";
          }
          echo "</select>";
