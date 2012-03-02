@@ -230,6 +230,29 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    }
   
    
+   
+   static function removeCatalog($item) {
+      global $DB;
+      
+      $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+      $pmComponentscatalog_rule = new PluginMonitoringComponentscatalog_rule(); 
+      
+      $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+         WHERE `plugin_monitoring_componentscalalog_id`='".$item->fields["id"]."'
+            AND `is_static`='1'";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         $pmComponentscatalog_Host->delete($data);
+      }
+      
+      $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_rules`
+         WHERE `plugin_monitoring_componentscalalog_id`='".$item->fields["id"]."'";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         $pmComponentscatalog_rule->delete($data);
+      }
+   }
+   
 }
 
 ?>

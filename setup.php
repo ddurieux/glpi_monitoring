@@ -125,7 +125,9 @@ function plugin_init_monitoring() {
                                        'PluginMonitoringComponentscatalog_rule' =>
                                              array('PluginMonitoringComponentscatalog_rule','getItemsDynamicly'),
                                        'PluginMonitoringComponentscatalog_Host' =>
-                                             array('PluginMonitoringComponentscatalog_Host','unlinkComponentsToItem'));
+                                             array('PluginMonitoringComponentscatalog_Host','unlinkComponentsToItem'),
+                                       'PluginMonitoringComponentscatalog' =>
+                                             array('PluginMonitoringComponentscatalog','removeCatalog'));
 
          if (!isset($_SESSION['glpi_plugin_monitoring']['_refresh'])) {
             $_SESSION['glpi_plugin_monitoring']['_refresh'] = '60';
