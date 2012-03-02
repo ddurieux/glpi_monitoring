@@ -48,7 +48,6 @@ class PluginMonitoringWebservice {
 
 
    static function methodShinkenGetConffiles($params, $protocol) {
-      global $LANG, $CFG_GLPI;
 
       if (isset ($params['help'])) {
          return array('file'  => 'config filename to get : commands.cfg, hosts.cfg',
@@ -116,7 +115,6 @@ class PluginMonitoringWebservice {
 
 
    static function methodShinkenCommands($params, $protocol) {
-      global $LANG, $CFG_GLPI;
       
       $pluginMonitoringShinken = new PluginMonitoringShinken();
       $array = $pluginMonitoringShinken->generateCommandsCfg();
@@ -126,7 +124,6 @@ class PluginMonitoringWebservice {
    
    
    static function methodShinkenHosts($params, $protocol) {
-      global $LANG, $CFG_GLPI;
 
       if (!isset($params['tag'])) {
          $params['tag'] = '';
@@ -140,7 +137,6 @@ class PluginMonitoringWebservice {
    
    
    static function methodShinkenServices($params, $protocol) {
-      global $LANG, $CFG_GLPI;
 
       if (!isset($params['tag'])) {
          $params['tag'] = '';
@@ -154,7 +150,6 @@ class PluginMonitoringWebservice {
 
 
    static function methodShinkenTemplates($params, $protocol) {
-      global $LANG, $CFG_GLPI;
 
       if (!isset($params['tag'])) {
          $params['tag'] = '';
@@ -168,7 +163,6 @@ class PluginMonitoringWebservice {
    
    
    static function methodShinkenContacts($params, $protocol) {
-      global $LANG, $CFG_GLPI;
 
       $pluginMonitoringShinken = new PluginMonitoringShinken();
       $array = $pluginMonitoringShinken->generateContactsCfg();
@@ -178,7 +172,6 @@ class PluginMonitoringWebservice {
 
 
    static function methodShinkenTimeperiods($params, $protocol) {
-      global $LANG, $CFG_GLPI;
 
       $pluginMonitoringShinken = new PluginMonitoringShinken();
       $array = $pluginMonitoringShinken->generateTimeperiodsCfg();

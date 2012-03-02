@@ -48,10 +48,6 @@ class PluginMonitoringShinken extends CommonDBTM {
    
 
    function generateConfig() {
-      global $DB,$CFG_GLPI,$LANG;
-
-      
-
 
       return true;
    }
@@ -221,7 +217,6 @@ class PluginMonitoringShinken extends CommonDBTM {
       
       $query = "SELECT * FROM `glpi_plugin_monitoring_services`";
       $result = $DB->query($query);
-      $a_itemused = array();
       while ($data=$DB->fetch_array($result)) {
          $a_component = current($pmComponent->find("`id`='".$data['plugin_monitoring_components_id']."'", "", 1));
          $a_hostname = array();
@@ -252,7 +247,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             $hostnamebp = $a_services[$i]['host_name']; // For business rules
 
             $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9]/","",$a_component['name'])."-".$data['id'];
-            $a_fields = array();
+
             $pMonitoringCommand->getFromDB($a_component['plugin_monitoring_commands_id']);
             // Manage arguments
             $array = array();
@@ -581,7 +576,6 @@ class PluginMonitoringShinken extends CommonDBTM {
    
    
    function _addContactUser($a_contacts, $users_id, $i) {
-      global $DB; 
       
       $pluginMonitoringContact             = new PluginMonitoringContact();
       $pluginMonitoringNotificationcommand = new PluginMonitoringNotificationcommand();
