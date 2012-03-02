@@ -60,9 +60,9 @@ if (!isset($_POST["withtemplate"])) {
 }
 
 
-$pluginMonitoringComponentscatalog = new PluginMonitoringComponentscatalog();
+$pmComponentscatalog = new PluginMonitoringComponentscatalog();
 
-if ($_POST["id"]>0 && $pluginMonitoringComponentscatalog->can($_POST["id"],'r')) {
+if ($_POST["id"]>0 && $pmComponentscatalog->can($_POST["id"],'r')) {
 
    switch($_POST['glpi_tab']) {
       case -1 :

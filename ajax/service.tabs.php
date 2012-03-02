@@ -60,10 +60,10 @@ if (!isset($_POST["withtemplate"])) {
 }
 
 
-$pluginMonitoringBusinessrule = new PluginMonitoringBusinessrule();
+$pmBusinessrule = new PluginMonitoringBusinessrule();
 
 //show computer form to add
-//if ($_POST["id"]>0 && $pluginMonitoringBusinessrule->can($_POST["id"],'r')) {
+//if ($_POST["id"]>0 && $pmBusinessrule->can($_POST["id"],'r')) {
 
    switch($_POST['glpi_tab']) {
       case -1 :
@@ -71,7 +71,7 @@ $pluginMonitoringBusinessrule = new PluginMonitoringBusinessrule();
          break;
 
       case 2 :
-         $pluginMonitoringBusinessrule->showForm();
+         $pmBusinessrule->showForm();
          break;
 
       default :

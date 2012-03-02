@@ -49,8 +49,8 @@ header_nocache();
 if (!isset($_POST["id"])) {
    exit();
 }
-$pMonitoringDisplay = new PluginMonitoringDisplay();
-$pluginMonitoringBusinessrule = new PluginMonitoringBusinessrule();
+$pmDisplay = new PluginMonitoringDisplay();
+$pmBusinessrule = new PluginMonitoringBusinessrule();
 
 switch($_REQUEST['glpi_tab']) {
    case -1 :
@@ -58,25 +58,25 @@ switch($_REQUEST['glpi_tab']) {
       break;
 
    case 1 :
-      $pluginMonitoringServicescatalog = new PluginMonitoringServicescatalog();
-      $pMonitoringDisplay->displayCounters("Businessrules");
-      $pluginMonitoringServicescatalog->showBAChecks();
+      $pmServicescatalog = new PluginMonitoringServicescatalog();
+      $pmDisplay->displayCounters("Businessrules");
+      $pmServicescatalog->showBAChecks();
       break;
    
    case 2:
       $pmComponentscatalog = new PluginMonitoringComponentscatalog();
-      $pMonitoringDisplay->displayCounters("Componentscatalog");
+      $pmDisplay->displayCounters("Componentscatalog");
       $pmComponentscatalog->showChecks();
       break;
 
    case 3:
-      $pMonitoringDisplay->displayCounters("Ressources");
+      $pmDisplay->displayCounters("Ressources");
       // Manage search
       $_GET = $_SESSION['plugin_monitoring']['service'];
       Search::manageGetValues("PluginMonitoringService");
       Search::showGenericSearch("PluginMonitoringService", $_SESSION['plugin_monitoring']['service']);
 
-      $pMonitoringDisplay->showBoard(950);
+      $pmDisplay->showBoard(950);
       break;
 
    case 4:
@@ -85,7 +85,7 @@ switch($_REQUEST['glpi_tab']) {
       Search::manageGetValues("PluginMonitoringService");
       Search::showGenericSearch("PluginMonitoringService", $_SESSION['plugin_monitoring']['service']);
 
-      $pMonitoringDisplay->showBoard("PluginMonitoringHost", 'hosts');
+      $pmDisplay->showBoard("PluginMonitoringHost", 'hosts');
       break;
 
    case 5:
@@ -94,10 +94,11 @@ switch($_REQUEST['glpi_tab']) {
       Search::manageGetValues("PluginMonitoringService");
       Search::showGenericSearch("PluginMonitoringService", $_SESSION['plugin_monitoring']['service']);
 
-      $pMonitoringDisplay->showBoard("PluginMonitoringHost_Service", 'services');
+      $pmDisplay->showBoard("PluginMonitoringHost_Service", 'services');
       break;
 
    default :
+      break;
 
 }
 

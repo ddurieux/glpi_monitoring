@@ -80,11 +80,11 @@ if ($_POST["idtable"] && class_exists($_POST["idtable"])) {
       $paramsallitems['condition'] = stripslashes($_POST['condition']);
    }
 
-   $pluginMonitoringHost = new PluginMonitoringHost();
+   $pmHost = new PluginMonitoringHost();
    $classname = $_POST['idtable'];
    $class = new $classname;
    
-   $a_list = $pluginMonitoringHost->find("`itemtype`='".$classname."'");
+   $a_list = $pmHost->find("`itemtype`='".$classname."'");
    $a_elements = array();
    foreach ($a_list as $data) {
       $class->getFromDB($data['items_id']);
