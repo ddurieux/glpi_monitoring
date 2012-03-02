@@ -76,11 +76,9 @@ function pluginMonitoringInstall($version) {
       mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring/templates");
    }
    
-   
    CronTask::Register('PluginMonitoringServiceevent', 'updaterrd', '300', 
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
-  
-   
+
 }
 
 

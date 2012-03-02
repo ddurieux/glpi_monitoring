@@ -65,16 +65,16 @@ class PluginMonitoringHostconfig extends CommonDBTM {
             WHERE `command_name`='check_host_alive'
             LIMIT 1";
          $result2 = $DB->query($query2);
-         if ($DB->numrows($result) == '1') {
-            $data = $DB->fetch_assoc($result);
+         if ($DB->numrows($result2) == '1') {
+            $data = $DB->fetch_assoc($result2);
             $input['plugin_monitoring_commands_id'] = $data['id'];
          }
          
          $query2 = "SELECT * FROM `glpi_plugin_monitoring_checks`
             LIMIT 1";
          $result2 = $DB->query($query2);
-         if ($DB->numrows($result) == '1') {
-            $data = $DB->fetch_assoc($result);
+         if ($DB->numrows($result2) == '1') {
+            $data = $DB->fetch_assoc($result2);
             $input['plugin_monitoring_checks_id'] = $data['id'];
          }
          
@@ -82,8 +82,8 @@ class PluginMonitoringHostconfig extends CommonDBTM {
             WHERE `entities_id`='0'
             LIMIT 1";
          $result2 = $DB->query($query2);
-         if ($DB->numrows($result) == '1') {
-            $data = $DB->fetch_assoc($result);
+         if ($DB->numrows($result2) == '1') {
+            $data = $DB->fetch_assoc($result2);
             $input['calendars_id'] = $data['id'];
          }
          $this->add($input);         
