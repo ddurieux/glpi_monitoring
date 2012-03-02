@@ -159,6 +159,8 @@ class PluginMonitoringHostaddress extends CommonDBTM {
       
       $ip = $hostname;
       if ($itemtype == 'NetworkEquipment') {
+         $class = new $itemtype();
+         $class->getFromDB($items_id);
          if ($class->fields['ip'] != '') {
             $ip = $class->fields['ip'];
          }

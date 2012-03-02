@@ -151,10 +151,10 @@ class PluginMonitoringShinken extends CommonDBTM {
 
                $a_fields = $a_component;
 
-                  $pluginMonitoringCommand->getFromDB($pmHostconfig->getValueAncestor('plugin_monitoring_commands_id', 
-                                                                                       $class->fields['entities_id'],
-                                                                                       $classname,
-                                                                                       $class->getID()));
+               $pluginMonitoringCommand->getFromDB($pmHostconfig->getValueAncestor('plugin_monitoring_commands_id', 
+                                                                                    $class->fields['entities_id'],
+                                                                                    $classname,
+                                                                                    $class->getID()));
                $a_hosts[$i]['check_command'] = $pluginMonitoringCommand->fields['command_name'];
                   $pluginMonitoringCheck->getFromDB($pmHostconfig->getValueAncestor('plugin_monitoring_checks_id', 
                                                                                      $class->fields['entities_id'],
@@ -209,7 +209,9 @@ class PluginMonitoringShinken extends CommonDBTM {
       $pMonitoringCheck        = new PluginMonitoringCheck();
       $pmComponent             = new PluginMonitoringComponent();
       $pmEntity                = new PluginMonitoringEntity();
+      $pmContact_Item          = new PluginMonitoringContact_Item();
       $calendar                = new Calendar();
+      $user                    = new User();
       $hostnamebp = '';
       
       $a_services = array();
@@ -228,6 +230,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             LIMIT 1";
          $resulth = $DB->query($queryh);
          $hostname = '';
+         $plugin_monitoring_componentscatalogs_id = 0;
          while ($datah=$DB->fetch_array($resulth)) {
             $itemtype = $datah['itemtype'];
             $item = new $itemtype();
@@ -237,6 +240,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                
                   $a_hostname[] = $itemtype."-".$datah['id']."-".preg_replace("/[^A-Za-z0-9]/","",$item->fields['name']);
                   $hostname = $item->fields['name'];
+                  $plugin_monitoring_componentscatalogs_id = $datah['plugin_monitoring_componentscalalog_id'];
                }
             }
          }
@@ -289,12 +293,13 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_services[$i]['check_command'] = $pMonitoringCommand->fields['command_name'].$args;
             }
                $a_contacts = array();
-   //            $a_list_contact = $pluginMonitoringHost_Contact->find("`plugin_monitoring_hosts_id`='".$data['id']."'");
-   //            foreach ($a_list_contact as $data_contact) {
-   //               $pluginMonitoringContact->getFromDB($data_contact['plugin_monitoring_contacts_id']);
-   //               $user->getFromDB($pluginMonitoringContact->fields['users_id']);
-   //               $a_contacts[] = $user->fields['name'];
-   //            }
+               $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
+                  AND `items_id`='".$plugin_monitoring_componentscatalogs_id."'");
+               foreach ($a_list_contact as $data_contact) {
+//                  $pluginMonitoringContact->getFromDB($data_contact['plugin_monitoring_contacts_id']);
+                  $user->getFromDB($data_contact['users_id']);
+                  $a_contacts[] = $user->fields['name'];
+               }
             $a_services[$i]['contacts'] = implode(',', $a_contacts);
 
             // ** If shinken not use templates or template not defined : 
