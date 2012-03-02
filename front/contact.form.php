@@ -49,7 +49,7 @@ checkCentralAccess();
 commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "host");
 
-$pluginMonitoringContact = new PluginMonitoringContact();
+$pmContact = new PluginMonitoringContact();
 if (isset($_POST["add"])) {
    if ($_POST['users_id'] != "0") {
       $pmContacttemplate = new PluginMonitoringContacttemplate();
@@ -57,21 +57,21 @@ if (isset($_POST["add"])) {
       if (isset($a_template['id'])) {
          $_POST['plugin_monitoring_contacttemplates_id'] = $a_template['id'];
       }
-      $pluginMonitoringContact->add($_POST);
+      $pmContact->add($_POST);
    }
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["update"])) {
-   $pluginMonitoringContact->update($_POST);
+   $pmContact->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["delete"])) {
-   $pluginMonitoringContact->delete($_POST);
+   $pmContact->delete($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 }
 
 //if (isset($_GET["id"])) {
-//   $pluginMonitoringHost->showForm($_GET["id"]);
+//   $pmHost->showForm($_GET["id"]);
 //} else {
-//   $pluginMonitoringHost->showForm("");
+//   $pmHost->showForm("");
 //}
 
 commonFooter();

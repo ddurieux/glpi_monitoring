@@ -49,23 +49,23 @@ checkCentralAccess();
 commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "servicedef");
 
-$pluginMonitoringServicedef = new PluginMonitoringServicedef();
+$pmServicedef = new PluginMonitoringServicedef();
 if (isset($_POST["add"])) {
-   $pluginMonitoringServicedef->add($_POST);
+   $pmServicedef->add($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["update"])) {
-   $pluginMonitoringServicedef->update($_POST);
+   $pmServicedef->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["delete"])) {
-   $pluginMonitoringServicedef->delete($_POST);
+   $pmServicedef->delete($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 }
 
 
 if (isset($_GET["id"])) {
-   $pluginMonitoringServicedef->showForm($_GET["id"]);
+   $pmServicedef->showForm($_GET["id"]);
 } else {
-   $pluginMonitoringServicedef->showForm(0);
+   $pmServicedef->showForm(0);
 }
 
 commonFooter();

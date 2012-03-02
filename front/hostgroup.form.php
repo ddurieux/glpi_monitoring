@@ -49,13 +49,12 @@ checkCentralAccess();
 commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "hostgroup");
 
-$pluginMonitoringHostgroup = new PluginMonitoringHostgroup();
-
+$pmHostgroup = new PluginMonitoringHostgroup();
 
 if (isset($_GET["id"])) {
-   $pluginMonitoringHostgroup->showForm($_GET["id"]);
+   $pmHostgroup->showForm($_GET["id"]);
 } else {
-   $pluginMonitoringHostgroup->showForm("");
+   $pmHostgroup->showForm("");
 }
 
 commonFooter();

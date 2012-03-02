@@ -49,21 +49,21 @@ checkCentralAccess();
 commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "host");
 
-$pluginMonitoringHost_Contact = new PluginMonitoringHost_Contact();
+$pmHost_Contact = new PluginMonitoringHost_Contact();
 if (isset($_POST['parent_add'])) {
    // Add contact to notify for host problem
 
    $input = array();
    $input['plugin_monitoring_hosts_id'] = $_POST['id'];
    $input['plugin_monitoring_contacts_id'] = $_POST['plugin_monitoring_contacts_id'];
-   $pluginMonitoringHost_Contact->add($input);
+   $pmHost_Contact->add($input);
 
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST['parent_delete'])) {
    // Delete contact to notify for host problem
 
    foreach ($_POST['parent_to_delete'] as $delete_id) {
-      $query = "DELETE FROM ".$pluginMonitoringHost_Contact->getTable()."
+      $query = "DELETE FROM ".$pmHost_Contact->getTable()."
          WHERE `plugin_monitoring_hosts_id`='".$_POST['id']."'
             AND `plugin_monitoring_contacts_id`='".$delete_id."'";
       $DB->query($query);

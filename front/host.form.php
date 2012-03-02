@@ -49,42 +49,42 @@ checkCentralAccess();
 commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "host");
 
-$pluginMonitoringHost = new PluginMonitoringHost();
+$pmHost = new PluginMonitoringHost();
 if (isset($_POST["add"])) {
    if (((isset($_POST['items_id']) AND $_POST['items_id'] != "0") AND ($_POST['items_id'] != ""))
          OR (isset($_POST['is_template']) AND ($_POST['is_template'] == "1"))) {
 
       if (isset($_POST['template_id']) AND $_POST['template_id'] > 0) {
-         $pluginMonitoringHost->getFromDB($_POST['template_id']);
-         $_POST['parenttype'] = $pluginMonitoringHost->fields['parenttype'];
-         $_POST['plugin_monitoring_commands_id'] = $pluginMonitoringHost->fields['plugin_monitoring_commands_id'];
-         $_POST['plugin_monitoring_checks_id'] = $pluginMonitoringHost->fields['plugin_monitoring_checks_id'];
-         $_POST['active_checks_enabled'] = $pluginMonitoringHost->fields['active_checks_enabled'];
-         $_POST['passive_checks_enabled'] = $pluginMonitoringHost->fields['passive_checks_enabled'];
-         $_POST['calendars_id'] = $pluginMonitoringHost->fields['calendars_id'];
+         $pmHost->getFromDB($_POST['template_id']);
+         $_POST['parenttype'] = $pmHost->fields['parenttype'];
+         $_POST['plugin_monitoring_commands_id'] = $pmHost->fields['plugin_monitoring_commands_id'];
+         $_POST['plugin_monitoring_checks_id'] = $pmHost->fields['plugin_monitoring_checks_id'];
+         $_POST['active_checks_enabled'] = $pmHost->fields['active_checks_enabled'];
+         $_POST['passive_checks_enabled'] = $pmHost->fields['passive_checks_enabled'];
+         $_POST['calendars_id'] = $pmHost->fields['calendars_id'];
       }
 
-      $hosts_id = $pluginMonitoringHost->add($_POST);
+      $hosts_id = $pmHost->add($_POST);
 
       if (isset($_POST['template_id']) AND $_POST['template_id'] > 0) {
          // Add parents
-         $pluginMonitoringHost_Host = new PluginMonitoringHost_Host();
-         $a_list = $pluginMonitoringHost_Host->find("`plugin_monitoring_hosts_id_1`='".$_POST['template_id']."'");
+         $pmHost_Host = new PluginMonitoringHost_Host();
+         $a_list = $pmHost_Host->find("`plugin_monitoring_hosts_id_1`='".$_POST['template_id']."'");
          foreach ($a_list as $data) {
             $input = array();
             $input['plugin_monitoring_hosts_id_1'] = $hosts_id;
             $input['plugin_monitoring_hosts_id_2'] = $data['plugin_monitoring_hosts_id_2'];
-            $pluginMonitoringHost_Host->add($input);
+            $pmHost_Host->add($input);
          }
 
          // Add contacts
-         $pluginMonitoringHost_Contact = new PluginMonitoringHost_Contact();
-         $a_list = $pluginMonitoringHost_Contact->find("`plugin_monitoring_hosts_id`='".$_POST['template_id']."'");
+         $pmHost_Contact = new PluginMonitoringHost_Contact();
+         $a_list = $pmHost_Contact->find("`plugin_monitoring_hosts_id`='".$_POST['template_id']."'");
          foreach ($a_list as $data) {
             $input = array();
             $input['plugin_monitoring_hosts_id'] = $hosts_id;
             $input['plugin_monitoring_contacts_id'] = $data['plugin_monitoring_contacts_id'];
-            $pluginMonitoringHost_Contact->add($input);
+            $pmHost_Contact->add($input);
          }         
       }
       if (isset($_POST['is_template']) AND ($_POST['is_template'] == "1")) {
@@ -97,17 +97,17 @@ if (isset($_POST["add"])) {
    if ($_POST['parenttype'] == '0' OR $_POST['parenttype'] == '2') {
       $_POST['parents'] = "";
    }
-   $pluginMonitoringHost->update($_POST);
+   $pmHost->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["delete"])) {
-   $pluginMonitoringHost->delete($_POST, 1);
+   $pmHost->delete($_POST, 1);
    glpi_header($_SERVER['HTTP_REFERER']);
 }
 
 if (isset($_GET["id"])) {
-   $pluginMonitoringHost->showForm($_GET["id"]);
+   $pmHost->showForm($_GET["id"]);
 } else {
-   $pluginMonitoringHost->showForm("");
+   $pmHost->showForm("");
 }
 
 commonFooter();

@@ -49,21 +49,21 @@ checkCentralAccess();
 commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "host");
 
-$pluginMonitoringHost_Host = new PluginMonitoringHost_Host();
+$pmHost_Host = new PluginMonitoringHost_Host();
 if (isset($_POST['parent_add'])) {
    // Add host in dependencies/parent of host
 
    $input = array();
    $input['plugin_monitoring_hosts_id_1'] = $_POST['id'];
    $input['plugin_monitoring_hosts_id_2'] = $_POST['parent_to_add'];
-   $pluginMonitoringHost_Host->add($input);
+   $pmHost_Host->add($input);
 
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST['parent_delete'])) {
    // Delete host in dependencies/parent of host
 
    foreach ($_POST['parent_to_delete'] as $delete_id) {
-      $query = "DELETE FROM ".$pluginMonitoringHost_Host->getTable()."
+      $query = "DELETE FROM ".$pmHost_Host->getTable()."
          WHERE `plugin_monitoring_hosts_id_1`='".$_POST['id']."'
             AND `plugin_monitoring_hosts_id_2`='".$delete_id."'";
       $DB->query($query);
