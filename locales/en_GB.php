@@ -144,6 +144,7 @@ $LANG['plugin_monitoring']['component'][1]="Add a new component";
 $LANG['plugin_monitoring']['component'][2]="Associated components";
 $LANG['plugin_monitoring']['component'][3]="Static hosts";
 $LANG['plugin_monitoring']['component'][4]="Dynmic hosts";
+$LANG['plugin_monitoring']['component'][5]="Fields with asterisk are required";
 
 $LANG['plugin_monitoring']['componentscatalog'][0]="Components catalog";
 

@@ -52,12 +52,36 @@ commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugi
 $pMonitoringComponent = new PluginMonitoringComponent();
 
 if (isset ($_POST["add"])) {
+   if (empty($_POST['name'])
+           OR empty($_POST['plugin_monitoring_checks_id'])
+           OR empty($_POST['plugin_monitoring_commands_id'])
+           OR empty($_POST['calendars_id'])) {
+      
+      $_SESSION['plugin_monitoring_components'] = $_POST;
+    
+      addMessageAfterRedirect("<font class='red'>".$LANG['plugin_monitoring']['component'][5]."</font>");
+      glpi_header($_SERVER['HTTP_REFERER']);
+      exit;
+   }   
+   
    $pMonitoringComponent->add($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["update"])) {
    if (isset($_POST['arg'])) {
       $_POST['arguments'] = exportArrayToDB($_POST['arg']);
+   }   
+   if (empty($_POST['name'])
+           OR empty($_POST['plugin_monitoring_checks_id'])
+           OR empty($_POST['plugin_monitoring_commands_id'])
+           OR empty($_POST['calendars_id'])) {
+    
+      $_SESSION['plugin_monitoring_components'] = $_POST;
+    
+      addMessageAfterRedirect("<font class='red'>".$LANG['plugin_monitoring']['component'][5]."</font>");
+      glpi_header($_SERVER['HTTP_REFERER']);
+      exit;
    }
+
    $pMonitoringComponent->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["delete"])) {
