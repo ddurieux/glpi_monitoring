@@ -52,6 +52,8 @@ if (isset($_GET['detail']) AND isset($_GET['id'])) {
    $dropdown->showBADetail($_GET['id']);
    commonFooter();
 } else {
+   commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
+          "monitoring", "servicescatalog");
    include (GLPI_ROOT . "/front/dropdown.common.form.php");
 }
 ?>
