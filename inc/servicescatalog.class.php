@@ -93,7 +93,8 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    function showForm($items_id, $options=array()) {
       global $LANG;
 
-      if ($items_id!='') {
+      if ($items_id!=''
+              AND $items_id != '-1') {
          $this->getFromDB($items_id);
       } else {
          $this->getEmpty();
