@@ -114,7 +114,9 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
       
       case 'PluginMonitoringServicescatalog':
          $array = array();
-         $array[0] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['businessrule'][0];
+         if ($_GET['id'] > 0) {
+            $array[0] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['businessrule'][0];
+         }
          return $array;
          break;
       
