@@ -106,7 +106,7 @@ class PluginMonitoringComponent extends CommonDBTM {
 
       $tab = array();
     
-      $tab['common'] = $LANG['plugin_monitoring']['service'][0];
+      $tab['common'] = $LANG['plugin_monitoring']['component'][0];
 
 		$tab[1]['table'] = $this->getTable();
 		$tab[1]['field'] = 'name';
@@ -128,8 +128,6 @@ class PluginMonitoringComponent extends CommonDBTM {
       global $LANG,$CFG_GLPI;
 
       $ong = array();
-
-      $ong[2] = $LANG['plugin_monitoring']['businessrule'][0]; 
       
       return $ong;
    }
