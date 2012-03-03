@@ -138,6 +138,7 @@ $LANG['plugin_monitoring']['businessrule'][8]="8 of";
 $LANG['plugin_monitoring']['businessrule'][9]="9 of";
 $LANG['plugin_monitoring']['businessrule'][10]="10 of";
 $LANG['plugin_monitoring']['businessrule'][11]="Group";
+$LANG['plugin_monitoring']['businessrule'][12]="Groups";
 
 $LANG['plugin_monitoring']['component'][0]="Components";
 $LANG['plugin_monitoring']['component'][1]="Add a new component";
