@@ -265,6 +265,10 @@ class PluginMonitoringDisplay extends CommonDBTM {
             }
          }
       }
+      if ($where != '') {
+         $where .= " AND ";
+      }
+      $where .= ' `entities_id` IN ('.$_SESSION['glpiactiveentities_string'].')';
 
       if ($where != '') {
          $where = " WHERE ".$where;
@@ -303,6 +307,11 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "<th>";
       echo $LANG['joblist'][0];
       echo "</th>";
+      
+      echo "<th>";
+      echo $LANG['entity'][0];
+      echo "</th>";
+      
       echo "<th>";
       echo "</th>";
       echo "<th>";
@@ -341,12 +350,17 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $pMonitoringServiceH = new PluginMonitoringService();
       $pMonitoringComponent = new PluginMonitoringComponent();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+      $entity = new Entity();
       
       $pMonitoringService->getFromDB($data['id']);
       
       echo "<td width='32' class='center'>";
       $shortstate = self::getState($data['state'], $data['state_type']);
       echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/>";
+      echo "</td>";
+      echo "<td>";
+      $entity->getFromDB($data['entities_id']);
+      echo $entity->fields['completename'];
       echo "</td>";
       if ($displayhost == '1') {
          $pmComponentscatalog_Host->getFromDB($data["plugin_monitoring_componentscatalogs_hosts_id"]);
@@ -596,28 +610,34 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $play_sound = 0;
       
       if ($type == 'Ressources') {
-
+         
          $ok = countElementsInTable("glpi_plugin_monitoring_services", 
-                 "(`state`='OK' OR `state`='UP') AND `state_type`='HARD'");
+                 "(`state`='OK' OR `state`='UP') AND `state_type`='HARD'
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
          $warning = countElementsInTable("glpi_plugin_monitoring_services", 
                  "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
-                    AND `state_type`='HARD'");
+                    AND `state_type`='HARD'
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
          $critical = countElementsInTable("glpi_plugin_monitoring_services", 
                  "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
-                    AND `state_type`='HARD'");
+                    AND `state_type`='HARD'
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
          $warning_soft = countElementsInTable("glpi_plugin_monitoring_services", 
                  "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
-                    AND `state_type`='SOFT'");
+                    AND `state_type`='SOFT'
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
          $critical_soft = countElementsInTable("glpi_plugin_monitoring_services", 
                  "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
-                    AND `state_type`='SOFT'");
+                    AND `state_type`='SOFT'
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
          $ok_soft = countElementsInTable("glpi_plugin_monitoring_services", 
-                 "(`state`='OK' OR `state`='UP') AND `state_type`='SOFT'");
+                 "(`state`='OK' OR `state`='UP') AND `state_type`='SOFT'
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
          
          // ** Manage play sound if critical increase since last refresh
             if (isset($_SESSION['plugin_monitoring_dashboard_Ressources'])) {

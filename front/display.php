@@ -76,5 +76,6 @@ div#tabcontent {
 
 $pMonitoringDisplay->addDivForTabs();
 
-popFooter();
+//popFooter();
+commonFooter();
 ?>

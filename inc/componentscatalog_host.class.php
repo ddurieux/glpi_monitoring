@@ -195,13 +195,20 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
    function linkComponentsToItem($componentscatalogs_id, $componentscatalogs_hosts_id) {
       global $DB;
       
-      $pmService = new PluginMonitoringService();
+      $pmService                 = new PluginMonitoringService();
+      $pmComponentscatalog_Host  = new PluginMonitoringComponentscatalog_Host();
       
       $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_components`
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
          $input = array();
+         $pmComponentscatalog_Host->getFromDB($componentscatalogs_hosts_id);
+         $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
+         $item = new $itemtype();
+         $item->getFromDB($pmComponentscatalog_Host->fields['items_id']);
+         
+         $input['entities_id'] =  $item->fields['entities_id'];
          $input['plugin_monitoring_componentscatalogs_hosts_id'] = $componentscatalogs_hosts_id;
          $input['plugin_monitoring_components_id'] = $data['plugin_monitoring_components_id'];
          $input['name'] = Dropdown::getDropdownName("glpi_plugin_monitoring_components", $data['plugin_monitoring_components_id']);

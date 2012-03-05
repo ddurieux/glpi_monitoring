@@ -322,6 +322,16 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                                                                $componentscatalogs_hosts_id);
             } else {
                $data2 = $DB->fetch_assoc($resulth);
+               // modify entity of services (if entity of device is changed)
+                  $itemtype = $data2['itemtype'];
+                  $item = new $itemtype();
+                  $item->getFromDB($data2['items_id']);
+                  $queryu = "UPDATE `glpi_plugin_monitoring_services`
+                     SET `entities_id`='".$item->fields['entities_id']."'
+                        WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$data2['id']."'";
+                  $DB->query($queryu);                  
+               
+               
                unset($devices_present[$data2['id']]);
             }
          }
@@ -415,7 +425,8 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
             $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
                WHERE `plugin_monitoring_componentscalalog_id`='".$componentscalalog_id."'
                   AND `itemtype`='".$itemtype."'
-                  AND `items_id`='".$items_id."'";
+                  AND `items_id`='".$items_id."'
+                     LIMIT 1";
             $result = $DB->query($query);
             if ($DB->numrows($result) == '0') {
                $input = array();
@@ -426,7 +437,16 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                $componentscatalogs_hosts_id = $pmComponentscatalog_Host->add($input);
                $pmComponentscatalog_Host->linkComponentsToItem($componentscalalog_id, 
                                                                $componentscatalogs_hosts_id);
-            }            
+            } else {
+               $data2 = $DB->fetch_assoc($result);
+               // modify entity of services (if entity of device is changed)
+                  $item = new $itemtype();
+                  $item->getFromDB($items_id);
+                  $queryu = "UPDATE `glpi_plugin_monitoring_services`
+                     SET `entities_id`='".$item->fields['entities_id']."'
+                        WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$data2['id']."'";
+                  $DB->query($queryu); 
+            }     
          }
       }
    }

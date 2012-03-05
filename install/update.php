@@ -489,6 +489,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'id', 
                                  'id', 
                                  "int(11) NOT NULL AUTO_INCREMENT");
+         $migration->changeField($newTable, 
+                                 'entities_id', 
+                                 'entities_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
          $migration->changeField($newTable,
                                  'name', 
                                  'name', 
@@ -526,6 +530,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'alias_command', 
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
       $migration->migrationOneTable($newTable);
+         $migration->addField($newTable, 
+                              'entities_id',
+                              "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
                                  'name', 
                                  "varchar(255) DEFAULT NULL");         

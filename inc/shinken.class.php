@@ -136,7 +136,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             if (isset($a_entities_allowed['-1'])
                     OR isset($a_entities_allowed[$class->fields['entities_id']])) {
 
-               $a_hosts[$i]['host_name'] = $classname."-".$data['id']."-".preg_replace("/[^A-Za-z0-9]/","",$class->fields['name']);
+               $a_hosts[$i]['host_name'] = $classname."-".$data['items_id']."-".preg_replace("/[^A-Za-z0-9]/","",$class->fields['name']);
                $a_hosts[$i]['alias'] = $a_hosts[$i]['host_name'];
                $ip = PluginMonitoringHostaddress::getIp($data['items_id'], $data['itemtype'], $class->fields['name']);
 
@@ -233,7 +233,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                if (isset($a_entities_allowed['-1'])
                        OR isset($a_entities_allowed[$item->fields['entities_id']])) {
                
-                  $a_hostname[] = $itemtype."-".$datah['id']."-".preg_replace("/[^A-Za-z0-9]/","",$item->fields['name']);
+                  $a_hostname[] = $itemtype."-".$datah['items_id']."-".preg_replace("/[^A-Za-z0-9]/","",$item->fields['name']);
                   $hostname = $item->fields['name'];
                   $plugin_monitoring_componentscatalogs_id = $datah['plugin_monitoring_componentscalalog_id'];
                }

@@ -99,6 +99,7 @@ DROP TABLE IF EXISTS `glpi_plugin_monitoring_services`;
 
 CREATE TABLE `glpi_plugin_monitoring_services` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `entities_id` int(11) NOT NULL DEFAULT '0',
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `plugin_monitoring_components_id` int(11) NOT NULL DEFAULT '0',
   `plugin_monitoring_componentscatalogs_hosts_id` int(11) NOT NULL DEFAULT '0',
