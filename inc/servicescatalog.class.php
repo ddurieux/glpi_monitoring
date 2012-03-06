@@ -201,28 +201,29 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
             $state['WARNING'] = 0;
             $state['CRITICAL'] = 0;
             foreach ($a_brules as $brulesdata) {
-               $pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id']);
-               switch($pMonitoringService->fields['state']) {
+               if ($pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id'])) {
+                  switch($pMonitoringService->fields['state']) {
 
-                  case 'UP':
-                  case 'OK':
-                     $state['OK']++;
-                     break;
+                     case 'UP':
+                     case 'OK':
+                        $state['OK']++;
+                        break;
 
-                  case 'DOWN':
-                  case 'UNREACHABLE':
-                  case 'CRITICAL':
-                  case 'DOWNTIME':
-                     $state['CRITICAL']++;
-                     break;
+                     case 'DOWN':
+                     case 'UNREACHABLE':
+                     case 'CRITICAL':
+                     case 'DOWNTIME':
+                        $state['CRITICAL']++;
+                        break;
 
-                  case 'WARNING':
-                  case 'UNKNOWN':
-                  case 'RECOVERY':
-                  case 'FLAPPING':
-                     $state['WARNING']++;
-                     break;
+                     case 'WARNING':
+                     case 'UNKNOWN':
+                     case 'RECOVERY':
+                     case 'FLAPPING':
+                        $state['WARNING']++;
+                        break;
 
+                  }
                }
             }
             if ($state['CRITICAL'] >= 1) {
