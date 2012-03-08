@@ -313,8 +313,10 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "</th>";
       
       echo "<th>";
+      echo $LANG['state'][6]." - ".$LANG['common'][16];
       echo "</th>";
       echo "<th>";
+      echo $LANG['plugin_monitoring']['component'][0];
       echo "</th>";
       echo "<th>";
       echo $LANG['state'][0];
@@ -326,6 +328,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo $LANG['plugin_monitoring']['service'][18];
       echo "</th>";
       echo "<th>";
+      echo $LANG['rulesengine'][82];
       echo "</th>";     
       echo "</tr>";
       while ($data=$DB->fetch_array($result)) {
