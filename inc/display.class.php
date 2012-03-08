@@ -248,7 +248,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
             if (isset($_SESSION['plugin_monitoring']['service']['link'][$key])) {
                $wheretmp.= " ".$_SESSION['plugin_monitoring']['service']['link'][$key]." ";
             }
-
             $wheretmp .= Search::addWhere(
                                    "",
                                    0,
@@ -276,7 +275,23 @@ class PluginMonitoringDisplay extends CommonDBTM {
                  "", $where);
          
       }
-      $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringService")."` ".$where."
+      
+      $leftjoin = '';
+      if (isset($_SESSION['plugin_monitoring']['service']['field'])) {
+         foreach ($_SESSION['plugin_monitoring']['service']['field'] as $key=>$value) {
+            if ($key == 'Computer'
+                    OR $key == 'Printer'
+                    OR $key == 'NetworkEquipment') {
+               $leftjoin = "LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
+                  ON `plugin_monitoring_componentscatalogs_hosts_id` = 
+                  `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`";
+            }
+         }
+      }
+      
+      $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringService")."`
+         ".$leftjoin."
+         ".$where."
          ORDER BY `name`";
       $result = $DB->query($query);
       

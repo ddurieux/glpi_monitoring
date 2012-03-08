@@ -340,6 +340,8 @@ function plugin_monitoring_addLeftJoin($itemtype,$ref_table,$new_table,$linkfiel
 
    switch ($itemtype) {
       
+      
+      
    }
    return "";
 }
@@ -356,15 +358,27 @@ function plugin_monitoring_addDefaultWhere($type) {
 
 
 function plugin_monitoring_addWhere($link,$nott,$type,$id,$val) {
-	global $SEARCH_OPTION;
+   global $SEARCH_OPTION;
+   
+   $searchopt = &Search::getOptions($type);
+   $table = $searchopt[$id]["table"];
+   $field = $searchopt[$id]["field"];
+ 
+  switch ($type) {
+      // * Computer List (front/computer.php)
+      case 'PluginMonitoringService':
+         switch ($table.".".$field) {
 
-//   $searchopt = &Search::getOptions($type);
-//   $table = $searchopt[$id]["table"];
-//   $field = $searchopt[$id]["field"];
-//
-//   switch ($type) {
-//
-//   }
+            case "glpi_plugin_monitoring_services.Computer":
+            case "glpi_plugin_monitoring_services.Printer":
+            case "glpi_plugin_monitoring_services.NetworkEquipment":
+               return $link." (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = '".$val."') ";
+               break;
+
+         }
+         
+   }
+
    return "";
 }
 
@@ -415,6 +429,7 @@ function plugin_monitoring_getDropdown(){
 }
 
 function plugin_monitoring_searchOptionsValues($item) {
+   global $CFG_GLPI;
    
    if ($item['searchoption']['table'] == 'glpi_plugin_monitoring_services'
            AND $item['searchoption']['field'] == 'state') {
@@ -439,6 +454,40 @@ function plugin_monitoring_searchOptionsValues($item) {
       $input['SOFT'] = 'SOFT';
 
       Dropdown::showFromArray($item['name'], $input);
+      return true;
+   } else if ($item['searchoption']['table'] == 'glpi_plugin_monitoring_services'
+           AND ($item['searchoption']['field'] == 'Computer'
+                   OR $item['searchoption']['field'] == 'Printer'
+                   OR $item['searchoption']['field'] == 'NetworkEquipment')) {
+      
+      $itemtype = $item['searchoption']['field'];
+                                      
+      $use_ajax = false;
+
+      if ($CFG_GLPI["use_ajax"]) {
+         $nb = countElementsInTable("glpi_plugin_monitoring_componentscatalogs_hosts", "`itemtype`='Computer'");
+         if ($nb > $CFG_GLPI["ajax_limit_count"]) {
+            $use_ajax = true;
+         }
+      }
+      
+      $params = array();
+      $params['itemtype'] = $itemtype;
+      $params['searchText'] = '';
+      $params['myname'] = $item['name'];
+      $params['rand'] = '';
+      $params['value'] = $item['value'];
+      
+      $default = "<select name='".$item['name']."' id='dropdown_".$item['name']."0'>";
+      if (isset($item['value'])
+              AND !empty($item['value'])) {
+         $itemm = new $itemtype();
+         $itemm->getFromDB($item['value']);
+         $default .= "<option value='".$item['value']."'>".$itemm->getName()."</option></select>";
+      }
+      
+      ajaxDropdown($use_ajax, "/plugins/monitoring/ajax/dropdownDevices.php", $params,$default);
+      
       return true;
    }
    
