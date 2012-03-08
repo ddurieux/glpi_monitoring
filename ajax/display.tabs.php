@@ -73,6 +73,9 @@ switch($_REQUEST['glpi_tab']) {
       $pmDisplay->displayCounters("Ressources");
       // Manage search
       $_GET = $_SESSION['plugin_monitoring']['service'];
+      if (isset($_GET['reset'])) {
+         unset($_SESSION['glpisearch']['PluginMonitoringService']);
+      }
       Search::manageGetValues("PluginMonitoringService");
       Search::showGenericSearch("PluginMonitoringService", $_SESSION['plugin_monitoring']['service']);
 

@@ -789,7 +789,16 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<table class='tab_cadre' width='474' height='100' ".$background." >";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
-         echo $LANG['plugin_monitoring']['display'][2];
+         if ($type == 'Ressources') {
+            echo "<a href='".$CFG_GLPI['root_doc'].
+               "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=contains&contains[0]=CRITICAL&link[1]=OR".
+                  "&field[1]=3&searchtype[1]=contains&contains[1]=DOWN&link[2]=OR".
+                  "&field[2]=3&searchtype[2]=contains&contains[2]=UNREACHABLE". 
+                  "&itemtype=PluginMonitoringService&start=0'>".
+                    "<font color='black' style='font-size: 12px;font-weight: bold;'>".$LANG['plugin_monitoring']['display'][2]."</font></a>";
+         } else {
+            echo $LANG['plugin_monitoring']['display'][2];
+         }
          echo "</td>";
          echo "</tr>";
          echo "<tr>";
@@ -813,7 +822,19 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<table class='tab_cadre' width='316' height='100' ".$background." >";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
-         echo $LANG['plugin_monitoring']['display'][3];
+         if ($type == 'Ressources') {
+            echo "<a href='".$CFG_GLPI['root_doc'].
+               "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=contains&contains[0]=WARNING&link[1]=OR".
+                  "&field[1]=3&searchtype[1]=contains&contains[1]=UNKNOWN&link[2]=OR".
+                  "&field[2]=3&searchtype[2]=contains&contains[2]=RECOVERY&link[3]=OR".
+                  "&field[3]=3&searchtype[3]=contains&contains[3]=UNKNOWN&link[4]=OR".
+                  "&field[4]=3&searchtype[4]=contains&contains[4]=FLAPPING&link[5]=OR".
+                  "&field[5]=3&searchtype[5]=contains&contains[5]=NULL".
+                  "&itemtype=PluginMonitoringService&start=0'>".
+                    "<font color='black' style='font-size: 12px;font-weight: bold;'>".$LANG['plugin_monitoring']['display'][3]."</font></a>";
+         } else {
+            echo $LANG['plugin_monitoring']['display'][3];
+         }
          echo "</td>";
          echo "</tr>";
          echo "<tr>";
@@ -837,7 +858,16 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<table class='tab_cadre' width='158' height='100' ".$background." >";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
-         echo $LANG['plugin_monitoring']['display'][4];
+         if ($type == 'Ressources') {
+            echo "<a href='".$CFG_GLPI['root_doc'].
+               "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=contains&contains[0]=WARNING&link[1]=OR".
+                  "&field[1]=3&searchtype[1]=contains&contains[1]=OK&link[2]=OR".
+                  "&field[2]=3&searchtype[2]=contains&contains[2]=UP".
+                  "&itemtype=PluginMonitoringService&start=0'>".
+                    "<font color='black' style='font-size: 12px;font-weight: bold;'>".$LANG['plugin_monitoring']['display'][4]."</font></a>";
+         } else {
+            echo $LANG['plugin_monitoring']['display'][4];
+         }
          echo "</td>";
          echo "</tr>";
          echo "<tr>";
