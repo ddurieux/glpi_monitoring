@@ -98,6 +98,7 @@ class PluginMonitoringService extends CommonDBTM {
       $tab[3]['table'] = $this->getTable();
       $tab[3]['field'] = 'state';
       $tab[3]['name']  = "Status";
+      $tab[3]['searchtype'] = 'equals';
       
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'last_check';

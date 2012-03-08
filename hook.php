@@ -414,4 +414,26 @@ function plugin_monitoring_getDropdown(){
                 'PluginMonitoringComponent'           => $LANG['plugin_monitoring']['component'][0]);
 }
 
+function plugin_monitoring_searchOptionsValues($item) {
+   
+   if ($item['searchoption']['table'] == 'glpi_plugin_monitoring_services'
+           AND $item['searchoption']['field'] == 'state') {
+      $input = array();
+      $input['CRITICAL'] = 'CRITICAL';
+      $input['DOWN'] = 'DOWN';
+      $input['DOWNTIME'] = 'DOWNTIME';
+      $input['FLAPPING'] = 'FLAPPING';
+      $input['OK'] = 'OK';
+      $input['RECOVERY'] = 'RECOVERY';
+      $input['UNKNOWN'] = 'UNKNOWN';
+      $input['UNREACHABLE'] = 'UNREACHABLE';
+      $input['UP'] = 'UP';
+      $input['WARNING'] = 'WARNING';
+
+      Dropdown::showFromArray($item['name'], $input);
+      return true;
+   }
+   
+}
+
 ?>
