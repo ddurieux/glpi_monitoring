@@ -513,11 +513,16 @@ class PluginMonitoringService extends CommonDBTM {
    static function convertArgument($services_id, $argument) {
       global $DB;
       
-      $pMonitoringService = new PluginMonitoringService();
-      $pMonitoringService->getFromDB($services_id);
-      $itemtype = $pMonitoringService->fields['itemtype'];
+      $pmService = new PluginMonitoringService();
+      $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+      
+      $pmService->getFromDB($services_id);
+      
+      $pmComponentscatalog_Host->getFromDB($pmService->fields['plugin_monitoring_componentscatalogs_hosts_id']);
+      
+      $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
       $item = new $itemtype();
-      $item->getFromDB($pMonitoringService->fields['items_id']);
+      $item->getFromDB($pmComponentscatalog_Host->fields['items_id']);
 
       $argument = str_replace("[", "", $argument);
       $argument = str_replace("]", "", $argument);
@@ -566,6 +571,21 @@ class PluginMonitoringService extends CommonDBTM {
                   break;
 
                case 'SNMP':
+                  if ($PluginFusinvsnmpNetworkEquipment->getValue("plugin_fusinvsnmp_configsecurities_id") == '0') {
+                     
+                     switch ($a_arg[1]) {
+
+                        case 'version':
+                           return '2c';
+                           break;
+
+                        case 'authentication':
+                           return 'public';
+                           break;
+
+                     }
+                     
+                  }
                   $pFusinvsnmpConfigSecurity = new PluginFusinvsnmpConfigSecurity();
                   $pFusinvsnmpConfigSecurity->getFromDB($PluginFusinvsnmpNetworkEquipment->getValue("plugin_fusinvsnmp_configsecurities_id"));
 
