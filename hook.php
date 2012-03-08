@@ -432,6 +432,14 @@ function plugin_monitoring_searchOptionsValues($item) {
 
       Dropdown::showFromArray($item['name'], $input);
       return true;
+   } else if ($item['searchoption']['table'] == 'glpi_plugin_monitoring_services'
+           AND $item['searchoption']['field'] == 'state_type') {
+      $input = array();
+      $input['HARD'] = 'HARD';
+      $input['SOFT'] = 'SOFT';
+
+      Dropdown::showFromArray($item['name'], $input);
+      return true;
    }
    
 }

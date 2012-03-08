@@ -108,6 +108,7 @@ class PluginMonitoringService extends CommonDBTM {
       $tab[5]['table'] = $this->getTable();
       $tab[5]['field'] = 'state_type';
       $tab[5]['name']  = $LANG['plugin_monitoring']['service'][19];
+      $tab[5]['searchtype'] = 'equals';
       
       $tab[6]['table'] = 'glpi_entities';
       $tab[6]['field'] = 'completename';
