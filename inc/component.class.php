@@ -329,10 +329,11 @@ class PluginMonitoringComponent extends CommonDBTM {
          foreach ($a_displayarg as $key=>$value) {
          echo "<tr>";
          echo "<td>";
-            if (isset($a_argtext[$key])) {
+            if (isset($a_argtext[$key])
+                    AND $a_argtext[$key] != '') {
                echo nl2br($a_argtext[$key])."&nbsp;:";
             } else {
-               echo $LANG['plugin_monitoring']['service'][14]."&nbsp;:";
+               echo $LANG['plugin_monitoring']['service'][14]." (".$key.")&nbsp;:";
             }
             echo "</td>";
             echo "<td>";
