@@ -246,9 +246,9 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
    static function getItemsDynamicly($parm) {
       global $DB;
 
-      $pmCc_Rule                = new PluginMonitoringComponentscatalog_rule();
-      $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
-      $pmComponentscatalog = new PluginMonitoringComponentscatalog();
+      $pmCc_Rule                 = new PluginMonitoringComponentscatalog_rule();
+      $pmComponentscatalog_Host  = new PluginMonitoringComponentscatalog_Host();
+      $pmComponentscatalog       = new PluginMonitoringComponentscatalog();
       
       if ($pmCc_Rule->getFromDB($parm->fields['id'])) {
       

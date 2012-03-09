@@ -125,7 +125,6 @@ class PluginMonitoringWebservice {
    
    
    static function methodShinkenHosts($params, $protocol) {
-
       if (!isset($params['tag'])) {
          $params['tag'] = '';
       }

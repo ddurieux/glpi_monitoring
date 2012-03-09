@@ -197,6 +197,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
       
       $pmService                 = new PluginMonitoringService();
       $pmComponentscatalog_Host  = new PluginMonitoringComponentscatalog_Host();
+      $pmLog                     = new PluginMonitoringLog();
       
       $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_components`
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
@@ -212,7 +213,14 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
          $input['plugin_monitoring_componentscatalogs_hosts_id'] = $componentscatalogs_hosts_id;
          $input['plugin_monitoring_components_id'] = $data['plugin_monitoring_components_id'];
          $input['name'] = Dropdown::getDropdownName("glpi_plugin_monitoring_components", $data['plugin_monitoring_components_id']);
-         $pmService->add($input);
+         $services_id = $pmService->add($input);
+         
+         $input = array();
+         $input['itemtype'] = "PluginMonitoringService";
+         $input['items_id'] = $services_id;
+         $input['action'] = "add";
+         $input['value'] = "New service";
+         $pmLog->add($input);
       }      
    }
    
@@ -221,12 +229,20 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
    static function unlinkComponentsToItem($parm) {
       global $DB;
       
-      $pmService = new PluginMonitoringService();
+      $pmService  = new PluginMonitoringService();
+      $pmLog      = new PluginMonitoringLog();
       
       $query = "SELECT * FROM `glpi_plugin_monitoring_services`
          WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$parm->fields['id']."'";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
+         $input = array();
+         $input['itemtype'] = "PluginMonitoringService";
+         $input['items_id'] = $data['id'];
+         $input['action'] = "delete";
+         $input['value'] = "Service xx of computer yy";
+         $pmLog->add($input); 
+         
          $pmService->delete(array('id'=>$data['id']));
       }      
    }

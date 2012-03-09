@@ -58,6 +58,7 @@ $LANG['plugin_monitoring']['host'][20]="Preview";
 $LANG['plugin_monitoring']['config'][0]="Timezones (for graph)";
 $LANG['plugin_monitoring']['config'][1]="Configuration";
 $LANG['plugin_monitoring']['config'][2]="Path of RRDTOOL";
+$LANG['plugin_monitoring']['config'][3]="Logs retention (in days)";
 
 $LANG['plugin_monitoring']['grouphost'][0]="hosts groups";
 $LANG['plugin_monitoring']['grouphost'][1]="hosts group";
@@ -163,5 +164,11 @@ $LANG['plugin_monitoring']['entity'][0]="Tag";
 $LANG['plugin_monitoring']['entity'][1]="Set tag to link entity with a specific shinken server";
 
 $LANG['plugin_monitoring']['hostconfig'][0]="Hosts configuration";
+
+$LANG['plugin_monitoring']['log'][0]="Logs";
+$LANG['plugin_monitoring']['log'][1]="The configuration has changed";
+$LANG['plugin_monitoring']['log'][2]="resources added";
+$LANG['plugin_monitoring']['log'][3]="resources deleted";
+$LANG['plugin_monitoring']['log'][4]="Restart Shinken to reload this new configuration";
 
 ?>
