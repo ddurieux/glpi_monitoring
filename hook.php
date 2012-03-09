@@ -445,7 +445,7 @@ function plugin_monitoring_searchOptionsValues($item) {
       $input['UP'] = 'UP';
       $input['WARNING'] = 'WARNING';
 
-      Dropdown::showFromArray($item['name'], $input);
+      Dropdown::showFromArray($item['name'], $input, array('value'=>$item['value']));
       return true;
    } else if ($item['searchoption']['table'] == 'glpi_plugin_monitoring_services'
            AND $item['searchoption']['field'] == 'state_type') {
@@ -453,7 +453,7 @@ function plugin_monitoring_searchOptionsValues($item) {
       $input['HARD'] = 'HARD';
       $input['SOFT'] = 'SOFT';
 
-      Dropdown::showFromArray($item['name'], $input);
+      Dropdown::showFromArray($item['name'], $input, array('value'=>$item['value']));
       return true;
    } else if ($item['searchoption']['table'] == 'glpi_plugin_monitoring_services'
            AND ($item['searchoption']['field'] == 'Computer'

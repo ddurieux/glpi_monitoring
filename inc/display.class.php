@@ -794,6 +794,25 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       // *** Test new presentation
       
+      $critical_link = $CFG_GLPI['root_doc'].
+               "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=CRITICAL&link[1]=OR".
+                  "&field[1]=3&searchtype[1]=equals&contains[1]=DOWN&link[2]=OR".
+                  "&field[2]=3&searchtype[2]=equals&contains[2]=UNREACHABLE". 
+                  "&itemtype=PluginMonitoringService&start=0'";
+      $warning_link = $CFG_GLPI['root_doc'].
+               "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=WARNING&link[1]=OR".
+                  "&field[1]=3&searchtype[1]=equals&contains[1]=UNKNOWN&link[2]=OR".
+                  "&field[2]=3&searchtype[2]=equals&contains[2]=RECOVERY&link[3]=OR".
+                  "&field[3]=3&searchtype[3]=equals&contains[3]=UNKNOWN&link[4]=OR".
+                  "&field[4]=3&searchtype[4]=equals&contains[4]=FLAPPING&link[5]=OR".
+                  "&field[5]=3&searchtype[5]=equals&contains[5]=NULL".
+                  "&itemtype=PluginMonitoringService&start=0'";
+      $ok_link = $CFG_GLPI['root_doc'].
+               "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=WARNING&link[1]=OR".
+                  "&field[1]=3&searchtype[1]=equals&contains[1]=OK&link[2]=OR".
+                  "&field[2]=3&searchtype[2]=equals&contains[2]=UP".
+                  "&itemtype=PluginMonitoringService&start=0'";
+      
       echo "<table align='center'>";
       echo "<tr>";
       echo "<td>";
@@ -805,11 +824,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
          if ($type == 'Ressources') {
-            echo "<a href='".$CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=CRITICAL&link[1]=OR".
-                  "&field[1]=3&searchtype[1]=equals&contains[1]=DOWN&link[2]=OR".
-                  "&field[2]=3&searchtype[2]=equals&contains[2]=UNREACHABLE". 
-                  "&itemtype=PluginMonitoringService&start=0'>".
+            echo "<a href='".$critical_link.">".
                     "<font color='black' style='font-size: 12px;font-weight: bold;'>".$LANG['plugin_monitoring']['display'][2]."</font></a>";
          } else {
             echo $LANG['plugin_monitoring']['display'][2];
@@ -818,7 +833,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "</tr>";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
-         echo "<font style='font-size: 52px;'>".$critical."</font>";         
+         if ($type == 'Ressources') {
+            echo "<a href='".$critical_link.">".
+                    "<font color='black' style='font-size: 52px;font-weight: bold;'>".$critical."</font></a>";
+         } else {
+            echo "<font style='font-size: 52px;'>".$critical."</font>";
+         }
          echo "</th>";
          echo "</tr>";
          echo "<tr>";
@@ -838,14 +858,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
          if ($type == 'Ressources') {
-            echo "<a href='".$CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=WARNING&link[1]=OR".
-                  "&field[1]=3&searchtype[1]=equals&contains[1]=UNKNOWN&link[2]=OR".
-                  "&field[2]=3&searchtype[2]=equals&contains[2]=RECOVERY&link[3]=OR".
-                  "&field[3]=3&searchtype[3]=equals&contains[3]=UNKNOWN&link[4]=OR".
-                  "&field[4]=3&searchtype[4]=equals&contains[4]=FLAPPING&link[5]=OR".
-                  "&field[5]=3&searchtype[5]=equals&contains[5]=NULL".
-                  "&itemtype=PluginMonitoringService&start=0'>".
+            echo "<a href='".$warning_link.">".
                     "<font color='black' style='font-size: 12px;font-weight: bold;'>".$LANG['plugin_monitoring']['display'][3]."</font></a>";
          } else {
             echo $LANG['plugin_monitoring']['display'][3];
@@ -854,7 +867,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "</tr>";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
-         echo "<font style='font-size: 52px;'>".$warning."</font>";         
+         if ($type == 'Ressources') {
+            echo "<a href='".$warning_link.">".
+                    "<font color='black' style='font-size: 52px;'>".$warning."</font></a>";
+         } else {
+            echo "<font style='font-size: 52px;'>".$warning."</font>";
+         }
          echo "</th>";
          echo "</tr>";
          echo "<tr>";
@@ -874,11 +892,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
          if ($type == 'Ressources') {
-            echo "<a href='".$CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=WARNING&link[1]=OR".
-                  "&field[1]=3&searchtype[1]=equals&contains[1]=OK&link[2]=OR".
-                  "&field[2]=3&searchtype[2]=equals&contains[2]=UP".
-                  "&itemtype=PluginMonitoringService&start=0'>".
+            echo "<a href='".$ok_link.">".
                     "<font color='black' style='font-size: 12px;font-weight: bold;'>".$LANG['plugin_monitoring']['display'][4]."</font></a>";
          } else {
             echo $LANG['plugin_monitoring']['display'][4];
@@ -887,7 +901,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "</tr>";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
-         echo "<font style='font-size: 52px;'>".$ok."</font>";         
+         if ($type == 'Ressources') {
+            echo "<a href='".$ok_link.">".
+                    "<font color='black' style='font-size: 52px;font-weight: bold;'>".$ok."</font></a>";
+         } else {
+            echo "<font style='font-size: 52px;'>".$ok."</font>";
+         }
          echo "</th>";
          echo "</tr>";
          echo "<tr>";
