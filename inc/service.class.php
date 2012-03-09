@@ -187,7 +187,7 @@ class PluginMonitoringService extends CommonDBTM {
          echo "<table class='tab_cadre_fixe'>";
          
          echo "<tr class='tab_bg_1'>";
-         echo "<th colspan='7'>".$pmComponentscatalog->getTypeName()."&nbsp;:&nbsp;".$pmComponentscatalog->getLink()."</th>";
+         echo "<th colspan='8'>".$pmComponentscatalog->getTypeName()."&nbsp;:&nbsp;".$pmComponentscatalog->getLink()."</th>";
          echo "</tr>";
          
          echo "<tr class='tab_bg_1'>";
@@ -195,6 +195,10 @@ class PluginMonitoringService extends CommonDBTM {
          echo $LANG['joblist'][0];
          echo "</th>";
          echo "<th>";
+         echo $LANG['entity'][0];
+         echo "</th>";
+         echo "<th>";
+         echo $LANG['plugin_monitoring']['component'][0];
          echo "</th>";
          echo "<th>";
          echo $LANG['state'][0];
@@ -209,7 +213,8 @@ class PluginMonitoringService extends CommonDBTM {
          echo $LANG['plugin_monitoring']['service'][18];
          echo "</th>";
          echo "<th>";
-         echo "</th>";     
+         echo $LANG['rulesengine'][82];
+         echo "</th>";    
          echo "</tr>";
          
          $querys = "SELECT * FROM `glpi_plugin_monitoring_services`
