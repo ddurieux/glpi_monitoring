@@ -163,8 +163,8 @@ class PluginMonitoringService extends CommonDBTM {
             AND `itemtype`='".$itemtype."'";
       $result = $DB->query($query);
 
-      echo "<form name='form' method='post' 
-         action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/service.form.php'>";
+//      echo "<form name='form' method='post' 
+//         action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/service.form.php'>";
 
       echo "<table class='tab_cadre_fixe'>";
 
@@ -227,11 +227,11 @@ class PluginMonitoringService extends CommonDBTM {
          
       }
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='8' align='center'>";
-      echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][7]."'>";
-      echo "</td>";
-      echo "</tr>";
+//      echo "<tr class='tab_bg_1'>";
+//      echo "<td colspan='8' align='center'>";
+//      echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][7]."'>";
+//      echo "</td>";
+//      echo "</tr>";
       
       echo "</table>";
 
