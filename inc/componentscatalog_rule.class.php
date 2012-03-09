@@ -392,6 +392,10 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
             $_GET["glpisearchcount2"] = count($_GET['field2']);
          }
          
+         if (!isset($_SESSION['glpiactiveentities_string'])) {
+            $_SESSION['glpiactiveentities_string'] = $parm->fields['entities_id'];
+         }
+         
          Search::manageGetValues($data['itemtype']);
 
          $resultr = $pmComponentscatalog_rule->constructSQL($itemtype, 
