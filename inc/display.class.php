@@ -289,7 +289,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          }
       }
       
-      $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringService")."`
+      $query = "SELECT `".getTableForItemType("PluginMonitoringService")."`.* FROM `".getTableForItemType("PluginMonitoringService")."`
          ".$leftjoin."
          ".$where."
          ORDER BY `name`";
