@@ -76,7 +76,7 @@ $LANG['plugin_monitoring']['componentscatalog'][0]="Catalogue de composants";
 
 $LANG['plugin_monitoring']['config'][0]="Zones de temps (pour les graphiques)";
 $LANG['plugin_monitoring']['config'][1]="Configuration";
-$LANG['plugin_monitoring']['config'][2]="Chemin de l'exécutable RRDTOOL";
+$LANG['plugin_monitoring']['config'][2]="Chemin de l'exécutable RRDtool";
 
 $LANG['plugin_monitoring']['contact'][0]="Contact";
 $LANG['plugin_monitoring']['contact'][10]="Notifier quant l'état d'un service devient UNKNOWN";
@@ -138,7 +138,7 @@ $LANG['plugin_monitoring']['host'][9]="Période de contrôle";
 
 $LANG['plugin_monitoring']['hostconfig'][0]="Configuration des hôtes";
 
-$LANG['plugin_monitoring']['rrdtemplates'][0]="Gabarits RRDTOOL";
+$LANG['plugin_monitoring']['rrdtemplates'][0]="Gabarits RRDtool";
 $LANG['plugin_monitoring']['rrdtemplates'][1]="Charger les fichiers perfdata et graph";
 $LANG['plugin_monitoring']['rrdtemplates'][2]="Vous trouverez les fichier sur";
 
