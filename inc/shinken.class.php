@@ -360,7 +360,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                      $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
                      $item = new $itemtype();
                      if ($item->getFromDB($pmComponentscatalog_Host->fields['items_id'])) {           
-                        $hostname = $itemtype."-".$pmComponentscatalog_Host->fields['id']."-".preg_replace("/[^A-Za-z0-9]/","",$item->fields['name']);
+                        $hostname = $itemtype."-".$pmComponentscatalog_Host->fields['items_id']."-".preg_replace("/[^A-Za-z0-9]/","",$item->fields['name']);
 
                         if ($gdata['operator'] == 'and'
                                 OR $gdata['operator'] == 'or'
