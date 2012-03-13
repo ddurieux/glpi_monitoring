@@ -27,7 +27,7 @@
 
    ------------------------------------------------------------------------
    Original Author of file: David DURIEUX
-   Co-authors of file:
+   Co-authors of file: Mathieu Simon
    Purpose of file:
    ----------------------------------------------------------------------
  */
@@ -38,7 +38,7 @@ $LANG['plugin_monitoring']['host'][0]="hosts";
 $LANG['plugin_monitoring']['host'][1]="Dependencies";
 $LANG['plugin_monitoring']['host'][2]="Dynamic management";
 $LANG['plugin_monitoring']['host'][3]="Static management";
-$LANG['plugin_monitoring']['host'][4]="Dependency host";
+$LANG['plugin_monitoring']['host'][4]="Host dependency";
 $LANG['plugin_monitoring']['host'][5]="Active checks";
 $LANG['plugin_monitoring']['host'][6]="Passive checks";
 $LANG['plugin_monitoring']['host'][7]="Dynamic dependencies are";
@@ -57,10 +57,10 @@ $LANG['plugin_monitoring']['host'][20]="Preview";
 
 $LANG['plugin_monitoring']['config'][0]="Timezones (for graph)";
 $LANG['plugin_monitoring']['config'][1]="Configuration";
-$LANG['plugin_monitoring']['config'][2]="Path of RRDTOOL";
+$LANG['plugin_monitoring']['config'][2]="Path of RRDtool";
 
-$LANG['plugin_monitoring']['grouphost'][0]="hosts groups";
-$LANG['plugin_monitoring']['grouphost'][1]="hosts group";
+$LANG['plugin_monitoring']['grouphost'][0]="host groups";
+$LANG['plugin_monitoring']['grouphost'][1]="host group";
 
 $LANG['plugin_monitoring']['command'][0]="Commands";
 $LANG['plugin_monitoring']['command'][1]="Command check";
@@ -108,12 +108,12 @@ $LANG['plugin_monitoring']['service'][6]="Active check";
 $LANG['plugin_monitoring']['service'][7]="Passive check";
 $LANG['plugin_monitoring']['service'][8]="Remote check";
 $LANG['plugin_monitoring']['service'][9]="Utility used for remote check";
-$LANG['plugin_monitoring']['service'][10]="Use arguments (Only for NRPE)";
-$LANG['plugin_monitoring']['service'][11]="Alias command if required (Only for NRPE)";
+$LANG['plugin_monitoring']['service'][10]="Use arguments (NRPE only)";
+$LANG['plugin_monitoring']['service'][11]="Alias command if required (NRPE only)";
 $LANG['plugin_monitoring']['service'][12]="Template (for graphs generation)";
 $LANG['plugin_monitoring']['service'][13]="Argument ([text:text] is used to get values dynamically)";
 $LANG['plugin_monitoring']['service'][14]="Argument";
-$LANG['plugin_monitoring']['service'][15]="Add this host to be monitored";
+$LANG['plugin_monitoring']['service'][15]="Add this host to monitoring";
 $LANG['plugin_monitoring']['service'][16]="Check Host";
 $LANG['plugin_monitoring']['service'][17]="Configuration complete";
 $LANG['plugin_monitoring']['service'][18]="Last check";
@@ -144,7 +144,7 @@ $LANG['plugin_monitoring']['component'][0]="Components";
 $LANG['plugin_monitoring']['component'][1]="Add a new component";
 $LANG['plugin_monitoring']['component'][2]="Associated components";
 $LANG['plugin_monitoring']['component'][3]="Static hosts";
-$LANG['plugin_monitoring']['component'][4]="Dynmic hosts";
+$LANG['plugin_monitoring']['component'][4]="Dynamic hosts";
 $LANG['plugin_monitoring']['component'][5]="Fields with asterisk are required";
 
 $LANG['plugin_monitoring']['componentscatalog'][0]="Components catalog";
@@ -155,12 +155,12 @@ $LANG['plugin_monitoring']['display'][2]="Critical";
 $LANG['plugin_monitoring']['display'][3]="Warning";
 $LANG['plugin_monitoring']['display'][4]="OK";
 
-$LANG['plugin_monitoring']['rrdtemplates'][0]="RRDTOOL templates";
+$LANG['plugin_monitoring']['rrdtemplates'][0]="RRDtool templates";
 $LANG['plugin_monitoring']['rrdtemplates'][1]="Upload perfdata and graph files";
 $LANG['plugin_monitoring']['rrdtemplates'][2]="Find files on";
 
 $LANG['plugin_monitoring']['entity'][0]="Tag";
-$LANG['plugin_monitoring']['entity'][1]="Set tag to link entity with a specific shinken server";
+$LANG['plugin_monitoring']['entity'][1]="Set tag to link entity with a specific Shinken server";
 
 $LANG['plugin_monitoring']['hostconfig'][0]="Hosts configuration";
 
