@@ -123,10 +123,10 @@ class PluginMonitoringConfig extends CommonDBTM {
       echo "<td align='center'>";
       echo "<input name='rrdtoolpath' type='text' value='".$this->fields['rrdtoolpath']."' />";
       echo "</td>";
-      echo "<td>";
+      echo "<td rowspan='2'>";
       echo $LANG['plugin_monitoring']['config'][0]."&nbsp:";
       echo "</td>";
-      echo "<td>";
+      echo "<td rowspan='2'>";
          $a_timezones = $this->getTimezones();
       
          $a_timezones_selected = importArrayFromDB($this->fields['timezones']);
@@ -177,6 +177,13 @@ class PluginMonitoringConfig extends CommonDBTM {
          echo "</td>";
          echo "</tr>";
          echo "</table>";
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['plugin_monitoring']['config'][3]."&nbsp;:</td>";
+      echo "<td align='center'>";
+      Dropdown::showInteger("logretention", $this->fields['logretention'], 0, 1000);
       echo "</td>";
       echo "</tr>";
 

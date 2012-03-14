@@ -208,6 +208,18 @@ class PluginMonitoringShinken extends CommonDBTM {
       $pmContact_Item          = new PluginMonitoringContact_Item();
       $calendar                = new Calendar();
       $user                    = new User();
+      $pmLog                   = new PluginMonitoringLog();
+      if (isset($_SERVER['HTTP_USER_AGENT'])
+              AND strstr($_SERVER['HTTP_USER_AGENT'], 'xmlrpclib.py')) {
+         if (!isset($_SESSION['glpi_currenttime'])) {
+            $_SESSION['glpi_currenttime'] = date("Y-m-d H:i:s");
+         }
+         $input = array();
+         $input['user_name'] = "Shinken";
+         $input['action'] = "restart";
+         $pmLog->add($input);
+      }
+      
       $hostnamebp = '';
       
       $a_services = array();

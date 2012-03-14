@@ -634,6 +634,38 @@ class PluginMonitoringService extends CommonDBTM {
       }
       return $argument;
    }
+   
+   
+   
+   function post_addItem() {
+      global $DB;
+
+      $pmLog = new PluginMonitoringLog();
+      
+      $input = array();
+      $input['itemtype'] = "PluginMonitoringService";
+      $input['items_id'] = $this->fields['id'];
+      $input['action'] = "add";
+      $input['value'] = "New service";
+      $pmLog->add($input);
+   }
+
+   
+
+   function post_purgeItem() {
+      global $DB;
+
+      $pmLog = new PluginMonitoringLog();
+      
+      $input = array();
+      $input['itemtype'] = "PluginMonitoringService";
+      $input['items_id'] = $this->fields['id'];
+      $input['action'] = "delete";
+      $input['value'] = "Service xx of computer yy";
+      $pmLog->add($input);
+   }
+
+   
 }
 
 ?>
