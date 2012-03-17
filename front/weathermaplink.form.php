@@ -60,7 +60,7 @@ if (isset ($_POST["add"])) {
 } else if (isset ($_POST["update"])) {
    $pmWeathermaplink->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset ($_POST["delete"])) {
+} else if (isset ($_POST["purge"])) {
    $pmWeathermaplink->delete($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 }

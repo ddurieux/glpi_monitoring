@@ -111,15 +111,16 @@ class PluginMonitoringWeathermap extends CommonDBTM {
       // image file to generate
       echo "IMAGEOUTPUTFILE test.png\n";
       echo "\n";
+      
       echo "
 WIDTH ".$this->fields["width"]."
 HEIGHT ".$this->fields["height"]."
 HTMLSTYLE overlib
 TITLE ".$this->fields["name"]."
-TIMEPOS 10 20 Cree le : ".date("d")." ".date("m")." ".date("Y")." ".date("H:i:s")."
+TIMEPOS 10 20 Cree le : ".convDateTime(date("Y-m-d H:i:s"))."
 
-KEYPOS DEFAULT 11 865 Charge Reseau
-KEYSTYLE  DEFAULT horizontal
+KEYPOS DEFAULT 10 ".($this->fields["height"] - ($this->fields["width"] /16))."
+KEYSTYLE  DEFAULT horizontal ".($this->fields["width"] /4)."
 KEYTEXTCOLOR 0 0 0
 KEYOUTLINECOLOR 0 0 0
 KEYBGCOLOR 255 255 255
@@ -285,6 +286,10 @@ echo "
    
    function configureNodesLinks($weathermaps_id) {
       global $LANG,$DB,$CFG_GLPI;
+      
+      $networkPort = new NetworkPort();
+      $pmWeathermapnode = new PluginMonitoringWeathermapnode();
+      
       
       $this->getFromDB($weathermaps_id);
       
@@ -493,7 +498,8 @@ function point_it(event){
                `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`, 
                `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`,
                `glpi_plugin_monitoring_services`.`id` as `services_id`,
-               `glpi_plugin_monitoring_components`.`name` as `components_name`
+               `glpi_plugin_monitoring_components`.`name` as `components_name`,
+               `plugin_monitoring_commands_id`, `glpi_plugin_monitoring_components`.`arguments`
             FROM `glpi_plugin_monitoring_weathermapnodes`
             
             LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
@@ -511,6 +517,7 @@ function point_it(event){
             ORDER BY `itemtype`,`items_id`,`glpi_plugin_monitoring_components`.`name`";
          $elements = array();
          $elements[0] = DROPDOWN_EMPTY_VALUE;
+         $elements2 = array();
          $result = $DB->query($query);
          while ($data=$DB->fetch_array($result)) {
             $itemtype = $data['itemtype'];
@@ -520,8 +527,80 @@ function point_it(event){
             if ($name == '') {
                $name = $item->getName();
             }
-            $elements[$data['id']."-".$data['services_id']] = $name." > ".$data['components_name'];            
+            // Try to get device/node connected on this port
+            $device_connected = '';
+            if ($data['arguments'] != '') {
+               $arguments = importArrayFromDB($data['arguments']);
+               foreach ($arguments as $argument) {
+                  if (!is_numeric($argument)) {
+                     // Search networkport have this name or description
+                     $a_ports = $networkPort->find("`itemtype`='".$itemtype."'
+                        AND `items_id`='".$data['items_id']."'
+                        AND `name`='".$argument."'");
+                     foreach ($a_ports as $pdata) {
+                        if ($device_connected == '') {
+                           $oppositeports_id = $networkPort->getContact($pdata['id']);
+                           if ($oppositeports_id) {
+                              $networkPort->getFromDB($oppositeports_id);
+                              $a_nodes = $pmWeathermapnode->find("
+                                 `plugin_monitoring_weathermaps_id`='".$weathermaps_id."'
+                                 AND `itemtype`='".$networkPort->fields['itemtype']."'
+                                 AND `items_id`='".$networkPort->fields['items_id']."'", "", 1);
+                              if (count($a_nodes) > 0) {
+                                 $a_node = current($a_nodes);
+                                 $device_connected = $pmWeathermapnode->getNodeName($a_node['id']);
+                              }
+                           }
+                        }                        
+                     }
+                     if ($device_connected == ''
+                             AND class_exists("PluginFusinvsnmpNetworkPort")) {
+                        $queryn = "SELECT `glpi_networkports`.`id` FROM `glpi_plugin_fusinvsnmp_networkports`
+                           
+                           LEFT JOIN `glpi_networkports`
+                              ON `glpi_networkports`.`id`=`networkports_id`
+                              
+                           WHERE `itemtype`='".$itemtype."'
+                           AND `items_id`='".$data['items_id']."'
+                           AND `ifdescr`='".$argument."'";
+                        
+                        $resultn = $DB->query($queryn);
+                        while ($pdata=$DB->fetch_array($resultn)) {
+                           if ($device_connected == '') {
+                              $oppositeports_id = $networkPort->getContact($pdata['id']);
+                              if ($oppositeports_id) {
+                                 $networkPort->getFromDB($oppositeports_id);
+                                 $a_nodes = $pmWeathermapnode->find("
+                                    `plugin_monitoring_weathermaps_id`='".$weathermaps_id."'
+                                    AND `itemtype`='".$networkPort->fields['itemtype']."'
+                                    AND `items_id`='".$networkPort->fields['items_id']."'", "", 1);
+                                 if (count($a_nodes) > 0) {
+                                    $a_node = current($a_nodes);
+                                    $device_connected = $pmWeathermapnode->getNodeName($a_node['id']);
+                                 }
+                              }
+                           }                        
+                        }                        
+                     }
+                  }
+               }               
+            }
+            if ($device_connected == '') {
+               $elements2[$data['id']."-".$data['services_id']] = $name." (".$data['components_name'].")";
+            } else {
+               $elements[$data['id']."-".$data['services_id']] = $name." (".$data['components_name'].") > ".$device_connected;
+            }
          }
+         if (count($elements) > 1
+                 AND count($elements2) > 0) {
+            
+            $elements = array_merge($elements,array('0'=>DROPDOWN_EMPTY_VALUE));
+            $elements = array_merge($elements, $elements2);
+            
+         } else {
+            $elements = array_merge($elements, $elements2);
+         }
+
          Dropdown::showFromArray('linksource', $elements);
 
          echo "</td>";
@@ -532,16 +611,7 @@ function point_it(event){
          echo "Node destination&nbsp:";
          echo "</td>";
          echo "<td>";
-//         $params = array('type_appliances' => '__VALUE__',
-//                         'entity_restrict' => $p['entity'],
-//                         'rand'            => $rand,
-//                         'myname'          => $p['name'],
-//                         'used'            => $p['used']);
-//
-//         ajaxUpdateItemOnSelectEvent("type_appliances", "show_".$p['name'].$rand,
-//                                     $CFG_GLPI["root_doc"].
-//                                       "/plugins/appliances/ajax/dropdownTypeAppliances.php",
-//                                     $params);
+
          echo "<div id='nodedestination'>";
          
          $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringWeathermapnode")."`
@@ -611,26 +681,42 @@ function point_it(event){
          echo "</tr>";
          
          echo "<tr>";
-         echo "<td colspan='2'>";
+         echo "<td>";
+         echo "Link :";
+         echo "</td>";
+         echo "<td>";
+         $pmWeathermapnode = new PluginMonitoringWeathermapnode();
          $query = "SELECT `glpi_plugin_monitoring_weathermaplinks`.`id` as `id`,
-               `itemtype`, `items_id`
+               `itemtype`, `items_id`, `name`, `plugin_monitoring_weathermapnodes_id_2`
             FROM `glpi_plugin_monitoring_weathermaplinks`
+            
+            LEFT JOIN `glpi_plugin_monitoring_weathermapnodes`
+               ON `glpi_plugin_monitoring_weathermapnodes`.`id` = `plugin_monitoring_weathermapnodes_id_1`
 
-            WHERE `is_weathermap` = '1'";
+            WHERE `plugin_monitoring_weathermaps_id` = '".$weathermaps_id."'";
          $elements = array();
          $elements[0] = DROPDOWN_EMPTY_VALUE;
          $result = $DB->query($query);
          while ($data=$DB->fetch_array($result)) {
-//            $itemtype = $data['itemtype'];
-//            $item = new $itemtype();
-//            $item->getFromDB($data['items_id']);
-//            $name = $data['name'];
-//            if ($name == '') {
-//               $name = $item->getName();
-//            }
-//            $elements[$data['id']."-".$data['services_id']] = $name." > ".$data['components_name'];            
+            $itemtype = $data['itemtype'];
+            $item = new $itemtype();
+            $item->getFromDB($data['items_id']);
+            $name1 = $data['name'];
+            if ($name1 == '') {
+               $name1 = $item->getName();
+            }
+            $pmWeathermapnode->getFromDB($data['plugin_monitoring_weathermapnodes_id_2']);
+            $itemtype = $pmWeathermapnode->fields['itemtype'];
+            $item = new $itemtype();
+            $item->getFromDB($pmWeathermapnode->fields['items_id']);
+            $name2 = $pmWeathermapnode->fields['name'];
+            if ($name2 == '') {
+               $name2 = $item->getName();
+            }
+            
+            $elements[$data['id']] = $name1." - ".$name2;            
          }
-         Dropdown::showFromArray('linksource', $elements);
+         Dropdown::showFromArray('id', $elements);
 
          echo "</td>";
          echo "</tr>";

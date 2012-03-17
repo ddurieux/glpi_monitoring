@@ -76,6 +76,21 @@ class PluginMonitoringWeathermapnode extends CommonDBTM {
    }
 
    
+   
+   function getNodeName($nodes_id) {
+      
+      $this->getFromDB($nodes_id);
+      
+      $itemtype = $this->fields['itemtype'];
+      $item = new $itemtype();
+      $item->getFromDB($this->fields['items_id']);
+      $name = $this->fields['name'];
+      if ($name == '') {
+         $name = $item->getName();
+      }
+      return $name;
+   }
+   
 }
 
 ?>
