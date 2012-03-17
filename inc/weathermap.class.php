@@ -77,10 +77,31 @@ class PluginMonitoringWeathermap extends CommonDBTM {
 
    
    
+   function defineTabs($options=array()){
+      global $LANG;
+
+      $ong = array();
+      
+      if ($_GET['id'] > 0) {
+         $ong[1] = $LANG['plugin_monitoring']['weathermap'][0];
+         $ong[2] = $LANG['plugin_monitoring']['weathermap'][6];
+      }
+      
+      return $ong;
+   }
+   
+   
+   
    function generateConfig() {
       global $DB;
       
-      $weathermaps_id = 1;
+      if (!isset($_GET['id'])
+              OR (isset($_GET['id'])
+                      AND $_GET['id'] < 1)) {
+         return;
+      }
+      
+      $weathermaps_id = $_GET['id'];
       
       $pmWeathermapnode = new PluginMonitoringWeathermapnode();
       
@@ -95,7 +116,7 @@ WIDTH ".$this->fields["width"]."
 HEIGHT ".$this->fields["height"]."
 HTMLSTYLE overlib
 TITLE ".$this->fields["name"]."
-TIMEPOS 10 20 Creee le : ٪d ٪b ٪Y ٪H:٪M:٪S
+TIMEPOS 10 20 Cree le : ".date("d")." ".date("m")." ".date("Y")." ".date("H:i:s")."
 
 KEYPOS DEFAULT 11 865 Charge Reseau
 KEYSTYLE  DEFAULT horizontal
@@ -132,14 +153,36 @@ LINK DEFAULT
          ORDER BY `name`";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
+         $name = $data['name'];
+         if ($name == '') {
+            $itemtype = $data['itemtype'];
+            $item = new $itemtype();
+            $item->getFromDB($data['items_id']);
+            $name = $item->getName();            
+         }
+         
          echo "NODE ".preg_replace("/[^A-Za-z0-9_]/","",$data['name'])."_".$data['id']."
-	LABEL ".$data['name']."
-	ICON images/Cloud-Filled.png
-	POSITION ".$data['x']." ".$data['y']."
+	LABEL ".$name."
+	POSITION ".$data['x']." ".$data['y']."      
 ";         
       }
       
-      
+
+$in = 0;
+$out = 0;
+$query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
+         WHERE `plugin_monitoring_services_id`='13616'
+         ORDER BY `id` DESC
+         LIMIT 1";
+$result = $DB->query($query);
+while ($data=$DB->fetch_array($result)) {
+   $matches = array();
+   preg_match("/(?:.*)inBandwidth=([0-9]*).(?:.*)bps outBandwidth=([0-9]*).(?:.*)bps/m", $data['perf_data'], $matches);
+
+   $in = $matches[1];
+   $out = $matches[2];
+}
+
 echo "
 
 # regular LINKs:
@@ -153,21 +196,470 @@ echo "
             WHERE `plugin_monitoring_weathermapnodes_id_1`='".$data['id']."'";
          $resultl = $DB->query($queryl);
          while ($datal=$DB->fetch_array($resultl)) {
+            $bandwidth = $datal['bandwidth_in'].":".$datal['bandwidth_out'];
+            if ($datal['bandwidth_in'] == $datal['bandwidth_out']) {
+               $bandwidth = $datal['bandwidth_in'];
+            }
             $pmWeathermapnode->getFromDB($datal['plugin_monitoring_weathermapnodes_id_2']);
+            
+            $queryevent = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
+               WHERE `plugin_monitoring_services_id`='".$datal['plugin_monitoring_services_id']."'
+                  ORDER BY `id` desc
+                  LIMIT 1";
+            $resultevent = $DB->query($queryevent);
+            while ($dataevent=$DB->fetch_array($resultevent)) {
+               $matches1 = array();
+               preg_match("/(?:.*)inBandwidth=([0-9]*).(?:.*)bps outBandwidth=([0-9]*).(?:.*)bps/m", $dataevent['perf_data'], $matches1);
+               $in = $matches1[1];
+               $out = $matches1[2];
+            }
+            
+            
             echo "LINK ".preg_replace("/[^A-Za-z0-9_]/","",$data['name'])."_".$data['id']."-".preg_replace("/[^A-Za-z0-9_]/","",$pmWeathermapnode->fields['name'])."_".$pmWeathermapnode->fields['id']."
 	INFOURL /cacti/graph.php?rra_id=all&local_graph_id=35
 	OVERLIBGRAPH /cacti/graph_image.php?local_graph_id=35&rra_id=0&graph_nolegend=true&graph_height=100&graph_width=300
 	BWLABELPOS 69 31
-	TARGET static:1M:3M
+	TARGET static:".$in.":".$out."
 	NODES ".preg_replace("/[^A-Za-z0-9_]/","",$data['name'])."_".$data['id']." ".preg_replace("/[^A-Za-z0-9_]/","",$pmWeathermapnode->fields['name'])."_".$pmWeathermapnode->fields['id']."
-	BANDWIDTH ".$datal['bandwidth_in'].":".$datal['bandwidth_out']."
+	BANDWIDTH ".$bandwidth."      
 ";
             
          }         
       }
+   }
+   
+   
+   
+   function showForm($items_id, $options=array()) {
+      global $DB,$CFG_GLPI,$LANG;
 
+      if ($items_id == '0') {
+         $this->getEmpty();
+      } else {
+         $this->getFromDB($items_id);
+      }
+     
+      $this->showTabs($options);
+      $this->showFormHeader($options);
+
+      echo "<tr>";
+      echo "<td>";
+      echo $LANG['common'][16]."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      $objectName = autoName($this->fields["name"], "name", 1,
+                             $this->getType());
+      autocompletionTextField($this, 'name', array('value' => $objectName));      
+      echo "</td>";
+      echo "<td>".$LANG['plugin_monitoring']['weathermap'][3]."&nbsp;:</td>";
+      echo "<td>";
+      Dropdown::showInteger("width", $this->fields['width'], 100, 3000);
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr>";
+      echo "<td>";
+      echo $LANG['plugin_monitoring']['weathermap'][5]."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      if ($this->fields['background'] == '') {
+         echo "<input type='file' size='25' value='' name='background'/>";
+      } else {
+         echo $this->fields['background'];
+      }
+      echo "</td>";
+      echo "<td>".$LANG['plugin_monitoring']['weathermap'][4]."&nbsp;:</td>";
+      echo "<td>";
+      Dropdown::showInteger("height", $this->fields['height'], 100, 3000);
+      echo "</td>";
+      echo "</tr>";
+      
+      
+      $this->showFormButtons($options);
+      $this->addDivForTabs();
+      
+      return true;
+   }
+   
+   
+   
+   function configureNodesLinks($weathermaps_id) {
+      global $LANG,$DB,$CFG_GLPI;
+      
+      $this->getFromDB($weathermaps_id);
+      
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<th colspan='2'>";
+      echo $LANG['plugin_monitoring']['weathermap'][6];
+      echo "</th>";
+      echo "</tr>";
+      
+      $this->generateWeathermap($weathermaps_id);
+      $map = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=weathermap-".$weathermaps_id.".png'/>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td valign='top'>";      
+      if ($this->fields['background'] == '') {
+         echo '<div id="pointer_div" onclick="point_it(event)" style = "background-color:grey;width:'.$this->fields['width'].'px;height:'.$this->fields['height'].'px;">
+            <div id="cross" style="position:relative;visibility:hidden;z-index:2;"></div>
+            '.$map.'
+            </div>';
+      } else {
+         echo '<div id="pointer_div" onclick="point_it(event)" style = "background-image:url(\''.$this->fields['background'].'\');width:'.$this->fields['width'].'px;height:'.$this->fields['height'].'px;">
+            <img id="cross" style="position:relative;visibility:hidden;z-index:2;">
+            '.$map.'</div>';
+      }
+      echo "</td>";
+      echo "<td valign='top'>";
+      
+ echo '<script language="JavaScript">
+function point_it(event){
+	pos_x = event.offsetX?(event.offsetX):event.pageX;
+	pos_y = event.offsetY?(event.offsetY):event.pageY;
+	document.getElementById("cross").style.left = (pos_x-1) ;
+	document.getElementById("cross").style.top = (pos_y-15) ;
+   
+   var topValue= 0;
+   var leftValue= 0;
+   var obj = document.getElementById("pointer_div");
+   while(obj){
+	   leftValue+= obj.offsetLeft;
+	   topValue+= obj.offsetTop;
+	   obj= obj.offsetParent;
+   }
+
+
+	document.pointform.x.value = pos_x-leftValue;
+	document.pointform.y.value = pos_y-topValue;
+
+}
+</script>';
+   echo '<form name="pointform" method="post" action="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/weathermapnode.form.php">';
+      echo "<table align='center'>";
+      echo "<tr>";
+      echo "<td>";
+      echo "x :";
+      echo "</td>";
+      echo "<td>";
+      echo '<input type="text" name="x" size="4" />';
+      echo "</td>";
+      echo "<td>";
+      echo "y :";
+      echo "</td>";
+      echo "<td>";
+      echo '<input type="text" name="y" size="4" />';
+      echo "</td>";
+      echo "</tr>";
+      echo "</table>";
+      echo "<input type='hidden' name='plugin_monitoring_weathermaps_id' value='".$weathermaps_id."' />";
+      
+         echo "<table class='tab_cadre'>";
+         // * Add node
+         echo "<tr>";
+         echo "<th colspan='2'>";
+         echo "add node";
+         echo "</th>";
+         echo "</tr>";
+         
+         echo "<tr>";
+         echo "<td>";
+         echo $LANG['plugin_monitoring']['weathermap'][7]."&nbsp;:";
+         echo "</td>";
+         echo "<td>";
+         Dropdown::showAllItems("items_id");
+         
+         echo "</td>";
+         echo "</tr>";
+         
+         echo "<tr>";
+         echo "<td>";
+         echo $LANG['common'][16]."&nbsp;:";
+         echo "</td>";
+         echo "<td>";
+         echo "<input type='text' name='name' value='' />";     
+         echo "</td>";
+         echo "</tr>";
+         
+         echo "<tr>";
+         echo "<td align='center' colspan='2'>";
+         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "</td>";
+         echo "</tr>";
+            
+
+         // * Change node position
+         echo "<tr>";
+         echo "<th colspan='2'>";
+         echo "Change node position";
+         echo "</th>";
+         echo "</tr>";
+
+         echo "<tr>";
+         echo "<td>";
+         echo "</td>";
+         echo "<td>";
+
+         $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringWeathermapnode")."`
+            WHERE `plugin_monitoring_weathermaps_id`='".$weathermaps_id."'
+            ORDER BY `name`";
+         $result = $DB->query($query);
+         $elements = array();
+         $elements[0] = DROPDOWN_EMPTY_VALUE;
+         $result = $DB->query($query);
+         while ($data=$DB->fetch_array($result)) {
+            $itemtype = $data['itemtype'];
+            $item = new $itemtype();
+            $item->getFromDB($data['items_id']);
+            $name = $data['name'];
+            if ($name == '') {
+               $name = $item->getName();
+            }
+            $elements[$data['id']] = $name;            
+         }
+         Dropdown::showFromArray('id', $elements);
+         
+         echo "</td>";
+         echo "</tr>";
+         
+         echo "<tr>";
+         echo "<td align='center' colspan='2'>";
+         echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+         echo "</td>";
+         echo "</tr>";
+         
+
+         // * Delete node
+         echo "<tr>";
+         echo "<th colspan='2'>";
+         echo "Delete node";
+         echo "</th>";
+         echo "</tr>";
+
+         echo "<tr>";
+         echo "<td>";
+         echo "</td>";
+         echo "<td>";
+         $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringWeathermapnode")."`
+            WHERE `plugin_monitoring_weathermaps_id`='".$weathermaps_id."'
+            ORDER BY `name`";
+         $result = $DB->query($query);
+         $elements = array();
+         $elements[0] = DROPDOWN_EMPTY_VALUE;
+         $result = $DB->query($query);
+         while ($data=$DB->fetch_array($result)) {
+            $itemtype = $data['itemtype'];
+            $item = new $itemtype();
+            $item->getFromDB($data['items_id']);
+            $name = $data['name'];
+            if ($name == '') {
+               $name = $item->getName();
+            }
+            $elements[$data['id']] = $name;            
+         }
+         Dropdown::showFromArray('id', $elements);
+         echo "</td>";
+         echo "</tr>";         
+         
+         echo "<tr>";
+         echo "<td align='center' colspan='2'>";
+         echo "<input type='submit' name='purge' value=\"".$LANG['buttons'][22]."\" class='submit'>";
+         echo "</td>";
+         echo "</tr>";
+         
+         echo "</table>";
+         
+         echo "</form><br/>";
+
+         
+         
+         echo '<form name="formlink" method="post" action="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/weathermaplink.form.php">';
+         echo "<table class='tab_cadre'>";
+         // *Add Link
+         echo "<tr>";
+         echo "<th colspan='2'>";
+         echo "Add link";
+         echo "</th>";
+         echo "</tr>";
+         
+         echo "<tr>";
+         echo "<td>";
+         echo "Node source*&nbsp:";
+         echo "</td>";
+         echo "<td>";
+
+         $query = "SELECT `glpi_plugin_monitoring_weathermapnodes`.`id` as `id`,
+               `glpi_plugin_monitoring_weathermapnodes`.`name` as `name`,
+               `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`, 
+               `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`,
+               `glpi_plugin_monitoring_services`.`id` as `services_id`,
+               `glpi_plugin_monitoring_components`.`name` as `components_name`
+            FROM `glpi_plugin_monitoring_weathermapnodes`
+            
+            LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
+               ON (`glpi_plugin_monitoring_weathermapnodes`.`items_id`=`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`
+                  AND `glpi_plugin_monitoring_weathermapnodes`.`itemtype`=`glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`)
+            
+            LEFT JOIN `glpi_plugin_monitoring_services` 
+               ON `plugin_monitoring_componentscatalogs_hosts_id`= `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
+
+            LEFT JOIN `glpi_plugin_monitoring_components` 
+               ON `plugin_monitoring_components_id` = `glpi_plugin_monitoring_components`.`id`
+            
+
+            WHERE `is_weathermap` = '1'
+            ORDER BY `itemtype`,`items_id`,`glpi_plugin_monitoring_components`.`name`";
+         $elements = array();
+         $elements[0] = DROPDOWN_EMPTY_VALUE;
+         $result = $DB->query($query);
+         while ($data=$DB->fetch_array($result)) {
+            $itemtype = $data['itemtype'];
+            $item = new $itemtype();
+            $item->getFromDB($data['items_id']);
+            $name = $data['name'];
+            if ($name == '') {
+               $name = $item->getName();
+            }
+            $elements[$data['id']."-".$data['services_id']] = $name." > ".$data['components_name'];            
+         }
+         Dropdown::showFromArray('linksource', $elements);
+
+         echo "</td>";
+         echo "</tr>";
+         
+         echo "<tr>";
+         echo "<td>";
+         echo "Node destination&nbsp:";
+         echo "</td>";
+         echo "<td>";
+//         $params = array('type_appliances' => '__VALUE__',
+//                         'entity_restrict' => $p['entity'],
+//                         'rand'            => $rand,
+//                         'myname'          => $p['name'],
+//                         'used'            => $p['used']);
+//
+//         ajaxUpdateItemOnSelectEvent("type_appliances", "show_".$p['name'].$rand,
+//                                     $CFG_GLPI["root_doc"].
+//                                       "/plugins/appliances/ajax/dropdownTypeAppliances.php",
+//                                     $params);
+         echo "<div id='nodedestination'>";
+         
+         $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringWeathermapnode")."`
+            WHERE `plugin_monitoring_weathermaps_id`='".$weathermaps_id."'
+            ORDER BY `name`";
+         $result = $DB->query($query);
+         $elements = array();
+         $elements[0] = DROPDOWN_EMPTY_VALUE;
+         $result = $DB->query($query);
+         while ($data=$DB->fetch_array($result)) {
+            $itemtype = $data['itemtype'];
+            $item = new $itemtype();
+            $item->getFromDB($data['items_id']);
+            $name = $data['name'];
+            if ($name == '') {
+               $name = $item->getName();
+            }
+            $elements[$data['id']] = $name;            
+         }
+         Dropdown::showFromArray('plugin_monitoring_weathermapnodes_id_2', $elements);
+         echo "</div>";
+         echo "</td>";
+         echo "</tr>";
+         
+         echo "<tr>";
+         echo "<td>";
+         echo "Max bandwidth input&nbsp:";
+         echo "</td>";
+         echo "<td>";
+         echo "<input type='text' name='bandwidth_in' value=''/>";
+         echo "</td>";
+         echo "</tr>";
+         
+         echo "<tr>";
+         echo "<td>";
+         echo "Max bandwidth output&nbsp:";
+         echo "</td>";
+         echo "<td>";
+         echo "<input type='text' name='bandwidth_out' value=''/>";
+         echo "</td>";
+         echo "</tr>";
+         
+         echo "<tr>";
+         echo "<td align='center' colspan='2'>";
+         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "</td>";
+         echo "</tr>";
+         
+         // * Edit link
+         echo "<tr>";
+         echo "<th colspan='2'>";
+         echo "Edit link";
+         echo "</th>";
+         echo "</tr>";
+
+         echo "<tr>";
+         echo "<td colspan='2'>";
+         echo "</td>";
+         echo "</tr>";
+         
+         
+         // * Delete link
+         echo "<tr>";
+         echo "<th colspan='2'>";
+         echo "Delete link";
+         echo "</th>";
+         echo "</tr>";
+         
+         echo "<tr>";
+         echo "<td colspan='2'>";
+         $query = "SELECT `glpi_plugin_monitoring_weathermaplinks`.`id` as `id`,
+               `itemtype`, `items_id`
+            FROM `glpi_plugin_monitoring_weathermaplinks`
+
+            WHERE `is_weathermap` = '1'";
+         $elements = array();
+         $elements[0] = DROPDOWN_EMPTY_VALUE;
+         $result = $DB->query($query);
+         while ($data=$DB->fetch_array($result)) {
+//            $itemtype = $data['itemtype'];
+//            $item = new $itemtype();
+//            $item->getFromDB($data['items_id']);
+//            $name = $data['name'];
+//            if ($name == '') {
+//               $name = $item->getName();
+//            }
+//            $elements[$data['id']."-".$data['services_id']] = $name." > ".$data['components_name'];            
+         }
+         Dropdown::showFromArray('linksource', $elements);
+
+         echo "</td>";
+         echo "</tr>";
+         
+         echo "<tr>";
+         echo "<td align='center' colspan='2'>";
+         echo "<input type='submit' name='purge' value=\"".$LANG['buttons'][22]."\" class='submit'>";
+         echo "</td>";
+         echo "</tr>";
+      
+         echo "</table>";
+         echo "</form>";
+      
+      echo "</td>";
+      echo "</tr>";
       
    }
+   
+   
+   
+   function generateWeathermap($weathermaps_id) {
+      global $CFG_GLPI;
+      
+      system("/usr/local/bin/php ".GLPI_ROOT."/plugins/monitoring/lib/weathermap/weathermap ".
+         "--config 'http://".$_SERVER['SERVER_NAME'].$CFG_GLPI['root_doc']."/plugins/monitoring/front/weathermap_conf.php?id=".$weathermaps_id."' ".
+         "--output '".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png'");
+
+   }
+   
 }
 
 ?>

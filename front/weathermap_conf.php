@@ -43,13 +43,7 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkCentralAccess();
+$pmWeathermap = new PluginMonitoringWeathermap();
+$pmWeathermap->generateConfig();
 
-commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "weathermap");
-
-
-Search::show('PluginMonitoringWeathermap');
-
-commonFooter();
 ?>

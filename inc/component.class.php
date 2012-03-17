@@ -344,6 +344,26 @@ class PluginMonitoringComponent extends CommonDBTM {
          }
       }
       
+      echo "<tr>";
+      echo "<th colspan='4'>".$LANG['plugin_monitoring']['weathermap'][0]."&nbsp;</th>";
+      echo "</tr>";
+      
+      echo "<tr>";
+      echo "<td>";
+      echo $LANG['plugin_monitoring']['weathermap'][1]."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      Dropdown::showYesNo("is_weathermap", $this->fields['is_weathermap']);
+      echo "</td>";
+      echo "<td>";
+      echo $LANG['plugin_monitoring']['weathermap'][2]."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      echo "<input type='text' name='weathermap_regex' value='".$this->fields['weathermap_regex']."' />";
+      echo "</td>"; 
+      echo "</tr>";
+      
+      
       $this->showFormButtons($options);
       return true;
    }

@@ -45,11 +45,30 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkCentralAccess();
 
-commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
+commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins", 
              "monitoring", "weathermap");
 
 
-Search::show('PluginMonitoringWeathermap');
+$pmWeathermap = new PluginMonitoringWeathermap();
+
+if (isset ($_POST["add"])) {
+   $pmWeathermap->add($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset ($_POST["update"])) {
+   $pmWeathermap->update($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset ($_POST["delete"])) {
+   $pmWeathermap->delete($_POST);
+   $pmWeathermap->redirectToList();
+}
+
+
+if (isset($_GET["id"])) {
+   $pmWeathermap->showForm($_GET["id"]);
+} else {
+   $pmWeathermap->showForm(0);
+}
 
 commonFooter();
+
 ?>

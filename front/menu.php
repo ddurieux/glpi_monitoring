@@ -72,6 +72,15 @@ echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicescatalo
 echo "</th>";
 
 echo "<th>";
+echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/weathermap.php'>".$LANG['plugin_monitoring']['weathermap'][0]."</a>";
+echo "</th>";
+echo "</tr>";
+echo "</table>";
+
+echo "<br/>";
+
+echo "<table class='tab_cadre' width='950'>";
+echo "<th height='40'>";
 echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.php'>".$LANG['plugin_monitoring']['componentscatalog'][0]."</a>";
 echo "</th>";
 echo "</tr>";

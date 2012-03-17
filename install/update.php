@@ -280,6 +280,14 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'link', 
                                  'link', 
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'is_weathermap', 
+                                 'is_weathermap', 
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'weathermap_regex', 
+                                 'weathermap_regex', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable, 
                                  'id', 
@@ -319,6 +327,12 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
                                  'link', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'is_weathermap', 
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'weathermap_regex', 
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addKey($newTable, 
                             "plugin_monitoring_commands_id");

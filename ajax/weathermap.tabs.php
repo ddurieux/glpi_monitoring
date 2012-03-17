@@ -43,13 +43,46 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkCentralAccess();
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
-commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "weathermap");
+if (!isset($_POST["id"])) {
+   exit();
+}
+if (!isset($_POST["sort"])) {
+   $_POST["sort"] = "";
+}
+if (!isset($_POST["order"])) {
+   $_POST["order"] = "";
+}
+if (!isset($_POST["withtemplate"])) {
+   $_POST["withtemplate"] = "";
+}
 
 
-Search::show('PluginMonitoringWeathermap');
+$pmWeathermap = new PluginMonitoringWeathermap();
 
-commonFooter();
+if ($_POST["id"]>0 && $pmWeathermap->can($_POST["id"],'r')) {
+
+   switch($_POST['glpi_tab']) {
+      case -1 :
+
+         break;
+
+      case 1:
+       
+         break;
+      
+      case 2 :
+         $pmWeathermap->configureNodesLinks($_POST['id']);
+         break;
+
+
+      default :
+
+   }
+}
+
+ajaxFooter();
+
 ?>
