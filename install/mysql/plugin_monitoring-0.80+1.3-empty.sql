@@ -47,6 +47,8 @@ CREATE TABLE `glpi_plugin_monitoring_components` (
   `alias_command` text DEFAULT NULL COLLATE utf8_unicode_ci,
   `graph_template` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `link` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_weathermap` tinyint(1) NOT NULL DEFAULT '0',
+  `weathermap_regex` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
    KEY `plugin_monitoring_commands_id` (`plugin_monitoring_commands_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -399,5 +401,47 @@ CREATE TABLE `glpi_plugin_monitoring_servicedefs` (
   `alias_command` text DEFAULT NULL COLLATE utf8_unicode_ci,
   `aliasperfdata_commands_id` int(11) NOT NULL DEFAULT '0',
   `link` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_weathermaps`;
+
+CREATE TABLE `glpi_plugin_monitoring_weathermaps` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `width` smallint(6) NOT NULL DEFAULT '0',
+  `height` smallint(6) NOT NULL DEFAULT '0',
+  `background` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_weathermapnodes`;
+
+CREATE TABLE `glpi_plugin_monitoring_weathermapnodes` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `plugin_monitoring_weathermaps_id` int(11) NOT NULL DEFAULT '0',
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(100) DEFAULT NULL,
+  `x` smallint(6) NOT NULL DEFAULT '0',
+  `y` smallint(6) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_weathermaplinks`;
+
+CREATE TABLE `glpi_plugin_monitoring_weathermaplinks` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `plugin_monitoring_weathermapnodes_id_1` int(11) NOT NULL DEFAULT '0',
+  `plugin_monitoring_weathermapnodes_id_2` int(11) NOT NULL DEFAULT '0',
+  `plugin_monitoring_services_id` int(11) NOT NULL DEFAULT '0',
+  `bandwidth_in` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `bandwidth_out` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

@@ -280,6 +280,14 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'link', 
                                  'link', 
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'is_weathermap', 
+                                 'is_weathermap', 
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'weathermap_regex', 
+                                 'weathermap_regex', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable, 
                                  'id', 
@@ -319,6 +327,12 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
                                  'link', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'is_weathermap', 
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'weathermap_regex', 
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addKey($newTable, 
                             "plugin_monitoring_commands_id");
@@ -1686,6 +1700,173 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'link', 
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL"); 
       $migration->migrationOneTable($newTable);
+      
+      
+      
+    /*
+    * Table glpi_plugin_monitoring_weathermaps
+    */
+      $newTable = "glpi_plugin_monitoring_weathermaps";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+         $DB->query($query);
+      }
+         $migration->changeField($newTable, 
+                                 'id', 
+                                 'id', 
+                                 "int(11) NOT NULL AUTO_INCREMENT");
+         $migration->changeField($newTable, 
+                                 'name', 
+                                 'name', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'width', 
+                                 'width', 
+                                 "smallint(6) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'height', 
+                                 'height', 
+                                 "smallint(6) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'background', 
+                                 'background', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+      $migration->migrationOneTable($newTable);
+         $migration->addField($newTable, 
+                              'name', 
+                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'width', 
+                              "smallint(6) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'height', 
+                              "smallint(6) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'background', 
+                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+      $migration->migrationOneTable($newTable);
+      
+      
+      
+    /*
+    * Table glpi_plugin_monitoring_weathermapnodes
+    */
+      $newTable = "glpi_plugin_monitoring_weathermapnodes";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+         $DB->query($query);
+      }
+         $migration->changeField($newTable, 
+                                 'id', 
+                                 'id', 
+                                 "int(11) NOT NULL AUTO_INCREMENT");
+         $migration->changeField($newTable, 
+                                 'name', 
+                                 'name', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'plugin_monitoring_weathermaps_id', 
+                                 'plugin_monitoring_weathermaps_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'items_id', 
+                                 'items_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'itemtype', 
+                                 'itemtype', 
+                                 "varchar(100) DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'x', 
+                                 'x', 
+                                 "smallint(6) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'y', 
+                                 'y', 
+                                 "smallint(6) NOT NULL DEFAULT '0'");
+      $migration->migrationOneTable($newTable);
+         $migration->addField($newTable, 
+                              'name', 
+                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'plugin_monitoring_weathermaps_id', 
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'items_id', 
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'itemtype', 
+                              "varchar(100) DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'x', 
+                              "smallint(6) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'y', 
+                              "smallint(6) NOT NULL DEFAULT '0'");
+      $migration->migrationOneTable($newTable);
+      
+      
+
+    /*
+    * Table glpi_plugin_monitoring_weathermapnodes
+    */
+      $newTable = "glpi_plugin_monitoring_weathermapnodes";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+         $DB->query($query);
+      }
+         $migration->changeField($newTable, 
+                                 'id', 
+                                 'id', 
+                                 "int(11) NOT NULL AUTO_INCREMENT");
+         $migration->changeField($newTable, 
+                                 'plugin_monitoring_weathermapnodes_id_1', 
+                                 'plugin_monitoring_weathermapnodes_id_1', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'plugin_monitoring_weathermapnodes_id_2', 
+                                 'plugin_monitoring_weathermapnodes_id_2', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'plugin_monitoring_services_id', 
+                                 'plugin_monitoring_services_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'bandwidth_in', 
+                                 'bandwidth_in', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'bandwidth_out', 
+                                 'bandwidth_out', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+      $migration->migrationOneTable($newTable);
+         $migration->addField($newTable, 
+                              'plugin_monitoring_weathermapnodes_id_1', 
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'plugin_monitoring_weathermapnodes_id_2', 
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'plugin_monitoring_services_id', 
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'bandwidth_in', 
+                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'bandwidth_out', 
+                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+      $migration->migrationOneTable($newTable);
+      
+      
       
       
          

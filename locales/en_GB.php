@@ -171,4 +171,13 @@ $LANG['plugin_monitoring']['log'][2]="resources added";
 $LANG['plugin_monitoring']['log'][3]="resources deleted";
 $LANG['plugin_monitoring']['log'][4]="Restart Shinken to reload this new configuration";
 
+$LANG['plugin_monitoring']['weathermap'][0]="Weathermap";
+$LANG['plugin_monitoring']['weathermap'][1]="Use this component for Weathermap";
+$LANG['plugin_monitoring']['weathermap'][2]="Regex";
+$LANG['plugin_monitoring']['weathermap'][3]="Width";
+$LANG['plugin_monitoring']['weathermap'][4]="Height";
+$LANG['plugin_monitoring']['weathermap'][5]="Background image";
+$LANG['plugin_monitoring']['weathermap'][6]="Nodes and links";
+$LANG['plugin_monitoring']['weathermap'][7]="Node";
+
 ?>
