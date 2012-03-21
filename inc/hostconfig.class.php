@@ -86,6 +86,15 @@ class PluginMonitoringHostconfig extends CommonDBTM {
             $data = $DB->fetch_assoc($result2);
             $input['calendars_id'] = $data['id'];
          }
+         
+         $query2 = "SELECT * FROM `glpi_plugin_monitoring_realms`
+            LIMIT 1";
+         $result2 = $DB->query($query2);
+         if ($DB->numrows($result2) == '1') {
+            $data = $DB->fetch_assoc($result2);
+            $input['plugin_monitoring_realms_id'] = $data['id'];
+         }
+         
          $this->add($input);         
       }
    }
@@ -149,6 +158,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
       $pmCommand = new PluginMonitoringCommand();
       $pmCheck = new PluginMonitoringCheck();
       $calendar = new Calendar();
+      $pmRealm  = new PluginMonitoringRealm();
       
       $entities_id = 0;
       if ($itemtype == "Entity") {
@@ -172,6 +182,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
             $this->fields['plugin_monitoring_commands_id'] = -1;
             $this->fields['plugin_monitoring_checks_id'] = -1;
             $this->fields['calendars_id'] = -1;
+            $this->fields['plugin_monitoring_realms_id'] = -1;
          }
       } else {
          $data = $DB->fetch_assoc($result);
@@ -259,8 +270,23 @@ class PluginMonitoringHostconfig extends CommonDBTM {
       
       
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='2'>";
+      echo "<td>".$LANG['plugin_monitoring']['realms'][1]."&nbsp;:</td>";
+      echo "<td>";
+      $input = array();
+      if ($entities_id != '0'
+              OR $itemtype != 'Entity') {
+         $input["-1"] = $LANG['common'][102];
+      }
+      $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringRealm")."`
+         ORDER BY `name`";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         $input[$data['id']] = $data['name'];
+      }
+      Dropdown::showFromArray('plugin_monitoring_realms_id', $input, array(
+          'value'=>$this->fields['plugin_monitoring_realms_id']));
       echo "</td>";
+
       echo "<td>".$LANG['plugin_monitoring']['host'][9]."&nbsp;:</td>";
       echo "<td>";
       $input = array();
@@ -287,15 +313,30 @@ class PluginMonitoringHostconfig extends CommonDBTM {
       echo "</tr>";
       
       // Inheritance
-      if ($this->fields['calendars_id'] == '-1') {
-         
+      if ($this->fields['calendars_id'] == '-1'
+              OR $this->fields['plugin_monitoring_realms_id'] == '-1') {
+
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2'>";         
-         echo "<td colspan='2' class='green center'>";
-         echo $LANG['common'][102]."&nbsp;:&nbsp;";
-         $calendar->getFromDB($this->getValueAncestor("calendars_id", $entities_id));
-         echo $calendar->fields['name'];
-         echo "</td>";
+         if ($this->fields['plugin_monitoring_realms_id'] == '-1') {
+            echo "<td colspan='2' class='green center'>";
+            echo $LANG['common'][102]."&nbsp;:&nbsp;";
+            $pmRealm->getFromDB($this->getValueAncestor("plugin_monitoring_realms_id", $entities_id));
+            echo $pmRealm->fields['name'];
+            echo "</td>";
+         } else {
+            echo "<td colspan='2'>";
+            echo "</td>";
+         }
+         if ($this->fields['calendars_id'] == '-1') {     
+            echo "<td colspan='2' class='green center'>";
+            echo $LANG['common'][102]."&nbsp;:&nbsp;";
+            $calendar->getFromDB($this->getValueAncestor("calendars_id", $entities_id));
+            echo $calendar->fields['name'];
+            echo "</td>";
+         } else {
+            echo "<td colspan='2'>";
+            echo "</td>";
+         }
          echo "</tr>";
       }
       

@@ -35,40 +35,75 @@
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
-   @since     2011
+   @since     2012
  
    ------------------------------------------------------------------------
  */
 
-
-define('GLPI_ROOT', '../../..');
-include (GLPI_ROOT . "/inc/includes.php");
-
-checkCentralAccess();
-
-commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins", 
-             "monitoring", "hostconfig");
-
-
-$pmHostconfig = new PluginMonitoringHostconfig();
-
-if (isset($_POST["update"])) {
-   if ($_POST['plugin_monitoring_commands_id'] != '-1'
-           OR $_POST['plugin_monitoring_checks_id'] != '-1'
-           OR $_POST['calendars_id'] != '-1'
-           OR $_POST['plugin_monitoring_realms_id'] != '-1') {
-   
-      if (isset($_POST['id'])) {
-         $pmHostconfig->update($_POST);
-      } else {
-         $pmHostconfig->add($_POST);
-      }      
-   } else if (isset($_POST['id'])) {
-      $pmHostconfig->delete($_POST);
-   }
-   glpi_header($_SERVER['HTTP_REFERER']);
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
 }
 
-commonFooter();
+class PluginMonitoringRealm extends CommonDropdown {
+
+   public $first_level_menu  = "plugins";
+   public $second_level_menu = "monitoring";
+
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['plugin_monitoring']['realms'][0];
+   }
+
+   function canCreate() {
+      return haveRight('computer', 'w');
+   }
+
+   function canView() {
+      return haveRight('computer', 'w');
+   }
+   
+   
+//   
+//   function getSearchOptions() {
+//      global $LANG;
+//
+//      $tab = array();
+//
+//      $tab['common'] = $LANG['plugin_fusioninventory']['menu'][5];
+//
+//      $tab[1]['table'] = $this->getTable();
+//      $tab[1]['field'] = 'name';
+//      $tab[1]['name'] = $LANG['common'][16];
+//      $tab[1]['datatype'] = 'itemlink';
+//
+//      $tab[3]['table']         = $this->getTable();
+//      $tab[3]['field']         = 'itemtype';
+//      $tab[3]['name']          = $LANG['common'][17];
+//      $tab[3]['massiveaction'] = false;
+//
+//      $tab[4]['table'] = $this->getTable();
+//      $tab[4]['field'] = 'username';
+//      $tab[4]['name'] = $LANG['login'][6];
+//
+//      return $tab;
+//   }
+
+   
+   
+   
+   function prepareInputForAdd($input) {
+      $input['name'] = preg_replace("/[^A-Za-z0-9]/","",$input['name']);
+      return $input;
+   }
+
+
+   
+   function prepareInputForUpdate($input) {
+      $input['name'] = preg_replace("/[^A-Za-z0-9]/","",$input['name']);
+      return $input;
+   }
+
+}
 
 ?>

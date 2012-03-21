@@ -242,6 +242,7 @@ CREATE TABLE `glpi_plugin_monitoring_hostconfigs` (
   `plugin_monitoring_commands_id` int(11) NOT NULL DEFAULT '0',
   `plugin_monitoring_checks_id` int(11) NOT NULL DEFAULT '0',
   `calendars_id` int(11) NOT NULL DEFAULT '0',
+  `plugin_monitoring_realms_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -259,6 +260,18 @@ CREATE TABLE `glpi_plugin_monitoring_logs` (
   `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_realms`;
+
+CREATE TABLE  `glpi_plugin_monitoring_realms` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `name` varchar(255) DEFAULT NULL,
+   `comment` text DEFAULT NULL COLLATE utf8_unicode_ci,
+   `date_mod` datetime DEFAULT NULL,
+   PRIMARY KEY (`id`)
+) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
 
 
 
@@ -445,3 +458,7 @@ CREATE TABLE `glpi_plugin_monitoring_weathermaplinks` (
   `bandwidth_out` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `glpi_plugin_monitoring_realms` 
+   (`id` ,`name` ,`comment` ,`date_mod`) VALUES (NULL , 'All', NULL , NULL);
+

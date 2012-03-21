@@ -97,6 +97,10 @@ echo "</th>";
 echo "<th rowspan='2'>";
 echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/contacttemplate.php'>".$LANG['plugin_monitoring']['contacttemplate'][0]."</a>";
 echo "</th>";
+
+echo "<th rowspan='2'>";
+echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/realm.php'>".$LANG['plugin_monitoring']['realms'][0]."</a>";
+echo "</th>";
 echo "</tr>";
 
 echo "<tr class='tab_bg_1'>";

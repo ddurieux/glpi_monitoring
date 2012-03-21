@@ -35,40 +35,15 @@
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
-   @since     2011
+   @since     2012
  
    ------------------------------------------------------------------------
  */
 
-
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkCentralAccess();
-
-commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins", 
-             "monitoring", "hostconfig");
-
-
-$pmHostconfig = new PluginMonitoringHostconfig();
-
-if (isset($_POST["update"])) {
-   if ($_POST['plugin_monitoring_commands_id'] != '-1'
-           OR $_POST['plugin_monitoring_checks_id'] != '-1'
-           OR $_POST['calendars_id'] != '-1'
-           OR $_POST['plugin_monitoring_realms_id'] != '-1') {
-   
-      if (isset($_POST['id'])) {
-         $pmHostconfig->update($_POST);
-      } else {
-         $pmHostconfig->add($_POST);
-      }      
-   } else if (isset($_POST['id'])) {
-      $pmHostconfig->delete($_POST);
-   }
-   glpi_header($_SERVER['HTTP_REFERER']);
-}
-
-commonFooter();
+$dropdown = new PluginMonitoringRealm();
+include (GLPI_ROOT . "/front/dropdown.common.form.php");
 
 ?>

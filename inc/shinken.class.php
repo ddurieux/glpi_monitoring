@@ -115,6 +115,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       $pmEntity      = new PluginMonitoringEntity();
       $pmHostconfig  = new PluginMonitoringHostconfig();
       $calendar      = new Calendar();
+      $pmRealm       = new PluginMonitoringRealm();
 
       $a_hosts = array();
       $i=0;
@@ -168,6 +169,11 @@ class PluginMonitoringShinken extends CommonDBTM {
                   $a_hosts[$i]['check_period'] = "24x7";
                }
 
+               $pmRealm->getFromDB($pmHostconfig->getValueAncestor('plugin_monitoring_realms_id', 
+                                                                                    $class->fields['entities_id'],
+                                                                                    $classname,
+                                                                                    $class->getID()));
+               $a_hosts[$i]['realm'] = $pmRealm->fields['name'];
                $a_hosts[$i]['contacts'] = '';
                $a_hosts[$i]['process_perf_data'] = '1';
                $a_hosts[$i]['notification_interval'] = '30';

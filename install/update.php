@@ -1069,6 +1069,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'calendars_id', 
                                  'calendars_id', 
                                  "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'plugin_monitoring_realms_id', 
+                                 'plugin_monitoring_realms_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable, 
                               'items_id', 
@@ -1084,6 +1088,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                               'calendars_id', 
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'plugin_monitoring_realms_id', 
                               "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
       
@@ -1148,7 +1155,55 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               'value', 
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
       $migration->migrationOneTable($newTable);
+ 
       
+      
+    /*
+    * Table glpi_plugin_monitoring_realms
+    */
+      $newTable = "glpi_plugin_monitoring_realms";
+      $insertrealm = 0;
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        int(11) NOT NULL AUTO_INCREMENT,
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+         $DB->query($query);
+         $insertrealm = 1;
+      }
+         $migration->changeField($newTable, 
+                                 'id', 
+                                 'id', 
+                                 "int(11) NOT NULL AUTO_INCREMENT");
+         $migration->changeField($newTable, 
+                                 'name', 
+                                 'name', 
+                                 "varchar(255) DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'comment', 
+                                 'comment', 
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->changeField($newTable, 
+                                 'date_mod', 
+                                 'date_mod', 
+                                 "datetime DEFAULT NULL");
+      $migration->migrationOneTable($newTable);
+         $migration->addField($newTable, 
+                              'name', 
+                              "varchar(255) DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'comment', 
+                              "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->addField($newTable, 
+                              'date_mod', 
+                              "datetime DEFAULT NULL");
+      $migration->migrationOneTable($newTable);
+      if ($insertrealm == '1') {
+         $query = "INSERT INTO `glpi_plugin_monitoring_realms` 
+            (`id` ,`name` ,`comment` ,`date_mod`) VALUES (NULL , 'All', NULL , NULL)";
+         $DB->query($query);
+      }
+         
       
       
     /*
@@ -1915,6 +1970,16 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    include (GLPI_ROOT . "/plugins/monitoring/inc/hostconfig.class.php");
    $pmHostconfig = new PluginMonitoringHostconfig();
    $pmHostconfig->initConfig();
+   
+   
+   if ($insertrealm == '1') {
+      // Insert into hostconfigs
+      $query = "UPDATE `glpi_plugin_monitoring_hostconfigs` 
+         SET `plugin_monitoring_realms_id` = '1'
+         WHERE `items_id` = '0'
+            AND `itemtype` = 'Entity'";
+      $DB->query($query);         
+   }
    
    
    

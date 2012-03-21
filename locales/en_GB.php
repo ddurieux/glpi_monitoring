@@ -180,4 +180,7 @@ $LANG['plugin_monitoring']['weathermap'][5]="Background image";
 $LANG['plugin_monitoring']['weathermap'][6]="Nodes and links";
 $LANG['plugin_monitoring']['weathermap'][7]="Node";
 
+$LANG['plugin_monitoring']['realms'][0]="Reamls";
+$LANG['plugin_monitoring']['realms'][1]="Reaml";
+
 ?>
