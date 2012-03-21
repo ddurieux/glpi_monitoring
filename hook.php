@@ -126,6 +126,12 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
          return $array;
          break;
       
+      case 'Central':
+         $array = array();
+         $array[0] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['servicescatalog'][0];
+         return $array;
+         break;
+      
    }
 
    return false;
@@ -165,6 +171,13 @@ function plugin_headings_actions_monitoring($item) {
          $array[0] = "plugin_headings_monitoring_entitytag";
          return $array;
          break;
+      
+      case 'Central':
+         $array = array();
+         $array[0] = "plugin_headings_monitoring_dashboadservicecatalog";
+         return $array;
+         break;
+         
       
    }
    return false;
@@ -231,6 +244,16 @@ function plugin_headings_monitoring_entitytag($item) {
    
    $pmHostconfig->showForm($item->getID(), "Entity");
    $pmEntity->showForm($item->fields['id']);
+}
+
+
+
+function plugin_headings_monitoring_dashboadservicecatalog($item) {
+   $pmServicescatalog   = new PluginMonitoringServicescatalog();
+   $pmDisplay           = new PluginMonitoringDisplay();
+   
+   $pmDisplay->displayCounters("Businessrules");
+   $pmServicescatalog->showBAChecks();   
 }
 
 
