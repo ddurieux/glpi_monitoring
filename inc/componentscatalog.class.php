@@ -125,7 +125,8 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          echo "<table  class='tab_cadre_fixe' style='width:158px;'>";
          echo "<tr class='tab_bg_1'>";
          echo "<th colspan='2' style='font-size:18px;' height='60'>";
-         echo $data['name'];
+         echo $data['name']."&nbsp;";
+         echo showToolTip($data['comment']);
          echo "</th>";
          echo "</tr>";
          
