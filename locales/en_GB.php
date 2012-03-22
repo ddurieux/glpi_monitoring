@@ -122,6 +122,7 @@ $LANG['plugin_monitoring']['service'][19]="State type";
 $LANG['plugin_monitoring']['service'][20]="Resource";
 $LANG['plugin_monitoring']['service'][21]="All resources";
 $LANG['plugin_monitoring']['service'][22]="Time in ms";
+$LANG['plugin_monitoring']['service'][23]="Resource deleted";
 
 $LANG['plugin_monitoring']['servicesuggest'][0]="Suggests";
 

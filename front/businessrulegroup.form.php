@@ -50,6 +50,16 @@ commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugi
              "monitoring", "businessrules");
 
 $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
+foreach ($_POST as $key=>$value) {
+   if (strstr($key, 'deletebusinessrules-')) {
+      $split = explode("-", $key);
+      $pmBusinessrule = new PluginMonitoringBusinessrule();
+      $pmBusinessrule->delete(array('id'=>$split[1]));
+      glpi_header($_SERVER['HTTP_REFERER']);
+   }
+}
+
+
 if (isset($_POST['update'])) {
    $pMonitoringBusinessrulegroup->update($_POST);
 } else if (isset($_POST['add'])

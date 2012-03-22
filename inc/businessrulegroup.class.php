@@ -153,30 +153,43 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
             echo "</div>";
 
 
-            echo "<table>";
+            echo "<table width='100%'>";
          $pmBusinessrule = new PluginMonitoringBusinessrule();
          $pmService = new PluginMonitoringService();
          $a_services = $pmBusinessrule->find("`plugin_monitoring_businessrulegroups_id`='".$servicescatalogs_id."'");
          foreach ($a_services as $gdata) {
-            $pmService->getFromDB($gdata['plugin_monitoring_services_id']);
+            if ($pmService->getFromDB($gdata['plugin_monitoring_services_id'])) {
 
-            $shortstate = PluginMonitoringDisplay::getState($pmService->fields['state'], $pmService->fields['state_type']);
+               $shortstate = PluginMonitoringDisplay::getState($pmService->fields['state'], $pmService->fields['state_type']);
 
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/>";
-            echo "</td>";
-            echo "<td>";
-            $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
-            $pmService->getFromDB($gdata["plugin_monitoring_services_id"]);
-            $pmComponentscatalog_Host->getFromDB($pmService->fields['plugin_monitoring_componentscatalogs_hosts_id']);
-            echo $pmService->getLink(1);
-            echo " ".$LANG['networking'][25]." ";
-            $itemtype2 = $pmComponentscatalog_Host->fields['itemtype'];
-            $item2 = new $itemtype2();
-            $item2->getFromDB($pmComponentscatalog_Host->fields['items_id']);
-            echo $item2->getLink(1);
-            echo "</td>";
+               echo "<tr class='tab_bg_1'>";
+               echo "<td>";
+               echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/>";
+               echo "</td>";
+               echo "<td>";
+               $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+               $pmService->getFromDB($gdata["plugin_monitoring_services_id"]);
+               $pmComponentscatalog_Host->getFromDB($pmService->fields['plugin_monitoring_componentscatalogs_hosts_id']);
+               echo $pmService->getLink(1);
+               echo " ".$LANG['networking'][25]." ";
+               $itemtype2 = $pmComponentscatalog_Host->fields['itemtype'];
+               $item2 = new $itemtype2();
+               $item2->getFromDB($pmComponentscatalog_Host->fields['items_id']);
+               echo $item2->getLink(1);
+               echo "</td>";
+               echo "<td>";
+               echo "<input type='submit' name='deletebusinessrules-".$gdata['id']."' value=\"".$LANG['buttons'][6]."\" class='submit'>";
+               echo "</td>";
+            } else {
+               // resource deleted
+               echo "<tr class='tab_bg_1'>";
+               echo "<td colspan='2' bgcolor='#ff0000'>";
+               echo $LANG['plugin_monitoring']['service'][23];
+               echo "</td>";
+               echo "<td>";
+               echo "<input type='submit' name='deletebusinessrules-".$gdata['id']."' value=\"".$LANG['buttons'][53]."\" class='submit'>";
+               echo "</td>";
+            }
          }
          echo "</tr>";
       }  

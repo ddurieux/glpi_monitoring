@@ -415,6 +415,28 @@ return;
 
       return $rand;
    }
+   
+   
+   
+
+   static function removeBusinessruleonDeletegroup($item) {
+      global $DB;
+      
+      $pmBusinessrule = new PluginMonitoringBusinessrule();
+      
+      
+      
+      $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+      $pmComponentscatalog_rule = new PluginMonitoringComponentscatalog_rule(); 
+      
+      $query = "SELECT * FROM `glpi_plugin_monitoring_businessrules`
+         WHERE `plugin_monitoring_businessrulegroups_id`='".$item->fields["id"]."'";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         $pmBusinessrule->delete($data);
+      }
+   }
+   
 }
 
 ?>
