@@ -114,6 +114,13 @@ class PluginMonitoringService extends CommonDBTM {
       $tab[6]['field'] = 'completename';
       $tab[6]['name']  = $LANG['entity'][0];
       
+      $tab[7]['table'] = "glpi_plugin_monitoring_components";
+      $tab[7]['field'] = 'name';
+      $tab[7]['linkfield'] = 'plugin_monitoring_components_id';
+      $tab[7]['name'] = $LANG['plugin_monitoring']['component'][6];
+      $tab[7]['datatype'] = 'itemlink';
+      $tab[7]['itemlink_type']  = 'PluginMonitoringComponent';
+      
       $tab[20]['table'] = $this->getTable();
       $tab[20]['field'] = 'Computer';
       $tab[20]['name']  = $LANG['common'][1]." > ".$LANG['help'][25];
@@ -128,7 +135,7 @@ class PluginMonitoringService extends CommonDBTM {
       $tab[22]['field'] = 'NetworkEquipment';
       $tab[22]['name']  = $LANG['common'][1]." > ".$LANG['help'][26];
       $tab[22]['searchtype'] = 'equals';
-      
+     
       return $tab;
    }
 

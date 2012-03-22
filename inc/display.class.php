@@ -279,16 +279,20 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $leftjoin = '';
       if (isset($_SESSION['plugin_monitoring']['service']['field'])) {
          foreach ($_SESSION['plugin_monitoring']['service']['field'] as $key=>$value) {
-            if ($key == 'Computer'
-                    OR $key == 'Printer'
-                    OR $key == 'NetworkEquipment') {
-               $leftjoin = "LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
+            if ($value == '20'
+                    OR $value == '21'
+                    OR $value == '22') {
+               $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
                   ON `plugin_monitoring_componentscatalogs_hosts_id` = 
-                  `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`";
+                  `glpi_plugin_monitoring_componentscatalogs_hosts`.`id` ";
+            } else if ($value == '7') {
+               $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_components`
+                  ON `plugin_monitoring_components_id` = 
+                  `glpi_plugin_monitoring_components`.`id` ";
             }
          }
       }
-      
+
       $query = "SELECT `".getTableForItemType("PluginMonitoringService")."`.* FROM `".getTableForItemType("PluginMonitoringService")."`
          ".$leftjoin."
          ".$where."
