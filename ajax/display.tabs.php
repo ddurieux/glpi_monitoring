@@ -80,6 +80,9 @@ switch($_REQUEST['glpi_tab']) {
       Search::showGenericSearch("PluginMonitoringService", $_SESSION['plugin_monitoring']['service']);
 
       $pmDisplay->showBoard(950);
+      if (isset($_SESSION['glpisearch']['PluginMonitoringService']['reset'])) {
+         unset($_SESSION['glpisearch']['PluginMonitoringService']['reset']);
+      }
       break;
 
    case 4:

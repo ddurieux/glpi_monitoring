@@ -307,6 +307,17 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $numrows = $DB->numrows($result);
       $parameters = '';
       
+      $globallinkto = Search::getArrayUrlLink("field",$_GET['field']).
+                Search::getArrayUrlLink("link",$_GET['link']).
+                Search::getArrayUrlLink("contains",$_GET['contains']).
+                Search::getArrayUrlLink("searchtype",$_GET['searchtype']).
+                Search::getArrayUrlLink("field2",$_GET['field2']).
+                Search::getArrayUrlLink("contains2",$_GET['contains2']).
+                Search::getArrayUrlLink("itemtype2",$_GET['itemtype2']).
+                Search::getArrayUrlLink("searchtype2",$_GET['searchtype2']).
+                Search::getArrayUrlLink("link2",$_GET['link2']);
+
+      $parameters = "sort=".$_GET['sort']."&amp;order=".$_GET['order'].$globallinkto;
       printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php", $parameters);
 
       $limit = $numrows;
