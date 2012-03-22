@@ -90,6 +90,11 @@ function pluginMonitoringInstall($version) {
 function pluginMonitoringUninstall() {
    global $DB;
 
+   if (file_exists(GLPI_PLUGIN_DOC_DIR.'/monitoring')) {
+      $pmConfig = new PluginMonitoringConfig();
+      $pmConfig->rrmdir(GLPI_PLUGIN_DOC_DIR.'/fusioninventory/machines');
+   }
+   
    $query = "SHOW TABLES;";
    $result=$DB->query($query);
    while ($data=$DB->fetch_array($result)) {
