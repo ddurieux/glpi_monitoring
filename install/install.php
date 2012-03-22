@@ -75,6 +75,9 @@ function pluginMonitoringInstall($version) {
    if (!is_dir(GLPI_PLUGIN_DOC_DIR.'/monitoring/templates')) {
       mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring/templates");
    }
+   if (!is_dir(GLPI_PLUGIN_DOC_DIR.'/monitoring/weathermapbg')) {
+      mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermapbg");
+   }
    
    CronTask::Register('PluginMonitoringServiceevent', 'updaterrd', '300', 
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));

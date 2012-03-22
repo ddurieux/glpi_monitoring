@@ -50,8 +50,15 @@ commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugi
 
 
 $pmWeathermap = new PluginMonitoringWeathermap();
-
-if (isset ($_POST["add"])) {
+//print_r($_POST);exit;
+if (isset($_POST['deletepic_x'])) {
+   // Delete picture
+   $input = array();
+   $input['id'] = $_POST['id'];
+   $input['background'] = '';
+   $pmWeathermap->update($input);
+   glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset ($_POST["add"])) {
    $pmWeathermap->add($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["update"])) {

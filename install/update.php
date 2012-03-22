@@ -79,6 +79,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    if (!is_dir(GLPI_PLUGIN_DOC_DIR.'/monitoring/templates')) {
       mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring/templates");
    }
+   if (!is_dir(GLPI_PLUGIN_DOC_DIR.'/monitoring/weathermapbg')) {
+      mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermapbg");
+   }
    
 
     /*

@@ -108,6 +108,9 @@ class PluginMonitoringWeathermap extends CommonDBTM {
       $this->getFromDB($weathermaps_id);
       
       echo "\n";
+      if ($this->fields['background'] != '') {
+         echo "BACKGROUND ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermapbg/".$this->fields['background']."\n";
+      }
       // image file to generate
       echo "IMAGEOUTPUTFILE test.png\n";
       echo "\n";
@@ -241,6 +244,7 @@ echo "
       }
      
       $this->showTabs($options);
+      $options['formoptions'] = " enctype='multipart/form-data'";
       $this->showFormHeader($options);
 
       echo "<tr>";
@@ -267,6 +271,9 @@ echo "
          echo "<input type='file' size='25' value='' name='background'/>";
       } else {
          echo $this->fields['background'];
+         echo "&nbsp;";
+         echo "<input type='image' name='deletepic' value='deletepic' class='submit' src='".$CFG_GLPI["root_doc"]."/pics/delete.png' >";
+
       }
       echo "</td>";
       echo "<td>".$LANG['plugin_monitoring']['weathermap'][4]."&nbsp;:</td>";
@@ -306,12 +313,12 @@ echo "
       echo "<tr class='tab_bg_1'>";
       echo "<td valign='top'>";      
       if ($this->fields['background'] == '') {
-         echo '<div id="pointer_div" onclick="point_it(event)" style = "background-color:grey;width:'.$this->fields['width'].'px;height:'.$this->fields['height'].'px;">
+         echo '<div id="pointer_div" onclick="point_it(event)" style = "background-color:grey;">
             <div id="cross" style="position:relative;visibility:hidden;z-index:2;"></div>
             '.$map.'
             </div>';
       } else {
-         echo '<div id="pointer_div" onclick="point_it(event)" style = "background-image:url(\''.$this->fields['background'].'\');width:'.$this->fields['width'].'px;height:'.$this->fields['height'].'px;">
+         echo '<div id="pointer_div" onclick="point_it(event)" style = "background-image:url(\''.$this->fields['background'].'\');">
             <img id="cross" style="position:relative;visibility:hidden;z-index:2;">
             '.$map.'</div>';
       }
@@ -576,7 +583,22 @@ function point_it(event){
                                     AND `items_id`='".$networkPort->fields['items_id']."'", "", 1);
                                  if (count($a_nodes) > 0) {
                                     $a_node = current($a_nodes);
+                                    
+         $queryl = "SELECT `plugin_monitoring_weathermapnodes_id_1`
+            FROM `glpi_plugin_monitoring_weathermaplinks`
+            
+            LEFT JOIN `glpi_plugin_monitoring_weathermapnodes`
+               ON `glpi_plugin_monitoring_weathermapnodes`.`id` = `plugin_monitoring_weathermapnodes_id_1`
+
+            WHERE ((`plugin_monitoring_weathermapnodes_id_1`='".$data['id']."'
+                        AND `plugin_monitoring_weathermapnodes_id_2`='".$a_node['id']."')
+                     OR (`plugin_monitoring_weathermapnodes_id_1`='".$a_node['id']."'
+                        AND `plugin_monitoring_weathermapnodes_id_2`='".$data['id']."'))
+               AND `plugin_monitoring_weathermaps_id` = '".$weathermaps_id."'";
+         $resultl = $DB->query($queryl);
+         if ($DB->numrows($resultl) == '0') {
                                     $device_connected = $pmWeathermapnode->getNodeName($a_node['id']);
+         }
                                  }
                               }
                            }                        
@@ -743,7 +765,29 @@ function point_it(event){
       system("/usr/local/bin/php ".GLPI_ROOT."/plugins/monitoring/lib/weathermap/weathermap ".
          "--config 'http://".$_SERVER['SERVER_NAME'].$CFG_GLPI['root_doc']."/plugins/monitoring/front/weathermap_conf.php?id=".$weathermaps_id."' ".
          "--output '".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png'");
+   }
+   
+   
+   
+   function prepareInputForUpdate($input) {
 
+      if (isset($_FILES['background']['type']) && !empty($_FILES['background']['type'])) {
+         $mime = $_FILES['background']['type'];
+      }
+      if (isset($mime)) {
+         if ($mime == 'image/png'
+                 OR $mime == 'image/jpg'
+                 OR $mime == 'image/jpeg') {
+            
+            // Upload file
+            copy($_FILES['background']['tmp_name'], GLPI_PLUGIN_DOC_DIR."/monitoring/weathermapbg/".$_FILES['background']['name']);            
+            $input['background'] = $_FILES['background']['name'];
+            unlink($_FILES['background']['tmp_name']);
+         } else if (isset($input['background'])){
+            unset($input['background']);
+         }
+      }
+      return $input;
    }
    
 }
