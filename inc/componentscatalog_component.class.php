@@ -207,7 +207,11 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
+         $itemtype = $data['itemtype'];
+         $item = new $itemtype();
+         $item->getFromDB($data['items_id']);
          $input = array();
+         $input['entities_id'] = $item->fields['entities_id'];
          $input['plugin_monitoring_componentscatalogs_hosts_id'] = $data['id'];
          $input['plugin_monitoring_components_id'] = $components_id;
          $input['name'] = Dropdown::getDropdownName("glpi_plugin_monitoring_components", $components_id);
