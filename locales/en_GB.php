@@ -128,6 +128,7 @@ $LANG['plugin_monitoring']['servicesuggest'][0]="Suggests";
 
 $LANG['plugin_monitoring']['servicescatalog'][0]="Services catalog";
 $LANG['plugin_monitoring']['servicescatalog'][1]="Degraded mode";
+$LANG['plugin_monitoring']['servicescatalog'][2]="Services catalog with resources not available";
 
 $LANG['plugin_monitoring']['businessrule'][0]="Business rules";
 $LANG['plugin_monitoring']['businessrule'][2]="2 of";

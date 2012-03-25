@@ -60,8 +60,8 @@ if (isset($_POST['sessionupdate'])) {
 
 echo '<meta http-equiv ="refresh" content="'.$_SESSION['glpi_plugin_monitoring']['_refresh'].'">';
 
-$pmLog = new PluginMonitoringLog();
-$pmLog->getModifications();
+$pmMessage = new PluginMonitoringMessage();
+$pmMessage->getMessages();
 
 $_SESSION['plugin_monitoring']['service'] = $_GET;
 

@@ -91,48 +91,6 @@ class PluginMonitoringLog extends CommonDBTM {
 
 
    
-   /**
-    * Get modifications of resources (if have modifications);
-    */
-   function getModifications() {
-      global $DB,$LANG;
-      
-      // Get id of last Shinken restart
-      $id_restart = 0;
-      $a_restarts = $this->find("`action`='restart'", "`id` DESC", 1);
-      if (count($a_restarts) > 0) {
-         $a_restart = current($a_restarts);
-         $id_restart = $a_restart['id'];
-      }
-      // get number of modifications
-      $nb_delete  = 0;
-      $nb_add     = 0;
-      $nb_delete = countElementsInTable($this->getTable(), "`id` > '".$id_restart."'
-         AND `action`='delete'");
-      $nb_add = countElementsInTable($this->getTable(), "`id` > '".$id_restart."'
-         AND `action`='add'");
-      
-      if ($nb_delete > 0 OR $nb_add > 0) {
-         echo "<table class='tab_cadre' width='600'>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<th><font class='red'>";
-         echo $LANG['plugin_monitoring']['log'][1]."<br/>";
-         if ($nb_add > 0) {
-            echo $nb_add." ".$LANG['plugin_monitoring']['log'][2]."<br/>";
-         }
-         if ($nb_delete > 0) {
-            echo $nb_delete." ".$LANG['plugin_monitoring']['log'][3]."<br/>";
-         }
-         echo $LANG['plugin_monitoring']['log'][4];
-         echo "</font></th>";
-         echo "</tr>";
-         echo "</table>";
-         echo "<br/>";
-      }
-   }
-   
-   
-   
    static function cronCleanlogs() {
       global $DB;
 
