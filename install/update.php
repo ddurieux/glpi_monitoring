@@ -959,6 +959,138 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       
       
+
+    /*
+    * Table glpi_plugin_monitoring_displayviews
+    */
+      $newTable = "glpi_plugin_monitoring_displayviews";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+         $DB->query($query);
+      }
+         $migration->changeField($newTable, 
+                                 'id', 
+                                 'id', 
+                                 "int(11) NOT NULL AUTO_INCREMENT");
+         $migration->changeField($newTable, 
+                                 'name', 
+                                 'name', 
+                                 "varchar(255) DEFAULT NULL");         
+         $migration->changeField($newTable, 
+                                 'entities_id', 
+                                 'entities_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");         
+         $migration->changeField($newTable, 
+                                 'is_recursive', 
+                                 'is_recursive', 
+                                 "tinyint(1) NOT NULL DEFAULT '0'");         
+         $migration->changeField($newTable, 
+                                 'is_active', 
+                                 'is_active', 
+                                 "tinyint(1) NOT NULL DEFAULT '0'");        
+         $migration->changeField($newTable, 
+                                 'users_id', 
+                                 'users_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");         
+         $migration->changeField($newTable, 
+                                 'counter', 
+                                 'counter', 
+                                 "varchar(255) DEFAULT NULL");         
+         $migration->changeField($newTable, 
+                                 'in_central', 
+                                 'in_central', 
+                                 "tinyint(1) NOT NULL DEFAULT '0'");         
+      $migration->migrationOneTable($newTable);
+         $migration->addField($newTable, 
+                              'name', 
+                              "varchar(255) DEFAULT NULL");         
+         $migration->addField($newTable, 
+                              'entities_id', 
+                              "int(11) NOT NULL DEFAULT '0'");         
+         $migration->addField($newTable, 
+                              'is_recursive', 
+                              "tinyint(1) NOT NULL DEFAULT '0'");          
+         $migration->addField($newTable, 
+                              'is_active', 
+                              "tinyint(1) NOT NULL DEFAULT '0'");        
+         $migration->addField($newTable, 
+                              'users_id', 
+                              "int(11) NOT NULL DEFAULT '0'");         
+         $migration->addField($newTable, 
+                              'counter', 
+                              "varchar(255) DEFAULT NULL");         
+         $migration->addField($newTable, 
+                              'in_central', 
+                              "tinyint(1) NOT NULL DEFAULT '0'"); 
+      $migration->migrationOneTable($newTable);
+      
+      
+      
+    /*
+    * Table glpi_plugin_monitoring_displayviews_items
+    */
+      $newTable = "glpi_plugin_monitoring_displayviews_items";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+         $DB->query($query);
+      }
+         $migration->changeField($newTable, 
+                                 'id', 
+                                 'id', 
+                                 "int(11) NOT NULL AUTO_INCREMENT");
+         $migration->changeField($newTable, 
+                                 'plugin_monitoring_displayviews_id', 
+                                 'plugin_monitoring_displayviews_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");      
+         $migration->changeField($newTable, 
+                                 'x', 
+                                 'x', 
+                                 "int(5) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'y', 
+                                 'y', 
+                                 "int(5) NOT NULL DEFAULT '0'");   
+         $migration->changeField($newTable, 
+                                 'items_id', 
+                                 'items_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");   
+         $migration->changeField($newTable, 
+                                 'itemtype', 
+                                 'itemtype', 
+                                 "varchar(100) DEFAULT NULL");   
+         $migration->changeField($newTable, 
+                                 'extra_infos', 
+                                 'extra_infos', 
+                                 "varchar(255) DEFAULT NULL");              
+      $migration->migrationOneTable($newTable);
+         $migration->addField($newTable, 
+                              'plugin_monitoring_displayviews_id', 
+                              "int(11) NOT NULL DEFAULT '0'");      
+         $migration->addField($newTable, 
+                              'column', 
+                              "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'position', 
+                              "tinyint(2) NOT NULL DEFAULT '0'");   
+         $migration->addField($newTable, 
+                              'items_id', 
+                              "int(11) NOT NULL DEFAULT '0'");   
+         $migration->addField($newTable, 
+                              'itemtype', 
+                              "varchar(100) DEFAULT NULL");   
+         $migration->addField($newTable, 
+                              'extra_infos', 
+                              "varchar(255) DEFAULT NULL"); 
+      $migration->migrationOneTable($newTable);
+      
+      
+      
    /*
     * Table glpi_plugin_monitoring_entities
     */

@@ -208,6 +208,37 @@ CREATE TABLE `glpi_plugin_monitoring_configs` (
 
 
 
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_displayviews`;
+
+CREATE TABLE `glpi_plugin_monitoring_displayviews` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `name` varchar(255) DEFAULT NULL,
+   `entities_id` int(11) NOT NULL DEFAULT '0',
+   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+   `is_active` tinyint(1) NOT NULL DEFAULT '0',
+   `users_id` int(11) NOT NULL DEFAULT '0',
+   `counter` varchar(255) DEFAULT NULL,
+   `in_central` tinyint(1) NOT NULL DEFAULT '0',
+   PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_displayviews_items`;
+
+CREATE TABLE `glpi_plugin_monitoring_displayviews_items` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `plugin_monitoring_displayviews_id` int(11) NOT NULL DEFAULT '0',
+   `x` int(5) NOT NULL DEFAULT '0',
+   `y` int(5) NOT NULL DEFAULT '0',
+   `items_id` int(11) NOT NULL DEFAULT '0',
+   `itemtype` varchar(100) DEFAULT NULL,
+   `extra_infos` varchar(255) DEFAULT NULL,
+   PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_entities`;
 
 CREATE TABLE `glpi_plugin_monitoring_entities` (

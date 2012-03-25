@@ -47,6 +47,12 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringWeathermap extends CommonDBTM {
    
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['plugin_monitoring']['weathermap'][0];
+   }
+   
    function canCreate() {
       return haveRight('computer', 'w');
    }
@@ -82,7 +88,8 @@ class PluginMonitoringWeathermap extends CommonDBTM {
 
       $ong = array();
       
-      if ($_GET['id'] > 0) {
+      if (isset($_GET['id'])
+              AND $_GET['id'] > 0) {
          $ong[1] = $LANG['plugin_monitoring']['weathermap'][0];
          $ong[2] = $LANG['plugin_monitoring']['weathermap'][6];
       }
@@ -311,7 +318,7 @@ echo "
       $map = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=weathermap-".$weathermaps_id.".png'/>";
       
       echo "<tr class='tab_bg_1'>";
-      echo "<td valign='top'>";      
+      echo "<td valign='top' width='10'>";      
       if ($this->fields['background'] == '') {
          echo '<div id="pointer_div" onclick="point_it(event)" style = "background-color:grey;">
             <div id="cross" style="position:relative;visibility:hidden;z-index:2;"></div>
@@ -788,6 +795,15 @@ function point_it(event){
          }
       }
       return $input;
+   }
+   
+   
+   
+   function showWidget($id) {
+      global $LANG, $DB, $CFG_GLPI;
+   
+      $this->generateWeathermap($id);
+      return '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/send.php?file=weathermap-'.$id.'.png"/>';
    }
    
 }

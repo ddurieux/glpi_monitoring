@@ -50,12 +50,19 @@ class PluginMonitoringDisplay extends CommonDBTM {
    function defineTabs($options=array()){
       global $LANG,$CFG_GLPI;
 
+      $pmDisplayview = new PluginMonitoringDisplayview();
+      
       $ong = array();
       $ong[1] = $LANG['plugin_monitoring']['servicescatalog'][0];
       $ong[2] = $LANG['plugin_monitoring']['componentscatalog'][0];
       $ong[3] = $LANG['plugin_monitoring']['service'][21];
-//      $ong[4] = $LANG['plugin_monitoring']['host'][0];
-//      $ong[5] = $LANG['plugin_monitoring']['service'][0];
+
+      $i = 5;
+      $a_views = $pmDisplayview->getViews();
+      foreach ($a_views as $views_id=>$name) {
+         $ong[$i] = $name;
+         $i++;
+      }
       return $ong;
    }
    

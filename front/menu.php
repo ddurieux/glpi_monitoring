@@ -67,12 +67,16 @@ echo "<br/>";
 
 echo "<table class='tab_cadre' width='950'>";
 echo "<tr class='tab_bg_1'>";
-echo "<th align='center' height='50' width='50%'>";
+echo "<th align='center' height='50' width='33%'>";
 echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicescatalog.php'>".$LANG['plugin_monitoring']['servicescatalog'][0]."</a>";
 echo "</th>";
 
-echo "<th>";
+echo "<th width='33%'>";
 echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/weathermap.php'>".$LANG['plugin_monitoring']['weathermap'][0]."</a>";
+echo "</th>";
+
+echo "<th>";
+echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/displayview.php'>".$LANG['plugin_monitoring']['displayview'][0]."</a>";
 echo "</th>";
 echo "</tr>";
 echo "</table>";

@@ -47,6 +47,13 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringService extends CommonDBTM {
 
 
+   static function getTypeName() {
+      global $LANG;
+
+      return $LANG['plugin_monitoring']['service'][0];
+   }
+   
+   
    function canCreate() {
       return haveRight('computer', 'w');
    }
@@ -672,6 +679,24 @@ class PluginMonitoringService extends CommonDBTM {
       $pmLog->add($input);
    }
 
+   
+   function showWidget($id, $time) {
+      global $LANG, $DB, $CFG_GLPI;
+      
+      $pmRrdtool = new PluginMonitoringRrdtool();
+      $pmComponent = new PluginMonitoringComponent();
+      
+      $this->getFromDB($id);
+      $pmComponent->getFromDB($this->fields['plugin_monitoring_components_id']);
+      
+      $pmRrdtool->displayGLPIGraph($pmComponent->fields['graph_template'], 
+                            "PluginMonitoringService", 
+                            $id, 
+                            "0", 
+                            $time);
+      return '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/send.php?file=PluginMonitoringService-'.$id.'-'.$time.'0.gif"/>';
+      
+   }
    
 }
 

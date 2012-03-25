@@ -139,9 +139,6 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    function showBAChecks() {
       global $CFG_GLPI,$LANG;
       
-      $pMonitoringBusinessrule = new PluginMonitoringBusinessrule();
-      $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
-      $pMonitoringService = new PluginMonitoringService();
       echo "<table class='tab_cadre' width='100%'>";
       echo "<tr class='tab_bg_4' style='background: #cececc;'>";
       
@@ -149,116 +146,8 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       foreach ($a_ba as $data) {
          echo "<td>";
 
-         echo "<table  class='tab_cadre_fixe' style='width:200px;height:200px'>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<th colspan='2' style='font-size:20px;' height='50'>";
-         echo $data['name'];
-         echo "</th>";
-         echo "</tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>";
-         echo $LANG['state'][0]."&nbsp;:";
-         echo "</td>";
-         echo "<td width='40'>";
-         switch($data['state']) {
-
-            case 'UP':
-            case 'OK':
-               echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_40.png'/>";
-               break;
-
-            case 'DOWN':
-            case 'UNREACHABLE':
-            case 'CRITICAL':
-            case 'DOWNTIME':
-               echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_40.png'/>";
-               break;
-
-            case 'WARNING':
-            case 'UNKNOWN':
-            case 'RECOVERY':
-            case 'FLAPPING':
-            case '':
-               echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_40.png'/>";
-               break;
-
-         }
-         echo "</td>";
-         echo "</tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>";
-         echo $LANG['plugin_monitoring']['servicescatalog'][1]."&nbsp;:";
-         echo "</td>";
-         echo "<td width='40' align='center'>";
-         $a_group = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_servicescatalogs_id`='".$data['id']."'");
-         $a_gstate = array();
-         foreach ($a_group as $gdata) {
-            $a_brules = $pMonitoringBusinessrule->find("`plugin_monitoring_businessrulegroups_id`='".$gdata['id']."'");
-            $state = array();
-            $state['OK'] = 0;
-            $state['WARNING'] = 0;
-            $state['CRITICAL'] = 0;
-            foreach ($a_brules as $brulesdata) {
-               if ($pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id'])) {
-                  switch($pMonitoringService->fields['state']) {
-
-                     case 'UP':
-                     case 'OK':
-                        $state['OK']++;
-                        break;
-
-                     case 'DOWN':
-                     case 'UNREACHABLE':
-                     case 'CRITICAL':
-                     case 'DOWNTIME':
-                        $state['CRITICAL']++;
-                        break;
-
-                     case 'WARNING':
-                     case 'UNKNOWN':
-                     case 'RECOVERY':
-                     case 'FLAPPING':
-                        $state['WARNING']++;
-                        break;
-
-                  }
-               }
-            }
-            if ($state['CRITICAL'] >= 1) {
-               $a_gstate[$gdata['id']] = "CRITICAL";
-            } else if ($state['WARNING'] >= 1) {
-               $a_gstate[$gdata['id']] = "WARNING";
-            } else {
-               $a_gstate[$gdata['id']] = "OK";
-            }            
-
-         }
-         $state = array();
-         $state['OK'] = 0;
-         $state['WARNING'] = 0;
-         $state['CRITICAL'] = 0;
-         foreach ($a_gstate as $value) {
-            $state[$value]++;
-         }
-         $color = 'green';
-         if ($state['CRITICAL'] > 0) {
-            $color = 'red';
-         } else if ($state['WARNING'] > 0) {
-            $color = 'orange';
-         }
-         echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$color."_32.png' />";
-         echo "</td>";
-         echo "</tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2' align='center'>";
-         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicescatalog.form.php?id=".$data['id']."&detail=1'>Détail</a>";
-         echo "</td>";
-         echo "</tr>";
-
-         echo "</table>";
+         echo $this->showWidget($data['id']);
+         
 
          echo "</td>";
       }      
@@ -361,6 +250,129 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    }
    
    
+   
+   function showWidget($id) {
+      global $LANG, $DB, $CFG_GLPI;
+
+      $pMonitoringBusinessrule = new PluginMonitoringBusinessrule();
+      $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
+      $pMonitoringService = new PluginMonitoringService();
+
+      $this->getFromDB($id);
+      $data = $this->fields;
+      $input = '';
+      $input .= '<table  class="tab_cadre_fixe" style="width:200px;height:200px">';
+      $input .= '<tr class="tab_bg_1">';
+      $input .= '<th colspan="2" style="font-size:20px;" height="50">';
+      $input .= $data['name'];
+      $input .= '</th>';
+      $input .= '</tr>';
+
+      $input .= '<tr class="tab_bg_1">';
+      $input .= '<td>';
+      $input .= $LANG['state'][0]."&nbsp;:";
+      $input .= '</td>';
+      $input .= '<td width="40">';
+      switch($data['state']) {
+
+         case 'UP':
+         case 'OK':
+            $input .= '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/box_green_40.png"/>';
+            break;
+
+         case 'DOWN':
+         case 'UNREACHABLE':
+         case 'CRITICAL':
+         case 'DOWNTIME':
+            $input .= '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/box_red_40.png"/>';
+            break;
+
+         case 'WARNING':
+         case 'UNKNOWN':
+         case 'RECOVERY':
+         case 'FLAPPING':
+         case '':
+            $input .= '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/box_orange_40.png"/>';
+            break;
+
+      }
+      $input .= '</td>';
+      $input .= '</tr>';
+
+      $input .= '<tr class="tab_bg_1">';
+      $input .= '<td>';
+      $input .= $LANG['plugin_monitoring']['servicescatalog'][1]."&nbsp;:";
+      $input .= '</td>';
+      $input .= '<td width="40" align="center">';
+      $a_group = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_servicescatalogs_id`='".$data['id']."'");
+      $a_gstate = array();
+      foreach ($a_group as $gdata) {
+         $a_brules = $pMonitoringBusinessrule->find("`plugin_monitoring_businessrulegroups_id`='".$gdata['id']."'");
+         $state = array();
+         $state['OK'] = 0;
+         $state['WARNING'] = 0;
+         $state['CRITICAL'] = 0;
+         foreach ($a_brules as $brulesdata) {
+            if ($pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id'])) {
+               switch($pMonitoringService->fields['state']) {
+
+                  case 'UP':
+                  case 'OK':
+                     $state['OK']++;
+                     break;
+
+                  case 'DOWN':
+                  case 'UNREACHABLE':
+                  case 'CRITICAL':
+                  case 'DOWNTIME':
+                     $state['CRITICAL']++;
+                     break;
+
+                  case 'WARNING':
+                  case 'UNKNOWN':
+                  case 'RECOVERY':
+                  case 'FLAPPING':
+                     $state['WARNING']++;
+                     break;
+
+               }
+            }
+         }
+         if ($state['CRITICAL'] >= 1) {
+            $a_gstate[$gdata['id']] = "CRITICAL";
+         } else if ($state['WARNING'] >= 1) {
+            $a_gstate[$gdata['id']] = "WARNING";
+         } else {
+            $a_gstate[$gdata['id']] = "OK";
+         }            
+
+      }
+      $state = array();
+      $state['OK'] = 0;
+      $state['WARNING'] = 0;
+      $state['CRITICAL'] = 0;
+      foreach ($a_gstate as $value) {
+         $state[$value]++;
+      }
+      $color = 'green';
+      if ($state['CRITICAL'] > 0) {
+         $color = 'red';
+      } else if ($state['WARNING'] > 0) {
+         $color = 'orange';
+      }
+      $input .= '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/box_'.$color.'_32.png" />';
+      $input .= '</td>';
+      $input .= '</tr>';
+
+      $input .= '<tr class="tab_bg_1">';
+      $input .= '<td colspan="2" align="center">';
+      $input .= '<a href="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/servicescatalog.form.php?id='.$data['id'].'&detail=1">Détail</a>';
+      $input .= '</td>';
+      $input .= '</tr>';
+
+      $input .= '</table>';
+      return $input;
+   }
 }
 
 ?>

@@ -43,65 +43,13 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
+checkCentralAccess();
 
-if (!isset($_POST["id"])) {
-   exit();
-}
-$pmDisplay = new PluginMonitoringDisplay();
-$pmBusinessrule = new PluginMonitoringBusinessrule();
-
-$pmDisplayview = new PluginMonitoringDisplayview();
-$a_views = $pmDisplayview->getViews();
-
-switch($_REQUEST['glpi_tab']) {
-   case -1 :
-
-      break;
-
-   case 1 :
-      $pmServicescatalog = new PluginMonitoringServicescatalog();
-      $pmDisplay->displayCounters("Businessrules");
-      $pmServicescatalog->showBAChecks();
-      break;
-   
-   case 2:
-      $pmComponentscatalog = new PluginMonitoringComponentscatalog();
-      $pmDisplay->displayCounters("Componentscatalog");
-      $pmComponentscatalog->showChecks();
-      break;
-
-   case 3:
-      $pmDisplay->displayCounters("Ressources");
-      // Manage search
-      $_GET = $_SESSION['plugin_monitoring']['service'];
-      if (isset($_GET['reset'])) {
-         unset($_SESSION['glpisearch']['PluginMonitoringService']);
-      }
-      Search::manageGetValues("PluginMonitoringService");
-      Search::showGenericSearch("PluginMonitoringService", $_SESSION['plugin_monitoring']['service']);
-
-      $pmDisplay->showBoard(950);
-      if (isset($_SESSION['glpisearch']['PluginMonitoringService']['reset'])) {
-         unset($_SESSION['glpisearch']['PluginMonitoringService']['reset']);
-      }
-      break;
+commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
+             "monitoring", "displayview");
 
 
-   default :
-      $i = 5;
-      foreach ($a_views as $views_id=>$name) {
-         if ($_REQUEST['glpi_tab'] == $i) {
-            $pmDisplayview_item = new PluginMonitoringDisplayview_item();
-            $pmDisplayview_item->view($views_id);
-         }
-         $i++;
-      }
-      break;
+Search::show('PluginMonitoringDisplayview');
 
-}
-
-ajaxFooter();
-
+commonFooter();
 ?>

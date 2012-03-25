@@ -46,44 +46,27 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if (class_exists($_POST["itemtype"])) {
-   $table = getTableForItemType($_POST["itemtype"]);
-
-   $query = "SELECT `$table`.`name`, 
-                    `".$table."`.`id`
-                        
-             FROM `".getTableForItemType("PluginMonitoringService")."`
-             LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts` 
-                  ON `plugin_monitoring_componentscatalogs_hosts_id` 
-                      = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
-             LEFT JOIN `$table` ON `$table`.`id` = `items_id`          
-             WHERE `itemtype` = '".$_POST["itemtype"]."'
-             ORDER BY `$table`.`name`";
-   $result = $DB->query($query);
-   $a_hosts = array();
-   $a_hosts[0] = DROPDOWN_EMPTY_VALUE;
-   while ($data = $DB->fetch_array($result)) {
-      $a_hosts[$data['id']] = $data['name'];
-   }
-   $rand = Dropdown::showFromArray("hosts", $a_hosts);
-
-   $selectgraph = 0;
-   if (isset($_POST['selectgraph'])) {
-      $selectgraph = $_POST['selectgraph'];
-   }
-   
-   $params = array('hosts'           => '__VALUE__',
-                   'entity_restrict' => $_POST["entity_restrict"],
-                   'itemtype'        => $_POST['itemtype'],
-                   'selectgraph'     => $selectgraph,
-                   'rand'            => $rand,
-                   'myname'          => "items");
-
-   ajaxUpdateItemOnSelectEvent("dropdown_hosts".$rand, "show_items$rand",
-                               $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownServiceHost.php",
-                               $params);
-
-   echo "<span id='show_items$rand'><input type='hidden' name='services_id[]' value='0'/></span>";
+if (!isset($_POST["id"])) {
+   exit();
 }
+
+$pmDisplayview = new PluginMonitoringDisplayview();
+$pmDisplayview_item = new PluginMonitoringDisplayview_item();
+
+switch($_REQUEST['glpi_tab']) {
+   case -1 :
+
+      break;
+
+   case 1 :
+      $pmDisplayview_item->view($_POST['id'], 1);
+      break;
+   
+   default :
+      break;
+
+}
+
+ajaxFooter();
 
 ?>

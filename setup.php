@@ -52,7 +52,8 @@ function plugin_init_monitoring() {
          Plugin::loadLang("monitoring");
          
          $PLUGIN_HOOKS['use_massive_action']['monitoring']=1;
-
+         $PLUGIN_HOOKS['add_css']['monitoring']="css/views.css";
+         
          $plugin = new Plugin();
          if ($plugin->isActivated('monitoring')) {
             
@@ -85,11 +86,17 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['contacttemplates'] = 'front/contacttemplate.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['contacttemplates'] = 'front/contacttemplate.php';
          
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['displayview'] = 'front/displayview.form.php?add=1';
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['displayview'] = 'front/displayview.php';
+         
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['rrdtemplates'] = 'front/rrdtemplate.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['rrdtemplates'] = 'front/rrdtemplate.php';
 
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['PluginMonitoringRealm'] = 'front/realm.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['PluginMonitoringRealm'] = 'front/realm.php';
+
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['weathermap'] = 'front/weathermap.form.php?add=1';
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['weathermap'] = 'front/weathermap.php';
          
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['service'] = 'front/display.php';
          

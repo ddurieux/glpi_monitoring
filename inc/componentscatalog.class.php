@@ -111,9 +111,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    function showChecks() {
       global $DB,$CFG_GLPI,$LANG;
       
-      $pmService = new PluginMonitoringService();
-      $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
-      
+
       echo "<table class='tab_cadre' width='100%'>";
       echo "<tr class='tab_bg_4' style='background: #cececc;'>";
       
@@ -122,100 +120,8 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       foreach ($a_componentscatalogs as $data) {
          echo "<td>";
 
-         echo "<table  class='tab_cadre_fixe' style='width:158px;'>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<th colspan='2' style='font-size:18px;' height='60'>";
-         echo $data['name']."&nbsp;";
-         echo showToolTip($data['comment']);
-         echo "</th>";
-         echo "</tr>";
+         echo $this->showWidget($data['id']);
          
-         $stateg = array();
-         $stateg['OK'] = 0;
-         $stateg['WARNING'] = 0;
-         $stateg['CRITICAL'] = 0;
-         $a_gstate = array();
-         $nb_ressources = 0;
-         $query = "SELECT * FROM `".$pmComponentscatalog_Host->getTable()."`
-            WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'";
-         $result = $DB->query($query);
-         while ($dataComponentscatalog_Host=$DB->fetch_array($result)) {
-            $queryService = "SELECT * FROM `".$pmService->getTable()."`
-               WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'";
-            $resultService = $DB->query($queryService);
-            while ($dataService=$DB->fetch_array($resultService)) {
-               $nb_ressources++;
-               $state = array();
-               $state['OK'] = 0;
-               $state['WARNING'] = 0;
-               $state['CRITICAL'] = 0;
-               if ($dataService['state_type'] != "HARD") {
-                  $a_gstate[$dataService['id']] = "OK";
-               } else {
-                  switch($dataService['state']) {
-
-                     case 'UP':
-                     case 'OK':
-                        $state['OK']++;
-                        break;
-
-                     case 'DOWN':
-                     case 'UNREACHABLE':
-                     case 'CRITICAL':
-                     case 'DOWNTIME':
-                        $state['CRITICAL']++;
-                        break;
-
-                     case 'WARNING':
-                     case 'UNKNOWN':
-                     case 'RECOVERY':
-                     case 'FLAPPING':
-                        $state['WARNING']++;
-                        break;
-
-                  }
-                  if ($state['CRITICAL'] >= 1) {
-                     $a_gstate[$dataService['id']] = "CRITICAL";
-                  } else if ($state['WARNING'] >= 1) {
-                     $a_gstate[$dataService['id']] = "WARNING";
-                  } else {
-                     $a_gstate[$dataService['id']] = "OK";
-                  }
-               }
-            }
-         }
-         foreach ($a_gstate as $value) {
-            $stateg[$value]++;
-         }
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>";
-         echo $LANG['plugin_monitoring']['service'][0]."&nbsp;:";
-         echo "</td>";
-         echo "<th align='center' height='40' width='50%'>";
-         echo $nb_ressources;
-         echo "</th>";
-         echo "</tr>";
-         
-         $background = '';
-         $count = 0;
-         if ($stateg['CRITICAL'] > 0) {
-            $count = $stateg['CRITICAL'];
-            $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_critical.png"';
-         } else if ($stateg['WARNING'] > 0) {
-            $count = $stateg['WARNING'];
-            $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_warning.png"';
-         } else if ($stateg['OK'] > 0) {
-            $count = $stateg['OK'];
-            $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_ok.png"';
-         }
-         echo "<tr ".$background.">";
-         echo "<th style='background-color:transparent;' colspan='2' height='100'>";
-         echo "<font style='font-size: 52px;'>".$count."</font>";         
-         echo "</th>";
-         echo "</tr>";
-
-         echo "</table>";
-
          echo "</td>";
          
          $i++;
@@ -252,6 +158,114 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       while ($data=$DB->fetch_array($result)) {
          $pmComponentscatalog_rule->delete($data);
       }
+   }
+   
+   
+   
+   function showWidget($id) {
+      global $LANG, $DB, $CFG_GLPI;
+      
+      $pmService = new PluginMonitoringService();
+      $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+      
+      $input = '';
+      
+      $this->getFromDB($id);
+      $data = $this->fields;
+      $input .= '<table  class="tab_cadre_fixe" style="width:158px;">';
+      $input .= '<tr class="tab_bg_1">';
+      $input .= '<th colspan="2" style="font-size:18px;" height="60">';
+      $input .= $data['name']."&nbsp;";
+//      $input .= showToolTip($data['comment'], array('display'=>false));
+      $input .= '</th>';
+      $input .= '</tr>';
+         
+      $stateg = array();
+      $stateg['OK'] = 0;
+      $stateg['WARNING'] = 0;
+      $stateg['CRITICAL'] = 0;
+      $a_gstate = array();
+      $nb_ressources = 0;
+      $query = "SELECT * FROM `".$pmComponentscatalog_Host->getTable()."`
+         WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'";
+      $result = $DB->query($query);
+      while ($dataComponentscatalog_Host=$DB->fetch_array($result)) {
+         $queryService = "SELECT * FROM `".$pmService->getTable()."`
+            WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'";
+         $resultService = $DB->query($queryService);
+         while ($dataService=$DB->fetch_array($resultService)) {
+            $nb_ressources++;
+            $state = array();
+            $state['OK'] = 0;
+            $state['WARNING'] = 0;
+            $state['CRITICAL'] = 0;
+            if ($dataService['state_type'] != "HARD") {
+               $a_gstate[$dataService['id']] = "OK";
+            } else {
+               switch($dataService['state']) {
+
+                  case 'UP':
+                  case 'OK':
+                     $state['OK']++;
+                     break;
+
+                  case 'DOWN':
+                  case 'UNREACHABLE':
+                  case 'CRITICAL':
+                  case 'DOWNTIME':
+                     $state['CRITICAL']++;
+                     break;
+
+                  case 'WARNING':
+                  case 'UNKNOWN':
+                  case 'RECOVERY':
+                  case 'FLAPPING':
+                     $state['WARNING']++;
+                     break;
+
+               }
+               if ($state['CRITICAL'] >= 1) {
+                  $a_gstate[$dataService['id']] = "CRITICAL";
+               } else if ($state['WARNING'] >= 1) {
+                  $a_gstate[$dataService['id']] = "WARNING";
+               } else {
+                  $a_gstate[$dataService['id']] = "OK";
+               }
+            }
+         }
+      }
+      foreach ($a_gstate as $value) {
+         $stateg[$value]++;
+      }
+      $input .= '<tr class="tab_bg_1">';
+      $input .= '<td>';
+      $input .= $LANG['plugin_monitoring']['service'][0]."&nbsp;:";
+      $input .= '</td>';
+      $input .= '<th align="center" height="40" width="50%">';
+      $input .= $nb_ressources;
+      $input .= '</th>';
+      $input .= '</tr>';
+
+      $background = '';
+      $count = 0;
+      if ($stateg['CRITICAL'] > 0) {
+         $count = $stateg['CRITICAL'];
+         $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_critical.png"';
+      } else if ($stateg['WARNING'] > 0) {
+         $count = $stateg['WARNING'];
+         $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_warning.png"';
+      } else if ($stateg['OK'] > 0) {
+         $count = $stateg['OK'];
+         $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_ok.png"';
+      }
+      $input .= "<tr ".$background.">";
+      $input .= '<th style="background-color:transparent;" colspan="2" height="100">';
+      $input .= '<font style="font-size: 52px;">'.$count.'</font>';         
+      $input .= '</th>';
+      $input .= '</tr>';
+
+      $input .= '</table>';
+      return $input;
    }
    
 }

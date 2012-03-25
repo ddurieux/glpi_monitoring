@@ -65,8 +65,19 @@ if (class_exists($_POST["itemtype"]) && isset($_POST["hosts"])) {
       $a_services[$data['id']] = $data['name'];
    }
    
-   Dropdown::showFromArray("plugin_monitoring_services_id", $a_services);
+   $rand = Dropdown::showFromArray("plugin_monitoring_services_id", $a_services);
 
+   if ($_POST['selectgraph'] == '1') {
+
+      $params = array('hosts'           => '__VALUE__',
+                      'rand'            => $rand);
+
+      ajaxUpdateItemOnSelectEvent("dropdown_plugin_monitoring_services_id".$rand, "show_extrainfos$rand",
+                                  $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownDisplayviewExtrainfos.php",
+                                  $params);
+
+      echo "<span id='show_extrainfos$rand'></span>";
+   }
 }
 
 ?>

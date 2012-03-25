@@ -129,6 +129,13 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
       case 'Central':
          $array = array();
          $array[0] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['servicescatalog'][0];
+         $pmDisplayview = new PluginMonitoringDisplayview();
+         $i = 5;
+         $a_views = $pmDisplayview->getViews(1);
+         foreach ($a_views as $name) {
+            $array[$i] = $LANG['plugin_monitoring']['title'][0]."-".$name;
+            $i++;
+         }         
          return $array;
          break;
       
@@ -175,6 +182,14 @@ function plugin_headings_actions_monitoring($item) {
       case 'Central':
          $array = array();
          $array[0] = "plugin_headings_monitoring_dashboadservicecatalog";
+         $pmDisplayview = new PluginMonitoringDisplayview();
+         $i = 5;
+         $a_views = $pmDisplayview->getViews(1);
+         foreach ($a_views as $name) {
+            $_SESSION['plugin_monitoring_displayviews_num'] = $i;
+            $array[$i] = "plugin_headings_monitoring_dashboadview";
+            $i++;
+         }
          return $array;
          break;
          
@@ -254,6 +269,22 @@ function plugin_headings_monitoring_dashboadservicecatalog($item) {
    
    $pmDisplay->displayCounters("Businessrules");
    $pmServicescatalog->showBAChecks();   
+}
+
+
+
+function plugin_headings_monitoring_dashboadview($item) {
+   $pmDisplayview = new PluginMonitoringDisplayview();
+   $a_views = $pmDisplayview->getViews();
+
+   $i = 5;
+   foreach ($a_views as $views_id=>$name) {
+      if ($_SESSION['plugin_monitoring_displayviews_num'] == $i) {
+         $pmDisplayview_item = new PluginMonitoringDisplayview_item();
+         $pmDisplayview_item->view($views_id);
+      }
+      $i++;
+   }
 }
 
 

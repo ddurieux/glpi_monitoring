@@ -43,65 +43,38 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
+checkCentralAccess();
 
-if (!isset($_POST["id"])) {
-   exit();
-}
-$pmDisplay = new PluginMonitoringDisplay();
-$pmBusinessrule = new PluginMonitoringBusinessrule();
+commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins", 
+             "monitoring", "displayview");
 
 $pmDisplayview = new PluginMonitoringDisplayview();
-$a_views = $pmDisplayview->getViews();
 
-switch($_REQUEST['glpi_tab']) {
-   case -1 :
-
-      break;
-
-   case 1 :
-      $pmServicescatalog = new PluginMonitoringServicescatalog();
-      $pmDisplay->displayCounters("Businessrules");
-      $pmServicescatalog->showBAChecks();
-      break;
+if (isset($_POST['users_id'])) {
+   if ($_POST['users_id'] == 'public') {
+      $_POST['users_id'] = '0';
+   } else {
+      $_POST['users_id'] = $_SESSION['glpiID'];
+   }
+}
    
-   case 2:
-      $pmComponentscatalog = new PluginMonitoringComponentscatalog();
-      $pmDisplay->displayCounters("Componentscatalog");
-      $pmComponentscatalog->showChecks();
-      break;
-
-   case 3:
-      $pmDisplay->displayCounters("Ressources");
-      // Manage search
-      $_GET = $_SESSION['plugin_monitoring']['service'];
-      if (isset($_GET['reset'])) {
-         unset($_SESSION['glpisearch']['PluginMonitoringService']);
-      }
-      Search::manageGetValues("PluginMonitoringService");
-      Search::showGenericSearch("PluginMonitoringService", $_SESSION['plugin_monitoring']['service']);
-
-      $pmDisplay->showBoard(950);
-      if (isset($_SESSION['glpisearch']['PluginMonitoringService']['reset'])) {
-         unset($_SESSION['glpisearch']['PluginMonitoringService']['reset']);
-      }
-      break;
-
-
-   default :
-      $i = 5;
-      foreach ($a_views as $views_id=>$name) {
-         if ($_REQUEST['glpi_tab'] == $i) {
-            $pmDisplayview_item = new PluginMonitoringDisplayview_item();
-            $pmDisplayview_item->view($views_id);
-         }
-         $i++;
-      }
-      break;
-
+if (isset ($_POST["add"])) {
+   $pmDisplayview->add($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset ($_POST["update"])) {
+   $pmDisplayview->update($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset ($_POST["delete"])) {
+   $pmDisplayview->delete($_POST);
+   $pmDisplayview->redirectToList();
 }
 
-ajaxFooter();
+if (isset($_GET["id"])) {
+   $pmDisplayview->showForm($_GET["id"]);
+} else {
+   $pmDisplayview->showForm(0);
+}
+
+commonFooter();
 
 ?>
