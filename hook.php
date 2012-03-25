@@ -407,7 +407,15 @@ function plugin_monitoring_addOrderBy($type,$id,$order,$key=0) {
 
 
 function plugin_monitoring_addDefaultWhere($type) {
- 
+
+   switch ($type) {
+      case "PluginMonitoringDisplayview" :
+         $who=getLoginUserID();
+         return " (`glpi_plugin_monitoring_displayviews`.`users_id` = '$who' 
+            OR `glpi_plugin_monitoring_displayviews`.`users_id` = '0') ";
+         break;
+   }
+   return "";
 }
 
 

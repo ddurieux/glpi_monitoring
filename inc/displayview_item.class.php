@@ -93,16 +93,18 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
    
    function view($id, $config=0) {
       global $DB,$CFG_GLPI;
+
+      $pmDisplayview = new PluginMonitoringDisplayview();
+      $pmDisplayview->getFromDB($id);
       
       if ($config == '1') {
          $this->addItem($id);
-      }
-      
-      $pmDisplayview = new PluginMonitoringDisplayview();
-      $pmDisplayview->getFromDB($id);
-   
-      if ($config == '1') {
          echo "<div id='updatecoordonates'></div>";
+      } else {
+         if (!is_null($pmDisplayview->fields['counter'])) {
+            $pmDisplay = new PluginMonitoringDisplay();
+            $pmDisplay->displayCounters($pmDisplayview->fields['counter']);
+         }
       }
       
       echo "<table class='tab_cadre_fixe' id='test'>";
