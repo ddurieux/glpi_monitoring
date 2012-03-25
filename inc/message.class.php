@@ -55,6 +55,7 @@ class PluginMonitoringMessage extends CommonDBTM {
       
       $servicecatalog = $pmMessage->servicescatalogMessage();
       $confchanges = $pmMessage->configurationchangesMessage();
+      $runningshinken = $pmMessage->ShinkennotrunMessage();
       $i = 0;
       if ($servicecatalog != ''
               OR $confchanges != '') {
@@ -73,6 +74,16 @@ class PluginMonitoringMessage extends CommonDBTM {
                echo "<th><font class='red'>";
             }
             echo $servicecatalog;
+            $i++;
+         }
+         if ($runningshinken != '') {
+            if($i > 0) {
+               echo "</font></th>";
+               echo "</tr>";
+               echo "<tr class='tab_bg_1'>";
+               echo "<th><font class='red'>";
+            }
+            echo $runningshinken."!";
             $i++;
          }
          echo "</font></th>";
@@ -155,6 +166,39 @@ class PluginMonitoringMessage extends CommonDBTM {
    }
    
    
+   /**
+    * Get maximum time between 2 checks and see if have one event in this period
+    * 
+    */
+   function ShinkennotrunMessage() {
+      global $DB,$LANG;
+
+      $input = '';
+      $query = "SELECT * FROM `glpi_plugin_monitoring_checks`
+         
+         ORDER BY `check_interval` DESC 
+         LIMIT 1";
+      
+      $result = $DB->query($query);
+      $data = $DB->fetch_assoc($result);
+      $time_s = $data['check_interval'] * 60 * 2;
+      
+      $query = "SELECT count(id) as cnt FROM `glpi_plugin_monitoring_services`";
+      $result = $DB->query($query);
+      $data = $DB->fetch_assoc($result);
+      if ($data['cnt'] > 0) {
+         $query = "SELECT * FROM `glpi_plugin_monitoring_services`
+            
+            WHERE UNIX_TIMESTAMP(last_check) > UNIX_TIMESTAMP()-".$time_s."
+               ORDER BY `last_check`
+               LIMIT 1";
+         $result = $DB->query($query);
+         if ($DB->numrows($result) == '0') {
+            $input = $LANG['plugin_monitoring']['config'][4];
+         }      
+      }
+      return $input;
+   }
 }
 
 ?>
