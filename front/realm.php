@@ -43,6 +43,8 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+PluginMonitoringProfile::checkRight("config","r");
+
 $dropdown = new PluginMonitoringRealm();
 include (GLPI_ROOT . "/front/dropdown.common.php");
 

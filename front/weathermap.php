@@ -43,7 +43,7 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkCentralAccess();
+PluginMonitoringProfile::checkRight("weathermap","r");
 
 commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "weathermap");

@@ -56,11 +56,11 @@ class PluginMonitoringRealm extends CommonDropdown {
    }
 
    function canCreate() {
-      return haveRight('computer', 'w');
+      return PluginMonitoringProfile::haveRight("config", 'w');
    }
 
    function canView() {
-      return haveRight('computer', 'w');
+      return PluginMonitoringProfile::haveRight("config", 'r');
    }
    
    

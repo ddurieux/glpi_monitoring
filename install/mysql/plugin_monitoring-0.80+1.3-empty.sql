@@ -429,6 +429,24 @@ CREATE TABLE `glpi_plugin_monitoring_contactgroups_contactgroups` (
 
 
 
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_profiles`;
+
+CREATE TABLE `glpi_plugin_monitoring_profiles` (
+  `profiles_id` int(11) NOT NULL DEFAULT '0',
+  `dashboard` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `servicescatalog` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `view` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `componentscatalog` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `viewshomepage` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `weathermap` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `component` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `command` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `config` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `check` char(1) COLLATE utf8_unicode_ci DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_servicedefs`;
 
 CREATE TABLE `glpi_plugin_monitoring_servicedefs` (

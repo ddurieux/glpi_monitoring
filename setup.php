@@ -46,6 +46,8 @@ define ("PLUGIN_MONITORING_VERSION","0.80+1.3");
 function plugin_init_monitoring() {
    global $PLUGIN_HOOKS,$LANG;
    
+   $PLUGIN_HOOKS['change_profile']['monitoring'] = array('PluginMonitoringProfile','changeprofile');
+   
    $Plugin = new Plugin();
    if ($Plugin->isActivated('monitoring')) {
       if (isset($_SESSION["glpiID"])) {

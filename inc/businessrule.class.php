@@ -48,13 +48,13 @@ class PluginMonitoringBusinessrule extends CommonDBTM {
    
 
    function canCreate() {
-      return haveRight('computer', 'w');
+      return PluginMonitoringProfile::haveRight("servicescatalog", 'w');
    }
 
 
    
    function canView() {
-      return haveRight('computer', 'r');
+      return PluginMonitoringProfile::haveRight("servicescatalog", 'r');
    }
 
 

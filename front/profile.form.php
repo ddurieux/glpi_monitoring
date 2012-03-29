@@ -40,30 +40,25 @@
    ------------------------------------------------------------------------
  */
 
+
 if (!defined('GLPI_ROOT')) {
    define('GLPI_ROOT', '../../..');
 }
 
-include (GLPI_ROOT."/inc/includes.php");
+include_once (GLPI_ROOT . "/inc/includes.php");
+checkRight("profile","r");
 
-PluginMonitoringProfile::checkRight("config","w");
 
-commonHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plugins", 
-             "monitoring", "rrdtemplates");
+$pmProfile = new PluginMonitoringProfile();
 
-if (isset($_FILES['filename'])) {
-   if (strstr($_FILES['filename']['name'], ".json")) {
-      if (Document::renameForce($_FILES['filename']['tmp_name'], GLPI_PLUGIN_DOC_DIR."/monitoring/templates/".$_FILES['filename']['name'])) {
-            addMessageAfterRedirect($LANG['document'][26]);
-      }
-   }
+checkRight("profile","w");
+   
+if ($pmProfile->getFromDB($_POST['profiles_id'])) {
+   $pmProfile->update($_POST);
+   glpi_header($_SERVER['HTTP_REFERER']);
+} else {
+   $pmProfile->add($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 }
-
-
-$pmRrdtool = new PluginMonitoringRrdtool();
-$pmRrdtool->addTemplate();
-
-commonFooter();
 
 ?>

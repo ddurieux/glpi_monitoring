@@ -61,33 +61,27 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
 
 
    function canCreate() {
-      return haveRight('computer', 'w');
+      return PluginMonitoringProfile::haveRight("servicescatalog", 'w');
    }
 
 
    
    function canView() {
-      return haveRight('computer', 'r');
+      return PluginMonitoringProfile::haveRight("servicescatalog", 'r');
    }
 
 
    
    function canCancel() {
-      return haveRight('computer', 'w');
+      return PluginMonitoringProfile::haveRight("servicescatalog", 'w');
    }
 
 
    
    function canUndo() {
-      return haveRight('computer', 'w');
+      return PluginMonitoringProfile::haveRight("servicescatalog", 'w');
    }
 
-
-   
-   function canValidate() {
-      return true;
-   }
-   
    
    
    function showForm($items_id, $options=array()) {

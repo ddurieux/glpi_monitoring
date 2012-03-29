@@ -61,33 +61,27 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
 
 
    function canCreate() {
-      return haveRight('computer', 'w');
+      return PluginMonitoringProfile::haveRight("componentscatalog", 'w');
    }
 
 
    
    function canView() {
-      return haveRight('computer', 'r');
+      return PluginMonitoringProfile::haveRight("componentscatalog", 'r');
    }
 
 
    
    function canCancel() {
-      return haveRight('computer', 'w');
+      return PluginMonitoringProfile::haveRight("componentscatalog", 'w');
    }
 
 
    
    function canUndo() {
-      return haveRight('computer', 'w');
+      return PluginMonitoringProfile::haveRight("componentscatalog", 'w');
    }
 
-
-   
-   function canValidate() {
-      return true;
-   }
-   
    
    
    function defineTabs($options=array()){

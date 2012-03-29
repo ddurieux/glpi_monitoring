@@ -68,15 +68,21 @@ echo "<br/>";
 echo "<table class='tab_cadre' width='950'>";
 echo "<tr class='tab_bg_1'>";
 echo "<th align='center' height='50' width='33%'>";
-echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicescatalog.php'>".$LANG['plugin_monitoring']['servicescatalog'][0]."</a>";
+if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
+   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicescatalog.php'>".$LANG['plugin_monitoring']['servicescatalog'][0]."</a>";
+}
 echo "</th>";
 
 echo "<th width='33%'>";
-echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/weathermap.php'>".$LANG['plugin_monitoring']['weathermap'][0]."</a>";
+if (PluginMonitoringProfile::haveRight("weathermap", 'r')) {
+   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/weathermap.php'>".$LANG['plugin_monitoring']['weathermap'][0]."</a>";
+}
 echo "</th>";
 
 echo "<th>";
-echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/displayview.php'>".$LANG['plugin_monitoring']['displayview'][0]."</a>";
+if (PluginMonitoringProfile::haveRight("view", 'r')) {
+   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/displayview.php'>".$LANG['plugin_monitoring']['displayview'][0]."</a>";
+}
 echo "</th>";
 echo "</tr>";
 echo "</table>";
@@ -85,7 +91,9 @@ echo "<br/>";
 
 echo "<table class='tab_cadre' width='950'>";
 echo "<th height='40'>";
-echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.php'>".$LANG['plugin_monitoring']['componentscatalog'][0]."</a>";
+if (PluginMonitoringProfile::haveRight("componentscatalog", 'r')) {
+   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.php'>".$LANG['plugin_monitoring']['componentscatalog'][0]."</a>";
+}
 echo "</th>";
 echo "</tr>";
 echo "</table>";
@@ -95,33 +103,47 @@ echo "<br/>";
 echo "<table class='tab_cadre' width='950'>";
 echo "<tr class='tab_bg_1'>";
 echo "<th colspan='4' height='30' width='75%'>";
-echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/component.php'>".$LANG['plugin_monitoring']['component'][0]."</a>";
+if (PluginMonitoringProfile::haveRight("component", 'r')) {
+   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/component.php'>".$LANG['plugin_monitoring']['component'][0]."</a>";
+}
 echo "</th>";
 
 echo "<th rowspan='2'>";
-echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/contacttemplate.php'>".$LANG['plugin_monitoring']['contacttemplate'][0]."</a>";
+if (PluginMonitoringProfile::haveRight("config", 'r')) {
+   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/contacttemplate.php'>".$LANG['plugin_monitoring']['contacttemplate'][0]."</a>";
+}
 echo "</th>";
 
 echo "<th rowspan='2'>";
-echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/realm.php'>".$LANG['plugin_monitoring']['realms'][0]."</a>";
+if (PluginMonitoringProfile::haveRight("config", 'r')) {
+   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/realm.php'>".$LANG['plugin_monitoring']['realms'][0]."</a>";
+}
 echo "</th>";
 echo "</tr>";
 
 echo "<tr class='tab_bg_1'>";
 echo "<th width='18%' height='25'>";
-echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/command.php'>".$LANG['plugin_monitoring']['command'][0]."</a>";
+if (PluginMonitoringProfile::haveRight("command", 'r')) {
+   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/command.php'>".$LANG['plugin_monitoring']['command'][0]."</a>";
+}
 echo "</th>";
 
 echo "<th width='18%'>";
-echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/check.php'>".$LANG['plugin_monitoring']['check'][0]."</a>";
+if (PluginMonitoringProfile::haveRight("check", 'r')) {
+   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/check.php'>".$LANG['plugin_monitoring']['check'][0]."</a>";
+}
 echo "</th>";
 
 echo "<th width='18%'>";
-echo "<a href='".$CFG_GLPI['root_doc']."/front/calendar.php'>".$LANG['buttons'][15]."</a>";
+if (haveRight('calendar', 'r')) {
+   echo "<a href='".$CFG_GLPI['root_doc']."/front/calendar.php'>".$LANG['buttons'][15]."</a>";
+}
 echo "</th>";
 
 echo "<th width='18%'>";
-echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/rrdtemplate.php'>".$LANG['plugin_monitoring']['rrdtemplates'][0]."</a>";
+if (PluginMonitoringProfile::haveRight("config", 'r')) {
+   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/rrdtemplate.php'>".$LANG['plugin_monitoring']['rrdtemplates'][0]."</a>";
+}
 echo "</th>";
 
 echo "</table>";

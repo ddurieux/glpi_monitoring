@@ -48,31 +48,25 @@ class PluginMonitoringWeathermapnode extends CommonDBTM {
    
 
    function canCreate() {
-      return haveRight('computer', 'w');
+      return PluginMonitoringProfile::haveRight("weathermap", 'w');
    }
 
 
    
    function canView() {
-      return haveRight('computer', 'r');
+      return PluginMonitoringProfile::haveRight("weathermap", 'r');
    }
 
 
    
    function canCancel() {
-      return haveRight('computer', 'w');
+      return PluginMonitoringProfile::haveRight("weathermap", 'w');
    }
 
 
    
    function canUndo() {
-      return haveRight('computer', 'w');
-   }
-
-
-   
-   function canValidate() {
-      return true;
+      return PluginMonitoringProfile::haveRight("weathermap", 'w');
    }
 
    

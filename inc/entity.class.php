@@ -63,31 +63,25 @@ class PluginMonitoringEntity extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('entity', 'w');
+      return PluginMonitoringProfile::haveRight("config", 'w');
    }
 
 
    
    function canView() {
-      return haveRight('entity', 'r');
+      return PluginMonitoringProfile::haveRight("config", 'r');
    }
 
 
    
    function canCancel() {
-      return haveRight('entity', 'w');
+      return PluginMonitoringProfile::haveRight("config", 'w');
    }
 
 
    
    function canUndo() {
-      return haveRight('entity', 'w');
-   }
-
-
-   
-   function canValidate() {
-      return true;
+      return PluginMonitoringProfile::haveRight("config", 'w');
    }
 
 

@@ -71,32 +71,26 @@ class PluginMonitoringComponent extends CommonDBTM {
 
 
 
-   function canCreate() {
-      return haveRight('computer', 'w');
+   function canCreate() {      
+      return PluginMonitoringProfile::haveRight("component", 'w');
    }
 
 
    
    function canView() {
-      return haveRight('computer', 'r');
+      return PluginMonitoringProfile::haveRight("component", 'r');
    }
 
 
    
    function canCancel() {
-      return haveRight('computer', 'w');
+      return PluginMonitoringProfile::haveRight("component", 'w');
    }
 
 
    
    function canUndo() {
-      return haveRight('computer', 'w');
-   }
-
-
-   
-   function canValidate() {
-      return true;
+      return PluginMonitoringProfile::haveRight("component", 'w');
    }
 
    

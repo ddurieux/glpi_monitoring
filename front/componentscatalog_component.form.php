@@ -43,7 +43,7 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkCentralAccess();
+PluginMonitoringProfile::checkRight("componentscatalog","w");
 
 $pmComponentscatalog_Component = new PluginMonitoringComponentscatalog_Component();
 

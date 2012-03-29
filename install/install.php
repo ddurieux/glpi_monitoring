@@ -54,6 +54,9 @@ function pluginMonitoringInstall($version) {
       if (!empty($sql_line)) $DB->query($sql_line);
    }
 
+   include (GLPI_ROOT . "/plugins/monitoring/inc/profile.class.php");
+   $pmProfile = new PluginMonitoringProfile();
+   $pmProfile->initProfile();
    include (GLPI_ROOT . "/plugins/monitoring/inc/command.class.php");
    $pmCommand = new PluginMonitoringCommand();
    $pmCommand->initCommands();

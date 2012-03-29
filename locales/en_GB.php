@@ -191,5 +191,7 @@ $LANG['plugin_monitoring']['displayview'][0]="Views";
 $LANG['plugin_monitoring']['displayview'][1]="Header counter (critical/warning/ok)";
 $LANG['plugin_monitoring']['displayview'][2]="Display in GLPI home page";
 $LANG['plugin_monitoring']['displayview'][3]="Element to display";
+$LANG['plugin_monitoring']['displayview'][4]="Views in GLPI home page";
+
 
 ?>

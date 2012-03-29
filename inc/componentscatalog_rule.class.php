@@ -62,34 +62,28 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
 
 
    function canCreate() {
-      return haveRight('computer', 'w');
+      return PluginMonitoringProfile::haveRight("componentscatalog", 'w');
    }
 
 
    
    function canView() {
-      return haveRight('computer', 'r');
+      return PluginMonitoringProfile::haveRight("componentscatalog", 'r');
    }
 
 
    
    function canCancel() {
-      return haveRight('computer', 'w');
+      return PluginMonitoringProfile::haveRight("componentscatalog", 'w');
    }
 
 
    
    function canUndo() {
-      return haveRight('computer', 'w');
+      return PluginMonitoringProfile::haveRight("componentscatalog", 'w');
    }
 
 
-   
-   function canValidate() {
-      return true;
-   }
-
-   
 
    function showRules($componentscatalogs_id) {
       global $DB,$LANG;

@@ -53,15 +53,21 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $pmDisplayview = new PluginMonitoringDisplayview();
       
       $ong = array();
-      $ong[1] = $LANG['plugin_monitoring']['servicescatalog'][0];
-      $ong[2] = $LANG['plugin_monitoring']['componentscatalog'][0];
+      if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
+         $ong[1] = $LANG['plugin_monitoring']['servicescatalog'][0];
+      }
+      if (PluginMonitoringProfile::haveRight("componentscatalog", 'r')) {
+         $ong[2] = $LANG['plugin_monitoring']['componentscatalog'][0];
+      }
       $ong[3] = $LANG['plugin_monitoring']['service'][21];
 
-      $i = 5;
-      $a_views = $pmDisplayview->getViews();
-      foreach ($a_views as $views_id=>$name) {
-         $ong[$i] = $name;
-         $i++;
+      if (PluginMonitoringProfile::haveRight("view", 'r')) {
+         $i = 5;
+         $a_views = $pmDisplayview->getViews();
+         foreach ($a_views as $views_id=>$name) {
+            $ong[$i] = $name;
+            $i++;
+         }
       }
       return $ong;
    }

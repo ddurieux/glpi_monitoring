@@ -43,7 +43,7 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkCentralAccess();
+PluginMonitoringProfile::checkRight("servicescatalog","w");
 
 $dropdown = new PluginMonitoringServicescatalog();
 if (isset($_GET['detail']) AND isset($_GET['id'])) {

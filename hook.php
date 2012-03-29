@@ -115,27 +115,43 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
       case 'PluginMonitoringServicescatalog':
          $array = array();
          if ($_GET['id'] > 0) {
-            $array[0] = $LANG['plugin_monitoring']['businessrule'][12];
+            if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
+               $array[0] = $LANG['plugin_monitoring']['businessrule'][12];
+            }
          }
          return $array;
          break;
       
       case 'Entity':
          $array = array();
-         $array[0] = $LANG['plugin_monitoring']['title'][0];
+         if (PluginMonitoringProfile::haveRight("config", 'r')) {
+            $array[0] = $LANG['plugin_monitoring']['title'][0];
+         }
          return $array;
          break;
       
       case 'Central':
          $array = array();
-         $array[0] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['servicescatalog'][0];
-         $pmDisplayview = new PluginMonitoringDisplayview();
-         $i = 5;
-         $a_views = $pmDisplayview->getViews(1);
-         foreach ($a_views as $name) {
-            $array[$i] = $LANG['plugin_monitoring']['title'][0]."-".$name;
-            $i++;
-         }         
+         if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
+            $array[0] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['servicescatalog'][0];
+         }
+         if (PluginMonitoringProfile::haveRight("viewshomepage", 'r')) {
+            $pmDisplayview = new PluginMonitoringDisplayview();
+            $i = 5;
+            $a_views = $pmDisplayview->getViews(1);
+            foreach ($a_views as $name) {
+               $array[$i] = $LANG['plugin_monitoring']['title'][0]."-".$name;
+               $i++;
+            }
+         }
+         return $array;
+         break;
+         
+      case 'Profile':
+         $array = array();
+         if ($_GET['id'] > 0) {
+            $array[0] = $LANG['plugin_monitoring']['title'][0];
+         }
          return $array;
          break;
       
@@ -192,7 +208,13 @@ function plugin_headings_actions_monitoring($item) {
          }
          return $array;
          break;
-         
+
+      case 'Profile':
+         $array = array();
+         $array[0] = "plugin_headings_monitoring_profile";
+         return $array;
+         break;
+
       
    }
    return false;
@@ -285,6 +307,13 @@ function plugin_headings_monitoring_dashboadview($item) {
       }
       $i++;
    }
+}
+
+
+
+function plugin_headings_monitoring_profile($item) {
+   $pmProfile = new PluginMonitoringProfile();
+   $pmProfile->showForm($item->getID());
 }
 
 

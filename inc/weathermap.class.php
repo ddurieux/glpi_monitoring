@@ -54,34 +54,28 @@ class PluginMonitoringWeathermap extends CommonDBTM {
    }
    
    function canCreate() {
-      return haveRight('computer', 'w');
+      return PluginMonitoringProfile::haveRight("weathermap", 'w');
    }
 
 
    
    function canView() {
-      return haveRight('computer', 'r');
+      return PluginMonitoringProfile::haveRight("weathermap", 'r');
    }
 
 
    
    function canCancel() {
-      return haveRight('computer', 'w');
+      return PluginMonitoringProfile::haveRight("weathermap", 'w');
    }
 
 
    
    function canUndo() {
-      return haveRight('computer', 'w');
+      return PluginMonitoringProfile::haveRight("weathermap", 'w');
    }
 
 
-   
-   function canValidate() {
-      return true;
-   }
-
-   
    
    function defineTabs($options=array()){
       global $LANG;
