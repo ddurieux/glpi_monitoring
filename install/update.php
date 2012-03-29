@@ -51,14 +51,17 @@ function pluginMonitoringGetCurrentVersion($version) {
    } else if (!FieldExists("glpi_plugin_monitoring_configs", "version")) {
       return "0.80+1.0";
    } else if (FieldExists("glpi_plugin_monitoring_configs", "version")) {
-      
       $query = "SELECT `version`
           FROM `glpi_plugin_monitoring_configs`
           WHERE `id` = '1'";
       $result = $DB->query($query);
-      $data = $DB->fetch_assoc($result);
-      if ($data['version'] != $version) {
-         return $data['version'];
+      if ($DB->numrows($result) > 0) {
+         $data = $DB->fetch_assoc($result);
+         if ($data['version'] != $version) {
+            return $data['version'];
+         }
+      }else {
+         return "0.80+1.0";
       }
    } else {
       return $version;
@@ -1245,7 +1248,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->changeField($newTable, 
                                  'id', 
                                  'id', 
-                                 "`id` bigint(30) NOT NULL AUTO_INCREMENT");
+                                 "bigint(30) NOT NULL AUTO_INCREMENT");
          $migration->changeField($newTable, 
                                  'date_mod', 
                                  'date_mod', 
@@ -1273,7 +1276,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable, 
                               'date_mod', 
-                           "datetime DEFAULT NULL");
+                              "datetime DEFAULT NULL");
          $migration->addField($newTable, 
                               'user_name', 
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
@@ -2208,9 +2211,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $DB->query($query);         
    }
    
-   
-   
-   
+   include (GLPI_ROOT . "/plugins/monitoring/inc/config.class.php");
+   $pmConfig = new PluginMonitoringConfig();
+   $pmConfig->initConfig();
+
    $query = "UPDATE `glpi_plugin_monitoring_configs`
       SET `version`='".PLUGIN_MONITORING_VERSION."'
          WHERE `id`='1'";

@@ -71,6 +71,13 @@ function pluginMonitoringInstall($version) {
    $pmHostconfig = new PluginMonitoringHostconfig();
    $pmHostconfig->initConfig();
    
+   include (GLPI_ROOT . "/plugins/monitoring/inc/config.class.php");
+   $pmConfig = new PluginMonitoringConfig();
+   $pmConfig->initConfig();
+   $query = "UPDATE `glpi_plugin_monitoring_configs`
+      SET `version`='".PLUGIN_MONITORING_VERSION."'
+         WHERE `id`='1'";
+   $DB->query($query);
    
    if (!is_dir(GLPI_PLUGIN_DOC_DIR.'/monitoring')) {
       mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring");
@@ -95,7 +102,7 @@ function pluginMonitoringUninstall() {
 
    if (file_exists(GLPI_PLUGIN_DOC_DIR.'/monitoring')) {
       $pmConfig = new PluginMonitoringConfig();
-      $pmConfig->rrmdir(GLPI_PLUGIN_DOC_DIR.'/fusioninventory/machines');
+      $pmConfig->rrmdir(GLPI_PLUGIN_DOC_DIR.'/monitoring');
    }
    
    $query = "SHOW TABLES;";

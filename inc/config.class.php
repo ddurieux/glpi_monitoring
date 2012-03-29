@@ -83,6 +83,24 @@ class PluginMonitoringConfig extends CommonDBTM {
       return PluginMonitoringProfile::haveRight("config", 'w');
    }
 
+   
+   
+   function initConfig() {
+      global $DB;
+      
+      $query = "SELECT * FROM `".$this->getTable()."`
+         LIMIT 1";
+      
+      $result = $DB->query($query);
+      if ($DB->numrows($result) == '0') {
+         $input = array();
+         $input['rrdtoolpath'] = '/usr/bin/';
+         $input['timezones'] = 0;
+         $input['logretention'] = 30;
+         $this->add($input);         
+      }
+   }
+   
 
    
    /**
