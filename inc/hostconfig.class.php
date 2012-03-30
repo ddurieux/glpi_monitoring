@@ -201,7 +201,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-            echo "<td>";
+      echo "<td>";
       echo $LANG['plugin_monitoring']['service'][5]."&nbsp;:";
       echo "</td>";
       echo "<td>";
@@ -337,6 +337,22 @@ class PluginMonitoringHostconfig extends CommonDBTM {
             echo "<td colspan='2'>";
             echo "</td>";
          }
+         echo "</tr>";
+      }
+      
+      if ($itemtype == 'Entity'
+              AND $items_id == '0') {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>";
+         echo $LANG['plugin_monitoring']['config'][5]."&nbsp;:";
+         echo "</td>";
+         echo "<td>";
+         Dropdown::show("Computer", array(
+             'name'  => 'computers_id',
+             'value' => $this->fields['computers_id']
+            ));
+         echo "</td>";
+         echo "<td colspan='2'></td>";
          echo "</tr>";
       }
       

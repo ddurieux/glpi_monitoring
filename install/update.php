@@ -1211,6 +1211,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'plugin_monitoring_realms_id', 
                                  'plugin_monitoring_realms_id', 
                                  "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'computers_id', 
+                                 'computers_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable, 
                               'items_id', 
@@ -1229,6 +1233,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                               'plugin_monitoring_realms_id', 
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'computers_id', 
                               "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
       
