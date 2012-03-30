@@ -55,9 +55,11 @@ checkRight("profile","w");
    
 if ($pmProfile->getFromDB($_POST['profiles_id'])) {
    $pmProfile->update($_POST);
+   $pmProfile->changeprofile();
    glpi_header($_SERVER['HTTP_REFERER']);
 } else {
    $pmProfile->add($_POST);
+   $pmProfile->changeprofile();
    glpi_header($_SERVER['HTTP_REFERER']);
 }
 
