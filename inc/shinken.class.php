@@ -223,6 +223,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $input = array();
          $input['user_name'] = "Shinken";
          $input['action'] = "restart";
+         $input['date_mod'] = date("Y-m-d H:i:s");
          $pmLog->add($input);
       }
       

@@ -134,10 +134,10 @@ class PluginMonitoringMessage extends CommonDBTM {
       global $DB,$LANG;
       
       $input = '';
-      
+      $pmLog = new PluginMonitoringLog();
       // Get id of last Shinken restart
       $id_restart = 0;
-      $a_restarts = $this->find("`action`='restart'", "`id` DESC", 1);
+      $a_restarts = $pmLog->find("`action`='restart'", "`id` DESC", 1);
       if (count($a_restarts) > 0) {
          $a_restart = current($a_restarts);
          $id_restart = $a_restart['id'];
