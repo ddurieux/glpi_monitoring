@@ -46,7 +46,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 PluginMonitoringProfile::checkRight("check","w");
 
 commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins", 
-             "monitoring", "checks");
+             "monitoring", "check");
 
 
 $pMonitoringCheck = new PluginMonitoringCheck();

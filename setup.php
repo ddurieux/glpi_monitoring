@@ -103,20 +103,35 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['service'] = 'front/display.php';
          
          // Fil ariane
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['check']['title'] = $LANG['plugin_monitoring']['check'][0];
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['check']['page']  = '/plugins/monitoring/front/check.php';
+
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['command']['title'] = $LANG['plugin_monitoring']['command'][0];
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['command']['page']  = '/plugins/monitoring/front/command.php';
+
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['components']['title'] = $LANG['plugin_monitoring']['component'][0];
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['components']['page']  = '/plugins/monitoring/front/component.php';
-
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['contacttemplates']['title'] = $LANG['plugin_monitoring']['contacttemplate'][0];
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['contacttemplates']['page']  = '/plugins/monitoring/front/contacttemplate.php';
 
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['componentscatalog']['title'] = $LANG['plugin_monitoring']['componentscatalog'][0];
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['componentscatalog']['page']  = '/plugins/monitoring/front/componentscatalog.php';
          
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['servicescatalog']['title'] = $LANG['plugin_monitoring']['servicescatalog'][0];
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['servicescatalog']['page']  = '/plugins/monitoring/front/servicescatalog.php';
-         
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['contacttemplates']['title'] = $LANG['plugin_monitoring']['contacttemplate'][0];
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['contacttemplates']['page']  = '/plugins/monitoring/front/contacttemplate.php';
+
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['display']['title'] = $LANG['plugin_monitoring']['display'][0];
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['display']['page']  = '/plugins/monitoring/front/display.php';
+
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['displayview']['title'] = $LANG['plugin_monitoring']['displayview'][0];
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['displayview']['page']  = '/plugins/monitoring/front/displayview.php';
+
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['PluginMonitoringRealm']['title'] = $LANG['plugin_monitoring']['realms'][0];
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['PluginMonitoringRealm']['page']  = '/plugins/monitoring/front/realm.php';
+
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['servicescatalog']['title'] = $LANG['plugin_monitoring']['servicescatalog'][0];
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['servicescatalog']['page']  = '/plugins/monitoring/front/servicescatalog.php';
+
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['weathermap']['title'] = $LANG['plugin_monitoring']['weathermap'][0];
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['weathermap']['page']  = '/plugins/monitoring/front/weathermap.php';
 
          
          // Define hook item
