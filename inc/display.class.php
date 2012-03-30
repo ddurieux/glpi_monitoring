@@ -60,7 +60,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          $ong[2] = $LANG['plugin_monitoring']['componentscatalog'][0];
       }
       $ong[3] = $LANG['plugin_monitoring']['service'][21];
-
+      $ong[4] = $LANG['plugin_monitoring']['dependency'][0];
       if (PluginMonitoringProfile::haveRight("view", 'r')) {
          $i = 5;
          $a_views = $pmDisplayview->getViews();

@@ -88,6 +88,13 @@ switch($_REQUEST['glpi_tab']) {
       }
       break;
 
+   case 4:
+PluginMonitoringCanvas::onload();
+
+$pmCanvas = new PluginMonitoringCanvas();
+$pmCanvas->show();
+      
+      break;
 
    default :
       $i = 5;

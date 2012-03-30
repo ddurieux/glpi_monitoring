@@ -46,6 +46,11 @@ define ("PLUGIN_MONITORING_VERSION","0.80+1.3");
 function plugin_init_monitoring() {
    global $PLUGIN_HOOKS,$LANG;
    
+   echo "
+    <!--[if IE]><script type='text/javascript' src='".GLPI_ROOT."/plugins/monitoring/lib/canvas/excanvas.js'></script><![endif]-->
+    <script type='text/javascript' src='".GLPI_ROOT."/plugins/monitoring/lib/canvas/canvasXpress.min.js'></script>";
+
+   
    $PLUGIN_HOOKS['change_profile']['monitoring'] = array('PluginMonitoringProfile','changeprofile');
    
    $Plugin = new Plugin();

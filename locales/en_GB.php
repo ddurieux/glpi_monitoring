@@ -194,5 +194,6 @@ $LANG['plugin_monitoring']['displayview'][2]="Display in GLPI home page";
 $LANG['plugin_monitoring']['displayview'][3]="Element to display";
 $LANG['plugin_monitoring']['displayview'][4]="Views in GLPI home page";
 
+$LANG['plugin_monitoring']['dependency'][0]="Dependencies";
 
 ?>
