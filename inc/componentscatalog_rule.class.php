@@ -217,12 +217,12 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
          $entities_isrecursive = 1;
       }
       
-      changeActiveEntities($pmComponentscatalog->fields['entities_id'], 
+      Session::changeActiveEntities($pmComponentscatalog->fields['entities_id'], 
                            $pmComponentscatalog->fields['is_recursive']);
       
       Search::showList($_GET['itemtype'], $_GET);
 
-      changeActiveEntities($default_entity,
+      Session::changeActiveEntities($default_entity,
                            $entities_isrecursive);
       echo "</td>";
       echo "</tr>";
@@ -257,7 +257,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                     AND count($_SESSION['glpiactiveentities']) > 1) {
                $entities_isrecursive = 1;
             }
-            changeActiveEntities($pmComponentscatalog->fields['entities_id'], 
+            Session::changeActiveEntities($pmComponentscatalog->fields['entities_id'], 
                                  $pmComponentscatalog->fields['is_recursive']);
          
          
@@ -330,7 +330,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
          }
          
          // Reload current entity
-            changeActiveEntities($default_entity,
+            Session::changeActiveEntities($default_entity,
                                  $entities_isrecursive);
       } else { // Purge
          $devices_present = array();
