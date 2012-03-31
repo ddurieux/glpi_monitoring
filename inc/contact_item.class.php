@@ -167,8 +167,8 @@ class PluginMonitoringContact_Item extends CommonDBTM {
          echo "</tr>";
       }
       
-      openArrowMassive("contact_item_form$rand", true);
-      closeArrowMassive('deleteitem', $LANG['buttons'][6]);
+      Html::openArrowMassives("contact_item_form$rand", true);
+      Html::closeArrowMassives('deleteitem', $LANG['buttons'][6]);
       
       echo "</table>";
       

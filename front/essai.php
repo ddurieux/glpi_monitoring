@@ -36,11 +36,11 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader("Essai",
+Html::header("Essai",
              $_SERVER["PHP_SELF"], "plugins", "canvas", '', PluginMonitoringCanvas::onload());
 
 $pmCanvas = new PluginMonitoringCanvas();
 $pmCanvas->show();
 
-commonFooter();
+Html::footer();
 ?>

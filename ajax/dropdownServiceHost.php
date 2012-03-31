@@ -44,14 +44,14 @@ define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
+Html::header_nocache();
 
 // Make a select box
 if (class_exists($_POST["itemtype"]) && isset($_POST["hosts"])) {
    $table = getTableForItemType($_POST["itemtype"]);
    $pmService = new PluginMonitoringService();
    $a_services = array();
-   $a_services[] = DROPDOWN_EMPTY_VALUE;
+   $a_services[] = Dropdown::EMPTY_VALUE;
    $query = "SELECT `".getTableForItemType("PluginMonitoringService")."`.*
              FROM `".getTableForItemType("PluginMonitoringService")."`
              LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts` 
@@ -72,7 +72,7 @@ if (class_exists($_POST["itemtype"]) && isset($_POST["hosts"])) {
       $params = array('hosts'           => '__VALUE__',
                       'rand'            => $rand);
 
-      ajaxUpdateItemOnSelectEvent("dropdown_plugin_monitoring_services_id".$rand, "show_extrainfos$rand",
+      Ajax::updateItemOnSelectEvent("dropdown_plugin_monitoring_services_id".$rand, "show_extrainfos$rand",
                                   $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownDisplayviewExtrainfos.php",
                                   $params);
 

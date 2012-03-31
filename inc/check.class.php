@@ -148,7 +148,7 @@ class PluginMonitoringCheck extends CommonDBTM {
          '.$LANG['plugin_monitoring']['check'][3].' : '.$this->fields['retry_interval'].' minutes';
       
       if (!empty($comment)) {
-         return showToolTip($comment, array('display' => false));
+         return Html::showToolTip($comment, array('display' => false));
       }
 
       return $comment;

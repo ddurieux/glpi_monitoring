@@ -49,14 +49,14 @@ $pmContact_Item = new PluginMonitoringContact_Item();
 
 if (isset ($_POST["add"])) {
    $pmContact_Item->add($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else if (isset($_POST["deleteitem"])) {
    foreach ($_POST["item"] as $id=>$num) {
       $pmContact_Item->delete(array('id'=>$id));
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 }
 
-commonFooter();
+Html::footer();
 
 ?>

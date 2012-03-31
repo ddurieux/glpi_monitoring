@@ -44,7 +44,7 @@ define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
+Html::header_nocache();
 
 if (!isset($_POST["id"])) {
    exit();
@@ -67,6 +67,6 @@ switch($_REQUEST['glpi_tab']) {
 
 }
 
-ajaxFooter();
+Html::ajaxFooter();
 
 ?>

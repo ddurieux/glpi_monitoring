@@ -45,7 +45,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 PluginMonitoringProfile::checkRight("weathermap","w");
 
-commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins", 
+Html::header($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins", 
              "monitoring", "weathermapnode");
 
 
@@ -53,24 +53,24 @@ $pmWeathermapnode = new PluginMonitoringWeathermapnode();
 
 if (isset ($_POST["add"])) {
    if ($_POST['x'] == '') {
-      glpi_header($_SERVER['HTTP_REFERER']);
+      Html::back();
       exit;
    }
    $pmWeathermapnode->add($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else if (isset ($_POST["update"])) {
    if ($_POST['x'] == '') {
-      glpi_header($_SERVER['HTTP_REFERER']);
+      Html::back();
       exit;
    }
    unset($_POST['itemtype']);
    $pmWeathermapnode->update($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else if (isset ($_POST["delete"])) {
    $pmWeathermapnode->delete($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 }
 
-commonFooter();
+Html::footer();
 
 ?>

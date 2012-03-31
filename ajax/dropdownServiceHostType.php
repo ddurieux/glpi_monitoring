@@ -44,7 +44,7 @@ define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
+Html::header_nocache();
 
 if (class_exists($_POST["itemtype"])) {
    $table = getTableForItemType($_POST["itemtype"]);
@@ -61,7 +61,7 @@ if (class_exists($_POST["itemtype"])) {
              ORDER BY `$table`.`name`";
    $result = $DB->query($query);
    $a_hosts = array();
-   $a_hosts[0] = DROPDOWN_EMPTY_VALUE;
+   $a_hosts[0] = Dropdown::EMPTY_VALUE;
    while ($data = $DB->fetch_array($result)) {
       $a_hosts[$data['id']] = $data['name'];
    }
@@ -79,7 +79,7 @@ if (class_exists($_POST["itemtype"])) {
                    'rand'            => $rand,
                    'myname'          => "items");
 
-   ajaxUpdateItemOnSelectEvent("dropdown_hosts".$rand, "show_items$rand",
+   Ajax::updateItemOnSelectEvent("dropdown_hosts".$rand, "show_items$rand",
                                $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownServiceHost.php",
                                $params);
 

@@ -46,14 +46,14 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 PluginMonitoringProfile::checkRight("config","w");
 
-commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
+Html::header($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "config");
 
 
 $pmConfig = new PluginMonitoringConfig();
 if (isset ($_POST["update"])) {
    $pmConfig->update($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else if (isset($_POST['timezones_add'])) {
    $input = array();
    $pmConfig->getFromDB($_POST['id']);
@@ -64,7 +64,7 @@ if (isset ($_POST["update"])) {
    }
    $input['timezones'] = exportArrayToDB($a_timezones);
    $pmConfig->update($input); 
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else if (isset($_POST['timezones_delete'])) {
    $input = array();
    $pmConfig->getFromDB($_POST['id']);
@@ -76,12 +76,12 @@ if (isset ($_POST["update"])) {
    }
    $input['timezones'] = exportArrayToDB($a_timezones);
    $pmConfig->update($input); 
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 }
 
 
 $pmConfig->showForm(0);
 
-commonFooter();
+Html::footer();
 
 ?>

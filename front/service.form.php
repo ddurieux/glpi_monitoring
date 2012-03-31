@@ -46,7 +46,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkCentralAccess();
 
-commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
+Html::header($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "host_service");
 
 
@@ -68,7 +68,7 @@ if (isset($_POST['add'])) {
       $_POST['plugin_monitoring_servicedefs_id'] = $_POST['plugin_monitoring_servicedefs_id_s'];
    }
    $pMonitoringService->add($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else if (isset($_POST['update'])) {
    if (is_array($_POST['id'])) {
       foreach ($_POST['id'] as $key=>$id) {
@@ -107,7 +107,7 @@ if (isset($_POST['add'])) {
       }
       $pMonitoringService->update($_POST);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 }
 
 if (isset($_GET["id"])) {
@@ -116,6 +116,6 @@ if (isset($_GET["id"])) {
    $pMonitoringService->showForm('', array(), $_GET['services_id']);
 }
 
-commonFooter();
+Html::footer();
 
 ?>

@@ -45,7 +45,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 PluginMonitoringProfile::checkRight("weathermap","w");
 
-commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins", 
+Html::header($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins", 
              "monitoring", "weathermaplink");
 
 
@@ -56,15 +56,15 @@ if (isset ($_POST["add"])) {
    $_POST['plugin_monitoring_weathermapnodes_id_1'] = $split[0];
    $_POST['plugin_monitoring_services_id'] = $split[1];
    $pmWeathermaplink->add($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else if (isset ($_POST["update"])) {
    $pmWeathermaplink->update($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else if (isset ($_POST["purge"])) {
    $pmWeathermaplink->delete($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 }
 
-commonFooter();
+Html::footer();
 
 ?>

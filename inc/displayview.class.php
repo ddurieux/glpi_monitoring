@@ -166,7 +166,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       echo "<td>".$LANG['plugin_monitoring']['displayview'][1]."&nbsp;:</td>";
       echo "<td>";
       $elements = array();
-      $elements['NULL'] = DROPDOWN_EMPTY_VALUE;
+      $elements['NULL'] = Dropdown::EMPTY_VALUE;
       $elements['Businessrules'] = $LANG['plugin_monitoring']['businessrule'][0];
       $elements['Componentscatalog'] = $LANG['plugin_monitoring']['componentscatalog'][0];
       $elements['Ressources'] = $LANG['plugin_monitoring']['service'][0];

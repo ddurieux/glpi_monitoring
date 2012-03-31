@@ -484,7 +484,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       }
 
       $options = Search::getCleanedOptions($itemtype);
-//      $target  = getItemTypeSearchURL($itemtype);
+//      $target  = Toolbox::getItemTypeSearchURL($itemtype);
 
       // Instanciate an object to access method
       $item = NULL;
@@ -641,16 +641,16 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
                $group       = '';
                $nb_in_group = 0;
 
-               $group .= "<optgroup label=\"".utf8_substr($val,0,$str_limit)."\">";
+               $group .= "<optgroup label=\"".Toolbox::substr($val,0,$str_limit)."\">";
             } else {
                if (!isset($val['nosearch']) || $val['nosearch']==false) {
                   $nb_in_group ++;
-                  $group .= "<option title=\"".cleanInputText($val["name"])."\" value='$key'";
+                  $group .= "<option title=\"".Html::cleanInputText($val["name"])."\" value='$key'";
                   if (is_array($p['field']) && isset($p['field'][$i]) && $key == $p['field'][$i]) {
                      $group .= "selected";
                      $selected = $key;
                   }
-                  $group .= ">". utf8_substr($val["name"], 0, $str_limit) ."</option>\n";
+                  $group .= ">". Toolbox::substr($val["name"], 0, $str_limit) ."</option>\n";
                }
             }
          }
@@ -686,7 +686,7 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
                          'num'        => $i,
                          'value'      => $_POST["value"],
                          'searchtype' => $_POST["searchtype"]);
-         ajaxUpdateItemOnSelectEvent("Search$itemtype$i", "SearchSpan$itemtype$i",
+         Ajax::updateItemOnSelectEvent("Search$itemtype$i", "SearchSpan$itemtype$i",
                                      $CFG_GLPI["root_doc"]."/ajax/searchoption.php", $params, false);
 
          echo "</td></tr>\n";
@@ -730,13 +730,13 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
 
             // Display select of the linked item type available
             echo "<select name='itemtype2[$i]' id='itemtype2_".$itemtype."_".$i."_$rand'>";
-            echo "<option value=''>".DROPDOWN_EMPTY_VALUE."</option>";
+            echo "<option value=''>".Dropdown::EMPTY_VALUE."</option>";
             foreach ($linked as $key) {
                if (!isset($metanames[$key])) {
                   $linkitem = new $key();
                   $metanames[$key] = $linkitem->getTypeName();
                }
-               echo "<option value='$key'>".utf8_substr($metanames[$key], 0, 20)."</option>\n";
+               echo "<option value='$key'>".Toolbox::substr($metanames[$key], 0, 20)."</option>\n";
             }
             echo "</select>&nbsp;";
 
@@ -753,7 +753,7 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
                             'searchtype2' => (is_array($p['searchtype2'])
                                               && isset($p['searchtype2'][$i])?$p['searchtype2'][$i]:""));
 
-            ajaxUpdateItemOnSelectEvent("itemtype2_".$itemtype."_".$i."_$rand","show_".$itemtype."_".
+            Ajax::updateItemOnSelectEvent("itemtype2_".$itemtype."_".$i."_$rand","show_".$itemtype."_".
                                           $i."_$rand",$CFG_GLPI["root_doc"]."/ajax/updateMetaSearch.php",
                                         $params, false);
 
@@ -762,7 +762,7 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
                 && !empty($p['itemtype2'][$i])) {
 
                $params['itemtype'] = $p['itemtype2'][$i];
-               ajaxUpdateItem("show_".$itemtype."_".$i."_$rand",
+               Ajax::updateItem("show_".$itemtype."_".$i."_$rand",
                               $CFG_GLPI["root_doc"]."/ajax/updateMetaSearch.php", $params, false);
                echo "<script type='text/javascript' >";
                echo "window.document.getElementById('itemtype2_".$itemtype."_".$i."_$rand').value='".
@@ -797,7 +797,7 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
             if ($key == $p['sort']) {
                echo " selected";
             }
-            echo ">".utf8_substr($val["name"],0,20)."</option>\n";
+            echo ">".Toolbox::substr($val["name"],0,20)."</option>\n";
          }
       }
       if (!$first_group) {
@@ -814,7 +814,7 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
       echo "<td width='80' class='center'>";
       echo "<input type='submit' value=\"".$LANG['buttons'][0]."\" class='submit' >";
       echo "</td><td>";
-//      Bookmark::showSaveButton(BOOKMARK_SEARCH,$itemtype);
+//      Bookmark::showSaveButton(Bookmark::SEARCH,$itemtype);
       echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog_rule.form.php?reset=reset&".
          "name=".$_GET['name']."&plugin_monitoring_componentscalalog_id=".$_GET['plugin_monitoring_componentscalalog_id'].
               "&itemtype=".$_GET['itemtype']."' >";
@@ -912,7 +912,7 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
          }
       }
 
-//      $target = getItemTypeSearchURL($itemtype);
+//      $target = Toolbox::getItemTypeSearchURL($itemtype);
 
       $limitsearchopt = Search::getCleanedOptions($itemtype);
 
@@ -946,7 +946,7 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
 //      $toview = Search::addDefaultToView($itemtype);
 
 //      // Add items to display depending of personal prefs
-//      $displaypref = DisplayPreference::getForTypeUser($itemtype, getLoginUserID());
+//      $displaypref = DisplayPreference::getForTypeUser($itemtype, Session::getLoginUserID());
 //      if (count($displaypref)) {
 //         foreach ($displaypref as $val) {
 //            array_push($toview,$val);

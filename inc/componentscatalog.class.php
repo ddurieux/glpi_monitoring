@@ -170,7 +170,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $input .= '<tr class="tab_bg_1">';
       $input .= '<th colspan="2" style="font-size:18px;" height="60">';
       $input .= $data['name']."&nbsp;";
-//      $input .= showToolTip($data['comment'], array('display'=>false));
+//      $input .= Html::showToolTip($data['comment'], array('display'=>false));
       $input .= '</th>';
       $input .= '</tr>';
          

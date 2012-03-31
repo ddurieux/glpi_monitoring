@@ -45,7 +45,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 PluginMonitoringProfile::checkRight("view","w");
 
-commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins", 
+Html::header($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins", 
              "monitoring", "displayview_item");
 
 $pmDisplayview_item = new PluginMonitoringDisplayview_item();
@@ -59,12 +59,12 @@ if (isset($_POST['plugin_monitoring_services_id'])
 
 if (isset ($_POST["add"])) {
    $pmDisplayview_item->add($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else if (isset ($_POST["delete"])) {
    $pmDisplayview_item->delete($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 }
 
-commonFooter();
+Html::footer();
 
 ?>

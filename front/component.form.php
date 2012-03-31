@@ -45,7 +45,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 PluginMonitoringProfile::checkRight("component","w");
 
-commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins", 
+Html::header($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins", 
              "monitoring", "components");
 
 
@@ -59,13 +59,13 @@ if (isset ($_POST["add"])) {
       
       $_SESSION['plugin_monitoring_components'] = $_POST;
     
-      addMessageAfterRedirect("<font class='red'>".$LANG['plugin_monitoring']['component'][5]."</font>");
-      glpi_header($_SERVER['HTTP_REFERER']);
+      Session::addMessageAfterRedirect("<font class='red'>".$LANG['plugin_monitoring']['component'][5]."</font>");
+      Html::back();
       exit;
    }   
    
    $pMonitoringComponent->add($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else if (isset ($_POST["update"])) {
    if (isset($_POST['arg'])) {
       $_POST['arguments'] = exportArrayToDB($_POST['arg']);
@@ -77,13 +77,13 @@ if (isset ($_POST["add"])) {
     
       $_SESSION['plugin_monitoring_components'] = $_POST;
     
-      addMessageAfterRedirect("<font class='red'>".$LANG['plugin_monitoring']['component'][5]."</font>");
-      glpi_header($_SERVER['HTTP_REFERER']);
+      Session::addMessageAfterRedirect("<font class='red'>".$LANG['plugin_monitoring']['component'][5]."</font>");
+      Html::back();
       exit;
    }
 
    $pMonitoringComponent->update($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else if (isset ($_POST["delete"])) {
    $pMonitoringComponent->delete($_POST);
    $pMonitoringComponent->redirectToList();
@@ -96,6 +96,6 @@ if (isset($_GET["id"])) {
    $pMonitoringComponent->showForm(0);
 }
 
-commonFooter();
+Html::footer();
 
 ?>

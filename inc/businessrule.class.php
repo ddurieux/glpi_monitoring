@@ -393,7 +393,7 @@ return;
 
       $rand = mt_rand();
       echo "<select name='itemtype[$ID]' id='itemtype$rand'>";
-      echo "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option>";
+      echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
 
 //      $a_types =array();
       echo "<option value='Computer'>".Computer::getTypeName()."</option>";
@@ -407,7 +407,7 @@ return;
                       'myname'          => $p['name'],
                       'rand'            => $rand);
 
-      ajaxUpdateItemOnSelectEvent("itemtype$rand", "show_".$p['name']."$rand",
+      Ajax::updateItemOnSelectEvent("itemtype$rand", "show_".$p['name']."$rand",
                                   $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownServiceHostType.php",
                                   $params);
 

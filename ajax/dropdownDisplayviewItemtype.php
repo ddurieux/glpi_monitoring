@@ -3,9 +3,9 @@
 define('GLPI_ROOT','../../..');
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
+Html::header_nocache();
 
-checkLoginUser();
+Session::checkLoginUser();
 
 switch ($_POST['itemtype']) {
 
@@ -20,7 +20,7 @@ switch ($_POST['itemtype']) {
    case 'PluginMonitoringService':
       $rand = mt_rand();
       echo "<select name='itemtype' id='itemtype$rand'>";
-      echo "<option value='0'>".DROPDOWN_EMPTY_VALUE."</option>";
+      echo "<option value='0'>".Dropdown::EMPTY_VALUE."</option>";
 
 //      $a_types =array();
       echo "<option value='Computer'>".Computer::getTypeName()."</option>";
@@ -35,7 +35,7 @@ switch ($_POST['itemtype']) {
 //                      'myname'          => $p['name'],
                       'rand'            => $rand);
 
-      ajaxUpdateItemOnSelectEvent("itemtype$rand", "show_itemtype$rand",
+      Ajax::updateItemOnSelectEvent("itemtype$rand", "show_itemtype$rand",
                                   $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownServiceHostType.php",
                                   $params);
 
@@ -46,7 +46,7 @@ switch ($_POST['itemtype']) {
 //      $params = array('items_id'  => '__VALUE__',
 //                'itemtype' => "PluginMonitoringService");
 //
-//      ajaxUpdateItemOnSelectEvent("dropdown_items_id".$rand,"extra_infos",
+//      Ajax::updateItemOnSelectEvent("dropdown_items_id".$rand,"extra_infos",
 //                                  $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownDisplayviewExtrainfos.php",
 //                                  $params);
 //      echo "<span id='extra_infos'></span>";

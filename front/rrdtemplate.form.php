@@ -48,22 +48,22 @@ include (GLPI_ROOT."/inc/includes.php");
 
 PluginMonitoringProfile::checkRight("config","w");
 
-commonHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plugins", 
+Html::header($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plugins", 
              "monitoring", "rrdtemplates");
 
 if (isset($_FILES['filename'])) {
    if (strstr($_FILES['filename']['name'], ".json")) {
       if (Document::renameForce($_FILES['filename']['tmp_name'], GLPI_PLUGIN_DOC_DIR."/monitoring/templates/".$_FILES['filename']['name'])) {
-            addMessageAfterRedirect($LANG['document'][26]);
+            Session::addMessageAfterRedirect($LANG['document'][26]);
       }
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 }
 
 
 $pmRrdtool = new PluginMonitoringRrdtool();
 $pmRrdtool->addTemplate();
 
-commonFooter();
+Html::footer();
 
 ?>

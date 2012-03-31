@@ -46,7 +46,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkCentralAccess();
 
-commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
+Html::header($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "host");
 
 $pmHost_Contact = new PluginMonitoringHost_Contact();
@@ -58,7 +58,7 @@ if (isset($_POST['parent_add'])) {
    $input['plugin_monitoring_contacts_id'] = $_POST['plugin_monitoring_contacts_id'];
    $pmHost_Contact->add($input);
 
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else if (isset($_POST['parent_delete'])) {
    // Delete contact to notify for host problem
 
@@ -68,9 +68,9 @@ if (isset($_POST['parent_add'])) {
             AND `plugin_monitoring_contacts_id`='".$delete_id."'";
       $DB->query($query);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 }
 
-commonFooter();
+Html::footer();
 
 ?>

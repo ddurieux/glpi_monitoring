@@ -45,7 +45,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 PluginMonitoringProfile::checkRight("componentscatalog","w");
 
-commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins", 
+Html::header($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins", 
              "monitoring", "checks");
 
 if (isset($_POST['itemtypen'])) {
@@ -79,7 +79,7 @@ if (isset($_GET['addrule'])) {
       $rules_id = $pmComponentscatalog_rule->add($input);
       unset($_SESSION['plugin_monitoring_rules']);
       unset($_SESSION["glpisearch"][$input['itemtype']]);
-      glpi_header($CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.form.php?id=".$input['plugin_monitoring_componentscalalog_id']);
+      Html::redirect($CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.form.php?id=".$input['plugin_monitoring_componentscalalog_id']);
 
    }
 } else if (isset($_GET['updaterule'])) {
@@ -107,13 +107,13 @@ if (isset($_GET['addrule'])) {
       $pmComponentscatalog_rule->update($input);
       unset($_SESSION['plugin_monitoring_rules']);
       unset($_SESSION["glpisearch"][$input['itemtype']]);
-      glpi_header($CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.form.php?id=".$input['plugin_monitoring_componentscalalog_id']);
+      Html::redirect($CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.form.php?id=".$input['plugin_monitoring_componentscalalog_id']);
 
    }
 } else if (isset($_GET['deleterule'])) {
    $_POST = $_GET;
    $pmComponentscatalog_rule->delete($_POST);
-   glpi_header($CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.form.php?id=".$_POST['plugin_monitoring_componentscalalog_id']);
+   Html::redirect($CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.form.php?id=".$_POST['plugin_monitoring_componentscalalog_id']);
 } else if (isset($_GET['contains'])
         OR isset($_GET['reset'])) {
 //   if (isset($_SESSION['plugin_monitoring_rules'])) {
@@ -121,7 +121,7 @@ if (isset($_GET['addrule'])) {
 //   }
 //   $_SESSION['plugin_monitoring_rules'] = $_POST;
 //   $_SESSION['plugin_monitoring_rules_REQUEST_URI'] = $_SERVER['REQUEST_URI'];
-   //glpi_header($_SERVER['HTTP_REFERER']);
+   //Html::back();
 } else if (isset($_GET['id'])
         AND !isset($_GET['itemtype'])) {
    $pmComponentscatalog_rule->getFromDB($_GET['id']);
@@ -157,11 +157,11 @@ if (isset($_POST['name'])) {
       $a_construct[] = $key."=".$value;
    }
    $_SERVER['REQUEST_URI'] = $_SERVER['REQUEST_URI']."?".implode("&", $a_construct);
-   glpi_header($_SERVER['REQUEST_URI']);
+   Html::redirect($_SERVER['REQUEST_URI']);
 }
 
 $pmComponentscatalog_rule->addRule();
 
-commonFooter();
+Html::footer();
 
 ?>

@@ -136,7 +136,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
             }
          }
-         $cleantarget = cleanParametersURL($target);
+         $cleantarget = Html::cleanParametersURL($target);
          echo "<ul>";
          echo "<li><a href=\"javascript:showHideDiv('tabsbody','tabsbodyimg','".$CFG_GLPI["root_doc"].
                     "/pics/deplier_down.png','".$CFG_GLPI["root_doc"]."/pics/deplier_up.png')\">";
@@ -146,8 +146,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<li><a href=\"".$glpilisturl."\">";
 
          if ($glpilisttitle) {
-            if (utf8_strlen($glpilisttitle) > $_SESSION['glpidropdown_chars_limit']) {
-               $glpilisttitle = utf8_substr($glpilisttitle, 0,
+            if (Toolbox::strlen($glpilisttitle) > $_SESSION['glpidropdown_chars_limit']) {
+               $glpilisttitle = Toolbox::substr($glpilisttitle, 0,
                                             $_SESSION['glpidropdown_chars_limit'])
                                 . "&hellip;";
             }
@@ -211,7 +211,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          unset($onglets['no_all_tab']);
       }
       $class = $this->getType();
-      if ($_SESSION['glpi_use_mode']==DEBUG_MODE
+      if ($_SESSION['glpi_use_mode']==Session::DEBUG_MODE
           && ($ID > 0 || $this->showdebug)
           && (method_exists($class, 'showDebug')
               || in_array($class, $CFG_GLPI["infocom_types"])
@@ -240,7 +240,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                               'params' => "target=$target&itemtype=".$this->getType().
                                           "&glpi_tab=-1&id=$ID$extraparam");
          }
-         createAjaxTabs('tabspanel', 'tabcontent', $tabs, $this->getType(), "'100%'");
+         Ajax::createTabs('tabspanel', 'tabcontent', $tabs, $this->getType(), "'100%'");
       }
    }
 
@@ -331,7 +331,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                 Search::getArrayUrlLink("link2",$_GET['link2']);
 
       $parameters = "sort=".$_GET['sort']."&amp;order=".$_GET['order'].$globallinkto;
-      printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php", $parameters);
+      Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php", $parameters);
 
       $limit = $numrows;
       if ($_SESSION["glpilist_limit"] < $numrows) {
@@ -383,7 +383,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       echo "</table>";
       echo "<br/>";
-      printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php", $parameters);
+      Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php", $parameters);
 
    }
    
@@ -463,7 +463,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$data['id']."'>";
       if (file_exists(GLPI_ROOT."/files/_plugins/monitoring/PluginMonitoringService-".$data['id']."-2h".$timezone_file.".gif")) {
          $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$data['id']."-2h".$timezone_file.".gif'/>";
-         showToolTip($img, array('img'=>$CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"));
+         Html::showToolTip($img, array('img'=>$CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"));
       } else {
          
       }
@@ -513,11 +513,11 @@ class PluginMonitoringDisplay extends CommonDBTM {
 //      } else if ($globalserv_state['green_soft'] > 0) {
 //         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_32_soft.png";
 //      }
-//      showToolTip($tooltip, array('img'=>$img));
+//      Html::showToolTip($tooltip, array('img'=>$img));
 //      echo "</td>";
 
       echo "<td>";
-      echo convDate($data['last_check']).' '. substr($data['last_check'], 11, 8);
+      echo Html::convDate($data['last_check']).' '. substr($data['last_check'], 11, 8);
       echo "</td>";
 
       echo "<td>";

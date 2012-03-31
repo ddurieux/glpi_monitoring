@@ -145,8 +145,8 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
       }
       
       if ($static == '1') {
-         openArrowMassive("componentscatalog_host_form$rand", true);
-         closeArrowMassive('deleteitem', $LANG['buttons'][6]);
+         Html::openArrowMassives("componentscatalog_host_form$rand", true);
+         Html::closeArrowMassives('deleteitem', $LANG['buttons'][6]);
       }
       
       echo "</table>";

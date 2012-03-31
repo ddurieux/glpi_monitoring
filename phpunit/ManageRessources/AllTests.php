@@ -53,7 +53,7 @@ class ManageRessources extends PHPUnit_Framework_TestCase {
       
       $CFG_GLPI['root_doc'] = "http://127.0.0.1/fusion0.80/";
 
-      loadLanguage("en_GB");
+      Session::loadLanguage("en_GB");
       
       $pmComponent = new PluginMonitoringComponent();
       $pmComponentscatalog = new PluginMonitoringComponentscatalog();

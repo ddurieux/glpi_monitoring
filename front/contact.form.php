@@ -46,7 +46,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 PluginMonitoringProfile::checkRight("config","w");
 
-commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
+Html::header($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "host");
 
 $pmContact = new PluginMonitoringContact();
@@ -59,13 +59,13 @@ if (isset($_POST["add"])) {
       }
       $pmContact->add($_POST);
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else if (isset ($_POST["update"])) {
    $pmContact->update($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else if (isset ($_POST["delete"])) {
    $pmContact->delete($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 }
 
 //if (isset($_GET["id"])) {
@@ -74,6 +74,6 @@ if (isset($_POST["add"])) {
 //   $pmHost->showForm("");
 //}
 
-commonFooter();
+Html::footer();
 
 ?>

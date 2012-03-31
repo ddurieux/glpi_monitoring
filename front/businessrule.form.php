@@ -46,7 +46,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 PluginMonitoringProfile::checkRight("servicescatalog","w");
 
-commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
+Html::header($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "businessrules");
 
 $pMonitoringBusinessrule = new PluginMonitoringBusinessrule();
@@ -58,8 +58,8 @@ if (isset($_POST['update'])) {
 } else if (isset($_POST['delete'])) {
    
 }
-glpi_header($_SERVER['HTTP_REFERER']);
+Html::back();
 
 
-commonFooter();
+Html::footer();
 ?>

@@ -297,7 +297,7 @@ class PluginMonitoringService extends CommonDBTM {
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),
                              $this->getType());
-      autocompletionTextField($this, 'name', array('value' => $objectName));      
+      Html::autocompletionTextField($this, 'name', array('value' => $objectName));      
       echo "</td>";
       echo "<td>";
       echo $LANG['common'][13]."&nbsp;:";

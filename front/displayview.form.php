@@ -45,7 +45,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 PluginMonitoringProfile::checkRight("view","w");
 
-commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins", 
+Html::header($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins", 
              "monitoring", "displayview");
 
 $pmDisplayview = new PluginMonitoringDisplayview();
@@ -60,10 +60,10 @@ if (isset($_POST['users_id'])) {
    
 if (isset ($_POST["add"])) {
    $pmDisplayview->add($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else if (isset ($_POST["update"])) {
    $pmDisplayview->update($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else if (isset ($_POST["delete"])) {
    $pmDisplayview->delete($_POST);
    $pmDisplayview->redirectToList();
@@ -75,6 +75,6 @@ if (isset($_GET["id"])) {
    $pmDisplayview->showForm(0);
 }
 
-commonFooter();
+Html::footer();
 
 ?>

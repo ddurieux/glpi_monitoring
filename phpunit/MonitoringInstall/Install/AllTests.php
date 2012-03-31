@@ -69,7 +69,7 @@ class Install extends PHPUnit_Framework_TestCase {
       
       Plugin::load("monitoring");
       
-      loadLanguage("en_GB");
+      Session::loadLanguage("en_GB");
       
       if ($verify == '1') {
          $MonitoringInstall = new MonitoringInstall();

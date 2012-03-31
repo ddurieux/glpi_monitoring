@@ -46,21 +46,21 @@ if (!defined('GLPI_ROOT')) {
 }
 
 include_once (GLPI_ROOT . "/inc/includes.php");
-checkRight("profile","r");
+Session::checkRight("profile","r");
 
 
 $pmProfile = new PluginMonitoringProfile();
 
-checkRight("profile","w");
+Session::checkRight("profile","w");
    
 if ($pmProfile->getFromDB($_POST['profiles_id'])) {
    $pmProfile->update($_POST);
    $pmProfile->changeprofile();
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else {
    $pmProfile->add($_POST);
    $pmProfile->changeprofile();
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 }
 
 ?>

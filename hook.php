@@ -439,7 +439,7 @@ function plugin_monitoring_addDefaultWhere($type) {
 
    switch ($type) {
       case "PluginMonitoringDisplayview" :
-         $who=getLoginUserID();
+         $who=Session::getLoginUserID();
          return " (`glpi_plugin_monitoring_displayviews`.`users_id` = '$who' 
             OR `glpi_plugin_monitoring_displayviews`.`users_id` = '0') ";
          break;
@@ -577,7 +577,7 @@ function plugin_monitoring_searchOptionsValues($item) {
          $default .= "<option value='".$item['value']."'>".$itemm->getName()."</option></select>";
       }
       
-      ajaxDropdown($use_ajax, "/plugins/monitoring/ajax/dropdownDevices.php", $params,$default);
+      Ajax::dropdown($use_ajax, "/plugins/monitoring/ajax/dropdownDevices.php", $params,$default);
       
       return true;
    }

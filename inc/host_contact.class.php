@@ -68,7 +68,7 @@ class PluginMonitoringHost_Contact extends CommonDBRelation {
 
       echo "<form name='contacts_form' id='contacts_form'
              method='post' action=' ";
-      echo getItemTypeFormURL(__CLASS__)."'>";
+      echo Toolbox::getItemTypeFormURL(__CLASS__)."'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='3'>";

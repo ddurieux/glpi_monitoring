@@ -38,14 +38,14 @@ if (strpos($_SERVER['PHP_SELF'],"dropdownDevices.php")) {
    define('GLPI_ROOT','../../..');
    include (GLPI_ROOT."/inc/includes.php");
    header("Content-Type: text/html; charset=UTF-8");
-   header_nocache();
+   Html::header_nocache();
 }
 
 if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
 
-checkLoginUser();
+Session::checkLoginUser();
 
 // Security
 if (!class_exists($_POST['itemtype']) ) {
@@ -78,7 +78,7 @@ if (isset($_POST['condition']) && !empty($_POST['condition'])) {
 }
 
 if (!isset($_POST['emptylabel']) || $_POST['emptylabel'] == '') {
-   $_POST['emptylabel'] = DROPDOWN_EMPTY_VALUE;
+   $_POST['emptylabel'] = Dropdown::EMPTY_VALUE;
 }
 
 if (isset($_POST["entity_restrict"])
@@ -184,7 +184,7 @@ if ($item instanceof CommonTreeDropdown) {
    $query = "SELECT *
              FROM `$table`
              LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
-               ON `itemtype`='".getItemTypeForTable($table)."'
+               ON `itemtype`='".Toolbox::getItemTypeForTable($table)."'
              $where
              ORDER BY $add_order `completename`
              $LIMIT";
@@ -231,9 +231,9 @@ if ($item instanceof CommonTreeDropdown) {
 
          if (strlen($outputval)!=0 && $outputval!="&nbsp;") {
 
-            if (utf8_strlen($outputval)>$_POST["limit"]) {
+            if (Toolbox::strlen($outputval)>$_POST["limit"]) {
                // Completename for tree dropdown : keep right
-               $outputval = "&hellip;".utf8_substr($outputval, -$_POST["limit"]);
+               $outputval = "&hellip;".Toolbox::substr($outputval, -$_POST["limit"]);
             }
             if ($_SESSION["glpiis_ids_visible"] || strlen($outputval)==0) {
                $outputval .= " (".$_POST['value'].")";
@@ -305,8 +305,8 @@ if ($item instanceof CommonTreeDropdown) {
                               $addcomment = " - ".$item->fields["comment"];
                            }
                            $output2 = $item->getName();
-                           if (utf8_strlen($output2)>$_POST["limit"]) {
-                              $output2 = utf8_substr($output2, 0 ,$_POST["limit"])."&hellip;";
+                           if (Toolbox::strlen($output2)>$_POST["limit"]) {
+                              $output2 = Toolbox::substr($output2, 0 ,$_POST["limit"])."&hellip;";
                            }
 
                            $class2 = " class='tree' ";
@@ -318,7 +318,7 @@ if ($item instanceof CommonTreeDropdown) {
                            }
 
                            $to_display = "<option disabled value='$work_parentID' $class2
-                                           title=\"".cleanInputText($item->fields['completename'].
+                                           title=\"".Html::cleanInputText($item->fields['completename'].
                                              $addcomment)."\">".
                                          str_repeat("&nbsp;&nbsp;&nbsp;", $work_level).
                                          $raquo2.$output2."</option>".$to_display;
@@ -341,12 +341,12 @@ if ($item instanceof CommonTreeDropdown) {
                $last_level_displayed[$level] = $data['id'];
             }
 
-            if (utf8_strlen($output)>$_POST["limit"]) {
+            if (Toolbox::strlen($output)>$_POST["limit"]) {
 
                if ($_SESSION['glpiuse_flat_dropdowntree']) {
-                  $output = "&hellip;".utf8_substr($output, -$_POST["limit"]);
+                  $output = "&hellip;".Toolbox::substr($output, -$_POST["limit"]);
                } else {
-                  $output = utf8_substr($output, 0, $_POST["limit"])."&hellip;";
+                  $output = Toolbox::substr($output, 0, $_POST["limit"])."&hellip;";
                }
             }
 
@@ -358,7 +358,7 @@ if ($item instanceof CommonTreeDropdown) {
             if (isset($data["comment"])) {
                $addcomment = " - ".$data["comment"];
             }
-            echo "<option value='$ID' $class title=\"".cleanInputText($data['completename'].
+            echo "<option value='$ID' $class title=\"".Html::cleanInputText($data['completename'].
                    $addcomment)."\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.$output.
                  "</option>";
          }
@@ -496,8 +496,8 @@ if ($item instanceof CommonTreeDropdown) {
                echo "<optgroup label=\"". Dropdown::getDropdownName("glpi_entities", $prev) ."\">";
             }
 
-            echo "<option value='$ID' title=\"".cleanInputText($output.$addcomment)."\">".
-                  utf8_substr($output, 0, $_POST["limit"])."</option>";
+            echo "<option value='$ID' title=\"".Html::cleanInputText($output.$addcomment)."\">".
+                  Toolbox::substr($output, 0, $_POST["limit"])."</option>";
          }
 
          if ($multi) {
@@ -512,10 +512,10 @@ if (isset($_POST["comment"]) && $_POST["comment"]) {
    $paramscomment = array('value' => '__VALUE__',
                           'table' => $table);
 
-   ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],
+   Ajax::updateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],
                                "comment_".$_POST["myname"].$_POST["rand"],
                                $CFG_GLPI["root_doc"]."/ajax/comments.php", $paramscomment, false);
 }
 
-commonDropdownUpdateItem($_POST);
+Ajax::commonDropdownUpdateItem($_POST);
 ?>

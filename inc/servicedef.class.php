@@ -181,7 +181,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
       echo "<input type='hidden' name='is_template' value='1' />";
       $objectName = autoName($this->fields["name"], "name", 1,
                              $this->getType());
-      autocompletionTextField($this, 'name', array('value' => $objectName));      
+      Html::autocompletionTextField($this, 'name', array('value' => $objectName));      
       echo "</td>";
 
       // * commande

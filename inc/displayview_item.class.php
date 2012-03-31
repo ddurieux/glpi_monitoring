@@ -270,7 +270,7 @@ Ext.onReady(function() {
       echo $LANG['plugin_monitoring']['displayview'][3]." :</td>";
       echo "<td>";
       $elements = array();
-      $elements['NULL'] = DROPDOWN_EMPTY_VALUE;
+      $elements['NULL'] = Dropdown::EMPTY_VALUE;
       $elements['PluginMonitoringServicescatalog'] = $LANG['plugin_monitoring']['businessrule'][0];
       $elements['PluginMonitoringComponentscatalog'] = $LANG['plugin_monitoring']['componentscatalog'][0];
       $elements['PluginMonitoringService'] = $LANG['plugin_monitoring']['service'][0];
@@ -282,7 +282,7 @@ Ext.onReady(function() {
                 'myname'          => "items_id",
                 'a_entities' => $a_entities);
 
-      ajaxUpdateItemOnSelectEvent("dropdown_itemtype".$rand,"items_id",
+      Ajax::updateItemOnSelectEvent("dropdown_itemtype".$rand,"items_id",
                                   $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownDisplayviewItemtype.php",
                                   $params);
       echo "<span id='items_id'></span>";

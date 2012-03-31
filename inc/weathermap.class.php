@@ -121,7 +121,7 @@ WIDTH ".$this->fields["width"]."
 HEIGHT ".$this->fields["height"]."
 HTMLSTYLE overlib
 TITLE ".$this->fields["name"]."
-TIMEPOS 10 20 Cree le : ".convDateTime(date("Y-m-d H:i:s"))."
+TIMEPOS 10 20 Cree le : ".Html::convDateTime(date("Y-m-d H:i:s"))."
 
 KEYPOS DEFAULT 10 ".($this->fields["height"] - ($this->fields["width"] /16))."
 KEYSTYLE  DEFAULT horizontal ".($this->fields["width"] /4)."
@@ -255,7 +255,7 @@ echo "
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name", 1,
                              $this->getType());
-      autocompletionTextField($this, 'name', array('value' => $objectName));      
+      Html::autocompletionTextField($this, 'name', array('value' => $objectName));      
       echo "</td>";
       echo "<td>".$LANG['plugin_monitoring']['weathermap'][3]."&nbsp;:</td>";
       echo "<td>";
@@ -418,7 +418,7 @@ function point_it(event){
             ORDER BY `name`";
          $result = $DB->query($query);
          $elements = array();
-         $elements[0] = DROPDOWN_EMPTY_VALUE;
+         $elements[0] = Dropdown::EMPTY_VALUE;
          $result = $DB->query($query);
          while ($data=$DB->fetch_array($result)) {
             $itemtype = $data['itemtype'];
@@ -458,7 +458,7 @@ function point_it(event){
             ORDER BY `name`";
          $result = $DB->query($query);
          $elements = array();
-         $elements[0] = DROPDOWN_EMPTY_VALUE;
+         $elements[0] = Dropdown::EMPTY_VALUE;
          $result = $DB->query($query);
          while ($data=$DB->fetch_array($result)) {
             $itemtype = $data['itemtype'];
@@ -524,7 +524,7 @@ function point_it(event){
             WHERE `is_weathermap` = '1'
             ORDER BY `itemtype`,`items_id`,`glpi_plugin_monitoring_components`.`name`";
          $elements = array();
-         $elements[0] = DROPDOWN_EMPTY_VALUE;
+         $elements[0] = Dropdown::EMPTY_VALUE;
          $elements2 = array();
          $result = $DB->query($query);
          while ($data=$DB->fetch_array($result)) {
@@ -617,7 +617,7 @@ function point_it(event){
          if (count($elements) > 1
                  AND count($elements2) > 0) {
             
-            $elements = array_merge($elements,array('0'=>DROPDOWN_EMPTY_VALUE));
+            $elements = array_merge($elements,array('0'=>Dropdown::EMPTY_VALUE));
             $elements = array_merge($elements, $elements2);
             
          } else {
@@ -642,7 +642,7 @@ function point_it(event){
             ORDER BY `name`";
          $result = $DB->query($query);
          $elements = array();
-         $elements[0] = DROPDOWN_EMPTY_VALUE;
+         $elements[0] = Dropdown::EMPTY_VALUE;
          $result = $DB->query($query);
          while ($data=$DB->fetch_array($result)) {
             $itemtype = $data['itemtype'];
@@ -718,7 +718,7 @@ function point_it(event){
 
             WHERE `plugin_monitoring_weathermaps_id` = '".$weathermaps_id."'";
          $elements = array();
-         $elements[0] = DROPDOWN_EMPTY_VALUE;
+         $elements[0] = Dropdown::EMPTY_VALUE;
          $result = $DB->query($query);
          while ($data=$DB->fetch_array($result)) {
             $itemtype = $data['itemtype'];

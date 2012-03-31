@@ -236,11 +236,11 @@ class PluginMonitoringProfile extends CommonDBTM {
 
       if (!PluginMonitoringProfile::haveRight($module, $right)) {
          // Gestion timeout session
-         if (!getLoginUserID()) {
-            glpi_header($CFG_GLPI["root_doc"] . "/index.php");
+         if (!Session::getLoginUserID()) {
+            Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
             exit ();
          }
-         displayRightError();
+         Html::displayRightError();
       }
    }
 
@@ -350,7 +350,7 @@ class PluginMonitoringProfile extends CommonDBTM {
                                     $profile->fields['id'];
          }
 
-         addMessageAfterRedirect($LANG['common'][71] . "&nbsp;: " .
+         Session::addMessageAfterRedirect($LANG['common'][71] . "&nbsp;: " .
                                  (isset($this->input['_no_message_link'])?$profile->getNameID()
                                                                          :$profile->getLink()));
       }

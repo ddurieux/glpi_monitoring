@@ -123,7 +123,7 @@ class PluginMonitoringContacttemplate extends CommonDBTM {
       
       $objectName = autoName($this->fields["name"], "name", false,
                              $this->getType());
-      autocompletionTextField($this, 'name', array('value' => $objectName));
+      Html::autocompletionTextField($this, 'name', array('value' => $objectName));
       echo "</td>";
       echo "<td>".$LANG['plugin_monitoring']['contacttemplate'][1]."&nbsp;:</td>";
       echo "<td align='center'>";

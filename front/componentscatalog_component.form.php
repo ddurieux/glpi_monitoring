@@ -51,7 +51,7 @@ if (isset ($_POST["add"])) {
    $pmComponentscatalog_Component->add($_POST);
    $pmComponentscatalog_Component->addComponentToItems($_POST['plugin_monitoring_componentscalalog_id'],
                                                        $_POST['plugin_monitoring_components_id']);
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 } else if (isset($_POST["deleteitem"])) {
    foreach ($_POST["item"] as $id=>$num) {
       $fields = array();
@@ -63,9 +63,9 @@ if (isset ($_POST["add"])) {
                                                           $fields['plugin_monitoring_components_id']);
    
    }
-   glpi_header($_SERVER['HTTP_REFERER']);
+   Html::back();
 }
 
-commonFooter();
+Html::footer();
 
 ?>

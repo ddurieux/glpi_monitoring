@@ -174,7 +174,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "<input type='hidden' name='is_template' value='1' />";
       $objectName = autoName($this->fields["name"], "name", 1,
                              $this->getType());
-      autocompletionTextField($this, 'name', array('value' => $objectName));      
+      Html::autocompletionTextField($this, 'name', array('value' => $objectName));      
       echo "</td>";
       // * checks
       echo "<td>".$LANG['plugin_monitoring']['check'][0]."<font class='red'>*</font>&nbsp;:</td>";
@@ -192,7 +192,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "</td>";
       echo "<td>";
 //      $a_types = array();
-//      $a_types[''] = DROPDOWN_EMPTY_VALUE;
+//      $a_types[''] = Dropdown::EMPTY_VALUE;
 //      $a_types['partition'] = "Partition";
 //      $a_types['processor'] = "Processor";
 //      Dropdown::showFromArray("link", $a_types, array('value'=>$this->fields['link']));
@@ -233,7 +233,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "</td>";
       echo "<td>";
       $a_templates = array();
-      $a_templates[''] = DROPDOWN_EMPTY_VALUE;
+      $a_templates[''] = Dropdown::EMPTY_VALUE;
       if ($handle = opendir(GLPI_PLUGIN_DOC_DIR."/monitoring/templates/")) {
           while (false !== ($entry = readdir($handle))) {
               if ($entry != "." && $entry != "..") {

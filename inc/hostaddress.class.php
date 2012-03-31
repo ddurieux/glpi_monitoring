@@ -127,7 +127,7 @@ class PluginMonitoringHostaddress extends CommonDBTM {
          $this->fields['networkports_id'] = 0;
       }
       $a_networkport = array();
-      $a_networkport['0'] = DROPDOWN_EMPTY_VALUE;
+      $a_networkport['0'] = Dropdown::EMPTY_VALUE;
       $query = "SELECT * FROM `".getTableForItemType("NetworkPort")."`
          WHERE `items_id`='".$items_id."' 
             AND `itemtype`='".$itemtype."'
