@@ -135,7 +135,7 @@ if (PluginMonitoringProfile::haveRight("check", 'r')) {
 echo "</th>";
 
 echo "<th width='18%'>";
-if (haveRight('calendar', 'r')) {
+if (Session::haveRight('calendar', 'r')) {
    echo "<a href='".$CFG_GLPI['root_doc']."/front/calendar.php'>".$LANG['buttons'][15]."</a>";
 }
 echo "</th>";
