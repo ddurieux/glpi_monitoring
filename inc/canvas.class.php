@@ -128,9 +128,9 @@ class PluginMonitoringCanvas {
    function getState($itemtype, $items_id) {
       global $DB;
       
-      $state = 'ok';
       $critical = 0;
       $warning = 0;
+      $ok = 0;
       $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
          WHERE `itemtype`='".$itemtype."'
             AND `items_id`='".$items_id."'";
@@ -145,13 +145,17 @@ class PluginMonitoringCanvas {
            "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
            AND `state_type`='HARD'
               AND `plugin_monitoring_componentscatalogs_hosts_id`='".$data['id']."'");
+
+         $ok += countElementsInTable("glpi_plugin_monitoring_services", 
+           "(`state`='OK' OR `state`='UP')
+           AND `state_type`='HARD'
+              AND `plugin_monitoring_componentscatalogs_hosts_id`='".$data['id']."'");
       }
-      if ($critical > 0) {
-         $state = 'critical';
-      } else if ($warning > 0) {
-         $state = 'warning';
-      }
-      return $state;
+      $output = array();
+      $output['ok'] = $ok;
+      $output['warning'] = $warning;
+      $output['critical'] = $critical;
+      return $output;
    }
 
    
@@ -217,6 +221,7 @@ class PluginMonitoringCanvas {
       }
       
       foreach ($this->a_devices as $itemdata => $state) {
+         $networkroot = '';
          
          $split = explode("-", $itemdata);
          $itemtype = $split[0];
@@ -226,36 +231,45 @@ class PluginMonitoringCanvas {
          $input = array();
          $input['id'] = "i".$itemdata;
          $input['name'] = $item->getName();
-         $input['shape'] = 'square';
-//            $pics = array('computer', 'laptop', 'printer', 'server');
-//            $input['shape'] = 'image';
-//            $input['imagePath'] = 'http://'.$_SERVER['SERVER_ADDR'].$CFG_GLPI['root_doc'].
-//                    '/plugins/monitoring/pics/'.$pics[rand(0, 3)].'.png';
          $input['color'] = 'rgb(130,130,130)';
 
-         switch ($state) {
-            
-            case 'critical':
+         $stateDevice = 'ok';
+         if (is_array($state)) {
+            if ($state['critical'] > 0) {
                $input['color'] = 'rgb(255,0,0)';
-               break;
-
-            case 'warning':
+               $stateDevice = 'critical';
+            } else if ($state['warning'] > 0) {
                $input['color'] = 'rgb(255,187,0)';
-               break;
-            
-            case 'ok':
+               $stateDevice = 'warning';
+            } else if ($state['ok'] > 0) {
                $input['color'] = 'rgb(0,255,0)';
-               break;
-            
-            case 'SHINKEN':
-               $input['shape'] = 'image';
-               $input['imagePath'] = 'http://'.$_SERVER['SERVER_ADDR'].$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/shinken.png';
-               $input['width'] = '120';
-               $input['height'] = '27';
-               break;
-            
+            }
+            $input['critical']   = $state['critical'];
+            $input['warning']    = $state['warning'];
+            $input['ok']         = $state['ok'];
+         } else if ($state == 'SHINKEN') {
+            $input['shape']      = 'image';
+            $input['imagePath']  = 'http://'.$_SERVER['SERVER_ADDR'].$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/shinken.png';
+            $input['width']      = '120';
+            $input['height']     = '27';
+          
+            $networkroot = "i".$itemdata;
+            $statesh = $this->getState($split[0], $split[1]);
+            $input['critical']   = $statesh['critical'];
+            $input['warning']    = $statesh['warning'];
+            $input['ok']         = $statesh['ok'];
          }
-         $input['group'] = 0;
+         if (is_array($state)) {
+//            if ($itemtype == 'NetworkEquipment') {
+//               $input['shape'] = 'image';
+//               $input['imagePath'] = 'http://'.$_SERVER['SERVER_ADDR'].$CFG_GLPI['root_doc'].
+//                       '/plugins/monitoring/pics/switch_'.$stateDevice.'.png';
+//               $input['width'] = '120';
+//               $input['height'] = '23';
+//            } else {
+               $input['shape'] = 'sphere';
+//            }
+         }
 
          $input['items_id'] = $split[1];
          
@@ -263,17 +277,28 @@ class PluginMonitoringCanvas {
             $link['nodes'][] = $input;
          }
       }
-
+      
+$link['legend']['pos']['decorations'] = array('x' => 0, 'y' => 0);
+//echo "<pre>";print_r($link);exit;
       if (count($link['nodes']) > 0) {
          $canvas_config = array('graphType' => 'Network',
                                  'indicatorCenter' => 'rainbow',
-                                 'layoutTime' => 30,
+                                 'layoutTime' => 60,
                                  'maxIterations' => 80,
                                  'gradient' => true,
                                  'backgroundGradient2Color' => 'rgb(242,242,242)',
                                  'backgroundGradient1Color' => 'rgb(242,242,242)',
                                  'nodeFontColor' => 'rgb(29,34,43)',
-                                 'showAnimation' => true);
+                                 'showAnimation' => true,
+'networkRoot' => 'image',
+                                 'calculateLayout' => true,
+                                 'decorationsPosition' => 'top',
+                                 'decorationsType' => 'bar',
+                                 'showDecorations' => true,
+                                 'decorations' => array('critical', 'warning', 'ok'),
+                                 'decorationsColors' => array('rgb(255,0,0)', 'rgb(255,187,0)', 'rgb(0,255,0)')
+             
+             );
 
          $link_to_form = $root->getFormURL();
          $link_to_form .= (strpos($link_to_form,'?') ? '&amp;':'?').'id=';
