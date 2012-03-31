@@ -160,8 +160,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       echo $LANG['state'][6]."&nbsp;:";
       echo "</td>";
       echo "<td>";
-      Dropdown::dropdownTypes("itemtypen", 
-                              "",
+      Dropdown::showItemTypes("itemtypen",
                               $CFG_GLPI['networkport_types'],
                               $a_usedItemtypes);
       echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$componentscatalogs_id."' >";
