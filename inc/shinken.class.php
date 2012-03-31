@@ -116,9 +116,12 @@ class PluginMonitoringShinken extends CommonDBTM {
       $pmHostconfig  = new PluginMonitoringHostconfig();
       $calendar      = new Calendar();
       $pmRealm       = new PluginMonitoringRealm();
+      $networkEquipment = new NetworkEquipment();
 
       $a_hosts = array();
       $i=0;
+      $a_parents_found = array();
+      $a_hosts_found = array();
       
       $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
       
@@ -138,11 +141,31 @@ class PluginMonitoringShinken extends CommonDBTM {
                     OR isset($a_entities_allowed[$class->fields['entities_id']])) {
 
                $a_hosts[$i]['host_name'] = $classname."-".$data['items_id']."-".preg_replace("/[^A-Za-z0-9]/","",$class->fields['name']);
+               $a_hosts_found[$a_hosts[$i]['host_name']] = 1;
                $a_hosts[$i]['alias'] = $a_hosts[$i]['host_name'];
                $ip = PluginMonitoringHostaddress::getIp($data['items_id'], $data['itemtype'], $class->fields['name']);
 
                $a_hosts[$i]['address'] = $ip;
-               $a_hosts[$i]['parents'] = "";
+               // Manage dependencies
+                  $parent = '';
+                  if ($data['itemtype'] != 'NetworkEquipment') {
+                     $networkPort = new NetworkPort();
+                     $a_networkports = $networkPort->find("`itemtype`='".$data['itemtype']."'
+                        AND `items_id`='".$data['items_id']."'");
+                     foreach ($a_networkports as $data_n) {
+                        $networkports_id = $networkPort->getContact($data_n['id']);
+                        if ($networkports_id) {
+                           $networkPort->getFromDB($networkports_id);
+                           if ($networkPort->fields['itemtype'] == 'NetworkEquipment') {
+                              $networkEquipment->getFromDB($networkPort->fields['items_id']);
+                              $parent = 'NetworkEquipment-'.$networkPort->fields['items_id'].'-'.preg_replace("/[^A-Za-z0-9]/","",$networkEquipment->fields['name']);
+                              $a_parents_found[$parent] = 1;
+                           }
+                        }
+                     }
+                     
+                  }
+                  $a_hosts[$i]['parents'] = $parent;
 
                $a_fields = array();
 
@@ -184,6 +207,18 @@ class PluginMonitoringShinken extends CommonDBTM {
                }
                $a_hosts[$i]['notification_options'] = 'd,u,r';
                $i++;
+            }
+         }
+      }
+      
+      // Check if parents all exist in hosts config
+      foreach ($a_parents_found as $host => $num) {
+         if (!isset($a_hosts_found[$host])) {
+            // Delete parents not added in hosts config
+            foreach ($a_hosts as $id=>$data) {
+               if ($data['parents'] == $host) {
+                  $a_hosts[$id]['parents'] = '';
+               }
             }
          }
       }
