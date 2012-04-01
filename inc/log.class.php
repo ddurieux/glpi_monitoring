@@ -98,7 +98,7 @@ class PluginMonitoringLog extends CommonDBTM {
       $pmConfig   = new PluginMonitoringConfig();
       
       $id_restart = 0;
-      $a_restarts = $this->find("`action`='restart'", "`id` DESC", 1);
+      $a_restarts = $pmLog->find("`action`='restart'", "`id` DESC", 1);
       if (count($a_restarts) > 0) {
          $a_restart = current($a_restarts);
          $id_restart = $a_restart['id'];
@@ -111,6 +111,12 @@ class PluginMonitoringLog extends CommonDBTM {
          $query .= " AND `id` < '".$id_restart."'";
       }
       $DB->query($query);
+      
+      // Clean too events
+      $query = "DELETE FROM `glpi_plugin_monitoring_serviceevents`
+         WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
+      $DB->query($query);
+      
       return true;
    }
 
