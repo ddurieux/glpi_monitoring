@@ -1242,6 +1242,75 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       
       
     /*
+    * Table glpi_plugin_monitoring_hosts
+    */
+      $newTable = "glpi_plugin_monitoring_hosts";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+         $DB->query($query);
+      }
+         $migration->changeField($newTable, 
+                                 'id', 
+                                 'id', 
+                                 "int(11) NOT NULL AUTO_INCREMENT");
+         $migration->changeField($newTable, 
+                                 'items_id', 
+                                 'items_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'itemtype', 
+                                 'itemtype', 
+                                 "varchar(100) DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'event', 
+                                 'event', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'state', 
+                                 'state', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");                 
+         $migration->changeField($newTable, 
+                                 'state_type', 
+                                 'state_type', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'last_check', 
+                                 'last_check', 
+                                 "datetime DEFAULT NULL"); 
+         $migration->changeField($newTable, 
+                                 'dependencies', 
+                                 'dependencies', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL"); 
+      $migration->migrationOneTable($newTable);
+         $migration->addField($newTable, 
+                              'items_id', 
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'itemtype', 
+                              "varchar(100) DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'event', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'state', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");                 
+         $migration->addField($newTable, 
+                                 'state_type', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'last_check', 
+                                 "datetime DEFAULT NULL"); 
+         $migration->addField($newTable, 
+                              'dependencies', 
+                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+      $migration->migrationOneTable($newTable);
+
+      
+      
+    /*
     * Table glpi_plugin_monitoring_logs
     */
       $newTable = "glpi_plugin_monitoring_logs";
@@ -2207,6 +2276,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    include (GLPI_ROOT . "/plugins/monitoring/inc/hostconfig.class.php");
    $pmHostconfig = new PluginMonitoringHostconfig();
    $pmHostconfig->initConfig();
+   
+   include (GLPI_ROOT . "/plugins/monitoring/inc/host.class.php");
+   $pmHost = new PluginMonitoringHost();
+   $pmHost->verifyHosts();
    
    
    if ($insertrealm == '1') {

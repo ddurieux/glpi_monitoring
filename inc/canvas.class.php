@@ -157,6 +157,47 @@ class PluginMonitoringCanvas {
       $output['critical'] = $critical;
       return $output;
    }
+   
+   
+
+   function getHostState($itemtype, $items_id) {
+      global $DB;
+      
+      $query = "SELECT * FROM `glpi_plugin_monitoring_hosts`
+         WHERE `itemtype`='".$itemtype."'
+            AND `items_id`='".$items_id."'
+         LIMIT 1";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         if ($data['state_type'] == 'SOFT') {
+            return 'ok';
+         }
+         switch ($data['state']) {
+            case 'DOWN':
+            case 'UNREACHABLE':
+            case 'CRITICAL':
+            case 'DOWNTIME':
+               return 'critical';
+               break;
+
+            case 'WARNING':
+            case 'UNKNOWN':
+            case 'RECOVERY':
+            case 'FLAPPING':
+               return 'warning';
+               break;
+            
+            case 'OK':
+            case 'UP':
+               return 'ok';
+               break;
+
+         }
+         return 'warning';
+      }
+      return '';
+   }
+   
 
    
    function addPoint($itemdata, $ancestor = 0,$state = 'no') {
@@ -235,13 +276,14 @@ class PluginMonitoringCanvas {
 
          $stateDevice = 'ok';
          if (is_array($state)) {
-            if ($state['critical'] > 0) {
+            $host_state = $this->getHostState($itemtype, $split[1]);
+            if ($host_state == 'critical') {
                $input['color'] = 'rgb(255,0,0)';
                $stateDevice = 'critical';
-            } else if ($state['warning'] > 0) {
+            } else if ($host_state == 'warning') {
                $input['color'] = 'rgb(255,187,0)';
                $stateDevice = 'warning';
-            } else if ($state['ok'] > 0) {
+            } else if ($host_state == 'ok') {
                $input['color'] = 'rgb(0,255,0)';
             }
             $input['critical']   = $state['critical'];

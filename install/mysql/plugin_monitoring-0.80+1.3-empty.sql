@@ -280,6 +280,22 @@ CREATE TABLE `glpi_plugin_monitoring_hostconfigs` (
 
 
 
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_hosts`;
+
+CREATE TABLE `glpi_plugin_monitoring_hosts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(100) DEFAULT NULL,
+  `event` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `state` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `state_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `last_check` datetime DEFAULT NULL,
+  `dependencies` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_logs`;
 
 CREATE TABLE `glpi_plugin_monitoring_logs` (
@@ -509,6 +525,5 @@ CREATE TABLE `glpi_plugin_monitoring_weathermaplinks` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_plugin_monitoring_realms` 
+INSERT INTO `glpi_plugin_monitoring_realms`
    (`id` ,`name` ,`comment` ,`date_mod`) VALUES (NULL , 'All', NULL , NULL);
-

@@ -149,7 +149,9 @@ function plugin_init_monitoring() {
                                        'Peripheral'       => $rule_check,
                                        'Phone'            => $rule_check,
                                        'PluginMonitoringComponentscatalog_rule' =>
-                                             array('PluginMonitoringComponentscatalog_rule','getItemsDynamicly'));
+                                             array('PluginMonitoringComponentscatalog_rule','getItemsDynamicly'),
+                                       'PluginMonitoringComponentscatalog_Host' =>
+                                             array('PluginMonitoringHost','addHost'));
          $PLUGIN_HOOKS['item_update']['monitoring'] = 
                                  array('Computer'         => $rule_check,
                                        'NetworkEquipment' => $rule_check,

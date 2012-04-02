@@ -114,6 +114,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       $pmComponent   = new PluginMonitoringComponent();
       $pmEntity      = new PluginMonitoringEntity();
       $pmHostconfig  = new PluginMonitoringHostconfig();
+      $pmHost  = new PluginMonitoringHost();
       $calendar      = new Calendar();
       $pmRealm       = new PluginMonitoringRealm();
       $networkEquipment = new NetworkEquipment();
@@ -160,6 +161,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                               $networkEquipment->getFromDB($networkPort->fields['items_id']);
                               $parent = 'NetworkEquipment-'.$networkPort->fields['items_id'].'-'.preg_replace("/[^A-Za-z0-9]/","",$networkEquipment->fields['name']);
                               $a_parents_found[$parent] = 1;
+                              $pmHost->updateDependencies($classname, $data['items_id'], 'NetworkEquipment-'.$networkPort->fields['items_id']);
                            }
                         }
                      }
