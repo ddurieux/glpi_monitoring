@@ -2175,9 +2175,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       
 
     /*
-    * Table glpi_plugin_monitoring_weathermapnodes
+    * Table glpi_plugin_monitoring_weathermaplinks
     */
-      $newTable = "glpi_plugin_monitoring_weathermapnodes";
+      $newTable = "glpi_plugin_monitoring_weathermaplinks";
       if (!TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
