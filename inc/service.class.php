@@ -231,8 +231,11 @@ class PluginMonitoringService extends CommonDBTM {
          echo "</th>";    
          echo "</tr>";
          
-         $querys = "SELECT * FROM `glpi_plugin_monitoring_services`
-            WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$data['id']."'";
+         $querys = "SELECT `glpi_plugin_monitoring_services`.* FROM `glpi_plugin_monitoring_services`
+            LEFT JOIN `glpi_plugin_monitoring_components`
+               on `plugin_monitoring_components_id` = `glpi_plugin_monitoring_components`.`id`
+            WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$data['id']."'
+               ORDER BY `name`";
          $results = $DB->query($querys);
          while ($datas=$DB->fetch_array($results)) {
             $this->getFromDB($datas['id']);            
