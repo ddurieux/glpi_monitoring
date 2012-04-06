@@ -103,6 +103,8 @@ class PluginMonitoringRrdtool extends CommonDBTM {
                   if ($val != '') {
                      if (strstr($val, "ms")) {
                         $val = round(str_replace("ms", "", $val),0);
+                     } else if (strstr($val, "bps")) {
+                        $val = round(str_replace("bps", "", $val),0);
                      } else if (strstr($val, "s")) {
                         $val = round((str_replace("s", "", $val) * 1000),0);
                      } else if (strstr($val, "%")) {
@@ -127,7 +129,7 @@ class PluginMonitoringRrdtool extends CommonDBTM {
          }         
       }      
       //$ret = rrd_update($fname, $value);
-
+echo $rrdtool_value."<br/>";
       system(PluginMonitoringConfig::getRRDPath()."/rrdtool update ".$fname." ".$rrdtool_value, $ret);
       if (isset($ret) 
               AND $ret != '0' ) {

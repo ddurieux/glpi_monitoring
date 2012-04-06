@@ -546,9 +546,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'arguments', 
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci"); 
          $migration->changeField($newTable, 
-                                 'alias_command', 
-                                 'alias_command', 
-                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
+                                 'networkports_id', 
+                                 'networkports_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable, 
                               'entities_id',
@@ -578,8 +578,8 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'arguments', 
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci"); 
          $migration->addField($newTable, 
-                                 'alias_command', 
-                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
+                                 'networkports_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
          $migration->addKey($newTable,
                             array('state',
                                   'state_type'),
@@ -1370,6 +1370,47 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
       $migration->migrationOneTable($newTable);
  
+
+      
+    /*
+    * Table glpi_plugin_monitoring_networkports
+    */
+      $newTable = "glpi_plugin_monitoring_networkports";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+         $DB->query($query);
+      }
+         $migration->changeField($newTable, 
+                                 'id', 
+                                 'id', 
+                                 "int(11) NOT NULL AUTO_INCREMENT");
+         $migration->changeField($newTable, 
+                                 'items_id', 
+                                 'items_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'itemtype', 
+                                 'itemtype', 
+                                 "varchar(100) DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'networkports_id', 
+                                 'networkports_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+      $migration->migrationOneTable($newTable);
+         $migration->addField($newTable, 
+                              'items_id', 
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'itemtype', 
+                              "varchar(100) DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'networkports_id', 
+                              "int(11) NOT NULL DEFAULT '0'");
+      $migration->migrationOneTable($newTable);
+
       
       
     /*

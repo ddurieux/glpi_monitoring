@@ -198,7 +198,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       $a_lisths = $pmService->find();
       foreach ($a_lisths as $data) {
          $pmServiceevent->parseToRrdtool($data['id']);
-      }
+      }exit;
       return true;
    }
 }

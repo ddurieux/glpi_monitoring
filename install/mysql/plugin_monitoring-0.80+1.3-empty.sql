@@ -110,7 +110,7 @@ CREATE TABLE `glpi_plugin_monitoring_services` (
   `state_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `last_check` datetime DEFAULT NULL,
   `arguments` text DEFAULT NULL COLLATE utf8_unicode_ci,
-  `alias_command` text DEFAULT NULL COLLATE utf8_unicode_ci,
+  `networkports_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `state` (`state`(50),`state_type`(50)),
   KEY `plugin_monitoring_componentscatalogs_hosts_id` (`plugin_monitoring_componentscatalogs_hosts_id`)
@@ -308,6 +308,18 @@ CREATE TABLE `glpi_plugin_monitoring_logs` (
   `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_networkports`;
+
+CREATE TABLE `glpi_plugin_monitoring_networkports` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `itemtype` varchar(100) DEFAULT NULL,
+  `networkports_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 

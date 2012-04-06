@@ -252,6 +252,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       $calendar                = new Calendar();
       $user                    = new User();
       $pmLog                   = new PluginMonitoringLog();
+      
       if (isset($_SERVER['HTTP_USER_AGENT'])
               AND strstr($_SERVER['HTTP_USER_AGENT'], 'xmlrpclib.py')) {
          if (!isset($_SESSION['glpi_currenttime'])) {
@@ -322,6 +323,14 @@ class PluginMonitoringShinken extends CommonDBTM {
                   } else {
                      if (strstr($a_arguments[$arg], "[[HOSTNAME]]")) {
                         $a_arguments[$arg] = str_replace("[[HOSTNAME]]", $hostname, $a_arguments[$arg]);
+                     } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTDESCR]]")){
+                        if(class_exists("PluginFusinvsnmpNetworkPort")) {
+                           $pfNetworkPort = new PluginFusinvsnmpNetworkPort();
+                           $pfNetworkPort->load($data['networkports_id']);
+                           $descr = '';
+                           $descr = $pfNetworkPort->getValue("ifdescr");
+                           $a_arguments[$arg] = str_replace("[[NETWORKPORTDESCR]]", $descr, $a_arguments[$arg]);
+                        }
                      } else if (strstr($a_arguments[$arg], "[")) {
                         $a_arguments[$arg] = PluginMonitoringService::convertArgument($data['id'], $a_arguments[$arg]);
                      }

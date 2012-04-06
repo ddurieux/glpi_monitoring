@@ -196,4 +196,6 @@ $LANG['plugin_monitoring']['displayview'][4]="Views in GLPI home page";
 
 $LANG['plugin_monitoring']['dependency'][0]="Dependencies";
 
+$LANG['plugin_monitoring']['networkport'][0]='Network ports of networking devices';
+
 ?>

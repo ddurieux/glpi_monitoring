@@ -196,6 +196,18 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
       global $DB;
       
       $pmService = new PluginMonitoringService();
+      $pmComponentscatalog_rule = new PluginMonitoringComponentscatalog_rule();
+      $pmNetworkport = new PluginMonitoringNetworkport();
+      
+      $pluginMonitoringNetworkport = 0;
+      $query = "SELECT * FROM `".$pmComponentscatalog_rule->getTable()."`
+         WHERE `itemtype`='PluginMonitoringNetworkport'
+            AND `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'
+         LIMIT 1";
+      $result = $DB->query($query);
+      if ($DB->numrows($result) > 0) {
+         $pluginMonitoringNetworkport = 1;
+      }
       
       $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
@@ -204,12 +216,42 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
          $itemtype = $data['itemtype'];
          $item = new $itemtype();
          $item->getFromDB($data['items_id']);
-         $input = array();
-         $input['entities_id'] = $item->fields['entities_id'];
-         $input['plugin_monitoring_componentscatalogs_hosts_id'] = $data['id'];
-         $input['plugin_monitoring_components_id'] = $components_id;
-         $input['name'] = Dropdown::getDropdownName("glpi_plugin_monitoring_components", $components_id);
-         $pmService->add($input);         
+         if ($pluginMonitoringNetworkport == '0') {
+            $input = array();
+            $input['entities_id'] = $item->fields['entities_id'];
+            $input['plugin_monitoring_componentscatalogs_hosts_id'] = $data['id'];
+            $input['plugin_monitoring_components_id'] = $components_id;
+            $input['name'] = Dropdown::getDropdownName("glpi_plugin_monitoring_components", $components_id);
+            $pmService->add($input); 
+         } else if ($pluginMonitoringNetworkport == '1') {
+            $a_services_created = array();
+            $querys = "SELECT * FROM `glpi_plugin_monitoring_services`
+               WHERE `plugin_monitoring_components_id`='".$components_id."'
+                  AND `plugin_monitoring_componentscatalogs_hosts_id`='".$data['id']."'";
+            $results = $DB->query($querys);
+            while ($datas=$DB->fetch_array($results)) {
+               $a_services_created[$datas['networkports_id']] = $datas['id'];
+            }
+            
+            $a_ports = $pmNetworkport->find("`itemtype`='".$data['itemtype']."'
+               AND `items_id`='".$data['items_id']."'");
+            foreach ($a_ports as $datap) {
+               if (isset($a_services_created[$datap["id"]])) {
+                  unset($a_services_created[$datap["id"]]);
+               } else {               
+                  $input = array();
+                  $input['networkports_id'] = $datap['networkports_id'];
+                  $input['entities_id'] =  $item->fields['entities_id'];
+                  $input['plugin_monitoring_componentscatalogs_hosts_id'] = $data['id'];
+                  $input['plugin_monitoring_components_id'] = $components_id;
+                  $input['name'] = Dropdown::getDropdownName("glpi_plugin_monitoring_components", $components_id);
+                  $pmService->add($input);
+               }
+            }
+            foreach ($a_services_created as $id) {
+               $pmService->delete(array('id'=>$id));
+            }
+         }
       }
    }
    
