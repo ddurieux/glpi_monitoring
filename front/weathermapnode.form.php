@@ -66,7 +66,7 @@ if (isset ($_POST["add"])) {
    unset($_POST['itemtype']);
    $pmWeathermapnode->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset ($_POST["delete"])) {
+} else if (isset ($_POST["purge"])) {
    $pmWeathermapnode->delete($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 }
