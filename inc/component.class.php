@@ -316,11 +316,11 @@ class PluginMonitoringComponent extends CommonDBTM {
                   $a_arguments[$arg] = '';
                }
                $a_displayarg[$arg] = $a_arguments[$arg];
-               
             }
          }
       }
       if (count($a_displayarg) > 0) {
+         $a_tags = $this->tagsAvailable();
          $a_argtext = importArrayFromDB($pMonitoringCommand->fields['arguments']);
          echo "<tr>";
          echo "<th colspan='4'>".$LANG['plugin_monitoring']['service'][4]."&nbsp;</th>";
@@ -339,7 +339,31 @@ class PluginMonitoringComponent extends CommonDBTM {
             echo "<td>";
             echo "<input type='text' name='arg[".$key."]' value='".$value."'/><br/>";
             echo "</td>";
+            if (count($a_tags) > 0) {
+               foreach ($a_tags as $key=>$value) {
+                  echo "<td class='tab_bg_3'>";
+                  echo "<strong>".$key."</strong>&nbsp;:";
+                  echo "</td>";
+                  echo "<td class='tab_bg_3'>";
+                  echo $value;
+                  echo "</td>";
+                  unset($a_tags[$key]);
+                  break;
+               }
+            } else {
+               echo "<td colspan='2'></td>";
+            }
+            echo "</tr>";
+         }
+         foreach ($a_tags as $key=>$value) {
+            echo "<tr>";
             echo "<td colspan='2'></td>";
+            echo "<td class='tab_bg_3'>";
+            echo "<strong>".$key."</strong>&nbsp;:";
+            echo "</td>";
+            echo "<td class='tab_bg_3'>";
+            echo $value;
+            echo "</td>";
             echo "</tr>";
          }
       }
@@ -386,6 +410,24 @@ class PluginMonitoringComponent extends CommonDBTM {
       }
       
       return true;
+   }
+   
+   
+   
+   function tagsAvailable() {
+      global $LANG;
+      
+      $elements = array();
+      $elements[$LANG['plugin_monitoring']['component'][11]] = '';
+      $elements["[[HOSTNAME]]"] = $LANG['plugin_monitoring']['component'][7];
+      $elements["[[NETWORKPORTNUM]]"] = $LANG['plugin_monitoring']['component'][12];
+      $elements["[[NETWORKPORTNAME]]"] = $LANG['plugin_monitoring']['component'][13];
+      if (class_exists("PluginFusinvsnmpNetworkPort")) {
+         $elements["[[NETWORKPORTDESCR]]"] = $LANG['plugin_monitoring']['component'][8];
+         $elements["[SNMP:version]"] = $LANG['plugin_monitoring']['component'][9];
+         $elements["[SNMP:authentication]"] = $LANG['plugin_monitoring']['component'][10];
+      }      
+      return $elements;
    }
 }
 

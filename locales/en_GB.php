@@ -152,6 +152,13 @@ $LANG['plugin_monitoring']['component'][3]="Static hosts";
 $LANG['plugin_monitoring']['component'][4]="Dynamic hosts";
 $LANG['plugin_monitoring']['component'][5]="Fields with asterisk are required";
 $LANG['plugin_monitoring']['component'][6]="Component";
+$LANG['plugin_monitoring']['component'][7]="Hostname of the device";
+$LANG['plugin_monitoring']['component'][8]="Network port ifDescr of networking devices";
+$LANG['plugin_monitoring']['component'][9]="SNMP version of network equipment or printer";
+$LANG['plugin_monitoring']['component'][10]="SNMP community of network equipment or printer";
+$LANG['plugin_monitoring']['component'][11]="List of tags available";
+$LANG['plugin_monitoring']['component'][12]="Network port number";
+$LANG['plugin_monitoring']['component'][13]="Network port name";
 
 $LANG['plugin_monitoring']['componentscatalog'][0]="Components catalog";
 
