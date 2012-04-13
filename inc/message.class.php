@@ -61,37 +61,28 @@ class PluginMonitoringMessage extends CommonDBTM {
       $i = 0;
       if ($servicecatalog != ''
               OR $confchanges != '') {
-         echo "<table class='tab_cadre' width='600'>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<th><font class='red'>";
+         echo "<div class='msgboxmonit msgboxmonit-orange'>";
          if ($confchanges != '') {
             echo $confchanges;
             $i++;
          }
          if ($servicecatalog != '') {
             if($i > 0) {
-               echo "</font></th>";
-               echo "</tr>";
-               echo "<tr class='tab_bg_1'>";
-               echo "<th><font class='red'>";
+               echo "</div>";
+               echo "<div class='msgboxmonit msgboxmonit-orange'>";
             }
             echo $servicecatalog;
             $i++;
          }
          if ($runningshinken != '') {
             if($i > 0) {
-               echo "</font></th>";
-               echo "</tr>";
-               echo "<tr class='tab_bg_1'>";
-               echo "<th><font class='red'>";
+               echo "</div>";
+               echo "<div class='msgboxmonit msgboxmonit-red'>";
             }
             echo $runningshinken."!";
             $i++;
          }
-         echo "</font></th>";
-         echo "</tr>";
-         echo "</table>";
-         echo "<br/>";
+         echo "</div>";
       }      
    }
    
