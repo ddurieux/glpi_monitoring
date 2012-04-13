@@ -106,7 +106,7 @@ class PluginMonitoringContact_Item extends CommonDBTM {
       echo "<tr>";
       echo "<th width='10'>&nbsp;</th>";
       echo "<th>".$LANG['common'][35]." - ".$LANG['common'][16]."</th>";
-      echo "<th colspan='2'></th>";
+      echo "<th colspan='3'></th>";
       echo "</tr>";
       
       $used = array();
@@ -126,7 +126,7 @@ class PluginMonitoringContact_Item extends CommonDBTM {
          echo "<td class='center'>";
          echo $group->getLink(1);         
          echo "</td>";
-         echo "<td colspan='2'>";
+         echo "<td colspan='3'>";
 
          echo "</td>";
          
@@ -136,10 +136,12 @@ class PluginMonitoringContact_Item extends CommonDBTM {
       echo "<tr>";
       echo "<th width='10'>&nbsp;</th>";
       echo "<th>".$LANG['common'][34]." - ".$LANG['common'][16]."</th>";
+      echo "<th>".$LANG['entity'][0]."</th>";
       echo "<th>".$LANG['setup'][14]."</th>";
       echo "<th>".$LANG['help'][35]."</th>";
       echo "</tr>";
       
+      $entity = new Entity();
       $used = array();
       // Display Users
       $query = "SELECT * FROM `".$this->getTable()."`
@@ -153,10 +155,14 @@ class PluginMonitoringContact_Item extends CommonDBTM {
          echo "<tr>";
          echo "<td>";
          echo "<input type='checkbox' name='item[".$data["id"]."]' value='1'>";
-         echo "</td>";
+         echo "</td>";        
          echo "<td class='center'>";
          echo $user->getLink(1);         
          echo "</td>";
+         $entity->getFromDB($data['entities_id']);
+         echo "<td class='center'>";
+         echo $entity->getName()." <strong>(R)</strong>";         
+         echo "</td>"; 
          echo "<td class='center'>";
          echo $user->fields['email'];
          echo "</td>";
@@ -176,7 +182,7 @@ class PluginMonitoringContact_Item extends CommonDBTM {
    
    
    function addContact($itemtype, $items_id) {
-      global $DB,$LANG;
+      global $DB,$LANG,$CFG_GLPI;
       
       $this->getEmpty();
       
@@ -189,14 +195,26 @@ class PluginMonitoringContact_Item extends CommonDBTM {
       echo "<input type='hidden' name='itemtype' value='".$itemtype."'/>";
       echo "</td>";
       echo "<td>";
-      Dropdown::show("User", array('name'=>'users_id'));
+      
+      $paramscomment = array('value'  => '__VALUE__');
+      
+      $toupdate = array('users_id' => 'value',
+                        'to_update'  => "show_entity",
+                        'url'        => $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownUserEntities.php",
+                        'moreparams' => $paramscomment);
+      
+      $rand = Dropdown::show("User", array('name'=>'users_id', 'toupdate'=> $toupdate));
+  
       echo "</td>";
-      echo "<td colspan='2'>";
+      echo "<td>";
+      echo $LANG['entity'][0]." (".strtolower($LANG['profiles'][28]).")&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      echo "<span id='show_entity'></span>\n";
       echo "</td>";
       echo "</tr>";
       
       $this->showFormButtons();
-      
       $this->showFormHeader();      
      
       echo "<tr>";

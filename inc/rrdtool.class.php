@@ -184,6 +184,13 @@ echo $rrdtool_value."<br/>";
       if ($a_json->data[0]->limits[0]->{"lower-limit"} != "") {
          $opts .= " --lower-limit ".$a_json->data[0]->limits[0]->{"lower-limit"};
       }
+      if ($a_json->data[0]->{"y-axis"}[0]->{"units-exponent"} != "") {
+         $opts .= " --units-exponent ".$a_json->data[0]->{"y-axis"}[0]->{"units-exponent"};
+      }
+      if ($a_json->data[0]->{"y-axis"}[0]->{"unitst"} != "") {
+         $opts .= " --units ".$a_json->data[0]->{"y-axis"}[0]->{"units"};
+      }
+      
       
       foreach ($a_json->data[0]->data as $data) {
          $data = str_replace("[[RRDFILE]]", 

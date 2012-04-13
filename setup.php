@@ -46,7 +46,7 @@ define ("PLUGIN_MONITORING_VERSION","0.80+1.3");
 function plugin_init_monitoring() {
    global $PLUGIN_HOOKS,$LANG;
    
-   if (!strstr($_SERVER["PHP_SELF"], 'xmlrpc')) {
+   if (strstr($_SERVER["PHP_SELF"], 'monitoring/front/display.')) {
       echo "
        <!--[if IE]><script type='text/javascript' src='".GLPI_ROOT."/plugins/monitoring/lib/canvas/excanvas.js'></script><![endif]-->
        <script type='text/javascript' src='".GLPI_ROOT."/plugins/monitoring/lib/canvas/canvasXpress.min.js'></script>";

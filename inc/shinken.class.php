@@ -252,6 +252,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       $calendar                = new Calendar();
       $user                    = new User();
       $pmLog                   = new PluginMonitoringLog();
+      $profile_User = new Profile_User();
       
       if (isset($_SERVER['HTTP_USER_AGENT'])
               AND strstr($_SERVER['HTTP_USER_AGENT'], 'xmlrpclib.py')) {
@@ -269,6 +270,17 @@ class PluginMonitoringShinken extends CommonDBTM {
       
       $a_services = array();
       $i=0;
+      
+      // * Prepare contacts
+      $a_contacts_entities = array();
+      $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
+         AND `users_id`>0");
+      foreach ($a_list_contact as $data) {
+         $usersentities = $profile_User->getUserEntities($data['users_id']);
+         $contactentities = getSonsOf('glpi_entities', $data['entities_id']);
+         $a_contacts_entities[$data['items_id']][$data['users_id']] = 
+                                                array_intersect($usersentities, $contactentities);
+      }
       
       $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
       
@@ -324,9 +336,9 @@ class PluginMonitoringShinken extends CommonDBTM {
                      if (strstr($a_arguments[$arg], "[[HOSTNAME]]")) {
                         $a_arguments[$arg] = str_replace("[[HOSTNAME]]", $hostname, $a_arguments[$arg]);
                      } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTDESCR]]")){
-                        if(class_exists("PluginFusinvsnmpNetworkPort")) {
+                        if (class_exists("PluginFusinvsnmpNetworkPort")) {
                            $pfNetworkPort = new PluginFusinvsnmpNetworkPort();
-                           $pfNetworkPort->load($data['networkports_id']);
+                           $pfNetworkPort->loadNetworkport($data['networkports_id']);
                            $descr = '';
                            $descr = $pfNetworkPort->getValue("ifdescr");
                            $a_arguments[$arg] = str_replace("[[NETWORKPORTDESCR]]", $descr, $a_arguments[$arg]);
@@ -362,13 +374,18 @@ class PluginMonitoringShinken extends CommonDBTM {
             } else {
                $a_services[$i]['check_command'] = $pMonitoringCommand->fields['command_name'].$args;
             }
+            // * Contacts
                $a_contacts = array();
                $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
                   AND `items_id`='".$plugin_monitoring_componentscatalogs_id."'");
                foreach ($a_list_contact as $data_contact) {
-//                  $pmContact->getFromDB($data_contact['plugin_monitoring_contacts_id']);
-                  $user->getFromDB($data_contact['users_id']);
-                  $a_contacts[] = $user->fields['name'];
+                  if (isset($a_contacts_entities[$plugin_monitoring_componentscatalogs_id][$data_contact['users_id']])) {
+                     if (in_array($data['entities_id'], $a_contacts_entities[$plugin_monitoring_componentscatalogs_id][$data_contact['users_id']])) {
+      //                  $pmContact->getFromDB($data_contact['plugin_monitoring_contacts_id']);
+                        $user->getFromDB($data_contact['users_id']);
+                        $a_contacts[] = $user->fields['name'];
+                     }
+                  }
                }
             $a_services[$i]['contacts'] = implode(',', $a_contacts);
 
