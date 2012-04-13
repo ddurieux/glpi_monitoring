@@ -815,6 +815,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'itemtype', 
                                  'itemtype', 
                                  "varchar(100) DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'entities_id', 
+                                 'entities_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable, 
                                  'users_id', 
@@ -828,6 +832,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                                  'itemtype', 
                                  "varchar(100) DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'entities_id', 
+                              "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
 
 
