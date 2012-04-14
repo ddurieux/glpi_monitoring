@@ -236,8 +236,22 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
          WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$parm->fields['id']."'";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
+         $_SESSION['plugin_monitoring_hosts'] = $this->fields;
          $pmService->delete(array('id'=>$data['id']));
       }      
+   }
+   
+   
+   
+   /**
+    * Put in session informations for add in log what change in config
+    * 
+    * @return type 
+    */
+   function pre_deleteItem() {
+      $_SESSION['plugin_monitoring_hosts'] = $this->fields;
+      
+      return true;
    }
 }
 

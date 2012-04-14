@@ -423,7 +423,35 @@ function plugin_monitoring_addLeftJoin($itemtype,$ref_table,$new_table,$linkfiel
 
    switch ($itemtype) {
       
-      
+      case 'PluginMonitoringNetworkport':
+         $already_link_tables_tmp = $already_link_tables;
+         array_pop($already_link_tables_tmp);
+         
+         $leftjoin_networkequipments = 1;
+         if (in_array('glpi_states', $already_link_tables_tmp)
+                 OR in_array('glpi_networkequipments', $already_link_tables_tmp)) {
+            $leftjoin_networkequipments = 0;
+         }
+         switch ($new_table.".".$linkfield) {
+
+            case "glpi_networkequipments.networkequipments_id" :
+               if ($leftjoin_networkequipments == '0') {
+                  return " ";
+               }
+               return " LEFT JOIN `glpi_networkequipments` ON (`glpi_plugin_monitoring_networkports`.`items_id` = `glpi_networkequipments`.`id` ) ";
+               break;
+            
+            case "glpi_states.states_id":
+               if ($leftjoin_networkequipments == '1') {
+                  return " LEFT JOIN `glpi_networkequipments` ON (`glpi_plugin_monitoring_networkports`.`items_id` = `glpi_networkequipments`.`id` ) 
+                     LEFT JOIN `glpi_states` ON (`glpi_networkequipments`.`states_id` = `glpi_states`.`id` ) ";
+               } else {
+                  return " LEFT JOIN `glpi_states` ON (`glpi_networkequipments`.`states_id` = `glpi_states`.`id` ) ";
+               }
+               break;
+            
+         }
+         break;
       
    }
    return "";

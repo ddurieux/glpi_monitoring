@@ -249,6 +249,7 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
                }
             }
             foreach ($a_services_created as $id) {
+               $_SESSION['plugin_monitoring_hosts'] = $data;
                $pmService->delete(array('id'=>$id));
             }
          }
@@ -270,6 +271,7 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
                AND `plugin_monitoring_components_id`='".$components_id."'";
          $results = $DB->query($querys);
          while ($datas=$DB->fetch_array($results)) {
+            $_SESSION['plugin_monitoring_hosts'] = $data;
             $pmService->delete(array('id'=>$datas['id']));
          } 
       }

@@ -148,7 +148,8 @@ class PluginMonitoringMessage extends CommonDBTM {
                margin-left: -350px;margin-top:40px;display:none'
                class='msgboxmonit msgboxmonit-grey' id='addelements'>";
             $query = "SELECT * FROM `".getTableForItemType('PluginMonitoringLog')."`
-               WHERE `id` > '".$id_restart."' AND `action`='add'";
+               WHERE `id` > '".$id_restart."' AND `action`='add'
+               ORDER BY `id` DESC";
             $result = $DB->query($query);
             while ($data=$DB->fetch_array($result)) {
                echo "[".convDateTime($data['date_mod'])."] Add ".$data['value']."<br/>";
@@ -164,7 +165,8 @@ class PluginMonitoringMessage extends CommonDBTM {
                margin-left: -350px;margin-top:40px;display:none'
                class='msgboxmonit msgboxmonit-grey' id='deleteelements'>";
             $query = "SELECT * FROM `".getTableForItemType('PluginMonitoringLog')."`
-               WHERE `id` > '".$id_restart."' AND `action`='delete'";
+               WHERE `id` > '".$id_restart."' AND `action`='delete'
+               ORDER BY `id` DESC";
             $result = $DB->query($query);
             while ($data=$DB->fetch_array($result)) {
                echo "[".convDateTime($data['date_mod'])."] Delete ".$data['value']."<br/>";

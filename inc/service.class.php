@@ -678,9 +678,17 @@ class PluginMonitoringService extends CommonDBTM {
       $input['itemtype'] = "PluginMonitoringService";
       $input['items_id'] = $this->fields['id'];
       $input['action'] = "delete";
-      $input['value'] = "Service xx of computer yy";
+
+      $itemtype = $_SESSION['plugin_monitoring_hosts']['itemtype'];
+      $item = new $itemtype();
+      $item->getFromDB($_SESSION['plugin_monitoring_hosts']['items_id']);
+      
+      $input['value'] = "Service ".$this->fields['name']." of ".$item->getTypeName()." ".$item->getName();
       $pmLog->add($input);
+      
+      unset($_SESSION['plugin_monitoring_hosts']);
    }
+   
 
    
    function showWidget($id, $time) {
