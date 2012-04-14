@@ -658,12 +658,17 @@ class PluginMonitoringService extends CommonDBTM {
       global $DB;
 
       $pmLog = new PluginMonitoringLog();
+      $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
       
       $input = array();
       $input['itemtype'] = "PluginMonitoringService";
       $input['items_id'] = $this->fields['id'];
       $input['action'] = "add";
-      $input['value'] = "New service";
+      $pmComponentscatalog_Host->getFromDB($this->fields['plugin_monitoring_componentscatalogs_hosts_id']);
+      $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
+      $item = new $itemtype();
+      $item->getFromDB($pmComponentscatalog_Host->fields['items_id']);      
+      $input['value'] = "New service ".$this->fields['name']." for ".$item->getTypeName()." ".$item->getName();
       $pmLog->add($input);
    }
 
