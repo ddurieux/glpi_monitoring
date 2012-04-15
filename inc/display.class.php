@@ -393,7 +393,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       global $DB,$CFG_GLPI,$LANG;
 
       $pMonitoringService = new PluginMonitoringService();
-      $pMonitoringServiceH = new PluginMonitoringService();
+      $networkPort = new NetworkPort();
       $pMonitoringComponent = new PluginMonitoringComponent();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
       $entity = new Entity();
@@ -418,6 +418,11 @@ class PluginMonitoringDisplay extends CommonDBTM {
             $item->getFromDB($pmComponentscatalog_Host->fields['items_id']);
             echo "<td>";
             echo $item->getTypeName()." : ".$item->getLink();
+            if (!is_null($pMonitoringService->fields['networkports_id'])
+                    AND $pMonitoringService->fields['networkports_id'] > 0) {
+               $networkPort->getFromDB($pMonitoringService->fields['networkports_id']);
+               echo " [".$networkPort->getLink()."]";
+            }
             echo "</td>";
 
          } else {
