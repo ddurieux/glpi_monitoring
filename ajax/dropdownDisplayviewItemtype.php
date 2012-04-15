@@ -30,9 +30,6 @@ switch ($_POST['itemtype']) {
       $params = array('itemtype'        => '__VALUE__',
                       'entity_restrict' => $_POST['a_entities'],
                       'selectgraph' => '1',
-//                      'current'         => $ID,
-//                      'comments'        => $p['comments'],
-//                      'myname'          => $p['name'],
                       'rand'            => $rand);
 
       ajaxUpdateItemOnSelectEvent("itemtype$rand", "show_itemtype$rand",
@@ -40,20 +37,12 @@ switch ($_POST['itemtype']) {
                                   $params);
 
       echo "<span id='show_itemtype$rand'><input type='hidden' name='services_id[]' value='0'/></span>\n";
-
-      
-//      $rand = Dropdown::show('PluginMonitoringService', array('name'=>'items_id'));
-//      $params = array('items_id'  => '__VALUE__',
-//                'itemtype' => "PluginMonitoringService");
-//
-//      ajaxUpdateItemOnSelectEvent("dropdown_items_id".$rand,"extra_infos",
-//                                  $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownDisplayviewExtrainfos.php",
-//                                  $params);
-//      echo "<span id='extra_infos'></span>";
       break;
 
    case 'PluginMonitoringWeathermap':
       Dropdown::show('PluginMonitoringWeathermap', array('name'=>'items_id'));
+      echo "&nbsp;&nbsp;&nbsp;".$LANG['plugin_monitoring']['displayview'][5]."&nbsp: ".
+              Dropdown::showInteger("extra_infos", 100, 0, 100, 5);
       break;
 
    default:

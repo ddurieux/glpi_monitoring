@@ -200,6 +200,7 @@ $LANG['plugin_monitoring']['displayview'][1]="Header counter (critical/warning/o
 $LANG['plugin_monitoring']['displayview'][2]="Display in GLPI home page";
 $LANG['plugin_monitoring']['displayview'][3]="Element to display";
 $LANG['plugin_monitoring']['displayview'][4]="Views in GLPI home page";
+$LANG['plugin_monitoring']['displayview'][5]="% of the width of the frame";
 
 $LANG['plugin_monitoring']['dependency'][0]="Dependencies";
 

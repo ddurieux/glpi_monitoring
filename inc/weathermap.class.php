@@ -259,7 +259,7 @@ echo "
       echo "</td>";
       echo "<td>".$LANG['plugin_monitoring']['weathermap'][3]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::showInteger("width", $this->fields['width'], 100, 3000);
+      Dropdown::showInteger("width", $this->fields['width'], 100, 3000,20);
       echo "</td>";
       echo "</tr>";
       
@@ -279,7 +279,7 @@ echo "
       echo "</td>";
       echo "<td>".$LANG['plugin_monitoring']['weathermap'][4]."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::showInteger("height", $this->fields['height'], 100, 3000);
+      Dropdown::showInteger("height", $this->fields['height'], 100, 3000, 20);
       echo "</td>";
       echo "</tr>";
       
@@ -793,11 +793,22 @@ function point_it(event){
    
    
    
-   function showWidget($id) {
+   function showWidget($id, $pourcentage) {
       global $LANG, $DB, $CFG_GLPI;
    
       $this->generateWeathermap($id);
-      return '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/send.php?file=weathermap-'.$id.'.png"/>';
+      $imgdisplay = $CFG_GLPI['root_doc'].'/plugins/monitoring/front/send.php?file=weathermap-'.$id.'.png';
+      $img = GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$id.".png";
+      list($width, $height, $type, $attr) = getimagesize($img);
+      $table_width = 950;
+      $withreduced = $width;
+      $heightreduced = $height;
+      if ((($table_width * $pourcentage) / 100) < $width) {
+         $withreduced = ceil(($table_width * $pourcentage) / 100);
+         
+         
+      }
+      return '<img src="'.$imgdisplay.'" width="'.$withreduced.'"/>';
    }
    
 }

@@ -177,6 +177,8 @@ Ext.onReady(function() {
             $title .= $item2->getName()." (".$item2->getTypeName().")";
             
          }
+      } else if ($itemtype == "PluginMonitoringWeathermap") {
+         $content = $item->showWidget($data['items_id'], $data['extra_infos']);
       } else {
          $content = $item->showWidget($data['items_id']);
       }
