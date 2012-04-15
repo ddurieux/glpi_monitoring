@@ -162,6 +162,7 @@ Ext.onReady(function() {
       $item = new $itemtype();
       $content = '';
       $title = $item->getTypeName();
+      $event = '';
       if ($itemtype == "PluginMonitoringService") {
          $content = $item->showWidget($data['items_id'], $data['extra_infos']);
          $title .= " : ".Dropdown::getDropdownName(getTableForItemType('PluginMonitoringComponent'), $item->fields['plugin_monitoring_components_id']);
@@ -179,6 +180,7 @@ Ext.onReady(function() {
          }
       } else if ($itemtype == "PluginMonitoringWeathermap") {
          $content = $item->showWidget($data['items_id'], $data['extra_infos']);
+         $event = $item->widgetEvent($data['items_id']);
       } else {
          $content = $item->showWidget($data['items_id']);
       }
@@ -237,7 +239,8 @@ Ext.onReady(function() {
                      params:'id=".$data['id']."&x=' + (this.x)  + '&y=' + (this.y)});\n";
       }
       echo "           }
-             }
+             },
+             ".$event."
          });
      </script>";//.show()
       

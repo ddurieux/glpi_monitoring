@@ -94,7 +94,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
    
    
    function generateConfig() {
-      global $DB;
+      global $DB,$CFG_GLPI;
       
       if (!isset($_GET['id'])
               OR (isset($_GET['id'])
@@ -221,9 +221,17 @@ echo "
             
             
             echo "LINK ".preg_replace("/[^A-Za-z0-9_]/","",$data['name'])."_".$data['id']."-".preg_replace("/[^A-Za-z0-9_]/","",$pmWeathermapnode->fields['name'])."_".$pmWeathermapnode->fields['id']."
-	INFOURL /cacti/graph.php?rra_id=all&local_graph_id=35
-	OVERLIBGRAPH /cacti/graph_image.php?local_graph_id=35&rra_id=0&graph_nolegend=true&graph_height=100&graph_width=300
-	BWLABELPOS 69 31
+	";
+            $timezone = '0';
+            if (isset($_SESSION['plugin_monitoring_timezone'])) {
+               $timezone = $_SESSION['plugin_monitoring_timezone'];
+            }
+            $timezone_file = str_replace("+", ".", $timezone);
+            if (file_exists(GLPI_ROOT."/files/_plugins/monitoring/PluginMonitoringService-".$datal['plugin_monitoring_services_id']."-2h".$timezone_file.".gif")) {
+               echo "   INFOURL ".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$datal['plugin_monitoring_services_id']."
+                  OVERLIBGRAPH ".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$datal['plugin_monitoring_services_id']."-2h".$timezone_file.".gif";
+            }
+            echo "   BWLABELPOS 69 31
 	TARGET static:".$in.":".$out."
 	NODES ".preg_replace("/[^A-Za-z0-9_]/","",$data['name'])."_".$data['id']." ".preg_replace("/[^A-Za-z0-9_]/","",$pmWeathermapnode->fields['name'])."_".$pmWeathermapnode->fields['id']."
 	BANDWIDTH ".$bandwidth."      
@@ -507,7 +515,8 @@ function point_it(event){
                `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`,
                `glpi_plugin_monitoring_services`.`id` as `services_id`,
                `glpi_plugin_monitoring_components`.`name` as `components_name`,
-               `plugin_monitoring_commands_id`, `glpi_plugin_monitoring_components`.`arguments`
+               `plugin_monitoring_commands_id`, `glpi_plugin_monitoring_components`.`arguments`,
+               `glpi_plugin_monitoring_services`.`networkports_id`
             FROM `glpi_plugin_monitoring_weathermapnodes`
             
             LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
@@ -541,6 +550,23 @@ function point_it(event){
                $arguments = importArrayFromDB($data['arguments']);
                foreach ($arguments as $argument) {
                   if (!is_numeric($argument)) {
+                     if (strstr($argument, "[[NETWORKPORTDESCR]]")){
+                        if (class_exists("PluginFusinvsnmpNetworkPort")) {
+                           $pfNetworkPort = new PluginFusinvsnmpNetworkPort();
+                           $pfNetworkPort->loadNetworkport($data['networkports_id']);
+                           $argument = $pfNetworkPort->getValue("ifdescr");
+                        }
+                     } elseif (strstr($argument, "[[NETWORKPORTNUM]]")){
+                        $networkPort = new NetworkPort();
+                        $networkPort->getFromDB($data['networkports_id']);
+                        $argument = $pfNetworkPort->fields['logical_number'];
+                     } elseif (strstr($argument, "[[NETWORKPORTNAME]]")){
+                        $networkPort = new NetworkPort();
+                        $networkPort->getFromDB($data['networkports_id']);
+                        $argument = $pfNetworkPort->fields['name'];
+                     }
+                     
+                     
                      // Search networkport have this name or description
                      $a_ports = $networkPort->find("`itemtype`='".$itemtype."'
                         AND `items_id`='".$data['items_id']."'
@@ -571,7 +597,6 @@ function point_it(event){
                            WHERE `itemtype`='".$itemtype."'
                            AND `items_id`='".$data['items_id']."'
                            AND `ifdescr`='".$argument."'";
-                        
                         $resultn = $DB->query($queryn);
                         while ($pdata=$DB->fetch_array($resultn)) {
                            if ($device_connected == '') {
@@ -609,7 +634,8 @@ function point_it(event){
                }               
             }
             if ($device_connected == '') {
-               $elements2[$data['id']."-".$data['services_id']] = $name." (".$data['components_name'].")";
+               $networkPort->getFromDB($data['networkports_id']);
+               $elements2[$data['id']."-".$data['services_id']] = $name." [".$networkPort->fields['name']."] (".$data['components_name'].")";
             } else {
                $elements[$data['id']."-".$data['services_id']] = $name." (".$data['components_name'].") > ".$device_connected;
             }
@@ -763,9 +789,15 @@ function point_it(event){
    function generateWeathermap($weathermaps_id) {
       global $CFG_GLPI;
       
+      $outputhtml = '';
+      if (strstr($_SERVER["PHP_SELF"], "ajax/weathermap.tabs.php")) {
+         $outputhtml = "--htmloutput '".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".html'";
+      }
+      
       system("/usr/local/bin/php ".GLPI_ROOT."/plugins/monitoring/lib/weathermap/weathermap ".
          "--config 'http://".$_SERVER['SERVER_NAME'].$CFG_GLPI['root_doc']."/plugins/monitoring/front/weathermap_conf.php?id=".$weathermaps_id."' ".
-         "--output '".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png'");
+         "--output '".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png' ".$outputhtml);
+      
    }
    
    
@@ -808,7 +840,19 @@ function point_it(event){
          
          
       }
-      return '<img src="'.$imgdisplay.'" width="'.$withreduced.'"/>';
+      return '<img src="'.$imgdisplay.'" width="'.$withreduced.'" />';
+   }
+   
+   
+   function widgetEvent($id) {
+      global $CFG_GLPI;
+      
+      $img = GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$id.".png";
+      list($width, $height, $type, $attr) = getimagesize($img);      
+      return "listeners: {render: function(c) {c.body.on('click', function() { window.open('".$CFG_GLPI["root_doc"]."/plugins/monitoring/front/weathermap_full.php?id=".
+                                      $id."', 'weathermap', 'height=".($height + 100).", ".
+                                      "width=".($width + 50).", top=100, left=100, scrollbars=yes') });}}";
+      
    }
    
 }
