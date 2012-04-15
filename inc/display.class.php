@@ -461,7 +461,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          $timezone = $_SESSION['plugin_monitoring_timezone'];
       }
       $timezone_file = str_replace("+", ".", $timezone);
-         
+      
       $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$data['id']."-2h".$timezone_file.".gif'/>";
          
 

@@ -129,7 +129,7 @@ class PluginMonitoringRrdtool extends CommonDBTM {
          }         
       }      
       //$ret = rrd_update($fname, $value);
-echo $rrdtool_value."<br/>";
+
       system(PluginMonitoringConfig::getRRDPath()."/rrdtool update ".$fname." ".$rrdtool_value, $ret);
       if (isset($ret) 
               AND $ret != '0' ) {
@@ -213,7 +213,7 @@ echo $rrdtool_value."<br/>";
             $opts .= " SHIFT:".$a_name[0].":".$converttimezone;
          }
       }
-
+      
       //$ret = rrd_graph(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.".gif", $opts, count($opts));
       if (file_exists(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id.".rrd")) {
          ob_start();

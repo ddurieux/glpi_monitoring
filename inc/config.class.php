@@ -95,7 +95,7 @@ class PluginMonitoringConfig extends CommonDBTM {
       if ($DB->numrows($result) == '0') {
          $input = array();
          $input['rrdtoolpath'] = '/usr/bin/';
-         $input['timezones'] = 0;
+         $input['timezones'] = '["0"]';
          $input['logretention'] = 30;
          $this->add($input);         
       }
