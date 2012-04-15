@@ -49,12 +49,12 @@ simpleHeader($LANG['plugin_monitoring']['title'][0]);
 
 if (isset($_POST['update'])) {
    $pmNetworkport = new PluginMonitoringNetworkport();
-   $pmComponentscatalog_rule = new PluginMonitoringComponentscatalog_rule();
-   $networkEquipment = new NetworkEquipment();
-   
+//   $pmComponentscatalog_rule = new PluginMonitoringComponentscatalog_rule();
+//   $networkEquipment = new NetworkEquipment();   
    $pmNetworkport->updateNetworkports();
-   $networkEquipment->getFromDB($_POST['items_id']);
-   $pmComponentscatalog_rule->isThisItemCheckRuleNetworkport($networkEquipment);
+   
+//   $networkEquipment->getFromDB($_POST['items_id']);
+//   $pmComponentscatalog_rule->isThisItemCheckRuleNetworkport($networkEquipment);
    glpi_header($_SERVER['HTTP_REFERER']);
 }
 

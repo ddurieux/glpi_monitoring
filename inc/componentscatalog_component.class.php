@@ -257,6 +257,7 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
    }
    
    
+   
    function removeComponentToItems($componentscatalogs_id, $components_id) {
       global $DB;
       

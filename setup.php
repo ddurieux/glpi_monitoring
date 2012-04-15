@@ -142,12 +142,14 @@ function plugin_init_monitoring() {
          
          // Define hook item
          $rule_check = array('PluginMonitoringComponentscatalog_rule','isThisItemCheckRule');
+         $rule_check_networkport = array('PluginMonitoringComponentscatalog_rule', 'isThisItemCheckRuleNetworkport');
          $PLUGIN_HOOKS['item_add']['monitoring'] = 
                                  array('Computer'         => $rule_check,
                                        'NetworkEquipment' => $rule_check,
                                        'Printer'          => $rule_check,
                                        'Peripheral'       => $rule_check,
                                        'Phone'            => $rule_check,
+                                       'PluginMonitoringNetworkport' => $rule_check_networkport,
                                        'PluginMonitoringComponentscatalog_rule' =>
                                              array('PluginMonitoringComponentscatalog_rule','getItemsDynamicly'),
                                        'PluginMonitoringComponentscatalog_Host' =>
@@ -166,6 +168,7 @@ function plugin_init_monitoring() {
                                        'Printer'          => $rule_check,
                                        'Peripheral'       => $rule_check,
                                        'Phone'            => $rule_check,
+                                       'PluginMonitoringNetworkport' => $rule_check_networkport,
                                        'PluginMonitoringComponentscatalog_rule' =>
                                              array('PluginMonitoringComponentscatalog_rule','getItemsDynamicly'),
                                        'PluginMonitoringComponentscatalog_Host' =>
