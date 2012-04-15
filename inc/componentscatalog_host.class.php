@@ -213,7 +213,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
             $a_services = $pmService->find("`plugin_monitoring_components_id`='".$data['plugin_monitoring_components_id']."'
                AND `plugin_monitoring_componentscatalogs_hosts_id`='".$componentscatalogs_hosts_id."'
                AND `networkports_id`='".$networkports_id."'", "", 1);
-            $item = new NetworkEquipment();
+            $item = new NetworkPort();
             $item->getFromDB($networkports_id);
             if (count($a_services) == '0') {
                $input = array();
