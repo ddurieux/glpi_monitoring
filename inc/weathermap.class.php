@@ -869,8 +869,7 @@ function point_it(event){
       $withreduced = $width;
       $heightreduced = $height;
       if ((($table_width * $pourcentage) / 100) < $width) {
-         $withreduced = ceil(($table_width * $pourcentage) / 100);
-         
+         $withreduced = ceil(($table_width * $pourcentage) / 100);         
          
       }
       return '<img src="'.$imgdisplay.'" width="'.$withreduced.'" />';

@@ -430,7 +430,13 @@ class PluginMonitoringDisplay extends CommonDBTM {
          }
       }
       $pMonitoringComponent->getFromDB($data['plugin_monitoring_components_id']);
-      echo "<td>".$pMonitoringComponent->getLink()."</td>";
+      echo "<td>".$pMonitoringComponent->getLink();
+      if (!is_null($pMonitoringService->fields['networkports_id'])
+              AND $pMonitoringService->fields['networkports_id'] > 0) {
+         $networkPort->getFromDB($pMonitoringService->fields['networkports_id']);
+         echo " [".$networkPort->getLink()."]";
+      }
+      echo "</td>";
       $nameitem = '';
       if (isset($itemmat->fields['name'])) {
          $nameitem = "[".$itemmat->getLink(1)."]";
@@ -528,6 +534,18 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "<td>";
       echo $data['event'];
       echo "</td>";
+      
+      if ($displayhost == '0') {
+         echo "<td>";
+         $a_arg = importArrayFromDB($pMonitoringService->fields['arguments']);
+         $cnt = '';
+         if (count($a_arg) > 0) {
+            $cnt = " (".count($a_arg).")";
+         }
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicearg.form.php?id=".$data['id']."'>".
+                 $LANG['plugin_monitoring']['service'][25].$cnt."</a>";
+         echo "</td>";
+      }
    }
 
    

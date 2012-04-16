@@ -125,6 +125,8 @@ $LANG['plugin_monitoring']['service'][20]="Resource";
 $LANG['plugin_monitoring']['service'][21]="All resources";
 $LANG['plugin_monitoring']['service'][22]="Time in ms";
 $LANG['plugin_monitoring']['service'][23]="Resource deleted";
+$LANG['plugin_monitoring']['service'][24]="Custom arguments for this resource (empty = inherit)";
+$LANG['plugin_monitoring']['service'][25]="Configure";
 
 $LANG['plugin_monitoring']['servicesuggest'][0]="Suggests";
 
@@ -159,6 +161,7 @@ $LANG['plugin_monitoring']['component'][10]="SNMP community of network equipment
 $LANG['plugin_monitoring']['component'][11]="List of tags available";
 $LANG['plugin_monitoring']['component'][12]="Network port number";
 $LANG['plugin_monitoring']['component'][13]="Network port name";
+$LANG['plugin_monitoring']['component'][14]="Component arguments";
 
 $LANG['plugin_monitoring']['componentscatalog'][0]="Components catalog";
 

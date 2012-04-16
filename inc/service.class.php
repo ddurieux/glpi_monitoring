@@ -228,7 +228,10 @@ class PluginMonitoringService extends CommonDBTM {
          echo "</th>";
          echo "<th>";
          echo $LANG['rulesengine'][82];
-         echo "</th>";    
+         echo "</th>";
+         echo "<th>";
+         echo $LANG['plugin_monitoring']['service'][4];
+         echo "</th>"; 
          echo "</tr>";
          
          $querys = "SELECT `glpi_plugin_monitoring_services`.* FROM `glpi_plugin_monitoring_services`
@@ -650,6 +653,146 @@ class PluginMonitoringService extends CommonDBTM {
          }
       }
       return $argument;
+   }
+   
+   
+   
+   function showCustomArguments($services_id) {
+      global $LANG;
+      
+      $pmComponent = new PluginMonitoringComponent();
+      $pmCommand = new PluginMonitoringCommand();
+      $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+      
+      $this->getFromDB($services_id);
+      
+      $options = array();
+      $options['target'] = str_replace("service.form.php", "servicearg.form.php", $this->getFormURL());
+      
+      $this->showFormHeader($options);
+      
+      $pmComponentscatalog_Host->getFromDB($this->fields['plugin_monitoring_componentscatalogs_hosts_id']);
+      $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
+      $item = new $itemtype();
+      $item->getFromDB($pmComponentscatalog_Host->fields['items_id']);
+      echo "<tr>";
+      echo "<td>";
+      echo $item->getTypeName()." :";
+      echo "</td>";
+      echo "<td>";
+      echo $item->getLink();
+      echo "</td>";
+      echo "<td colspan='2'></td>";
+      echo "</tr>";
+      
+      $pmComponent->getFromDB($this->fields['plugin_monitoring_components_id']);
+      $pmCommand->getFromDB($pmComponent->fields['plugin_monitoring_commands_id']);
+      
+      $array = array();
+      $a_displayarg = array();
+      if (isset($pmCommand->fields['command_line'])) {
+         preg_match_all("/\\$(ARG\d+)\\$/", $pmCommand->fields['command_line'], $array);
+         $a_arguments = importArrayFromDB($pmComponent->fields['arguments']);
+         foreach ($array[0] as $arg) {
+            if (strstr($arg, "ARG")) {
+               $arg = str_replace('$', '', $arg);
+               if (!isset($a_arguments[$arg])) {
+                  $a_arguments[$arg] = '';
+               }
+               $a_displayarg[$arg] = $a_arguments[$arg];
+            }
+         }
+      }
+      if (count($a_displayarg) > 0) {
+         $a_tags = $pmComponent->tagsAvailable();
+         array_shift($a_tags);
+         $a_argtext = importArrayFromDB($pmCommand->fields['arguments']);
+         echo "<tr>";
+         echo "<th colspan='2'>".$LANG['plugin_monitoring']['component'][14]."</th>";
+         echo "<th colspan='2'>".$LANG['plugin_monitoring']['component'][11]."&nbsp;</th>";
+         echo "</tr>";
+          
+         foreach ($a_displayarg as $key=>$value) {
+         echo "<tr>";
+         echo "<td>";
+            if (isset($a_argtext[$key])
+                    AND $a_argtext[$key] != '') {
+               echo nl2br($a_argtext[$key])."&nbsp;:";
+            } else {
+               echo $LANG['plugin_monitoring']['service'][14]." (".$key.")&nbsp;:";
+            }
+            echo "</td>";
+            echo "<td>";
+            echo $value."<br/>";
+            echo "</td>";
+            if (count($a_tags) > 0) {
+               foreach ($a_tags as $key=>$value) {
+                  echo "<td class='tab_bg_3'>";
+                  echo "<strong>".$key."</strong>&nbsp;:";
+                  echo "</td>";
+                  echo "<td class='tab_bg_3'>";
+                  echo $value;
+                  echo "</td>";
+                  unset($a_tags[$key]);
+                  break;
+               }
+            } else {
+               echo "<td colspan='2'></td>";
+            }
+            echo "</tr>";
+         }
+         foreach ($a_tags as $key=>$value) {
+            echo "<tr>";
+            echo "<td colspan='2'></td>";
+            echo "<td class='tab_bg_3'>";
+            echo "<strong>".$key."</strong>&nbsp;:";
+            echo "</td>";
+            echo "<td class='tab_bg_3'>";
+            echo $value;
+            echo "</td>";
+            echo "</tr>";
+         }
+      }
+      
+      // customized arguments 
+      echo "<tr>";
+      echo "<th colspan='4'>".$LANG['plugin_monitoring']['service'][24]."</th>";
+      echo "</tr>";
+      $array = array();
+      $a_displayarg = array();
+      if (isset($pmCommand->fields['command_line'])) {
+         preg_match_all("/\\$(ARG\d+)\\$/", $pmCommand->fields['command_line'], $array);
+         $a_arguments = importArrayFromDB($this->fields['arguments']);
+         foreach ($array[0] as $arg) {
+            if (strstr($arg, "ARG")) {
+               $arg = str_replace('$', '', $arg);
+               if (!isset($a_arguments[$arg])) {
+                  $a_arguments[$arg] = '';
+               }
+               $a_displayarg[$arg] = $a_arguments[$arg];
+            }
+         }
+      }
+      $a_argtext = importArrayFromDB($pmCommand->fields['arguments']);
+      foreach ($a_displayarg as $key=>$value) {
+         echo "<tr>";
+         echo "<td>";
+         if (isset($a_argtext[$key])
+                 AND $a_argtext[$key] != '') {
+            echo nl2br($a_argtext[$key])."&nbsp;:";
+         } else {
+            echo $LANG['plugin_monitoring']['service'][14]." (".$key.")&nbsp;:";
+         }
+         echo "</td>";
+         echo "<td>";
+         echo "<input type='text' name='arg[".$key."]' value='".$value."'/><br/>";
+         echo "</td>";
+         echo "<td colspan='2'></td>";
+         echo "</tr>";
+      }
+      
+      $this->showFormButtons($options);
+      
    }
    
    

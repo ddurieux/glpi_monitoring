@@ -323,6 +323,10 @@ class PluginMonitoringShinken extends CommonDBTM {
             preg_match_all("/\\$(ARG\d+)\\$/", $pMonitoringCommand->fields['command_line'], $array);
             sort($array[0]);
             $a_arguments = importArrayFromDB($a_component['arguments']);
+            $a_argumentscustom = importArrayFromDB($data['arguments']);
+            foreach ($a_argumentscustom as $key=>$value) {
+               $a_arguments[$key] = $value;
+            }
             $args = '';
             foreach ($array[0] as $arg) {
                if ($arg != '$PLUGINSDIR$'
