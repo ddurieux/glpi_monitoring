@@ -50,7 +50,7 @@ commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugi
 
 
 $pmWeathermapnode = new PluginMonitoringWeathermapnode();
-
+print_r($_POST);exit;
 if (isset ($_POST["add"])) {
    if ($_POST['x'] == '') {
       glpi_header($_SERVER['HTTP_REFERER']);
@@ -63,7 +63,9 @@ if (isset ($_POST["add"])) {
       glpi_header($_SERVER['HTTP_REFERER']);
       exit;
    }
+   unset($_POST['name']);
    unset($_POST['itemtype']);
+   $_POST['id'] = $_POST['id_update'];
    $pmWeathermapnode->update($_POST);
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset ($_POST["purge"])) {

@@ -192,6 +192,25 @@ echo "
 
 # regular LINKs:
 ";
+      $bwlabelpos=array();
+      $bwlabelpos[0] = "BWLABELPOS 39 81";
+      $bwlabelpos[1] = "BWLABELPOS 29 71";
+      $i = 0;
+      $doublelink = array();
+      $query = "SELECT `".getTableForItemType("PluginMonitoringWeathermaplink")."`.*, 
+            count(`".getTableForItemType("PluginMonitoringWeathermaplink")."`.`id`) as `cnt` 
+            FROM `".getTableForItemType("PluginMonitoringWeathermaplink")."` 
+         LEFT JOIN `".getTableForItemType("PluginMonitoringWeathermapnode")."`
+            ON `plugin_monitoring_weathermapnodes_id_1` = `".getTableForItemType("PluginMonitoringWeathermapnode")."`.`id`
+
+         WHERE `plugin_monitoring_weathermaps_id`='".$weathermaps_id."'
+         group by `plugin_monitoring_weathermapnodes_id_1`, `plugin_monitoring_weathermapnodes_id_2`
+         HAVING cnt >1";
+      $result=$DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         $doublelink[$data['plugin_monitoring_weathermapnodes_id_1']."-".$data['plugin_monitoring_weathermapnodes_id_2']] = 2;
+      }
+      
       $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringWeathermapnode")."`
          WHERE `plugin_monitoring_weathermaps_id`='".$weathermaps_id."'
          ORDER BY `name`";
@@ -217,10 +236,17 @@ echo "
                preg_match("/(?:.*)inBandwidth=([0-9]*).(?:.*)bps outBandwidth=([0-9]*).(?:.*)bps/m", $dataevent['perf_data'], $matches1);
                $in = $matches1[1];
                $out = $matches1[2];
+            }            
+            $nodesuffix = '';
+            if (isset($doublelink[$datal['plugin_monitoring_weathermapnodes_id_1']."-".$datal['plugin_monitoring_weathermapnodes_id_2']])) {
+               if ($doublelink[$datal['plugin_monitoring_weathermapnodes_id_1']."-".$datal['plugin_monitoring_weathermapnodes_id_2']] == '2') {
+                  $nodesuffix = ":E";
+                  $doublelink[$datal['plugin_monitoring_weathermapnodes_id_1']."-".$datal['plugin_monitoring_weathermapnodes_id_2']] = 1;                  
+               } else {
+                  $nodesuffix = ":W";
+               }
             }
-            
-            
-            echo "LINK ".preg_replace("/[^A-Za-z0-9_]/","",$data['name'])."_".$data['id']."-".preg_replace("/[^A-Za-z0-9_]/","",$pmWeathermapnode->fields['name'])."_".$pmWeathermapnode->fields['id']."
+            echo "LINK ".preg_replace("/[^A-Za-z0-9_]/","",$data['name'])."_".$data['id']."-".preg_replace("/[^A-Za-z0-9_]/","",$pmWeathermapnode->fields['name'])."_".$pmWeathermapnode->fields['id'].$nodesuffix."
 	";
             $timezone = '0';
             if (isset($_SESSION['plugin_monitoring_timezone'])) {
@@ -229,14 +255,20 @@ echo "
             $timezone_file = str_replace("+", ".", $timezone);
             if (file_exists(GLPI_ROOT."/files/_plugins/monitoring/PluginMonitoringService-".$datal['plugin_monitoring_services_id']."-2h".$timezone_file.".gif")) {
                echo "   INFOURL ".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$datal['plugin_monitoring_services_id']."
-                  OVERLIBGRAPH ".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$datal['plugin_monitoring_services_id']."-2h".$timezone_file.".gif";
+                  OVERLIBGRAPH ".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$datal['plugin_monitoring_services_id']."-2h".$timezone_file.".gif
+               ";
             }
-            echo "   BWLABELPOS 69 31
+            echo "   ".$bwlabelpos[$i]."
 	TARGET static:".$in.":".$out."
-	NODES ".preg_replace("/[^A-Za-z0-9_]/","",$data['name'])."_".$data['id']." ".preg_replace("/[^A-Za-z0-9_]/","",$pmWeathermapnode->fields['name'])."_".$pmWeathermapnode->fields['id']."
-	BANDWIDTH ".$bandwidth."      
 ";
-            
+            echo "   NODES ".preg_replace("/[^A-Za-z0-9_]/","",$data['name'])."_".$data['id'].$nodesuffix." ".preg_replace("/[^A-Za-z0-9_]/","",$pmWeathermapnode->fields['name'])."_".$pmWeathermapnode->fields['id'].$nodesuffix."
+";
+            echo "   BANDWIDTH ".$bandwidth."      
+";
+            $i++;
+            if ($i == '2') {
+               $i = 0;
+            }
          }         
       }
    }
@@ -438,7 +470,7 @@ function point_it(event){
             }
             $elements[$data['id']] = $name;            
          }
-         Dropdown::showFromArray('id', $elements);
+         Dropdown::showFromArray('id_update', $elements);
          
          echo "</td>";
          echo "</tr>";
@@ -610,21 +642,21 @@ function point_it(event){
                                  if (count($a_nodes) > 0) {
                                     $a_node = current($a_nodes);
                                     
-         $queryl = "SELECT `plugin_monitoring_weathermapnodes_id_1`
-            FROM `glpi_plugin_monitoring_weathermaplinks`
-            
-            LEFT JOIN `glpi_plugin_monitoring_weathermapnodes`
-               ON `glpi_plugin_monitoring_weathermapnodes`.`id` = `plugin_monitoring_weathermapnodes_id_1`
+                                    $queryl = "SELECT `plugin_monitoring_weathermapnodes_id_1`
+                                       FROM `glpi_plugin_monitoring_weathermaplinks`
 
-            WHERE ((`plugin_monitoring_weathermapnodes_id_1`='".$data['id']."'
-                        AND `plugin_monitoring_weathermapnodes_id_2`='".$a_node['id']."')
-                     OR (`plugin_monitoring_weathermapnodes_id_1`='".$a_node['id']."'
-                        AND `plugin_monitoring_weathermapnodes_id_2`='".$data['id']."'))
-               AND `plugin_monitoring_weathermaps_id` = '".$weathermaps_id."'";
-         $resultl = $DB->query($queryl);
-         if ($DB->numrows($resultl) == '0') {
-                                    $device_connected = $pmWeathermapnode->getNodeName($a_node['id']);
-         }
+                                       LEFT JOIN `glpi_plugin_monitoring_weathermapnodes`
+                                          ON `glpi_plugin_monitoring_weathermapnodes`.`id` = `plugin_monitoring_weathermapnodes_id_1`
+
+                                       WHERE ((`plugin_monitoring_weathermapnodes_id_1`='".$data['id']."'
+                                                   AND `plugin_monitoring_weathermapnodes_id_2`='".$a_node['id']."')
+                                                OR (`plugin_monitoring_weathermapnodes_id_1`='".$a_node['id']."'
+                                                   AND `plugin_monitoring_weathermapnodes_id_2`='".$data['id']."'))
+                                          AND `plugin_monitoring_weathermaps_id` = '".$weathermaps_id."'";
+                                    $resultl = $DB->query($queryl);
+                                    if ($DB->numrows($resultl) == '0') {
+                                       $device_connected = $pmWeathermapnode->getNodeName($a_node['id']);
+                                    }
                                  }
                               }
                            }                        
@@ -637,7 +669,8 @@ function point_it(event){
                $networkPort->getFromDB($data['networkports_id']);
                $elements2[$data['id']."-".$data['services_id']] = $name." [".$networkPort->fields['name']."] (".$data['components_name'].")";
             } else {
-               $elements[$data['id']."-".$data['services_id']] = $name." (".$data['components_name'].") > ".$device_connected;
+               $networkPort->getFromDB($data['networkports_id']);
+               $elements[$data['id']."-".$data['services_id']] = $name." [".$networkPort->fields['name']."] (".$data['components_name'].") > ".$device_connected;
             }
          }
          if (count($elements) > 1

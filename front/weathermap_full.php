@@ -45,13 +45,19 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 PluginMonitoringProfile::checkRight("weathermap","r");
 
-$id = 1;
-
+if (!isset($_GET['id'])) {
+   exit;
+}
+$id = $_GET['id'];
+$pmWeathermap = new PluginMonitoringWeathermap();
+$pmWeathermap->generateWeathermap($id);
 $html = file_get_contents(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$id.".html");
 $html = str_replace(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$id.".png", 
          $CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=weathermap-".$id.".png", $html);
 $html = str_replace("overlib.js", GLPI_ROOT."/plugins/monitoring/lib/weathermap/overlib.js", $html);
 
 echo $html;
+
+echo '<meta http-equiv ="refresh" content="60">';
 
 ?>

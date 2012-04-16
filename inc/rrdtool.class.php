@@ -187,7 +187,7 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       if ($a_json->data[0]->{"y-axis"}[0]->{"units-exponent"} != "") {
          $opts .= " --units-exponent ".$a_json->data[0]->{"y-axis"}[0]->{"units-exponent"};
       }
-      if ($a_json->data[0]->{"y-axis"}[0]->{"unitst"} != "") {
+      if ($a_json->data[0]->{"y-axis"}[0]->{"units"} != "") {
          $opts .= " --units ".$a_json->data[0]->{"y-axis"}[0]->{"units"};
       }
       
