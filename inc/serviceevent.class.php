@@ -162,6 +162,20 @@ class PluginMonitoringServiceevent extends CommonDBTM {
 
             }
             $this->delete($edata);
+         } else {
+            // Last value (may not be deleted)
+            if (!is_null($pmComponent->fields['graph_template'])) {
+               $perf_data = $edata['perf_data'];
+               if ($edata['perf_data'] == '') {
+                  $perf_data = $edata['output'];                     
+               }
+               $pmRrdtool->addData($pmComponent->fields['graph_template'], 
+                                              $plugin_monitoring_services_id, 
+                                              $this->convert_datetime_timestamp($edata['date']), 
+                                              $perf_data,
+                                              1);
+
+            }
          }
       }
       $a_list = array();

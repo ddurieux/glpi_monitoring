@@ -79,12 +79,20 @@ class PluginMonitoringRrdtool extends CommonDBTM {
 
    
    
-   function addData($rrdtool_template, $items_id, $timestamp, $perf_data) {
+   function addData($rrdtool_template, $items_id, $timestamp, $perf_data, $verifdate=0) {
 
       $fname = GLPI_PLUGIN_DOC_DIR."/monitoring/PluginMonitoringService-".$items_id.".rrd";
       if (!file_exists($fname)) {
          $this->createGraph($rrdtool_template, $items_id, $timestamp);
       }
+      
+      if ($verifdate == '1') {
+         $ret = system(PluginMonitoringConfig::getRRDPath()."/rrdtool last ".$fname);
+         if ($ret == $timestamp) { // Yet added
+            return;
+         }
+         unset($ret);
+      }  
       
       $a_filename = explode("-", $rrdtool_template);
       $filename = GLPI_PLUGIN_DOC_DIR."/monitoring/templates/".$a_filename[0]."-perfdata.json";
@@ -129,10 +137,9 @@ class PluginMonitoringRrdtool extends CommonDBTM {
          }         
       }      
       //$ret = rrd_update($fname, $value);
-
       system(PluginMonitoringConfig::getRRDPath()."/rrdtool update ".$fname." ".$rrdtool_value, $ret);
       if (isset($ret) 
-              AND $ret != '0' ) {
+              AND $ret != '0') {
          echo "Create error: $ret for ".PluginMonitoringConfig::getRRDPath()."/rrdtool update ".$fname." ".$rrdtool_value."\n";
       }
    }
