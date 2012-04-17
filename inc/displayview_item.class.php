@@ -137,6 +137,7 @@ Ext.onReady(function() {
     height   : 1000,
     layout: 'absolute',
     renderTo : 'panel',
+    closable : true,
     items    : [
       ".implode(",", $a_items)."
     ]
@@ -196,6 +197,7 @@ Ext.onReady(function() {
          }
 
         var item".$data['id']." = new Ext.Panel({
+             closable: true,           
              title: '".$title."',
              x: ".$data['x'].",
              y: ".$data['y'].",
@@ -205,9 +207,9 @@ Ext.onReady(function() {
              renderTo: Ext.getBody(),
 //             floating: true,
              frame: false,
-                         autoHeight  : true,
-                         autoWidth   : true,
-                         layout: 'fit',
+             autoHeight  : true,
+             autoWidth   : true,
+             layout: 'fit',
              draggable: {
          //      Config option of Ext.Panel.DD class.
          //      It's a floating Panel, so do not show a placeholder proxy in the original position.

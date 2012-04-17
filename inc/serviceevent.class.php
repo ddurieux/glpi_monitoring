@@ -191,7 +191,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
    
    
    static function cronUpdaterrd() {
-
+      ini_set("max_execution_time", "0");
       $pmServiceevent = new PluginMonitoringServiceevent();
       $pmService = new PluginMonitoringService();
       

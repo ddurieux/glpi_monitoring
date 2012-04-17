@@ -563,6 +563,7 @@ function point_it(event){
             
 
             WHERE `is_weathermap` = '1'
+               AND `plugin_monitoring_weathermaps_id`='".$weathermaps_id."'
             ORDER BY `itemtype`,`items_id`,`glpi_plugin_monitoring_components`.`name`";
          $elements = array();
          $elements[0] = DROPDOWN_EMPTY_VALUE;
