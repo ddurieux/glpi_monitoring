@@ -137,7 +137,6 @@ Ext.onReady(function() {
     height   : 1000,
     layout: 'absolute',
     renderTo : 'panel',
-    closable : true,
     items    : [
       ".implode(",", $a_items)."
     ]
@@ -198,7 +197,6 @@ Ext.onReady(function() {
          }
 
         var item".$data['id']." = new Ext.Panel({
-
              closable: true,           
              title: '".$title."',
              x: ".$data['x'].",
@@ -207,7 +205,7 @@ Ext.onReady(function() {
              baseCls : 'x-panel',
              layout : 'fit',
              renderTo: Ext.getBody(),
-//             floating: true,
+             floating: true,
              frame: false,
              autoHeight  : true,
              autoWidth   : true,
@@ -237,10 +235,19 @@ Ext.onReady(function() {
                  endDrag : function(e){
                      this.panel.setPosition(this.x, this.y);\n";
       if ($config == '1') {
-         echo "                     Ext.get('updatecoordonates').load({
-                     url: '".$CFG_GLPI['root_doc']."/plugins/monitoring/ajax/displayview_itemcoordinates.php',
-                     scripts: true,
-                     params:'id=".$data['id']."&x=' + (this.x)  + '&y=' + (this.y)});\n";
+         echo "      Ext.get('updatecoordonates').load({
+                        url: '".$CFG_GLPI['root_doc']."/plugins/monitoring/ajax/displayview_itemcoordinates.php',
+                        scripts: true,
+                        params:'id=".$data['id']."&x=' + (this.x)  + '&y=' + (this.y)
+                     });\n";
+         echo "if (this.x < 1) {
+                  this.panel.destroy();
+               }
+               if (this.y < 0) {
+                  this.panel.destroy();
+               }
+            
+            ";
       }
       echo "           }
              },
