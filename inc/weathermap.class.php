@@ -158,18 +158,21 @@ LINK DEFAULT
          WHERE `plugin_monitoring_weathermaps_id`='".$weathermaps_id."'
          ORDER BY `name`";
       $result = $DB->query($query);
+      $link = '';
       while ($data=$DB->fetch_array($result)) {
-         $name = $data['name'];
+         $name = $data['name'];         
          if ($name == '') {
             $itemtype = $data['itemtype'];
             $item = new $itemtype();
             $item->getFromDB($data['items_id']);
-            $name = $item->getName();            
+            $name = $item->getName();    
+            $link = $item->getLinkURL();
          }
          
          echo "NODE ".preg_replace("/[^A-Za-z0-9_]/","",$data['name'])."_".$data['id']."
 	LABEL ".$name."
-	POSITION ".$data['x']." ".$data['y']."      
+	POSITION ".$data['x']." ".$data['y']." 
+   INFOURL ".$link."
 ";         
       }
       
