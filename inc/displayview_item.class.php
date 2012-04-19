@@ -182,6 +182,7 @@ Ext.onReady(function() {
       } else if ($itemtype == "PluginMonitoringWeathermap") {
          $content = $item->showWidget($data['items_id'], $data['extra_infos']);
          $event = $item->widgetEvent($data['items_id']);
+         $title .= " : ".Dropdown::getDropdownName(getTableForItemType('PluginMonitoringWeathermap'), $data['items_id']);
       } else {
          $content = $item->showWidget($data['items_id']);
       }
@@ -197,6 +198,7 @@ Ext.onReady(function() {
          }
 
         var item".$data['id']." = new Ext.Panel({
+
              closable: true,           
              title: '".$title."',
              x: ".$data['x'].",

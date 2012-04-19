@@ -105,6 +105,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
       $weathermaps_id = $_GET['id'];
       
       $pmWeathermapnode = new PluginMonitoringWeathermapnode();
+      $networkPort = new NetworkPort();
       
       $this->getFromDB($weathermaps_id);
       
@@ -172,29 +173,13 @@ LINK DEFAULT
 ";         
       }
       
-
-$in = 0;
-$out = 0;
-$query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
-         WHERE `plugin_monitoring_services_id`='13616'
-         ORDER BY `id` DESC
-         LIMIT 1";
-$result = $DB->query($query);
-while ($data=$DB->fetch_array($result)) {
-   $matches = array();
-   preg_match("/(?:.*)inBandwidth=([0-9]*).(?:.*)bps outBandwidth=([0-9]*).(?:.*)bps/m", $data['perf_data'], $matches);
-
-   $in = $matches[1];
-   $out = $matches[2];
-}
-
 echo "
 
 # regular LINKs:
 ";
       $bwlabelpos=array();
-      $bwlabelpos[0] = "BWLABELPOS 39 81";
-      $bwlabelpos[1] = "BWLABELPOS 29 71";
+      $bwlabelpos[0] = "BWLABELPOS 81 39";
+      $bwlabelpos[1] = "BWLABELPOS 71 29";
       $i = 0;
       $doublelink = array();
       $query = "SELECT `".getTableForItemType("PluginMonitoringWeathermaplink")."`.*, 
@@ -231,12 +216,27 @@ echo "
                   ORDER BY `id` desc
                   LIMIT 1";
             $resultevent = $DB->query($queryevent);
+            $in = '';
+            $out = '';
             while ($dataevent=$DB->fetch_array($resultevent)) {
                $matches1 = array();
                preg_match("/(?:.*)inBandwidth=([0-9]*).(?:.*)bps outBandwidth=([0-9]*).(?:.*)bps/m", $dataevent['perf_data'], $matches1);
                $in = $matches1[1];
                $out = $matches1[2];
-            }            
+            }
+            if ($in == '') {
+               $queryevent = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
+                  WHERE `plugin_monitoring_services_id`='".$pmWeathermapnode->fields['plugin_monitoring_services_id']."'
+                     ORDER BY `id` desc
+                     LIMIT 1";
+               $resultevent = $DB->query($queryevent);
+               while ($dataevent=$DB->fetch_array($resultevent)) {
+                  $matches1 = array();
+                  preg_match("/(?:.*)inBandwidth=([0-9]*).(?:.*)bps outBandwidth=([0-9]*).(?:.*)bps/m", $dataevent['perf_data'], $matches1);
+                  $out = $matches1[1];
+                  $in = $matches1[2];
+               }               
+            }
             $nodesuffix = '';
             if (isset($doublelink[$datal['plugin_monitoring_weathermapnodes_id_1']."-".$datal['plugin_monitoring_weathermapnodes_id_2']])) {
                if ($doublelink[$datal['plugin_monitoring_weathermapnodes_id_1']."-".$datal['plugin_monitoring_weathermapnodes_id_2']] == '2') {
@@ -258,9 +258,10 @@ echo "
                   OVERLIBGRAPH ".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$datal['plugin_monitoring_services_id']."-2h".$timezone_file.".gif
                ";
             }
-            echo "   ".$bwlabelpos[$i]."
-	TARGET static:".$in.":".$out."
-";
+            echo "   ".$bwlabelpos[$i]."\n";
+            
+            echo "	TARGET static:".$in.":".$out."\n";
+            
             echo "   NODES ".preg_replace("/[^A-Za-z0-9_]/","",$data['name'])."_".$data['id'].$nodesuffix." ".preg_replace("/[^A-Za-z0-9_]/","",$pmWeathermapnode->fields['name'])."_".$pmWeathermapnode->fields['id'].$nodesuffix."
 ";
             echo "   BANDWIDTH ".$bandwidth."      
