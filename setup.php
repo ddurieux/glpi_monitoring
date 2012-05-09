@@ -63,7 +63,8 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['add_css']['monitoring']="css/views.css";
          
          $plugin = new Plugin();
-         if ($plugin->isActivated('monitoring')) {
+         if ($plugin->isActivated('monitoring')
+                 AND isset($_SESSION['glpi_plugin_monitoring_profile'])) {
             
             $PLUGIN_HOOKS['menu_entry']['monitoring'] = true;
          }
