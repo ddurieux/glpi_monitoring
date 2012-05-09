@@ -140,7 +140,7 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
             $i = 5;
             $a_views = $pmDisplayview->getViews(1);
             foreach ($a_views as $name) {
-               $array[$i] = $LANG['plugin_monitoring']['title'][0]."-".$name;
+               $array[$i] = $LANG['plugin_monitoring']['title'][0]."-".htmlentities($name);
                $i++;
             }
          }
