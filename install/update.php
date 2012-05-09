@@ -1427,7 +1427,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $insertrealm = 0;
       if (!TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
-                        int(11) NOT NULL AUTO_INCREMENT,
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
@@ -1519,6 +1519,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'execution_time', 
                                  'execution_time', 
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'unavailability', 
+                                 'unavailability', 
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable, 
                                  'plugin_monitoring_services_id', 
@@ -1547,6 +1551,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                                  'execution_time', 
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'unavailability', 
+                              "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->addKey($newTable, 
                             "plugin_monitoring_services_id");
       $migration->migrationOneTable($newTable);
@@ -2108,6 +2115,54 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                                  'link', 
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL"); 
+      $migration->migrationOneTable($newTable);
+      
+      
+      
+    /*
+    * Table glpi_plugin_monitoring_unavailabilities
+    */
+      $newTable = "glpi_plugin_monitoring_unavailabilities";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+         $DB->query($query);
+      }
+         $migration->changeField($newTable, 
+                                 'id', 
+                                 'id', 
+                                 "int(11) NOT NULL AUTO_INCREMENT");
+         $migration->changeField($newTable, 
+                                 'items_id', 
+                                 'items_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'itemtype', 
+                                 'itemtype', 
+                                 "varchar(100) DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'begin_date', 
+                                 'begin_date', 
+                                 "datetime DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'end_date', 
+                                 'end_date', 
+                                 "datetime DEFAULT NULL");
+      $migration->migrationOneTable($newTable);
+         $migration->addField($newTable, 
+                              'items_id', 
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'itemtype', 
+                              "varchar(100) DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'begin_date', 
+                              "datetime DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'end_date', 
+                              "datetime DEFAULT NULL");
       $migration->migrationOneTable($newTable);
       
       
