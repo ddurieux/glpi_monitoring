@@ -240,6 +240,8 @@ echo "
                   $in = $matches1[2];
                }               
             }
+            $in = $this->checkBandwidth("in", $in, $bandwidth);
+            $out = $this->checkBandwidth("out", $out, $bandwidth);
             $nodesuffix = '';
             if (isset($doublelink[$datal['plugin_monitoring_weathermapnodes_id_1']."-".$datal['plugin_monitoring_weathermapnodes_id_2']])) {
                if ($doublelink[$datal['plugin_monitoring_weathermapnodes_id_1']."-".$datal['plugin_monitoring_weathermapnodes_id_2']] == '2') {
@@ -829,12 +831,12 @@ function point_it(event){
       
       $outputhtml = '';
       if (strstr($_SERVER["PHP_SELF"], "ajax/weathermap.tabs.php")) {
-         $outputhtml = "--htmloutput '".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".html'";
+         $outputhtml = "--htmloutput ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".html";
       }
       
-      system("/usr/local/bin/php ".GLPI_ROOT."/plugins/monitoring/lib/weathermap/weathermap ".
-         "--config 'http://".$_SERVER['SERVER_NAME'].$CFG_GLPI['root_doc']."/plugins/monitoring/front/weathermap_conf.php?id=".$weathermaps_id."' ".
-         "--output '".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png' ".$outputhtml);
+      system("/usr/bin/php ".GLPI_ROOT."/plugins/monitoring/lib/weathermap/weathermap ".
+         "--config http://".$_SERVER['SERVER_NAME'].$CFG_GLPI['root_doc']."/plugins/monitoring/front/weathermap_conf.php?id=".$weathermaps_id." ".
+         "--output ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png ".$outputhtml);
       
    }
    
@@ -890,6 +892,38 @@ function point_it(event){
                                       $id."', 'weathermap', 'height=".($height + 100).", ".
                                       "width=".($width + 50).", top=100, left=100, scrollbars=yes') });}}";
       
+   }
+   
+   
+   
+   /**
+    *
+    * @param type $type ("in" or "out")
+    */
+   function checkBandwidth($type, $bandwidth, $bandwidthmax) {
+      $bdmax = $bandwidthmax;
+      if (strstr($bandwidthmax, ":")) {
+         $split = explode(":", $bandwidthmax);
+         if ($type == 'in') {
+            $bdmax= $split[0];
+         } else if ($type == 'out') {
+            $bdmax= $split[1];
+         }         
+      }
+      
+      if (strstr($bdmax, "G")) {
+         $bdmax = $bdmax * 1000 * 1000 * 1000;
+      } else if (strstr($bdmax, "M")) {
+         $bdmax = $bdmax * 1000 * 1000;
+      } else if (strstr($bdmax, "K")) {
+         $bdmax = $bdmax * 1000;
+      }
+      
+      if ($bandwidth > ($bdmax * 1000)) {
+         return "0";
+      } else {
+         return $bandwidth;
+      }
    }
    
 }
