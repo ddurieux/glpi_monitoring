@@ -105,7 +105,8 @@ class PluginMonitoringService extends CommonDBTM {
       $tab[3]['table'] = $this->getTable();
       $tab[3]['field'] = 'state';
       $tab[3]['name']  = "Status";
-      $tab[3]['searchtype'] = 'equals';
+      $tab[3]['datatype'] = 'string';
+      //$tab[3]['searchtype'] = 'equals';
       
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'last_check';
@@ -127,6 +128,13 @@ class PluginMonitoringService extends CommonDBTM {
       $tab[7]['name'] = $LANG['plugin_monitoring']['component'][6];
       $tab[7]['datatype'] = 'itemlink';
       $tab[7]['itemlink_type']  = 'PluginMonitoringComponent';
+      
+      $tab[8]['table'] = "glpi_plugin_monitoring_componentscatalogs";
+      $tab[8]['field'] = 'name';
+//      $tab[8]['linkfield'] = 'plugin_monitoring_componentscatalogs_hosts_id';
+      $tab[8]['name'] = $LANG['plugin_monitoring']['componentscatalog'][0];
+      $tab[8]['datatype'] = 'itemlink';
+//      $tab[8]['itemlink_type']  = 'PluginMonitoringComponentcatalog';
       
       $tab[20]['table'] = $this->getTable();
       $tab[20]['field'] = 'Computer';
