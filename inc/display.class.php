@@ -50,6 +50,10 @@ class PluginMonitoringDisplay extends CommonDBTM {
    function defineTabs($options=array()){
       global $LANG,$CFG_GLPI;
 
+      if (isset($_GET['glpi_tab'])) {
+         setActiveTab("PluginMonitoringDisplay",$_GET['glpi_tab']);
+      }
+      
       $pmDisplayview = new PluginMonitoringDisplayview();
       
       $ong = array();
@@ -65,7 +69,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          $i = 5;
          $a_views = $pmDisplayview->getViews();
          foreach ($a_views as $views_id=>$name) {
-            $ong[$i] = $name;
+            $ong[$i] = htmlentities($name);
             $i++;
          }
       }
@@ -280,7 +284,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       if ($where != '') {
          $where .= " AND ";
       }
-      $where .= ' `entities_id` IN ('.$_SESSION['glpiactiveentities_string'].')';
+      $where .= ' `glpi_plugin_monitoring_services`.`entities_id` IN ('.$_SESSION['glpiactiveentities_string'].')';
 
       if ($where != '') {
          $where = " WHERE ".$where;
@@ -290,7 +294,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       
       $leftjoin = '';
-      if (isset($_SESSION['plugin_monitoring']['service']['field'])) {
+      if (isset($_SESSION['plugin_monitoring']['service']['field'])) {         
          foreach ($_SESSION['plugin_monitoring']['service']['field'] as $key=>$value) {
             if ($value == '20'
                     OR $value == '21'
@@ -302,6 +306,17 @@ class PluginMonitoringDisplay extends CommonDBTM {
                $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_components`
                   ON `plugin_monitoring_components_id` = 
                   `glpi_plugin_monitoring_components`.`id` ";
+            } else if ($value == '8') {
+               if (!strstr($leftjoin, 'LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`')) {
+                  $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
+                  ON `plugin_monitoring_componentscatalogs_hosts_id` = 
+                  `glpi_plugin_monitoring_componentscatalogs_hosts`.`id` ";
+               }
+               if (!strstr($leftjoin, 'LEFT JOIN `glpi_plugin_monitoring_componentscatalogs`')) {
+                  $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_componentscatalogs`
+                     ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`plugin_monitoring_componentscalalog_id` = 
+                     `glpi_plugin_monitoring_componentscatalogs`.`id` ";
+               }
             }
          }
       }
@@ -854,14 +869,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
                "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=WARNING&link[1]=OR".
                   "&field[1]=3&searchtype[1]=equals&contains[1]=UNKNOWN&link[2]=OR".
                   "&field[2]=3&searchtype[2]=equals&contains[2]=RECOVERY&link[3]=OR".
-                  "&field[3]=3&searchtype[3]=equals&contains[3]=UNKNOWN&link[4]=OR".
-                  "&field[4]=3&searchtype[4]=equals&contains[4]=FLAPPING&link[5]=OR".
-                  "&field[5]=3&searchtype[5]=equals&contains[5]=NULL".
+                  "&field[3]=3&searchtype[3]=equals&contains[3]=FLAPPING&link[4]=OR".
+                  "&field[5]=3&searchtype[4]=equals&contains[4]=NULL".
                   "&itemtype=PluginMonitoringService&start=0'";
       $ok_link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=WARNING&link[1]=OR".
-                  "&field[1]=3&searchtype[1]=equals&contains[1]=OK&link[2]=OR".
-                  "&field[2]=3&searchtype[2]=equals&contains[2]=UP".
+               "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=OK&link[1]=OR".
+                  "&field[1]=3&searchtype[1]=equals&contains[1]=UP".
                   "&itemtype=PluginMonitoringService&start=0'";
       
       echo "<table align='center'>";

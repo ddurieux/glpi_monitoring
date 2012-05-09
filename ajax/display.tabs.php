@@ -49,6 +49,7 @@ header_nocache();
 if (!isset($_POST["id"])) {
    exit();
 }
+
 $pmDisplay = new PluginMonitoringDisplay();
 $pmBusinessrule = new PluginMonitoringBusinessrule();
 
@@ -78,6 +79,9 @@ switch($_REQUEST['glpi_tab']) {
       $_GET = $_SESSION['plugin_monitoring']['service'];
       if (isset($_GET['reset'])) {
          unset($_SESSION['glpisearch']['PluginMonitoringService']);
+      }
+      if (isset($_GET['glpi_tab'])) {
+         unset($_GET['glpi_tab']);
       }
       Search::manageGetValues("PluginMonitoringService");
       Search::showGenericSearch("PluginMonitoringService", $_SESSION['plugin_monitoring']['service']);

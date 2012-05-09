@@ -170,7 +170,6 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $input .= '<tr class="tab_bg_1">';
       $input .= '<th colspan="2" style="font-size:18px;" height="60">';
       $input .= $data['name']."&nbsp;";
-//      $input .= showToolTip($data['comment'], array('display'=>false));
       $input .= '</th>';
       $input .= '</tr>';
          
@@ -185,7 +184,8 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $result = $DB->query($query);
       while ($dataComponentscatalog_Host=$DB->fetch_array($result)) {
          $queryService = "SELECT * FROM `".$pmService->getTable()."`
-            WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'";
+            WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'
+               AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
          $resultService = $DB->query($queryService);
          while ($dataService=$DB->fetch_array($resultService)) {
             $nb_ressources++;
@@ -236,25 +236,53 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $input .= $LANG['plugin_monitoring']['service'][0]."&nbsp;:";
       $input .= '</td>';
       $input .= '<th align="center" height="40" width="50%">';
-      $input .= $nb_ressources;
+      $link = $CFG_GLPI['root_doc'].
+         "/plugins/monitoring/front/service.php?reset=reset&field[0]=8&searchtype[0]=equals&contains[0]=".$id.
+            "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
+      $input .= '<a href="'.$link.'">'.$nb_ressources.'</a>';
       $input .= '</th>';
       $input .= '</tr>';
 
       $background = '';
       $count = 0;
+            
+      $link = '';
       if ($stateg['CRITICAL'] > 0) {
          $count = $stateg['CRITICAL'];
          $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_critical.png"';
+         $link = $CFG_GLPI['root_doc'].
+         "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=CRITICAL".
+            "&link[1]=AND&field[1]=8&searchtype[1]=equals&contains[1]=".$id.
+            "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=DOWN".
+            "&link[3]=AND&field[3]=8&searchtype[3]=equals&contains[3]=".$id.
+            "&link[4]=OR&field[4]=3&searchtype[4]=equals&contains[4]=UNREACHABLE".
+            "&link[5]=AND&field[5]=8&searchtype[5]=equals&contains[5]=".$id.
+            "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
       } else if ($stateg['WARNING'] > 0) {
          $count = $stateg['WARNING'];
          $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_warning.png"';
+         $link = $CFG_GLPI['root_doc'].
+         "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=WARNING".
+            "&link[1]=AND&field[1]=8&searchtype[1]=equals&contains[1]=".$id.
+            "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=UNKNOWN".
+            "&link[3]=AND&field[3]=8&searchtype[3]=equals&contains[3]=".$id.
+            "&link[4]=OR&field[4]=3&searchtype[4]=equals&contains[4]=RECOVERY".
+            "&link[5]=AND&field[5]=8&searchtype[5]=equals&contains[5]=".$id.
+            "&link[6]=OR&field[6]=3&searchtype[6]=equals&contains[6]=FLAPPING".
+            "&link[7]=AND&field[7]=8&searchtype[7]=equals&contains[7]=".$id.
+            "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
       } else if ($stateg['OK'] > 0) {
          $count = $stateg['OK'];
          $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_ok.png"';
+         $link = $CFG_GLPI['root_doc'].
+         "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=OK".
+            "&link[1]=AND&field[1]=8&searchtype[1]=equals&contains[1]=".$id.
+            "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=UP".
+            "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
       }
       $input .= "<tr ".$background.">";
       $input .= '<th style="background-color:transparent;" colspan="2" height="100">';
-      $input .= '<font style="font-size: 52px;">'.$count.'</font>';         
+      $input .= '<a href="'.$link.'"><font style="font-size: 52px; color:black">'.$count.'</font></a>';         
       $input .= '</th>';
       $input .= '</tr>';
 
