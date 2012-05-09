@@ -302,7 +302,8 @@ Ext.onReady(function() {
                                   $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownDisplayviewItemtype.php",
                                   $params);
       echo "<span id='items_id'></span>";
-            
+      echo "<input type='hidden' name='x' value='1' />";
+      echo "<input type='hidden' name='y' value='1' />";
       echo "</td>";
 
       echo "<td colspan='2'></td>";
