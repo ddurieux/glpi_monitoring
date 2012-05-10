@@ -500,12 +500,11 @@ CREATE TABLE `glpi_plugin_monitoring_servicedefs` (
 
 
 
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_unavailabilities`;
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_unavaibilities`;
 
-CREATE TABLE `glpi_plugin_monitoring_unavailabilities` (
+CREATE TABLE `glpi_plugin_monitoring_unavaibilities` (
    `id` int(11) NOT NULL AUTO_INCREMENT,
-   `items_id` int(11) NOT NULL DEFAULT '0',
-   `itemtype` varchar(100) DEFAULT NULL,
+   `plugin_monitoring_services_id` int(11) NOT NULL DEFAULT '0',
    `begin_date` datetime DEFAULT NULL,
    `end_date` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
