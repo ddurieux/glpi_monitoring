@@ -455,7 +455,7 @@ class WeatherMap extends WeatherMapBase
 	{
 		$linecount = 1;
 		
-		$lines = split("\n",$string);
+		$lines = explode("\n",$string);
 		$linecount = sizeof($lines);
 		$maxlinelength=0;
 		foreach($lines as $line)
@@ -1763,7 +1763,7 @@ function ReadConfigNG($input, $is_include=FALSE, $initial_context="GLOBAL")
 		 debug("ReadConfig Detected that this is a config fragment.\n");
 			 // strip out any Windows line-endings that have gotten in here
 			 $input=str_replace("\r", "", $input);
-			 $lines = split("/n",$input);
+			 $lines = explode("/n",$input);
 			 $filename = "{text insert}";
 	}
 	else
@@ -1841,7 +1841,7 @@ function ReadConfigNG($input, $is_include=FALSE, $initial_context="GLOBAL")
 			}
 			else
 			{
-				list($ctype,$junk) = split("\\.", $context, 2);
+				list($ctype,$junk) = explode("\\.", $context, 2);
 			}
 			
 			$lookup = $ctype.".".$cmd;
@@ -1907,7 +1907,7 @@ function ReadConfigNNG($input, $is_include=FALSE, $initial_context="GLOBAL")
 		 debug("ReadConfig Detected that this is a config fragment.\n");
 			 // strip out any Windows line-endings that have gotten in here
 			 $input=str_replace("\r", "", $input);
-			 $lines = split("/n",$input);
+			 $lines = explode("/n",$input);
 			 $filename = "{text insert}";
 	}
 	else
@@ -1985,7 +1985,7 @@ function ReadConfigNNG($input, $is_include=FALSE, $initial_context="GLOBAL")
 			}
 			else
 			{
-				list($ctype,$junk) = split("\\.", $context, 2);
+				list($ctype,$junk) = explode("\\.", $context, 2);
 			}
 			
 			$lookup = $ctype.".".$cmd;
@@ -2077,7 +2077,7 @@ function ReadConfig($input, $is_include=FALSE)
 		 debug("ReadConfig Detected that this is a config fragment.\n");
 			 // strip out any Windows line-endings that have gotten in here
 			 $input=str_replace("\r", "", $input);
-			 $lines = split("/n",$input);
+			 $lines = explode("/n",$input);
 			 $filename = "{text insert}";
 	}
 	else
