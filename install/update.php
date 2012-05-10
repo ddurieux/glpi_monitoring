@@ -2129,9 +2129,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       
       
     /*
-    * Table glpi_plugin_monitoring_unavailabilities
+    * Table glpi_plugin_monitoring_unavaibilities
     */
-      $newTable = "glpi_plugin_monitoring_unavailabilities";
+      $newTable = "glpi_plugin_monitoring_unavaibilities";
       if (!TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -2368,6 +2368,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    }
    if (!$crontask->getFromDBbyName('PluginMonitoringLog', 'cleanlogs')) {
       CronTask::Register('PluginMonitoringLog', 'cleanlogs', '96400', 
+                      array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
+   }
+   if (!$crontask->getFromDBbyName('PluginMonitoringUnavaibility', 'cronUnavaibility')) {
+      CronTask::Register('PluginMonitoringUnavaibility', 'cronUnavaibility', '300', 
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
    }
    

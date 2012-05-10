@@ -50,7 +50,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
    private $unavaibilities_id = 0;
    
    
-   static function cronUnavaibility() {
+   static function cronUnavaibility($services_id = 0) {
       global $DB;
       
       ini_set("max_execution_time", "0");
@@ -58,7 +58,13 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
       $pmUnavaibility = new PluginMonitoringUnavaibility();
       $pmServiceevent = new PluginMonitoringServiceevent();
       
-      $query = "SELECT * FROM `glpi_plugin_monitoring_services`";
+      $where = '';
+      if ($services_id != '0') {
+         $where = " WHERE `id`='".$services_id."' ";
+      }
+      
+      $query = "SELECT * FROM `glpi_plugin_monitoring_services` ".$where;
+      $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
          $pmUnavaibility->getCurrentState($data['id']);
          
