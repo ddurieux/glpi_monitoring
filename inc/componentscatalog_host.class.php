@@ -150,7 +150,6 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
       }
       
       echo "</table>";
-      
    }
    
    

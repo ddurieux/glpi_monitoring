@@ -95,6 +95,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          $ong[3] = $LANG['rulesengine'][17];
          $ong[4] = $LANG['plugin_monitoring']['component'][4];
          $ong[5] = $LANG['plugin_monitoring']['contact'][20];
+         $ong[6] = $LANG['plugin_monitoring']['availability'][0];
       }
       
       return $ong;

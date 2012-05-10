@@ -210,4 +210,9 @@ $LANG['plugin_monitoring']['dependency'][0]="Dependencies";
 
 $LANG['plugin_monitoring']['networkport'][0]='Network ports of networking devices';
 
+$LANG['plugin_monitoring']['availability'][0]='Availability';
+$LANG['plugin_monitoring']['availability'][1]='Current month';
+$LANG['plugin_monitoring']['availability'][2]='Last month';
+$LANG['plugin_monitoring']['availability'][3]='Current year';
+
 ?>

@@ -94,6 +94,11 @@ if ($_POST["id"]>0 && $pmComponentscatalog->can($_POST["id"],'r')) {
          $pmContact_Item->showContacts("PluginMonitoringComponentscatalog", $_POST['id']);
          break;
 
+      case 6:
+         $pmUnavaibility = new PluginMonitoringUnavaibility();
+         $pmUnavaibility->displayComponentscatalog($_POST['id']);
+         break;
+      
       default :
 
    }
