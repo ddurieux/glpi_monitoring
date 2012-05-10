@@ -834,7 +834,7 @@ function point_it(event){
          $outputhtml = "--htmloutput ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".html";
       }
       
-      system("/usr/bin/php ".GLPI_ROOT."/plugins/monitoring/lib/weathermap/weathermap ".
+      system(PluginMonitoringConfig::getRRDPath()." ".GLPI_ROOT."/plugins/monitoring/lib/weathermap/weathermap ".
          "--config http://".$_SERVER['SERVER_NAME'].$CFG_GLPI['root_doc']."/plugins/monitoring/front/weathermap_conf.php?id=".$weathermaps_id." ".
          "--output ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png ".$outputhtml);
       

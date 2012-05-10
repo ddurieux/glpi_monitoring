@@ -941,6 +941,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'rrdtoolpath', 
                                  "varchar(255) DEFAULT NULL");
          $migration->changeField($newTable, 
+                                 'phppath', 
+                                 'phppath', 
+                                 "varchar(255) DEFAULT NULL");
+         $migration->changeField($newTable, 
                                  'timezones', 
                                  'timezones', 
                                  "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '[\"0\"]'");
@@ -955,6 +959,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable, 
                               'rrdtoolpath', 
+                              "varchar(255) DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'phppath', 
                               "varchar(255) DEFAULT NULL");
          $migration->addField($newTable, 
                               'timezones', 

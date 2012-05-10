@@ -201,6 +201,7 @@ DROP TABLE IF EXISTS `glpi_plugin_monitoring_configs`;
 CREATE TABLE `glpi_plugin_monitoring_configs` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `rrdtoolpath` varchar(255) DEFAULT NULL,
+  `phppath` varchar(255) DEFAULT NULL,
   `timezones` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '["0"]',
   `version` varchar(255) DEFAULT NULL,
   `logretention` int(5) NOT NULL DEFAULT '30',
