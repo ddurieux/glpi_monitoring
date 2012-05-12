@@ -57,7 +57,7 @@ $LANG['plugin_monitoring']['host'][20]="Preview";
 
 $LANG['plugin_monitoring']['config'][0]="Timezones (for graph)";
 $LANG['plugin_monitoring']['config'][1]="Configuration";
-$LANG['plugin_monitoring']['config'][2]="Path of RRDtool";
+$LANG['plugin_monitoring']['config'][2]="Path and bin name of RRDtool";
 $LANG['plugin_monitoring']['config'][3]="Logs retention (in days)";
 $LANG['plugin_monitoring']['config'][4]="No events found in last minutes, so Shinken seems stopped";
 $LANG['plugin_monitoring']['config'][5]="Shinken Server";
