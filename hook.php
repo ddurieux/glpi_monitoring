@@ -308,7 +308,7 @@ function plugin_headings_monitoring_dashboadview($item) {
 
    $i = 5;
    foreach ($a_views as $views_id=>$name) {
-      if ($_SESSION['plugin_monitoring_displayviews_num'] == $i) {
+      if ($_SESSION['plugin_monitoring_displaytab'] == "monitoring_".$i) {
          $pmDisplayview_item = new PluginMonitoringDisplayview_item();
          $pmDisplayview_item->view($views_id);
       }
