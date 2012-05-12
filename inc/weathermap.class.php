@@ -352,7 +352,7 @@ echo "
       echo "</th>";
       echo "</tr>";
       
-      $this->generateWeathermap($weathermaps_id);
+      $this->generateWeathermap($weathermaps_id, 1);
       $map = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=weathermap-".$weathermaps_id.".png'/>";
       
       echo "<tr class='tab_bg_1'>";
@@ -824,7 +824,7 @@ function point_it(event){
    
    
    
-   function generateWeathermap($weathermaps_id) {
+   function generateWeathermap($weathermaps_id, $force=0) {
       global $CFG_GLPI;
       
       $filename = GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap".$weathermaps_id.".lock";
@@ -839,7 +839,8 @@ function point_it(event){
          file_put_contents($filename, date('U'));
          $generate = 1;
       }
-      if ($generate == '1') {
+      if ($generate == '1'
+              OR $force == '1') {
          $outputhtml = '';
          if (strstr($_SERVER["PHP_SELF"], "ajax/weathermap.tabs.php")) {
             $outputhtml = "--htmloutput ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".html";
