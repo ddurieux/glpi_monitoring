@@ -130,78 +130,83 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       $pmService = new PluginMonitoringService();
       $pmComponent = new PluginMonitoringComponent();
       
-      $pmService->getFromDB($plugin_monitoring_services_id);
-      $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
-      if (!isset($pmComponent->fields['plugin_monitoring_commands_id'])) {
-         return;
-      }
-      if (is_null($pmComponent->fields['graph_template'])) {
-         return;
-      }
-      $pmCommand->getFromDB($pmComponent->fields['plugin_monitoring_commands_id']);
-      
-      $pmUnavaibility = new PluginMonitoringUnavaibility();
-      $pmUnavaibility->cronUnavaibility($plugin_monitoring_services_id);
-      
-      $query = "SELECT * FROM `".$this->getTable()."`
-         WHERE `plugin_monitoring_services_id`='".$plugin_monitoring_services_id."'
-         ORDER BY `date`";
-      $result = $DB->query($query);
-               
-      $i = 0;
-      while ($edata=$DB->fetch_array($result)) {
-         $i++;
-         if ($i < $DB->numrows($result)) {
+      if ($pmService->getFromDB($plugin_monitoring_services_id)) {
+         $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
+         if (!isset($pmComponent->fields['plugin_monitoring_commands_id'])) {
+            return;
+         }
+         if (is_null($pmComponent->fields['graph_template'])) {
+            return;
+         }
+         $pmCommand->getFromDB($pmComponent->fields['plugin_monitoring_commands_id']);
 
-            if (!is_null($pmComponent->fields['graph_template'])) {
-               $perf_data = $edata['perf_data'];
-               if ($edata['perf_data'] == '') {
-                  $perf_data = $edata['output'];                     
+         $pmUnavaibility = new PluginMonitoringUnavaibility();
+         $pmUnavaibility->cronUnavaibility($plugin_monitoring_services_id);
+
+         $query = "SELECT * FROM `".$this->getTable()."`
+            WHERE `plugin_monitoring_services_id`='".$plugin_monitoring_services_id."'
+            ORDER BY `date`";
+         $result = $DB->query($query);
+
+         $i = 0;
+         while ($edata=$DB->fetch_array($result)) {
+            $i++;
+            if ($i < $DB->numrows($result)) {
+
+               if (!is_null($pmComponent->fields['graph_template'])) {
+                  $perf_data = $edata['perf_data'];
+                  if ($edata['perf_data'] == '') {
+                     $perf_data = $edata['output'];                     
+                  }
+                  $pmRrdtool->addData($pmComponent->fields['graph_template'], 
+                                                 $plugin_monitoring_services_id, 
+                                                 $this->convert_datetime_timestamp($edata['date']), 
+                                                 $perf_data);
+
                }
-               $pmRrdtool->addData($pmComponent->fields['graph_template'], 
-                                              $plugin_monitoring_services_id, 
-                                              $this->convert_datetime_timestamp($edata['date']), 
-                                              $perf_data);
+               $this->delete($edata);
+            } else {
+               // Last value (may not be deleted)
+               if (!is_null($pmComponent->fields['graph_template'])) {
+                  $perf_data = $edata['perf_data'];
+                  if ($edata['perf_data'] == '') {
+                     $perf_data = $edata['output'];                     
+                  }
+                  $pmRrdtool->addData($pmComponent->fields['graph_template'], 
+                                                 $plugin_monitoring_services_id, 
+                                                 $this->convert_datetime_timestamp($edata['date']), 
+                                                 $perf_data,
+                                                 1);
 
-            }
-            $this->delete($edata);
-         } else {
-            // Last value (may not be deleted)
-            if (!is_null($pmComponent->fields['graph_template'])) {
-               $perf_data = $edata['perf_data'];
-               if ($edata['perf_data'] == '') {
-                  $perf_data = $edata['output'];                     
                }
-               $pmRrdtool->addData($pmComponent->fields['graph_template'], 
-                                              $plugin_monitoring_services_id, 
-                                              $this->convert_datetime_timestamp($edata['date']), 
-                                              $perf_data,
-                                              1);
-
             }
          }
-      }
-      $a_list = array();
-      $a_list[] = "2h";
-      $a_list[] = "12h";
-      $a_list[] = "1d";
-      $a_list[] = "1w";
-      $a_list[] = "1m";
-      $a_list[] = "0y6m";
-      $a_list[] = "1y";
-      
-      $pmConfig = new PluginMonitoringConfig();
-      $pmConfig->getFromDB(1);
-      $a_timezones = importArrayFromDB($pmConfig->fields['timezones']);
-      
-      foreach ($a_list as $time) {
-         foreach ($a_timezones as $timezone) {
-            $pmRrdtool->displayGLPIGraph($pmComponent->fields['graph_template'],
-                                                       "PluginMonitoringService", 
-                                                       $plugin_monitoring_services_id, 
-                                                       $timezone,
-                                                       $time);
+         $a_list = array();
+         $a_list[] = "2h";
+         $a_list[] = "12h";
+         $a_list[] = "1d";
+         $a_list[] = "1w";
+         $a_list[] = "1m";
+         $a_list[] = "0y6m";
+         $a_list[] = "1y";
+
+         $pmConfig = new PluginMonitoringConfig();
+         $pmConfig->getFromDB(1);
+         $a_timezones = importArrayFromDB($pmConfig->fields['timezones']);
+
+         foreach ($a_list as $time) {
+            foreach ($a_timezones as $timezone) {
+               $pmRrdtool->displayGLPIGraph($pmComponent->fields['graph_template'],
+                                                          "PluginMonitoringService", 
+                                                          $plugin_monitoring_services_id, 
+                                                          $timezone,
+                                                          $time);
+            }
          }
+      } else {
+         $query = "DELETE FROM `".$this->getTable()."`
+            WHERE `plugin_monitoring_services_id`='".$plugin_monitoring_services_id."'";
+         $DB->query($query);
       }
    }
    
