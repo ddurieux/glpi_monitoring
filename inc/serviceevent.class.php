@@ -141,7 +141,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
          $pmCommand->getFromDB($pmComponent->fields['plugin_monitoring_commands_id']);
 
          $pmUnavaibility = new PluginMonitoringUnavaibility();
-         $pmUnavaibility->cronUnavaibility($plugin_monitoring_services_id);
+         $pmUnavaibility->runUnavaibility($plugin_monitoring_services_id);
 
          $query = "SELECT * FROM `".$this->getTable()."`
             WHERE `plugin_monitoring_services_id`='".$plugin_monitoring_services_id."'
