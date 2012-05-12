@@ -448,14 +448,12 @@ function point_it(event){
          // * Change node position
          echo "<tr>";
          echo "<th colspan='2'>";
-         echo "Change node position";
+         echo "Edit node";
          echo "</th>";
          echo "</tr>";
-
+        
          echo "<tr>";
-         echo "<td>";
-         echo "</td>";
-         echo "<td>";
+         echo "<td colspan='2' align='center'>";
 
          $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringWeathermapnode")."`
             WHERE `plugin_monitoring_weathermaps_id`='".$weathermaps_id."'
@@ -474,7 +472,16 @@ function point_it(event){
             }
             $elements[$data['id']] = $name;            
          }
-         Dropdown::showFromArray('id_update', $elements);
+         $rand = Dropdown::showFromArray('id_update', $elements);         
+         
+         $params = array('items_id'        => '__VALUE__',
+                         'rand'            => $rand);
+
+         ajaxUpdateItemOnSelectEvent("dropdown_id_update$rand", "show_updatenode$rand",
+                                     $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownWnode.php",
+                                     $params, false);
+
+         echo "<span id='show_updatenode$rand'></span>\n";
          
          echo "</td>";
          echo "</tr>";

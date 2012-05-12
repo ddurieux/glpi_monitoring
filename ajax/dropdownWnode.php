@@ -35,7 +35,7 @@
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
-   @since     2011
+   @since     2012
  
    ------------------------------------------------------------------------
  */
@@ -43,36 +43,25 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-PluginMonitoringProfile::checkRight("weathermap","w");
-
-commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins", 
-             "monitoring", "weathermapnode");
-
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
 $pmWeathermapnode = new PluginMonitoringWeathermapnode();
-if (isset ($_POST["add"])) {
-   if ($_POST['x'] == '') {
-      glpi_header($_SERVER['HTTP_REFERER']);
-      exit;
-   }
-   $pmWeathermapnode->add($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset ($_POST["update"])) {
-   if ($_POST['x'] == '') {
-      glpi_header($_SERVER['HTTP_REFERER']);
-      exit;
-   }
-   unset($_POST['name']);
-   $_POST['name'] = $_POST['nameupdate'];
-   unset($_POST['itemtype']);
-   $_POST['id'] = $_POST['id_update'];
-   $pmWeathermapnode->update($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset ($_POST["purge"])) {
-   $pmWeathermapnode->delete($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
-}
+$pmWeathermapnode->getFromDB($_POST['items_id']);
 
-commonFooter();
+echo "<br/>";
+echo $LANG['plugin_monitoring']['host'][8]."&nbsp:&nbsp";
+$itemtype = $pmWeathermapnode->fields['itemtype'];
+$item = new $itemtype();
+$item->getFromDB($pmWeathermapnode->fields['items_id']);
+echo $item->getLink(1);
+echo "<br/>";
+echo $LANG['common'][16]."&nbsp;:&nbsp;";
+echo "<input type='text' name='nameupdate' value='".$pmWeathermapnode->fields['name']."' />";
+
+echo "<script language='JavaScript'>
+document.pointform.x.value = ".$pmWeathermapnode->fields['x'].";
+document.pointform.y.value = ".$pmWeathermapnode->fields['y'].";
+</script>";
 
 ?>
