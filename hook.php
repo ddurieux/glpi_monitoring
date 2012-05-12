@@ -131,6 +131,8 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
          break;
       
       case 'Central':
+         $_SESSION['plugin_monitoring_displaytab'] = $_SESSION['glpi_tabs']['central'];
+         
          $array = array();
          if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
             $array[0] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['servicescatalog'][0];
@@ -196,6 +198,11 @@ function plugin_headings_actions_monitoring($item) {
          break;
       
       case 'Central':
+         if ($_SESSION['plugin_monitoring_displaytab'] != $_SESSION['glpi_tabs']['central']) {
+            echo '<script language="javascript">window.location.reload();</script>';
+            exit;
+         }
+         
          $array = array();
          $array[0] = "plugin_headings_monitoring_dashboadservicecatalog";
          $pmDisplayview = new PluginMonitoringDisplayview();

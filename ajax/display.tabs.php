@@ -104,6 +104,10 @@ $pmCanvas->show();
       $i = 5;
       foreach ($a_views as $views_id=>$name) {
          if ($_REQUEST['glpi_tab'] == $i) {
+            if ($_SESSION['plugin_monitoring_displaytab'] != $_POST['glpi_tab']) {
+               echo '<script language="javascript">window.location.reload();</script>';
+               exit;
+            }
             $pmDisplayview_item = new PluginMonitoringDisplayview_item();
             $pmDisplayview_item->view($views_id);
          }

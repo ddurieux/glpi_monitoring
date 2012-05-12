@@ -69,6 +69,8 @@ $pMonitoringDisplay = new PluginMonitoringDisplay();
 
 $pMonitoringDisplay->refreshPage();
 
+$_SESSION['plugin_monitoring_displaytab'] = $_SESSION['glpi_tabs']['pluginmonitoringdisplay'];
+
 $pMonitoringDisplay->showTabs();
 echo "<style type='text/css'>
 div#tabcontent {
