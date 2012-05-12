@@ -67,7 +67,7 @@ if (isset($_GET['file'])) {
       // Now send the file with header() magic
       header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
       header('Pragma: private'); /// IE BUG + SSL
-      //header('Pragma: no-cache');
+      header('Pragma: no-cache');
       header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
       header("Content-disposition: filename=\"$filename\"");
 //      header("Content-type: ".$mime);
