@@ -186,40 +186,11 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
          echo "<td class='center'>";
          echo $data['name'];
          echo "</td>";
-         $a_times = $this->parseEvents($data['id'], 'currentmonth');
-         $displaytime = '';
-         if ($a_times[0] > 0) {
-            echo "<td style='background-color: rgb(255, 120, 0);-moz-border-radius: 4px;-webkit-border-radius: 4px;-o-border-radius: 4px;padding: 2px;' align='center'>";
-            $displaytime = '<br/>'.timestampToString($a_times[0]);
-         } else {
-            echo "<td align='center'>";
-         }      
-         echo round(((($a_times[1] - $a_times[0]) / $a_times[1]) * 100), 3)."%".$displaytime."<br/>";
-         echo "</td>";
+         $this->displayValues($data['id'], 'currentmonth');
          
-         $a_times = $this->parseEvents($data['id'], 'lastmonth');
-         $displaytime = '';
-         if ($a_times[0] > 0) {
-            echo "<td style='background-color: rgb(255, 120, 0);-moz-border-radius: 4px;-webkit-border-radius: 4px;-o-border-radius: 4px;padding: 2px;' align='center'>";
-            $displaytime = '<br/>'.timestampToString($a_times[0]);
-
-         } else {
-            echo "<td align='center'>";
-         }      
-         echo round(((($a_times[1] - $a_times[0]) / $a_times[1]) * 100), 3)."%".$displaytime."<br/>";
-         echo "</td>";
+         $this->displayValues($data['id'], 'lastmonth');
          
-         $a_times = $this->parseEvents($data['id'], 'currentyear');
-         $displaytime = '';
-         if ($a_times[0] > 0) {
-            echo "<td style='background-color: rgb(255, 120, 0);-moz-border-radius: 4px;-webkit-border-radius: 4px;-o-border-radius: 4px;padding: 2px;' align='center'>";
-            $displaytime = '<br/>'.timestampToString($a_times[0]);
-
-         } else {
-            echo "<td align='center'>";
-         }      
-         echo round(((($a_times[1] - $a_times[0]) / $a_times[1]) * 100), 3)."%".$displaytime."<br/>";
-         echo "</td>";
+         $this->displayValues($data['id'], 'currentyear');
 
          echo "</tr>";
       }      
@@ -353,6 +324,27 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
          
       }
       return array($timecriticalSeconds, $totaltime);
+   }
+   
+   
+   
+   function displayValues($services_id,$period, $tooltip=0) {
+            
+      $a_times = $this->parseEvents($services_id, $period);
+      $displaytime = '';
+      if ($a_times[0] > 0) {
+         echo "<td style='background-color: rgb(255, 120, 0);-moz-border-radius: 4px;-webkit-border-radius: 4px;-o-border-radius: 4px;padding: 2px;' align='center'>";
+         if ($tooltip == '1') {
+            $displaytime = '&nbsp;'.showToolTip(timestampToString($a_times[0]), array('display'=>false));
+         } else {
+            $displaytime = '<br/>'.timestampToString($a_times[0]);
+         }
+      } else {
+         echo "<td align='center'>";
+      }      
+      echo round(((($a_times[1] - $a_times[0]) / $a_times[1]) * 100), 3)."%".$displaytime;
+      echo "</td>";
+      
    }
    
 }

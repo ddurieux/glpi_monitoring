@@ -209,7 +209,7 @@ class PluginMonitoringService extends CommonDBTM {
          echo "<table class='tab_cadre_fixe'>";
          
          echo "<tr class='tab_bg_1'>";
-         echo "<th colspan='8'>".$pmComponentscatalog->getTypeName()."&nbsp;:&nbsp;".$pmComponentscatalog->getLink()."</th>";
+         echo "<th colspan='11'>".$pmComponentscatalog->getTypeName()."&nbsp;:&nbsp;".$pmComponentscatalog->getLink()."</th>";
          echo "</tr>";
          
          echo "<tr class='tab_bg_1'>";
@@ -228,15 +228,15 @@ class PluginMonitoringService extends CommonDBTM {
          echo "<th>";
          echo $LANG['stats'][7];
          echo "</th>";
-//         echo "<th>";
-//         echo $LANG['plugin_monitoring']['servicescatalog'][1];
-//         echo "</th>";
          echo "<th>";
          echo $LANG['plugin_monitoring']['service'][18];
          echo "</th>";
          echo "<th>";
          echo $LANG['rulesengine'][82];
          echo "</th>";
+         echo "<th>".$LANG['plugin_monitoring']['availability'][1]." ".showToolTip($LANG['plugin_monitoring']['availability'][0], array('display'=>false))."</th>";
+         echo "<th>".$LANG['plugin_monitoring']['availability'][2]." ".showToolTip($LANG['plugin_monitoring']['availability'][0], array('display'=>false))."</th>";
+         echo "<th>".$LANG['plugin_monitoring']['availability'][3]." ".showToolTip($LANG['plugin_monitoring']['availability'][0], array('display'=>false))."</th>";
          echo "<th>";
          echo $LANG['plugin_monitoring']['service'][4];
          echo "</th>"; 
