@@ -855,12 +855,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "</tr>";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
-         if ($type == 'Ressources') {
+//         if ($type == 'Ressources') {
             echo "<a href='".$critical_link.">".
                     "<font color='black' style='font-size: 52px;font-weight: bold;'>".$critical."</font></a>";
-         } else {
-            echo "<font style='font-size: 52px;'>".$critical."</font>";
-         }
+//         } else {
+//            echo "<font style='font-size: 52px;'>".$critical."</font>";
+//         }
          echo "</th>";
          echo "</tr>";
          echo "<tr>";
@@ -879,12 +879,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<table class='tab_cadre' width='316' height='100' ".$background." >";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
-         if ($type == 'Ressources') {
+//         if ($type == 'Ressources') {
             echo "<a href='".$warning_link.">".
                     "<font color='black' style='font-size: 12px;font-weight: bold;'>".$LANG['plugin_monitoring']['display'][3]."</font></a>";
-         } else {
-            echo $LANG['plugin_monitoring']['display'][3];
-         }
+//         } else {
+//            echo $LANG['plugin_monitoring']['display'][3];
+//         }
          echo "</td>";
          echo "</tr>";
          echo "<tr>";
@@ -913,12 +913,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<table class='tab_cadre' width='158' height='100' ".$background." >";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
-         if ($type == 'Ressources') {
+//         if ($type == 'Ressources') {
             echo "<a href='".$ok_link.">".
                     "<font color='black' style='font-size: 12px;font-weight: bold;'>".$LANG['plugin_monitoring']['display'][4]."</font></a>";
-         } else {
-            echo $LANG['plugin_monitoring']['display'][4];
-         }
+//         } else {
+//            echo $LANG['plugin_monitoring']['display'][4];
+//         }
          echo "</td>";
          echo "</tr>";
          echo "<tr>";

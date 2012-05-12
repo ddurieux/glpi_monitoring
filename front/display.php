@@ -58,6 +58,13 @@ if (isset($_POST['sessionupdate'])) {
    exit;
 }
 
+if (isset($_GET['glpi_tab'])
+        AND is_numeric($_GET['glpi_tab'])) {
+   $_SESSION['glpi_tabs']['pluginmonitoringdisplay'] = $_GET['glpi_tab'];
+   $_SERVER['REQUEST_URI'] = str_replace("&glpi_tab=".$_GET['glpi_tab'], "", $_SERVER['REQUEST_URI']);
+   glpi_header($_SERVER['REQUEST_URI']);
+}
+
 echo '<meta http-equiv ="refresh" content="'.$_SESSION['glpi_plugin_monitoring']['_refresh'].'">';
 
 $pmMessage = new PluginMonitoringMessage();
