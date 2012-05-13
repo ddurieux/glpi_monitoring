@@ -105,7 +105,6 @@ class PluginMonitoringWeathermap extends CommonDBTM {
       $weathermaps_id = $_GET['id'];
       
       $pmWeathermapnode = new PluginMonitoringWeathermapnode();
-      $networkPort = new NetworkPort();
       
       $this->getFromDB($weathermaps_id);
       
@@ -178,10 +177,8 @@ LINK DEFAULT
          echo "\n";
       }
       
-echo "
-
-# regular LINKs:
-";
+      echo "\n\n# regular LINKs:\n";
+      
       $bwlabelpos=array();
       $bwlabelpos[0] = "BWLABELPOS 81 39";
       $bwlabelpos[1] = "BWLABELPOS 71 29";
@@ -415,7 +412,7 @@ function point_it(event){
          // * Add node
          echo "<tr>";
          echo "<th colspan='2'>";
-         echo "add node";
+         echo $LANG['plugin_monitoring']['weathermap'][8];
          echo "</th>";
          echo "</tr>";
          
@@ -448,7 +445,7 @@ function point_it(event){
          // * Change node position
          echo "<tr>";
          echo "<th colspan='2'>";
-         echo "Edit node";
+         echo $LANG['plugin_monitoring']['weathermap'][9];
          echo "</th>";
          echo "</tr>";
         
@@ -496,7 +493,7 @@ function point_it(event){
          // * Delete node
          echo "<tr>";
          echo "<th colspan='2'>";
-         echo "Delete node";
+         echo $LANG['plugin_monitoring']['weathermap'][10];
          echo "</th>";
          echo "</tr>";
 
@@ -542,13 +539,13 @@ function point_it(event){
          // *Add Link
          echo "<tr>";
          echo "<th colspan='2'>";
-         echo "Add link";
+         echo $LANG['plugin_monitoring']['weathermap'][11];
          echo "</th>";
          echo "</tr>";
          
          echo "<tr>";
          echo "<td>";
-         echo "Node source*&nbsp:";
+         echo $LANG['plugin_monitoring']['weathermap'][14]."*&nbsp;:";
          echo "</td>";
          echo "<td>";
 
@@ -702,7 +699,7 @@ function point_it(event){
          
          echo "<tr>";
          echo "<td>";
-         echo "Node destination&nbsp:";
+         echo $LANG['plugin_monitoring']['weathermap'][15]."&nbsp;:";
          echo "</td>";
          echo "<td>";
 
@@ -732,7 +729,7 @@ function point_it(event){
          
          echo "<tr>";
          echo "<td>";
-         echo "Max bandwidth input&nbsp;:";
+         echo $LANG['plugin_monitoring']['weathermap'][16]."&nbsp;:";
          echo "</td>";
          echo "<td>";
          echo "<input type='text' name='bandwidth_in' value=''/>";
@@ -741,7 +738,7 @@ function point_it(event){
          
          echo "<tr>";
          echo "<td>";
-         echo "Max bandwidth output&nbsp;:";
+         echo $LANG['plugin_monitoring']['weathermap'][17]."&nbsp;:";
          echo "</td>";
          echo "<td>";
          echo "<input type='text' name='bandwidth_out' value=''/>";
@@ -757,7 +754,7 @@ function point_it(event){
          // * Edit link
          echo "<tr>";
          echo "<th colspan='2'>";
-         echo "Edit link";
+         echo $LANG['plugin_monitoring']['weathermap'][12];
          echo "</th>";
          echo "</tr>";
          echo "<tr>";
@@ -809,7 +806,7 @@ function point_it(event){
          // * Delete link
          echo "<tr>";
          echo "<th colspan='2'>";
-         echo "Delete link";
+         echo $LANG['plugin_monitoring']['weathermap'][13];
          echo "</th>";
          echo "</tr>";
          

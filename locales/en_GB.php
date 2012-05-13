@@ -195,6 +195,16 @@ $LANG['plugin_monitoring']['weathermap'][4]="Height";
 $LANG['plugin_monitoring']['weathermap'][5]="Background image";
 $LANG['plugin_monitoring']['weathermap'][6]="Nodes and links";
 $LANG['plugin_monitoring']['weathermap'][7]="Node";
+$LANG['plugin_monitoring']['weathermap'][8]="Add a node";
+$LANG['plugin_monitoring']['weathermap'][9]="Edit a node";
+$LANG['plugin_monitoring']['weathermap'][10]="Delete a node";
+$LANG['plugin_monitoring']['weathermap'][11]="Add a link";
+$LANG['plugin_monitoring']['weathermap'][12]="Edit a link";
+$LANG['plugin_monitoring']['weathermap'][13]="Delete a link";
+$LANG['plugin_monitoring']['weathermap'][14]="Source";
+$LANG['plugin_monitoring']['weathermap'][15]="Destination";
+$LANG['plugin_monitoring']['weathermap'][16]="Max bandwidth input";
+$LANG['plugin_monitoring']['weathermap'][17]="Max bandwidth output";
 
 $LANG['plugin_monitoring']['realms'][0]="Reamls";
 $LANG['plugin_monitoring']['realms'][1]="Reaml";

@@ -50,10 +50,10 @@ $pmWeathermaplink = new PluginMonitoringWeathermaplink();
 $pmWeathermaplink->getFromDB($_POST['items_id']);
 
 echo "<br/>";
-echo "Max bandwidth input&nbsp;:&nbsp;";
+echo $LANG['plugin_monitoring']['weathermap'][16]."&nbsp;:&nbsp;";
 echo "<input type='text' name='up_bandwidth_in' value='".$pmWeathermaplink->fields['bandwidth_in']."'/>";
 echo "<br/>";
-echo "Max bandwidth output&nbsp;:&nbsp;";
+echo $LANG['plugin_monitoring']['weathermap'][17]."&nbsp;:&nbsp;";
 echo "<input type='text' name='up_bandwidth_out' value='".$pmWeathermaplink->fields['bandwidth_out']."'/>";
 echo "<br/>";
 echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
