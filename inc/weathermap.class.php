@@ -732,7 +732,7 @@ function point_it(event){
          
          echo "<tr>";
          echo "<td>";
-         echo "Max bandwidth input&nbsp:";
+         echo "Max bandwidth input&nbsp;:";
          echo "</td>";
          echo "<td>";
          echo "<input type='text' name='bandwidth_in' value=''/>";
@@ -741,7 +741,7 @@ function point_it(event){
          
          echo "<tr>";
          echo "<td>";
-         echo "Max bandwidth output&nbsp:";
+         echo "Max bandwidth output&nbsp;:";
          echo "</td>";
          echo "<td>";
          echo "<input type='text' name='bandwidth_out' value=''/>";
@@ -760,25 +760,8 @@ function point_it(event){
          echo "Edit link";
          echo "</th>";
          echo "</tr>";
-
          echo "<tr>";
-         echo "<td colspan='2'>";
-         echo "</td>";
-         echo "</tr>";
-         
-         
-         // * Delete link
-         echo "<tr>";
-         echo "<th colspan='2'>";
-         echo "Delete link";
-         echo "</th>";
-         echo "</tr>";
-         
-         echo "<tr>";
-         echo "<td>";
-         echo "Link :";
-         echo "</td>";
-         echo "<td>";
+         echo "<td colspan='2' align='center'>";
          $pmWeathermapnode = new PluginMonitoringWeathermapnode();
          $query = "SELECT `glpi_plugin_monitoring_weathermaplinks`.`id` as `id`,
                `itemtype`, `items_id`, `name`, `plugin_monitoring_weathermapnodes_id_2`
@@ -810,8 +793,32 @@ function point_it(event){
             
             $elements[$data['id']] = $name1." - ".$name2;            
          }
-         Dropdown::showFromArray('id', $elements);
+         $rand = Dropdown::showFromArray('id_update', $elements);
+         
+         $params = array('items_id'        => '__VALUE__',
+                         'rand'            => $rand);
 
+         ajaxUpdateItemOnSelectEvent("dropdown_id_update$rand", "show_updatelink$rand",
+                                     $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownWlink.php",
+                                     $params, false);
+         echo "<span id='show_updatelink$rand'></span>\n";
+         echo "</td>";
+         echo "</tr>";
+         
+         
+         // * Delete link
+         echo "<tr>";
+         echo "<th colspan='2'>";
+         echo "Delete link";
+         echo "</th>";
+         echo "</tr>";
+         
+         echo "<tr>";
+         echo "<td>";
+         echo "Link :";
+         echo "</td>";
+         echo "<td>";
+         Dropdown::showFromArray('id', $elements);
          echo "</td>";
          echo "</tr>";
          

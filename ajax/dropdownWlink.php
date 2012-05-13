@@ -35,7 +35,7 @@
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
-   @since     2011
+   @since     2012
  
    ------------------------------------------------------------------------
  */
@@ -43,42 +43,19 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-PluginMonitoringProfile::checkRight("weathermap","w");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
-commonHeader($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugins", 
-             "monitoring", "weathermapnode");
+$pmWeathermaplink = new PluginMonitoringWeathermaplink();
+$pmWeathermaplink->getFromDB($_POST['items_id']);
 
-
-$pmWeathermapnode = new PluginMonitoringWeathermapnode();
-if (isset ($_POST["add"])) {
-   if ($_POST['x'] == '') {
-      glpi_header($_SERVER['HTTP_REFERER']);
-      exit;
-   }
-   $pmWeathermapnode->add($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset ($_POST["update"])) {
-   if ($_POST['x'] == '') {
-      glpi_header($_SERVER['HTTP_REFERER']);
-      exit;
-   }
-   unset($_POST['name']);
-   $_POST['name'] = $_POST['nameupdate'];
-   unset($_POST['itemtype']);
-   $_POST['id'] = $_POST['id_update'];
-   $pmWeathermapnode->update($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset ($_POST["purge"])) {
-   $pmWeathermaplink = new PluginMonitoringWeathermaplink();
-   $a_links = $pmWeathermaplink->find("`plugin_monitoring_weathermapnodes_id_1`='".$_POST['id']."' 
-      OR `plugin_monitoring_weathermapnodes_id_2`='".$_POST['id']."'");
-   foreach ($a_links as $data) {
-      $pmWeathermaplink->delete($data);
-   }
-   $pmWeathermapnode->delete($_POST);
-   glpi_header($_SERVER['HTTP_REFERER']);
-}
-
-commonFooter();
+echo "<br/>";
+echo "Max bandwidth input&nbsp;:&nbsp;";
+echo "<input type='text' name='up_bandwidth_in' value='".$pmWeathermaplink->fields['bandwidth_in']."'/>";
+echo "<br/>";
+echo "Max bandwidth output&nbsp;:&nbsp;";
+echo "<input type='text' name='up_bandwidth_out' value='".$pmWeathermaplink->fields['bandwidth_out']."'/>";
+echo "<br/>";
+echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
 
 ?>
