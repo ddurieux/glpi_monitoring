@@ -71,7 +71,12 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       $opts .= " RRA:AVERAGE:0.5:5:1016";
 
       $ret = '0';
-      system(PluginMonitoringConfig::getRRDPath().'/rrdtool create '.$fname.$opts, $ret);
+      $end = '';
+      if (preg_match('/^windows/i', php_uname())) {
+         session_write_close();
+         $end = ' && exit';
+      }
+      system(PluginMonitoringConfig::getRRDPath().'/rrdtool create '.$fname.$opts.$end, $ret);
       if (isset($ret) 
               AND $ret != '0' ) {
          echo "Create error: $ret for ".PluginMonitoringConfig::getRRDPath()."/rrdtool create ".$fname.$opts."\n";
@@ -138,7 +143,12 @@ class PluginMonitoringRrdtool extends CommonDBTM {
          }         
       }      
       $ret = '0';
-      system(PluginMonitoringConfig::getRRDPath()."/rrdtool update ".$fname." ".$rrdtool_value, $ret);
+      $end = '';
+      if (preg_match('/^windows/i', php_uname())) {
+         session_write_close();
+         $end = ' && exit';
+      }
+      system(PluginMonitoringConfig::getRRDPath()."/rrdtool update ".$fname." ".$rrdtool_value.$end, $ret);
       if (isset($ret) 
               AND $ret != '0') {
          echo "Create error: $ret for ".PluginMonitoringConfig::getRRDPath()."/rrdtool update ".$fname." ".$rrdtool_value."\n";
@@ -226,7 +236,12 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       if (file_exists(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id.".rrd")) {
          $ret = '0';
          ob_start();
-         system(PluginMonitoringConfig::getRRDPath()."/rrdtool graph ".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.$timezonefile.".gif ".$opts, $ret);
+         $end = '';
+         if (preg_match('/^windows/i', php_uname())) {
+            session_write_close();
+            $end = ' && exit';
+         }
+         system(PluginMonitoringConfig::getRRDPath()."/rrdtool graph ".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.$timezonefile.".gif ".$opts.$end, $ret);
          ob_end_clean();
          if (isset($ret) 
                  AND $ret != '0' ) {
