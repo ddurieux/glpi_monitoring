@@ -239,8 +239,6 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       echo "</tr>";
       
       echo "</table>";
-      
-      $state = "OK";
    }
    
    

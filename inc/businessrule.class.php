@@ -89,7 +89,7 @@ class PluginMonitoringBusinessrule extends CommonDBTM {
    function showFormTest($servicescatalogs_id, $options=array()) {
       global $CFG_GLPI,$LANG;
 
-      $this->showFormTest($servicescatalogs_id, $options);
+      //$this->showFormTest($servicescatalogs_id, $options);
 return;
 //      $this->showFormHeader($options);
       
@@ -335,7 +335,6 @@ return;
       global $LANG;
 
       if (!empty($items_id)) {
-         $pMonitoringService = new PluginMonitoringService();
          $item = new $itemtype();
          
          $item->getFromDB($items_id);
@@ -344,10 +343,11 @@ return;
          echo "<input type='hidden' name='services_id[]' value='".$items_id."' />";
          echo "<strong>".$item->getName()."</strong>";
          echo " ".$LANG['networking'][25]." ";
-         $pMonitoringHost->getFromDB($item->fields['plugin_monitoring_hosts_id']);
-         $itemtype2 = $pMonitoringHost->fields['itemtype'];
+         $pmHost = new PluginMonitoringHost();
+         $pmHost->getFromDB($item->fields['plugin_monitoring_hosts_id']);
+         $itemtype2 = $pmHost->fields['itemtype'];
          $item2 = new $itemtype2();
-         $item2->getFromDB($pMonitoringHost->fields['items_id']);
+         $item2->getFromDB($pmHost->fields['items_id']);
          echo $item2->getLink(1);
          echo "</td><td width='100'>";
          echo "<input type='hidden' name='businessrules_id' value='".$businessrules_id."' />";
@@ -371,6 +371,7 @@ return;
    static function dropdownService($ID,$options=array()) {
       global $CFG_GLPI;
 
+      $p = array();
       $p['name']        = 'networkports_id';
       $p['comments']    = 1;
       $p['entity']      = -1;
@@ -423,20 +424,14 @@ return;
       global $DB;
       
       $pmBusinessrule = new PluginMonitoringBusinessrule();
-      
-      
-      
-      $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
-      $pmComponentscatalog_rule = new PluginMonitoringComponentscatalog_rule(); 
-      
+
       $query = "SELECT * FROM `glpi_plugin_monitoring_businessrules`
          WHERE `plugin_monitoring_businessrulegroups_id`='".$item->fields["id"]."'";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
          $pmBusinessrule->delete($data);
       }
-   }
-   
+   }   
 }
 
 ?>

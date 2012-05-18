@@ -163,8 +163,6 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
       global $DB,$LANG;
       
       $this->getEmpty();
-      
-      $pmComponent = new PluginMonitoringComponent();
 
       $this->showFormHeader();      
 

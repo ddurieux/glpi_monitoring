@@ -140,12 +140,7 @@ toastAlert('Critical!', 'Apache on server xxx is down...');
 
 
 </script>";
-      
-      
-      
    }
-   
-   
 }
 
 ?>

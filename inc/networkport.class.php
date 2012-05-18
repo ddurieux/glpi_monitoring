@@ -145,8 +145,7 @@ class PluginMonitoringNetworkport extends CommonDBTM {
       foreach ($networkportInDB as $id) {
          $this->delete(array('id'=>$id));
       }
-   }
-   
+   }   
 }
 
 ?>

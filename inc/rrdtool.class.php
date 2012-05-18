@@ -70,6 +70,7 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       $opts .= " RRA:LAST:0.5:1:1400";
       $opts .= " RRA:AVERAGE:0.5:5:1016";
 
+      $ret = '0';
       system(PluginMonitoringConfig::getRRDPath().'/rrdtool create '.$fname.$opts, $ret);
       if (isset($ret) 
               AND $ret != '0' ) {
@@ -136,7 +137,7 @@ class PluginMonitoringRrdtool extends CommonDBTM {
             }
          }         
       }      
-      //$ret = rrd_update($fname, $value);
+      $ret = '0';
       system(PluginMonitoringConfig::getRRDPath()."/rrdtool update ".$fname." ".$rrdtool_value, $ret);
       if (isset($ret) 
               AND $ret != '0') {
@@ -223,6 +224,7 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       
       //$ret = rrd_graph(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.".gif", $opts, count($opts));
       if (file_exists(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id.".rrd")) {
+         $ret = '0';
          ob_start();
          system(PluginMonitoringConfig::getRRDPath()."/rrdtool graph ".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.$timezonefile.".gif ".$opts, $ret);
          ob_end_clean();

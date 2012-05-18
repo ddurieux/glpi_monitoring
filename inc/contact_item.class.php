@@ -203,7 +203,7 @@ class PluginMonitoringContact_Item extends CommonDBTM {
                         'url'        => $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownUserEntities.php",
                         'moreparams' => $paramscomment);
       
-      $rand = Dropdown::show("User", array('name'=>'users_id', 'toupdate'=> $toupdate));
+      Dropdown::show("User", array('name'=>'users_id', 'toupdate'=> $toupdate));
   
       echo "</td>";
       echo "<td>";

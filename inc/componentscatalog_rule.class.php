@@ -180,18 +180,6 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
    function addRule() {
       global $LANG;
       
-//      $param = array();
-//      if (isset($_SESSION['plugin_monitoring_rules'])) {
-//         $param = $_SESSION['plugin_monitoring_rules'];
-//      }
-//      if (isset($_GET)) {
-//         unset($_GET);
-//      }
-//      $_GET = $_POST;
-//      if (isset($_SESSION['plugin_monitoring_rules_REQUEST_URI'])) {
-//         $_SERVER['REQUEST_URI'] = $_SESSION['plugin_monitoring_rules_REQUEST_URI'];
-//      }
-      
       Search::manageGetValues($_GET['itemtype']);
       $this->showGenericSearch($_GET['itemtype'], $_GET);
       
@@ -210,9 +198,8 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       $pmComponentscatalog = new PluginMonitoringComponentscatalog();
       $pmComponentscatalog->getFromDB($_GET['plugin_monitoring_componentscalalog_id']);
      
-      if (!isset($_SESSION['glpiactive_entity'])) {
-         $default_entity = 0;
-      } else {
+      $default_entity = 0;
+      if (isset($_SESSION['glpiactive_entity'])) {
          $default_entity = $_SESSION['glpiactive_entity'];
       }
       $entities_isrecursive = 0;
@@ -247,13 +234,13 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       $pmComponentscatalog_Host  = new PluginMonitoringComponentscatalog_Host();
       $pmComponentscatalog       = new PluginMonitoringComponentscatalog();
       
+      $devices_present = array();
       if ($pmCc_Rule->getFromDB($parm->fields['id'])) {
       
          // Load right entity
             $pmComponentscatalog->getFromDB($pmCc_Rule->fields['plugin_monitoring_componentscalalog_id']);
-            if (!isset($_SESSION['glpiactive_entity'])) {
-               $default_entity = 0;
-            } else {
+            $default_entity = 0;
+            if (isset($_SESSION['glpiactive_entity'])) {
                $default_entity = $_SESSION['glpiactive_entity'];
             }
             $entities_isrecursive = 0;
@@ -286,7 +273,6 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
 
          Search::manageGetValues($pmCc_Rule->fields['itemtype']);
 
-         $devices_present = array();
          $queryd = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
             WHERE `plugin_monitoring_componentscalalog_id`='".$pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"]."'
                AND `itemtype`='".$pmCc_Rule->fields['itemtype']."'
@@ -347,7 +333,6 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
             changeActiveEntities($default_entity,
                                  $entities_isrecursive);
       } else { // Purge
-         $devices_present = array();
          $queryd = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
             WHERE `plugin_monitoring_componentscalalog_id`='".$parm->fields["plugin_monitoring_componentscalalog_id"]."'
                AND `itemtype`='".$parm->fields['itemtype']."'
@@ -577,42 +562,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                   $pmComponentscatalog_Host->linkComponentsToItem($componentscalalog_id, 
                                                                   $componentscatalogs_hosts_id,
                                                                   $networkports_id);
-                  
-                  
-// OLD
-//                  $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
-//                     WHERE `plugin_monitoring_componentscalalog_id`='".$componentscalalog_id."'
-//                        AND `itemtype`='NetworkEquipment'
-//                        AND `items_id`='".$networkequipments_id."'
-//                           LIMIT 1";
-//                  $result = $DB->query($query);
-//                  if ($DB->numrows($result) == '0') {
-//                     $input = array();
-//                     $input['plugin_monitoring_componentscalalog_id'] = $componentscalalog_id;
-//                     $input['is_static'] = '0';
-//                     $input['itemtype'] = "NetworkEquipment";
-//                     $input['items_id'] = $networkequipments_id;
-//                     $componentscatalogs_hosts_id = $pmComponentscatalog_Host->add($input);
-//                     $pmComponentscatalog_Host->linkComponentsToItem($componentscalalog_id, 
-//                                                                     $componentscatalogs_hosts_id,
-//                                                                     1);
-//                  } else {
-//                     $data2 = $DB->fetch_assoc($result);
-//                     // modify entity of services (if entity of device is changed)
-//                        $item = new NetworkEquipment();
-//                        $item->getFromDB($networkequipments_id);
-//                        $queryu = "UPDATE `glpi_plugin_monitoring_services`
-//                           SET `entities_id`='".$item->fields['entities_id']."'
-//                              WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$data2['id']."'";
-//                        $DB->query($queryu);
-//
-//                     $pmComponentscatalog_Component = new PluginMonitoringComponentscatalog_Component();
-//                     $a_components = $pmComponentscatalog_Component->find("`plugin_monitoring_componentscalalog_id`='".$componentscalalog_id."'");
-//                     foreach ($a_components as $components_id=>$carray) {
-//                        $pmComponentscatalog_Component->addComponentToItems($componentscalalog_id,
-//                                                             $carray['plugin_monitoring_components_id']);
-//                     }
-//                  }     
+  
                }
             }
          }

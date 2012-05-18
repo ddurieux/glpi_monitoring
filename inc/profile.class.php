@@ -127,7 +127,8 @@ class PluginMonitoringProfile extends CommonDBTM {
       if (!haveRight("profile","r")) {
          return false;
       }
-      if ($canedit=haveRight("profile","w")) {
+      $canedit=haveRight("profile","w");
+      if ($canedit) {
          echo "<form method='post' action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/profile.form.php'>";
          echo '<input type="hidden" name="profiles_id" value="'.$items_id.'"/>';
       }
@@ -270,8 +271,7 @@ class PluginMonitoringProfile extends CommonDBTM {
       return false;
    }
 
-   
-   
+      
    
    /**
     * Update the item in the database
@@ -316,10 +316,10 @@ class PluginMonitoringProfile extends CommonDBTM {
       if (count($oldvalues)) {
          Log::constructHistory($this, $oldvalues, $this->fields);
       }
-
       return true;
    }
 
+   
    
    /**
     * Add a message on update action
@@ -358,8 +358,6 @@ class PluginMonitoringProfile extends CommonDBTM {
                                                                          :$profile->getLink()));
       }
    }
-   
-   
 }
 
 ?>

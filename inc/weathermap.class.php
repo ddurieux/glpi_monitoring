@@ -867,6 +867,7 @@ function point_it(event){
    
    function prepareInputForUpdate($input) {
 
+      $mime = '';
       if (isset($_FILES['background']['type']) && !empty($_FILES['background']['type'])) {
          $mime = $_FILES['background']['type'];
       }
@@ -898,14 +899,13 @@ function point_it(event){
          list($width, $height, $type, $attr) = getimagesize($img);
          $table_width = 950;
          $withreduced = $width;
-         $heightreduced = $height;
          if ((($table_width * $pourcentage) / 100) < $width) {
-            $withreduced = ceil(($table_width * $pourcentage) / 100);         
-
+            $withreduced = ceil(($table_width * $pourcentage) / 100);
          }
          return '<img src="'.$imgdisplay.'" width="'.$withreduced.'" />';
       }
    }
+   
    
    
    function widgetEvent($id) {
@@ -955,8 +955,7 @@ function point_it(event){
       } else {
          return $bandwidth;
       }
-   }
-   
+   }   
 }
 
 ?>

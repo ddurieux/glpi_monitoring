@@ -68,7 +68,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       if (PluginMonitoringProfile::haveRight("view", 'r')) {
          $i = 5;
          $a_views = $pmDisplayview->getViews();
-         foreach ($a_views as $views_id=>$name) {
+         foreach ($a_views as $name) {
             $ong[$i] = htmlentities($name);
             $i++;
          }
@@ -82,10 +82,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
       global $LANG, $CFG_GLPI;
       
       // for objects not in table like central
+      $ID = 0;
       if (isset($this->fields['id'])) {
          $ID = $this->fields['id'];
-      } else {
-        $ID = 0;
       }
 
       $target         = $_SERVER['PHP_SELF'];
@@ -207,7 +206,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
       echo "<div id='tabspanel' class='center-h'></div>";
 
-      $active      = 0;
       $onglets     = $this->defineTabs($options);
       $display_all = true;
       if (isset($onglets['no_all_tab'])) {
@@ -295,7 +293,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       
       $leftjoin = '';
       if (isset($_SESSION['plugin_monitoring']['service']['field'])) {         
-         foreach ($_SESSION['plugin_monitoring']['service']['field'] as $key=>$value) {
+         foreach ($_SESSION['plugin_monitoring']['service']['field'] as $value) {
             if ($value == '20'
                     OR $value == '21'
                     OR $value == '22') {
@@ -452,10 +450,10 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo " [".$networkPort->getLink()."]";
       }
       echo "</td>";
-      $nameitem = '';
-      if (isset($itemmat->fields['name'])) {
-         $nameitem = "[".$itemmat->getLink(1)."]";
-      }
+//      $nameitem = '';
+//      if (isset($itemmat->fields['name'])) {
+//         $nameitem = "[".$itemmat->getLink(1)."]";
+//      }
       //if ($pMonitoringService->fields['plugin_monitoring_services_id'] == '0') {
          //echo "<td>".$itemmat->getLink(1)."</td>";
 //      } else {
@@ -465,17 +463,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
 //         $itemmat->getFromDB($pMonitoringServiceH->fields['items_id']);
 //         echo "<td>".$pMonitoringService->getLink(1).$nameitem." ".$LANG['networking'][25]." ".$itemmat->getLink(1)."</td>";
 //      }
-      
-      
-
-      unset($itemmat);
+//      unset($itemmat);
       echo "<td class='center'>";
       echo $data['state'];
       echo "</td>";
 
       echo "<td class='center'>";
-      $to = new PluginMonitoringRrdtool();
-      $plu = new PluginMonitoringServiceevent();
       $img = '';
       $timezone = '0';
       if (isset($_SESSION['plugin_monitoring_timezone'])) {
@@ -523,6 +516,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
    }
 
    
+   
    static function getState($state, $state_type) {
       $shortstate = '';
       switch($state) {
@@ -560,7 +554,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
       global $CFG_GLPI,$LANG;
 
       $to = new PluginMonitoringRrdtool();
-      $plu = new PluginMonitoringServiceevent();
       $pmComponent = new PluginMonitoringComponent();
       $pmConfig = new PluginMonitoringConfig();
 
@@ -817,7 +810,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          $a_return['critical_soft'] = strval($critical_soft);
          return $a_return;
       }
-      // *** Test new presentation
+
       $critical_link = $CFG_GLPI['root_doc'].
                "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=CRITICAL&link[1]=OR".
                   "&field[1]=3&searchtype[1]=equals&contains[1]=DOWN&link[2]=OR".
@@ -845,7 +838,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<table class='tab_cadre' width='474' height='100' ".$background." >";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
-         if ($type == 'Ressources') {
+         if ($type == 'Ressources' OR $type == 'Componentscatalog') {
             echo "<a href='".$critical_link.">".
                     "<font color='black' style='font-size: 12px;font-weight: bold;'>".$LANG['plugin_monitoring']['display'][2]."</font></a>";
          } else {
@@ -855,12 +848,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "</tr>";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
-//         if ($type == 'Ressources') {
+         if ($type == 'Ressources' OR $type == 'Componentscatalog') {
             echo "<a href='".$critical_link.">".
                     "<font color='black' style='font-size: 52px;font-weight: bold;'>".$critical."</font></a>";
-//         } else {
-//            echo "<font style='font-size: 52px;'>".$critical."</font>";
-//         }
+         } else {
+            echo "<font style='font-size: 52px;'>".$critical."</font>";
+        }
          echo "</th>";
          echo "</tr>";
          echo "<tr>";
@@ -879,17 +872,17 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<table class='tab_cadre' width='316' height='100' ".$background." >";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
-//         if ($type == 'Ressources') {
+         if ($type == 'Ressources' OR $type == 'Componentscatalog') {
             echo "<a href='".$warning_link.">".
                     "<font color='black' style='font-size: 12px;font-weight: bold;'>".$LANG['plugin_monitoring']['display'][3]."</font></a>";
-//         } else {
-//            echo $LANG['plugin_monitoring']['display'][3];
-//         }
+         } else {
+            echo $LANG['plugin_monitoring']['display'][3];
+         }
          echo "</td>";
          echo "</tr>";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
-         if ($type == 'Ressources') {
+         if ($type == 'Ressources' OR $type == 'Componentscatalog') {
             echo "<a href='".$warning_link.">".
                     "<font color='black' style='font-size: 52px;'>".$warning."</font></a>";
          } else {
@@ -913,17 +906,17 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<table class='tab_cadre' width='158' height='100' ".$background." >";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
-//         if ($type == 'Ressources') {
+         if ($type == 'Ressources' OR $type == 'Componentscatalog') {
             echo "<a href='".$ok_link.">".
                     "<font color='black' style='font-size: 12px;font-weight: bold;'>".$LANG['plugin_monitoring']['display'][4]."</font></a>";
-//         } else {
-//            echo $LANG['plugin_monitoring']['display'][4];
-//         }
+         } else {
+            echo $LANG['plugin_monitoring']['display'][4];
+         }
          echo "</td>";
          echo "</tr>";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
-         if ($type == 'Ressources') {
+         if ($type == 'Ressources' OR $type == 'Componentscatalog') {
             echo "<a href='".$ok_link.">".
                     "<font color='black' style='font-size: 52px;font-weight: bold;'>".$ok."</font></a>";
          } else {
@@ -969,10 +962,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "</tr>";
          echo "</table>";
       echo "</form>";
-      
    }
-   
-   
 }
 
 ?>

@@ -58,6 +58,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       return $timestamp;
    }
    
+   
 
    function calculateUptime($hosts_id, $startDate, $endDate) {
       $a_list = $this->find("`plugin_monitoring_hosts_id`='".$hosts_id."'

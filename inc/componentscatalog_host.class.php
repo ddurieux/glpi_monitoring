@@ -160,14 +160,6 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
       $this->getEmpty();
       
       $this->showFormHeader();      
-
-      $used = array();
-      $query = "SELECT * FROM `".$this->getTable()."`
-         WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
-      $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
-         
-      }      
      
       echo "<tr>";
       echo "<td colspan='2'>";
@@ -190,7 +182,6 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
       
       $pmService                 = new PluginMonitoringService();
       $pmComponentscatalog_Host  = new PluginMonitoringComponentscatalog_Host();
-      $pmNetworkport             = new PluginMonitoringNetworkport();
       
       $pmComponentscatalog_Host->getFromDB($componentscatalogs_hosts_id);
       
