@@ -50,7 +50,6 @@ checkCentralAccess();
 
 commonHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plugins",
              "monitoring", "display");
-//popHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"]);
 
 if (isset($_POST['sessionupdate'])) {
    $_SESSION['glpi_plugin_monitoring']['_refresh'] = $_POST['_refresh'];
@@ -63,6 +62,12 @@ if (isset($_GET['glpi_tab'])
    $_SESSION['glpi_tabs']['pluginmonitoringdisplay'] = $_GET['glpi_tab'];
    $_SERVER['REQUEST_URI'] = str_replace("&glpi_tab=".$_GET['glpi_tab'], "", $_SERVER['REQUEST_URI']);
    glpi_header($_SERVER['REQUEST_URI']);
+}
+
+if (isset($_GET['searchtype'])) {
+   Search::manageGetValues("PluginMonitoringService");
+   glpi_header($CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php");
+   exit;
 }
 
 echo '<meta http-equiv ="refresh" content="'.$_SESSION['glpi_plugin_monitoring']['_refresh'].'">';
@@ -88,6 +93,5 @@ div#tabcontent {
 
 $pMonitoringDisplay->addDivForTabs();
 
-//popFooter();
 commonFooter();
 ?>
