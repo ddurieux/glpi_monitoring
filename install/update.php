@@ -204,19 +204,26 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'comment', 
                                  'comment', 
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->changeField($newTable, 
+                                 'notification_interval', 
+                                 'notification_interval', 
+                                 "int(4) NOT NULL DEFAULT '30'");
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable, 
-                                 'name', 
-                                 "varchar(255) DEFAULT NULL");
+                              'name', 
+                              "varchar(255) DEFAULT NULL");
          $migration->addField($newTable, 
-                                 'entities_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");
+                              'entities_id', 
+                              "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
-                                 'is_recursive', 
-                                 "tinyint(1) NOT NULL DEFAULT '0'");
+                              'is_recursive', 
+                              "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
-                                 'comment', 
-                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
+                              'comment', 
+                              "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->addField($newTable, 
+                              'notification_interval', 
+                              "int(4) NOT NULL DEFAULT '30'");
          $migration->addKey($newTable, 
                             "name");
       $migration->migrationOneTable($newTable);
@@ -2370,8 +2377,8 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       CronTask::Register('PluginMonitoringLog', 'cleanlogs', '96400', 
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
    }
-   if (!$crontask->getFromDBbyName('PluginMonitoringUnavaibility', 'cronUnavaibility')) {
-      CronTask::Register('PluginMonitoringUnavaibility', 'cronUnavaibility', '300', 
+   if (!$crontask->getFromDBbyName('PluginMonitoringUnavaibility', 'unavaibility')) {
+      CronTask::Register('PluginMonitoringUnavaibility', 'unavaibility', '300', 
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
    }
    

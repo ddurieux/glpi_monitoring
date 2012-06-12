@@ -53,6 +53,7 @@ class PluginMonitoringShinken extends CommonDBTM {
    }
 
 
+   
    function constructFile($name, $array) {
       $config = '';
       $config .= "define ".$name."{\n";
@@ -70,6 +71,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       return $config;
    }
 
+   
 
    function generateCommandsCfg($file=0) {
       
@@ -249,6 +251,8 @@ class PluginMonitoringShinken extends CommonDBTM {
       $pmComponent             = new PluginMonitoringComponent();
       $pmEntity                = new PluginMonitoringEntity();
       $pmContact_Item          = new PluginMonitoringContact_Item();
+      $pmService               = new PluginMonitoringService();
+      $pmComponentscatalog     = new PluginMonitoringComponentscatalog();
       $calendar                = new Calendar();
       $user                    = new User();
       $pmLog                   = new PluginMonitoringLog();
@@ -287,6 +291,8 @@ class PluginMonitoringShinken extends CommonDBTM {
       $query = "SELECT * FROM `glpi_plugin_monitoring_services`";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
+         $notadd = 0;
+         $notadddescription = '';
          $a_component = current($pmComponent->find("`id`='".$data['plugin_monitoring_components_id']."'", "", 1));
          $a_hostname = array();
          $queryh = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts` 
@@ -360,6 +366,13 @@ class PluginMonitoringShinken extends CommonDBTM {
                      } else if (strstr($a_arguments[$arg], "[")) {
                         $a_arguments[$arg] = PluginMonitoringService::convertArgument($data['id'], $a_arguments[$arg]);
                      }
+                     if ($a_arguments == '') {
+                        $notadd = 1;
+                        if ($notadddescription != '') {
+                           $notadddescription .= ", ";
+                        }
+                        $notadddescription .= "Argument ".$a_arguments[$arg]." Not have value";
+                     }
                      $args .= '!'.$a_arguments[$arg];
                      if ($a_arguments[$arg] == ''
                              AND $a_component['alias_command'] != '') {
@@ -394,7 +407,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             $a_services[$i]['contacts'] = implode(',', $a_contacts);
 
             // ** If shinken not use templates or template not defined : 
-            if (isset($_SESSION['plugin_monitoring']['servicetemplates'][$a_component['id']])) {
+            if (!isset($_SESSION['plugin_monitoring']['servicetemplates'][$a_component['id']])) {
                   $pMonitoringCheck->getFromDB($a_component['plugin_monitoring_checks_id']);
                $a_services[$i]['check_interval'] = $pMonitoringCheck->fields['check_interval'];
                $a_services[$i]['retry_interval'] = $pMonitoringCheck->fields['retry_interval'];
@@ -427,8 +440,22 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_services[$i]['is_volatile'] = '0';
                $a_services[$i]['_httpstink'] = 'NO';
             }
+            $pmComponentscatalog->getFromDB($plugin_monitoring_componentscatalogs_id);
+            if ($pmComponentscatalog->fields['notification_interval'] != '30') {
+               $a_services[$i]['notification_interval'] = $pmComponentscatalog->fields['notification_interval'];
+            }
             
-            $i++;
+            if ($notadd == '1') {
+               unset($a_services[$i]);
+               $input = array();
+               $input['id'] = $data['id'];
+               $input['event'] = $notadddescription;
+               $input['state'] = "CRITICAL";
+               $input['state_type'] = "HARD";
+               $pmService->update($input);
+            } else {
+               $i++;
+            }
          }
       }
 

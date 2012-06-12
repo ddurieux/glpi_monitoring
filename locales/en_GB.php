@@ -165,6 +165,7 @@ $LANG['plugin_monitoring']['component'][13]="Network port name";
 $LANG['plugin_monitoring']['component'][14]="Component arguments";
 
 $LANG['plugin_monitoring']['componentscatalog'][0]="Components catalog";
+$LANG['plugin_monitoring']['componentscatalog'][1]="Interval between 2 notifications (in minutes)";
 
 $LANG['plugin_monitoring']['display'][0]="Dashboard";
 $LANG['plugin_monitoring']['display'][1]="Page refresh (in seconds)";
