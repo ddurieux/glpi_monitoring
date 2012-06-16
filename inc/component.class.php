@@ -208,7 +208,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo $LANG['plugin_monitoring']['host'][5]."<font class='red'>*</font>&nbsp;:";
       echo "</td>";
       echo "<td>";
-      echo Dropdown::showYesNo("active_checks_enabled", $this->fields['active_checks_enabled']);
+      Dropdown::showYesNo("active_checks_enabled", $this->fields['active_checks_enabled']);
       echo "</td>";
       echo "</tr>";
       
@@ -229,7 +229,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo $LANG['plugin_monitoring']['service'][7]."<font class='red'>*</font>&nbsp;:";
       echo "</td>";
       echo "<td>";
-      echo Dropdown::showYesNo("passive_checks_enabled", $this->fields['passive_checks_enabled']);
+      Dropdown::showYesNo("passive_checks_enabled", $this->fields['passive_checks_enabled']);
       echo "</td>";
       echo "</tr>";
       

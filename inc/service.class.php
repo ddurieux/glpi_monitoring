@@ -403,7 +403,7 @@ class PluginMonitoringService extends CommonDBTM {
       if ($this->fields['plugin_monitoring_servicetemplates_id'] > 0) {
          echo Dropdown::getYesNo($pMonitoringServicetemplate->fields['active_checks_enabled']);
       } else {
-         echo Dropdown::showYesNo("active_checks_enabled", $pMonitoringServicedef->fields['active_checks_enabled']);
+         Dropdown::showYesNo("active_checks_enabled", $pMonitoringServicedef->fields['active_checks_enabled']);
       }
       echo "</td>";
       echo "</tr>";
@@ -417,7 +417,7 @@ class PluginMonitoringService extends CommonDBTM {
       if ($this->fields['plugin_monitoring_servicetemplates_id'] > 0) {
          echo Dropdown::getYesNo($pMonitoringServicetemplate->fields['passive_checks_enabled']);
       } else {
-         echo Dropdown::showYesNo("passive_checks_enabled", $pMonitoringServicedef->fields['passive_checks_enabled']);
+         Dropdown::showYesNo("passive_checks_enabled", $pMonitoringServicedef->fields['passive_checks_enabled']);
       }
       echo "</td>";
       // * calendar
