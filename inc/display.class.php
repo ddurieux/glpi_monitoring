@@ -441,7 +441,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       if (file_exists(GLPI_ROOT."/files/_plugins/monitoring/PluginMonitoringService-".$data['id']."-2h".$timezone_file.".png")
               OR $pMonitoringComponent->fields['graph_template'] != '') {
          $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$data['id']."-2h".$timezone_file.".png'/>";
-         showToolTip($img, array('img'=>$CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"));
+         Html::showToolTip($img, array('img'=>$CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"));
       } else {
          
       }
