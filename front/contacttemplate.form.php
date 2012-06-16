@@ -51,7 +51,8 @@ Html::header($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugi
 
 $pmContacttemplate = new PluginMonitoringContacttemplate();
 if (isset($_POST["add"])) {
-   if ($_POST['users_id'] != "0") {
+   if (!isset($_POST['users_id'])
+           OR $_POST['users_id'] != "0") {
       $pmContacttemplate->add($_POST);
    }
    Html::back();
