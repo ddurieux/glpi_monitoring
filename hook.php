@@ -132,7 +132,11 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
          break;
       
       case 'Central':
-         $_SESSION['plugin_monitoring_displaytab'] = $_SESSION['glpi_tabs']['central'];
+         if (isset($_SESSION['glpi_tabs']['central'])) {
+            $_SESSION['plugin_monitoring_displaytab'] = $_SESSION['glpi_tabs']['central'];
+         } else {
+            $_SESSION['plugin_monitoring_displaytab'] = '';
+         }
          
          $array = array();
          if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
