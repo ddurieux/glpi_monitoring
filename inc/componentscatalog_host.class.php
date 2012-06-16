@@ -198,6 +198,8 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
             $input['plugin_monitoring_componentscatalogs_hosts_id'] = $componentscatalogs_hosts_id;
             $input['plugin_monitoring_components_id'] = $data['plugin_monitoring_components_id'];
             $input['name'] = Dropdown::getDropdownName("glpi_plugin_monitoring_components", $data['plugin_monitoring_components_id']);
+            $input['state'] = 'WARNING';
+            $input['state_type'] = 'HARD';
             $pmService->add($input);
          } else if ($networkports_id > 0) {
             $a_services = $pmService->find("`plugin_monitoring_components_id`='".$data['plugin_monitoring_components_id']."'
@@ -212,6 +214,8 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
                $input['plugin_monitoring_componentscatalogs_hosts_id'] = $componentscatalogs_hosts_id;
                $input['plugin_monitoring_components_id'] = $data['plugin_monitoring_components_id'];
                $input['name'] = Dropdown::getDropdownName("glpi_plugin_monitoring_components", $data['plugin_monitoring_components_id']);
+               $input['state'] = 'WARNING';
+               $input['state_type'] = 'HARD';
                $pmService->add($input);
             } else {
                $a_service = current($a_services);               
