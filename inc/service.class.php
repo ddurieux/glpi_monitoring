@@ -234,9 +234,9 @@ class PluginMonitoringService extends CommonDBTM {
          echo "<th>";
          echo $LANG['rulesengine'][82];
          echo "</th>";
-         echo "<th>".$LANG['plugin_monitoring']['availability'][1]." ".showToolTip($LANG['plugin_monitoring']['availability'][0], array('display'=>false))."</th>";
-         echo "<th>".$LANG['plugin_monitoring']['availability'][2]." ".showToolTip($LANG['plugin_monitoring']['availability'][0], array('display'=>false))."</th>";
-         echo "<th>".$LANG['plugin_monitoring']['availability'][3]." ".showToolTip($LANG['plugin_monitoring']['availability'][0], array('display'=>false))."</th>";
+         echo "<th>".$LANG['plugin_monitoring']['availability'][1]." ".Html::showToolTip($LANG['plugin_monitoring']['availability'][0], array('display'=>false))."</th>";
+         echo "<th>".$LANG['plugin_monitoring']['availability'][2]." ".Html::showToolTip($LANG['plugin_monitoring']['availability'][0], array('display'=>false))."</th>";
+         echo "<th>".$LANG['plugin_monitoring']['availability'][3]." ".Html::showToolTip($LANG['plugin_monitoring']['availability'][0], array('display'=>false))."</th>";
          echo "<th>";
          echo $LANG['plugin_monitoring']['service'][4];
          echo "</th>"; 
