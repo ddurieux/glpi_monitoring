@@ -173,26 +173,27 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
       while ($data=$DB->fetch_array($result)) {
          $itemtype = $data['itemtype'];
          $item = new $itemtype();
-         $item->getFromDB($data['items_id']);
-         echo "<tr class='tab_bg_3'>";
-         echo "<td class='center'>";
-         echo $item->getTypeName();
-         echo "</td>";
-         echo "<td class='center'>";
-         echo Dropdown::getDropdownName("glpi_entities",$item->fields['entities_id'])."</td>";
-         echo "<td class='center".
-               (isset($item->fields['is_deleted']) && $item->fields['is_deleted'] ? " tab_bg_2_2'" : "'");
-         echo ">".$item->getLink(1)."</td>";
-         echo "<td class='center'>";
-         echo $data['name'];
-         echo "</td>";
-         $this->displayValues($data['id'], 'currentmonth');
-         
-         $this->displayValues($data['id'], 'lastmonth');
-         
-         $this->displayValues($data['id'], 'currentyear');
+         if ($item->getFromDB($data['items_id'])) {
+            echo "<tr class='tab_bg_3'>";
+            echo "<td class='center'>";
+            echo $item->getTypeName();
+            echo "</td>";
+            echo "<td class='center'>";
+            echo Dropdown::getDropdownName("glpi_entities",$item->fields['entities_id'])."</td>";
+            echo "<td class='center".
+                  (isset($item->fields['is_deleted']) && $item->fields['is_deleted'] ? " tab_bg_2_2'" : "'");
+            echo ">".$item->getLink(1)."</td>";
+            echo "<td class='center'>";
+            echo $data['name'];
+            echo "</td>";
+            $this->displayValues($data['id'], 'currentmonth');
 
-         echo "</tr>";
+            $this->displayValues($data['id'], 'lastmonth');
+
+            $this->displayValues($data['id'], 'currentyear');
+
+            echo "</tr>";
+         }
       }      
       echo "</table>";
    }
