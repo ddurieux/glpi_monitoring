@@ -114,7 +114,9 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       global $LANG,$CFG_GLPI;
 
       $ong = array();
-      $ong[1] = 'items';
+      if ($this->fields['id'] > 0) {
+         $ong[1] = 'items';
+      }
       
       return $ong;
    }

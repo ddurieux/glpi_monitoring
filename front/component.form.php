@@ -51,7 +51,14 @@ Html::header($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugi
 
 $pMonitoringComponent = new PluginMonitoringComponent();
 
-if (isset ($_POST["add"])) {
+if (isset($_POST["copy"])) {
+   $pMonitoringComponent->showForm(0, array(), $_POST);
+   commonFooter();
+   exit;
+} else if (isset ($_POST["add"])) {
+   if (isset($_POST['arg'])) {
+      $_POST['arguments'] = exportArrayToDB($_POST['arg']);
+   }
    if (empty($_POST['name'])
            OR empty($_POST['plugin_monitoring_checks_id'])
            OR empty($_POST['plugin_monitoring_commands_id'])

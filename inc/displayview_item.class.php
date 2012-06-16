@@ -162,6 +162,7 @@ Ext.onReady(function() {
       $item = new $itemtype();
       $content = '';
       $title = $item->getTypeName();
+      $event = '';
       if ($itemtype == "PluginMonitoringService") {
          $content = $item->showWidget($data['items_id'], $data['extra_infos']);
          $title .= " : ".Dropdown::getDropdownName(getTableForItemType('PluginMonitoringComponent'), $item->fields['plugin_monitoring_components_id']);
@@ -177,6 +178,10 @@ Ext.onReady(function() {
             $title .= $item2->getName()." (".$item2->getTypeName().")";
             
          }
+      } else if ($itemtype == "PluginMonitoringWeathermap") {
+         $content = $item->showWidget($data['items_id'], $data['extra_infos']);
+         $event = $item->widgetEvent($data['items_id']);
+         $title .= " : ".Dropdown::getDropdownName(getTableForItemType('PluginMonitoringWeathermap'), $data['items_id']);
       } else {
          $content = $item->showWidget($data['items_id']);
       }
@@ -192,6 +197,7 @@ Ext.onReady(function() {
          }
 
         var item".$data['id']." = new Ext.Panel({
+             closable: true,           
              title: '".$title."',
              x: ".$data['x'].",
              y: ".$data['y'].",
@@ -199,11 +205,11 @@ Ext.onReady(function() {
              baseCls : 'x-panel',
              layout : 'fit',
              renderTo: Ext.getBody(),
-//             floating: true,
+             floating: true,
              frame: false,
-                         autoHeight  : true,
-                         autoWidth   : true,
-                         layout: 'fit',
+             autoHeight  : true,
+             autoWidth   : true,
+             layout: 'fit',
              draggable: {
          //      Config option of Ext.Panel.DD class.
          //      It's a floating Panel, so do not show a placeholder proxy in the original position.
@@ -229,13 +235,23 @@ Ext.onReady(function() {
                  endDrag : function(e){
                      this.panel.setPosition(this.x, this.y);\n";
       if ($config == '1') {
-         echo "                     Ext.get('updatecoordonates').load({
-                     url: '".$CFG_GLPI['root_doc']."/plugins/monitoring/ajax/displayview_itemcoordinates.php',
-                     scripts: true,
-                     params:'id=".$data['id']."&x=' + (this.x)  + '&y=' + (this.y)});\n";
+         echo "      Ext.get('updatecoordonates').load({
+                        url: '".$CFG_GLPI['root_doc']."/plugins/monitoring/ajax/displayview_itemcoordinates.php',
+                        scripts: true,
+                        params:'id=".$data['id']."&x=' + (this.x)  + '&y=' + (this.y)
+                     });\n";
+         echo "if (this.x < 1) {
+                  this.panel.destroy();
+               }
+               if (this.y < 0) {
+                  this.panel.destroy();
+               }
+            
+            ";
       }
       echo "           }
-             }
+             },
+             ".$event."
          });
      </script>";//.show()
       
@@ -286,7 +302,8 @@ Ext.onReady(function() {
                                   $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownDisplayviewItemtype.php",
                                   $params);
       echo "<span id='items_id'></span>";
-            
+      echo "<input type='hidden' name='x' value='1' />";
+      echo "<input type='hidden' name='y' value='1' />";
       echo "</td>";
 
       echo "<td colspan='2'></td>";

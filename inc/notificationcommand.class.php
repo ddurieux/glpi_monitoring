@@ -64,6 +64,7 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
       
    }
 
+   
 
    /**
    * Get name of this type
@@ -171,8 +172,6 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
 
       return true;
    }
-
-
 }
 
 ?>

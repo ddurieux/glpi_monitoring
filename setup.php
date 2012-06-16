@@ -46,7 +46,7 @@ define ("PLUGIN_MONITORING_VERSION","0.80+1.3");
 function plugin_init_monitoring() {
    global $PLUGIN_HOOKS,$LANG;
    
-   if (!strstr($_SERVER["PHP_SELF"], 'xmlrpc')) {
+   if (strstr($_SERVER["PHP_SELF"], 'monitoring/front/display.')) {
       echo "
        <!--[if IE]><script type='text/javascript' src='".GLPI_ROOT."/plugins/monitoring/lib/canvas/excanvas.js'></script><![endif]-->
        <script type='text/javascript' src='".GLPI_ROOT."/plugins/monitoring/lib/canvas/canvasXpress.min.js'></script>";
@@ -63,7 +63,8 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['add_css']['monitoring']="css/views.css";
          
          $plugin = new Plugin();
-         if ($plugin->isActivated('monitoring')) {
+         if ($plugin->isActivated('monitoring')
+                 AND isset($_SESSION['glpi_plugin_monitoring_profile'])) {
             
             $PLUGIN_HOOKS['menu_entry']['monitoring'] = true;
          }
@@ -142,14 +143,18 @@ function plugin_init_monitoring() {
          
          // Define hook item
          $rule_check = array('PluginMonitoringComponentscatalog_rule','isThisItemCheckRule');
+         $rule_check_networkport = array('PluginMonitoringComponentscatalog_rule', 'isThisItemCheckRuleNetworkport');
          $PLUGIN_HOOKS['item_add']['monitoring'] = 
                                  array('Computer'         => $rule_check,
                                        'NetworkEquipment' => $rule_check,
                                        'Printer'          => $rule_check,
                                        'Peripheral'       => $rule_check,
                                        'Phone'            => $rule_check,
+                                       'PluginMonitoringNetworkport' => $rule_check_networkport,
                                        'PluginMonitoringComponentscatalog_rule' =>
-                                             array('PluginMonitoringComponentscatalog_rule','getItemsDynamicly'));
+                                             array('PluginMonitoringComponentscatalog_rule','getItemsDynamicly'),
+                                       'PluginMonitoringComponentscatalog_Host' =>
+                                             array('PluginMonitoringHost','addHost'));
          $PLUGIN_HOOKS['item_update']['monitoring'] = 
                                  array('Computer'         => $rule_check,
                                        'NetworkEquipment' => $rule_check,
@@ -164,6 +169,7 @@ function plugin_init_monitoring() {
                                        'Printer'          => $rule_check,
                                        'Peripheral'       => $rule_check,
                                        'Phone'            => $rule_check,
+                                       'PluginMonitoringNetworkport' => $rule_check_networkport,
                                        'PluginMonitoringComponentscatalog_rule' =>
                                              array('PluginMonitoringComponentscatalog_rule','getItemsDynamicly'),
                                        'PluginMonitoringComponentscatalog_Host' =>

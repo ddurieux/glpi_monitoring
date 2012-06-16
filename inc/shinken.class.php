@@ -53,6 +53,7 @@ class PluginMonitoringShinken extends CommonDBTM {
    }
 
 
+   
    function constructFile($name, $array) {
       $config = '';
       $config .= "define ".$name."{\n";
@@ -70,6 +71,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       return $config;
    }
 
+   
 
    function generateCommandsCfg($file=0) {
       
@@ -114,6 +116,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       $pmComponent   = new PluginMonitoringComponent();
       $pmEntity      = new PluginMonitoringEntity();
       $pmHostconfig  = new PluginMonitoringHostconfig();
+      $pmHost  = new PluginMonitoringHost();
       $calendar      = new Calendar();
       $pmRealm       = new PluginMonitoringRealm();
       $networkEquipment = new NetworkEquipment();
@@ -160,6 +163,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                               $networkEquipment->getFromDB($networkPort->fields['items_id']);
                               $parent = 'NetworkEquipment-'.$networkPort->fields['items_id'].'-'.preg_replace("/[^A-Za-z0-9]/","",$networkEquipment->fields['name']);
                               $a_parents_found[$parent] = 1;
+                              $pmHost->updateDependencies($classname, $data['items_id'], 'NetworkEquipment-'.$networkPort->fields['items_id']);
                            }
                         }
                      }
@@ -247,9 +251,13 @@ class PluginMonitoringShinken extends CommonDBTM {
       $pmComponent             = new PluginMonitoringComponent();
       $pmEntity                = new PluginMonitoringEntity();
       $pmContact_Item          = new PluginMonitoringContact_Item();
+      $pmService               = new PluginMonitoringService();
+      $pmComponentscatalog     = new PluginMonitoringComponentscatalog();
       $calendar                = new Calendar();
       $user                    = new User();
       $pmLog                   = new PluginMonitoringLog();
+      $profile_User = new Profile_User();
+      
       if (isset($_SERVER['HTTP_USER_AGENT'])
               AND strstr($_SERVER['HTTP_USER_AGENT'], 'xmlrpclib.py')) {
          if (!isset($_SESSION['glpi_currenttime'])) {
@@ -267,11 +275,24 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_services = array();
       $i=0;
       
+      // * Prepare contacts
+      $a_contacts_entities = array();
+      $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
+         AND `users_id`>0");
+      foreach ($a_list_contact as $data) {
+         $usersentities = $profile_User->getUserEntities($data['users_id']);
+         $contactentities = getSonsOf('glpi_entities', $data['entities_id']);
+         $a_contacts_entities[$data['items_id']][$data['users_id']] = 
+                                                array_intersect($usersentities, $contactentities);
+      }
+      
       $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
       
       $query = "SELECT * FROM `glpi_plugin_monitoring_services`";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
+         $notadd = 0;
+         $notadddescription = '';
          $a_component = current($pmComponent->find("`id`='".$data['plugin_monitoring_components_id']."'", "", 1));
          $a_hostname = array();
          $queryh = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts` 
@@ -308,6 +329,10 @@ class PluginMonitoringShinken extends CommonDBTM {
             preg_match_all("/\\$(ARG\d+)\\$/", $pMonitoringCommand->fields['command_line'], $array);
             sort($array[0]);
             $a_arguments = importArrayFromDB($a_component['arguments']);
+            $a_argumentscustom = importArrayFromDB($data['arguments']);
+            foreach ($a_argumentscustom as $key=>$value) {
+               $a_arguments[$key] = $value;
+            }
             $args = '';
             foreach ($array[0] as $arg) {
                if ($arg != '$PLUGINSDIR$'
@@ -320,8 +345,33 @@ class PluginMonitoringShinken extends CommonDBTM {
                   } else {
                      if (strstr($a_arguments[$arg], "[[HOSTNAME]]")) {
                         $a_arguments[$arg] = str_replace("[[HOSTNAME]]", $hostname, $a_arguments[$arg]);
+                     } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTDESCR]]")){
+                        if (class_exists("PluginFusinvsnmpNetworkPort")) {
+                           $pfNetworkPort = new PluginFusinvsnmpNetworkPort();
+                           $pfNetworkPort->loadNetworkport($data['networkports_id']);
+                           $descr = '';
+                           $descr = $pfNetworkPort->getValue("ifdescr");
+                           $a_arguments[$arg] = str_replace("[[NETWORKPORTDESCR]]", $descr, $a_arguments[$arg]);
+                        }
+                     } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTNUM]]")){
+                        $networkPort = new NetworkPort();
+                        $networkPort->getFromDB($data['networkports_id']);
+                        $logicalnum = $pfNetworkPort->fields['logical_number'];
+                        $a_arguments[$arg] = str_replace("[[NETWORKPORTNUM]]", $logicalnum, $a_arguments[$arg]);
+                     } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTNAME]]")){
+                        $networkPort = new NetworkPort();
+                        $networkPort->getFromDB($data['networkports_id']);
+                        $portname = $pfNetworkPort->fields['name'];
+                        $a_arguments[$arg] = str_replace("[[NETWORKPORTNAME]]", $portname, $a_arguments[$arg]);
                      } else if (strstr($a_arguments[$arg], "[")) {
                         $a_arguments[$arg] = PluginMonitoringService::convertArgument($data['id'], $a_arguments[$arg]);
+                     }
+                     if ($a_arguments == '') {
+                        $notadd = 1;
+                        if ($notadddescription != '') {
+                           $notadddescription .= ", ";
+                        }
+                        $notadddescription .= "Argument ".$a_arguments[$arg]." Not have value";
                      }
                      $args .= '!'.$a_arguments[$arg];
                      if ($a_arguments[$arg] == ''
@@ -341,18 +391,23 @@ class PluginMonitoringShinken extends CommonDBTM {
             } else {
                $a_services[$i]['check_command'] = $pMonitoringCommand->fields['command_name'].$args;
             }
+            // * Contacts
                $a_contacts = array();
                $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
                   AND `items_id`='".$plugin_monitoring_componentscatalogs_id."'");
                foreach ($a_list_contact as $data_contact) {
-//                  $pmContact->getFromDB($data_contact['plugin_monitoring_contacts_id']);
-                  $user->getFromDB($data_contact['users_id']);
-                  $a_contacts[] = $user->fields['name'];
+                  if (isset($a_contacts_entities[$plugin_monitoring_componentscatalogs_id][$data_contact['users_id']])) {
+                     if (in_array($data['entities_id'], $a_contacts_entities[$plugin_monitoring_componentscatalogs_id][$data_contact['users_id']])) {
+      //                  $pmContact->getFromDB($data_contact['plugin_monitoring_contacts_id']);
+                        $user->getFromDB($data_contact['users_id']);
+                        $a_contacts[] = $user->fields['name'];
+                     }
+                  }
                }
             $a_services[$i]['contacts'] = implode(',', $a_contacts);
 
             // ** If shinken not use templates or template not defined : 
-            if (isset($_SESSION['plugin_monitoring']['servicetemplates'][$a_component['id']])) {
+            if (!isset($_SESSION['plugin_monitoring']['servicetemplates'][$a_component['id']])) {
                   $pMonitoringCheck->getFromDB($a_component['plugin_monitoring_checks_id']);
                $a_services[$i]['check_interval'] = $pMonitoringCheck->fields['check_interval'];
                $a_services[$i]['retry_interval'] = $pMonitoringCheck->fields['retry_interval'];
@@ -385,8 +440,22 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_services[$i]['is_volatile'] = '0';
                $a_services[$i]['_httpstink'] = 'NO';
             }
+            $pmComponentscatalog->getFromDB($plugin_monitoring_componentscatalogs_id);
+            if ($pmComponentscatalog->fields['notification_interval'] != '30') {
+               $a_services[$i]['notification_interval'] = $pmComponentscatalog->fields['notification_interval'];
+            }
             
-            $i++;
+            if ($notadd == '1') {
+               unset($a_services[$i]);
+               $input = array();
+               $input['id'] = $data['id'];
+               $input['event'] = $notadddescription;
+               $input['state'] = "CRITICAL";
+               $input['state_type'] = "HARD";
+               $pmService->update($input);
+            } else {
+               $i++;
+            }
          }
       }
 

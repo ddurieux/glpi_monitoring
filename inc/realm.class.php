@@ -64,33 +64,6 @@ class PluginMonitoringRealm extends CommonDropdown {
    }
    
    
-//   
-//   function getSearchOptions() {
-//      global $LANG;
-//
-//      $tab = array();
-//
-//      $tab['common'] = $LANG['plugin_fusioninventory']['menu'][5];
-//
-//      $tab[1]['table'] = $this->getTable();
-//      $tab[1]['field'] = 'name';
-//      $tab[1]['name'] = $LANG['common'][16];
-//      $tab[1]['datatype'] = 'itemlink';
-//
-//      $tab[3]['table']         = $this->getTable();
-//      $tab[3]['field']         = 'itemtype';
-//      $tab[3]['name']          = $LANG['common'][17];
-//      $tab[3]['massiveaction'] = false;
-//
-//      $tab[4]['table'] = $this->getTable();
-//      $tab[4]['field'] = 'username';
-//      $tab[4]['name'] = $LANG['login'][6];
-//
-//      return $tab;
-//   }
-
-   
-   
    
    function prepareInputForAdd($input) {
       $input['name'] = preg_replace("/[^A-Za-z0-9]/","",$input['name']);

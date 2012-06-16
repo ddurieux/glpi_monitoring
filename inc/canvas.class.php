@@ -103,18 +103,18 @@ class PluginMonitoringCanvas {
             switch ($networkPort->fields['itemtype']) {
                
                case 'NetworkEquipment':
+                  $this->a_devices_link['NetworkEquipment-'.$networkPort->fields['items_id']]['NetworkEquipment-'.$networkequipments_id]=1;
                   if (!isset($this->a_devices['NetworkEquipment-'.$networkPort->fields['items_id']])) {
                      $this->a_devices['NetworkEquipment-'.$networkPort->fields['items_id']] = $this->getState('NetworkEquipment', $networkPort->fields['items_id']);
-                     $this->a_devices_link['NetworkEquipment-'.$networkPort->fields['items_id']]['NetworkEquipment-'.$networkequipments_id]=1;
                      $this->getNetworkEquipments($networkPort->fields['items_id']);
                   }
                   break;
                
                case 'Computer':
                case 'Printer':
+                  $this->a_devices_link['NetworkEquipment-'.$networkequipments_id][$networkPort->fields['itemtype'].'-'.$networkPort->fields['items_id']]=1;
                   if (!isset($this->a_devices[$networkPort->fields['itemtype'].'-'.$networkPort->fields['items_id']])) {
                      $this->a_devices[$networkPort->fields['itemtype'].'-'.$networkPort->fields['items_id']] = $this->getState($networkPort->fields['itemtype'], $networkPort->fields['items_id']);
-                     $this->a_devices_link['NetworkEquipment-'.$networkequipments_id][$networkPort->fields['itemtype'].'-'.$networkPort->fields['items_id']]=1;
                   }
                   break;
 
@@ -157,6 +157,47 @@ class PluginMonitoringCanvas {
       $output['critical'] = $critical;
       return $output;
    }
+   
+   
+
+   function getHostState($itemtype, $items_id) {
+      global $DB;
+      
+      $query = "SELECT * FROM `glpi_plugin_monitoring_hosts`
+         WHERE `itemtype`='".$itemtype."'
+            AND `items_id`='".$items_id."'
+         LIMIT 1";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         if ($data['state_type'] == 'SOFT') {
+            return 'ok';
+         }
+         switch ($data['state']) {
+            case 'DOWN':
+            case 'UNREACHABLE':
+            case 'CRITICAL':
+            case 'DOWNTIME':
+               return 'critical';
+               break;
+
+            case 'WARNING':
+            case 'UNKNOWN':
+            case 'RECOVERY':
+            case 'FLAPPING':
+               return 'warning';
+               break;
+            
+            case 'OK':
+            case 'UP':
+               return 'ok';
+               break;
+
+         }
+         return 'warning';
+      }
+      return '';
+   }
+   
 
    
    function addPoint($itemdata, $ancestor = 0,$state = 'no') {
@@ -235,13 +276,14 @@ class PluginMonitoringCanvas {
 
          $stateDevice = 'ok';
          if (is_array($state)) {
-            if ($state['critical'] > 0) {
+            $host_state = $this->getHostState($itemtype, $split[1]);
+            if ($host_state == 'critical') {
                $input['color'] = 'rgb(255,0,0)';
                $stateDevice = 'critical';
-            } else if ($state['warning'] > 0) {
+            } else if ($host_state == 'warning') {
                $input['color'] = 'rgb(255,187,0)';
                $stateDevice = 'warning';
-            } else if ($state['ok'] > 0) {
+            } else if ($host_state == 'ok') {
                $input['color'] = 'rgb(0,255,0)';
             }
             $input['critical']   = $state['critical'];
@@ -260,15 +302,17 @@ class PluginMonitoringCanvas {
             $input['ok']         = $statesh['ok'];
          }
          if (is_array($state)) {
-//            if ($itemtype == 'NetworkEquipment') {
+            if ($itemtype == 'NetworkEquipment') {
 //               $input['shape'] = 'image';
 //               $input['imagePath'] = 'http://'.$_SERVER['SERVER_ADDR'].$CFG_GLPI['root_doc'].
 //                       '/plugins/monitoring/pics/switch_'.$stateDevice.'.png';
 //               $input['width'] = '120';
 //               $input['height'] = '23';
-//            } else {
+               $input['shape'] = 'star';
+               $input['size'] = 2;
+            } else {
                $input['shape'] = 'sphere';
-//            }
+            }
          }
 
          $input['items_id'] = $split[1];
@@ -278,8 +322,8 @@ class PluginMonitoringCanvas {
          }
       }
       
-$link['legend']['pos']['decorations'] = array('x' => 0, 'y' => 0);
-//echo "<pre>";print_r($link);exit;
+      $link['legend']['pos']['decorations'] = array('x' => 0, 'y' => 0);
+//    echo "<pre>";print_r($link);exit;
       if (count($link['nodes']) > 0) {
          $canvas_config = array('graphType' => 'Network',
                                  'indicatorCenter' => 'rainbow',
@@ -289,8 +333,9 @@ $link['legend']['pos']['decorations'] = array('x' => 0, 'y' => 0);
                                  'backgroundGradient2Color' => 'rgb(242,242,242)',
                                  'backgroundGradient1Color' => 'rgb(242,242,242)',
                                  'nodeFontColor' => 'rgb(29,34,43)',
-                                 'showAnimation' => true,
-'networkRoot' => 'image',
+                                 'showAnimation' => false,
+                                 //'networkRoot' => 'image',
+                                 'networkForceConstant' => 200,
                                  'calculateLayout' => true,
                                  'decorationsPosition' => 'top',
                                  'decorationsType' => 'bar',

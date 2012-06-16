@@ -58,6 +58,11 @@ if (isset ($_POST["add"])) {
    $pmWeathermaplink->add($_POST);
    Html::back();
 } else if (isset ($_POST["update"])) {
+   $_POST['id'] = $_POST['id_update'];
+   unset($_POST['plugin_monitoring_weathermapnodes_id_1']);
+   unset($_POST['plugin_monitoring_weathermapnodes_id_2']);
+   $_POST['bandwidth_in'] = $_POST['up_bandwidth_in'];
+   $_POST['bandwidth_out'] = $_POST['up_bandwidth_out'];   
    $pmWeathermaplink->update($_POST);
    Html::back();
 } else if (isset ($_POST["purge"])) {

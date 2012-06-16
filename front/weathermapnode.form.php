@@ -50,7 +50,6 @@ Html::header($LANG['plugin_monitoring']['title'][0],$_SERVER["PHP_SELF"], "plugi
 
 
 $pmWeathermapnode = new PluginMonitoringWeathermapnode();
-
 if (isset ($_POST["add"])) {
    if ($_POST['x'] == '') {
       Html::back();
@@ -63,10 +62,19 @@ if (isset ($_POST["add"])) {
       Html::back();
       exit;
    }
+   unset($_POST['name']);
+   $_POST['name'] = $_POST['nameupdate'];
    unset($_POST['itemtype']);
+   $_POST['id'] = $_POST['id_update'];
    $pmWeathermapnode->update($_POST);
    Html::back();
-} else if (isset ($_POST["delete"])) {
+} else if (isset ($_POST["purge"])) {
+   $pmWeathermaplink = new PluginMonitoringWeathermaplink();
+   $a_links = $pmWeathermaplink->find("`plugin_monitoring_weathermapnodes_id_1`='".$_POST['id']."' 
+      OR `plugin_monitoring_weathermapnodes_id_2`='".$_POST['id']."'");
+   foreach ($a_links as $data) {
+      $pmWeathermaplink->delete($data);
+   }
    $pmWeathermapnode->delete($_POST);
    Html::back();
 }

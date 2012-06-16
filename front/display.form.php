@@ -69,6 +69,9 @@ if (isset($_GET['itemtype']) AND isset($_GET['items_id'])) {
    
    echo '<meta http-equiv ="refresh" content="'.$_SESSION['glpi_plugin_monitoring']['_refresh'].'">';
    
+   $pmServicegraph = new PluginMonitoringServicegraph();
+   $pmServicegraph->parseToDB($_GET['items_id']);
+   
    $pMonitoringDisplay->displayGraphs($_GET['itemtype'], $_GET['items_id']);
 }
 

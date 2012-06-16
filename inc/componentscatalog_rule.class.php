@@ -133,6 +133,9 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
    function preaddRule($componentscatalogs_id) {
       global $LANG,$CFG_GLPI,$DB;
       
+      $networkport_types = $CFG_GLPI['networkport_types'];
+      $networkport_types[] = "PluginMonitoringNetworkport";
+      
       $a_usedItemtypes = array();
       $query = "SELECT * FROM `".$this->getTable()."`
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
@@ -141,7 +144,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
          $a_usedItemtypes[$data['itemtype']] = $data['itemtype'];
       }
       
-      if (count($a_usedItemtypes) == count($CFG_GLPI['networkport_types'])) {
+      if (count($a_usedItemtypes) == count($networkport_types)) {
          return;
       }
       
@@ -162,7 +165,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       echo "<td>";
       Dropdown::dropdownTypes("itemtypen", 
                               "",
-                              $CFG_GLPI['networkport_types'],
+                              $networkport_types,
                               $a_usedItemtypes);
       echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$componentscatalogs_id."' >";
       echo "</td>";
@@ -176,18 +179,6 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
    
    function addRule() {
       global $LANG;
-      
-//      $param = array();
-//      if (isset($_SESSION['plugin_monitoring_rules'])) {
-//         $param = $_SESSION['plugin_monitoring_rules'];
-//      }
-//      if (isset($_GET)) {
-//         unset($_GET);
-//      }
-//      $_GET = $_POST;
-//      if (isset($_SESSION['plugin_monitoring_rules_REQUEST_URI'])) {
-//         $_SERVER['REQUEST_URI'] = $_SESSION['plugin_monitoring_rules_REQUEST_URI'];
-//      }
       
       Search::manageGetValues($_GET['itemtype']);
       $this->showGenericSearch($_GET['itemtype'], $_GET);
@@ -207,9 +198,8 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       $pmComponentscatalog = new PluginMonitoringComponentscatalog();
       $pmComponentscatalog->getFromDB($_GET['plugin_monitoring_componentscalalog_id']);
      
-      if (!isset($_SESSION['glpiactive_entity'])) {
-         $default_entity = 0;
-      } else {
+      $default_entity = 0;
+      if (isset($_SESSION['glpiactive_entity'])) {
          $default_entity = $_SESSION['glpiactive_entity'];
       }
       $entities_isrecursive = 0;
@@ -244,13 +234,13 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       $pmComponentscatalog_Host  = new PluginMonitoringComponentscatalog_Host();
       $pmComponentscatalog       = new PluginMonitoringComponentscatalog();
       
+      $devices_present = array();
       if ($pmCc_Rule->getFromDB($parm->fields['id'])) {
       
          // Load right entity
             $pmComponentscatalog->getFromDB($pmCc_Rule->fields['plugin_monitoring_componentscalalog_id']);
-            if (!isset($_SESSION['glpiactive_entity'])) {
-               $default_entity = 0;
-            } else {
+            $default_entity = 0;
+            if (isset($_SESSION['glpiactive_entity'])) {
                $default_entity = $_SESSION['glpiactive_entity'];
             }
             $entities_isrecursive = 0;
@@ -283,7 +273,6 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
 
          Search::manageGetValues($pmCc_Rule->fields['itemtype']);
 
-         $devices_present = array();
          $queryd = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
             WHERE `plugin_monitoring_componentscalalog_id`='".$pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"]."'
                AND `itemtype`='".$pmCc_Rule->fields['itemtype']."'
@@ -299,18 +288,28 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
          $_SESSION['glpilist_limit'] = $glpilist_limit;
 
          while ($data=$DB->fetch_array($result)) {
+            
+            $itemtype_device = $pmCc_Rule->fields['itemtype'];
+            $items_id_device = $data['id'];
+            if ($itemtype_device == 'PluginMonitoringNetworkport') {
+               $pmNetworkport = new PluginMonitoringNetworkport();
+               $pmNetworkport->getFromDB($data['id']);
+               $itemtype_device = $pmNetworkport->fields['itemtype'];
+               $items_id_device = $pmNetworkport->fields['items_id'];
+            }
+            
             $queryh = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
                WHERE `plugin_monitoring_componentscalalog_id`='".$pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"]."'
-                  AND `itemtype`='".$pmCc_Rule->fields['itemtype']."'
-                  AND `items_id`='".$data['id']."'
+                  AND `itemtype`='".$itemtype_device."'
+                  AND `items_id`='".$items_id_device."'
                      LIMIT 1";
             $resulth = $DB->query($queryh);
             if ($DB->numrows($resulth) == '0') {
                $input = array();
                $input['plugin_monitoring_componentscalalog_id'] = $pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"];
                $input['is_static'] = '0';
-               $input['items_id'] = $data['id'];
-               $input['itemtype'] = $pmCc_Rule->fields['itemtype'];
+               $input['items_id'] = $items_id_device;
+               $input['itemtype'] = $itemtype_device;
                $componentscatalogs_hosts_id = $pmComponentscatalog_Host->add($input);
                $pmComponentscatalog_Host->linkComponentsToItem($pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"], 
                                                                $componentscatalogs_hosts_id);
@@ -334,7 +333,6 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
             Session::changeActiveEntities($default_entity,
                                  $entities_isrecursive);
       } else { // Purge
-         $devices_present = array();
          $queryd = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
             WHERE `plugin_monitoring_componentscalalog_id`='".$parm->fields["plugin_monitoring_componentscalalog_id"]."'
                AND `itemtype`='".$parm->fields['itemtype']."'
@@ -447,8 +445,129 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
             }     
          }
       }
+      if ($itemtype == 'NetworkEquipment') {
+         //Get networkports
+         $pmComponentscatalog_rule->isThisItemCheckRuleNetworkport($parm);
+      }
    }
    
+   
+   
+   static function isThisItemCheckRuleNetworkport($parm) {
+      global $DB;
+      
+      $pmComponentscatalog_rule = new self();
+      $pmService = new PluginMonitoringService();
+
+      $a_networkports_id = array();
+      if (get_class($parm) == 'PluginMonitoringNetworkport') {
+         $a_networkports_id[$parm->fields['networkports_id']] = $parm->fields['items_id'];
+      } else if (get_class($parm) == 'NetworkEquipment') {
+         $query = "SELECT * FROM `glpi_plugin_monitoring_networkports`
+            WHERE `items_id`='".$parm->fields['id']."'";
+         $result = $DB->query($query);
+         while ($data=$DB->fetch_array($result)) {
+            $a_networkports_id[$data['networkports_id']] = $parm->fields['id'];
+         }         
+      }
+            
+      foreach ($a_networkports_id as $networkports_id=>$networkequipments_id) {
+         $a_find = array();
+
+         $query = "SELECT * FROM `".$pmComponentscatalog_rule->getTable()."`
+            WHERE `itemtype`='PluginMonitoringNetworkport'";
+         $result = $DB->query($query);
+         $get_tmp = array();
+         if (isset($_GET)) {
+             $get_tmp = $_GET;  
+         }
+         while ($data=$DB->fetch_array($result)) {
+            if (isset($_SESSION["glpisearchcount"][$data['itemtype']])) {
+               unset($_SESSION["glpisearchcount"][$data['itemtype']]);
+            }
+            if (isset($_SESSION["glpisearchcount2"][$data['itemtype']])) {
+               unset($_SESSION["glpisearchcount2"][$data['itemtype']]);
+            }
+
+            $_GET = importArrayFromDB($data['condition']);
+
+            $_GET["glpisearchcount"] = count($_GET['field']);
+            if (isset($_GET['field2'])) {
+               $_GET["glpisearchcount2"] = count($_GET['field2']);
+            }
+
+            if (!isset($_SESSION['glpiactiveentities_string'])) {
+               $_SESSION['glpiactiveentities_string'] = $parm->fields['entities_id'];
+            }
+
+            Search::manageGetValues($data['itemtype']);
+
+            $resultr = $pmComponentscatalog_rule->constructSQL("PluginMonitoringNetworkport", 
+                                           $_GET,
+                                           $networkports_id);
+            if ($DB->numrows($resultr) > 0) {
+               $a_find[$data['plugin_monitoring_componentscalalog_id']][$networkports_id] = 1;
+            } else {
+               if (!isset($a_find[$data['plugin_monitoring_componentscalalog_id']][$networkports_id])) {
+                  $a_find[$data['plugin_monitoring_componentscalalog_id']][$networkports_id] = 0;
+               }
+            }
+         }
+         if (count($get_tmp) > 0) {
+            $_GET = $get_tmp; 
+         }
+         $pmComponentscatalog_Host= new PluginMonitoringComponentscatalog_Host();
+
+         foreach ($a_find as $componentscalalog_id => $datan) {
+            foreach ($datan as $networkports_id=>$is_present) {
+               // Get all networports in this rule
+               if ($is_present == '0') { // * Remove from dynamic if present      
+                  $query = "SELECT `glpi_plugin_monitoring_services`.`id`,
+                        `glpi_plugin_monitoring_componentscatalogs_hosts`.`id` as hid
+                        FROM `glpi_plugin_monitoring_services`
+                     LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts` ON
+                        `plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
+                     WHERE `plugin_monitoring_componentscalalog_id`='".$componentscalalog_id."'
+                        AND `itemtype`='NetworkEquipment'
+                        AND `items_id`='".$networkequipments_id."'
+                        AND `is_static`='0'
+                        AND `networkports_id`='".$networkports_id."'";
+                  $result = $DB->query($query);
+                  while ($data=$DB->fetch_array($result)) {
+                     $pmComponentscatalog_Host->getFromDB($data['hid']);
+                     $_SESSION['plugin_monitoring_hosts'] = $pmComponentscatalog_Host->fields;
+                     $pmService->delete(array('id'=>$data['id']));
+                  }
+               } else { //  add if not present
+                  // * Add componentscatalogs_hosts if not exist
+                  $componentscatalogs_hosts_id = 0;
+                  $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+                     WHERE `plugin_monitoring_componentscalalog_id`='".$componentscalalog_id."'
+                        AND `itemtype`='NetworkEquipment'
+                        AND `items_id`='".$networkequipments_id."'
+                           LIMIT 1";
+                  $result = $DB->query($query);
+                  if ($DB->numrows($result) == '0') {
+                     $input = array();
+                     $input['plugin_monitoring_componentscalalog_id'] = $componentscalalog_id;
+                     $input['is_static'] = '0';
+                     $input['itemtype'] = "NetworkEquipment";
+                     $input['items_id'] = $networkequipments_id;
+                     $componentscatalogs_hosts_id = $pmComponentscatalog_Host->add($input);
+                  } else {
+                     $a_componentscatalogs_hosts = $DB->fetch_assoc($result);
+                     $componentscatalogs_hosts_id = $a_componentscatalogs_hosts['id'];
+                  }
+                  // * Add service if not exist
+                  $pmComponentscatalog_Host->linkComponentsToItem($componentscalalog_id, 
+                                                                  $componentscatalogs_hosts_id,
+                                                                  $networkports_id);
+  
+               }
+            }
+         }
+      }
+   }   
    
    
    
@@ -1462,7 +1581,15 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
 
       /* =========== Add for plugin Monitoring ============ */
       if (($items_id_check > 0)) {
-         $WHERE .= " AND `".getTableForItemType($itemtype)."`.`id`='".$items_id_check."' ";
+         if ($itemtype == "PluginMonitoringNetworkport") {
+            if ($WHERE == '') {
+               $WHERE .= " WHERE `".getTableForItemType($itemtype)."`.`networkports_id`='".$items_id_check."' ";
+            } else {
+               $WHERE .= " AND `".getTableForItemType($itemtype)."`.`networkports_id`='".$items_id_check."' ";
+            }
+         } else {
+            $WHERE .= " AND `".getTableForItemType($itemtype)."`.`id`='".$items_id_check."' ";
+         }
       }
 
       // Create QUERY

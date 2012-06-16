@@ -60,6 +60,27 @@ if (isset($_GET['file'])) {
    }
 
    $file = $docDir.'/'.$filename;
+   $mime = '';
+   if (preg_match("/PluginMonitoringService-([0-9]+)-2h([0-9]+).png/", $filename)) {
+      include (GLPI_ROOT."/inc/includes.php");
+
+      $match = array();
+      preg_match("/PluginMonitoringService-([0-9]+)-2h([0-9]+).png/", $filename, $match);
+
+      $pmServicegraph = new PluginMonitoringServicegraph();
+      $pmService = new PluginMonitoringService();
+      $pmComponent = new PluginMonitoringComponent();
+      $pmService->getFromDB($match[1]);
+      $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
+
+      $pmServicegraph->displayGraph($pmComponent->fields['graph_template'], 
+                                    "PluginMonitoringService", 
+                                    $match[1], 
+                                    $match[2], 
+                                    '2h');
+      $mime = "PNG";
+   }
+   
    if (!file_exists($file)){
       echo "Error file $filename does not exist";
       return;
@@ -67,11 +88,13 @@ if (isset($_GET['file'])) {
       // Now send the file with header() magic
       header("Expires: Mon, 26 Nov 1962 00:00:00 GMT");
       header('Pragma: private'); /// IE BUG + SSL
-      //header('Pragma: no-cache');
+      header('Pragma: no-cache');
       header('Cache-control: private, must-revalidate'); /// IE BUG + SSL
       header("Content-disposition: filename=\"$filename\"");
-//      header("Content-type: ".$mime);
-
+      if ($mime != '') {
+         header("Content-type: ".$mime);
+      }
+      
       $f=fopen($file,"r");
 
       if (!$f){

@@ -70,16 +70,24 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       $opts .= " RRA:LAST:0.5:1:1400";
       $opts .= " RRA:AVERAGE:0.5:5:1016";
 
-      system(PluginMonitoringConfig::getRRDPath().'/rrdtool create '.$fname.$opts, $ret);
+      $ret = '0';
+      $end = '';
+      if (preg_match('/^windows/i', php_uname())) {
+         session_write_close();
+         $end = ' && exit';
+      }
+      system(PluginMonitoringConfig::getRRDPath().'/rrdtool create '.$fname.$opts.$end, $ret);
       if (isset($ret) 
               AND $ret != '0' ) {
-         echo "Create error: $ret for ".PluginMonitoringConfig::getRRDPath()."/rrdtool create ".$fname.$opts."\n";
+         $displaytext = "Create error: $ret for ".PluginMonitoringConfig::getRRDPath()."/rrdtool create ".$fname.$opts."\n";
+         logInFile("plugin_monitoring_rrdtool", $displaytext);
+         echo $displaytext;
       }
    }
 
    
    
-   function addData($rrdtool_template, $items_id, $timestamp, $perf_data) {
+   function addData($rrdtool_template, $items_id, $timestamp, $perf_data, $rrdtool_value = '', $runrrdtool = 1) {
 
       $fname = GLPI_PLUGIN_DOC_DIR."/monitoring/PluginMonitoringService-".$items_id.".rrd";
       if (!file_exists($fname)) {
@@ -93,45 +101,63 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       }
       $a_json = json_decode(file_get_contents($filename));
       $a_perfdata = explode(" ", $perf_data);
-      $rrdtool_value = $timestamp;
-      foreach ($a_json->parseperfdata as $num=>$data) {
-         if (isset($a_perfdata[$num])) {
-            $a_a_perfdata = explode("=", $a_perfdata[$num]);
-            if ($a_a_perfdata[0] == $data->name) {
-               $a_perfdata_final = explode(";", $a_a_perfdata[1]);
-               foreach ($a_perfdata_final as $nb_val=>$val) {
-                  if ($val != '') {
-                     if (strstr($val, "ms")) {
-                        $val = round(str_replace("ms", "", $val),0);
-                     } else if (strstr($val, "s")) {
-                        $val = round((str_replace("s", "", $val) * 1000),0);
-                     } else if (strstr($val, "%")) {
-                        $val = round(str_replace("%", "", $val),0);
-                     } else if (!strstr($val, "timeout")){
-                        $val = round($val,2);
-                     } else {
-                        $val = $data->DS[$nb_val]->max;
+      if ($timestamp != '0') {
+         if ($rrdtool_value != '') {
+            $rrdtool_value .= ' '.$timestamp;
+         } else {
+            $rrdtool_value = $timestamp;
+         }
+         foreach ($a_json->parseperfdata as $num=>$data) {
+            if (isset($a_perfdata[$num])) {
+               $a_a_perfdata = explode("=", $a_perfdata[$num]);
+               if ($a_a_perfdata[0] == $data->name) {
+                  $a_perfdata_final = explode(";", $a_a_perfdata[1]);
+                  foreach ($a_perfdata_final as $nb_val=>$val) {
+                     if ($val != '') {
+                        if (strstr($val, "ms")) {
+                           $val = round(str_replace("ms", "", $val),0);
+                        } else if (strstr($val, "bps")) {
+                           $val = round(str_replace("bps", "", $val),0);
+                        } else if (strstr($val, "s")) {
+                           $val = round((str_replace("s", "", $val) * 1000),0);
+                        } else if (strstr($val, "%")) {
+                           $val = round(str_replace("%", "", $val),0);
+                        } else if (!strstr($val, "timeout")){
+                           $val = round($val,2);
+                        } else {
+                           $val = $data->DS[$nb_val]->max;
+                        }
+                        $rrdtool_value .= ':'.$val;
                      }
-                     $rrdtool_value .= ':'.$val;
+                  }
+               } else {
+                  foreach ($data->DS as $nb_DS) {
+                     $rrdtool_value .= ':U';
                   }
                }
             } else {
                foreach ($data->DS as $nb_DS) {
                   $rrdtool_value .= ':U';
                }
-            }
-         } else {
-            foreach ($data->DS as $nb_DS) {
-               $rrdtool_value .= ':U';
-            }
-         }         
-      }      
-      //$ret = rrd_update($fname, $value);
-
-      system(PluginMonitoringConfig::getRRDPath()."/rrdtool update ".$fname." ".$rrdtool_value, $ret);
-      if (isset($ret) 
-              AND $ret != '0' ) {
-         echo "Create error: $ret for ".PluginMonitoringConfig::getRRDPath()."/rrdtool update ".$fname." ".$rrdtool_value."\n";
+            }         
+         }
+      }
+      if ($runrrdtool == '1') {
+         $ret = '0';
+         $end = '';
+         if (preg_match('/^windows/i', php_uname())) {
+            session_write_close();
+            $end = ' && exit';
+         }
+         system(PluginMonitoringConfig::getRRDPath()."/rrdtool update ".$fname." ".$rrdtool_value.$end, $ret);
+         if (isset($ret) 
+                 AND $ret != '0') {
+            $displaytext = "Create error: $ret for ".PluginMonitoringConfig::getRRDPath()."/rrdtool update ".$fname." ".$rrdtool_value."\n";
+            logInFile("plugin_monitoring_rrdtool", $displaytext);
+            echo $displaytext;
+         }
+      } else {
+         return $rrdtool_value;
       }
    }
    
@@ -182,6 +208,13 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       if ($a_json->data[0]->limits[0]->{"lower-limit"} != "") {
          $opts .= " --lower-limit ".$a_json->data[0]->limits[0]->{"lower-limit"};
       }
+      if ($a_json->data[0]->{"y-axis"}[0]->{"units-exponent"} != "") {
+         $opts .= " --units-exponent ".$a_json->data[0]->{"y-axis"}[0]->{"units-exponent"};
+      }
+      if ($a_json->data[0]->{"y-axis"}[0]->{"units"} != "") {
+         $opts .= " --units ".$a_json->data[0]->{"y-axis"}[0]->{"units"};
+      }
+      
       
       foreach ($a_json->data[0]->data as $data) {
          $data = str_replace("[[RRDFILE]]", 
@@ -204,16 +237,24 @@ class PluginMonitoringRrdtool extends CommonDBTM {
             $opts .= " SHIFT:".$a_name[0].":".$converttimezone;
          }
       }
-
+      
       //$ret = rrd_graph(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.".gif", $opts, count($opts));
       if (file_exists(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id.".rrd")) {
+         $ret = '0';
          ob_start();
-         system(PluginMonitoringConfig::getRRDPath()."/rrdtool graph ".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.$timezonefile.".gif ".$opts, $ret);
+         $end = '';
+         if (preg_match('/^windows/i', php_uname())) {
+            session_write_close();
+            $end = ' && exit';
+         }
+         system(PluginMonitoringConfig::getRRDPath()."/rrdtool graph ".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.$timezonefile.".gif ".$opts.$end, $ret);
          ob_end_clean();
          if (isset($ret) 
                  AND $ret != '0' ) {
-            echo "Create error: $ret for ".PluginMonitoringConfig::getRRDPath()."/rrdtool graph ".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.$timezonefile.".gif ".
+            $displaytext = "Create error: $ret for ".PluginMonitoringConfig::getRRDPath()."/rrdtool graph ".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.$timezonefile.".gif ".
                      $opts."\n";
+            logInFile("plugin_monitoring_rrdtool", $displaytext);
+            echo $displaytext;
          }
       }
       return true;

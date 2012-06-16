@@ -72,32 +72,35 @@ class PluginMonitoringProfile extends CommonDBTM {
     *
     **/
    static function initProfile() {
-      $input = array();
-      $input['profiles_id'] = $_SESSION['glpiactiveprofile']['id'];
-      $input['dashboard'] = 'w';
-      $input['servicescatalog'] = 'w';
-      $input['view'] = 'w';
-      $input['componentscatalog'] = 'w';
-      $input['viewshomepage'] = 'r';
-      $input['weathermap'] = 'w';
-      $input['component'] = 'w';
-      $input['command'] = 'w';
-      $input['config'] = 'w';
-      $input['check'] = 'w';
-      $pmProfile = new self();
-      $pmProfile->add($input);      
+      if (isset($_SESSION['glpiactiveprofile']['id'])) {
+         $input = array();
+         $input['profiles_id'] = $_SESSION['glpiactiveprofile']['id'];
+         $input['dashboard'] = 'w';
+         $input['servicescatalog'] = 'w';
+         $input['view'] = 'w';
+         $input['componentscatalog'] = 'w';
+         $input['viewshomepage'] = 'r';
+         $input['weathermap'] = 'w';
+         $input['component'] = 'w';
+         $input['command'] = 'w';
+         $input['config'] = 'w';
+         $input['check'] = 'w';
+         $pmProfile = new self();
+         $pmProfile->add($input);
+      }
    }
    
    
 
    static function changeprofile() {
-
-      $tmp = new self();
-       if ($tmp->getFromDB($_SESSION['glpiactiveprofile']['id'])) {
-          $_SESSION["glpi_plugin_monitoring_profile"] = $tmp->fields;
-       } else {
-          unset($_SESSION["glpi_plugin_monitoring_profile"]);
-       }
+      if (isset($_SESSION['glpiactiveprofile']['id'])) {
+         $tmp = new self();
+          if ($tmp->getFromDB($_SESSION['glpiactiveprofile']['id'])) {
+             $_SESSION["glpi_plugin_monitoring_profile"] = $tmp->fields;
+          } else {
+             unset($_SESSION["glpi_plugin_monitoring_profile"]);
+          }
+      }
    }
 
    
@@ -124,7 +127,8 @@ class PluginMonitoringProfile extends CommonDBTM {
       if (!haveRight("profile","r")) {
          return false;
       }
-      if ($canedit=haveRight("profile","w")) {
+      $canedit=haveRight("profile","w");
+      if ($canedit) {
          echo "<form method='post' action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/profile.form.php'>";
          echo '<input type="hidden" name="profiles_id" value="'.$items_id.'"/>';
       }
@@ -267,8 +271,7 @@ class PluginMonitoringProfile extends CommonDBTM {
       return false;
    }
 
-   
-   
+      
    
    /**
     * Update the item in the database
@@ -313,10 +316,10 @@ class PluginMonitoringProfile extends CommonDBTM {
       if (count($oldvalues)) {
          Log::constructHistory($this, $oldvalues, $this->fields);
       }
-
       return true;
    }
 
+   
    
    /**
     * Add a message on update action
@@ -355,8 +358,6 @@ class PluginMonitoringProfile extends CommonDBTM {
                                                                          :$profile->getLink()));
       }
    }
-   
-   
 }
 
 ?>

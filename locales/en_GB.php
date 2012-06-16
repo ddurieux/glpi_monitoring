@@ -57,10 +57,11 @@ $LANG['plugin_monitoring']['host'][20]="Preview";
 
 $LANG['plugin_monitoring']['config'][0]="Timezones (for graph)";
 $LANG['plugin_monitoring']['config'][1]="Configuration";
-$LANG['plugin_monitoring']['config'][2]="Path of RRDtool";
+$LANG['plugin_monitoring']['config'][2]="Path and bin name of RRDtool";
 $LANG['plugin_monitoring']['config'][3]="Logs retention (in days)";
 $LANG['plugin_monitoring']['config'][4]="No events found in last minutes, so Shinken seems stopped";
 $LANG['plugin_monitoring']['config'][5]="Shinken Server";
+$LANG['plugin_monitoring']['config'][6]="Path and bin name of php";
 
 $LANG['plugin_monitoring']['grouphost'][0]="host groups";
 $LANG['plugin_monitoring']['grouphost'][1]="host group";
@@ -125,6 +126,8 @@ $LANG['plugin_monitoring']['service'][20]="Resource";
 $LANG['plugin_monitoring']['service'][21]="All resources";
 $LANG['plugin_monitoring']['service'][22]="Time in ms";
 $LANG['plugin_monitoring']['service'][23]="Resource deleted";
+$LANG['plugin_monitoring']['service'][24]="Custom arguments for this resource (empty = inherit)";
+$LANG['plugin_monitoring']['service'][25]="Configure";
 
 $LANG['plugin_monitoring']['servicesuggest'][0]="Suggests";
 
@@ -152,8 +155,17 @@ $LANG['plugin_monitoring']['component'][3]="Static hosts";
 $LANG['plugin_monitoring']['component'][4]="Dynamic hosts";
 $LANG['plugin_monitoring']['component'][5]="Fields with asterisk are required";
 $LANG['plugin_monitoring']['component'][6]="Component";
+$LANG['plugin_monitoring']['component'][7]="Hostname of the device";
+$LANG['plugin_monitoring']['component'][8]="Network port ifDescr of networking devices";
+$LANG['plugin_monitoring']['component'][9]="SNMP version of network equipment or printer";
+$LANG['plugin_monitoring']['component'][10]="SNMP community of network equipment or printer";
+$LANG['plugin_monitoring']['component'][11]="List of tags available";
+$LANG['plugin_monitoring']['component'][12]="Network port number";
+$LANG['plugin_monitoring']['component'][13]="Network port name";
+$LANG['plugin_monitoring']['component'][14]="Component arguments";
 
 $LANG['plugin_monitoring']['componentscatalog'][0]="Components catalog";
+$LANG['plugin_monitoring']['componentscatalog'][1]="Interval between 2 notifications (in minutes)";
 
 $LANG['plugin_monitoring']['display'][0]="Dashboard";
 $LANG['plugin_monitoring']['display'][1]="Page refresh (in seconds)";
@@ -184,6 +196,16 @@ $LANG['plugin_monitoring']['weathermap'][4]="Height";
 $LANG['plugin_monitoring']['weathermap'][5]="Background image";
 $LANG['plugin_monitoring']['weathermap'][6]="Nodes and links";
 $LANG['plugin_monitoring']['weathermap'][7]="Node";
+$LANG['plugin_monitoring']['weathermap'][8]="Add a node";
+$LANG['plugin_monitoring']['weathermap'][9]="Edit a node";
+$LANG['plugin_monitoring']['weathermap'][10]="Delete a node";
+$LANG['plugin_monitoring']['weathermap'][11]="Add a link";
+$LANG['plugin_monitoring']['weathermap'][12]="Edit a link";
+$LANG['plugin_monitoring']['weathermap'][13]="Delete a link";
+$LANG['plugin_monitoring']['weathermap'][14]="Source";
+$LANG['plugin_monitoring']['weathermap'][15]="Destination";
+$LANG['plugin_monitoring']['weathermap'][16]="Max bandwidth input";
+$LANG['plugin_monitoring']['weathermap'][17]="Max bandwidth output";
 
 $LANG['plugin_monitoring']['realms'][0]="Reamls";
 $LANG['plugin_monitoring']['realms'][1]="Reaml";
@@ -193,7 +215,15 @@ $LANG['plugin_monitoring']['displayview'][1]="Header counter (critical/warning/o
 $LANG['plugin_monitoring']['displayview'][2]="Display in GLPI home page";
 $LANG['plugin_monitoring']['displayview'][3]="Element to display";
 $LANG['plugin_monitoring']['displayview'][4]="Views in GLPI home page";
+$LANG['plugin_monitoring']['displayview'][5]="% of the width of the frame";
 
 $LANG['plugin_monitoring']['dependency'][0]="Dependencies";
+
+$LANG['plugin_monitoring']['networkport'][0]='Network ports of networking devices';
+
+$LANG['plugin_monitoring']['availability'][0]='Availability';
+$LANG['plugin_monitoring']['availability'][1]='Current month';
+$LANG['plugin_monitoring']['availability'][2]='Last month';
+$LANG['plugin_monitoring']['availability'][3]='Current year';
 
 ?>

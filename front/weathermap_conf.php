@@ -43,7 +43,12 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$pmWeathermap = new PluginMonitoringWeathermap();
-$pmWeathermap->generateConfig();
+if (isset($_GET['id'])
+        AND $_GET['id'] == 'rrdtool') {
+   echo PluginMonitoringConfig::getRRDPath();
+} else {
+   $pmWeathermap = new PluginMonitoringWeathermap();
+   $pmWeathermap->generateConfig();
+}
 
 ?>
