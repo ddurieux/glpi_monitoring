@@ -70,7 +70,7 @@ if (class_exists($_POST["itemtype"]) && isset($_POST["hosts"])) {
    if ($_POST['selectgraph'] == '1') {
 
       $params = array('hosts'    => '__VALUE__',
-                      'entity'   =>
+                      'entity'   => '',
                       'rand'     => $rand);
 
       Ajax::updateItemOnSelectEvent("dropdown_plugin_monitoring_services_id".$rand, "show_extrainfos$rand",
