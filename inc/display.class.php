@@ -65,7 +65,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          $i = 5;
          $a_views = $pmDisplayview->getViews();
          foreach ($a_views as $views_id=>$name) {
-            $ong[$i] = $name;
+            $ong[$i] = htmlentities($name);
             $i++;
          }
       }
@@ -820,7 +820,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
          $a_return['critical_soft'] = strval($critical_soft);
          return $a_return;
       }
-      // *** Test new presentation
       
       $critical_link = $CFG_GLPI['root_doc'].
                "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=CRITICAL&link[1]=OR".

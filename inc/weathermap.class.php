@@ -218,7 +218,8 @@ echo "
                $in = $matches1[1];
                $out = $matches1[2];
             }
-            
+            $in = $this->checkBandwidth("in", $in, $bandwidth);
+            $out = $this->checkBandwidth("out", $out, $bandwidth);
             
             echo "LINK ".preg_replace("/[^A-Za-z0-9_]/","",$data['name'])."_".$data['id']."-".preg_replace("/[^A-Za-z0-9_]/","",$pmWeathermapnode->fields['name'])."_".$pmWeathermapnode->fields['id']."
 	INFOURL /cacti/graph.php?rra_id=all&local_graph_id=35
@@ -798,6 +799,38 @@ function point_it(event){
    
       $this->generateWeathermap($id);
       return '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/send.php?file=weathermap-'.$id.'.png"/>';
+   }
+   
+   
+   
+   /**
+    *
+    * @param type $type ("in" or "out")
+    */
+   function checkBandwidth($type, $bandwidth, $bandwidthmax) {
+      $bdmax = $bandwidthmax;
+      if (strstr($bandwidthmax, ":")) {
+         $split = explode(":", $bandwidthmax);
+         if ($type == 'in') {
+            $bdmax= $split[0];
+         } else if ($type == 'out') {
+            $bdmax= $split[1];
+         }         
+      }
+      
+      if (strstr($bdmax, "G")) {
+         $bdmax = $bdmax * 1000 * 1000 * 1000;
+      } else if (strstr($bdmax, "M")) {
+         $bdmax = $bdmax * 1000 * 1000;
+      } else if (strstr($bdmax, "K")) {
+         $bdmax = $bdmax * 1000;
+      }
+      
+      if ($bandwidth > ($bdmax * 1000)) {
+         return "0";
+      } else {
+         return $bandwidth;
+      }
    }
    
 }
