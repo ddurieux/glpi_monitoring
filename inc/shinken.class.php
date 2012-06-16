@@ -407,7 +407,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             $a_services[$i]['contacts'] = implode(',', $a_contacts);
 
             // ** If shinken not use templates or template not defined : 
-            if (!isset($_SESSION['plugin_monitoring']['servicetemplates'][$a_component['id']])) {
+//            if (!isset($_SESSION['plugin_monitoring']['servicetemplates'][$a_component['id']])) {
                   $pMonitoringCheck->getFromDB($a_component['plugin_monitoring_checks_id']);
                $a_services[$i]['check_interval'] = $pMonitoringCheck->fields['check_interval'];
                $a_services[$i]['retry_interval'] = $pMonitoringCheck->fields['retry_interval'];
@@ -439,7 +439,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_services[$i]['retain_nonstatus_information'] = '1';
                $a_services[$i]['is_volatile'] = '0';
                $a_services[$i]['_httpstink'] = 'NO';
-            }
+//            }
             $pmComponentscatalog->getFromDB($plugin_monitoring_componentscatalogs_id);
             if ($pmComponentscatalog->fields['notification_interval'] != '30') {
                $a_services[$i]['notification_interval'] = $pmComponentscatalog->fields['notification_interval'];
