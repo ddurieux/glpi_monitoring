@@ -80,7 +80,7 @@ class PluginMonitoringContacttemplate extends CommonDBTM {
 
    
    function canUndo() {
-      return haveRight('computer', 'w');
+      return Session::haveRight('computer', 'w');
    }
 
 

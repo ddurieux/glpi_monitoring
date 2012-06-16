@@ -60,13 +60,13 @@ class PluginMonitoringBusinessrule extends CommonDBTM {
 
    
    function canCancel() {
-      return haveRight('computer', 'w');
+      return Session::haveRight('computer', 'w');
    }
 
 
    
    function canUndo() {
-      return haveRight('computer', 'w');
+      return Session::haveRight('computer', 'w');
    }
 
 
