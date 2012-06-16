@@ -157,6 +157,20 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       echo "</tr>";
       echo "</table>";      
    }
+   
+   
+   
+   static function replayRulesCatalog($item) {
+      global $DB;
+      
+      $datas = getAllDatasFromTable("glpi_plugin_monitoring_componentscatalogs_rules", 
+              "`plugin_monitoring_componentscalalog_id`='".$item->getID()."'");
+      $pmComponentscatalog_rule = new PluginMonitoringComponentscatalog_rule();
+      foreach($datas as $data) {
+         $pmComponentscatalog_rule->getFromDB($data['id']);
+         PluginMonitoringComponentscatalog_rule::getItemsDynamicly($pmComponentscatalog_rule);
+      }
+   }
   
    
    
