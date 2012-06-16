@@ -120,6 +120,9 @@ class PluginMonitoringShinken extends CommonDBTM {
       $calendar      = new Calendar();
       $pmRealm       = new PluginMonitoringRealm();
       $networkEquipment = new NetworkEquipment();
+      $pmContact_Item  = new PluginMonitoringContact_Item();
+      $profile_User = new Profile_User();
+      $user = new User();
 
       $a_hosts = array();
       $i=0;
@@ -127,6 +130,17 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_hosts_found = array();
       
       $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
+      
+      // * Prepare contacts
+      $a_contacts_entities = array();
+      $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
+         AND `users_id`>0");
+      foreach ($a_list_contact as $data) {
+         $usersentities = $profile_User->getUserEntities($data['users_id']);
+         $contactentities = getSonsOf('glpi_entities', $data['entities_id']);
+         $a_contacts_entities[$data['items_id']][$data['users_id']] = 
+                                                array_intersect($usersentities, $contactentities);
+      }
       
       $command_ping = current($pmCommand->find("`command_name`='check_host_alive'", "", 1));
       $a_component = current($pmComponent->find("`plugin_monitoring_commands_id`='".$command_ping['id']."'", "", 1));
@@ -201,7 +215,34 @@ class PluginMonitoringShinken extends CommonDBTM {
                                                                                     $classname,
                                                                                     $class->getID()));
                $a_hosts[$i]['realm'] = $pmRealm->fields['name'];
-               $a_hosts[$i]['contacts'] = '';
+               // For contact check if a service with this component
+                  $a_hosts[$i]['contacts'] = '';
+                  $querycont = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+                     LEFT JOIN `glpi_plugin_monitoring_services`
+                        ON `plugin_monitoring_componentscatalogs_hosts_id`
+                           = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
+                     WHERE `plugin_monitoring_components_id`='".$a_component['id']."'
+                        AND `items_id`='".$data['items_id']."'
+                        AND `itemtype`='".$data['itemtype']."'
+                        LIMIT 1";
+                  $resultcont = $DB->query($querycont);
+                  if ($DB->numrows($resultcont) != 0) {
+                     $a_componentscatalogs_hosts = $DB->fetch_assoc($resultcont);
+                     $a_contacts = array();
+                     $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
+                        AND `items_id`='".$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']."'");
+                     foreach ($a_list_contact as $data_contact) {
+                        if (isset($a_contacts_entities[$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']][$data_contact['users_id']])) {
+                           if (in_array($class->fields['entities_id'], $a_contacts_entities[$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']][$data_contact['users_id']])) {
+                              $user->getFromDB($data_contact['users_id']);
+                              $a_contacts[] = $user->fields['name'];
+                           }
+                        }
+                     }
+                     if (count($a_contacts) > 0) {
+                        $a_hosts[$i]['contacts'] = implode(',', $a_contacts);
+                     }
+                  }
                $a_hosts[$i]['process_perf_data'] = '1';
                $a_hosts[$i]['notification_interval'] = '30';
                if ($calendar->getFromDB($a_fields['calendars_id'])) {
