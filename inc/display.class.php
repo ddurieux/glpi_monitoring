@@ -384,7 +384,10 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "</th>";
       echo "<th>";
       echo $LANG['rulesengine'][82];
-      echo "</th>";     
+      echo "</th>";
+      echo "<th>";
+      echo $LANG['plugin_monitoring']['host'][9];
+      echo "</th>";
       echo "</tr>";
       
       while ($data=$DB->fetch_array($result)) {
@@ -501,6 +504,17 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
       echo "<td>";
       echo $data['event'];
+      echo "</td>";
+      
+      echo "<td align='center'>";
+      $segments = CalendarSegment::getSegmentsBetween($pMonitoringComponent->fields['calendars_id'], 
+              date('w', date('U')), date('H:i:s'), 
+              date('w', date('U')), date('H:i:s'));
+      if (count($segments) == '0') {
+         echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/service_pause.png' />";
+      } else {
+         echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/service_run.png' />";
+      }
       echo "</td>";
       
       if ($displayhost == '0') {
