@@ -80,9 +80,12 @@ $_SESSION['plugin_monitoring']['service'] = $_GET;
 $pMonitoringDisplay = new PluginMonitoringDisplay();
 
 $pMonitoringDisplay->refreshPage();
-
-$_SESSION['plugin_monitoring_displaytab'] = $_SESSION['glpi_tabs']['pluginmonitoringdisplay'];
-
+if (isset($_SESSION['glpi_tabs']['pluginmonitoringdisplay'])) {
+   $_SESSION['plugin_monitoring_displaytab'] = $_SESSION['glpi_tabs']['pluginmonitoringdisplay'];
+} else {
+   $_SESSION['plugin_monitoring_displaytab'] = '';
+}
+   
 $pMonitoringDisplay->showTabs();
 echo "<style type='text/css'>
 div#tabcontent {
