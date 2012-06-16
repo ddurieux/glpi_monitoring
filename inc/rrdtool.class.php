@@ -79,26 +79,20 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       system(PluginMonitoringConfig::getRRDPath().'/rrdtool create '.$fname.$opts.$end, $ret);
       if (isset($ret) 
               AND $ret != '0' ) {
-         echo "Create error: $ret for ".PluginMonitoringConfig::getRRDPath()."/rrdtool create ".$fname.$opts."\n";
+         $displaytext = "Create error: $ret for ".PluginMonitoringConfig::getRRDPath()."/rrdtool create ".$fname.$opts."\n";
+         logInFile("plugin_monitoring_rrdtool", $displaytext);
+         echo $displaytext;
       }
    }
 
    
    
-   function addData($rrdtool_template, $items_id, $timestamp, $perf_data, $verifdate=0) {
+   function addData($rrdtool_template, $items_id, $timestamp, $perf_data, $rrdtool_value = '', $runrrdtool = 1) {
 
       $fname = GLPI_PLUGIN_DOC_DIR."/monitoring/PluginMonitoringService-".$items_id.".rrd";
       if (!file_exists($fname)) {
          $this->createGraph($rrdtool_template, $items_id, $timestamp);
       }
-      
-      if ($verifdate == '1') {
-         $ret = system(PluginMonitoringConfig::getRRDPath()."/rrdtool last ".$fname);
-         if ($ret == $timestamp) { // Yet added
-            return;
-         }
-         unset($ret);
-      }  
       
       $a_filename = explode("-", $rrdtool_template);
       $filename = GLPI_PLUGIN_DOC_DIR."/monitoring/templates/".$a_filename[0]."-perfdata.json";
@@ -107,51 +101,63 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       }
       $a_json = json_decode(file_get_contents($filename));
       $a_perfdata = explode(" ", $perf_data);
-      $rrdtool_value = $timestamp;
-      foreach ($a_json->parseperfdata as $num=>$data) {
-         if (isset($a_perfdata[$num])) {
-            $a_a_perfdata = explode("=", $a_perfdata[$num]);
-            if ($a_a_perfdata[0] == $data->name) {
-               $a_perfdata_final = explode(";", $a_a_perfdata[1]);
-               foreach ($a_perfdata_final as $nb_val=>$val) {
-                  if ($val != '') {
-                     if (strstr($val, "ms")) {
-                        $val = round(str_replace("ms", "", $val),0);
-                     } else if (strstr($val, "bps")) {
-                        $val = round(str_replace("bps", "", $val),0);
-                     } else if (strstr($val, "s")) {
-                        $val = round((str_replace("s", "", $val) * 1000),0);
-                     } else if (strstr($val, "%")) {
-                        $val = round(str_replace("%", "", $val),0);
-                     } else if (!strstr($val, "timeout")){
-                        $val = round($val,2);
-                     } else {
-                        $val = $data->DS[$nb_val]->max;
+      if ($timestamp != '0') {
+         if ($rrdtool_value != '') {
+            $rrdtool_value .= ' '.$timestamp;
+         } else {
+            $rrdtool_value = $timestamp;
+         }
+         foreach ($a_json->parseperfdata as $num=>$data) {
+            if (isset($a_perfdata[$num])) {
+               $a_a_perfdata = explode("=", $a_perfdata[$num]);
+               if ($a_a_perfdata[0] == $data->name) {
+                  $a_perfdata_final = explode(";", $a_a_perfdata[1]);
+                  foreach ($a_perfdata_final as $nb_val=>$val) {
+                     if ($val != '') {
+                        if (strstr($val, "ms")) {
+                           $val = round(str_replace("ms", "", $val),0);
+                        } else if (strstr($val, "bps")) {
+                           $val = round(str_replace("bps", "", $val),0);
+                        } else if (strstr($val, "s")) {
+                           $val = round((str_replace("s", "", $val) * 1000),0);
+                        } else if (strstr($val, "%")) {
+                           $val = round(str_replace("%", "", $val),0);
+                        } else if (!strstr($val, "timeout")){
+                           $val = round($val,2);
+                        } else {
+                           $val = $data->DS[$nb_val]->max;
+                        }
+                        $rrdtool_value .= ':'.$val;
                      }
-                     $rrdtool_value .= ':'.$val;
+                  }
+               } else {
+                  foreach ($data->DS as $nb_DS) {
+                     $rrdtool_value .= ':U';
                   }
                }
             } else {
                foreach ($data->DS as $nb_DS) {
                   $rrdtool_value .= ':U';
                }
-            }
-         } else {
-            foreach ($data->DS as $nb_DS) {
-               $rrdtool_value .= ':U';
-            }
-         }         
-      }      
-      $ret = '0';
-      $end = '';
-      if (preg_match('/^windows/i', php_uname())) {
-         session_write_close();
-         $end = ' && exit';
+            }         
+         }
       }
-      system(PluginMonitoringConfig::getRRDPath()."/rrdtool update ".$fname." ".$rrdtool_value.$end, $ret);
-      if (isset($ret) 
-              AND $ret != '0') {
-         echo "Create error: $ret for ".PluginMonitoringConfig::getRRDPath()."/rrdtool update ".$fname." ".$rrdtool_value."\n";
+      if ($runrrdtool == '1') {
+         $ret = '0';
+         $end = '';
+         if (preg_match('/^windows/i', php_uname())) {
+            session_write_close();
+            $end = ' && exit';
+         }
+         system(PluginMonitoringConfig::getRRDPath()."/rrdtool update ".$fname." ".$rrdtool_value.$end, $ret);
+         if (isset($ret) 
+                 AND $ret != '0') {
+            $displaytext = "Create error: $ret for ".PluginMonitoringConfig::getRRDPath()."/rrdtool update ".$fname." ".$rrdtool_value."\n";
+            logInFile("plugin_monitoring_rrdtool", $displaytext);
+            echo $displaytext;
+         }
+      } else {
+         return $rrdtool_value;
       }
    }
    
@@ -245,8 +251,10 @@ class PluginMonitoringRrdtool extends CommonDBTM {
          ob_end_clean();
          if (isset($ret) 
                  AND $ret != '0' ) {
-            echo "Create error: $ret for ".PluginMonitoringConfig::getRRDPath()."/rrdtool graph ".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.$timezonefile.".gif ".
+            $displaytext = "Create error: $ret for ".PluginMonitoringConfig::getRRDPath()."/rrdtool graph ".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.$timezonefile.".gif ".
                      $opts."\n";
+            logInFile("plugin_monitoring_rrdtool", $displaytext);
+            echo $displaytext;
          }
       }
       return true;

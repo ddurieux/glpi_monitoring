@@ -213,7 +213,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
 
          case 'currentmonth':
             $begindate = date("Y-m-d H:i:s", strtotime(date('m').'/01/'.date('Y').' 00:00:00'));
-            $enddate = date("Y-m-d H:i:s", strtotime('-1 second',strtotime('+1 month',strtotime(date('m').'/01/'.date('Y').' 23:59:59'))));
+            $enddate = date("Y-m-d H:i:s", strtotime('+1 month',strtotime(date('m').'/01/'.date('Y').' 23:59:59')));
             $timestart   = strtotime($begindate);
             $timeend     = strtotime($enddate);
             $totaltime = $timeend - $timestart;
@@ -240,6 +240,16 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
                $timestart   = strtotime($begindate);
                $timeend     = strtotime($data['end_date']);
                $activetime = $timeend-$timestart;
+               $timecriticalSeconds += $activetime;
+            }
+            // current unvaibility (not finished)
+            $query = "SELECT * FROM `glpi_plugin_monitoring_unavaibilities`
+               WHERE `plugin_monitoring_services_id`='".$services_id."'
+                  AND `end_date` IS NULL";
+            $result = $DB->query($query);
+            while ($data=$DB->fetch_array($result)) {
+               $timestart   = strtotime($data['begin_date']);
+               $activetime = date('U')-$timestart;
                $timecriticalSeconds += $activetime;
             }
             break;
@@ -308,7 +318,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
                $activetime = $timeend-$timestart;
                $timecriticalSeconds += $activetime;
             }
-            // unvaibility on 2 months
+            // unvaibility on 2 years
             $query = "SELECT * FROM `glpi_plugin_monitoring_unavaibilities`
                WHERE `plugin_monitoring_services_id`='".$services_id."'
                   AND `begin_date` NOT LIKE '".$year."%'
@@ -318,6 +328,16 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
                $timestart   = strtotime($begindate);
                $timeend     = strtotime($data['end_date']);
                $activetime = $timeend-$timestart;
+               $timecriticalSeconds += $activetime;
+            }
+            // current unvaibility (not finished)
+            $query = "SELECT * FROM `glpi_plugin_monitoring_unavaibilities`
+               WHERE `plugin_monitoring_services_id`='".$services_id."'
+                  AND `end_date` IS NULL";
+            $result = $DB->query($query);
+            while ($data=$DB->fetch_array($result)) {
+               $timestart   = strtotime($data['begin_date']);
+               $activetime = date('U')-$timestart;
                $timecriticalSeconds += $activetime;
             }
             break;

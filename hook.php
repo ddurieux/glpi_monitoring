@@ -66,6 +66,7 @@ function plugin_monitoring_install() {
 
    include (GLPI_ROOT . "/plugins/monitoring/install/update.php");
    $version_detected = pluginMonitoringGetCurrentVersion(PLUGIN_MONITORING_VERSION);
+
    if ((isset($version_detected)) 
            AND ($version_detected != PLUGIN_MONITORING_VERSION)
            AND $version_detected != '0') {

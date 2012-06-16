@@ -220,13 +220,13 @@ class PluginMonitoringService extends CommonDBTM {
          echo $LANG['entity'][0];
          echo "</th>";
          echo "<th>";
+         echo $LANG['stats'][7];
+         echo "</th>";
+         echo "<th>";
          echo $LANG['plugin_monitoring']['component'][0];
          echo "</th>";
          echo "<th>";
          echo $LANG['state'][0];
-         echo "</th>";
-         echo "<th>";
-         echo $LANG['stats'][7];
          echo "</th>";
          echo "<th>";
          echo $LANG['plugin_monitoring']['service'][18];

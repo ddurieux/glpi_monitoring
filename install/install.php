@@ -93,7 +93,7 @@ function pluginMonitoringInstall($version) {
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
    CronTask::Register('PluginMonitoringLog', 'cleanlogs', '96400', 
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
-   CronTask::Register('PluginMonitoringUnavaibility', 'cronUnavaibility', '300', 
+   CronTask::Register('PluginMonitoringUnavaibility', 'unavaibility', '300', 
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
 
 }

@@ -103,6 +103,33 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    
    
    
+   function getAdditionalFields() {
+      global $LANG;
+
+      return array(array('name'  => 'notification_interval',
+                         'label' => $LANG['plugin_monitoring']['componentscatalog'][1],
+                         'type'  => 'notificationinterval'));
+   }
+   
+   
+   
+   function displaySpecificTypeField($ID, $field=array()) {
+      
+      
+      switch ($field['type']) {
+         case 'notificationinterval' :
+            if ($ID > 0) {
+//               $this->fields['notification_interval'];
+            } else {
+               $this->fields['notification_interval'] = 30;
+            }
+            Dropdown::showInteger('notification_interval', $this->fields['notification_interval'], 1, 1000);
+            break;
+      }
+   }
+   
+   
+   
    function showChecks() {
       global $DB,$CFG_GLPI,$LANG;
       

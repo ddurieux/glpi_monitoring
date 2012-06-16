@@ -215,7 +215,7 @@ LINK DEFAULT
             
             $queryevent = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `plugin_monitoring_services_id`='".$datal['plugin_monitoring_services_id']."'
-                  ORDER BY `id` desc
+                  ORDER BY `id` DESC
                   LIMIT 1";
             $resultevent = $DB->query($queryevent);
             $in = '';
@@ -223,22 +223,25 @@ LINK DEFAULT
             while ($dataevent=$DB->fetch_array($resultevent)) {
                $matches1 = array();
                preg_match("/(?:.*)inBandwidth=([0-9]*).(?:.*)bps outBandwidth=([0-9]*).(?:.*)bps/m", $dataevent['perf_data'], $matches1);
-               $in = $matches1[1];
-               $out = $matches1[2];
+               if (isset($matches1[1])
+                       AND isset($matches1[2])) {
+                  $in = $matches1[1];
+                  $out = $matches1[2];
+               }
             }
-            if ($in == '') {
-               $queryevent = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
-                  WHERE `plugin_monitoring_services_id`='".$datal['plugin_monitoring_services_id']."'
-                     ORDER BY `id` desc
-                     LIMIT 1";
-               $resultevent = $DB->query($queryevent);
-               while ($dataevent=$DB->fetch_array($resultevent)) {
-                  $matches1 = array();
-                  preg_match("/(?:.*)inBandwidth=([0-9]*).(?:.*)bps outBandwidth=([0-9]*).(?:.*)bps/m", $dataevent['perf_data'], $matches1);
-                  $out = $matches1[1];
-                  $in = $matches1[2];
-               }               
-            }
+//            if ($in == '') {
+//               $queryevent = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
+//                  WHERE `plugin_monitoring_services_id`='".$datal['plugin_monitoring_services_id']."'
+//                     ORDER BY `id` desc
+//                     LIMIT 1";
+//               $resultevent = $DB->query($queryevent);
+//               while ($dataevent=$DB->fetch_array($resultevent)) {
+//                  $matches1 = array();
+//                  preg_match("/(?:.*)inBandwidth=([0-9]*).(?:.*)bps outBandwidth=([0-9]*).(?:.*)bps/m", $dataevent['perf_data'], $matches1);
+//                  $out = $matches1[1];
+//                  $in = $matches1[2];
+//               }               
+//            }
             $in = $this->checkBandwidth("in", $in, $bandwidth);
             $out = $this->checkBandwidth("out", $out, $bandwidth);
             $nodesuffix = '';
@@ -256,10 +259,10 @@ LINK DEFAULT
                $timezone = $_SESSION['plugin_monitoring_timezone'];
             }
             $timezone_file = str_replace("+", ".", $timezone);
-            if (file_exists(GLPI_ROOT."/files/_plugins/monitoring/PluginMonitoringService-".$datal['plugin_monitoring_services_id']."-2h".$timezone_file.".gif")) {
+//            if (file_exists(GLPI_ROOT."/files/_plugins/monitoring/PluginMonitoringService-".$datal['plugin_monitoring_services_id']."-2h".$timezone_file.".gif")) {
                echo "   INFOURL ".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$datal['plugin_monitoring_services_id']."\n".
-                  "   OVERLIBGRAPH ".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$datal['plugin_monitoring_services_id']."-2h".$timezone_file.".gif\n";
-            }
+                  "   OVERLIBGRAPH ".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$datal['plugin_monitoring_services_id']."-2h".$timezone_file.".png\n";
+//            }
             echo "   ".$bwlabelpos[$i]."\n";
             
             echo "   TARGET static:".$in.":".$out."\n";
@@ -837,34 +840,28 @@ function point_it(event){
    
    function generateWeathermap($weathermaps_id, $force=0) {
       global $CFG_GLPI;
-      
-      $filename = GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap".$weathermaps_id.".lock";
-      $generate = 0;
-      if (is_file($filename)) {
-         $time = file_get_contents($filename);
-         if ($time + 30 < date('U')) {
-            file_put_contents($filename, date('U'));
-            $generate = 1;
+            
+      if ($force == '0'
+              AND file_exists(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png")) {
+         $time_generate = filectime(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png");
+         if (($time_generate + 60) > date('U')) {
+            return;
          }
-      } else {
-         file_put_contents($filename, date('U'));
-         $generate = 1;
       }
-      if ($generate == '1'
-              OR $force == '1') {
-         $outputhtml = '';
-         if (strstr($_SERVER["PHP_SELF"], "ajax/weathermap.tabs.php")) {
-            $outputhtml = "--htmloutput ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".html";
-         }
-         $end = '';
-         if (preg_match('/^windows/i', php_uname())) {
-            session_write_close();
-            $end = ' && exit';
-         }
-         system(PluginMonitoringConfig::getPHPPath()." ".GLPI_ROOT."/plugins/monitoring/lib/weathermap/weathermap ".
-            "--config http://".$_SERVER['SERVER_NAME'].$CFG_GLPI['root_doc']."/plugins/monitoring/front/weathermap_conf.php?id=".$weathermaps_id." ".
-            "--output ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png ".$outputhtml.$end);
+
+      $outputhtml = '';
+      if (strstr($_SERVER["PHP_SELF"], "ajax/weathermap.tabs.php")) {
+         $outputhtml = "--htmloutput ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".html";
       }
+      $end = '';
+      if (preg_match('/^windows/i', php_uname())) {
+         session_write_close();
+         $end = ' && exit';
+      }
+      system(PluginMonitoringConfig::getPHPPath()." ".GLPI_ROOT."/plugins/monitoring/lib/weathermap/weathermap ".
+         "--config http://".$_SERVER['SERVER_NAME'].$CFG_GLPI['root_doc']."/plugins/monitoring/front/weathermap_conf.php?id=".$weathermaps_id." ".
+         "--output ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png ".$outputhtml.$end);
+
    }
    
    

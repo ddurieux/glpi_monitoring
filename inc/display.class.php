@@ -367,7 +367,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "<th>";
       echo $LANG['entity'][0];
       echo "</th>";
-      
+      echo "<th>";
+      echo $LANG['stats'][7];
+      echo "</th>";
       echo "<th>";
       echo $LANG['state'][6]." - ".$LANG['common'][16];
       echo "</th>";
@@ -378,15 +380,13 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo $LANG['state'][0];
       echo "</th>";
       echo "<th>";
-      echo $LANG['stats'][7];
-      echo "</th>";
-      echo "<th>";
       echo $LANG['plugin_monitoring']['service'][18];
       echo "</th>";
       echo "<th>";
       echo $LANG['rulesengine'][82];
       echo "</th>";     
       echo "</tr>";
+      
       while ($data=$DB->fetch_array($result)) {
          echo "<tr class='tab_bg_3'>";
 
@@ -409,6 +409,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $networkPort = new NetworkPort();
       $pMonitoringComponent = new PluginMonitoringComponent();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+      $pmServicegraph = new PluginMonitoringServicegraph();
       $entity = new Entity();
       
       $pMonitoringService->getFromDB($data['id']);
@@ -421,6 +422,32 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $entity->getFromDB($data['entities_id']);
       echo $entity->fields['completename'];
       echo "</td>";
+      
+
+      $pMonitoringComponent->getFromDB($data['plugin_monitoring_components_id']);
+      echo "<td class='center'>";
+      $img = '';
+      $timezone = '0';
+      if (isset($_SESSION['plugin_monitoring_timezone'])) {
+         $timezone = $_SESSION['plugin_monitoring_timezone'];
+      }
+      $timezone_file = str_replace("+", ".", $timezone);
+      
+      $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$data['id']."-2h".$timezone_file.".png'/>";
+         
+
+      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$data['id']."'>";
+      
+      if (file_exists(GLPI_ROOT."/files/_plugins/monitoring/PluginMonitoringService-".$data['id']."-2h".$timezone_file.".png")
+              OR $pMonitoringComponent->fields['graph_template'] != '') {
+         $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$data['id']."-2h".$timezone_file.".png'/>";
+         showToolTip($img, array('img'=>$CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"));
+      } else {
+         
+      }
+      echo "</a>";
+      echo "</td>";
+      
       if ($displayhost == '1') {
          $pmComponentscatalog_Host->getFromDB($data["plugin_monitoring_componentscatalogs_hosts_id"]);
          if (isset($pmComponentscatalog_Host->fields['itemtype']) 
@@ -442,7 +469,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
             echo "<td>".$LANG['plugin_monitoring']['service'][0]."</td>";
          }
       }
-      $pMonitoringComponent->getFromDB($data['plugin_monitoring_components_id']);
+
       echo "<td>".$pMonitoringComponent->getLink();
       if (!is_null($pMonitoringService->fields['networkports_id'])
               AND $pMonitoringService->fields['networkports_id'] > 0) {
@@ -466,27 +493,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
 //      unset($itemmat);
       echo "<td class='center'>";
       echo $data['state'];
-      echo "</td>";
-
-      echo "<td class='center'>";
-      $img = '';
-      $timezone = '0';
-      if (isset($_SESSION['plugin_monitoring_timezone'])) {
-         $timezone = $_SESSION['plugin_monitoring_timezone'];
-      }
-      $timezone_file = str_replace("+", ".", $timezone);
-      
-      $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$data['id']."-2h".$timezone_file.".gif'/>";
-         
-
-      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$data['id']."'>";
-      if (file_exists(GLPI_ROOT."/files/_plugins/monitoring/PluginMonitoringService-".$data['id']."-2h".$timezone_file.".gif")) {
-         $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$data['id']."-2h".$timezone_file.".gif'/>";
-         showToolTip($img, array('img'=>$CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"));
-      } else {
-         
-      }
-      echo "</a>";
       echo "</td>";
 
       echo "<td>";
@@ -617,13 +623,23 @@ class PluginMonitoringDisplay extends CommonDBTM {
             $timezone = $_SESSION['plugin_monitoring_timezone'];
          }
          $timezone_file = str_replace("+", ".", $timezone);
+
+         $pmServicegraph = new PluginMonitoringServicegraph();
+         $pmServicegraph->displayGraph($pmComponent->fields['graph_template'], 
+                                       $itemtype, 
+                                       $items_id, 
+                                       $timezone, 
+                                       $time);
+
+
          
-         $to->displayGLPIGraph($pmComponent->fields['graph_template'], 
-                               $itemtype, 
-                               $items_id, 
-                               $timezone, 
-                               $time);
-         $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=".$itemtype."-".$items_id."-".$time.$timezone_file.".gif'/>";
+         
+//         $to->displayGLPIGraph($pmComponent->fields['graph_template'], 
+//                               $itemtype, 
+//                               $items_id, 
+//                               $timezone, 
+//                               $time);
+         $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=".$itemtype."-".$items_id."-".$time.$timezone_file.".png'/>";
          echo $img;
          echo "</td>";
          echo "</tr>";
