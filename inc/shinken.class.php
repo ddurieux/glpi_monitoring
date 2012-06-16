@@ -763,7 +763,15 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_contacts[$i]['service_notification_commands'] = $pmNotificationcommand->fields['command_name'];
          $pmNotificationcommand->getFromDB($a_pmcontact['host_notification_commands']);
       $a_contacts[$i]['host_notification_commands'] = $pmNotificationcommand->fields['command_name'];
-      $a_contacts[$i]['email'] = $user->fields['email'];
+      // Get first email
+      $a_emails = UserEmail::getAllForUser($users_id);
+      $first = 0;
+      foreach ($a_emails as $email) {
+         if ($first == 0) {
+            $a_contacts[$i]['email'] = $email;
+         }
+         $first++;
+      }
       $a_contacts[$i]['pager'] = $user->fields['phone'];
       return $a_contacts;
    }

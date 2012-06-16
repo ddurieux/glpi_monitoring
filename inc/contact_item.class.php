@@ -164,7 +164,14 @@ class PluginMonitoringContact_Item extends CommonDBTM {
          echo $entity->getName()." <strong>(R)</strong>";         
          echo "</td>"; 
          echo "<td class='center'>";
-         echo $user->fields['email'];
+         $a_emails = UserEmail::getAllForUser($data['users_id']);
+         $first = 0;
+         foreach ($a_emails as $email) {
+            if ($first == 0) {
+               echo $email;
+            }
+            $first++;
+         }
          echo "</td>";
          echo "<td class='center'>";
          echo $user->fields['phone'];
