@@ -152,7 +152,7 @@ class PluginMonitoringMessage extends CommonDBTM {
                ORDER BY `id` DESC";
             $result = $DB->query($query);
             while ($data=$DB->fetch_array($result)) {
-               echo "[".convDateTime($data['date_mod'])."] Add ".$data['value']."<br/>";
+               echo "[".Html::convDateTime($data['date_mod'])."] Add ".$data['value']."<br/>";
             }            
             echo "</div>";
          }
@@ -169,7 +169,7 @@ class PluginMonitoringMessage extends CommonDBTM {
                ORDER BY `id` DESC";
             $result = $DB->query($query);
             while ($data=$DB->fetch_array($result)) {
-               echo "[".convDateTime($data['date_mod'])."] Delete ".$data['value']."<br/>";
+               echo "[".Html::convDateTime($data['date_mod'])."] Delete ".$data['value']."<br/>";
             }            
             echo "</div>";
          }
