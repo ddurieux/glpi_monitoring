@@ -299,8 +299,8 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->changeField($newTable, 
                                  'weathermap_regex', 
-                                 'weathermap_regex', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+                                 'weathermap_regex_in', 
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable, 
                                  'id', 
@@ -345,8 +345,11 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'is_weathermap', 
                                  "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
-                                 'weathermap_regex', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+                                 'weathermap_regex_in', 
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->addField($newTable, 
+                                 'weathermap_regex_out', 
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
          $migration->addKey($newTable, 
                             "plugin_monitoring_commands_id");
       $migration->migrationOneTable($newTable);
