@@ -51,7 +51,7 @@ class PluginMonitoringHost extends CommonDBTM {
       global $DB;
       
       $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
-         GROUP BY `itemstype`, `items_id`";
+         GROUP BY `itemtype`, `items_id`";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
          $queryH = "SELECT * FROM `".$this->getTable()."`
