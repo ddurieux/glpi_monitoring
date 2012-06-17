@@ -80,6 +80,7 @@ $LANG['plugin_monitoring']['component'][11]="Liste des tags disponibles";
 $LANG['plugin_monitoring']['component'][12]="Numéro de port réseau";
 $LANG['plugin_monitoring']['component'][13]="Nom dep ort réseau";
 $LANG['plugin_monitoring']['component'][14]="Arguments du composant";
+$LANG['plugin_monitoring']['component'][15]="Exemple";
 
 $LANG['plugin_monitoring']['componentscatalog'][0]="Catalogue de composants";
 $LANG['plugin_monitoring']['componentscatalog'][1]="Intervalle entre 2 notifications(en minutes)";
@@ -215,6 +216,8 @@ $LANG['plugin_monitoring']['weathermap'][14]="Source";
 $LANG['plugin_monitoring']['weathermap'][15]="Destination";
 $LANG['plugin_monitoring']['weathermap'][16]="Bande passante entrante (in)";
 $LANG['plugin_monitoring']['weathermap'][17]="Bande passante sortante (out)";
+$LANG['plugin_monitoring']['weathermap'][18]="Regex passante entrante (in)";
+$LANG['plugin_monitoring']['weathermap'][19]="Regex passante sortante (out)";
 
 $LANG['plugin_monitoring']['realms'][0]="Royaumes (realms)";
 $LANG['plugin_monitoring']['realms'][1]="Royaume (reaml)";

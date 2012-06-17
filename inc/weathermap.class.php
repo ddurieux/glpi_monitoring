@@ -105,6 +105,8 @@ class PluginMonitoringWeathermap extends CommonDBTM {
       $weathermaps_id = $_GET['id'];
       
       $pmWeathermapnode = new PluginMonitoringWeathermapnode();
+      $pmComponent = new PluginMonitoringComponent();
+      $pmService = new PluginMonitoringService();
       
       $this->getFromDB($weathermaps_id);
       
@@ -221,28 +223,20 @@ LINK DEFAULT
             $in = '';
             $out = '';
             while ($dataevent=$DB->fetch_array($resultevent)) {
+               $pmService->getFromDB($datal['plugin_monitoring_services_id']);
+               $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
+               
                $matches1 = array();
-               preg_match("/(?:.*)inBandwidth=([0-9]*).(?:.*)bps outBandwidth=([0-9]*).(?:.*)bps/m", $dataevent['perf_data'], $matches1);
-               if (isset($matches1[1])
-                       AND isset($matches1[2])) {
+               preg_match("/".$pmComponent->fields['weathermap_regex_in']."/m", $dataevent['perf_data'], $matches1);
+               if (isset($matches1[1])) {
                   $in = $matches1[1];
-                  $out = $matches1[2];
+               }
+               $matches1 = array();
+               preg_match("/".$pmComponent->fields['weathermap_regex_out']."/m", $dataevent['perf_data'], $matches1);
+               if (isset($matches1[1])) {
+                  $out = $matches1[1];
                }
             }
-
-//            if ($in == '') {
-//               $queryevent = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
-//                  WHERE `plugin_monitoring_services_id`='".$datal['plugin_monitoring_services_id']."'
-//                     ORDER BY `id` desc
-//                     LIMIT 1";
-//               $resultevent = $DB->query($queryevent);
-//               while ($dataevent=$DB->fetch_array($resultevent)) {
-//                  $matches1 = array();
-//                  preg_match("/(?:.*)inBandwidth=([0-9]*).(?:.*)bps outBandwidth=([0-9]*).(?:.*)bps/m", $dataevent['perf_data'], $matches1);
-//                  $out = $matches1[1];
-//                  $in = $matches1[2];
-//               }               
-//            }
             $in = $this->checkBandwidth("in", $in, $bandwidth);
             $out = $this->checkBandwidth("out", $out, $bandwidth);
             $nodesuffix = '';
