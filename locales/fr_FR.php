@@ -41,6 +41,11 @@
  */
 
 
+$LANG['plugin_monitoring']['availability'][0]="Disponibilité";
+$LANG['plugin_monitoring']['availability'][1]="Mois en cours";
+$LANG['plugin_monitoring']['availability'][2]="Dernier mois";
+$LANG['plugin_monitoring']['availability'][3]="Année en cours";
+
 $LANG['plugin_monitoring']['businessrule'][0]="Règles métier";
 $LANG['plugin_monitoring']['businessrule'][10]="10 sur";
 $LANG['plugin_monitoring']['businessrule'][11]="Groupe";
@@ -66,6 +71,12 @@ $LANG['plugin_monitoring']['command'][3]="Ligne de commande";
 $LANG['plugin_monitoring']['command'][4]="Description des arguments";
 
 $LANG['plugin_monitoring']['component'][0]="Composants";
+$LANG['plugin_monitoring']['component'][10]="Communauté SNMP de l'équipement réseau ou imprimante";
+$LANG['plugin_monitoring']['component'][11]="Liste des tags disponibles";
+$LANG['plugin_monitoring']['component'][12]="Numéro de port réseau";
+$LANG['plugin_monitoring']['component'][13]="Nom de port réseau";
+$LANG['plugin_monitoring']['component'][14]="Arguments du composant";
+$LANG['plugin_monitoring']['component'][15]="Exemple";
 $LANG['plugin_monitoring']['component'][1]="Ajout d'un nouveau composant";
 $LANG['plugin_monitoring']['component'][2]="Composants associés";
 $LANG['plugin_monitoring']['component'][3]="Hôtes statiques";
@@ -75,12 +86,6 @@ $LANG['plugin_monitoring']['component'][6]="Composant";
 $LANG['plugin_monitoring']['component'][7]="Nom du matériel";
 $LANG['plugin_monitoring']['component'][8]="Port réseau ifDescr des matériels réseaux";
 $LANG['plugin_monitoring']['component'][9]="Version SNMP de l'équipement réseau ou imprimante";
-$LANG['plugin_monitoring']['component'][10]="Communauté SNMP de l'équipement réseau ou imprimante";
-$LANG['plugin_monitoring']['component'][11]="Liste des tags disponibles";
-$LANG['plugin_monitoring']['component'][12]="Numéro de port réseau";
-$LANG['plugin_monitoring']['component'][13]="Nom dep ort réseau";
-$LANG['plugin_monitoring']['component'][14]="Arguments du composant";
-$LANG['plugin_monitoring']['component'][15]="Exemple";
 
 $LANG['plugin_monitoring']['componentscatalog'][0]="Catalogue de composants";
 $LANG['plugin_monitoring']['componentscatalog'][1]="Intervalle entre 2 notifications(en minutes)";
@@ -124,6 +129,13 @@ $LANG['plugin_monitoring']['display'][2]="Critique";
 $LANG['plugin_monitoring']['display'][3]="Avertissement";
 $LANG['plugin_monitoring']['display'][4]="OK";
 
+$LANG['plugin_monitoring']['displayview'][0]="Vues";
+$LANG['plugin_monitoring']['displayview'][1]="Compteurs en titre (critique/warning/ok)";
+$LANG['plugin_monitoring']['displayview'][2]="Afficher sur la page d'accueil de GLPI";
+$LANG['plugin_monitoring']['displayview'][3]="Element à afficher";
+$LANG['plugin_monitoring']['displayview'][4]="Vues sur la page d'accueil de GLPI";
+$LANG['plugin_monitoring']['displayview'][5]="% de la largeur de la page";
+
 $LANG['plugin_monitoring']['entity'][0]="Etiquette";
 $LANG['plugin_monitoring']['entity'][1]="Définir l'étiquette pour lier une entité avec un serveur Shinken";
 
@@ -131,7 +143,6 @@ $LANG['plugin_monitoring']['grouphost'][0]="Groupes de hôtes";
 $LANG['plugin_monitoring']['grouphost'][1]="Groupe de hôtes";
 
 $LANG['plugin_monitoring']['host'][0]="hôtes";
-$LANG['plugin_monitoring']['host'][10]="Dernier mois";
 $LANG['plugin_monitoring']['host'][11]="6 derniers mois";
 $LANG['plugin_monitoring']['host'][12]="Dernière année";
 $LANG['plugin_monitoring']['host'][13]="Etat ok";
@@ -152,6 +163,17 @@ $LANG['plugin_monitoring']['host'][8]="Hôte";
 $LANG['plugin_monitoring']['host'][9]="Période de contrôle";
 
 $LANG['plugin_monitoring']['hostconfig'][0]="Configuration des hôtes";
+
+$LANG['plugin_monitoring']['log'][0]="Logs";
+$LANG['plugin_monitoring']['log'][1]="La configuration a changée";
+$LANG['plugin_monitoring']['log'][2]="ressources ajoutées";
+$LANG['plugin_monitoring']['log'][3]="ressources supprimées";
+$LANG['plugin_monitoring']['log'][4]="Redémarrer Shinken pour recharger cette nouvelle configuration";
+
+$LANG['plugin_monitoring']['networkport'][0]="Ports réseaux des équipements réseaux";
+
+$LANG['plugin_monitoring']['realms'][0]="Royaumes (realms)";
+$LANG['plugin_monitoring']['realms'][1]="Royaume (reaml)";
 
 $LANG['plugin_monitoring']['rrdtemplates'][0]="Gabarits RRDtool";
 $LANG['plugin_monitoring']['rrdtemplates'][1]="Charger les fichiers perfdata et graph";
@@ -192,22 +214,7 @@ $LANG['plugin_monitoring']['servicesuggest'][0]="Suggestions";
 
 $LANG['plugin_monitoring']['title'][0]="Monitoring";
 
-$LANG['plugin_monitoring']['log'][0]="Logs";
-$LANG['plugin_monitoring']['log'][1]="La configuration a changée";
-$LANG['plugin_monitoring']['log'][2]="ressources ajoutées";
-$LANG['plugin_monitoring']['log'][3]="ressources supprimées";
-$LANG['plugin_monitoring']['log'][4]="Redémarrer Shinken pour recharger cette nouvelle configuration";
-
 $LANG['plugin_monitoring']['weathermap'][0]="Weathermap";
-$LANG['plugin_monitoring']['weathermap'][1]="Utiliser ce composant pour Weathermap";
-$LANG['plugin_monitoring']['weathermap'][2]="Expression régulière";
-$LANG['plugin_monitoring']['weathermap'][3]="Longueur";
-$LANG['plugin_monitoring']['weathermap'][4]="Hauteur";
-$LANG['plugin_monitoring']['weathermap'][5]="Image de fond";
-$LANG['plugin_monitoring']['weathermap'][6]="Noeud et liens";
-$LANG['plugin_monitoring']['weathermap'][7]="Noeud";
-$LANG['plugin_monitoring']['weathermap'][8]="Ajouter un noeud";
-$LANG['plugin_monitoring']['weathermap'][9]="Modifier un noeud";
 $LANG['plugin_monitoring']['weathermap'][10]="Supprimer un noeud";
 $LANG['plugin_monitoring']['weathermap'][11]="Ajouter un lien";
 $LANG['plugin_monitoring']['weathermap'][12]="Modifier un lien";
@@ -218,23 +225,13 @@ $LANG['plugin_monitoring']['weathermap'][16]="Bande passante entrante (in)";
 $LANG['plugin_monitoring']['weathermap'][17]="Bande passante sortante (out)";
 $LANG['plugin_monitoring']['weathermap'][18]="Regex passante entrante (in)";
 $LANG['plugin_monitoring']['weathermap'][19]="Regex passante sortante (out)";
-
-$LANG['plugin_monitoring']['realms'][0]="Royaumes (realms)";
-$LANG['plugin_monitoring']['realms'][1]="Royaume (reaml)";
-
-$LANG['plugin_monitoring']['displayview'][0]="Vues";
-$LANG['plugin_monitoring']['displayview'][1]="Compteurs en titre (critique/warning/ok)";
-$LANG['plugin_monitoring']['displayview'][2]="Afficher sur la page d'accueil de GLPI";
-$LANG['plugin_monitoring']['displayview'][3]="Element à afficher";
-$LANG['plugin_monitoring']['displayview'][4]="Vues sur la page d'accueil de GLPI";
-$LANG['plugin_monitoring']['displayview'][5]="% de la largeur de la page";
-
-$LANG['plugin_monitoring']['dependency'][0]="Dépendances";
-
-$LANG['plugin_monitoring']['networkport'][0]='Ports réseaux des équipements réseaux';
-
-$LANG['plugin_monitoring']['availability'][0]='Disponibilité';
-$LANG['plugin_monitoring']['availability'][1]='Mois en cours';
-$LANG['plugin_monitoring']['availability'][2]='Mois dernier';
-$LANG['plugin_monitoring']['availability'][3]='Année en cours';
+$LANG['plugin_monitoring']['weathermap'][1]="Utiliser ce composant pour Weathermap";
+$LANG['plugin_monitoring']['weathermap'][2]="Expression régulière";
+$LANG['plugin_monitoring']['weathermap'][3]="Longueur";
+$LANG['plugin_monitoring']['weathermap'][4]="Hauteur";
+$LANG['plugin_monitoring']['weathermap'][5]="Image de fond";
+$LANG['plugin_monitoring']['weathermap'][6]="Noeud et liens";
+$LANG['plugin_monitoring']['weathermap'][7]="Noeud";
+$LANG['plugin_monitoring']['weathermap'][8]="Ajouter un noeud";
+$LANG['plugin_monitoring']['weathermap'][9]="Modifier un noeud";
 ?>

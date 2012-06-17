@@ -44,7 +44,6 @@ $LANG['plugin_monitoring']['host'][6]="Passive checks";
 $LANG['plugin_monitoring']['host'][7]="Dynamic dependencies are";
 $LANG['plugin_monitoring']['host'][8]="Host";
 $LANG['plugin_monitoring']['host'][9]="Check period";
-$LANG['plugin_monitoring']['host'][10]="Last month";
 $LANG['plugin_monitoring']['host'][11]="Last 6 months";
 $LANG['plugin_monitoring']['host'][12]="Last year";
 $LANG['plugin_monitoring']['host'][13]="State ok";
@@ -126,7 +125,7 @@ $LANG['plugin_monitoring']['service'][20]="Resource";
 $LANG['plugin_monitoring']['service'][21]="All resources";
 $LANG['plugin_monitoring']['service'][22]="Time in ms";
 $LANG['plugin_monitoring']['service'][23]="Resource deleted";
-$LANG['plugin_monitoring']['service'][24]="Custom arguments for this resource (empty = inherit)";
+$LANG['plugin_monitoring']['service'][24]="Custom arguments for this resource (empty : inherit)";
 $LANG['plugin_monitoring']['service'][25]="Configure";
 
 $LANG['plugin_monitoring']['servicesuggest'][0]="Suggests";
@@ -220,13 +219,11 @@ $LANG['plugin_monitoring']['displayview'][3]="Element to display";
 $LANG['plugin_monitoring']['displayview'][4]="Views in GLPI home page";
 $LANG['plugin_monitoring']['displayview'][5]="% of the width of the frame";
 
-$LANG['plugin_monitoring']['dependency'][0]="Dependencies";
+$LANG['plugin_monitoring']['networkport'][0]="Network ports of networking devices";
 
-$LANG['plugin_monitoring']['networkport'][0]='Network ports of networking devices';
-
-$LANG['plugin_monitoring']['availability'][0]='Availability';
-$LANG['plugin_monitoring']['availability'][1]='Current month';
-$LANG['plugin_monitoring']['availability'][2]='Last month';
-$LANG['plugin_monitoring']['availability'][3]='Current year';
+$LANG['plugin_monitoring']['availability'][0]="Availability";
+$LANG['plugin_monitoring']['availability'][1]="Current month";
+$LANG['plugin_monitoring']['availability'][2]="Last month";
+$LANG['plugin_monitoring']['availability'][3]="Current year";
 
 ?>
