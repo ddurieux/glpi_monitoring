@@ -371,7 +371,7 @@ new CanvasXpress(
          
          echo "<tr class='tab_bg_1'>";
          echo "<th>";
-         echo $LANG['plugin_monitoring']['dependency'][0];
+         echo $LANG['plugin_monitoring']['host'][1];
          echo "</th>";
          echo "</tr>";
          

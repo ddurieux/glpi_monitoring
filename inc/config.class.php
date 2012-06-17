@@ -94,7 +94,6 @@ class PluginMonitoringConfig extends CommonDBTM {
       $result = $DB->query($query);
       if ($DB->numrows($result) == '0') {
          $input = array();
-         $input['rrdtoolpath'] = '/usr/bin/';
          $input['timezones'] = '["0"]';
          $input['logretention'] = 30;
          $this->add($input);         
@@ -121,7 +120,6 @@ class PluginMonitoringConfig extends CommonDBTM {
          
       } else {
          $input = array();
-         $input['rrdtoolpath'] = "/usr/local/bin/";
          $input['phppath'] = "/usr/bin/php";
          $this->add($input);
          $this->getFromDB("1");
@@ -132,9 +130,8 @@ class PluginMonitoringConfig extends CommonDBTM {
       $this->getFromDB($items_id);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['plugin_monitoring']['config'][2]."&nbsp;:</td>";
+      echo "<td></td>";
       echo "<td align='center'>";
-      echo "<input name='rrdtoolpath' type='text' value='".$this->fields['rrdtoolpath']."' size='40'/>";
       echo "</td>";
       echo "<td rowspan='3'>";
       echo $LANG['plugin_monitoring']['config'][0]."&nbsp:";
@@ -210,15 +207,6 @@ class PluginMonitoringConfig extends CommonDBTM {
       $this->showFormButtons($options);
 
       return true;
-   }
-
-   
-   
-   static function getRRDPath() {
-      
-      $pmConfig = new PluginMonitoringConfig();
-      $pmConfig->getFromDB("1");
-      return $pmConfig->getField("rrdtoolpath");
    }
    
    
