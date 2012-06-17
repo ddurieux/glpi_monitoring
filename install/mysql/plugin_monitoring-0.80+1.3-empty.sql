@@ -49,7 +49,8 @@ CREATE TABLE `glpi_plugin_monitoring_components` (
   `graph_template` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `link` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `is_weathermap` tinyint(1) NOT NULL DEFAULT '0',
-  `weathermap_regex` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `weathermap_regex_in` text DEFAULT NULL COLLATE utf8_unicode_ci,
+  `weathermap_regex_out` text DEFAULT NULL COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
    KEY `plugin_monitoring_commands_id` (`plugin_monitoring_commands_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

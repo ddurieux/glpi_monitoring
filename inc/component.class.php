@@ -380,10 +380,33 @@ class PluginMonitoringComponent extends CommonDBTM {
       Dropdown::showYesNo("is_weathermap", $this->fields['is_weathermap']);
       echo "</td>";
       echo "<td>";
-      echo $LANG['plugin_monitoring']['weathermap'][2]."&nbsp;:";
+      $tooltip = $LANG['plugin_monitoring']['component'][15]." :<br/><br/>";
+      $tooltip .= "perfdata : <i>inUsage=0.00%;85;98 outUsage=0.00%;85;98 inBandwidth=<strong>789944</strong>.00bps outBandwidth=486006.00bps inAbsolut=0 outAbsolut=12665653</i><br/><br/>";
+      $tooltip .= $LANG['plugin_monitoring']['weathermap'][18]." : <i><strong>(?:.*)inBandwidth=(\d+)(?:.*)</strong></i><br/><br/>";
+      $tooltip .= $LANG['rulesengine'][85]." : <strong>789944</strong>";
+      echo $LANG['plugin_monitoring']['weathermap'][18]."&nbsp;";
+      showToolTip($tooltip, array('autoclose'=>false));
+      echo "&nbsp;:";
       echo "</td>";
       echo "<td>";
-      echo "<input type='text' name='weathermap_regex' value='".$this->fields['weathermap_regex']."' />";
+      echo "<input type='text' name='weathermap_regex_in' value='".$this->fields['weathermap_regex_in']."' size='40' />";
+      echo "</td>"; 
+      echo "</tr>";
+      
+      echo "<tr>";
+      echo "<td colspan='2'>";
+      echo "</td>";
+      echo "<td>";
+      $tooltip = $LANG['plugin_monitoring']['component'][15]." :<br/><br/>";
+      $tooltip .= "perfdata : <i>inUsage=0.00%;85;98 outUsage=0.00%;85;98 inBandwidth=789944.00bps outBandwidth=<strong>486006</strong>.00bps inAbsolut=0 outAbsolut=12665653</i><br/><br/>";
+      $tooltip .= $LANG['plugin_monitoring']['weathermap'][19]." : <i><strong>(?:.*)outBandwidth=(\d+)(?:.*)</strong></i><br/><br/>";
+      $tooltip .= $LANG['rulesengine'][85]." : <strong>789944</strong>";
+      echo $LANG['plugin_monitoring']['weathermap'][19]."&nbsp;";
+      showToolTip($tooltip, array('autoclose'=>false));
+      echo "&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      echo "<input type='text' name='weathermap_regex_out' value='".$this->fields['weathermap_regex_out']."' size='40' />";
       echo "</td>"; 
       echo "</tr>";
       

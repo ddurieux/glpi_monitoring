@@ -163,6 +163,7 @@ $LANG['plugin_monitoring']['component'][11]="List of tags available";
 $LANG['plugin_monitoring']['component'][12]="Network port number";
 $LANG['plugin_monitoring']['component'][13]="Network port name";
 $LANG['plugin_monitoring']['component'][14]="Component arguments";
+$LANG['plugin_monitoring']['component'][15]="Example";
 
 $LANG['plugin_monitoring']['componentscatalog'][0]="Components catalog";
 $LANG['plugin_monitoring']['componentscatalog'][1]="Interval between 2 notifications (in minutes)";
@@ -206,6 +207,8 @@ $LANG['plugin_monitoring']['weathermap'][14]="Source";
 $LANG['plugin_monitoring']['weathermap'][15]="Destination";
 $LANG['plugin_monitoring']['weathermap'][16]="Max bandwidth input";
 $LANG['plugin_monitoring']['weathermap'][17]="Max bandwidth output";
+$LANG['plugin_monitoring']['weathermap'][18]="Regex bandwidth input";
+$LANG['plugin_monitoring']['weathermap'][19]="Regex bandwidth output";
 
 $LANG['plugin_monitoring']['realms'][0]="Reamls";
 $LANG['plugin_monitoring']['realms'][1]="Reaml";
