@@ -53,7 +53,7 @@ $pMonitoringComponent = new PluginMonitoringComponent();
 
 if (isset($_POST["copy"])) {
    $pMonitoringComponent->showForm(0, array(), $_POST);
-   commonFooter();
+   Html::footer();
    exit;
 } else if (isset ($_POST["add"])) {
    if (isset($_POST['arg'])) {

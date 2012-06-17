@@ -52,7 +52,7 @@ $pMonitoringCommand = new PluginMonitoringCommand();
 
 if (isset($_POST["copy"])) {
    $pMonitoringCommand->showForm("", array(), $_POST);
-   commonFooter();
+   Html::footer();
    exit;
 } else if (isset ($_POST["add"])) {
    $_POST = $pMonitoringCommand->convertPostdata($_POST);
