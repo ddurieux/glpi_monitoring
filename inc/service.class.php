@@ -131,10 +131,8 @@ class PluginMonitoringService extends CommonDBTM {
       
       $tab[8]['table'] = "glpi_plugin_monitoring_componentscatalogs";
       $tab[8]['field'] = 'name';
-//      $tab[8]['linkfield'] = 'plugin_monitoring_componentscatalogs_hosts_id';
       $tab[8]['name'] = $LANG['plugin_monitoring']['componentscatalog'][0];
       $tab[8]['datatype'] = 'itemlink';
-//      $tab[8]['itemlink_type']  = 'PluginMonitoringComponentcatalog';
       
       $tab[20]['table'] = $this->getTable();
       $tab[20]['field'] = 'Computer';

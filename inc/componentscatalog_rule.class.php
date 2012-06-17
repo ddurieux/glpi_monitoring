@@ -586,6 +586,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       global $LANG, $CFG_GLPI;
 
       // Default values of parameters
+$p = array();
       $p['link']        = array();//
       $p['field']       = array();
       $p['contains']    = array();
@@ -992,6 +993,7 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
 
 
       // Default values of parameters
+$p = array();
       $p['link']        = array();//
       $p['field']       = array();//
       $p['contains']    = array();//

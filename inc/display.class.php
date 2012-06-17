@@ -51,7 +51,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       global $LANG,$CFG_GLPI;
 
       if (isset($_GET['glpi_tab'])) {
-         setActiveTab("PluginMonitoringDisplay",$_GET['glpi_tab']);
+         Session::setActiveTab("PluginMonitoringDisplay",$_GET['glpi_tab']);
       }
       
       $pmDisplayview = new PluginMonitoringDisplayview();
@@ -573,7 +573,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
    function displayGraphs($itemtype, $items_id) {
       global $CFG_GLPI,$LANG;
 
-      $to = new PluginMonitoringRrdtool();
       $pmComponent = new PluginMonitoringComponent();
       $pmConfig = new PluginMonitoringConfig();
 
@@ -645,14 +644,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
                                        $timezone, 
                                        $time);
 
-
-         
-         
-//         $to->displayGLPIGraph($pmComponent->fields['graph_template'], 
-//                               $itemtype, 
-//                               $items_id, 
-//                               $timezone, 
-//                               $time);
          $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=".$itemtype."-".$items_id."-".$time.$timezone_file.".png'/>";
          echo $img;
          echo "</td>";

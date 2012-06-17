@@ -472,7 +472,7 @@ function point_it(event){
          $params = array('items_id'        => '__VALUE__',
                          'rand'            => $rand);
 
-         ajaxUpdateItemOnSelectEvent("dropdown_id_update$rand", "show_updatenode$rand",
+         Ajax::updateItemOnSelectEvent("dropdown_id_update$rand", "show_updatenode$rand",
                                      $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownWnode.php",
                                      $params, false);
 
@@ -793,7 +793,7 @@ function point_it(event){
          $params = array('items_id'        => '__VALUE__',
                          'rand'            => $rand);
 
-         ajaxUpdateItemOnSelectEvent("dropdown_id_update$rand", "show_updatelink$rand",
+         Ajax::updateItemOnSelectEvent("dropdown_id_update$rand", "show_updatelink$rand",
                                      $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownWlink.php",
                                      $params, false);
          echo "<span id='show_updatelink$rand'></span>\n";
