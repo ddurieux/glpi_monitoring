@@ -849,7 +849,7 @@ function point_it(event){
          $outputhtml = "--htmloutput ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".html";
       }
       $end = '';
-      if (preg_match('/^windows/i', php_uname())) {
+      if (preg_match('/^Windows/i', php_uname())) {
          session_write_close();
          $end = ' && exit';
       }
@@ -887,7 +887,7 @@ function point_it(event){
    
    function showWidget($id, $pourcentage) {
       global $LANG, $DB, $CFG_GLPI;
-   
+
       $this->generateWeathermap($id);
       $imgdisplay = $CFG_GLPI['root_doc'].'/plugins/monitoring/front/send.php?file=weathermap-'.$id.'.png';
       $img = GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$id.".png";

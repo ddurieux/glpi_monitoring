@@ -84,8 +84,8 @@ switch($_REQUEST['glpi_tab']) {
          unset($_GET['glpi_tab']);
       }
       Search::manageGetValues("PluginMonitoringService");
-      Search::showGenericSearch("PluginMonitoringService", $_SESSION['plugin_monitoring']['service']);
-
+      Search::showGenericSearch("PluginMonitoringService", $_GET);
+      $_SESSION['plugin_monitoring']['service'] = $_GET;
       $pmDisplay->showBoard(950);
       if (isset($_SESSION['glpisearch']['PluginMonitoringService']['reset'])) {
          unset($_SESSION['glpisearch']['PluginMonitoringService']['reset']);
