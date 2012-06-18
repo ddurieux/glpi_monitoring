@@ -159,7 +159,20 @@ class PluginMonitoringShinken extends CommonDBTM {
 
                $a_hosts[$i]['host_name'] = $classname."-".$data['items_id']."-".preg_replace("/[^A-Za-z0-9]/","",$class->fields['name']);
                $a_hosts_found[$a_hosts[$i]['host_name']] = 1;
-               $a_hosts[$i]['alias'] = $a_hosts[$i]['host_name'];
+               $a_hosts[$i]['alias'] = preg_replace("/[^A-Za-z0-9]/","",$class->fields['name'])." / ".$classname."-".$data['items_id'];
+               if (isset($class->fields['networkequipmenttypes_id'])) {                  
+                  if ($class->fields['networkequipmenttypes_id'] > 0) {
+                     $a_hosts[$i]['alias'] .= " (".Dropdown::getDropdownName("glpi_networkequipmenttypes", $class->fields['networkequipmenttypes_id']).")";
+                  }
+               } else if (isset($class->fields['computertypes_id'])) {
+                  if ($class->fields['computertypes_id'] > 0) {
+                     $a_hosts[$i]['alias'] .= " (".Dropdown::getDropdownName("glpi_computertypes", $class->fields['computertypes_id']).")";
+                  }
+               } else if (isset($class->fields['printertypes_id'])) {
+                  if ($class->fields['printertypes_id'] > 0) {
+                     $a_hosts[$i]['alias'] .= " (".Dropdown::getDropdownName("glpi_printertypes", $class->fields['printertypes_id']).")";
+                  }
+               }
                $ip = PluginMonitoringHostaddress::getIp($data['items_id'], $data['itemtype'], $class->fields['name']);
 
                $a_hosts[$i]['address'] = $ip;
