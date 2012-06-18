@@ -356,9 +356,9 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
       if ($a_times[0] > 0) {
          echo "<td style='background-color: rgb(255, 120, 0);-moz-border-radius: 4px;-webkit-border-radius: 4px;-o-border-radius: 4px;padding: 2px;' align='center'>";
          if ($tooltip == '1') {
-            $displaytime = '&nbsp;'.showToolTip(timestampToString($a_times[0]), array('display'=>false));
+            $displaytime = '&nbsp;'.Html::showToolTip(Html::timestampToString($a_times[0]), array('display'=>false));
          } else {
-            $displaytime = '<br/>'.timestampToString($a_times[0]);
+            $displaytime = '<br/>'.Html::timestampToString($a_times[0]);
          }
       } else {
          echo "<td align='center'>";
