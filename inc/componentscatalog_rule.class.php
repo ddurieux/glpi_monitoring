@@ -95,13 +95,10 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       $result = $DB->query($query);
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
-      echo "<th>";
+      echo "<th colspan='3'>";
       echo $LANG['rulesengine'][17];
       echo "</th>";
       echo "</tr>";
-      echo "</table>";
-
-      echo "<table class='tab_cadre_fixe'>";     
       
       echo "<tr>";
       echo "<th width='10'>&nbsp;</th>";
