@@ -280,7 +280,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
          }
       }
       if ($where != '') {
-         $where .= " AND ";
+         $where = "(".$where;
+         $where .= ") AND ";
       }
       $where .= ' `glpi_plugin_monitoring_services`.`entities_id` IN ('.$_SESSION['glpiactiveentities_string'].')';
 
