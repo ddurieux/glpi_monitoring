@@ -280,7 +280,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
          }
       }
       if ($where != '') {
-         $where .= " AND ";
+         $where = "(".$where;
+         $where .= ") AND ";
       }
       $where .= ' `glpi_plugin_monitoring_services`.`entities_id` IN ('.$_SESSION['glpiactiveentities_string'].')';
 
@@ -715,7 +716,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
                   ON `plugin_monitoring_componentscatalogs_hosts_id`=`".$pmComponentscatalog_Host->getTable()."`.`id`
                WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'
                   AND (`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
-                          AND `state_type`='HARD'";
+                  AND `state_type`='HARD'
+                  AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
             $result = $DB->query($query);
             $data2 = $DB->fetch_assoc($result);
             if ($data2['cpt'] > 0) {
@@ -726,7 +728,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
                      ON `plugin_monitoring_componentscatalogs_hosts_id`=`".$pmComponentscatalog_Host->getTable()."`.`id`
                   WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'
                      AND (`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
-                             AND `state_type`='HARD'";
+                     AND `state_type`='HARD'
+                     AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
                $result = $DB->query($query);
                $data2 = $DB->fetch_assoc($result);
                if ($data2['cpt'] > 0) {
@@ -736,7 +739,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
                      LEFT JOIN `glpi_plugin_monitoring_services` 
                         ON `plugin_monitoring_componentscatalogs_hosts_id`=`".$pmComponentscatalog_Host->getTable()."`.`id`
                      WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'
-                        AND (`state`='OK' OR `state`='UP') AND `state_type`='HARD'";
+                     AND (`state`='OK' OR `state`='UP') AND `state_type`='HARD'
+                     AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
                   $result = $DB->query($query);
                   $data2 = $DB->fetch_assoc($result);
                   if ($data2['cpt'] > 0) {
@@ -750,7 +754,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
                   ON `plugin_monitoring_componentscatalogs_hosts_id`=`".$pmComponentscatalog_Host->getTable()."`.`id`
                WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'
                   AND (`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
-                          AND `state_type`='SOFT'";
+                  AND `state_type`='SOFT'
+                  AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
             $result = $DB->query($query);
             $data2 = $DB->fetch_assoc($result);
             if ($data2['cpt'] > 0) {
@@ -761,7 +766,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
                      ON `plugin_monitoring_componentscatalogs_hosts_id`=`".$pmComponentscatalog_Host->getTable()."`.`id`
                   WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'
                      AND (`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
-                             AND `state_type`='SOFT'";
+                     AND `state_type`='SOFT'
+                     AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
                $result = $DB->query($query);
                $data2 = $DB->fetch_assoc($result);
                if ($data2['cpt'] > 0) {
@@ -771,7 +777,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
                      LEFT JOIN `glpi_plugin_monitoring_services` 
                         ON `plugin_monitoring_componentscatalogs_hosts_id`=`".$pmComponentscatalog_Host->getTable()."`.`id`
                      WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'
-                        AND (`state`='OK' OR `state`='UP') AND `state_type`='SOFT'";
+                        AND (`state`='OK' OR `state`='UP') AND `state_type`='SOFT'
+                        AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
                   $result = $DB->query($query);
                   $data2 = $DB->fetch_assoc($result);
                   if ($data2['cpt'] > 0) {
@@ -791,26 +798,32 @@ class PluginMonitoringDisplay extends CommonDBTM {
             
       } else if ($type == 'Businessrules') {
          $ok = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
-                 "(`state`='OK' OR `state`='UP') AND `state_type`='HARD'");
+                 "(`state`='OK' OR `state`='UP') AND `state_type`='HARD'
+                 AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
          $warning = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
                  "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
-                    AND `state_type`='HARD'");
+                    AND `state_type`='HARD'
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
          $critical = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
                  "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
-                    AND `state_type`='HARD'");
+                    AND `state_type`='HARD'
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
          $warning_soft = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
                  "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
-                    AND `state_type`='SOFT'");
+                    AND `state_type`='SOFT'
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
          $critical_soft = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
                  "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
-                    AND `state_type`='SOFT'");
+                    AND `state_type`='SOFT'
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
          $ok_soft = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
-                 "(`state`='OK' OR `state`='UP') AND `state_type`='SOFT'");
+                 "(`state`='OK' OR `state`='UP') AND `state_type`='SOFT'
+                  AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
          
          // ** Manage play sound if critical increase since last refresh
             if (isset($_SESSION['plugin_monitoring_dashboard_Businessrules'])) {
