@@ -85,7 +85,11 @@ if (isset($_SESSION['glpi_tabs']['pluginmonitoringdisplay'])) {
 } else {
    $_SESSION['plugin_monitoring_displaytab'] = '';
 }
-   
+
+
+echo "<!--[if IE]><script type='text/javascript' src='".GLPI_ROOT."/plugins/monitoring/lib/canvas/excanvas.js'></script><![endif]-->
+ <script type='text/javascript' src='".GLPI_ROOT."/plugins/monitoring/lib/canvas/canvasXpress.min.js'></script>";
+
 $pMonitoringDisplay->showTabs();
 echo "<style type='text/css'>
 div#tabcontent {
