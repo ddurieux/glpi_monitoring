@@ -228,6 +228,8 @@ class PluginMonitoringShinken extends CommonDBTM {
                                                                                     $classname,
                                                                                     $class->getID()));
                $a_hosts[$i]['realm'] = $pmRealm->fields['name'];
+               $a_hosts[$i]['process_perf_data'] = '1';
+               $a_hosts[$i]['notification_interval'] = '30';
                // For contact check if a service with this component
                   $a_hosts[$i]['contacts'] = '';
                   $querycont = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
@@ -241,6 +243,10 @@ class PluginMonitoringShinken extends CommonDBTM {
                   $resultcont = $DB->query($querycont);
                   if ($DB->numrows($resultcont) != 0) {
                      $a_componentscatalogs_hosts = $DB->fetch_assoc($resultcont);
+                        // Notification interval
+                        $pmComponentscatalog = new PluginMonitoringComponentscatalog();
+                        $pmComponentscatalog->getFromDB($a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']);
+                        $a_hosts[$i]['notification_interval'] = $pmComponentscatalog->fields['notification_interval'];
                      $a_contacts = array();
                      $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
                         AND `items_id`='".$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']."'");
@@ -256,8 +262,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                         $a_hosts[$i]['contacts'] = implode(',', $a_contacts);
                      }
                   }
-               $a_hosts[$i]['process_perf_data'] = '1';
-               $a_hosts[$i]['notification_interval'] = '30';
+               
                if ($calendar->getFromDB($a_fields['calendars_id'])) {
                   $a_hosts[$i]['notification_period'] = $calendar->fields['name'];
                } else {
