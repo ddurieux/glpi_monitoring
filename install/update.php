@@ -601,6 +601,58 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       
     /*
+    * Table glpi_plugin_monitoring_servicegraphs
+    */
+      $newTable = "glpi_plugin_monitoring_servicegraphs";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        `id` bigint(30) NOT NULL AUTO_INCREMENT,
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+         $DB->query($query);
+      }
+         $migration->changeField($newTable, 
+                                 'id', 
+                                 'id', 
+                                 "bigint(30) NOT NULL AUTO_INCREMENT");
+         $migration->changeField($newTable, 
+                                 'plugin_monitoring_services_id', 
+                                 'plugin_monitoring_services_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'date', 
+                                 'date', 
+                                 "datetime DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'data', 
+                                 'data', 
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci"); 
+         $migration->changeField($newTable,
+                                 'type', 
+                                 'type', 
+                                 "varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL");
+      $migration->migrationOneTable($newTable);
+         $migration->addField($newTable, 
+                              'plugin_monitoring_services_id', 
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'date', 
+                              "datetime DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'data', 
+                              "text DEFAULT NULL COLLATE utf8_unicode_ci"); 
+         $migration->addField($newTable,
+                              'type', 
+                              "varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addKey($newTable,
+                            array('plugin_monitoring_services_id',
+                                  'type'),
+                            'plugin_monitoring_services_id');
+      $migration->migrationOneTable($newTable);
+      
+      
+      
+    /*
     * Table glpi_plugin_monitoring_contacttemplates
     */
       $newTable = "glpi_plugin_monitoring_contacttemplates";
