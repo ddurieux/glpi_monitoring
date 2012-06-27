@@ -110,16 +110,14 @@ class PluginMonitoringWeathermap extends CommonDBTM {
       
       $this->getFromDB($weathermaps_id);
       
-      echo "\n";
       if ($this->fields['background'] != '') {
          echo "BACKGROUND ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermapbg/".$this->fields['background']."\n";
       }
       // image file to generate
-      echo "IMAGEOUTPUTFILE test.png\n";
+      echo "IMAGEOUTPUTFILE ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png\n";
       echo "\n";
       
-      echo "
-WIDTH ".$this->fields["width"]."
+      echo "WIDTH ".$this->fields["width"]."
 HEIGHT ".$this->fields["height"]."
 HTMLSTYLE overlib
 TITLE ".$this->fields["name"]."
@@ -141,17 +139,14 @@ SET key_hidezero_DEFAULT 1
 
 # End of global section
 
-
 # TEMPLATE-only NODEs:
 NODE DEFAULT
 	MAXVALUE 100
-
 
 # TEMPLATE-only LINKs:
 LINK DEFAULT
 	WIDTH 4
 	BANDWIDTH 100M
-
 
 # regular NODEs:
 ";
@@ -833,6 +828,34 @@ function point_it(event){
    
    
    
+//   function generateWeathermap($weathermaps_id, $force=0) {
+//      global $CFG_GLPI;
+//            
+//      if ($force == '0'
+//              AND file_exists(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png")) {
+//         $time_generate = filectime(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png");
+//         if (($time_generate + 60) > date('U')) {
+//            return;
+//         }
+//      }
+//
+//      $outputhtml = '';
+//      if (strstr($_SERVER["PHP_SELF"], "ajax/weathermap.tabs.php")) {
+//         $outputhtml = "--htmloutput ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".html";
+//      }
+//      $end = '';
+//      if (preg_match('/^Windows/i', php_uname())) {
+//         session_write_close();
+//         $end = ' && exit';
+//      }
+//      system(PluginMonitoringConfig::getPHPPath()." ".GLPI_ROOT."/plugins/monitoring/lib/weathermap/weathermap ".
+//         "--config http://".$_SERVER['SERVER_NAME'].$CFG_GLPI['root_doc']."/plugins/monitoring/front/weathermap_conf.php?id=".$weathermaps_id." ".
+//         "--output ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png ".$outputhtml.$end);
+//
+//   }
+   
+   
+   
    function generateWeathermap($weathermaps_id, $force=0) {
       global $CFG_GLPI;
             
@@ -842,20 +865,49 @@ function point_it(event){
          if (($time_generate + 60) > date('U')) {
             return;
          }
-      }
+      } 
 
-      $outputhtml = '';
-      if (strstr($_SERVER["PHP_SELF"], "ajax/weathermap.tabs.php")) {
-         $outputhtml = "--htmloutput ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".html";
+      require_once GLPI_ROOT."/plugins/monitoring/lib/weathermap/WeatherMap.functions.php";
+      require_once GLPI_ROOT."/plugins/monitoring/lib/weathermap/HTML_ImageMap.class.php";
+      require_once GLPI_ROOT."/plugins/monitoring/lib/weathermap/Weathermap.class.php";
+      require_once GLPI_ROOT."/plugins/monitoring/lib/weathermap/WeatherMapNode.class.php";
+      require_once GLPI_ROOT."/plugins/monitoring/lib/weathermap/WeatherMapLink.class.php";
+
+      $map=new WeatherMap();
+      $map->context="cli";
+      $map->debugging = true;
+
+
+      if ($map->ReadConfig("http://".$_SERVER['SERVER_NAME'].$CFG_GLPI['root_doc']."/plugins/monitoring/front/weathermap_conf.php?id=".$weathermaps_id)) {
+
+         $imagefile=GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png";
+
+         $map->ReadData();
+
+         if ($imagefile != '') {
+            $map->DrawMap($imagefile);
+            $map->imagefile=$imagefile;
+         }
+
+      } else { 
+         echo "Problem to generate weathermap"; 
       }
-      $end = '';
-      if (preg_match('/^Windows/i', php_uname())) {
-         session_write_close();
-         $end = ' && exit';
-      }
-      system(PluginMonitoringConfig::getPHPPath()." ".GLPI_ROOT."/plugins/monitoring/lib/weathermap/weathermap ".
-         "--config http://".$_SERVER['SERVER_NAME'].$CFG_GLPI['root_doc']."/plugins/monitoring/front/weathermap_conf.php?id=".$weathermaps_id." ".
-         "--output ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png ".$outputhtml.$end);
+  
+      
+      
+
+//      $outputhtml = '';
+//      if (strstr($_SERVER["PHP_SELF"], "ajax/weathermap.tabs.php")) {
+//         $outputhtml = "--htmloutput ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".html";
+//      }
+//      $end = '';
+//      if (preg_match('/^Windows/i', php_uname())) {
+//         session_write_close();
+//         $end = ' && exit';
+//      }
+//      system(PluginMonitoringConfig::getPHPPath()." ".GLPI_ROOT."/plugins/monitoring/lib/weathermap/weathermap ".
+//         "--config http://".$_SERVER['SERVER_NAME'].$CFG_GLPI['root_doc']."/plugins/monitoring/front/weathermap_conf.php?id=".$weathermaps_id." ".
+//         "--output ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png ".$outputhtml.$end);
 
    }
    
