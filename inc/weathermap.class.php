@@ -906,8 +906,10 @@ function point_it(event){
          foreach ($lines as $line) {
             $match = array();
             preg_match_all("/\<area id=\"([\w\d:]*)\"  href=\"(?:.*)items_id=(\d+)\" /", $line, $match);
-            $objects_id[$match[1][0]] = $match[1][0];
-            $services_id[$match[1][0]] = $match[2][0];
+            if (isset($match[1][0])) {
+               $objects_id[$match[1][0]] = $match[1][0];
+               $services_id[$match[1][0]] = $match[2][0];
+            }
          }
          foreach ($objects_id as $o_id) {
             $html .= "\n".$this->showToolTip("<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$services_id[$o_id]."-2h0.png' width='500' height='164' />", 
