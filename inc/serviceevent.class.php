@@ -45,7 +45,6 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringServiceevent extends CommonDBTM {
-   
 
    static function convert_datetime_timestamp($str) {
 
@@ -249,10 +248,12 @@ class PluginMonitoringServiceevent extends CommonDBTM {
    
    
    
-   function getData($result, $rrdtool_template) {
+   function getData($result, $rrdtool_template, $ret=array()) {
       global $DB;
       
-      $ret = $this->getRef($rrdtool_template);
+      if (empty($ret)) {
+         $ret = $this->getRef($rrdtool_template);
+      }
       $a_ref = $ret[0];
       $a_convert = $ret[1];
       
@@ -303,7 +304,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
             }         
          }
       }
-      return array($mydatat, $a_labels, $a_ref);
+      return array($mydatat, $a_labels, $a_ref, $a_convert);
    }
    
    
@@ -311,9 +312,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
    function getRef($rrdtool_template) {
 
       $filename = GLPI_PLUGIN_DOC_DIR."/monitoring/templates/".$rrdtool_template."_graph.json";
-      if (!file_exists($filename)) {
-         return;
-      }
+      
       $a_jsong = json_decode(file_get_contents($filename));
       // Get data 
       $a_convert = array();

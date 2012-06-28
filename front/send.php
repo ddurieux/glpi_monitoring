@@ -95,24 +95,7 @@ if (isset($_GET['file'])) {
          header("Content-type: ".$mime);
       }
       
-      $f=fopen($file,"r");
-
-      if (!$f){
-         echo "Error opening file $filename";
-      } else {
-         // Pour que les \x00 ne devienne pas \0
-         $mc=get_magic_quotes_runtime();
-         if ($mc) @set_magic_quotes_runtime(0);
-         $fsize=filesize($file);
-
-         if ($fsize){
-            echo fread($f, filesize($file));
-         } else {
-            echo "Problem";
-         }
-
-         if ($mc) @set_magic_quotes_runtime($mc);
-      }
+      readfile($file) or die ("Error opening file ".$file);      
    }
 }
 
