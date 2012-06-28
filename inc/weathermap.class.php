@@ -861,7 +861,7 @@ function point_it(event){
       if ($force == '0'
               AND file_exists(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png")) {
          $time_generate = filectime(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png");
-         if (($time_generate + 60) > date('U')) {
+         if (($time_generate + 150) > date('U')) {
             return;
          }
       } 

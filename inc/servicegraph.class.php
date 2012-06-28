@@ -57,7 +57,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       // Cache 1 minute
       if (file_exists(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.$timezonefile.".png")) {
          $time_generate = filectime(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.$timezonefile.".png");
-         if (($time_generate + 60) > date('U')) {
+         if (($time_generate + 150) > date('U')) {
             return;
          }
       }

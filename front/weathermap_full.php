@@ -56,38 +56,12 @@ $pmWeathermap->generateWeathermap($id);
 
 $pmWeathermap->generateAllGraphs($id);
 $html = file_get_contents(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$id.".html");
-//$matches = array();
-//preg_match_all("/img  src\=([[:print:]]+)\.png/i", $html, $matches);
-
-
-
 
 $html = str_replace(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$id.".png", 
          $CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=weathermap-".$id.".png", $html);
-//$html = str_replace("overlib.js", GLPI_ROOT."/plugins/monitoring/lib/weathermap/overlib.js", $html);
-//
-//$html = str_replace('/lib/weathermap/overlib.js',
-//        '/lib/tooltip.js', $html);
-//$html = str_replace('<body>', '<body><div id="dhtmltooltip"></div><style type="text/css">
-//#dhtmltooltip{
-//position: absolute;
-//width: 700px;
-//height: 230px;
-//border: 2px solid black;
-//padding: 2px;
-//background-color: lightyellow;
-//visibility: hidden;
-//z-index: 100;
-///*Remove below line to remove shadow. Below line should always appear last within this CSS*/
-//filter: progid:DXImageTransform.Microsoft.Shadow(color=gray,direction=135);
-//}
-//
-//</style>', $html);
-//$html = str_replace('return overlib', 'ddrivetip', $html);
-//$html = str_replace('return nd();', 'hideddrivetip()', $html);
 
 echo $html;
 
-echo '<meta http-equiv ="refresh" content="60">';
+echo '<meta http-equiv ="refresh" content="150">';
 
 ?>
