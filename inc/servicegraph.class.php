@@ -45,6 +45,8 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringServicegraph extends CommonDBTM {
+   private $jsongraph_a_ref = array();
+   private $jsongraph_a_convert = array();
 
    
    function displayGraph($rrdtool_template, $itemtype, $items_id, $timezone, $time='1d', $width='470') {
@@ -55,16 +57,18 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       // Cache 1 minute
       if (file_exists(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.$timezonefile.".png")) {
          $time_generate = filectime(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.$timezonefile.".png");
-         if (($time_generate + 60) > date('U')) {
+         if (($time_generate + 150) > date('U')) {
             return;
          }
       }
       
       $filename = GLPI_PLUGIN_DOC_DIR."/monitoring/templates/".$rrdtool_template."_graph.json";
-      if (!file_exists($filename)) {
+
+      $loadfile = file_get_contents($filename);
+      if (!$loadfile) {
          return;
       }
-      $a_jsong = json_decode(file_get_contents($filename));
+      $a_jsong = json_decode($loadfile);
       
       // Manage timezones
       $converttimezone = '0';
@@ -86,42 +90,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       include_once("../lib/pChart2.1.3/class/pDraw.class.php");
       include_once("../lib/pChart2.1.3/class/pImage.class.php");
       
-      $MyData = new pData();
-      
-
-      $begin = '';
-      switch ($time) {
-         
-         case '2h':
-            $begin = date('Y-m-d H:i:s', date('U') - (2 * 3600));
-            break;
-         
-         case '12h':
-            $begin = date('Y-m-d H:i:s', date('U') - (12 * 3600));
-            break;
-         
-         case '1d':
-            $begin = date('Y-m-d H:i:s', date('U') - (24 * 3600));
-            break;
-         
-         case '1w':
-            $begin = date('Y-m-d H:i:s', date('U') - (7 * 24 * 3600));
-            break;
-
-         case '1m':
-            $begin = date('Y-m-d H:i:s', date('U') - (30 * 24 * 3600));
-            break;
-         
-         case '0y6m':
-            $begin = date('Y-m-d H:i:s', date('U') - ((364 / 2) * 24 * 3600));
-            break;
-         
-         case '1y':
-            $begin = date('Y-m-d H:i:s', date('U') - (365 * 24 * 3600));
-            break;
-         
-      }
-      
+      $MyData = new pData();      
 
       // ** Get in table serviceevents
       $mydatat = array();
@@ -130,140 +99,195 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       $pmServiceevent = new PluginMonitoringServiceevent();
       $pmService = new PluginMonitoringService();
       $pmService->getFromDB($items_id);
-      if ($time == '1d') {
-         $query = "SELECT * FROM `".$this->getTable()."`
-            WHERE `plugin_monitoring_services_id`='".$items_id."'
-               AND `type`='30m'
-            ORDER BY `date`";
-         $result = $DB->query($query);
-         while ($edata=$DB->fetch_array($result)) {
-            $dat = importArrayFromDB($edata['data']);
-            if (count($dat) > 0) {
-               $datemod = $edata['date'];
-               $split = explode(' ', $datemod);
-               $split2 = explode(':', $split[1]);
-               array_push($a_labels, $split2[0].':'.$split2[1]);
+      
+      $begin = '';
+      switch ($time) {
+         
+         case '2h':
+            $begin = date('Y-m-d H:i:s', date('U') - (2 * 3600));
+            
+            $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
+               WHERE `plugin_monitoring_services_id`='".$items_id."'
+                  AND `date` > '".$begin."'
+               ORDER BY `date`";
+            $result = $DB->query($query);
+            $ret = array();
+            if (isset($this->jsongraph_a_ref[$rrdtool_template])) {
+               $ret = $pmServiceevent->getData($result, $rrdtool_template,
+                       array($this->jsongraph_a_ref[$rrdtool_template], 
+                             $this->jsongraph_a_convert[$rrdtool_template]));
+            } else {
+               $ret = $pmServiceevent->getData($result, $rrdtool_template);
             }
-            foreach ($dat as $name=>$value) {
-               if (!isset($mydatat[$name])) {
-                  $mydatat[$name] = array();
+            if (is_array($ret)) {
+               $mydatat  = $ret[0];
+               $a_labels = $ret[1];
+               $a_ref    = $ret[2];
+               if (!isset($this->jsongraph_a_ref[$rrdtool_template])) {
+                  $this->jsongraph_a_ref[$rrdtool_template] = $ret[2];
+                  $this->jsongraph_a_convert[$rrdtool_template] = $ret[3];
                }
-               array_push($mydatat[$name], $value);
             }
-         }
-         $ret = $pmServiceevent->getRef($rrdtool_template);
-         $a_ref = $ret[0];
-      } else if ($time == '1w') {
-         $query = "SELECT * FROM `".$this->getTable()."`
-            WHERE `plugin_monitoring_services_id`='".$items_id."'
-               AND `type`='6h'
-            ORDER BY `date`";
-         $result = $DB->query($query);
-         while ($edata=$DB->fetch_array($result)) {
-            $dat = importArrayFromDB($edata['data']);
-            if (count($dat) > 0) {
-               $datemod = $edata['date'];
-               $daynum = Calendar::getDayNumberInWeek(PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
-               $split = explode(' ', $datemod);
-               $split2 = explode(':', $split[1]);
-               array_push($a_labels, $LANG['calendarDay'][$daynum]." ".$split2[0].':'.$split2[1]);
+            break;
+         
+         case '12h':
+            $begin = date('Y-m-d H:i:s', date('U') - (12 * 3600));
+            
+            $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
+               WHERE `plugin_monitoring_services_id`='".$items_id."'
+                  AND `date` > '".$begin."'
+               ORDER BY `date`";
+            $result = $DB->query($query);
+            $ret = $pmServiceevent->getData($result, $rrdtool_template);
+            if (is_array($ret)) {
+               $mydatat  = $ret[0];
+               $a_labels = $ret[1];
+               $a_ref    = $ret[2];
             }
-            foreach ($dat as $name=>$value) {
-               if (!isset($mydatat[$name])) {
-                  $mydatat[$name] = array();
+            break;
+         
+         case '1d':
+            $begin = date('Y-m-d H:i:s', date('U') - (24 * 3600));
+            
+            $query = "SELECT * FROM `".$this->getTable()."`
+               WHERE `plugin_monitoring_services_id`='".$items_id."'
+                  AND `type`='30m'
+               ORDER BY `date`";
+            $result = $DB->query($query);
+            while ($edata=$DB->fetch_array($result)) {
+               $dat = importArrayFromDB($edata['data']);
+               if (count($dat) > 0) {
+                  $datemod = $edata['date'];
+                  $split = explode(' ', $datemod);
+                  $split2 = explode(':', $split[1]);
+                  array_push($a_labels, $split2[0].':'.$split2[1]);
                }
-               array_push($mydatat[$name], $value);
-            }
-         }
-         $ret = $pmServiceevent->getRef($rrdtool_template);
-         $a_ref = $ret[0];
-      } else if ($time == '1m') {
-         $query = "SELECT * FROM `".$this->getTable()."`
-            WHERE `plugin_monitoring_services_id`='".$items_id."'
-               AND `type`='1d'
-            ORDER BY `date`";
-         $result = $DB->query($query);
-         while ($edata=$DB->fetch_array($result)) {
-            $dat = importArrayFromDB($edata['data']);
-            if (count($dat) > 0) {
-               $datemod = $edata['date'];
-               $daynum = Calendar::getDayNumberInWeek(PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
-               $split = explode(' ', $datemod);
-               $split2 = explode(':', $split[1]);
-               $day = explode("-", $split[0]);
-               array_push($a_labels, $LANG['calendarDay'][$daynum]." ".$day[2]);
-            }
-            foreach ($dat as $name=>$value) {
-               if (!isset($mydatat[$name])) {
-                  $mydatat[$name] = array();
+               foreach ($dat as $name=>$value) {
+                  if (!isset($mydatat[$name])) {
+                     $mydatat[$name] = array();
+                  }
+                  array_push($mydatat[$name], $value);
                }
-               array_push($mydatat[$name], $value);
             }
-         }
-         $ret = $pmServiceevent->getRef($rrdtool_template);
-         $a_ref = $ret[0];
-      } else if ($time == '0y6m') {
-         $query = "SELECT * FROM `".$this->getTable()."`
-            WHERE `plugin_monitoring_services_id`='".$items_id."'
-               AND `type`='5d'
-            ORDER BY `date`";
-         $result = $DB->query($query);
-         while ($edata=$DB->fetch_array($result)) {
-            $dat = importArrayFromDB($edata['data']);
-            if (count($dat) > 0) {
-               $datemod = $edata['date'];
-               $daynum = date('m', PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
-               $daynum = $daynum - 1;
-               $split = explode(' ', $datemod);
-               $day = explode("-", $split[0]);
-               array_push($a_labels, $LANG['calendarM'][$daynum]." ".$day[2]);
-            }
-            foreach ($dat as $name=>$value) {
-               if (!isset($mydatat[$name])) {
-                  $mydatat[$name] = array();
+            $ret = $pmServiceevent->getRef($rrdtool_template);
+            $a_ref = $ret[0];
+            break;
+         
+         case '1w':
+            $begin = date('Y-m-d H:i:s', date('U') - (7 * 24 * 3600));
+            
+            $query = "SELECT * FROM `".$this->getTable()."`
+               WHERE `plugin_monitoring_services_id`='".$items_id."'
+                  AND `type`='6h'
+               ORDER BY `date`";
+            $result = $DB->query($query);
+            while ($edata=$DB->fetch_array($result)) {
+               $dat = importArrayFromDB($edata['data']);
+               if (count($dat) > 0) {
+                  $datemod = $edata['date'];
+                  $daynum = Calendar::getDayNumberInWeek(PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
+                  $split = explode(' ', $datemod);
+                  $split2 = explode(':', $split[1]);
+                  array_push($a_labels, $LANG['calendarDay'][$daynum]." ".$split2[0].':'.$split2[1]);
                }
-               array_push($mydatat[$name], $value);
-            }
-         }
-         $ret = $pmServiceevent->getRef($rrdtool_template);
-         $a_ref = $ret[0];
-      } else if ($time == '1y') {
-         $query = "SELECT * FROM `".$this->getTable()."`
-            WHERE `plugin_monitoring_services_id`='".$items_id."'
-               AND `type`='10d'
-            ORDER BY `date`";
-         $result = $DB->query($query);
-         while ($edata=$DB->fetch_array($result)) {
-            $dat = importArrayFromDB($edata['data']);
-            if (count($dat) > 0) {
-               $datemod = $edata['date'];
-               $daynum = date('m', PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
-               $daynum = $daynum - 1;
-               $split = explode(' ', $datemod);
-               $day = explode("-", $split[0]);
-               array_push($a_labels, $LANG['calendarM'][$daynum]." ".$day[2]);
-            }
-            foreach ($dat as $name=>$value) {
-               if (!isset($mydatat[$name])) {
-                  $mydatat[$name] = array();
+               foreach ($dat as $name=>$value) {
+                  if (!isset($mydatat[$name])) {
+                     $mydatat[$name] = array();
+                  }
+                  array_push($mydatat[$name], $value);
                }
-               array_push($mydatat[$name], $value);
             }
-         }
-         $ret = $pmServiceevent->getRef($rrdtool_template);
-         $a_ref = $ret[0];
-      } else {
-         $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
-            WHERE `plugin_monitoring_services_id`='".$items_id."'
-               AND `date` > '".$begin."'
-            ORDER BY `date`";
-         $result = $DB->query($query);
-         $ret = $pmServiceevent->getData($result, $rrdtool_template);
-         if (is_array($ret)) {
-            $mydatat  = $ret[0];
-            $a_labels = $ret[1];
-            $a_ref    = $ret[2];
-         }
+            $ret = $pmServiceevent->getRef($rrdtool_template);
+            $a_ref = $ret[0];
+            break;
+
+         case '1m':
+            $begin = date('Y-m-d H:i:s', date('U') - (30 * 24 * 3600));
+            
+            $query = "SELECT * FROM `".$this->getTable()."`
+               WHERE `plugin_monitoring_services_id`='".$items_id."'
+                  AND `type`='1d'
+               ORDER BY `date`";
+            $result = $DB->query($query);
+            while ($edata=$DB->fetch_array($result)) {
+               $dat = importArrayFromDB($edata['data']);
+               if (count($dat) > 0) {
+                  $datemod = $edata['date'];
+                  $daynum = Calendar::getDayNumberInWeek(PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
+                  $split = explode(' ', $datemod);
+                  $split2 = explode(':', $split[1]);
+                  $day = explode("-", $split[0]);
+                  array_push($a_labels, $LANG['calendarDay'][$daynum]." ".$day[2]);
+               }
+               foreach ($dat as $name=>$value) {
+                  if (!isset($mydatat[$name])) {
+                     $mydatat[$name] = array();
+                  }
+                  array_push($mydatat[$name], $value);
+               }
+            }
+            $ret = $pmServiceevent->getRef($rrdtool_template);
+            $a_ref = $ret[0];
+            break;
+         
+         case '0y6m':
+            $begin = date('Y-m-d H:i:s', date('U') - ((364 / 2) * 24 * 3600));
+            
+            $query = "SELECT * FROM `".$this->getTable()."`
+               WHERE `plugin_monitoring_services_id`='".$items_id."'
+                  AND `type`='5d'
+               ORDER BY `date`";
+            $result = $DB->query($query);
+            while ($edata=$DB->fetch_array($result)) {
+               $dat = importArrayFromDB($edata['data']);
+               if (count($dat) > 0) {
+                  $datemod = $edata['date'];
+                  $daynum = date('m', PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
+                  $daynum = $daynum - 1;
+                  $split = explode(' ', $datemod);
+                  $day = explode("-", $split[0]);
+                  array_push($a_labels, $LANG['calendarM'][$daynum]." ".$day[2]);
+               }
+               foreach ($dat as $name=>$value) {
+                  if (!isset($mydatat[$name])) {
+                     $mydatat[$name] = array();
+                  }
+                  array_push($mydatat[$name], $value);
+               }
+            }
+            $ret = $pmServiceevent->getRef($rrdtool_template);
+            $a_ref = $ret[0];
+            break;
+         
+         case '1y':
+            $begin = date('Y-m-d H:i:s', date('U') - (365 * 24 * 3600));
+            
+            $query = "SELECT * FROM `".$this->getTable()."`
+               WHERE `plugin_monitoring_services_id`='".$items_id."'
+                  AND `type`='10d'
+               ORDER BY `date`";
+            $result = $DB->query($query);
+            while ($edata=$DB->fetch_array($result)) {
+               $dat = importArrayFromDB($edata['data']);
+               if (count($dat) > 0) {
+                  $datemod = $edata['date'];
+                  $daynum = date('m', PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
+                  $daynum = $daynum - 1;
+                  $split = explode(' ', $datemod);
+                  $day = explode("-", $split[0]);
+                  array_push($a_labels, $LANG['calendarM'][$daynum]." ".$day[2]);
+               }
+               foreach ($dat as $name=>$value) {
+                  if (!isset($mydatat[$name])) {
+                     $mydatat[$name] = array();
+                  }
+                  array_push($mydatat[$name], $value);
+               }
+            }
+            $ret = $pmServiceevent->getRef($rrdtool_template);
+            $a_ref = $ret[0];
+            break;
+         
       }
       
       $i = 0;
@@ -276,77 +300,80 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                array_push($data, -$val);
             }
          }
+         if (empty($data)) {
+            array_push($data, 0);
+         }
          $MyData->addPoints($data, $name);
          $color = str_split($a_ref[$name]);
          $MyData->setPalette($name,array("R"=>hexdec($color[0].$color[1]),
                                          "G"=>hexdec($color[2].$color[3]),
                                          "B"=>hexdec($color[4].$color[5])));
       }
-$MyData->setAxisDisplay(0,AXIS_FORMAT_METRIC,1);
-// $MyData->setSerieTicks("Probe 2",4);
-// $MyData->setAxisName(0,"Temperatures");
- $MyData->addPoints($a_labels,"Labels");
-// $MyData->setSerieDescription("Labels","Months");
- $MyData->setAbscissa("Labels");
+      $MyData->setAxisDisplay(0,AXIS_FORMAT_METRIC,1);
+//    $MyData->setSerieTicks("Probe 2",4);
+//    $MyData->setAxisName(0,"Temperatures");
+      $MyData->addPoints($a_labels,"Labels");
+//    $MyData->setSerieDescription("Labels","Months");
+      $MyData->setAbscissa("Labels");
       $myPicture = new pImage(700,230,$MyData);
-$myPicture->Antialias = FALSE;
+      $myPicture->Antialias = FALSE;
 
-$Settings = array("R"=>225, "G"=>204, "B"=>123);
-$myPicture->drawFilledRectangle(0,0,700,230,$Settings);
+      $Settings = array("R"=>225, "G"=>204, "B"=>123);
+      $myPicture->drawFilledRectangle(0,0,700,230,$Settings);
 
-$Settings = array("R"=>255, "G"=>255, "B"=>255);
-$myPicture->drawFilledRectangle(60,40,650,200,$Settings);
+      $Settings = array("R"=>255, "G"=>255, "B"=>255);
+      $myPicture->drawFilledRectangle(60,40,650,200,$Settings);
 
- /* Add a border to the picture */
- $myPicture->drawRectangle(0,0,699,229,array("R"=>0,"G"=>0,"B"=>0));
- 
-  
- /* Write the chart title */ 
- $myPicture->setFontProperties(array("FontName"=>"../lib/pChart2.1.3/fonts/verdana.ttf","FontSize"=>11));
- $myPicture->drawText(350,20, $a_jsong->data[0]->labels[0]->title, array("FontSize"=>13,"Align"=>TEXT_ALIGN_MIDDLEMIDDLE));
+      /* Add a border to the picture */
+      $myPicture->drawRectangle(0,0,699,229,array("R"=>0,"G"=>0,"B"=>0));
 
- /* Set the default font */
- $myPicture->setFontProperties(array("FontName"=>"../lib/pChart2.1.3/fonts/verdana.ttf","FontSize"=>7));
 
- /* Define the chart area */
- $myPicture->setGraphArea(60,40,650,200);
+      /* Write the chart title */ 
+      $myPicture->setFontProperties(array("FontName"=>"../lib/pChart2.1.3/fonts/verdana.ttf","FontSize"=>11));
+      $myPicture->drawText(350,20, $a_jsong->data[0]->labels[0]->title, array("FontSize"=>13,"Align"=>TEXT_ALIGN_MIDDLEMIDDLE));
 
- /* Draw the scale */
- $labelskip = round(count($a_labels) / 8);
- if ($time == '1d') {
-    $labelskip = 3;
- } else if($time == '1m') {
-    $labelskip = 3;
- } else if($time == '0y6m') {
-    $labelskip = 4;
- } else if($time == '1y') {
-    $labelskip = 3;
- }
- $scaleSettings = array("XMargin"=>10,
-                        "YMargin"=>10,
-                        "Floating"=>TRUE,
-     "GridR"=>158, "GridG"=>158, "GridB"=>158, "GridAlpha"=>80,
+      /* Set the default font */
+      $myPicture->setFontProperties(array("FontName"=>"../lib/pChart2.1.3/fonts/verdana.ttf","FontSize"=>7));
 
-                        "DrawSubTicks"=>TRUE,
-                        "CycleBackground"=>FALSE,
-     "LabelSkip"=>$labelskip);
- $myPicture->drawScale($scaleSettings);
+      /* Define the chart area */
+      $myPicture->setGraphArea(60,40,650,200);
 
- /* Write the chart legend */
- $myPicture->drawLegend(540,20,array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL));
+      /* Draw the scale */
+      $labelskip = round(count($a_labels) / 8);
+      if ($time == '1d') {
+         $labelskip = 3;
+      } else if($time == '1m') {
+         $labelskip = 3;
+      } else if($time == '0y6m') {
+         $labelskip = 4;
+      } else if($time == '1y') {
+         $labelskip = 3;
+      }
+      $scaleSettings = array("XMargin"=>10,
+                             "YMargin"=>10,
+                             "Floating"=>TRUE,
+          "GridR"=>158, "GridG"=>158, "GridB"=>158, "GridAlpha"=>80,
 
- /* Turn on Antialiasing */
- $myPicture->Antialias = TRUE;
- 
+                             "DrawSubTicks"=>TRUE,
+                             "CycleBackground"=>FALSE,
+          "LabelSkip"=>$labelskip);
+      $myPicture->drawScale($scaleSettings);
 
- $Config = array("ForceTransparency"=>60);
- 
- /* Draw the area chart */
- $myPicture->drawAreaChart($Config);
+      /* Write the chart legend */
+      $myPicture->drawLegend(540,20,array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL));
 
-$myPicture->render(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.$timezonefile.".png");
-return;
+      /* Turn on Antialiasing */
+      $myPicture->Antialias = TRUE;
+
+
+      $Config = array("ForceTransparency"=>60);
+
+      /* Draw the area chart */
+      $myPicture->drawAreaChart($Config);
+
+      $myPicture->render(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.$timezonefile.".png");
       
+      return;      
    }
    
    

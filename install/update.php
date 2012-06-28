@@ -1627,6 +1627,15 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->addKey($newTable, 
                             "plugin_monitoring_services_id");
+         $migration->addKey($newTable,
+                            array('plugin_monitoring_services_id',
+                                  'date'),
+                            "plugin_monitoring_services_id_2");
+         $migration->addKey($newTable,
+                            array('unavailability',
+                                  'state_type',
+                                  'plugin_monitoring_services_id'),
+                            "unavailability");
       $migration->migrationOneTable($newTable);
 
       
@@ -2234,6 +2243,8 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                               'end_date', 
                               "datetime DEFAULT NULL");
+         $migration->addKey($newTable, 
+                            "plugin_monitoring_services_id");
       $migration->migrationOneTable($newTable);
       
       

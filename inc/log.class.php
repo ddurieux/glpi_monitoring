@@ -113,6 +113,11 @@ class PluginMonitoringLog extends CommonDBTM {
       $DB->query($query);
       
       // Clean too events
+      PluginMonitoringServiceevent::cronUpdaterrd();
+      
+      $pmUnavaibility = new PluginMonitoringUnavaibility();
+      $pmUnavaibility->runUnavaibility();      
+      
       $query = "DELETE FROM `glpi_plugin_monitoring_serviceevents`
          WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
       $DB->query($query);
