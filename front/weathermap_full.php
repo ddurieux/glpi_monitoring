@@ -43,7 +43,7 @@
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-popHeader("weathermap");
+Html::popHeader("weathermap");
 
 PluginMonitoringProfile::checkRight("weathermap","r");
 
