@@ -323,7 +323,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
       }
       $input .= "<tr ".$background.">";
-      $input .= '<th style="background-color:transparent;" colspan="2" height="100">';
+      $input .= '<th style="background-color:transparent;" '.$background.' colspan="2" height="100">';
       $input .= '<a href="'.$link.'"><font style="font-size: 52px; color:black">'.$count.'</font></a>';         
       $input .= '</th>';
       $input .= '</tr>';
