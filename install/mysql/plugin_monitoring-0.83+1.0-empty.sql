@@ -370,7 +370,9 @@ CREATE TABLE `glpi_plugin_monitoring_serviceevents` (
   `execution_time` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `unavailability` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  KEY `plugin_monitoring_services_id` (`plugin_monitoring_services_id`)
+  KEY `plugin_monitoring_services_id` (`plugin_monitoring_services_id`),
+  KEY `plugin_monitoring_services_id_2` (`plugin_monitoring_services_id`,`date`),
+  KEY `unavailability` (`unavailability`,`state_type`,`plugin_monitoring_services_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -525,7 +527,8 @@ CREATE TABLE `glpi_plugin_monitoring_unavaibilities` (
    `plugin_monitoring_services_id` int(11) NOT NULL DEFAULT '0',
    `begin_date` datetime DEFAULT NULL,
    `end_date` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `plugin_monitoring_services_id` (`plugin_monitoring_services_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
