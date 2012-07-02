@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')) {
 
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkLoginUser();
+Session::checkLoginUser();
 
 $docDir = GLPI_PLUGIN_DOC_DIR.'/monitoring';
 
@@ -72,7 +72,7 @@ if (isset($_GET['file'])) {
                                     $match[2], 
                                     '2h');
    }
-   sendFile($file, $filename);
+   Toolbox::sendFile($file, $filename);
 }
 
 ?>
