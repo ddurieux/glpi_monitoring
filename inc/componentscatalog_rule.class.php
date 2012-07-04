@@ -970,7 +970,7 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
       // Reset to start when submit new search
       echo "<input type='hidden' name='start' value='0'>";
       
-      echo "</form>";
+      Html::closeForm();
    }
 
    

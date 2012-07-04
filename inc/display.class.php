@@ -608,7 +608,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                               $a_timezones_allowed, 
                               array('value'=>$_SESSION['plugin_monitoring_timezone']));
       echo "&nbsp;<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
-      echo "</form>";
+      Html::closeForm();
       echo "</th>";
       echo "</tr>";
 
@@ -995,7 +995,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "</td>";
          echo "</tr>";
          echo "</table>";
-      echo "</form>";
+      Html::closeForm();
    }
 }
 

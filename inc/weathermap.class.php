@@ -521,8 +521,8 @@ function point_it(event){
          echo "</tr>";
          
          echo "</table>";
-         
-         echo "</form><br/>";
+         Html::closeForm();
+         echo "<br/>";
 
          
          
@@ -818,7 +818,7 @@ function point_it(event){
          echo "</tr>";
       
          echo "</table>";
-         echo "</form>";
+         Html::closeForm();
       
       echo "</td>";
       echo "</tr>";

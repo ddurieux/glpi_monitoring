@@ -269,7 +269,7 @@ class PluginMonitoringService extends CommonDBTM {
       
       echo "</table>";
 
-      echo "</form>";
+      Html::closeForm();
    }
    
    

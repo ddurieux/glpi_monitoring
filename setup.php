@@ -56,6 +56,8 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['use_massive_action']['monitoring']=1;
          $PLUGIN_HOOKS['add_css']['monitoring']="css/views.css";
          
+         $PLUGIN_HOOKS['csrf_compliant']['monitoring'] = true;
+         
          $plugin = new Plugin();
          if ($plugin->isActivated('monitoring')
                  AND isset($_SESSION['glpi_plugin_monitoring_profile'])) {
@@ -193,7 +195,7 @@ function plugin_version_monitoring() {
                 'version'        => PLUGIN_MONITORING_VERSION,
                 'author'         =>'<a href="mailto:d.durieux@siprossii.com">David DURIEUX</a>',
                 'homepage'       =>'https://forge.indepnet.net/projects/monitoring/',
-                'minGlpiVersion' => '0.83'
+                'minGlpiVersion' => '0.83.3'
    );
 }
 
@@ -201,8 +203,8 @@ function plugin_version_monitoring() {
 // Optional : check prerequisites before install : may print errors or add to message after redirect
 function plugin_monitoring_check_prerequisites() {
 
-   if (version_compare(GLPI_VERSION,'0.83','lt') || version_compare(GLPI_VERSION,'0.84','ge')) {
-      echo "error";
+   if (version_compare(GLPI_VERSION,'0.83.3','lt') || version_compare(GLPI_VERSION,'0.84','ge')) {
+      echo "error, require GLPI 0.83.3";
    } else {
       return true;
    }

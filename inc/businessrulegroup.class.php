@@ -144,7 +144,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
             echo "<input type='hidden' name='plugin_monitoring_businessrulegroups_id' value='".$items_id."' />";
             PluginMonitoringBusinessrule::dropdownService(0, array('name' => 'type'));         
             echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-            echo "</form>";
+            Html::closeForm();
             echo "</td>";
             echo "</tr>";
             echo "</table>";

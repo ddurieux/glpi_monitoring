@@ -224,13 +224,13 @@ class PluginMonitoringProfile extends CommonDBTM {
          echo "</td>";
          echo "</tr>";
          echo "</table>";
-         echo "</form>";
+         Html::closeForm();
       } else {
          echo "</table>";
       }
       echo "</div>";
 
-      echo "</form>";
+      Html::closeForm();
    }
 
    

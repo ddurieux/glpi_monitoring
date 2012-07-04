@@ -114,7 +114,7 @@ class PluginMonitoringHost_Contact extends CommonDBRelation {
       echo "</tr>";
       echo "</table>";
       echo "<input type='hidden' name='id' value='".$items_id."' />";
-      echo "</form>";
+      Html::closeForm();
    }
 }
 

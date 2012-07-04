@@ -220,7 +220,8 @@ return;
 
       echo "<br/><input type='submit' class='submit' name='update' value='update'/>";
       
-      echo "</form><br/>";
+      Html::closeForm();
+      echo "<br/>";
       
       return true;
    }
