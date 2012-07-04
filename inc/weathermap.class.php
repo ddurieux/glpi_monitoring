@@ -179,6 +179,9 @@ LINK DEFAULT
       $bwlabelpos[1] = "BWLABELPOS 71 29";
       $i = 0;
       $doublelink = array();
+      $doublelinkbegin = array();
+      $doublelinkdiff = array();
+      $doublelinknumber = array();
       $query = "SELECT `".getTableForItemType("PluginMonitoringWeathermaplink")."`.*, 
             count(`".getTableForItemType("PluginMonitoringWeathermaplink")."`.`id`) as `cnt` 
             FROM `".getTableForItemType("PluginMonitoringWeathermaplink")."` 
@@ -190,7 +193,36 @@ LINK DEFAULT
          HAVING cnt >1";
       $result=$DB->query($query);
       while ($data=$DB->fetch_array($result)) {
-         $doublelink[$data['plugin_monitoring_weathermapnodes_id_1']."-".$data['plugin_monitoring_weathermapnodes_id_2']] = 2;
+         $tlink = $data['plugin_monitoring_weathermapnodes_id_1']."-".$data['plugin_monitoring_weathermapnodes_id_2'];
+         $doublelink[$tlink] = $data['cnt'];
+         $doublelinknumber[$tlink] = 0;
+         $beg = 0;
+         $diff = 0;
+         switch($data['cnt']) {
+            
+            case 2:
+               $beg = -22;
+               $diff = 44;
+               break;
+            
+            case 3:
+               $beg = -33;
+               $diff = 33;               
+               break;
+            
+            case 4:
+               $beg = -39;
+               $diff = 26;
+               break;
+            
+            case 5:
+               $beg = -60;
+               $diff = 30;
+               break;
+            
+         }
+         $doublelinkbegin[$tlink] = $beg;
+         $doublelinkdiff[$tlink] = $diff;
       }
       
       $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringWeathermapnode")."`
@@ -233,13 +265,10 @@ LINK DEFAULT
             $in = $this->checkBandwidth("in", $in, $bandwidth);
             $out = $this->checkBandwidth("out", $out, $bandwidth);
             $nodesuffix = '';
-            if (isset($doublelink[$datal['plugin_monitoring_weathermapnodes_id_1']."-".$datal['plugin_monitoring_weathermapnodes_id_2']])) {
-               if ($doublelink[$datal['plugin_monitoring_weathermapnodes_id_1']."-".$datal['plugin_monitoring_weathermapnodes_id_2']] == '2') {
-                  $nodesuffix = ":E";
-                  $doublelink[$datal['plugin_monitoring_weathermapnodes_id_1']."-".$datal['plugin_monitoring_weathermapnodes_id_2']] = 1;                  
-               } else {
-                  $nodesuffix = ":W";
-               }
+            $tlink = $datal['plugin_monitoring_weathermapnodes_id_1']."-".$datal['plugin_monitoring_weathermapnodes_id_2'];
+            if (isset($doublelink[$tlink])) {               
+               $nodesuffix = ":".($doublelinkbegin[$tlink] + ($doublelinknumber[$tlink] * $doublelinkdiff[$tlink])).":0";
+               $doublelinknumber[$tlink]++;
             }
             $conf .= "LINK ".preg_replace("/[^A-Za-z0-9_]/","",$data['name'])."_".$data['id']."-".preg_replace("/[^A-Za-z0-9_]/","",$pmWeathermapnode->fields['name'])."_".$pmWeathermapnode->fields['id'].$nodesuffix."\n";
             $timezone = '0';
