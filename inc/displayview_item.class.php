@@ -163,6 +163,7 @@ Ext.onReady(function() {
       $content = '';
       $title = $item->getTypeName();
       $event = '';
+      $width='';
       if ($itemtype == "PluginMonitoringService") {
          $content = $item->showWidget($data['items_id'], $data['extra_infos']);
          $title .= " : ".Dropdown::getDropdownName(getTableForItemType('PluginMonitoringComponent'), $item->fields['plugin_monitoring_components_id']);
@@ -178,12 +179,20 @@ Ext.onReady(function() {
             $title .= $item2->getName()." (".$item2->getTypeName().")";
             
          }
+         $width = "width: 702,";
       } else if ($itemtype == "PluginMonitoringWeathermap") {
          $content = $item->showWidget($data['items_id'], $data['extra_infos']);
          $event = ", ".$item->widgetEvent($data['items_id']);
          $title .= " : ".Dropdown::getDropdownName(getTableForItemType('PluginMonitoringWeathermap'), $data['items_id']);
+         $item->getFromDB($data['items_id']);
+         $width = "width:".(($item->fields['width'] * $data['extra_infos']) / 100).",";
       } else {
          $content = $item->showWidget($data['items_id']);
+         if ($data['itemtype'] == 'PluginMonitoringServicescatalog') {
+            $width = "width: 202,";
+         } else {
+            $width = "width: 160,";
+         }
       }
       echo "<script>
          var left = 0;
@@ -205,10 +214,10 @@ Ext.onReady(function() {
              baseCls : 'x-panel',
              layout : 'fit',
              renderTo: Ext.getBody(),
-             floating: true,
+             floating: false,
              frame: false,
+             ".$width."
              autoHeight  : true,
-             autoWidth   : true,
              layout: 'fit',
              draggable: {
                  //Config option of Ext.Panel.DD class.

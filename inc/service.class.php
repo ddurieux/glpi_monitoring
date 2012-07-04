@@ -864,7 +864,7 @@ class PluginMonitoringService extends CommonDBTM {
                             $id, 
                             "0", 
                             $time);
-      return '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/send.php?file=PluginMonitoringService-'.$id.'-'.$time.'0.gif"/>';
+      return '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/send.php?file=PluginMonitoringService-'.$id.'-'.$time.'0.png"/>';
       
    }
    
