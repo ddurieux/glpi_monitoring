@@ -180,7 +180,7 @@ Ext.onReady(function() {
          }
       } else if ($itemtype == "PluginMonitoringWeathermap") {
          $content = $item->showWidget($data['items_id'], $data['extra_infos']);
-         $event = $item->widgetEvent($data['items_id']);
+         $event = ", ".$item->widgetEvent($data['items_id']);
          $title .= " : ".Dropdown::getDropdownName(getTableForItemType('PluginMonitoringWeathermap'), $data['items_id']);
       } else {
          $content = $item->showWidget($data['items_id']);
@@ -211,27 +211,27 @@ Ext.onReady(function() {
              autoWidth   : true,
              layout: 'fit',
              draggable: {
-         //      Config option of Ext.Panel.DD class.
-         //      It's a floating Panel, so do not show a placeholder proxy in the original position.
+                 //Config option of Ext.Panel.DD class.
+                 //It's a floating Panel, so do not show a placeholder proxy in the original position.
                  insertProxy: false,
 
-         //      Called for each mousemove event while dragging the DD object.
+                 //Called for each mousemove event while dragging the DD object.
                  onDrag : function(e){
-         //          Record the x,y position of the drag proxy so that we can
-         //          position the Panel at end of drag.
+                     //Record the x,y position of the drag proxy so that we can
+                     //position the Panel at end of drag.
                      var el = this.proxy.getEl();
                      this.x = el.getLeft(true) - left - 5;
                      this.y = el.getTop(true) - top - 5;
 
 
-         //          Keep the Shadow aligned if there is one.
+                     //Keep the Shadow aligned if there is one.
                      var s = this.panel.getEl().shadow;
                      if (s) {
                          s.realign(this.x, this.y, pel.getWidth(), pel.getHeight());
                      }
                  },
 
-         //      Called on the mouseup event.
+                 //Called on the mouseup event.
                  endDrag : function(e){
                      this.panel.setPosition(this.x, this.y);\n";
       if ($config == '1') {
@@ -240,17 +240,17 @@ Ext.onReady(function() {
                         scripts: true,
                         params:'id=".$data['id']."&x=' + (this.x)  + '&y=' + (this.y)
                      });\n";
-         echo "if (this.x < 1) {
-                  this.panel.destroy();
-               }
-               if (this.y < 0) {
-                  this.panel.destroy();
-               }
+         echo "      if (this.x < 1) {
+                        this.panel.destroy();
+                     }
+                     if (this.y < 0) {
+                        this.panel.destroy();
+                     }
             
             ";
       }
-      echo "           }
-             },
+      echo "      }
+             }
              ".$event."
          });
      </script>";//.show()
