@@ -296,7 +296,7 @@ Ext.onReady(function() {
       echo "<td>";
       $elements = array();
       $elements['NULL'] = DROPDOWN_EMPTY_VALUE;
-      $elements['PluginMonitoringServicescatalog'] = $LANG['plugin_monitoring']['businessrule'][0];
+      $elements['PluginMonitoringServicescatalog'] = $LANG['plugin_monitoring']['servicescatalog'][0];
       $elements['PluginMonitoringComponentscatalog'] = $LANG['plugin_monitoring']['componentscatalog'][0];
       $elements['PluginMonitoringService'] = $LANG['plugin_monitoring']['service'][0];
       $elements['PluginMonitoringWeathermap'] = $LANG['plugin_monitoring']['weathermap'][0];
