@@ -48,6 +48,8 @@ function plugin_init_monitoring() {
    
    $PLUGIN_HOOKS['change_profile']['monitoring'] = array('PluginMonitoringProfile','changeprofile');
    
+   $PLUGIN_HOOKS['csrf_compliant']['monitoring'] = true;
+   
    $Plugin = new Plugin();
    if ($Plugin->isActivated('monitoring')) {
       if (isset($_SESSION["glpiID"])) {
@@ -55,8 +57,6 @@ function plugin_init_monitoring() {
          
          $PLUGIN_HOOKS['use_massive_action']['monitoring']=1;
          $PLUGIN_HOOKS['add_css']['monitoring']="css/views.css";
-         
-         $PLUGIN_HOOKS['csrf_compliant']['monitoring'] = true;
          
          $plugin = new Plugin();
          if ($plugin->isActivated('monitoring')
