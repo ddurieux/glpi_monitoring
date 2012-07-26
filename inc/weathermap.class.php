@@ -376,40 +376,84 @@ LINK DEFAULT
       echo "<tr class='tab_bg_1'>";
       echo "<td valign='top' width='10'>";      
       if ($this->fields['background'] == '') {
-         echo '<div id="pointer_div" onclick="point_it(event)" style = "background-color:grey;">
-            <div id="cross" style="position:relative;visibility:hidden;z-index:2;"></div>
-            '.$map.'
-            </div>';
+//         echo '<div id="pointer_div" onclick="point_it(event)" style = "background-color:grey;">
+//            <div id="cross" style="position:relative;visibility:hidden;z-index:2;"></div>
+//            '.$map.'
+//            </div>';
+         
+         echo '<script language="JavaScript" type="text/JavaScript">
+
+         function FindPosition(oElement) {
+            if(typeof( oElement.offsetParent ) != "undefined") {
+               for(var posX = 0, posY = 0; oElement; oElement = oElement.offsetParent) {
+                  posX += oElement.offsetLeft;
+                  posY += oElement.offsetTop;
+               }
+               return [ posX, posY ];
+            } else {
+               return [ oElement.x, oElement.y ];
+            }
+         }
+
+         function GetCoordinates(e) {
+            var PosX = 0;
+            var PosY = 0;
+            var ImgPos;
+            ImgPos = FindPosition(myImg);
+            if (!e) var e = window.event;
+            if (e.pageX || e.pageY) {
+               PosX = e.pageX;
+               PosY = e.pageY;
+            } else if (e.clientX || e.clientY) {
+               PosX = e.clientX + document.body.scrollLeft
+                 + document.documentElement.scrollLeft;
+               PosY = e.clientY + document.body.scrollTop
+                 + document.documentElement.scrollTop;
+            }
+            PosX = PosX - ImgPos[0];
+            PosY = PosY - ImgPos[1];
+
+            document.pointform.x.value = PosX;
+            document.pointform.y.value = PosY;
+         }
+
+         var myImg = document.getElementById("myImgId");
+         myImg.onmousedown = GetCoordinates;
+
+         </script>';
+         echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=weathermap-".$weathermaps_id.".png' id='myImgId' />";
+         
       } else {
          echo '<div id="pointer_div" onclick="point_it(event)" style = "background-image:url(\''.$this->fields['background'].'\');">
             <img id="cross" style="position:relative;visibility:hidden;z-index:2;">
             '.$map.'</div>';
+         echo '<script language="JavaScript">
+         function point_it(event){
+            pos_x = event.offsetX?(event.offsetX):event.pageX;
+            pos_y = event.offsetY?(event.offsetY):event.pageY;
+            document.getElementById("cross").style.left = (pos_x-1) ;
+            document.getElementById("cross").style.top = (pos_y-15) ;
+
+            var topValue= 0;
+            var leftValue= 0;
+            var obj = document.getElementById("pointer_div");
+            while(obj){
+               leftValue+= obj.offsetLeft;
+               topValue+= obj.offsetTop;
+               obj= obj.offsetParent;
+            }
+
+
+            document.pointform.x.value = pos_x-leftValue;
+            document.pointform.y.value = pos_y-topValue;
+
+         }
+         </script>';
       }
       echo "</td>";
       echo "<td valign='top'>";
       
- echo '<script language="JavaScript">
-function point_it(event){
-	pos_x = event.offsetX?(event.offsetX):event.pageX;
-	pos_y = event.offsetY?(event.offsetY):event.pageY;
-	document.getElementById("cross").style.left = (pos_x-1) ;
-	document.getElementById("cross").style.top = (pos_y-15) ;
-   
-   var topValue= 0;
-   var leftValue= 0;
-   var obj = document.getElementById("pointer_div");
-   while(obj){
-	   leftValue+= obj.offsetLeft;
-	   topValue+= obj.offsetTop;
-	   obj= obj.offsetParent;
-   }
-
-
-	document.pointform.x.value = pos_x-leftValue;
-	document.pointform.y.value = pos_y-topValue;
-
-}
-</script>';
+ 
    echo '<form name="pointform" method="post" action="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/weathermapnode.form.php">';
       echo "<table align='center'>";
       echo "<tr>";
