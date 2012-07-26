@@ -259,7 +259,8 @@ class PluginMonitoringShinken extends CommonDBTM {
                         }
                      }
                      if (count($a_contacts) > 0) {
-                        $a_hosts[$i]['contacts'] = implode(',', $a_contacts);
+                        $a_contacts_unique = array_unique($a_contacts);
+                        $a_hosts[$i]['contacts'] = implode(',', $a_contacts_unique);
                      }
                   }
                
@@ -463,7 +464,8 @@ class PluginMonitoringShinken extends CommonDBTM {
                      }
                   }
                }
-            $a_services[$i]['contacts'] = implode(',', $a_contacts);
+            $a_contacts_unique = array_unique($a_contacts);
+            $a_services[$i]['contacts'] = implode(',', $a_contacts_unique);
 
             // ** If shinken not use templates or template not defined : 
             if (!isset($_SESSION['plugin_monitoring']['servicetemplates'][$a_component['id']])) {
