@@ -136,10 +136,11 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
          AND `users_id`>0");
       foreach ($a_list_contact as $data) {
-         $usersentities = $profile_User->getUserEntities($data['users_id']);
          $contactentities = getSonsOf('glpi_entities', $data['entities_id']);
-         $a_contacts_entities[$data['items_id']][$data['users_id']] = 
-                                                array_intersect($usersentities, $contactentities);
+         if (isset($a_contacts_entities[$data['items_id']][$data['users_id']])) {
+            $contactentities = array_merge($contactentities, $a_contacts_entities[$data['items_id']][$data['users_id']]);
+         }
+         $a_contacts_entities[$data['items_id']][$data['users_id']] = $contactentities;
       }
       
       $command_ping = current($pmCommand->find("`command_name`='check_host_alive'", "", 1));
@@ -340,10 +341,11 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
          AND `users_id`>0");
       foreach ($a_list_contact as $data) {
-         $usersentities = $profile_User->getUserEntities($data['users_id']);
          $contactentities = getSonsOf('glpi_entities', $data['entities_id']);
-         $a_contacts_entities[$data['items_id']][$data['users_id']] = 
-                                                array_intersect($usersentities, $contactentities);
+         if (isset($a_contacts_entities[$data['items_id']][$data['users_id']])) {
+            $contactentities = array_merge($contactentities, $a_contacts_entities[$data['items_id']][$data['users_id']]);
+         }
+         $a_contacts_entities[$data['items_id']][$data['users_id']] = $contactentities;
       }
       
       $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);

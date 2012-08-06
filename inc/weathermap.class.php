@@ -110,6 +110,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
       
       if ($this->fields['background'] != '') {
          $conf .= "BACKGROUND ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermapbg/".$this->fields['background']."\n";
+         //$conf .= "BACKGROUND http://192.168.20.194".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=weathermapbg/".$this->fields['background']."\n";
       }
       // image file to generate
       $conf .= "IMAGEOUTPUTFILE ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png\n";
@@ -376,11 +377,6 @@ LINK DEFAULT
       echo "<tr class='tab_bg_1'>";
       echo "<td valign='top' width='10'>";      
       if ($this->fields['background'] == '') {
-//         echo '<div id="pointer_div" onclick="point_it(event)" style = "background-color:grey;">
-//            <div id="cross" style="position:relative;visibility:hidden;z-index:2;"></div>
-//            '.$map.'
-//            </div>';
-         
          echo '<script language="JavaScript" type="text/JavaScript">
 
          function FindPosition(oElement) {
@@ -900,34 +896,6 @@ LINK DEFAULT
    
    
    
-//   function generateWeathermap($weathermaps_id, $force=0) {
-//      global $CFG_GLPI;
-//            
-//      if ($force == '0'
-//              AND file_exists(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png")) {
-//         $time_generate = filectime(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png");
-//         if (($time_generate + 60) > date('U')) {
-//            return;
-//         }
-//      }
-//
-//      $outputhtml = '';
-//      if (strstr($_SERVER["PHP_SELF"], "ajax/weathermap.tabs.php")) {
-//         $outputhtml = "--htmloutput ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".html";
-//      }
-//      $end = '';
-//      if (preg_match('/^Windows/i', php_uname())) {
-//         session_write_close();
-//         $end = ' && exit';
-//      }
-//      system(PluginMonitoringConfig::getPHPPath()." ".GLPI_ROOT."/plugins/monitoring/lib/weathermap/weathermap ".
-//         "--config http://".$_SERVER['SERVER_NAME'].$CFG_GLPI['root_doc']."/plugins/monitoring/front/weathermap_conf.php?id=".$weathermaps_id." ".
-//         "--output ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png ".$outputhtml.$end);
-//
-//   }
-   
-   
-   
    function generateWeathermap($weathermaps_id, $force=0, $makehtml=0) {
       global $CFG_GLPI;
             
@@ -947,7 +915,7 @@ LINK DEFAULT
 
       $map=new WeatherMap();
       //$map->context="cli";
-
+//echo $this->generateConfig($weathermaps_id);exit;
       if ($map->ReadConfig($this->generateConfig($weathermaps_id))) {
 
          $imagefile=GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png";
@@ -966,10 +934,6 @@ LINK DEFAULT
       if ($makehtml == '1') {
          $map->htmlstyle = '';
          $fd=fopen(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".html", 'w');
-//         fwrite($fd,
-//            '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head>');
-//         if($map->htmlstylesheet != '') fwrite($fd,'<link rel="stylesheet" type="text/css" href="'.$map->htmlstylesheet.'" />');
-//         fwrite($fd,'<meta http-equiv="refresh" content="300" /><title>' . $map->ProcessString($map->title, $map) . '</title></head><body>');
 
          $html = $map->MakeHTML();
          
@@ -995,23 +959,6 @@ LINK DEFAULT
             0.97a">PHP Network Weathermap v0.97a</a></span></body></html>');
          fclose ($fd);
       }
-
-      
-      
-
-//      $outputhtml = '';
-//      if (strstr($_SERVER["PHP_SELF"], "ajax/weathermap.tabs.php")) {
-//         $outputhtml = "--htmloutput ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".html";
-//      }
-//      $end = '';
-//      if (preg_match('/^Windows/i', php_uname())) {
-//         session_write_close();
-//         $end = ' && exit';
-//      }
-//      system(PluginMonitoringConfig::getPHPPath()." ".GLPI_ROOT."/plugins/monitoring/lib/weathermap/weathermap ".
-//         "--config http://".$_SERVER['SERVER_NAME'].$CFG_GLPI['root_doc']."/plugins/monitoring/front/weathermap_conf.php?id=".$weathermaps_id." ".
-//         "--output ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png ".$outputhtml.$end);
-
    }
    
    
@@ -1022,8 +969,9 @@ LINK DEFAULT
       if (isset($_FILES['background']['type']) && !empty($_FILES['background']['type'])) {
          $mime = $_FILES['background']['type'];
       }
-      if (isset($mime)) {
+      if (isset($mime) AND !empty($mime)) {
          if ($mime == 'image/png'
+                 OR $mime == 'image/x-png'
                  OR $mime == 'image/jpg'
                  OR $mime == 'image/jpeg') {
             
@@ -1035,6 +983,7 @@ LINK DEFAULT
             unset($input['background']);
          }
       }
+
       return $input;
    }
    
