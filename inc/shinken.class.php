@@ -142,9 +142,6 @@ class PluginMonitoringShinken extends CommonDBTM {
          }
          $a_contacts_entities[$data['items_id']][$data['users_id']] = $contactentities;
       }
-      
-      $command_ping = current($pmCommand->find("`command_name`='check_host_alive'", "", 1));
-      $a_component = current($pmComponent->find("`plugin_monitoring_commands_id`='".$command_ping['id']."'", "", 1));
 
       $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
          GROUP BY `itemtype`, `items_id`";
@@ -201,12 +198,16 @@ class PluginMonitoringShinken extends CommonDBTM {
 
                $a_fields = array();
 
-               $a_fields = $a_component;
-
                $pmCommand->getFromDB($pmHostconfig->getValueAncestor('plugin_monitoring_commands_id', 
                                                                                     $class->fields['entities_id'],
                                                                                     $classname,
                                                                                     $class->getID()));
+
+               $a_component = current($pmComponent->find("`plugin_monitoring_commands_id`='".$pmCommand->fields['id']."'", "", 1));
+               
+               $a_fields = $a_component;
+
+               
                $a_hosts[$i]['check_command'] = $pmCommand->fields['command_name'];
                   $pmCheck->getFromDB($pmHostconfig->getValueAncestor('plugin_monitoring_checks_id', 
                                                                                      $class->fields['entities_id'],
