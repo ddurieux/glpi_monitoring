@@ -48,9 +48,12 @@ PluginMonitoringProfile::checkRight("componentscatalog","w");
 $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
 
 if (isset ($_POST["add"])) {
-   $componentscatalogs_hosts_id = $pmComponentscatalog_Host->add($_POST);
-   $pmComponentscatalog_Host->linkComponentsToItem($_POST['plugin_monitoring_componentscalalog_id'], 
-                                                   $componentscatalogs_hosts_id);
+   if (isset($_POST['items_id'])
+           AND $_POST['items_id'] != '0') {
+      $componentscatalogs_hosts_id = $pmComponentscatalog_Host->add($_POST);
+      $pmComponentscatalog_Host->linkComponentsToItem($_POST['plugin_monitoring_componentscalalog_id'], 
+                                                      $componentscatalogs_hosts_id);
+   }
    glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["deleteitem"])) {
    foreach ($_POST["item"] as $id=>$num) {
