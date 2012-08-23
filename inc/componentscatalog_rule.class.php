@@ -285,7 +285,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
          $_SESSION['glpilist_limit'] = $glpilist_limit;
 
          while ($data=$DB->fetch_array($result)) {
-            
+            $networkports_id = 0;
             $itemtype_device = $pmCc_Rule->fields['itemtype'];
             $items_id_device = $data['id'];
             if ($itemtype_device == 'PluginMonitoringNetworkport') {
@@ -293,6 +293,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                $pmNetworkport->getFromDB($data['id']);
                $itemtype_device = $pmNetworkport->fields['itemtype'];
                $items_id_device = $pmNetworkport->fields['items_id'];
+               $networkports_id = $pmNetworkport->fields['networkports_id'];
             }
             
             $queryh = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
@@ -309,7 +310,8 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                $input['itemtype'] = $itemtype_device;
                $componentscatalogs_hosts_id = $pmComponentscatalog_Host->add($input);
                $pmComponentscatalog_Host->linkComponentsToItem($pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"], 
-                                                               $componentscatalogs_hosts_id);
+                                                               $componentscatalogs_hosts_id,
+                                                               $networkports_id);
             } else {
                $data2 = $DB->fetch_assoc($resulth);
                // modify entity of services (if entity of device is changed)
