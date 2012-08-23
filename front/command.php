@@ -49,7 +49,7 @@ include (GLPI_ROOT."/inc/includes.php");
 PluginMonitoringProfile::checkRight("command","r");
 
 commonHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "command");
+             "monitoring", "commands");
 
 Search::show('PluginMonitoringCommand');
 
