@@ -496,7 +496,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_services[$i]['freshness_threshold'] = '1';
                $a_services[$i]['notifications_enabled'] = '1';
                $a_services[$i]['event_handler_enabled'] = '0';
-               $a_services[$i]['event_handler'] = 'super_event_kill_everyone!DIE';
+               //$a_services[$i]['event_handler'] = 'super_event_kill_everyone!DIE';
                $a_services[$i]['flap_detection_enabled'] = '1';
                $a_services[$i]['failure_prediction_enabled'] = '1';
                $a_services[$i]['retain_status_information'] = '1';
@@ -611,7 +611,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_services[$i]['freshness_threshold'] = '1';
                $a_services[$i]['notifications_enabled'] = '1';
                $a_services[$i]['event_handler_enabled'] = '0';
-               $a_services[$i]['event_handler'] = 'super_event_kill_everyone!DIE';
+               //$a_services[$i]['event_handler'] = 'super_event_kill_everyone!DIE';
                $a_services[$i]['flap_detection_enabled'] = '1';
                $a_services[$i]['failure_prediction_enabled'] = '1';
                $a_services[$i]['retain_status_information'] = '1';
@@ -681,7 +681,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_servicetemplates[$i]['freshness_threshold'] = '1';
          $a_servicetemplates[$i]['notifications_enabled'] = '1';
          $a_servicetemplates[$i]['event_handler_enabled'] = '0';
-         $a_servicetemplates[$i]['event_handler'] = 'super_event_kill_everyone!DIE';
+         //$a_servicetemplates[$i]['event_handler'] = 'super_event_kill_everyone!DIE';
          $a_servicetemplates[$i]['flap_detection_enabled'] = '1';
          $a_servicetemplates[$i]['failure_prediction_enabled'] = '1';
          $a_servicetemplates[$i]['retain_status_information'] = '1';
