@@ -301,6 +301,18 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'weathermap_regex', 
                                  'weathermap_regex_in', 
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->changeField($newTable, 
+                                 'perfname', 
+                                 'perfname', 
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->changeField($newTable, 
+                                 'perfnameinvert', 
+                                 'perfnameinvert', 
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->changeField($newTable, 
+                                 'perfnamecolor', 
+                                 'perfnamecolor', 
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable, 
                                  'id', 
@@ -350,6 +362,15 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                                  'weathermap_regex_out', 
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->addField($newTable, 
+                              'perfname', 
+                              "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->addField($newTable, 
+                              'perfnameinvert', 
+                              "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->addField($newTable, 
+                              'perfnamecolor', 
+                              "text DEFAULT NULL COLLATE utf8_unicode_ci");
          $migration->addKey($newTable, 
                             "plugin_monitoring_commands_id");
       $migration->migrationOneTable($newTable);
