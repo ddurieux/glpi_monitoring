@@ -413,7 +413,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $networkPort = new NetworkPort();
       $pMonitoringComponent = new PluginMonitoringComponent();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
-      $pmServicegraph = new PluginMonitoringServicegraph();
       $entity = new Entity();
       
       $pMonitoringService->getFromDB($data['id']);
@@ -430,24 +429,15 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
       $pMonitoringComponent->getFromDB($data['plugin_monitoring_components_id']);
       echo "<td class='center'>";
-      $img = '';
       $timezone = '0';
       if (isset($_SESSION['plugin_monitoring_timezone'])) {
          $timezone = $_SESSION['plugin_monitoring_timezone'];
       }
       $timezone_file = str_replace("+", ".", $timezone);
-      
-      $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$data['id']."-2h".$timezone_file.".png'/>";
          
-
-      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$data['id']."'>";
-      
-      if (file_exists(GLPI_ROOT."/files/_plugins/monitoring/PluginMonitoringService-".$data['id']."-2h".$timezone_file.".png")
-              OR $pMonitoringComponent->fields['graph_template'] != '') {
-         $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$data['id']."-2h".$timezone_file.".png'/>";
-         Html::showToolTip($img, array('img'=>$CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"));
-      } else {
-         
+      if ($pMonitoringComponent->fields['graph_template'] != '') {
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$data['id']."'>";
+         Html::showToolTip("", array('img'=>$CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"));
       }
       echo "</a>";
       echo "</td>";
@@ -611,6 +601,174 @@ class PluginMonitoringDisplay extends CommonDBTM {
       Html::closeForm();
       echo "</th>";
       echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<th colspan='2'>";
+      echo "<div id='legendlink'><a onClick='Ext.get(\"options\").toggle();'>[ Options ]</a></div>";
+      echo "</th>";
+      echo "</tr>";
+      
+      // * Display perfname
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='2'>";
+      echo "<div id='options' style='display:none'>";
+      echo "<form method='post'>";
+      $a_perfnames = array();
+      $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($pmComponent->fields['graph_template']);
+      echo "<table>";
+      echo "<tr>";
+      echo "<td rowspan='".ceil(count($a_perfnames) / 7)."' width='90'>";
+      echo "Display&nbsp;:";
+      echo "<br/><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+      
+      echo "</td>";
+      $i = 0;
+      $j = 0;
+      if (!isset($_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->fields['id']])) {
+         foreach ($a_perfnames as $name) {
+            $_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->fields['id']][$name] = 'checked';
+         }
+      }
+      foreach ($a_perfnames as $name) {
+         if ($i == 'O'
+                 AND $j == '1') {
+            echo "<tr>";
+         }
+         echo "<td>";
+         $checked = "checked";
+         if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->fields['id']])) {
+            $checked = "";
+         }
+         if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->fields['id']][$name])) {
+            $checked = $_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->fields['id']][$name];
+         }
+         echo "<input type='checkbox' name='perfname[]' value='".$name."' ".$checked."/> ".$name;
+         echo "</td>";
+         $i++;
+         if ($i == 6) {
+            $i = 0;
+            echo "</tr>";
+         }
+         $j = 1;
+      }
+      if ($i != 6) {
+         echo "<td colspan='".(6-$i)."'></td>";
+         echo "</tr>";
+      }
+
+      echo "</table>";
+      Html::closeForm();
+
+      
+      // * Invert perfname
+
+      echo "<form method='post'>";
+      $a_perfnames = array();
+      $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($pmComponent->fields['graph_template']);
+      echo "<table>";
+      echo "<tr>";
+      echo "<td rowspan='".ceil(count($a_perfnames) / 7)."' width='90'>";
+      echo "Invert values&nbsp;:";
+      echo "<br/><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+      
+      echo "</td>";
+      $i = 0;
+      $j = 0;
+      foreach ($a_perfnames as $name) {
+         if ($i == 'O'
+                 AND $j == '1') {
+            echo "<tr>";
+         }
+         echo "<td>";
+         $checked = "";
+         if (isset($_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$pmComponent->fields['id']][$name])) {
+            $checked = $_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$pmComponent->fields['id']][$name];
+         }
+         echo "<input type='checkbox' name='perfnameinvert[]' value='".$name."' ".$checked."/> ".$name;
+         echo "</td>";
+         $i++;
+         if ($i == 6) {
+            $i = 0;
+            echo "</tr>";
+         }
+         $j = 1;
+      }
+      if ($i != 6) {
+         echo "<td colspan='".(6-$i)."'></td>";
+         echo "</tr>";
+      }
+
+      echo "</table>";
+      Html::closeForm();
+
+      
+      // * Define color of perfname
+
+      echo "<form method='post'>";
+      $a_perfnames = array();
+      $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($pmComponent->fields['graph_template']);
+      foreach ($a_perfnames as $key=>$name) {
+         if (!isset($_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->fields['id']][$name])) {
+            unset($a_perfnames[$key]);
+         }
+      }
+      echo "<table>";
+      echo "<tr>";
+      echo "<td rowspan='".ceil(count($a_perfnames) / 4)."' width='90'>";
+      echo "Colors&nbsp;:";
+      echo "<br/><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+      
+      echo "</td>";
+      $i = 0;
+      $j = 0;
+      foreach ($a_perfnames as $name) {
+         if ($i == 'O'
+                 AND $j == '1') {
+            echo "<tr>";
+         }
+         echo "<td>";
+         echo $name."&nbsp;:";
+         echo "</td>";
+         echo "<td>";
+         $a_colors = array();
+         if (strstr($name, "warn")) {
+            $a_colors = PluginMonitoringServicegraph::colors("warn");
+         } else if (strstr($name, "crit")) {
+            $a_colors = PluginMonitoringServicegraph::colors("crit");
+         } else {
+            $a_colors = PluginMonitoringServicegraph::colors();
+         }
+         echo " <select name='perfnamecolor[".$name."]' id='color".$name."'>";
+         echo "<option value=''>".Dropdown::EMPTY_VALUE."</option>";
+         foreach ($a_colors as $color) {
+            $checked = '';
+            if (isset($_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$pmComponent->fields['id']][$name])
+                    AND $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$pmComponent->fields['id']][$name] == $color) {
+               $checked = 'selected';
+            }
+            echo "<option value='".$color."' style='background-color: #".$color.";' ".$checked.">".$color."</option>";
+         }
+         echo "</select>";
+         echo "</td>";
+         $i++;
+         if ($i == 4) {
+            $i = 0;
+            echo "</tr>";
+         }
+         $j = 1;
+      }
+      if ($i != 4) {
+         echo "<td colspan='".((4-$i) *2 )."'></td>";
+         echo "</tr>";
+      }
+
+      echo "</table>";
+      Html::closeForm();
+      echo "</div>";
+      echo "</td>";
+      echo "</tr>";
+      
+      
 
       $a_list = array();
       $a_list[] = "2h";
@@ -645,8 +803,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
                                        $timezone, 
                                        $time);
 
-         $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=".$itemtype."-".$items_id."-".$time.$timezone_file.".png'/>";
-         echo $img;
          echo "</td>";
          echo "</tr>";
       }

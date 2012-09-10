@@ -238,21 +238,8 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo $LANG['plugin_monitoring']['service'][12]."&nbsp;:";
       echo "</td>";
       echo "<td>";
-      $a_templates = array();
-      $a_templates[''] = Dropdown::EMPTY_VALUE;
-      if ($handle = opendir(GLPI_PLUGIN_DOC_DIR."/monitoring/templates/")) {
-          while (false !== ($entry = readdir($handle))) {
-              if ($entry != "." && $entry != "..") {
-                 if (strstr($entry, "_graph.json")) {
-                    $entry = str_replace("_graph.json", "", $entry);
-                    $a_templates[$entry] = $entry;
-                 }
-              }
-          }
-          closedir($handle);
-      }
       Dropdown::showFromArray("graph_template", 
-                              $a_templates, 
+                              PluginMonitoringPerfdata::listPerfdata(), 
                               array('value'=>$this->fields['graph_template']));
       echo "</td>";
       // * calendar

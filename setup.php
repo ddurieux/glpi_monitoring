@@ -46,6 +46,8 @@ define ("PLUGIN_MONITORING_VERSION","0.83+1.0");
 function plugin_init_monitoring() {
    global $PLUGIN_HOOKS,$LANG;
    
+   $_SESSION['glpi_plugin_monitoring']['loadnvd3'] = false;
+   
    $PLUGIN_HOOKS['change_profile']['monitoring'] = array('PluginMonitoringProfile','changeprofile');
    
    $PLUGIN_HOOKS['csrf_compliant']['monitoring'] = true;

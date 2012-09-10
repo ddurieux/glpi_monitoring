@@ -851,18 +851,31 @@ class PluginMonitoringService extends CommonDBTM {
    function showWidget($id, $time) {
       global $LANG, $DB, $CFG_GLPI;
       
-      $pmRrdtool = new PluginMonitoringRrdtool();
+//      $pmRrdtool = new PluginMonitoringRrdtool();
       $pmComponent = new PluginMonitoringComponent();
       
       $this->getFromDB($id);
       $pmComponent->getFromDB($this->fields['plugin_monitoring_components_id']);
       
-      $pmRrdtool->displayGLPIGraph($pmComponent->fields['graph_template'], 
-                            "PluginMonitoringService", 
-                            $id, 
-                            "0", 
-                            $time);
-      return '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/send.php?file=PluginMonitoringService-'.$id.'-'.$time.'0.png"/>';
+//      $pmRrdtool->displayGLPIGraph($pmComponent->fields['graph_template'], 
+//                            "PluginMonitoringService", 
+//                            $id, 
+//                            "0", 
+//                            $time);
+      
+      $pmServicegraph = new PluginMonitoringServicegraph();
+      ob_start();
+      $pmServicegraph->displayGraph($pmComponent->fields['graph_template'], 
+                                    "PluginMonitoringService", 
+                                    $id, 
+                                    "0", 
+                                    $time, 
+                                    "div", 
+                                    "702");
+      $chart = ob_get_contents();
+      ob_end_clean();
+      return $chart;
+//      return '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/send.php?file=PluginMonitoringService-'.$id.'-'.$time.'0.png"/>';
       
    }
    

@@ -54,7 +54,7 @@ if (isset($_GET['file'])) {
    $filename = $_GET['file'];
 
    $file = $docDir.'/'.$filename;
-   if (preg_match("/PluginMonitoringService-([0-9]+)-2h([0-9]+).png/", $filename)) {
+//   if (preg_match("/PluginMonitoringService-([0-9]+)-2h([0-9]+).png/", $filename)) {
       include (GLPI_ROOT."/inc/includes.php");
 
       $match = array();
@@ -66,13 +66,14 @@ if (isset($_GET['file'])) {
       $pmService->getFromDB($match[1]);
       $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
 
-      $pmServicegraph->displayGraph($pmComponent->fields['graph_template'], 
-                                    "PluginMonitoringService", 
-                                    $match[1], 
-                                    $match[2], 
-                                    '2h');
-   }
-   Toolbox::sendFile($file, $filename);
+      print_r($match);
+//      $pmServicegraph->displayGraph($pmComponent->fields['graph_template'], 
+//                                    "PluginMonitoringService", 
+//                                    $match[1], 
+//                                    $match[2], 
+//                                    '2h');
+//   }
+//   Toolbox::sendFile($file, $filename);
 }
 
 ?>

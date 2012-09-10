@@ -97,6 +97,8 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
       $pmDisplayview = new PluginMonitoringDisplayview();
       $pmDisplayview->getFromDB($id);
       
+      PluginMonitoringServicegraph::loadLib();
+      
       if ($config == '1') {
          $this->addItem($id);
          echo "<div id='updatecoordonates'></div>";
@@ -166,6 +168,7 @@ Ext.onReady(function() {
       $width='';
       if ($itemtype == "PluginMonitoringService") {
          $content = $item->showWidget($data['items_id'], $data['extra_infos']);
+
          $title .= " : ".Dropdown::getDropdownName(getTableForItemType('PluginMonitoringComponent'), $item->fields['plugin_monitoring_components_id']);
          $title .= ' '.$LANG['networking'][25].' ';
          $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
@@ -264,6 +267,20 @@ Ext.onReady(function() {
          });
      </script>";//.show()
       
+      if ($itemtype == "PluginMonitoringService") {
+         $pmComponent = new PluginMonitoringComponent();
+         $item = new $itemtype();
+         
+         $item->getFromDB($data['items_id']);
+         $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
+         $pmServicegraph = new PluginMonitoringServicegraph();
+         $pmServicegraph->displayGraph($pmComponent->fields['graph_template'], 
+                                       "PluginMonitoringService", 
+                                       $data['items_id'], 
+                                       "0", 
+                                       $data['extra_infos'], 
+                                       "js");
+      }
    }
 
    

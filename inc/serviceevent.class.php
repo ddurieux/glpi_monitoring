@@ -257,28 +257,24 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       $a_ref = $ret[0];
       $a_convert = $ret[1];
       
-      
       $mydatat = array();
       $a_labels = array();
-      $a_filenamej = explode("-", $rrdtool_template);
-      $filenamej = GLPI_PLUGIN_DOC_DIR."/monitoring/templates/".$a_filenamej[0]."-perfdata.json";
-      if (!file_exists($filenamej)) {
-         return;
-      }
-      $a_json = json_decode(file_get_contents($filenamej));
+      $func = "perfdata_".$rrdtool_template;
+      $a_json = json_decode(PluginMonitoringPerfdata::$func());
       
       while ($edata=$DB->fetch_array($result)) {
          $a_perfdata = explode(" ", $edata['perf_data']);
          $a_time = explode(" ", $edata['date']);
          $a_time2 = explode(":", $a_time[1]);
-         array_push($a_labels, $a_time2[0].":".$a_time2[1]);
+         $day = explode("-", $a_time[0]);
+         array_push($a_labels, "(".$day[2].")".$a_time2[0].":".$a_time2[1]);
          foreach ($a_json->parseperfdata as $num=>$data) {
             if (isset($a_perfdata[$num])) {
                $a_a_perfdata = explode("=", $a_perfdata[$num]);
                if ($a_a_perfdata[0] == $data->name) {
                   $a_perfdata_final = explode(";", $a_a_perfdata[1]);
                   foreach ($a_perfdata_final as $nb_val=>$val) {
-                     if (isset($a_ref[$data->DS[$nb_val]->dsname])) {
+//                     if (isset($a_ref[$data->DS[$nb_val]->dsname])) {
                         if ($val != '') {
                            if (strstr($val, "ms")) {
                               $val = round(str_replace("ms", "", $val),0);
@@ -289,16 +285,29 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                            } else if (strstr($val, "%")) {
                               $val = round(str_replace("%", "", $val),0);
                            } else if (!strstr($val, "timeout")){
-                              $val = round($val);
+                              if ($val > 2) {
+                                 $val = round($val);
+                              } else {
+                                 $val = round($val, 2);
+                              }
                            } else {
                               $val = 0;
-                           }
+                           }                           
                            if (!isset($mydatat[$data->DS[$nb_val]->dsname])) {
                               $mydatat[$data->DS[$nb_val]->dsname] = array();
                            }
                            array_push($mydatat[$data->DS[$nb_val]->dsname], $val);
                         }
+//                     }
+                  }
+               } else {
+                  $nb_val = 0;
+                  foreach ($a_labels as $lab) {
+                     if (!isset($mydatat[$data->DS[$nb_val]->dsname])) {
+                        $mydatat[$data->DS[$nb_val]->dsname] = array();
                      }
+                     array_push($mydatat[$data->DS[$nb_val]->dsname], 0);
+                     $nb_val++;
                   }
                }
             }         
@@ -311,9 +320,8 @@ class PluginMonitoringServiceevent extends CommonDBTM {
    
    function getRef($rrdtool_template) {
 
-      $filename = GLPI_PLUGIN_DOC_DIR."/monitoring/templates/".$rrdtool_template."_graph.json";
-      
-      $a_jsong = json_decode(file_get_contents($filename));
+      $func = "perfdata_".$rrdtool_template;
+      $a_jsong = json_decode(PluginMonitoringPerfdata::$func());
       // Get data 
       $a_convert = array();
       $a_ref = array();

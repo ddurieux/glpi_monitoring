@@ -57,21 +57,63 @@ if (isset($_POST['sessionupdate'])) {
    exit;
 }
 
-if (isset ($_POST["plugin_monitoring_timezone"])) {
+if (isset($_POST["plugin_monitoring_timezone"])) {
    $_SESSION['plugin_monitoring_timezone'] = $_POST["plugin_monitoring_timezone"];
    Html::back();
 } 
 
+if (isset($_POST["perfname"])) {
+   $pmComponent = new PluginMonitoringComponent();
+   $itemtype = $_GET['itemtype'];
+   $items_id = $_GET['items_id'];
+   $item = new $itemtype();
+   $item->getFromDB($items_id); 
+   $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
+   $_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->fields['id']] = array();
+   foreach ($_POST["perfname"] as $perfname) {
+      $_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->fields['id']][$perfname] = "checked";
+   }
+   Html::back();
+}
+
+if (isset($_POST["perfnameinvert"])) {
+   $pmComponent = new PluginMonitoringComponent();
+   $itemtype = $_GET['itemtype'];
+   $items_id = $_GET['items_id'];
+   $item = new $itemtype();
+   $item->getFromDB($items_id); 
+   $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
+   $_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$pmComponent->fields['id']] = array();
+   foreach ($_POST["perfnameinvert"] as $perfname) {
+      $_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$pmComponent->fields['id']][$perfname] = "checked";
+   }
+   Html::back();
+}
+
+if (isset($_POST["perfnamecolor"])) {
+   $pmComponent = new PluginMonitoringComponent();
+   $itemtype = $_GET['itemtype'];
+   $items_id = $_GET['items_id'];
+   $item = new $itemtype();
+   $item->getFromDB($items_id); 
+   $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
+   $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$pmComponent->fields['id']] = array();
+   foreach ($_POST["perfnamecolor"] as $perfname=>$color) {
+      if ($color != '') {
+         $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$pmComponent->fields['id']][$perfname] = $color;
+      }
+   }
+   Html::back();   
+}
+
 $pMonitoringDisplay = new PluginMonitoringDisplay();
 
 if (isset($_GET['itemtype']) AND isset($_GET['items_id'])) {
-   $pMonitoringDisplay->refreshPage();
-   
-   echo '<meta http-equiv ="refresh" content="'.$_SESSION['glpi_plugin_monitoring']['_refresh'].'">';
+
+   PluginMonitoringServicegraph::loadLib();
    
    $pmServicegraph = new PluginMonitoringServicegraph();
    $pmServicegraph->parseToDB($_GET['items_id']);
-   
    $pMonitoringDisplay->displayGraphs($_GET['itemtype'], $_GET['items_id']);
 }
 

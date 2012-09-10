@@ -49,26 +49,50 @@ class PluginMonitoringServicegraph extends CommonDBTM {
    private $jsongraph_a_convert = array();
 
    
-   function displayGraph($rrdtool_template, $itemtype, $items_id, $timezone, $time='1d', $width='470') {
-      global $DB,$LANG;
-      
-      $timezonefile = str_replace("+", ".", $timezone);
-      
-      // Cache 1 minute
-      if (file_exists(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.$timezonefile.".png")) {
-         $time_generate = filectime(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.$timezonefile.".png");
-         if (($time_generate + 150) > date('U')) {
-            return;
-         }
-      }
-      
-      $filename = GLPI_PLUGIN_DOC_DIR."/monitoring/templates/".$rrdtool_template."_graph.json";
+   function displayGraph($rrdtool_template, $itemtype, $items_id, $timezone, $time='1d', $part='', $width='900') {
+      global $LANG,$CFG_GLPI;
 
-      $loadfile = file_get_contents($filename);
-      if (!$loadfile) {
-         return;
+      $pmComponent = new PluginMonitoringComponent();
+//      if (isset($_GET['itemtype'])) {
+//         $itemtype = $_GET['itemtype'];
+//         $items_id = $_GET['items_id'];
+//      }
+      $item = new $itemtype();
+      $item->getFromDB($items_id); 
+      $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
+      if ($part == ''
+              OR $part == 'div') {
+         echo '<div id="chart'.$items_id.$time.'">'.
+             '<svg style="height: 300px; width: '.$width.'px;"></svg>'.
+           '</div>';
+
+         echo "<div id=\"updategraph".$items_id.$time."\"></div>";
       }
-      $a_jsong = json_decode($loadfile);
+      if ($part == ''
+              OR $part == 'js') {
+         echo "<script type=\"text/javascript\">
+
+         var el".$items_id.$time." = Ext.get(\"updategraph".$items_id.$time."\");
+         var mgr".$items_id.$time." = el".$items_id.$time.".getUpdateManager();
+         mgr".$items_id.$time.".loadScripts=true;
+         mgr".$items_id.$time.".showLoadIndicator=false;
+         mgr".$items_id.$time.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateChart.php\", \"rrdtool_template=".$rrdtool_template."&itemtype=".$itemtype."&items_id=".$items_id."&timezone=".$timezone."&time=".$time."&components_id=".$pmComponent->fields['id']."\", \"\", true);
+         </script>";
+      }
+
+      return;
+
+   }
+      
+      
+      
+      
+      
+   function generateData($rrdtool_template, $itemtype, $items_id, $timezone, $time) { 
+      global $DB,$LANG;      
+
+//      $func = "perfdata_".$rrdtool_template;
+//      $loadfile = PluginMonitoringPerfdata::$func();
       
       // Manage timezones
       $converttimezone = '0';
@@ -81,16 +105,6 @@ class PluginMonitoringServicegraph extends CommonDBTM {
          $converttimezone = ($timezone_temp * 3600);
          $timezone = str_replace("+", "-", $timezone);
       }
-      
-      
-      $opts = "";
-
-      /* pChart library inclusions */
-      include_once("../lib/pChart2.1.3/class/pData.class.php");
-      include_once("../lib/pChart2.1.3/class/pDraw.class.php");
-      include_once("../lib/pChart2.1.3/class/pImage.class.php");
-      
-      $MyData = new pData();      
 
       // ** Get in table serviceevents
       $mydatat = array();
@@ -160,7 +174,8 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                   $datemod = $edata['date'];
                   $split = explode(' ', $datemod);
                   $split2 = explode(':', $split[1]);
-                  array_push($a_labels, $split2[0].':'.$split2[1]);
+                  $day = explode("-", $split[0]);
+                  array_push($a_labels, "(".$day[2].")".$split2[0].':'.$split2[1]);
                }
                foreach ($dat as $name=>$value) {
                   if (!isset($mydatat[$name])) {
@@ -188,7 +203,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                   $daynum = Calendar::getDayNumberInWeek(PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
                   $split = explode(' ', $datemod);
                   $split2 = explode(':', $split[1]);
-                  array_push($a_labels, $LANG['calendarDay'][$daynum]." ".$split2[0].':'.$split2[1]);
+                  array_push($a_labels, $split[0]." ".$split2[0].'h');
                }
                foreach ($dat as $name=>$value) {
                   if (!isset($mydatat[$name])) {
@@ -198,7 +213,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                }
             }
             $ret = $pmServiceevent->getRef($rrdtool_template);
-            $a_ref = $ret[0];
+//            $a_ref = $ret[0];
             break;
 
          case '1m':
@@ -217,7 +232,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                   $split = explode(' ', $datemod);
                   $split2 = explode(':', $split[1]);
                   $day = explode("-", $split[0]);
-                  array_push($a_labels, $LANG['calendarDay'][$daynum]." ".$day[2]);
+                  array_push($a_labels, $split[0]." ".$split2[0].'h');
                }
                foreach ($dat as $name=>$value) {
                   if (!isset($mydatat[$name])) {
@@ -245,8 +260,9 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                   $daynum = date('m', PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
                   $daynum = $daynum - 1;
                   $split = explode(' ', $datemod);
+                  $split2 = explode(':', $split[1]);
                   $day = explode("-", $split[0]);
-                  array_push($a_labels, $LANG['calendarM'][$daynum]." ".$day[2]);
+                  array_push($a_labels, $split[0]." ".$split2[0].'h');
                }
                foreach ($dat as $name=>$value) {
                   if (!isset($mydatat[$name])) {
@@ -274,8 +290,9 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                   $daynum = date('m', PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
                   $daynum = $daynum - 1;
                   $split = explode(' ', $datemod);
+                  $split2 = explode(':', $split[1]);
                   $day = explode("-", $split[0]);
-                  array_push($a_labels, $LANG['calendarM'][$daynum]." ".$day[2]);
+                  array_push($a_labels, $split[0]." ".$split2[0].'h');
                }
                foreach ($dat as $name=>$value) {
                   if (!isset($mydatat[$name])) {
@@ -290,90 +307,22 @@ class PluginMonitoringServicegraph extends CommonDBTM {
          
       }
       
-      $i = 0;
-      foreach ($mydatat as $name=>$data) {
-         $i++;
-         if ($i == '2') {
-            $datat = $data;
-            $data = array();
-            foreach ($datat as $val) {
-               array_push($data, -$val);
-            }
-         }
-         if (empty($data)) {
-            array_push($data, 0);
-         }
-         $MyData->addPoints($data, $name);
-         $color = str_split($a_ref[$name]);
-         $MyData->setPalette($name,array("R"=>hexdec($color[0].$color[1]),
-                                         "G"=>hexdec($color[2].$color[3]),
-                                         "B"=>hexdec($color[4].$color[5])));
-      }
-      $MyData->setAxisDisplay(0,AXIS_FORMAT_METRIC,1);
-//    $MyData->setSerieTicks("Probe 2",4);
-//    $MyData->setAxisName(0,"Temperatures");
-      $MyData->addPoints($a_labels,"Labels");
-//    $MyData->setSerieDescription("Labels","Months");
-      $MyData->setAbscissa("Labels");
-      $myPicture = new pImage(700,230,$MyData);
-      $myPicture->Antialias = FALSE;
-
-      $Settings = array("R"=>225, "G"=>204, "B"=>123);
-      $myPicture->drawFilledRectangle(0,0,700,230,$Settings);
-
-      $Settings = array("R"=>255, "G"=>255, "B"=>255);
-      $myPicture->drawFilledRectangle(60,40,650,200,$Settings);
-
-      /* Add a border to the picture */
-      $myPicture->drawRectangle(0,0,699,229,array("R"=>0,"G"=>0,"B"=>0));
-
-
-      /* Write the chart title */ 
-      $myPicture->setFontProperties(array("FontName"=>"../lib/pChart2.1.3/fonts/verdana.ttf","FontSize"=>11));
-      $myPicture->drawText(350,20, $a_jsong->data[0]->labels[0]->title, array("FontSize"=>13,"Align"=>TEXT_ALIGN_MIDDLEMIDDLE));
-
-      /* Set the default font */
-      $myPicture->setFontProperties(array("FontName"=>"../lib/pChart2.1.3/fonts/verdana.ttf","FontSize"=>7));
-
-      /* Define the chart area */
-      $myPicture->setGraphArea(60,40,650,200);
-
-      /* Draw the scale */
-      $labelskip = round(count($a_labels) / 8);
-      if ($time == '1d') {
-         $labelskip = 3;
-      } else if($time == '1m') {
-         $labelskip = 3;
-      } else if($time == '0y6m') {
-         $labelskip = 4;
-      } else if($time == '1y') {
-         $labelskip = 3;
-      }
-      $scaleSettings = array("XMargin"=>10,
-                             "YMargin"=>10,
-                             "Floating"=>TRUE,
-          "GridR"=>158, "GridG"=>158, "GridB"=>158, "GridAlpha"=>80,
-
-                             "DrawSubTicks"=>TRUE,
-                             "CycleBackground"=>FALSE,
-          "LabelSkip"=>$labelskip);
-      $myPicture->drawScale($scaleSettings);
-
-      /* Write the chart legend */
-      $myPicture->drawLegend(540,20,array("Style"=>LEGEND_NOBORDER,"Mode"=>LEGEND_HORIZONTAL));
-
-      /* Turn on Antialiasing */
-      $myPicture->Antialias = TRUE;
-
-
-      $Config = array("ForceTransparency"=>60);
-
-      /* Draw the area chart */
-      $myPicture->drawAreaChart($Config);
-
-      $myPicture->render(GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.$timezonefile.".png");
-      
-      return;      
+//      $i = 0;
+//      foreach ($mydatat as $name=>$data) {
+//         $i++;
+//         if ($i == '2') {
+//            $datat = $data;
+//            $data = array();
+//            foreach ($datat as $val) {
+//               array_push($data, -$val);
+//            }
+//         }
+//         if (empty($data)) {
+//            array_push($data, 0);
+//         }
+//      }
+         
+      return array($mydatat, $a_labels);      
    }
    
    
@@ -451,7 +400,12 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                }
                $array_data = array();
                foreach ($mydatat as $name=>$a_values) {
-                  $array_data[$name] = round(array_sum($a_values) / count($a_values));
+                  $valfloat = array_sum($a_values) / count($a_values);
+                  if ($valfloat > 2) {
+                     $array_data[$name] = round($valfloat);
+                  } else {
+                     $array_data[$name] = round($valfloat, 2);
+                  }
                }
                $input = array();
                $input['plugin_monitoring_services_id'] = $plugin_monitoring_services_id;
@@ -524,7 +478,12 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                }
                $array_data = array();
                foreach ($mydatat as $name=>$a_values) {
-                  $array_data[$name] = round(array_sum($a_values) / count($a_values));
+                  $valfloat = array_sum($a_values) / count($a_values);
+                  if ($valfloat > 2) {
+                     $array_data[$name] = round($valfloat);
+                  } else {
+                     $array_data[$name] = round($valfloat, 2);
+                  }
                }
                $input = array();
                $input['plugin_monitoring_services_id'] = $plugin_monitoring_services_id;
@@ -589,7 +548,12 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                }
                $array_data = array();
                foreach ($mydatat as $name=>$a_values) {
-                  $array_data[$name] = round(array_sum($a_values) / count($a_values));
+                  $valfloat = array_sum($a_values) / count($a_values);
+                  if ($valfloat > 2) {
+                     $array_data[$name] = round($valfloat);
+                  } else {
+                     $array_data[$name] = round($valfloat, 2);
+                  }
                }
                $input = array();
                $input['plugin_monitoring_services_id'] = $plugin_monitoring_services_id;
@@ -653,7 +617,12 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                }
                $array_data = array();
                foreach ($mydatat as $name=>$a_values) {
-                  $array_data[$name] = round(array_sum($a_values) / count($a_values));
+                  $valfloat = array_sum($a_values) / count($a_values);
+                  if ($valfloat > 2) {
+                     $array_data[$name] = round($valfloat);
+                  } else {
+                     $array_data[$name] = round($valfloat, 2);
+                  }
                }
                $input = array();
                $input['plugin_monitoring_services_id'] = $plugin_monitoring_services_id;
@@ -717,7 +686,12 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                }
                $array_data = array();
                foreach ($mydatat as $name=>$a_values) {
-                  $array_data[$name] = round(array_sum($a_values) / count($a_values));
+                  $valfloat = array_sum($a_values) / count($a_values);
+                  if ($valfloat > 2) {
+                     $array_data[$name] = round($valfloat);
+                  } else {
+                     $array_data[$name] = round($valfloat, 2);
+                  }
                }
                $input = array();
                $input['plugin_monitoring_services_id'] = $plugin_monitoring_services_id;
@@ -743,6 +717,76 @@ class PluginMonitoringServicegraph extends CommonDBTM {
             $result = $DB->query($query);
          }
       }
+   }
+   
+   
+   
+   static function getperfdataNames($rrdtool_template) {
+      
+      $a_name = array();
+
+      $func = "perfdata_".$rrdtool_template;
+      $a_json = json_decode(PluginMonitoringPerfdata::$func());
+
+      foreach ($a_json->parseperfdata as $data) {
+         foreach ($data->DS as $data2) {
+            $a_name[] = $data2->dsname;
+         }
+      }
+      return $a_name;
+   }
+   
+   
+   
+   static function colors($type='normal') {
+      $a_colors = array();
+      switch ($type) {
+         case 'normal':
+            $a_colors["006600"] = "006600";
+            $a_colors["009900"] = "009900";
+            $a_colors["67cb33"] = "67cb33";
+            $a_colors["9afe66"] = "9afe66";
+
+            $a_colors["003399"] = "003399";
+            $a_colors["0066cb"] = "0066cb";
+            $a_colors["0099ff"] = "0099ff";
+            $a_colors["99cdff"] = "99cdff";
+
+            $a_colors["feccff"] = "feccff";
+
+            break;
+
+         case 'warn':
+            $a_colors["eacc00"] = "eacc00";
+            $a_colors["ea8f00"] = "ea8f00";
+            $a_colors["ea991a"] = "ea991a";
+
+            break;
+         
+         case 'crit':
+            $a_colors["ff0000"] = "ff0000";
+            $a_colors["a00000"] = "a00000";
+            $a_colors["720000"] = "720000";
+
+            break;
+      }
+      return $a_colors;      
+   }
+   
+   
+   
+   static function loadLib() {
+      echo '<link href="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/src/nv.d3.css" rel="stylesheet" type="text/css">   
+      <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/lib/d3.v2.js"></script>
+      <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/nv.d3.js"></script>
+      <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/src/tooltip.js"></script>
+      <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/src/utils.js"></script>
+      <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/src/models/legend.js"></script>
+      <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/src/models/axis.js"></script>
+      <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/src/models/scatter.js"></script>
+      <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/src/models/line.js"></script>
+      <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/src/models/lineChart.js"></script>';
+
    }
 }
 
