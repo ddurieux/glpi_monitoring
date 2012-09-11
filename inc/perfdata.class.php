@@ -63,7 +63,6 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       $a_list["check_http"]         = "check_http";
       $a_list["check_pop"]          = "check_pop";
       $a_list["check_smtp"]         = "check_smtp";
-      $a_list["check_mem"]          = "check_mem";
       
       ksort($a_list);
       return $a_list;
@@ -374,21 +373,6 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       $ds[] = array('dsname' => 'time_critical');
       $ds[] = array('dsname' => 'time_other');
       $data['parseperfdata'][] = array('name' => 'time',
-                                       'DS'   => $ds);
-      return json_encode($data);      
-   }
-   
-   
-   
-   static function perfdata_check_mem() {
-      
-      $data = array();
-      $data['command'] = 'check_mem';
-      $data['parseperfdata'] = array();
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'percentage');
-      $data['parseperfdata'][] = array('name' => 'pct',
                                        'DS'   => $ds);
       return json_encode($data);      
    }

@@ -1022,6 +1022,94 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "</table>";
       Html::closeForm();
    }
+   
+   
+   
+   static function addRemoveTab($type, $tabnum) {
+      global $CFG_GLPI,$LANG;
+      
+      echo "<div style='z-index: 22;position:absolute;'>";
+      echo "<form name='form' method='post' action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/displayfix.php' >";
+      echo "<input type='hidden' name='type' value='".$type."' />";
+      echo "<input type='hidden' name='tabnum' value='".$tabnum."' />";
+      echo "<input type='submit' name='updateaddremovetab' value=\"\"
+         style='background:  url(\"".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/tab".$type.".png\");
+            width: 50px;height: 40px; border: 0px'>";
+      Html::closeForm();
+      echo "</div>";
+   }
+   
+   
+   
+   static function displayTab($tabnum) {
+      global $LANG;
+      
+      $pmDisplay = new PluginMonitoringDisplay();
+      switch($tabnum) {
+         case -1 :
+
+            break;
+
+         case 1 :
+            $pmServicescatalog = new PluginMonitoringServicescatalog();
+            $pmDisplay->displayCounters("Businessrules");
+            $pmServicescatalog->showBAChecks();
+            break;
+
+         case 2:
+            $pmComponentscatalog = new PluginMonitoringComponentscatalog();
+            $pmDisplay->displayCounters("Componentscatalog");
+            $pmComponentscatalog->showChecks();
+            break;
+
+         case 3:
+            $pmDisplay->displayCounters("Ressources");
+            // Manage search
+            if (isset($_SESSION['plugin_monitoring']['service'])) {
+               $_GET = $_SESSION['plugin_monitoring']['service'];
+            }
+            if (isset($_GET['reset'])) {
+               unset($_SESSION['glpisearch']['PluginMonitoringService']);
+            }
+            if (isset($_GET['glpi_tab'])) {
+               unset($_GET['glpi_tab']);
+            }
+            Search::manageGetValues("PluginMonitoringService");
+            Search::showGenericSearch("PluginMonitoringService", $_GET);
+            $_SESSION['plugin_monitoring']['service'] = $_GET;
+            $pmDisplay->showBoard(950);
+            if (isset($_SESSION['glpisearch']['PluginMonitoringService']['reset'])) {
+               unset($_SESSION['glpisearch']['PluginMonitoringService']['reset']);
+            }
+            break;
+
+         case 4:
+            PluginMonitoringCanvas::onload();
+
+            $pmCanvas = new PluginMonitoringCanvas();
+            $pmCanvas->show();      
+            break;
+
+         default :
+            $i = 5;
+            $pmDisplayview = new PluginMonitoringDisplayview();
+            $a_views = $pmDisplayview->getViews();
+            foreach ($a_views as $views_id=>$name) {
+               if ($tabnum == $i) {
+                  if ($_SESSION['plugin_monitoring_displaytab'] != $tabnum) {
+                     echo '<script language="javascript">window.location.reload();</script>';
+                     exit;
+                  }
+                  $pmDisplayview_item = new PluginMonitoringDisplayview_item();
+                  $pmDisplayview_item->view($views_id);
+               }
+               $i++;
+            }
+            break;
+
+      }
+      
+   }
 }
 
 ?>

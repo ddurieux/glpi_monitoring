@@ -56,6 +56,8 @@ $pmBusinessrule = new PluginMonitoringBusinessrule();
 $pmDisplayview = new PluginMonitoringDisplayview();
 $a_views = $pmDisplayview->getViews();
 
+PluginMonitoringDisplay::addRemoveTab('remove', $_REQUEST['glpi_tab']);
+
 switch($_REQUEST['glpi_tab']) {
    case -1 :
 
@@ -93,11 +95,10 @@ switch($_REQUEST['glpi_tab']) {
       break;
 
    case 4:
-PluginMonitoringCanvas::onload();
+      PluginMonitoringCanvas::onload();
 
-$pmCanvas = new PluginMonitoringCanvas();
-$pmCanvas->show();
-      
+      $pmCanvas = new PluginMonitoringCanvas();
+      $pmCanvas->show();      
       break;
 
    default :

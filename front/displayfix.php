@@ -40,24 +40,49 @@
    ------------------------------------------------------------------------
  */
 
-if(!defined('GLPI_ROOT')) {
+if (!defined('GLPI_ROOT')) {
    define('GLPI_ROOT', '../../..');
 }
 
 require_once GLPI_ROOT."/inc/includes.php";
 
-if (strstr($_SERVER['HTTP_REFERER'], "displayfix.php")) {
-   
-   if (isset($_GET['reset'])) {
-      unset($_SESSION['glpisearch']['PluginMonitoringService']);
+Session::checkCentralAccess();
+
+if (isset($_POST['updateaddremovetab'])) {
+   if ($_POST['type'] == 'remove') {
+      $_SESSION['glpi_plugin_monitoring']['displayonlytab'][$_POST['tabnum']] = 1;
+      Html::redirect($CFG_GLPI["root_doc"]."/plugins/monitoring/front/displayfix.php?tab=".$_POST['tabnum']);
+      
+   } else if ($_POST['type'] == 'add') {
+      if (isset($_SESSION['glpi_plugin_monitoring']['displayonlytab'][$_POST['tabnum']])) {
+         unset($_SESSION['glpi_plugin_monitoring']['displayonlytab'][$_POST['tabnum']]);
+      }
+      Html::redirect($CFG_GLPI["root_doc"]."/plugins/monitoring/front/display.php");
    }
-   if (isset($_GET['glpi_tab'])) {
-      unset($_GET['glpi_tab']);
-   }
-   Search::manageGetValues("PluginMonitoringService");
-   Html::back();
-} else {
-   include_once(GLPI_ROOT."/plugins/monitoring/front/display.php");
 }
 
+if (isset($_POST['sessionupdate'])) {
+   $_SESSION['glpi_plugin_monitoring']['_refresh'] = $_POST['_refresh'];
+   Html::back();
+}
+
+Html::header($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plugins",
+             "monitoring", "display");
+
+PluginMonitoringDisplay::addRemoveTab('add', $_GET['tab']);
+
+echo '<meta http-equiv ="refresh" content="'.$_SESSION['glpi_plugin_monitoring']['_refresh'].'">';
+
+$pmMessage = new PluginMonitoringMessage();
+$pmMessage->getMessages();
+
+$pmDisplay = new PluginMonitoringDisplay();
+$pmDisplay->refreshPage();
+
+if (isset($_SESSION['plugin_monitoring']['service'])) {
+   unset($_SESSION['plugin_monitoring']['service']);
+}
+PluginMonitoringDisplay::displayTab($_GET['tab']);
+
+Html::footer();
 ?>
