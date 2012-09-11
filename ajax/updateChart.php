@@ -56,6 +56,10 @@ $a_ret = $pmServicegraph->generateData($_POST['rrdtool_template'],
                              $_POST['time']);
 $mydatat = $a_ret[0];
 $a_labels = $a_ret[1];
+$suffix = '';
+if (isset($_POST['suffix'])) {
+   $suffix = $_POST['suffix'];
+}
 
 if(!isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']])) {
    PluginMonitoringServicegraph::loadPreferences($_POST['components_id']);
@@ -108,7 +112,7 @@ $pmCommand->getFromDB($pmComponent->fields['plugin_monitoring_commands_id']);
 
 echo '<script type="text/javascript">
 
-function updategraph'.$_POST['items_id'].$_POST['time'].'() {
+function updategraph'.$_POST['items_id'].$_POST['time'].$suffix.'() {
 
    var chart = nv.models.lineChart();
 
@@ -122,7 +126,7 @@ function updategraph'.$_POST['items_id'].$_POST['time'].'() {
    //chart.forceY([-400,400]);
 
    data = getdata'.$_POST['items_id'].$_POST['time'].'();
-   d3.select("#chart'.$_POST['items_id'].$_POST['time'].' svg")
+   d3.select("#chart'.$_POST['items_id'].$_POST['time'].$suffix.' svg")
      .datum(data)
      .transition().duration(50)
      .call(chart);
@@ -227,7 +231,7 @@ foreach ($mydatat as $name=>$data) {
 echo '  ];
 }
 
-updategraph'.$_POST['items_id'].$_POST['time'].'();
+updategraph'.$_POST['items_id'].$_POST['time'].$suffix.'();
 
 </script>';
 

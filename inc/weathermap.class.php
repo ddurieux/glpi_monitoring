@@ -903,7 +903,7 @@ LINK DEFAULT
               AND file_exists(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png")) {
          $time_generate = filectime(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png");
          if (($time_generate + 150) > date('U')) {
-            return;
+//            return;
          }
       } 
 
@@ -914,8 +914,7 @@ LINK DEFAULT
       require_once GLPI_ROOT."/plugins/monitoring/lib/weathermap/WeatherMapLink.class.php";
 
       $map=new WeatherMap();
-      //$map->context="cli";
-//echo $this->generateConfig($weathermaps_id);exit;
+
       if ($map->ReadConfig($this->generateConfig($weathermaps_id))) {
 
          $imagefile=GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png";
@@ -948,9 +947,52 @@ LINK DEFAULT
                $services_id[$match[1][0]] = $match[2][0];
             }
          }
+         $pmService = new PluginMonitoringService();
+         $pmComponent = new PluginMonitoringComponent();
+         $pmServicegraph = new PluginMonitoringServicegraph();
+         $i = 0;
          foreach ($objects_id as $o_id) {
-            $html .= "\n".$this->showToolTip("<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$services_id[$o_id]."-2h0.png' width='500' height='164' />", 
+            $pmService->getFromDB($services_id[$o_id]);
+            $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
+            ob_start();
+            $pmServicegraph->displayGraph($pmComponent->fields['graph_template'], 
+                                          "PluginMonitoringService", 
+                                          $services_id[$o_id], 
+                                          "0", 
+                                          '2h', 
+                                          "div", 
+                                          "400");
+            $chart = '';
+            $chart = ob_get_contents();
+            ob_end_clean();
+            $chart = str_replace('<div id="chart'.$services_id[$o_id].'2h">', 
+                                 '<div id="chart'.$services_id[$o_id].'2h'.$i.'">', 
+                                 $chart);
+            $chart = str_replace('<div id="updategraph'.$services_id[$o_id].'2h">', 
+                                 '<div id="updategraph'.$services_id[$o_id].'2h'.$i.'">', 
+                                 $chart);         
+            $chart = "<table width='400' class='tab_cadre'><tr><td>".$chart."</td></tr></table>";
+             
+            $html .= "\n".$this->showToolTip($chart, 
                            array('applyto'=>$o_id, 'display'=>false));
+            ob_start();
+            $pmServicegraph->displayGraph($pmComponent->fields['graph_template'], 
+                              "PluginMonitoringService", 
+                              $services_id[$o_id], 
+                              "0", 
+                              '2h', 
+                              "js");
+            $chart = '';
+            $chart = ob_get_contents();
+            ob_end_clean();
+            $chart = str_replace('"updategraph'.$services_id[$o_id].'2h"', 
+                                 '"updategraph'.$services_id[$o_id].'2h'.$i.'"', 
+                                 $chart);
+            $chart = str_replace('&time=2h&', 
+                                 '&time=2h&suffix='.$i.'&', 
+                                 $chart);
+            $html .= "\n".$chart;
+            $i++;
          }
          
          fwrite($fd, $html);
