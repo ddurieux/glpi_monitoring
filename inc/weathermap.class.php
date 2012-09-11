@@ -903,7 +903,7 @@ LINK DEFAULT
               AND file_exists(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png")) {
          $time_generate = filectime(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png");
          if (($time_generate + 150) > date('U')) {
-//            return;
+            return;
          }
       } 
 
@@ -1035,7 +1035,7 @@ LINK DEFAULT
       global $LANG, $DB, $CFG_GLPI;
 
       $this->generateWeathermap($id);
-      $imgdisplay = $CFG_GLPI['root_doc'].'/plugins/monitoring/front/send.php?file=weathermap-'.$id.'.png';
+      $imgdisplay = $CFG_GLPI['root_doc'].'/plugins/monitoring/front/send.php?file=weathermap-'.$id.'.png&date='.date('U');
       $img = GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$id.".png";
       if (file_exists($img)) {
          list($width, $height, $type, $attr) = getimagesize($img);

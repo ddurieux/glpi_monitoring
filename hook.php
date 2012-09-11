@@ -248,7 +248,7 @@ function plugin_headings_monitoring_status($item) {
 
 
 function plugin_headings_monitoring_resources($item) {
-
+   PluginMonitoringServicegraph::loadLib();
    $pmService = new PluginMonitoringService();
    $pmService->manageServices(get_class($item), $item->fields['id']);
    $pmHostconfig = new PluginMonitoringHostconfig();

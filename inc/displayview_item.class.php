@@ -185,6 +185,7 @@ Ext.onReady(function() {
          $width = "width: 702,";
       } else if ($itemtype == "PluginMonitoringWeathermap") {
          $content = $item->showWidget($data['items_id'], $data['extra_infos']);
+         $content = '<div id="weathermap-'.$data['items_id'].'">'.$content."</div>";
          $event = ", ".$item->widgetEvent($data['items_id']);
          $title .= " : ".Dropdown::getDropdownName(getTableForItemType('PluginMonitoringWeathermap'), $data['items_id']);
          $item->getFromDB($data['items_id']);
@@ -281,6 +282,22 @@ Ext.onReady(function() {
                                        $data['extra_infos'], 
                                        "js");
       }
+      
+      if ($itemtype == "PluginMonitoringWeathermap") {
+//         echo "<script type='text/javascript'>
+//            function updateimagew".$data['items_id']."() {
+//               var demain=new Date();
+//               document.getElementById('weathermap-".$data['items_id']."').innerHTML = demain.getTime() + '".$content."';
+//            }
+//            setInterval(updateimagew".$data['items_id'].", 50000);
+//         </script>";
+//      }
+         echo "<script type='text/javascript'>
+         var mgr = new Ext.UpdateManager('weathermap-".$data['items_id']."');
+         mgr.startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/widgetWeathermap.php\", \"id=".$data['items_id']."&extra_infos=".$data['extra_infos']."\", \"\", true);
+         </script>";
+      }
+
    }
 
    

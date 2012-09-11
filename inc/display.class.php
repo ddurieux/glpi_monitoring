@@ -1063,6 +1063,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
             break;
 
          case 3:
+            PluginMonitoringServicegraph::loadLib();
             $pmDisplay->displayCounters("Ressources");
             // Manage search
             if (isset($_SESSION['plugin_monitoring']['service'])) {

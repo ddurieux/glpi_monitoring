@@ -70,7 +70,6 @@ if (isset($_GET['searchtype'])) {
    exit;
 }
 
-echo '<meta http-equiv ="refresh" content="'.$_SESSION['glpi_plugin_monitoring']['_refresh'].'">';
 
 $pmMessage = new PluginMonitoringMessage();
 $pmMessage->getMessages();
@@ -79,13 +78,15 @@ $_SESSION['plugin_monitoring']['service'] = $_GET;
 
 $pMonitoringDisplay = new PluginMonitoringDisplay();
 
-$pMonitoringDisplay->refreshPage();
+
 if (isset($_SESSION['glpi_tabs']['pluginmonitoringdisplay'])) {
    $_SESSION['plugin_monitoring_displaytab'] = $_SESSION['glpi_tabs']['pluginmonitoringdisplay'];
 } else {
    $_SESSION['plugin_monitoring_displaytab'] = '';
 }
 
+echo '<meta http-equiv ="refresh" content="'.$_SESSION['glpi_plugin_monitoring']['_refresh'].'">';
+$pMonitoringDisplay->refreshPage();
 
 echo "<!--[if IE]><script type='text/javascript' src='".GLPI_ROOT."/plugins/monitoring/lib/canvas/excanvas.js'></script><![endif]-->
  <script type='text/javascript' src='".GLPI_ROOT."/plugins/monitoring/lib/canvas/canvasXpress.min.js'></script>";

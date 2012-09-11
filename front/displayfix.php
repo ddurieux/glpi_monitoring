@@ -71,13 +71,17 @@ Html::header($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plug
 
 PluginMonitoringDisplay::addRemoveTab('add', $_GET['tab']);
 
-echo '<meta http-equiv ="refresh" content="'.$_SESSION['glpi_plugin_monitoring']['_refresh'].'">';
-
+if ($_GET['tab'] < 5 ) {
+   echo '<meta http-equiv ="refresh" content="'.$_SESSION['glpi_plugin_monitoring']['_refresh'].'">';
+}
+   
 $pmMessage = new PluginMonitoringMessage();
 $pmMessage->getMessages();
 
-$pmDisplay = new PluginMonitoringDisplay();
-$pmDisplay->refreshPage();
+if ($_GET['tab'] < 5 ) {
+   $pmDisplay = new PluginMonitoringDisplay();
+   $pmDisplay->refreshPage();
+}
 
 if (isset($_SESSION['plugin_monitoring']['service'])) {
    unset($_SESSION['plugin_monitoring']['service']);
