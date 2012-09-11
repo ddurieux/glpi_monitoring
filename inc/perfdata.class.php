@@ -56,7 +56,14 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       $a_list["check_mem"]          = "check_mem";
       $a_list["check_users"]        = "check_users";
       $a_list["check_iftraffic41"]  = "check_iftraffic41";
-      $a_list["check_pf"]        = "check_pf";
+      $a_list["check_pf"]           = "check_pf";
+      $a_list["check_dig"]          = "check_dig";
+      $a_list["check_disk"]         = "check_disk";
+      $a_list["check_dns"]          = "check_dns";
+      $a_list["check_http"]         = "check_http";
+      $a_list["check_pop"]          = "check_pop";
+      $a_list["check_smtp"]         = "check_smtp";
+      $a_list["check_mem"]          = "check_mem";
       
       ksort($a_list);
       return $a_list;
@@ -249,6 +256,139 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       $ds = array();
       $ds[] = array('dsname' => 'limit');
       $data['parseperfdata'][] = array('name' => 'limit',
+                                       'DS'   => $ds);
+      return json_encode($data);      
+   }
+   
+   
+   
+   static function perfdata_check_dig() {
+      
+      $data = array();
+      $data['command'] = 'check_dig';
+      $data['parseperfdata'] = array();
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'time_current');
+      $ds[] = array('dsname' => 'time_warning');
+      $ds[] = array('dsname' => 'time_critical');
+      $ds[] = array('dsname' => 'time_other');
+      $data['parseperfdata'][] = array('name' => 'time',
+                                       'DS'   => $ds);
+      return json_encode($data);      
+   }
+   
+   
+   
+   static function perfdata_check_disk() {
+      
+      $data = array();
+      $data['command'] = 'check_disk';
+      $data['parseperfdata'] = array();
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'used');
+      $ds[] = array('dsname' => 'used_warning');
+      $ds[] = array('dsname' => 'used_critical');
+      $ds[] = array('dsname' => 'used_other');
+      $ds[] = array('dsname' => 'totalcapacity');
+      $data['parseperfdata'][] = array('name' => 'partition',
+                                       'DS'   => $ds);
+      return json_encode($data);      
+   }
+   
+   
+   
+   static function perfdata_check_dns() {
+      
+      $data = array();
+      $data['command'] = 'check_dns';
+      $data['parseperfdata'] = array();
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'time_current');
+      $ds[] = array('dsname' => 'time_warning');
+      $ds[] = array('dsname' => 'time_critical');
+      $ds[] = array('dsname' => 'time_other');
+      $data['parseperfdata'][] = array('name' => 'time',
+                                       'DS'   => $ds);
+      return json_encode($data);      
+   }
+   
+   
+   
+   static function perfdata_check_http() {
+      
+      $data = array();
+      $data['command'] = 'check_http';
+      $data['parseperfdata'] = array();
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'time_current');
+      $ds[] = array('dsname' => 'time_warning');
+      $ds[] = array('dsname' => 'time_critical');
+      $ds[] = array('dsname' => 'time_other');
+      $data['parseperfdata'][] = array('name' => 'time',
+                                       'DS'   => $ds);
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'size_current');
+      $ds[] = array('dsname' => 'size_warning');
+      $ds[] = array('dsname' => 'size_critical');
+      $ds[] = array('dsname' => 'size_other');
+      $data['parseperfdata'][] = array('name' => 'size',
+                                       'DS'   => $ds);
+      return json_encode($data);      
+   }
+   
+   
+   
+   static function perfdata_check_pop() {
+      
+      $data = array();
+      $data['command'] = 'check_pop';
+      $data['parseperfdata'] = array();
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'time_current');
+      $ds[] = array('dsname' => 'time_warning');
+      $ds[] = array('dsname' => 'time_critical');
+      $ds[] = array('dsname' => 'time_other');
+      $ds[] = array('dsname' => 'time_timeout');
+      $data['parseperfdata'][] = array('name' => 'time',
+                                       'DS'   => $ds);
+      return json_encode($data);      
+   }
+   
+   
+   
+   static function perfdata_check_smtp() {
+      
+      $data = array();
+      $data['command'] = 'check_smtp';
+      $data['parseperfdata'] = array();
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'time_current');
+      $ds[] = array('dsname' => 'time_warning');
+      $ds[] = array('dsname' => 'time_critical');
+      $ds[] = array('dsname' => 'time_other');
+      $data['parseperfdata'][] = array('name' => 'time',
+                                       'DS'   => $ds);
+      return json_encode($data);      
+   }
+   
+   
+   
+   static function perfdata_check_mem() {
+      
+      $data = array();
+      $data['command'] = 'check_mem';
+      $data['parseperfdata'] = array();
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'percentage');
+      $data['parseperfdata'][] = array('name' => 'pct',
                                        'DS'   => $ds);
       return json_encode($data);      
    }
