@@ -788,6 +788,199 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/src/models/lineChart.js"></script>';
 
    }
+   
+   
+   
+   static function preferences($components_id, $loadpreferences=1) {
+      global $LANG;
+      
+      if ($loadpreferences == 1) {
+         PluginMonitoringServicegraph::loadPreferences($components_id);
+      }
+      
+      $pmComponent = new PluginMonitoringComponent();
+      $pmComponent->getFromDB($components_id);
+      
+      echo "<form method='post'>";
+      $a_perfnames = array();
+      $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($pmComponent->fields['graph_template']);
+      echo "<table class='tab_cadre_fixe'>";      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td rowspan='".ceil(count($a_perfnames) / 7)."' width='90'>";
+      echo "Display&nbsp;:";
+      
+      echo "</td>";
+      $i = 0;
+      $j = 0;
+      if (!isset($_SESSION['glpi_plugin_monitoring']['perfname'][$components_id])) {
+         foreach ($a_perfnames as $name) {
+            $_SESSION['glpi_plugin_monitoring']['perfname'][$components_id][$name] = 'checked';
+         }
+      }
+      foreach ($a_perfnames as $name) {
+         if ($i == 'O'
+                 AND $j == '1') {
+            echo "<tr>";
+         }
+         echo "<td>";
+         $checked = "checked";
+         if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$components_id])) {
+            $checked = "";
+         }
+         if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$components_id][$name])) {
+            $checked = $_SESSION['glpi_plugin_monitoring']['perfname'][$components_id][$name];
+         }
+         echo "<input type='checkbox' name='perfname[]' value='".$name."' ".$checked."/> ".$name;
+         echo "</td>";
+         $i++;
+         if ($i == 6) {
+            $i = 0;
+            echo "</tr>";
+         }
+         $j = 1;
+      }
+      if ($i != 6) {
+         echo "<td colspan='".(6-$i)."'></td>";
+         echo "</tr>";
+      }
+
+      echo "</table>";
+
+      
+      // * Invert perfname
+
+      $a_perfnames = array();
+      $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($pmComponent->fields['graph_template']);
+      echo "<table class='tab_cadre_fixe'>";      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td rowspan='".ceil(count($a_perfnames) / 7)."' width='90'>";
+      echo "Invert values&nbsp;:";
+      
+      echo "</td>";
+      $i = 0;
+      $j = 0;
+      foreach ($a_perfnames as $name) {
+         if ($i == 'O'
+                 AND $j == '1') {
+            echo "<tr>";
+         }
+         echo "<td>";
+         $checked = "";
+         if (isset($_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$components_id][$name])) {
+            $checked = $_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$components_id][$name];
+         }
+         echo "<input type='checkbox' name='perfnameinvert[]' value='".$name."' ".$checked."/> ".$name;
+         echo "</td>";
+         $i++;
+         if ($i == 6) {
+            $i = 0;
+            echo "</tr>";
+         }
+         $j = 1;
+      }
+      if ($i != 6) {
+         echo "<td colspan='".(6-$i)."'></td>";
+         echo "</tr>";
+      }
+
+      echo "</table>";
+     
+      
+      // * Define color of perfname
+
+
+      $a_perfnames = array();
+      $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($pmComponent->fields['graph_template']);
+      foreach ($a_perfnames as $key=>$name) {
+         if (!isset($_SESSION['glpi_plugin_monitoring']['perfname'][$components_id][$name])) {
+            unset($a_perfnames[$key]);
+         }
+      }
+      echo "<table class='tab_cadre_fixe'>";      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td rowspan='".ceil(count($a_perfnames) / 4)."' width='90'>";
+      echo "Colors&nbsp;:";
+      
+      echo "</td>";
+      $i = 0;
+      $j = 0;
+      foreach ($a_perfnames as $name) {
+         if ($i == 'O'
+                 AND $j == '1') {
+            echo "<tr>";
+         }
+         echo "<td>";
+         echo $name."&nbsp;:";
+         echo "</td>";
+         echo "<td>";
+         $a_colors = array();
+         if (strstr($name, "warn")) {
+            $a_colors = PluginMonitoringServicegraph::colors("warn");
+         } else if (strstr($name, "crit")) {
+            $a_colors = PluginMonitoringServicegraph::colors("crit");
+         } else {
+            $a_colors = PluginMonitoringServicegraph::colors();
+         }
+         echo " <select name='perfnamecolor[".$name."]' id='color".$name."'>";
+         echo "<option value=''>".Dropdown::EMPTY_VALUE."</option>";
+         foreach ($a_colors as $color) {
+            $checked = '';
+            if (isset($_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$components_id][$name])
+                    AND $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$components_id][$name] == $color) {
+               $checked = 'selected';
+            }
+            echo "<option value='".$color."' style='background-color: #".$color.";' ".$checked.">".$color."</option>";
+         }
+         echo "</select>";
+         echo "</td>";
+         $i++;
+         if ($i == 4) {
+            $i = 0;
+            echo "</tr>";
+         }
+         $j = 1;
+      }
+      if ($i != 4) {
+         echo "<td colspan='".((4-$i) *2 )."'></td>";
+         echo "</tr>";
+      }
+
+      echo "<tr>";
+      echo "<td colspan='9' align='center'>";
+      echo "<input type='hidden' name='id' value='".$components_id."'/>";
+      echo "<input type='submit' name='updateperfdata' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+      echo "</td>";
+      echo "</tr>";
+      echo "</table>";
+
+      Html::closeForm();      
+   }
+   
+   
+   
+   static function loadPreferences($components_id) {
+      
+      $pmComponent = new PluginMonitoringComponent();
+      $pmComponent->getFromDB($components_id);
+      
+      $_SESSION['glpi_plugin_monitoring']['perfname'][$components_id] = array();
+      $a_perfname = importArrayFromDB($pmComponent->fields['perfname']);
+      foreach ($a_perfname as $perfname=>$active) {
+         $_SESSION['glpi_plugin_monitoring']['perfname'][$components_id][$perfname] = 'checked';
+      }
+      
+      $_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$components_id] = array();
+      $a_perfnameinvert = importArrayFromDB($pmComponent->fields['perfnameinvert']);
+      foreach ($a_perfnameinvert as $perfname=>$active) {
+         $_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$components_id][$perfname] = 'checked';
+      }
+      
+      $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$components_id] = array();
+      $a_perfnamecolor = importArrayFromDB($pmComponent->fields['perfnamecolor']);
+      foreach ($a_perfnamecolor as $perfname=>$color) {
+         $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$components_id][$perfname] = $color;
+      }
+   }
 }
 
 ?>

@@ -64,8 +64,7 @@ class PluginMonitoringComponent extends CommonDBTM {
     * 
     */
    function initComponents() {
-      
-      
+            
       
    }
 
@@ -92,6 +91,60 @@ class PluginMonitoringComponent extends CommonDBTM {
    function canUndo() {
       return PluginMonitoringProfile::haveRight("component", 'w');
    }
+   
+   
+   
+   function defineTabs($options=array()){
+      global $LANG,$CFG_GLPI;
+
+      $ong = array();
+      $this->addStandardTab("PluginMonitoringComponent", $ong, $options);    
+      return $ong;
+   }
+   
+   
+   
+   /**
+    * Display tab
+    * 
+    * @global array $LANG
+    * 
+    * @param CommonGLPI $item
+    * @param integer $withtemplate
+    * 
+    * @return varchar name of the tab(s) to display
+    */
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      if ($item->getID() > 0) {
+         return array($LANG['setup'][283], "Graph configuration");
+      }
+      return '';
+   }
+   
+   
+ 
+   /**
+    * Display content of tab
+    * 
+    * @param CommonGLPI $item
+    * @param integer $tabnum
+    * @param interger $withtemplate
+    * 
+    * @return boolean true
+    */
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType()=='PluginMonitoringComponent') {
+         if ($tabnum == '0') {
+            $item->copyItem($item->getID());
+         } else if ($tabnum == '1') {
+            $item->preferences($item->getID());
+         }         
+      }
+      return true;
+   }
 
    
 
@@ -117,17 +170,7 @@ class PluginMonitoringComponent extends CommonDBTM {
    }
 
    
-
-   function defineTabs($options=array()){
-      global $LANG,$CFG_GLPI;
-
-      $ong = array();
-      
-      return $ong;
-   }
-
-  
-   
+ 
    /**
    * Display form for service configuration
    *
@@ -398,28 +441,34 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "</tr>";
       
       $this->showFormButtons($options);
-      
-      // Add form for copy item
-      if ($items_id!='') {
-         $this->fields['id'] = 0;
-         $this->showFormHeader($options);
-         
-         echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='4' class='center'>";
-         foreach ($this->fields as $key=>$value) {
-            if ($key != 'id') {
-               echo "<input type='hidden' name='".$key."' value='".$value."'/>";
-            }
-         }
-         echo "<input type='submit' name='copy' value=\"".$LANG['setup'][283]."\" class='submit'>";
-         echo "</td>";
-         echo "</tr>";
-         
-         echo "</table>";
-         Html::closeForm();
-      }
+      $this->addDivForTabs();
       
       return true;
+   }
+   
+   
+   
+   function copyItem($items_id) {
+      global $LANG;
+      // Add form for copy item
+
+      $this->getFromDB($items_id);
+      $this->fields['id'] = 0;
+      $this->showFormHeader(array());
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='4' class='center'>";
+      foreach ($this->fields as $key=>$value) {
+         if ($key != 'id') {
+            echo "<input type='hidden' name='".$key."' value='".$value."'/>";
+         }
+      }
+      echo "<input type='submit' name='copy' value=\"".$LANG['setup'][283]."\" class='submit'>";
+      echo "</td>";
+      echo "</tr>";
+
+      echo "</table>";
+      Html::closeForm();
    }
    
    
@@ -438,6 +487,27 @@ class PluginMonitoringComponent extends CommonDBTM {
          $elements["[SNMP:authentication]"] = $LANG['plugin_monitoring']['component'][10];
       }      
       return $elements;
+   }
+   
+   
+   
+   function preferences($components_id) {
+      global $LANG;
+      
+      echo "<table class='tab_cadre_fixe'>"; 
+            
+      echo "<tr class='tab_bg_1'>";
+      echo "<th>";
+      echo $LANG['Menu'][11];      
+      echo "</th>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_3'>";
+      echo "<td>";
+      PluginMonitoringServicegraph::preferences($components_id);
+      echo "</td>";
+      echo "</tr>";
+      echo "</table>";
    }
 }
 

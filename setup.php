@@ -46,8 +46,6 @@ define ("PLUGIN_MONITORING_VERSION","0.83+2.0");
 function plugin_init_monitoring() {
    global $PLUGIN_HOOKS,$LANG;
    
-   $_SESSION['glpi_plugin_monitoring']['loadnvd3'] = false;
-   
    $PLUGIN_HOOKS['change_profile']['monitoring'] = array('PluginMonitoringProfile','changeprofile');
    
    $PLUGIN_HOOKS['csrf_compliant']['monitoring'] = true;
@@ -56,6 +54,8 @@ function plugin_init_monitoring() {
    if ($Plugin->isActivated('monitoring')) {
       if (isset($_SESSION["glpiID"])) {
          Plugin::loadLang("monitoring");
+         
+         Plugin::registerClass('PluginMonitoringComponent');
          
          $PLUGIN_HOOKS['use_massive_action']['monitoring']=1;
          $PLUGIN_HOOKS['add_css']['monitoring']="css/views.css";

@@ -68,7 +68,6 @@ if (isset($_POST["copy"])) {
     
       Session::addMessageAfterRedirect("<font class='red'>".$LANG['plugin_monitoring']['component'][5]."</font>");
       Html::back();
-      exit;
    }   
    
    $pMonitoringComponent->add($_POST);
@@ -86,7 +85,6 @@ if (isset($_POST["copy"])) {
     
       Session::addMessageAfterRedirect("<font class='red'>".$LANG['plugin_monitoring']['component'][5]."</font>");
       Html::back();
-      exit;
    }
 
    $pMonitoringComponent->update($_POST);
@@ -94,6 +92,37 @@ if (isset($_POST["copy"])) {
 } else if (isset ($_POST["delete"])) {
    $pMonitoringComponent->delete($_POST);
    $pMonitoringComponent->redirectToList();
+} else if(isset($_POST['updateperfdata'])) {
+   $a_perfname = array();
+   if (isset($_POST['perfname'])) {
+      foreach ($_POST['perfname'] as $perfname) {
+         $a_perfname[$perfname] = '1';
+      }
+   }
+   
+   $a_perfnameinvert = array();
+   if (isset($_POST['perfnameinvert'])) {
+      foreach ($_POST['perfnameinvert'] as $perfname) {
+         $a_perfnameinvert[$perfname] = '1';
+      }
+   }   
+   
+   $a_perfnamecolor = array();
+   if (isset($_POST['perfnamecolor'])) {
+      foreach ($_POST['perfnamecolor'] as $perfname=>$color) {
+         if ($color != '') {
+            $a_perfnamecolor[$perfname] = $color;
+         }
+      }
+   }
+   $input = array();
+   $input['id'] = $_POST['id'];
+   $input['perfname'] = exportArrayToDB($a_perfname);
+   $input['perfnameinvert'] = exportArrayToDB($a_perfnameinvert);
+   $input['perfnamecolor'] = exportArrayToDB($a_perfnamecolor);
+   
+   $pMonitoringComponent->update($input);
+   Html::back(); 
 }
 
 

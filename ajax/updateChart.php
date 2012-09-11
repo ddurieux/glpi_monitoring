@@ -57,6 +57,10 @@ $a_ret = $pmServicegraph->generateData($_POST['rrdtool_template'],
 $mydatat = $a_ret[0];
 $a_labels = $a_ret[1];
 
+if(!isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']])) {
+   PluginMonitoringServicegraph::loadPreferences($_POST['components_id']);
+}
+
 $format = "%H:%M";
 if ($_POST['time'] != "2h"
    AND $_POST['time'] != "12h"

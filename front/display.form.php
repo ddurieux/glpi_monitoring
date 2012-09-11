@@ -62,45 +62,43 @@ if (isset($_POST["plugin_monitoring_timezone"])) {
    Html::back();
 } 
 
-if (isset($_POST["perfname"])) {
+if(isset($_POST['updateperfdata'])) {
    $pmComponent = new PluginMonitoringComponent();
-   $itemtype = $_GET['itemtype'];
-   $items_id = $_GET['items_id'];
-   $item = new $itemtype();
-   $item->getFromDB($items_id); 
-   $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
-   $_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->fields['id']] = array();
-   foreach ($_POST["perfname"] as $perfname) {
-      $_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->fields['id']][$perfname] = "checked";
+   if (isset($_POST["perfname"])) {
+      $itemtype = $_GET['itemtype'];
+      $items_id = $_GET['items_id'];
+      $item = new $itemtype();
+      $item->getFromDB($items_id); 
+      $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
+      $_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->fields['id']] = array();
+      foreach ($_POST["perfname"] as $perfname) {
+         $_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->fields['id']][$perfname] = "checked";
+      }
    }
-   Html::back();
-}
 
-if (isset($_POST["perfnameinvert"])) {
-   $pmComponent = new PluginMonitoringComponent();
-   $itemtype = $_GET['itemtype'];
-   $items_id = $_GET['items_id'];
-   $item = new $itemtype();
-   $item->getFromDB($items_id); 
-   $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
-   $_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$pmComponent->fields['id']] = array();
-   foreach ($_POST["perfnameinvert"] as $perfname) {
-      $_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$pmComponent->fields['id']][$perfname] = "checked";
+   if (isset($_POST["perfnameinvert"])) {
+      $itemtype = $_GET['itemtype'];
+      $items_id = $_GET['items_id'];
+      $item = new $itemtype();
+      $item->getFromDB($items_id); 
+      $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
+      $_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$pmComponent->fields['id']] = array();
+      foreach ($_POST["perfnameinvert"] as $perfname) {
+         $_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$pmComponent->fields['id']][$perfname] = "checked";
+      }
    }
-   Html::back();
-}
 
-if (isset($_POST["perfnamecolor"])) {
-   $pmComponent = new PluginMonitoringComponent();
-   $itemtype = $_GET['itemtype'];
-   $items_id = $_GET['items_id'];
-   $item = new $itemtype();
-   $item->getFromDB($items_id); 
-   $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
-   $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$pmComponent->fields['id']] = array();
-   foreach ($_POST["perfnamecolor"] as $perfname=>$color) {
-      if ($color != '') {
-         $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$pmComponent->fields['id']][$perfname] = $color;
+   if (isset($_POST["perfnamecolor"])) {
+      $itemtype = $_GET['itemtype'];
+      $items_id = $_GET['items_id'];
+      $item = new $itemtype();
+      $item->getFromDB($items_id); 
+      $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
+      $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$pmComponent->fields['id']] = array();
+      foreach ($_POST["perfnamecolor"] as $perfname=>$color) {
+         if ($color != '') {
+            $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$pmComponent->fields['id']][$perfname] = $color;
+         }
       }
    }
    Html::back();   
