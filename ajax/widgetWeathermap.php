@@ -35,7 +35,7 @@
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
-   @since     2011
+   @since     2012
  
    ------------------------------------------------------------------------
  */
@@ -46,20 +46,13 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
-if (!isset($_POST["id"])) {
+if (!isset($_POST["id"])
+        OR !isset($_POST['extra_infos'])) {
    exit();
 }
 
-$pmDisplay = new PluginMonitoringDisplay();
-$pmBusinessrule = new PluginMonitoringBusinessrule();
-
-$pmDisplayview = new PluginMonitoringDisplayview();
-$a_views = $pmDisplayview->getViews();
-
-PluginMonitoringDisplay::addRemoveTab('remove', $_REQUEST['glpi_tab']);
-
-PluginMonitoringDisplay::displayTab($_REQUEST['glpi_tab']);
-
-Html::ajaxFooter();
+$pmWeathermap = new PluginMonitoringWeathermap();
+$map = $pmWeathermap->showWidget($_POST["id"], $_POST['extra_infos']);
+echo $map;
 
 ?>

@@ -101,5 +101,17 @@ div#tabcontent {
 
 $pMonitoringDisplay->addDivForTabs();
 
+echo "<script type='text/javascript'>
+tabpanel.getItem('1').on('activate', function(){
+reloadTab();
+});
+tabpanel.getItem('2').on('activate', function(){
+reloadTab();
+});
+tabpanel.getItem('3').on('activate', function(){
+reloadTab();
+});
+</script>";
+
 Html::footer();
 ?>
