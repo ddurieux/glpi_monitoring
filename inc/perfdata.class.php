@@ -291,7 +291,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       $ds[] = array('dsname' => 'used_critical');
       $ds[] = array('dsname' => 'used_other');
       $ds[] = array('dsname' => 'totalcapacity');
-      $data['parseperfdata'][] = array('name' => 'partition',
+      $data['parseperfdata'][] = array('name' => '',
                                        'DS'   => $ds);
       return json_encode($data);      
    }
