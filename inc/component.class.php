@@ -117,7 +117,8 @@ class PluginMonitoringComponent extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
 
-      if ($item->getID() > 0) {
+      if ($item->getID() > 0
+              AND $item->fields['graph_template'] != '') {
          return array($LANG['setup'][283], "Graph configuration");
       }
       return '';

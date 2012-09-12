@@ -68,7 +68,15 @@ if (isset($_POST["copy"])) {
     
       Session::addMessageAfterRedirect("<font class='red'>".$LANG['plugin_monitoring']['component'][5]."</font>");
       Html::back();
-   }   
+   }  
+   if ($_POST['graph_template'] != '') {
+      $a_perfnames = array();
+      $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($_POST['graph_template']);
+      foreach ($a_perfnames as $name) {
+         $a_perfnames[$name] = 1;
+      }
+      $_POST['perfname'] = exportArrayToDB($a_perfnames);
+   }
    
    $pMonitoringComponent->add($_POST);
    Html::back();
@@ -86,7 +94,24 @@ if (isset($_POST["copy"])) {
       Session::addMessageAfterRedirect("<font class='red'>".$LANG['plugin_monitoring']['component'][5]."</font>");
       Html::back();
    }
+   if ($_POST['graph_template'] != '') {
+      if (!isset($_POST['perfname'])
+              AND !isset($_POST['perfnameinvert'])
+              AND !isset($_POST['perfnamecolor'])) {
+         $pMonitoringComponent->getFromDB($_POST['id']);
+         if (empty($pMonitoringComponent->fields['perfname'])
+                 AND empty($pMonitoringComponent->fields['perfnameinvert'])
+                 AND empty($pMonitoringComponent->fields['perfnamecolor'])) {
 
+            $a_perfnames = array();
+            $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($_POST['graph_template']);
+            foreach ($a_perfnames as $name) {
+               $a_perfnames[$name] = 1;
+            }
+            $_POST['perfname'] = exportArrayToDB($a_perfnames);
+         }
+      }
+   }
    $pMonitoringComponent->update($_POST);
    Html::back();
 } else if (isset ($_POST["delete"])) {
