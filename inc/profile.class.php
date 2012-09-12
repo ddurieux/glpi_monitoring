@@ -124,10 +124,10 @@ class PluginMonitoringProfile extends CommonDBTM {
          $this->getEmpty();
       }
       
-      if (!haveRight("profile","r")) {
+      if (!Session::haveRight("profile","r")) {
          return false;
       }
-      $canedit=haveRight("profile","w");
+      $canedit=Session::haveRight("profile","w");
       if ($canedit) {
          echo "<form method='post' action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/profile.form.php'>";
          echo '<input type="hidden" name="profiles_id" value="'.$items_id.'"/>';
