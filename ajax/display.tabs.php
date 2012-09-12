@@ -56,6 +56,7 @@ $pmBusinessrule = new PluginMonitoringBusinessrule();
 $pmDisplayview = new PluginMonitoringDisplayview();
 $a_views = $pmDisplayview->getViews();
 
+
 PluginMonitoringDisplay::addRemoveTab('remove', $_REQUEST['glpi_tab']);
 
 PluginMonitoringDisplay::displayTab($_REQUEST['glpi_tab']);

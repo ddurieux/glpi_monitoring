@@ -120,7 +120,6 @@ class PluginMonitoringConfig extends CommonDBTM {
          
       } else {
          $input = array();
-         $input['phppath'] = "/usr/bin/php";
          $this->add($input);
          $this->getFromDB("1");
       }
@@ -130,13 +129,14 @@ class PluginMonitoringConfig extends CommonDBTM {
       $this->getFromDB($items_id);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td></td>";
+      echo "<td>".$LANG['plugin_monitoring']['config'][3]."&nbsp;:</td>";
       echo "<td align='center'>";
+      Dropdown::showInteger("logretention", $this->fields['logretention'], 0, 1000);
       echo "</td>";
-      echo "<td rowspan='3'>";
+      echo "<td>";
       echo $LANG['plugin_monitoring']['config'][0]."&nbsp:";
       echo "</td>";
-      echo "<td rowspan='3'>";
+      echo "<td>";
          $a_timezones = $this->getTimezones();
       
          $a_timezones_selected = importArrayFromDB($this->fields['timezones']);
@@ -187,20 +187,6 @@ class PluginMonitoringConfig extends CommonDBTM {
          echo "</td>";
          echo "</tr>";
          echo "</table>";
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['plugin_monitoring']['config'][6]."&nbsp;:</td>";
-      echo "<td align='center'>";
-      echo "<input name='phppath' type='text' value='".$this->fields['phppath']."' size='40'/>";
-      echo "</td>";
-      echo "</tr>";
-      
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['plugin_monitoring']['config'][3]."&nbsp;:</td>";
-      echo "<td align='center'>";
-      Dropdown::showInteger("logretention", $this->fields['logretention'], 0, 1000);
       echo "</td>";
       echo "</tr>";
 

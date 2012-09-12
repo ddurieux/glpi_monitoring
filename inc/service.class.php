@@ -871,7 +871,7 @@ class PluginMonitoringService extends CommonDBTM {
                                     "0", 
                                     $time, 
                                     "div", 
-                                    "702");
+                                    "475");
       $chart = ob_get_contents();
       ob_end_clean();
       return $chart;
