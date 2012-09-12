@@ -405,8 +405,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       echo "</table>";
       echo "<br/>";
-      Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php", $parameters);
-
+      if (strstr($_SERVER['PHP_SELF'], "displayfix.php")) {
+         $parameters .= "&tab=".$_GET['tab'];
+         Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/displayfix.php", $parameters);
+      } else {
+         Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php", $parameters);
+      }
    }
    
    
