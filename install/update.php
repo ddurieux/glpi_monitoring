@@ -2254,8 +2254,6 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                               'end_date', 
                               "datetime DEFAULT NULL");
-         $migration->addKey($newTable, 
-                            "plugin_monitoring_services_id");
       $migration->migrationOneTable($newTable);
       
       
