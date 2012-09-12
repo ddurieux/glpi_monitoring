@@ -1020,10 +1020,6 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'id', 
                                  "int(11) NOT NULL AUTO_INCREMENT");
          $migration->changeField($newTable, 
-                                 'rrdtoolpath', 
-                                 'rrdtoolpath', 
-                                 "varchar(255) DEFAULT NULL");
-         $migration->changeField($newTable, 
                                  'timezones', 
                                  'timezones', 
                                  "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '[\"0\"]'");
@@ -1037,10 +1033,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  "int(5) NOT NULL DEFAULT '30'");         
          $migration->dropField($newTable, 
                               'phppath');
+         $migration->dropField($newTable, 
+                              'rrdtoolpath');
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                              'rrdtoolpath', 
-                              "varchar(255) DEFAULT NULL");
          $migration->addField($newTable, 
                               'timezones', 
                               "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '[\"0\"]'");
