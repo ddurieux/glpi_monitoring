@@ -96,9 +96,6 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['displayview'] = 'front/displayview.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['displayview'] = 'front/displayview.php';
          
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['rrdtemplates'] = 'front/rrdtemplate.form.php?add=1';
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['rrdtemplates'] = 'front/rrdtemplate.php';
-
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['PluginMonitoringRealm'] = 'front/realm.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['PluginMonitoringRealm'] = 'front/realm.php';
 
