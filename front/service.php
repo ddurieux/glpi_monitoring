@@ -55,7 +55,16 @@ if (strstr($_SERVER['HTTP_REFERER'], "displayfix.php")) {
       unset($_GET['glpi_tab']);
    }
    Search::manageGetValues("PluginMonitoringService");
-   Html::back();
+   $split1 = explode("?", $_SERVER['HTTP_REFERER']);
+   $split2 = explode("&", $split1[1]);
+   $tab = 0;
+   foreach ($split2 as $data) {
+      if (strstr($data, "tab=")) {
+         $split3 = explode("=", $data);
+         $tab = $split3[1];
+      }
+   }
+   Html::redirect($CFG_GLPI["root_doc"]."/plugins/monitoring/front/displayfix.php?tab=".$tab);
 } else {
    include_once(GLPI_ROOT."/plugins/monitoring/front/display.php");
 }
