@@ -47,7 +47,7 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 if (!isset($_POST["id"])) {
-   exit();
+   Html::redirect($CFG_GLPI["root_doc"]."/plugins/monitoring/front/display.php");
 }
 
 $pmDisplay = new PluginMonitoringDisplay();

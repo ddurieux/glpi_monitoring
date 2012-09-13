@@ -140,9 +140,9 @@ class PluginMonitoringServiceevent extends CommonDBTM {
    function getData($result, $rrdtool_template, $ret=array()) {
       global $DB;
       
-      if (empty($ret)) {
-         $ret = $this->getRef($rrdtool_template);
-      }
+//      if (empty($ret)) {
+//         $ret = $this->getRef($rrdtool_template);
+//      }
       $a_ref = $ret[0];
       $a_convert = $ret[1];
       
@@ -211,7 +211,13 @@ class PluginMonitoringServiceevent extends CommonDBTM {
    
    
    function getRef($rrdtool_template) {
-
+      
+      $a_convert = array();
+      $a_ref = array();
+      return array($a_ref, $a_convert);
+      
+      
+      
       $func = "perfdata_".$rrdtool_template;
       $a_jsong = json_decode(PluginMonitoringPerfdata::$func());
       // Get data 
