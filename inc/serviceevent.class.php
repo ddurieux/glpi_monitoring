@@ -140,9 +140,9 @@ class PluginMonitoringServiceevent extends CommonDBTM {
    function getData($result, $rrdtool_template, $ret=array()) {
       global $DB;
       
-//      if (empty($ret)) {
-//         $ret = $this->getRef($rrdtool_template);
-//      }
+      if (empty($ret)) {
+         $ret = $this->getRef($rrdtool_template);
+      }
       $a_ref = $ret[0];
       $a_convert = $ret[1];
       
