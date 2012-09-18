@@ -47,9 +47,12 @@ if (!defined('GLPI_ROOT')) {
 include (GLPI_ROOT."/inc/includes.php");
 
 Session::checkCentralAccess();
-
-Html::header($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "display");
+if (isset($_GET['mobile'])) {
+   Html::popHeader('display');
+} else {
+   Html::header($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plugins",
+                "monitoring", "display");
+}
 
 if (isset($_POST['sessionupdate'])) {
    $_SESSION['glpi_plugin_monitoring']['_refresh'] = $_POST['_refresh'];
@@ -115,6 +118,9 @@ if (isset($_GET['itemtype']) AND isset($_GET['items_id'])) {
    $pMonitoringDisplay->displayGraphs($_GET['itemtype'], $_GET['items_id']);
 }
 
-Html::footer();
-
+if (isset($_GET['mobile'])) {
+   Html::popFooter();
+} else {
+   Html::footer();
+}
 ?>

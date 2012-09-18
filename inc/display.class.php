@@ -600,62 +600,69 @@ class PluginMonitoringDisplay extends CommonDBTM {
       if(!isset($_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->fields['id']])) {
          PluginMonitoringServicegraph::loadPreferences($pmComponent->fields['id']);
       }
-      echo "<table class='tab_cadre_fixe'>";
+      $css_width = '950';
+      if (isset($_GET['mobile'])) {
+         $css_width = '300';
+      }
+      echo "<table class='tab_cadre' width='".$css_width."'>";
       
       echo "<tr class='tab_bg_1'>";
       echo "<th>";
       echo $item->getLink(1);
       echo "</th>";
       echo "<th width='200'>";
-      echo "<form method='post'>";
-      $a_timezones = PluginMonitoringConfig::getTimezones();
-       if (!isset($_SESSION['plugin_monitoring_timezone'])) {
-         $_SESSION['plugin_monitoring_timezone'] = '0';
+      if (!isset($_GET['mobile'])) {
+         echo "<form method='post'>";
+         $a_timezones = PluginMonitoringConfig::getTimezones();
+          if (!isset($_SESSION['plugin_monitoring_timezone'])) {
+            $_SESSION['plugin_monitoring_timezone'] = '0';
+         }
+         $a_timezones_allowed = array();
+         $pmConfig->getFromDB(1);
+         $a_temp = importArrayFromDB($pmConfig->fields['timezones']);
+         foreach ($a_temp as $key) {
+            $a_timezones_allowed[$key] = $a_timezones[$key];
+         }
+         if (count($a_timezones_allowed) == '0') {
+            $a_timezones_allowed['0'] = $a_timezones['0'];
+         }
+
+         Dropdown::showFromArray('plugin_monitoring_timezone', 
+                                 $a_timezones_allowed, 
+                                 array('value'=>$_SESSION['plugin_monitoring_timezone']));
+         echo "&nbsp;<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+         Html::closeForm();
       }
-      $a_timezones_allowed = array();
-      $pmConfig->getFromDB(1);
-      $a_temp = importArrayFromDB($pmConfig->fields['timezones']);
-      foreach ($a_temp as $key) {
-         $a_timezones_allowed[$key] = $a_timezones[$key];
-      }
-      if (count($a_timezones_allowed) == '0') {
-         $a_timezones_allowed['0'] = $a_timezones['0'];
-      }
-      
-      Dropdown::showFromArray('plugin_monitoring_timezone', 
-                              $a_timezones_allowed, 
-                              array('value'=>$_SESSION['plugin_monitoring_timezone']));
-      echo "&nbsp;<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
-      Html::closeForm();
       echo "</th>";
       echo "</tr>";
       
-      echo "<tr class='tab_bg_1'>";
-      echo "<th colspan='2'>";
-      echo "<div id='legendlink'><a onClick='Ext.get(\"options\").toggle();'>[ Options ]</a></div>";
-      echo "</th>";
-      echo "</tr>";
+      if (!isset($_GET['mobile'])) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<th colspan='2'>";
+         echo "<div id='legendlink'><a onClick='Ext.get(\"options\").toggle();'>[ Options ]</a></div>";
+         echo "</th>";
+         echo "</tr>";
       
-      // * Display perfname
-      echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='2'>";
-      echo "<div id='options' style='display:none'>";
-      PluginMonitoringServicegraph::preferences($pmComponent->fields['id'], 0);
-      
-      echo "</div>";
-      echo "</td>";
-      echo "</tr>";
-      
-      
+         // * Display perfname
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='2'>";
+         echo "<div id='options' style='display:none'>";
+         PluginMonitoringServicegraph::preferences($pmComponent->fields['id'], 0);
+         echo "</div>";
+         echo "</td>";
+         echo "</tr>";
+      }      
 
       $a_list = array();
       $a_list[] = "2h";
       $a_list[] = "12h";
       $a_list[] = "1d";
-      $a_list[] = "1w";
-      $a_list[] = "1m";
-      $a_list[] = "0y6m";
-      $a_list[] = "1y";
+      if (!isset($_GET['mobile'])) {
+         $a_list[] = "1w";
+         $a_list[] = "1m";
+         $a_list[] = "0y6m";
+         $a_list[] = "1y";
+      }
        
       foreach ($a_list as $time) {
       
@@ -675,11 +682,18 @@ class PluginMonitoringDisplay extends CommonDBTM {
          $timezone_file = str_replace("+", ".", $timezone);
 
          $pmServicegraph = new PluginMonitoringServicegraph();
+         $part = '';
+         $width='';
+         if (isset($_GET['mobile'])) {
+            $width='294';
+         }
          $pmServicegraph->displayGraph($pmComponent->fields['graph_template'], 
                                        $itemtype, 
                                        $items_id, 
                                        $timezone, 
-                                       $time);
+                                       $time,
+                                       $part,
+                                       $width);
 
          echo "</td>";
          echo "</tr>";
