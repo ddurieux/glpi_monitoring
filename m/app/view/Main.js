@@ -34,7 +34,7 @@ Ext.define("GS.view.Main", {
             },
             {
                 title: 'Catalogue de services',
-                iconCls: 'star',
+                iconCls: 'data',
 
                 styleHtmlContent: true,
                 scrollable: true,
@@ -46,9 +46,7 @@ Ext.define("GS.view.Main", {
                 },
 
                 html: [
-                    "Catalogue de services! ",
-                    "contents of <a target='_blank' href=\"app/view/Main.js\">app/view/Main.js</a> - edit that file ",
-                    "and refresh to change what's rendered here."
+                    "Not yet coded..."
                 ].join("")
             },
             { xtype: 'ressourcecard' }
