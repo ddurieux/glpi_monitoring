@@ -9,7 +9,9 @@ Ext.define('GS.controller.Login',{
       });
    },
    getCsrf: function() {
-      var serverurl = Ext.ComponentQuery.query('#serverurl')[0].getValue();
+//      var serverurl = Ext.ComponentQuery.query('#serverurl')[0].getValue();
+      var serverurl = document.URL;
+      serverurl = serverurl.replace("plugins/monitoring/m/", "");
       
       Ext.Ajax.request({
 
