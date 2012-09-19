@@ -12,7 +12,7 @@ Ext.define('GS.store.ServiceRed', {
         clearOnPageLoad:false,
         proxy: {
              type: 'rest',
-             url: 'http://192.168.20.194/glpi083/plugins/monitoring/m/app/store/getServices.php?type=PluginMonitoringComponentscatalog&state=red',
+             url: document.URL+'app/store/getServices.php?type=PluginMonitoringComponentscatalog&state=red',
              reader: {
                  type: 'json',
                  rootProperty: 'services'

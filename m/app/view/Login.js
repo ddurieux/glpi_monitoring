@@ -4,6 +4,12 @@ Ext.define('GS.view.Login',{
       'Ext.form.FieldSet',
       'Ext.form.Password'
    ],
+   initialize: function () {
+       this.callParent(arguments);
+       var appurl = document.URL;
+       appurl = appurl.replace("plugins/monitoring/m/", "");
+       Ext.getCmp('serverurl').setValue(appurl);
+   },
    xtype: 'LoginForm',
    id: 'LoginForm',
 
@@ -49,8 +55,9 @@ Ext.define('GS.view.Login',{
                   xtype: 'textfield',
                   id: 'serverurl',
                   name : 'server',
-                  label: 'Server',
-                  value: 'http://192.168.20.194/glpi083/'
+                  label: 'Server'
+                  //value: 'http://192.168.20.194/glpi083/'
+                  //value:   }
                }
             ]//END ITEMS
          },

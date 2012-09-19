@@ -57,7 +57,7 @@ Ext.define('GS.view.Ressource', {
       refreshList();
       
       var counters = function() {
-         var critStore = Ext.getCmp('ressourceCriticalList').getStore();
+         var critStore = Ext.getCmp('ressourceCriticalList').getStore();         
          critStore.load();            
          critStore.on({
              'load':{
