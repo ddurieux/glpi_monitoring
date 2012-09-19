@@ -51,7 +51,7 @@ while ($data=$DB->fetch_array($result)) {
    if ($statewanted == 1) {
       $a_json['services'][] = array('title' => 
           "<table><tr><td><img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$state."_32.png'/></td><td> ".$data['name'].$host."</td></tr></table>",
-                                   'content' => "<iframe src ='http://192.168.20.194/glpi083/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$data['id']."&mobile=1' width='310' height='1030' frameborder='0'></iframe>",
+                                   'content' => "<iframe src ='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$data['id']."&mobile=1' width='310' height='1030' frameborder='0'></iframe>",
                                    'state' => $state,
                                    'date' => $data['last_check'],
                                    'event' => $data['event']);
