@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<link href="../src/nv.d3.css" rel="stylesheet" type="text/css">
+
+<style>
+
+body {
+  overflow-y:scroll;
+}
+
+text {
+  font: 12px sans-serif;
+}
+
+svg {
+  display: block;
+}
+
+#chart1 svg {
+  height: 500px;
+  min-width: 100px;
+  min-height: 100px;
+/*
+  margin: 50px;
+  Minimum height and width is a good idea to prevent negative SVG dimensions...
+  For example width should be =< margin.left + margin.right + 1,
+  of course 1 pixel for the entire chart would not be very useful, BUT should not have errors
+*/
+}
+
+</style>
+<body>
+
+  <div id="chart1">
+    <svg style="height: 300px; width: 600px;"></svg>
+  </div>
+
+<script src="../lib/d3.v2.js"></script>
+<script src="../nv.d3.js"></script>
+<script src="../src/tooltip.js"></script>
+<script src="../src/utils.js"></script>
+<script src="../src/models/legend.js"></script>
+<script src="../src/models/axis.js"></script>
+<script src="../src/models/scatter.js"></script>
+<script src="../src/models/line.js"></script>
+<script src="../src/models/lineChart.js"></script>
+<script>
+
+var data = sinAndCos();
+
+// Wrapping in nv.addGraph allows for '0 timeout render', stors rendered charts in nv.graphs, and may do more in the future... it's NOT required
+nv.addGraph(function() {
+  var chart = nv.models.lineChart();
+
+  chart.xAxis // chart sub-models (ie. xAxis, yAxis, etc) when accessed directly, return themselves, not the partent chart, so need to chain separately
+      .tickFormat(d3.format(',.0f'));
+
+  chart.yAxis
+      .axisLabel('Percentage (%)')
+      .tickFormat(d3.format(',.0f'));
+      
+  chart.forceY([0,100]);
+
+  d3.select('#chart1 svg')
+      //.datum([]) //for testing noData
+      .datum(data)
+    .transition().duration(50)
+      .call(chart);
+
+  //TODO: Figure out a good way to do this automatically
+  nv.utils.windowResize(chart.update);
+  //nv.utils.windowResize(function() { d3.select('#chart1 svg').call(chart) });
+
+  return chart;
+});
+
+
+
+function sinAndCos() {
+  var warn = [],
+      values = [];
+      crit = [];
+
+  for (var i = 0; i < 40; i++) {
+    crit.push({x: Math.round((new Date()).getTime() / 1000), y: 92});
+    warn.push({x: Math.round((new Date()).getTime() / 1000), y: 80});
+    values.push({x: Math.round((new Date()).getTime() / 1000), y: Math.floor((Math.random()*100)+1)});
+  }
+
+  return [
+     {
+      area: false,
+      values: crit,
+      key: "Critical",
+      color: "#ff0000"
+    },
+    {
+      area: false,
+      values: warn,
+      key: "Warning",
+      color: "#ff7f0e"
+    },
+    {
+      area: true,
+      values: values,
+      key: "CPU",
+      color: "#2ca02c"
+    }
+  ];
+}
+
+
+
+
+setInterval("updategraph()",2000);
+
+
+function updategraph() {
+
+    var chart = nv.models.lineChart();
+
+chart.forceY([0,100]);
+
+    data = sinAndCosnew();
+    d3.select('#chart1 svg')
+      .datum(data)
+      .transition().duration(50)
+      .call(chart);
+    
+}
+
+
+function sinAndCosnew() {
+   
+  var warn = data[1].values,
+      values = data[2].values,
+      crit = data[0].values;
+
+    crit.push({x: Math.round((new Date()).getTime() / 1000), y: 92});
+    warn.push({x: Math.round((new Date()).getTime() / 1000), y: 80});
+    values.push({x: Math.round((new Date()).getTime() / 1000), y: Math.floor((Math.random()*100)+1)});
+
+    crit.shift();
+    warn.shift();
+    values.shift();
+
+  return [
+     {
+      area: false,
+      values: crit,
+      key: "Critical",
+      color: "#ff0000"
+    },
+    {
+      area: false,
+      values: warn,
+      key: "Warning",
+      color: "#ff7f0e"
+    },
+    {
+      area: true,
+      values: values,
+      key: "CPU",
+      color: "#2ca02c"
+    }
+  ];
+}
+
+
+</script>
