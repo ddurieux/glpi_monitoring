@@ -126,7 +126,6 @@ Ext.define('GS.view.Ressource', {
 
             listeners: {
                itemtap: function(nestedList, list, index, element, post) {
-                  console.log('te');
                   this.getDetailCard().setHtml(
                   "<table>"+
                      
@@ -177,7 +176,6 @@ Ext.define('GS.view.Ressource', {
 
             listeners: {
                itemtap: function(nestedList, list, index, element, post) {
-                  console.log('te');
                   this.getDetailCard().setHtml(
                   "<table>"+
                      
@@ -228,7 +226,6 @@ Ext.define('GS.view.Ressource', {
 
             listeners: {
                itemtap: function(nestedList, list, index, element, post) {
-                  console.log('te');
                   this.getDetailCard().setHtml(
                   "<table>"+
                      
