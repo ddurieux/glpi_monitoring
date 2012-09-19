@@ -44,6 +44,11 @@ Ext.define('GS.controller.Login',{
                         if (strr.search("NomNav = navigator.appName") != -1) {
                            Ext.Msg.alert("Successful");
                            
+                           // Load store
+                           Ext.create('GS.store.ServiceRed');
+                           Ext.create('GS.store.ServiceOrange');
+                           Ext.create('GS.store.ServiceGreen');
+                           
                            var paneltab = Ext.create('GS.view.Main');
                            Ext.getCmp('LoginForm').destroy();
                            Ext.Viewport.add(paneltab);

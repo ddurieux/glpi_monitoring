@@ -34,9 +34,6 @@ Ext.application({
     launch: function() {
         // Destroy the #appLoadingIndicator element
         Ext.fly('appLoadingIndicator').destroy();
-        Ext.create('GS.store.ServiceRed');
-        Ext.create('GS.store.ServiceOrange');
-        Ext.create('GS.store.ServiceGreen');
         
         // Initialize the main view
         Ext.Viewport.add(Ext.create('GS.view.Login'));

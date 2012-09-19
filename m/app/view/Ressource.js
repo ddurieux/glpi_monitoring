@@ -53,17 +53,46 @@ Ext.define('GS.view.Ressource', {
             refreshList.call(this);
          });  
          task.delay(120000);
-
-
       };
       refreshList();
       
       var counters = function() {
-         Ext.getCmp('ressourcecard').getTabBar().getComponent(0).setBadgeText(Ext.getCmp('ressourceCriticalList').getStore().getCount());
+         var critStore = Ext.getCmp('ressourceCriticalList').getStore();
+         critStore.load();            
+         critStore.on({
+             'load':{
+                 fn: function(store, records, options){
+                    var countitems = Ext.getCmp('ressourceCriticalList').getStore().getCount();
+                    Ext.getCmp('ressourcecard').getTabBar().getComponent(0).setBadgeText(countitems);
+                 },
+                 scope:this
+             }
+         });
+
+         var warnStore = Ext.getCmp('ressourceWarningList').getStore();     
+         warnStore.load();
+         warnStore.on({
+             'load':{
+                 fn: function(store, records, options){
+                     Ext.getCmp('ressourcecard').getTabBar().getComponent(1).setBadgeText(Ext.getCmp('ressourceWarningList').getStore().getCount());
+                 },
+                 scope:this
+             }
+         });
+
+         var okStore = Ext.getCmp('ressourceOkList').getStore();
+         okStore.load();
+         okStore.on({
+             'load':{
+                 fn: function(store, records, options){
+                     Ext.getCmp('ressourcecard').getTabBar().getComponent(2).setBadgeText(Ext.getCmp('ressourceOkList').getStore().getCount());
+                 },
+                 scope:this
+             }
+         });
+                  
          Ext.getCmp('ressourcecard').getTabBar().getComponent(0).addCls('crit-badge');
-         Ext.getCmp('ressourcecard').getTabBar().getComponent(1).setBadgeText(Ext.getCmp('ressourceWarningList').getStore().getCount());
          Ext.getCmp('ressourcecard').getTabBar().getComponent(1).addCls('warn-badge');
-         Ext.getCmp('ressourcecard').getTabBar().getComponent(2).setBadgeText(Ext.getCmp('ressourceOkList').getStore().getCount());
          Ext.getCmp('ressourcecard').getTabBar().getComponent(2).addCls('ok-badge');
       }
       counters();
