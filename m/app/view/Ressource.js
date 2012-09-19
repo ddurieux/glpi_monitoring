@@ -52,7 +52,7 @@ Ext.define('GS.view.Ressource', {
             
             refreshList.call(this);
          });  
-         task.delay(12000);
+         task.delay(120000);
 
 
       };
