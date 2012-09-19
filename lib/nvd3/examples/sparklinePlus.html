@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link href="../src/nv.d3.css" rel="stylesheet" type="text/css">
+<style>
+
+text {
+  font: 10px sans-serif;
+}
+
+#chart1 {
+  width: 500px;
+  height: 50px;
+}
+
+</style>
+<body>
+
+  <h2>SparklinePlus: <svg id="chart1" class="sparkline"></svg></h2>
+
+<script src="../lib/d3.v2.js"></script>
+<script src="../nv.d3.js"></script>
+<script src="../src/utils.js"></script>
+<script src="../src/models/sparkline.js"></script>
+<script src="../src/models/sparklinePlus.js"></script>
+<script>
+
+nv.addGraph({
+  generate: function() {
+    var chart = nv.models.sparklinePlus()
+                  //.width(400)
+                  //.height(50)
+
+    d3.select("#chart1")
+        //.datum([]) //for testing "noData"
+        .datum(sine())
+      .transition().duration(250)
+        .call(chart);
+
+    return chart;
+  },
+  callback: function(graph) {
+    //log("Sparkline rendered");
+  }
+});
+
+
+
+function sine() {
+  var sin = [];
+
+  for (var i = 0; i < 100; i++) {
+    sin.push({x: i + 100, y: Math.sin(i/10)});
+  }
+
+  return sin;
+}
+
+
+</script>
