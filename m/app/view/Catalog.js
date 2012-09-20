@@ -15,6 +15,8 @@ Ext.define('GS.view.Catalog', {
        var refreshList = function() {
          var task = Ext.create('Ext.util.DelayedTask', function() { 
             
+            Ext.getCmp('maincard').getTabBar().getComponent(2).setBadgeText(null);
+            
             var critStore = Ext.getCmp('catalogCriticalList').getStore();
             critStore.load();            
             critStore.on({
@@ -22,6 +24,9 @@ Ext.define('GS.view.Catalog', {
                     fn: function(store, records, options){
                        var countitems = Ext.getCmp('catalogCriticalList').getStore().getCount();
                        Ext.getCmp('catalogcard').getTabBar().getComponent(0).setBadgeText(countitems);
+                       if (Ext.getCmp('maincard').getTabBar().getComponent(2).getBadgeText() === null) {
+                          Ext.getCmp('maincard').getTabBar().getComponent(2).setBadgeText(countitems);
+                       }
                     },
                     scope:this
                 }
@@ -64,6 +69,9 @@ Ext.define('GS.view.Catalog', {
                  fn: function(store, records, options){
                     var countitems = Ext.getCmp('catalogCriticalList').getStore().getCount();
                     Ext.getCmp('catalogcard').getTabBar().getComponent(0).setBadgeText(countitems);
+                    if (Ext.getCmp('maincard').getTabBar().getComponent(2).getBadgeText() === null) {
+                       Ext.getCmp('maincard').getTabBar().getComponent(2).setBadgeText(countitems);
+                    }
                  },
                  scope:this
              }

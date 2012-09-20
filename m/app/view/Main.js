@@ -4,7 +4,9 @@ Ext.define("GS.view.Main", {
         'Ext.TitleBar',
         'GS.view.Ressource',
         'GS.view.Catalog'
-    ],
+    ],   
+    xtype: 'maincard',
+    id: 'maincard',
     config: {
        tabBar: {
           docked: 'bottom',

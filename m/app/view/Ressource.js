@@ -15,6 +15,8 @@ Ext.define('GS.view.Ressource', {
        var refreshList = function() {
          var task = Ext.create('Ext.util.DelayedTask', function() { 
             
+            Ext.getCmp('maincard').getTabBar().getComponent(3).setBadgeText(null);
+            
             var critStore = Ext.getCmp('ressourceCriticalList').getStore();
             critStore.load();            
             critStore.on({
@@ -22,6 +24,9 @@ Ext.define('GS.view.Ressource', {
                     fn: function(store, records, options){
                        var countitems = Ext.getCmp('ressourceCriticalList').getStore().getCount();
                        Ext.getCmp('ressourcecard').getTabBar().getComponent(0).setBadgeText(countitems);
+                       if (Ext.getCmp('maincard').getTabBar().getComponent(3).getBadgeText() === null) {
+                          Ext.getCmp('maincard').getTabBar().getComponent(3).setBadgeText(countitems);
+                       }
                     },
                     scope:this
                 }
@@ -64,6 +69,9 @@ Ext.define('GS.view.Ressource', {
                  fn: function(store, records, options){
                     var countitems = Ext.getCmp('ressourceCriticalList').getStore().getCount();
                     Ext.getCmp('ressourcecard').getTabBar().getComponent(0).setBadgeText(countitems);
+                    if (Ext.getCmp('maincard').getTabBar().getComponent(3).getBadgeText() === null) {
+                       Ext.getCmp('maincard').getTabBar().getComponent(3).setBadgeText(countitems);
+                    }
                  },
                  scope:this
              }
@@ -74,12 +82,13 @@ Ext.define('GS.view.Ressource', {
          warnStore.on({
              'load':{
                  fn: function(store, records, options){
-                     Ext.getCmp('ressourcecard').getTabBar().getComponent(1).setBadgeText(Ext.getCmp('ressourceWarningList').getStore().getCount());
+                     var countitems = Ext.getCmp('ressourceWarningList').getStore().getCount();
+                    Ext.getCmp('ressourcecard').getTabBar().getComponent(1).setBadgeText(countitems);
                  },
                  scope:this
              }
          });
-
+         
          var okStore = Ext.getCmp('ressourceOkList').getStore();
          okStore.load();
          okStore.on({
@@ -90,7 +99,7 @@ Ext.define('GS.view.Ressource', {
                  scope:this
              }
          });
-                  
+      
          Ext.getCmp('ressourcecard').getTabBar().getComponent(0).addCls('crit-badge');
          Ext.getCmp('ressourcecard').getTabBar().getComponent(1).addCls('warn-badge');
          Ext.getCmp('ressourcecard').getTabBar().getComponent(2).addCls('ok-badge');
@@ -108,12 +117,11 @@ Ext.define('GS.view.Ressource', {
        title: 'Ressources',
        iconCls: 'data',
             
-      items: [
+       items: [
          {
             xtype: 'nestedlist',
             title: 'Critical',
-            iconCls: 'delete_black1',            
-            //badgeCls  : 'x-badge crit-badge',
+            iconCls: 'delete_black1',         
             id: 'ressourceCriticalList',
             displayField : 'title',
             store: 'servicered',
