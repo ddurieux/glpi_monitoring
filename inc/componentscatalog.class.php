@@ -215,64 +215,11 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $input .= '</th>';
       $input .= '</tr>';
          
-      $stateg = array();
-      $stateg['OK'] = 0;
-      $stateg['WARNING'] = 0;
-      $stateg['CRITICAL'] = 0;
-      $a_gstate = array();
-      $nb_ressources = 0;
-      $query = "SELECT * FROM `".$pmComponentscatalog_Host->getTable()."`
-         WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'";
-      $result = $DB->query($query);
-      while ($dataComponentscatalog_Host=$DB->fetch_array($result)) {
-         $queryService = "SELECT * FROM `".$pmService->getTable()."`
-            WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'
-               AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
-         $resultService = $DB->query($queryService);
-         while ($dataService=$DB->fetch_array($resultService)) {
-            $nb_ressources++;
-            $state = array();
-            $state['OK'] = 0;
-            $state['WARNING'] = 0;
-            $state['CRITICAL'] = 0;
-            if ($dataService['state_type'] != "HARD") {
-               $a_gstate[$dataService['id']] = "OK";
-            } else {
-               switch($dataService['state']) {
-
-                  case 'UP':
-                  case 'OK':
-                     $state['OK']++;
-                     break;
-
-                  case 'DOWN':
-                  case 'UNREACHABLE':
-                  case 'CRITICAL':
-                  case 'DOWNTIME':
-                     $state['CRITICAL']++;
-                     break;
-
-                  case 'WARNING':
-                  case 'UNKNOWN':
-                  case 'RECOVERY':
-                  case 'FLAPPING':
-                     $state['WARNING']++;
-                     break;
-
-               }
-               if ($state['CRITICAL'] >= 1) {
-                  $a_gstate[$dataService['id']] = "CRITICAL";
-               } else if ($state['WARNING'] >= 1) {
-                  $a_gstate[$dataService['id']] = "WARNING";
-               } else {
-                  $a_gstate[$dataService['id']] = "OK";
-               }
-            }
-         }
-      }
-      foreach ($a_gstate as $value) {
-         $stateg[$value]++;
-      }
+      $ret = $this->getInfoOfCatalog($id);
+      $nb_ressources = $ret[0];
+      $stateg = $ret[1];
+      
+      
       $input .= '<tr class="tab_bg_1">';
       $input .= '<td>';
       $input .= $LANG['plugin_monitoring']['service'][0]."&nbsp;:";
@@ -330,6 +277,52 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
 
       $input .= '</table>';
       return $input;
+   }
+   
+   
+   
+   function getInfoOfCatalog($componentscatalogs_id) {
+      global $DB;
+      
+      $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+      $pmService = new PluginMonitoringService();
+      
+      $stateg = array();
+      $stateg['OK'] = 0;
+      $stateg['WARNING'] = 0;
+      $stateg['CRITICAL'] = 0;
+      $a_gstate = array();
+      $nb_ressources = 0;
+      $query = "SELECT * FROM `".$pmComponentscatalog_Host->getTable()."`
+         WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
+      $result = $DB->query($query);
+      while ($dataComponentscatalog_Host=$DB->fetch_array($result)) {
+         $queryService = "SELECT * FROM `".$pmService->getTable()."`
+            WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'
+               AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
+         $resultService = $DB->query($queryService);
+         while ($dataService=$DB->fetch_array($resultService)) {
+            $nb_ressources++;
+            if ($dataService['state_type'] != "HARD") {
+               $a_gstate[$dataService['id']] = "OK";
+            } else {
+               $statecurrent = PluginMonitoringDisplay::getState($dataService['state'], $dataService['state_type']);
+               if ($statecurrent == 'green') {
+                  $a_gstate[$dataService['id']] = "OK";
+               } else if ($statecurrent == 'orange') {
+                  $a_gstate[$dataService['id']] = "WARNING";
+               } else if ($statecurrent == 'red') {
+                  $a_gstate[$dataService['id']] = "CRITICAL";
+               }
+            }
+         }
+      }
+      foreach ($a_gstate as $value) {
+         $stateg[$value]++;
+      }
+      return array($nb_ressources,
+                   $stateg);
+      
    }
    
 }
