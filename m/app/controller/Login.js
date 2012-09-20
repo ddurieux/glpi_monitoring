@@ -51,6 +51,10 @@ Ext.define('GS.controller.Login',{
                            Ext.create('GS.store.ServiceOrange');
                            Ext.create('GS.store.ServiceGreen');
                            
+                           Ext.create('GS.store.CatalogRed');
+                           Ext.create('GS.store.CatalogOrange');
+                           Ext.create('GS.store.CatalogGreen');
+                           
                            var paneltab = Ext.create('GS.view.Main');
                            Ext.getCmp('LoginForm').destroy();
                            Ext.Viewport.add(paneltab);

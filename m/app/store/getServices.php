@@ -12,7 +12,7 @@ if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
 
-//Session::checkLoginUser();
+Session::checkLoginUser();
 $a_json = array();
 $a_json['services'] = array();
 

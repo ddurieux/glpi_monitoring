@@ -3,13 +3,17 @@ Ext.application({
 
     requires: [
         'Ext.MessageBox',
-        'GS.view.Ressource'
+        'GS.view.Ressource',
+        'GS.view.Catalog'
     ],
 
     models: ['Service'],    
     store: ['ServiceRed',
             'ServiceOrange',   
-            'ServiceGreen'],
+            'ServiceGreen',
+            'CatalogRed',
+            'CatalogOrange',
+            'CatalogGreen'],
     controllers: ['Login'],
     views: ['Main', 'Login'],
 

@@ -2,7 +2,8 @@ Ext.define("GS.view.Main", {
     extend: 'Ext.TabPanel',
     requires: [
         'Ext.TitleBar',
-        'GS.view.Ressource'
+        'GS.view.Ressource',
+        'GS.view.Catalog'
     ],
     config: {
        tabBar: {
@@ -33,7 +34,7 @@ Ext.define("GS.view.Main", {
                 ].join("")
             },
             {
-                title: 'Catalogue de services',
+                title: 'Services catalog',
                 iconCls: 'data',
 
                 styleHtmlContent: true,
@@ -42,13 +43,14 @@ Ext.define("GS.view.Main", {
                 items: {
                     docked: 'top',
                     xtype: 'titlebar',
-                    title: 'Catalogue de services'
+                    title: 'Services catalog'
                 },
 
                 html: [
                     "Not yet coded..."
                 ].join("")
             },
+            { xtype: 'catalogcard' },
             { xtype: 'ressourcecard' }
         ]
     }
