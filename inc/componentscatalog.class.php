@@ -322,9 +322,32 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       }
       return array($nb_ressources,
                    $stateg);
-      
    }
+
    
+   
+   function getRessources($componentscatalogs_id, $state, $state_type='HARD') {
+      global $DB;
+      
+      $a_services = array();
+      
+      $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+      
+      $query = "SELECT * FROM `glpi_plugin_monitoring_services`         
+         LEFT JOIN `".$pmComponentscatalog_Host->getTable()."`
+            ON `plugin_monitoring_componentscatalogs_hosts_id`=
+               `".$pmComponentscatalog_Host->getTable()."`.`id`
+         WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'
+            AND `state_type` LIKE '".$state_type."'
+         ORDER BY `name`";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         if (PluginMonitoringDisplay::getState($data['state'], $data['state_type']) == $state) {
+            $a_services[] = $data;
+         }
+      }
+      return $a_services;      
+   }
 }
 
 ?>

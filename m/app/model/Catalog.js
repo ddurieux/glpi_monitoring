@@ -6,6 +6,7 @@ Ext.define('GS.model.Catalog', {
            'title',
            'state',
            'ressources',
+           'content',
            {name: 'leaf', defaultValue: true}
         ]
 

@@ -18,6 +18,7 @@ $a_json['catalogs'] = array();
 
 
 $pmComponentscatalog = new PluginMonitoringComponentscatalog();
+$pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
 $a_componentscatalogs = $pmComponentscatalog->find("", "`name`");
 
 foreach ($a_componentscatalogs as $data) {
@@ -38,11 +39,72 @@ foreach ($a_componentscatalogs as $data) {
    if (isset($_GET['state'])
            AND $_GET['state'] == $currentState) {
       
+      $a_services = "<table>";
+      if ($currentState != 'green') {
+         $a_services_crit = $pmComponentscatalog->getRessources($data['id'], $currentState);
+         foreach ($a_services_crit as $data) {
+            $a_services .= "<tr>";
+            $a_services .= "<td>";
+            $a_services .= "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$currentState."_32.png'/>";
+            $a_services .= "</td>";
+            $a_services .= "<td colspan='2'>";
+            
+            $host = '';
+            $pmComponentscatalog_Host->getFromDB($data["plugin_monitoring_componentscatalogs_hosts_id"]);
+            if (isset($pmComponentscatalog_Host->fields['itemtype']) 
+                    AND $pmComponentscatalog_Host->fields['itemtype'] != '') {
 
+               $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
+               $item = new $itemtype();
+               $item->getFromDB($pmComponentscatalog_Host->fields['items_id']);
+               $host .= " [".$item->fields['name'];
+         //      if (!is_null($pMonitoringService->fields['networkports_id'])
+         //              AND $pMonitoringService->fields['networkports_id'] > 0) {
+         //         $networkPort->getFromDB($pMonitoringService->fields['networkports_id']);
+         //         $host .= " (".$networkPort->getLink().")";
+         //      }
+               $host .= "]";
+            }
+            
+            $a_services .= $data['name'].$host;
+            $a_services .= "</td>";
+            $a_services .= "</tr>";
+
+            $a_services .= "<tr>";
+            $a_services .= "<td>";
+            $a_services .= "</td>";
+            $a_services .= "<td>";
+            $a_services .= "Date (last event):";
+            $a_services .= "</td>";
+            $a_services .= "<td>";
+            $a_services .= $data['last_check'];
+            $a_services .= "</td>";
+            $a_services .= "</tr>";
+
+            $a_services .= "<tr>";
+            $a_services .= "<td>";
+            $a_services .= "</td>";
+            $a_services .= "<td>";
+            $a_services .= "Event:";
+            $a_services .= "</td>";
+            $a_services .= "<td>";
+            $a_services .= $data['event'];
+            $a_services .= "</td>";
+            $a_services .= "</tr>";
+            
+            $a_services .= "<tr>";
+            $a_services .= "<td colspan='3' bgcolor='#616161' style='height:1px'>";
+            $a_services .= "</td>";
+            $a_services .= "</tr>";
+         }
+      }
+      $a_services .= "</table>";
+      
       $a_json['catalogs'][] = array('title' => 
           "<table><tr><td><img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$currentState."_32.png'/></td><td> ".$data['name']." (".$nbstate."/".$nb_ressources." ressources)</td></tr></table>",
                                     'state' => $currentState,
-                                    'ressources' => $nb_ressources);
+                                    'ressources' => $nb_ressources,
+                                    'content' => $a_services);
    }
 }
 

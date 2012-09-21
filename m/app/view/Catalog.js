@@ -128,8 +128,13 @@ Ext.define('GS.view.Catalog', {
             detailCard: {               
                xtype: 'panel',
                scrollable: true,
-               styleHtmlContent: true,
-               Html: ""
+               styleHtmlContent: true
+            },
+
+            listeners: {
+               itemtap: function(nestedList, list, index, element, post) {
+                  this.getDetailCard().setHtml(post.get('content'));                              
+               }
             }
          },
          {
@@ -143,8 +148,13 @@ Ext.define('GS.view.Catalog', {
             detailCard: {               
                xtype: 'panel',
                scrollable: true,
-               styleHtmlContent: true,
-               Html: ""
+               styleHtmlContent: true
+            },
+
+            listeners: {
+               itemtap: function(nestedList, list, index, element, post) {
+                  this.getDetailCard().setHtml(post.get('content'));                              
+               }
             }
          },
          {
