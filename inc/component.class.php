@@ -120,6 +120,8 @@ class PluginMonitoringComponent extends CommonDBTM {
       if ($item->getID() > 0
               AND $item->fields['graph_template'] != '') {
          return array($LANG['setup'][283], "Graph configuration");
+      } else if ($item->getID() > 0) {
+         return array($LANG['setup'][283]);
       }
       return '';
    }
