@@ -58,16 +58,15 @@ Ext.define('GS.view.Login',{
 //                  label: 'Server'
 //                  //value: 'http://192.168.20.194/glpi083/'
 //                  //value:   }
-               }
-            ]//END ITEMS
-         },
+               },
          {
             xtype: 'button',
             ui: 'action',
-            text: 'Login',
-            width: '30%',
-            centered: true,
-            action: 'submitLogin'
+            text: 'Login',            
+            action: 'submitLogin',
+            docked: 'bottom'
+         }
+            ]//END ITEMS
          }
       ]
    }//END CONFIG
