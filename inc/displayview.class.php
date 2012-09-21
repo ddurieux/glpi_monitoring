@@ -139,6 +139,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
          $this->getFromDB($items_id);
       } else {
          $this->getEmpty();
+         $this->fields['width'] = 950;
       }
 
       $this->showTabs($options);
@@ -184,7 +185,11 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       echo "</tr>";
       
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='2'>";
+      echo "<td>";
+      echo $LANG['plugin_monitoring']['weathermap'][3]." (px) :";
+      echo "</td>";
+      echo "<td>";
+      Dropdown::showInteger("width", $this->fields['width'], 950, 3000);
       echo "</td>";
       echo "<td>";
       echo $LANG['common'][60];

@@ -1093,6 +1093,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'in_central', 
                                  'in_central', 
                                  "tinyint(1) NOT NULL DEFAULT '0'");         
+         $migration->changeField($newTable, 
+                                 'width', 
+                                 'width', 
+                                 "int(5) NOT NULL DEFAULT '950'");         
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable, 
                               'name', 
@@ -1114,7 +1118,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               "varchar(255) DEFAULT NULL");         
          $migration->addField($newTable, 
                               'in_central', 
-                              "tinyint(1) NOT NULL DEFAULT '0'"); 
+                              "tinyint(1) NOT NULL DEFAULT '0'");         
+         $migration->addField($newTable, 
+                              'width', 
+                              "int(5) NOT NULL DEFAULT '950'");   
       $migration->migrationOneTable($newTable);
       
       

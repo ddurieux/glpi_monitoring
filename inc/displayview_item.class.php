@@ -109,7 +109,7 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
          }
       }
       
-      echo "<table class='tab_cadre_fixe' id='test'>";
+      echo "<table class='tab_cadre_fixe' id='test' style='width:".$pmDisplayview->fields['width']."px'>";
       
       echo "<tr class='tab_bg_1'>";
       echo "<th>";
@@ -119,7 +119,7 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
       echo "</tr>";
       
       echo "<tr class='tab_bg_1'>";
-      echo "<td height='1000' id='panel'>";
+      echo "<td height='1200' id='panel'>";
 
       $query = "SELECT * FROM `glpi_plugin_monitoring_displayviews_items`
          WHERE `plugin_monitoring_displayviews_id`='".$id."'";
@@ -135,8 +135,8 @@ Ext.onReady(function() {
 
   //Simple 'border layout' panel to house both grids
   var displayPanel = new Ext.Panel({
-    width    : 950,
-    height   : 1000,
+    width    : ".$pmDisplayview->fields['width'].",
+    height   : 1200,
     layout: 'absolute',
     renderTo : 'panel',
     items    : [
