@@ -782,9 +782,30 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_pmcontact = current($pmContacttemplate->find("`is_default`='1'", "", 1));
       } else {
          $a_pmcontact = current($pmContacttemplate->find("`id`='".$a_pmcontact['plugin_monitoring_contacttemplates_id']."'", "", 1));
-      }     
+      }
       $a_contacts[$i]['contact_name'] = $user->fields['name'];
       $a_contacts[$i]['alias'] = $user->getName();
+      if (!isset($a_pmcontact['host_notification_period'])) {
+         $a_calendars = current($calendar->find("", "", 1));
+         $a_pmcontact['host_notifications_enabled'] = '0';
+         $a_pmcontact['service_notifications_enabled'] = '0';
+         $a_pmcontact['service_notification_period'] = $a_calendars['id'];
+         $a_pmcontact['host_notification_period'] = $a_calendars['id'];
+         $a_pmcontact['service_notification_options_w'] = '0';
+         $a_pmcontact['service_notification_options_u'] = '0';
+         $a_pmcontact['service_notification_options_c'] = '0';
+         $a_pmcontact['service_notification_options_r'] = '0';
+         $a_pmcontact['service_notification_options_f'] = '0';
+         $a_pmcontact['service_notification_options_n'] = '0';
+         $a_pmcontact['host_notification_options_d'] = '0';
+         $a_pmcontact['host_notification_options_u'] = '0';
+         $a_pmcontact['host_notification_options_r'] = '0';
+         $a_pmcontact['host_notification_options_f'] = '0';
+         $a_pmcontact['host_notification_options_s'] = '0';
+         $a_pmcontact['host_notification_options_n'] = '0';
+         $a_pmcontact['service_notification_commands'] = '2';
+         $a_pmcontact['host_notification_commands'] = '1';
+      }
       $a_contacts[$i]['host_notifications_enabled'] = $a_pmcontact['host_notifications_enabled'];
       $a_contacts[$i]['service_notifications_enabled'] = $a_pmcontact['service_notifications_enabled'];
          $calendar->getFromDB($a_pmcontact['service_notification_period']);
@@ -827,6 +848,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_contacts[$i]['service_notification_commands'] = $pmNotificationcommand->fields['command_name'];
          $pmNotificationcommand->getFromDB($a_pmcontact['host_notification_commands']);
       $a_contacts[$i]['host_notification_commands'] = $pmNotificationcommand->fields['command_name'];
+        
       // Get first email
       $a_emails = UserEmail::getAllForUser($users_id);
       $first = 0;
@@ -837,6 +859,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $first++;
       }
       $a_contacts[$i]['pager'] = $user->fields['phone'];
+      
       return $a_contacts;
    }
 

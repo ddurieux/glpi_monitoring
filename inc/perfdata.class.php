@@ -63,6 +63,8 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       $a_list["check_http"]         = "check_http";
       $a_list["check_pop"]          = "check_pop";
       $a_list["check_smtp"]         = "check_smtp";
+      $a_list["check_mysql_health__tmp_disk_tables"] = "check_mysql_health__tmp_disk_tables";
+      $a_list["check_mysql_health__threads_connected"] = "check_mysql_health__threads_connected";
       
       ksort($a_list);
       return $a_list;
@@ -377,6 +379,46 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       return json_encode($data);      
    }
    
-}
+   
+   
+   static function perfdata_check_mysql_health__tmp_disk_tables() {
+      
+      $data = array();
+      $data['command'] = 'check_mysql_health__tmp_disk_tables';
+      $data['parseperfdata'] = array();
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'tmp_table_on_disk_current');
+      $ds[] = array('dsname' => 'tmp_table_on_disk_warning');
+      $ds[] = array('dsname' => 'tmp_table_on_disk_critical');
+      $data['parseperfdata'][] = array('name' => 'pct_tmp_table_on_disk',
+                                       'DS'   => $ds);
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'tmp_table_on_disk_now_current');
+      $ds[] = array('dsname' => 'tmp_table_on_disk_now_warning');
+      $ds[] = array('dsname' => 'tmp_table_on_disk_now_critical');
+      $data['parseperfdata'][] = array('name' => 'pct_tmp_table_on_disk_now',
+                                       'DS'   => $ds);
+      return json_encode($data);      
+   }
 
+   
+   
+   static function perfdata_check_mysql_health__threads_connected() {
+      
+      $data = array();
+      $data['command'] = 'check_mysql_health__threads_connected';
+      $data['parseperfdata'] = array();
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'threads_connected_current');
+      $ds[] = array('dsname' => 'threads_connected_warning');
+      $ds[] = array('dsname' => 'threads_connected_critical');
+      $data['parseperfdata'][] = array('name' => 'threads_connected',
+                                       'DS'   => $ds);
+      return json_encode($data);      
+   }
+
+}
 ?>
