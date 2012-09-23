@@ -124,7 +124,7 @@ function updategraph'.$_POST['items_id'].$_POST['time'].$suffix.'() {
       .tickFormat(d3.format(\''.$formaty.'\'));
 
    //chart.forceY([-400,400]);
-
+   chart.forceY([0]);
    data = getdata'.$_POST['items_id'].$_POST['time'].'();
    d3.select("#chart'.$_POST['items_id'].$_POST['time'].$suffix.' svg")
      .datum(data)
