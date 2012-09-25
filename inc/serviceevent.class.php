@@ -201,7 +201,14 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                      array_push($mydatat[$data->DS[$nb_val]->dsname], 0);                     
                   }                  
                }
-            }         
+            } else {
+               for ($nb_val=0; $nb_val < count($data->DS); $nb_val++) {
+                  if (!isset($mydatat[$data->DS[$nb_val]->dsname])) {
+                     $mydatat[$data->DS[$nb_val]->dsname] = array();
+                  }
+                  array_push($mydatat[$data->DS[$nb_val]->dsname], 0);                     
+               } 
+            }        
          }
       }
       return array($mydatat, $a_labels, $a_ref, $a_convert);
