@@ -150,7 +150,8 @@ foreach ($mydatat as $name=>$data) {
       echo "var ".$name." = new Array();\n";
       $i = 0;
       foreach ($a_labels as $label) {
-         if ($data[$i] == '') {
+         if (!isset($data[$i])
+                 OR $data[$i] == '') {
             $data[$i] = 0;
          }
          if (isset($_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$_POST['components_id']][$name])) {

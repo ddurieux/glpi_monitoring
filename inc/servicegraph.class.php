@@ -170,13 +170,13 @@ class PluginMonitoringServicegraph extends CommonDBTM {
             $result = $DB->query($query);
             while ($edata=$DB->fetch_array($result)) {
                $dat = importArrayFromDB($edata['data']);
-               if (count($dat) > 0) {
+//               if (count($dat) > 0) {
                   $datemod = $edata['date'];
                   $split = explode(' ', $datemod);
                   $split2 = explode(':', $split[1]);
                   $day = explode("-", $split[0]);
                   array_push($a_labels, "(".$day[2].")".$split2[0].':'.$split2[1]);
-               }
+//               }
                foreach ($dat as $name=>$value) {
                   if (!isset($mydatat[$name])) {
                      $mydatat[$name] = array();
@@ -198,13 +198,13 @@ class PluginMonitoringServicegraph extends CommonDBTM {
             $result = $DB->query($query);
             while ($edata=$DB->fetch_array($result)) {
                $dat = importArrayFromDB($edata['data']);
-               if (count($dat) > 0) {
+//               if (count($dat) > 0) {
                   $datemod = $edata['date'];
                   $daynum = Calendar::getDayNumberInWeek(PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
                   $split = explode(' ', $datemod);
                   $split2 = explode(':', $split[1]);
                   array_push($a_labels, $split[0]." ".$split2[0].'h');
-               }
+//               }
                foreach ($dat as $name=>$value) {
                   if (!isset($mydatat[$name])) {
                      $mydatat[$name] = array();
@@ -226,14 +226,14 @@ class PluginMonitoringServicegraph extends CommonDBTM {
             $result = $DB->query($query);
             while ($edata=$DB->fetch_array($result)) {
                $dat = importArrayFromDB($edata['data']);
-               if (count($dat) > 0) {
+//               if (count($dat) > 0) {
                   $datemod = $edata['date'];
                   $daynum = Calendar::getDayNumberInWeek(PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
                   $split = explode(' ', $datemod);
                   $split2 = explode(':', $split[1]);
                   $day = explode("-", $split[0]);
                   array_push($a_labels, $split[0]." ".$split2[0].'h');
-               }
+//               }
                foreach ($dat as $name=>$value) {
                   if (!isset($mydatat[$name])) {
                      $mydatat[$name] = array();
@@ -255,7 +255,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
             $result = $DB->query($query);
             while ($edata=$DB->fetch_array($result)) {
                $dat = importArrayFromDB($edata['data']);
-               if (count($dat) > 0) {
+//               if (count($dat) > 0) {
                   $datemod = $edata['date'];
                   $daynum = date('m', PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
                   $daynum = $daynum - 1;
@@ -263,7 +263,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                   $split2 = explode(':', $split[1]);
                   $day = explode("-", $split[0]);
                   array_push($a_labels, $split[0]." ".$split2[0].'h');
-               }
+//               }
                foreach ($dat as $name=>$value) {
                   if (!isset($mydatat[$name])) {
                      $mydatat[$name] = array();
@@ -285,7 +285,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
             $result = $DB->query($query);
             while ($edata=$DB->fetch_array($result)) {
                $dat = importArrayFromDB($edata['data']);
-               if (count($dat) > 0) {
+//               if (count($dat) > 0) {
                   $datemod = $edata['date'];
                   $daynum = date('m', PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
                   $daynum = $daynum - 1;
@@ -293,7 +293,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                   $split2 = explode(':', $split[1]);
                   $day = explode("-", $split[0]);
                   array_push($a_labels, $split[0]." ".$split2[0].'h');
-               }
+//               }
                foreach ($dat as $name=>$value) {
                   if (!isset($mydatat[$name])) {
                      $mydatat[$name] = array();
@@ -305,23 +305,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
             $a_ref = $ret[0];
             break;
          
-      }
-      
-//      $i = 0;
-//      foreach ($mydatat as $name=>$data) {
-//         $i++;
-//         if ($i == '2') {
-//            $datat = $data;
-//            $data = array();
-//            foreach ($datat as $val) {
-//               array_push($data, -$val);
-//            }
-//         }
-//         if (empty($data)) {
-//            array_push($data, 0);
-//         }
-//      }
-         
+      }         
       return array($mydatat, $a_labels);      
    }
    
