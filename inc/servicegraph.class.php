@@ -86,14 +86,9 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       
       
       
-      
-      
    function generateData($rrdtool_template, $itemtype, $items_id, $timezone, $time) { 
       global $DB,$LANG;      
 
-//      $func = "perfdata_".$rrdtool_template;
-//      $loadfile = PluginMonitoringPerfdata::$func();
-      
       // Manage timezones
       $converttimezone = '0';
       if (strstr($timezone, '-')) {
@@ -175,13 +170,11 @@ class PluginMonitoringServicegraph extends CommonDBTM {
             $result = $DB->query($query);
             while ($edata=$DB->fetch_array($result)) {
                $dat = importArrayFromDB($edata['data']);
-//               if (count($dat) > 0) {
-                  $datemod = $edata['date'];
-                  $split = explode(' ', $datemod);
-                  $split2 = explode(':', $split[1]);
-                  $day = explode("-", $split[0]);
-                  array_push($a_labels, "(".$day[2].")".$split2[0].':'.$split2[1]);
-//               }
+               $datemod = $edata['date'];
+               $split = explode(' ', $datemod);
+               $split2 = explode(':', $split[1]);
+               $day = explode("-", $split[0]);
+               array_push($a_labels, "(".$day[2].")".$split2[0].':'.$split2[1]);
                foreach ($dat as $name=>$value) {
                   if (!isset($mydatat[$name])) {
                      $mydatat[$name] = array();
@@ -209,27 +202,35 @@ class PluginMonitoringServicegraph extends CommonDBTM {
             $result = $DB->query($query);
             while ($edata=$DB->fetch_array($result)) {
                $dat = importArrayFromDB($edata['data']);
-//               if (count($dat) > 0) {
-                  $datemod = $edata['date'];
-                  $daynum = Calendar::getDayNumberInWeek(PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
-                  $split = explode(' ', $datemod);
-                  $split2 = explode(':', $split[1]);
-                  $splitymd = explode('-', $split[0]);
-                  $dateymd = "(".$splitymd[2].")";
-                  if ($display_month == 1) {
-                     $dateymd = $splitymd[1]."-".$splitymd[2];
+               $datemod = $edata['date'];
+               $daynum = Calendar::getDayNumberInWeek(PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
+               $split = explode(' ', $datemod);
+               $split2 = explode(':', $split[1]);
+               $splitymd = explode('-', $split[0]);
+               $dateymd = "(".$splitymd[2].")";
+               if ($display_month == 1) {
+                  $dateymd = $splitymd[1]."-".$splitymd[2];
+               }
+               array_push($a_labels, $dateymd." ".$split2[0].'h');
+               if (count($dat) == 0) {
+                  $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($rrdtool_template);
+                  foreach ($a_perfnames as $name) {                     
+                     if (!isset($mydatat[$name])) {
+                        $mydatat[$name] = array();
+                     }
+                     array_push($mydatat[$name], '');
                   }
-                  array_push($a_labels, $dateymd." ".$split2[0].'h');
-//               }
-               foreach ($dat as $name=>$value) {
-                  if (!isset($mydatat[$name])) {
-                     $mydatat[$name] = array();
+                  
+               } else {
+                  foreach ($dat as $name=>$value) {
+                     if (!isset($mydatat[$name])) {
+                        $mydatat[$name] = array();
+                     }
+                     array_push($mydatat[$name], $value);
                   }
-                  array_push($mydatat[$name], $value);
                }
             }
             $ret = $pmServiceevent->getRef($rrdtool_template);
-//            $a_ref = $ret[0];
             break;
 
          case '1m':
@@ -240,7 +241,6 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                $display_year = 1;
                $dateformat = "%Y-%m-%d %Hh";
             }
-
             
             $query = "SELECT * FROM `".$this->getTable()."`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
@@ -249,27 +249,35 @@ class PluginMonitoringServicegraph extends CommonDBTM {
             $result = $DB->query($query);
             while ($edata=$DB->fetch_array($result)) {
                $dat = importArrayFromDB($edata['data']);
-//               if (count($dat) > 0) {
-                  $datemod = $edata['date'];
-                  $daynum = Calendar::getDayNumberInWeek(PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
-                  $split = explode(' ', $datemod);
-                  $split2 = explode(':', $split[1]);
-                  $day = explode("-", $split[0]);
-                  $dateymd = $day[1]."-".$day[2];
-                  if ($display_year == 1) {
-                     $dateymd = $split[0];
+               $datemod = $edata['date'];
+//               $daynum = Calendar::getDayNumberInWeek(PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
+               $split = explode(' ', $datemod);
+               $split2 = explode(':', $split[1]);
+               $day = explode("-", $split[0]);
+               $dateymd = $day[1]."-".$day[2];
+               if ($display_year == 1) {
+                  $dateymd = $split[0];
+               }
+               array_push($a_labels, $dateymd." ".$split2[0].'h');
+               if (count($dat) == 0) {
+                  $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($rrdtool_template);
+                  foreach ($a_perfnames as $name) {                     
+                     if (!isset($mydatat[$name])) {
+                        $mydatat[$name] = array();
+                     }
+                     array_push($mydatat[$name], '');
                   }
-                  array_push($a_labels, $dateymd." ".$split2[0].'h');
-//               }
-               foreach ($dat as $name=>$value) {
-                  if (!isset($mydatat[$name])) {
-                     $mydatat[$name] = array();
+                  
+               } else {
+                  foreach ($dat as $name=>$value) {
+                     if (!isset($mydatat[$name])) {
+                        $mydatat[$name] = array();
+                     }
+                     array_push($mydatat[$name], $value);
                   }
-                  array_push($mydatat[$name], $value);
                }
             }
             $ret = $pmServiceevent->getRef($rrdtool_template);
-            $a_ref = $ret[0];
             break;
          
          case '0y6m':
@@ -282,20 +290,29 @@ class PluginMonitoringServicegraph extends CommonDBTM {
             $result = $DB->query($query);
             while ($edata=$DB->fetch_array($result)) {
                $dat = importArrayFromDB($edata['data']);
-//               if (count($dat) > 0) {
-                  $datemod = $edata['date'];
-                  $daynum = date('m', PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
-                  $daynum = $daynum - 1;
-                  $split = explode(' ', $datemod);
-                  $split2 = explode(':', $split[1]);
-                  $day = explode("-", $split[0]);
-                  array_push($a_labels, $split[0]." ".$split2[0].'h');
-//               }
-               foreach ($dat as $name=>$value) {
-                  if (!isset($mydatat[$name])) {
-                     $mydatat[$name] = array();
+               $datemod = $edata['date'];
+               $daynum = date('m', PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
+               $daynum = $daynum - 1;
+               $split = explode(' ', $datemod);
+               $split2 = explode(':', $split[1]);
+               $day = explode("-", $split[0]);
+               array_push($a_labels, $split[0]." ".$split2[0].'h');
+               if (count($dat) == 0) {
+                  $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($rrdtool_template);
+                  foreach ($a_perfnames as $name) {                     
+                     if (!isset($mydatat[$name])) {
+                        $mydatat[$name] = array();
+                     }
+                     array_push($mydatat[$name], '');
                   }
-                  array_push($mydatat[$name], $value);
+                  
+               } else {
+                  foreach ($dat as $name=>$value) {
+                     if (!isset($mydatat[$name])) {
+                        $mydatat[$name] = array();
+                     }
+                     array_push($mydatat[$name], $value);
+                  }
                }
             }
             $ret = $pmServiceevent->getRef($rrdtool_template);
@@ -312,27 +329,35 @@ class PluginMonitoringServicegraph extends CommonDBTM {
             $result = $DB->query($query);
             while ($edata=$DB->fetch_array($result)) {
                $dat = importArrayFromDB($edata['data']);
-//               if (count($dat) > 0) {
-                  $datemod = $edata['date'];
-                  $daynum = date('m', PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
-                  $daynum = $daynum - 1;
-                  $split = explode(' ', $datemod);
-                  $split2 = explode(':', $split[1]);
-                  $day = explode("-", $split[0]);
-                  array_push($a_labels, $split[0]." ".$split2[0].'h');
-//               }
-               foreach ($dat as $name=>$value) {
-                  if (!isset($mydatat[$name])) {
-                     $mydatat[$name] = array();
+               $datemod = $edata['date'];
+               $daynum = date('m', PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
+               $daynum = $daynum - 1;
+               $split = explode(' ', $datemod);
+               $split2 = explode(':', $split[1]);
+               $day = explode("-", $split[0]);
+               array_push($a_labels, $split[0]." ".$split2[0].'h');
+               if (count($dat) == 0) {
+                  $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($rrdtool_template);
+                  foreach ($a_perfnames as $name) {                     
+                     if (!isset($mydatat[$name])) {
+                        $mydatat[$name] = array();
+                     }
+                     array_push($mydatat[$name], '');
                   }
-                  array_push($mydatat[$name], $value);
+                  
+               } else {
+                  foreach ($dat as $name=>$value) {
+                     if (!isset($mydatat[$name])) {
+                        $mydatat[$name] = array();
+                     }
+                     array_push($mydatat[$name], $value);
+                  }
                }
             }
             $ret = $pmServiceevent->getRef($rrdtool_template);
-            $a_ref = $ret[0];
             break;
          
-      }         
+      }       
       return array($mydatat, $a_labels, $dateformat);      
    }
    
