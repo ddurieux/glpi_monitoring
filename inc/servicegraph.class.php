@@ -114,11 +114,14 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       $pmService = new PluginMonitoringService();
       $pmService->getFromDB($items_id);
       
+      $dateformat = "%Y-%m-%d %Hh";
+      
       $begin = '';
       switch ($time) {
          
          case '2h':
             $begin = date('Y-m-d H:i:s', date('U') - (2 * 3600));
+            $dateformat = "(%d)%H:%M";
             
             $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
@@ -146,6 +149,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
          
          case '12h':
             $begin = date('Y-m-d H:i:s', date('U') - (12 * 3600));
+            $dateformat = "(%d)%H:%M";
             
             $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
@@ -162,6 +166,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
          
          case '1d':
             $begin = date('Y-m-d H:i:s', date('U') - (24 * 3600));
+            $dateformat = "(%d)%H:%M";
             
             $query = "SELECT * FROM `".$this->getTable()."`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
@@ -190,6 +195,12 @@ class PluginMonitoringServicegraph extends CommonDBTM {
          
          case '1w':
             $begin = date('Y-m-d H:i:s', date('U') - (7 * 24 * 3600));
+            $display_month = 0;
+            $dateformat = "(%d) %Hh";
+            if (date('m', date('U') - (7 * 24 * 3600)) != date('m', date('U'))) {
+               $display_month = 1;
+               $dateformat = "%m-%d %Hh";
+            }
             
             $query = "SELECT * FROM `".$this->getTable()."`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
@@ -203,7 +214,12 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                   $daynum = Calendar::getDayNumberInWeek(PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
                   $split = explode(' ', $datemod);
                   $split2 = explode(':', $split[1]);
-                  array_push($a_labels, $split[0]." ".$split2[0].'h');
+                  $splitymd = explode('-', $split[0]);
+                  $dateymd = "(".$splitymd[2].")";
+                  if ($display_month == 1) {
+                     $dateymd = $splitymd[1]."-".$splitymd[2];
+                  }
+                  array_push($a_labels, $dateymd." ".$split2[0].'h');
 //               }
                foreach ($dat as $name=>$value) {
                   if (!isset($mydatat[$name])) {
@@ -218,6 +234,13 @@ class PluginMonitoringServicegraph extends CommonDBTM {
 
          case '1m':
             $begin = date('Y-m-d H:i:s', date('U') - (30 * 24 * 3600));
+            $display_year = 0;
+            $dateformat = "%m-%d %Hh";
+            if (date('Y', date('U') - (7 * 24 * 3600)) != date('Y', date('U'))) {
+               $display_year = 1;
+               $dateformat = "%Y-%m-%d %Hh";
+            }
+
             
             $query = "SELECT * FROM `".$this->getTable()."`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
@@ -232,7 +255,11 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                   $split = explode(' ', $datemod);
                   $split2 = explode(':', $split[1]);
                   $day = explode("-", $split[0]);
-                  array_push($a_labels, $split[0]." ".$split2[0].'h');
+                  $dateymd = $day[1]."-".$day[2];
+                  if ($display_year == 1) {
+                     $dateymd = $split[0];
+                  }
+                  array_push($a_labels, $dateymd." ".$split2[0].'h');
 //               }
                foreach ($dat as $name=>$value) {
                   if (!isset($mydatat[$name])) {
@@ -247,7 +274,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
          
          case '0y6m':
             $begin = date('Y-m-d H:i:s', date('U') - ((364 / 2) * 24 * 3600));
-            
+
             $query = "SELECT * FROM `".$this->getTable()."`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
                   AND `type`='5d'
@@ -306,7 +333,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
             break;
          
       }         
-      return array($mydatat, $a_labels);      
+      return array($mydatat, $a_labels, $dateformat);      
    }
    
    

@@ -56,6 +56,7 @@ $a_ret = $pmServicegraph->generateData($_POST['rrdtool_template'],
                              $_POST['time']);
 $mydatat = $a_ret[0];
 $a_labels = $a_ret[1];
+$format = $a_ret[2];
 $suffix = '';
 if (isset($_POST['suffix'])) {
    $suffix = $_POST['suffix'];
@@ -65,15 +66,21 @@ if(!isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id'
    PluginMonitoringServicegraph::loadPreferences($_POST['components_id']);
 }
 
-$format = "%H:%M";
-if ($_POST['time'] != "2h"
-   AND $_POST['time'] != "12h"
-   AND $_POST['time'] != "1d") {
-   $format = "%Y-%m-%d %Hh";
-} else {
-   $format = "(%d)%H:%M";
-}
-   
+//$format = "%H:%M";
+//if ($_POST['time'] != "2h"
+//   AND $_POST['time'] != "12h"
+//   AND $_POST['time'] != "1d") {
+//   if (isset($_SESSION['glpi_plugin_monitoring']['dateformat'])) {
+//      $format = $_SESSION['glpi_plugin_monitoring']['dateformat'];
+//   } else {  
+//      $format = "%Y-%m-%d %Hh";
+//   }
+//} else {
+//   $format = "(%d)%H:%M";
+//}
+
+
+
 
 $formaty = ",.0f";
 $max = 0;
