@@ -591,8 +591,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
    function displayGraphs($itemtype, $items_id) {
       global $CFG_GLPI,$LANG;
 
-      $pmComponent = new PluginMonitoringComponent();
-      $pmConfig = new PluginMonitoringConfig();
+      $pmComponent              = new PluginMonitoringComponent();
+      $pmConfig                 = new PluginMonitoringConfig();
+      $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
 
       $item = new $itemtype();
       $item->getFromDB($items_id);
@@ -608,7 +609,18 @@ class PluginMonitoringDisplay extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'>";
       echo "<th>";
-      echo $item->getLink(1);
+      $title = Dropdown::getDropdownName(getTableForItemType('PluginMonitoringComponent'), $item->fields['plugin_monitoring_components_id']);
+      $title .= ' '.$LANG['networking'][25].' ';
+      $pmComponentscatalog_Host->getFromDB($item->fields["plugin_monitoring_componentscatalogs_hosts_id"]);
+      if (isset($pmComponentscatalog_Host->fields['itemtype']) 
+              AND $pmComponentscatalog_Host->fields['itemtype'] != '') {
+          
+          $itemtype2 = $pmComponentscatalog_Host->fields['itemtype'];
+          $item2 = new $itemtype2();
+          $item2->getFromDB($pmComponentscatalog_Host->fields['items_id']);
+          $title .= str_replace("'", "\"", $item2->getLink()." (".$item2->getTypeName().")");    
+      }
+      echo $title;
       echo "</th>";
       echo "<th width='200'>";
       if (!isset($_GET['mobile'])) {
