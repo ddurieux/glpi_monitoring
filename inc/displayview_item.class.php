@@ -266,7 +266,7 @@ Ext.onReady(function() {
              ".$event."
          });
      </script>";//.show()
-      
+
       if ($itemtype == "PluginMonitoringService") {
          $pmComponent = new PluginMonitoringComponent();
          $item = new $itemtype();
@@ -280,6 +280,9 @@ Ext.onReady(function() {
                                        "0", 
                                        $data['extra_infos'], 
                                        "js");
+      } else if($itemtype == "PluginMonitoringComponentscatalog") {
+         $pmComponentscatalog = new PluginMonitoringComponentscatalog();
+         $pmComponentscatalog->ajaxLoad($data['items_id']);
       }
       
       if ($itemtype == "PluginMonitoringWeathermap") {

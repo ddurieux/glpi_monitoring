@@ -143,6 +143,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          echo "<td>";
 
          echo $this->showWidget($data['id']);
+         $this->ajaxLoad($data['id']);
          
          echo "</td>";
          
@@ -201,36 +202,119 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    function showWidget($id) {
       global $LANG, $DB, $CFG_GLPI;
       
-      $pmService = new PluginMonitoringService();
-      $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+
+      return "<div id=\"updatecomponentscatalog".$id."\"></div>";
+
+   
       
-      $input = '';
+//      $pmService = new PluginMonitoringService();
+//      $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+//      
+//      $input = '';
+//      
+//      $this->getFromDB($id);
+//      $data = $this->fields;
+//      $input .= '<table  class="tab_cadre_fixe" style="width:158px;">';
+//      $input .= '<tr class="tab_bg_1">';
+//      $input .= '<th colspan="2" style="font-size:18px;" height="60">';
+//      $input .= $data['name']."&nbsp;";
+//      $input .= '</th>';
+//      $input .= '</tr>';
+//         
+//      $ret = $this->getInfoOfCatalog($id);
+//      $nb_ressources = $ret[0];
+//      $stateg = $ret[1];
+//      
+//      
+//      $input .= '<tr class="tab_bg_1">';
+//      $input .= '<td>';
+//      $input .= $LANG['plugin_monitoring']['service'][0]."&nbsp;:";
+//      $input .= '</td>';
+//      $input .= '<th align="center" height="40" width="50%">';
+//      $link = $CFG_GLPI['root_doc'].
+//         "/plugins/monitoring/front/service.php?reset=reset&field[0]=8&searchtype[0]=equals&contains[0]=".$id.
+//            "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
+//      $input .= '<a href="'.$link.'">'.$nb_ressources.'</a>';
+//      $input .= '</th>';
+//      $input .= '</tr>';
+//
+//      $background = '';
+//      $count = 0;
+//            
+//      $link = '';
+//      if ($stateg['CRITICAL'] > 0) {
+//         $count = $stateg['CRITICAL'];
+//         $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_critical.png"';
+//         $link = $CFG_GLPI['root_doc'].
+//         "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=CRITICAL".
+//            "&link[1]=AND&field[1]=8&searchtype[1]=equals&contains[1]=".$id.
+//            "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=DOWN".
+//            "&link[3]=AND&field[3]=8&searchtype[3]=equals&contains[3]=".$id.
+//            "&link[4]=OR&field[4]=3&searchtype[4]=equals&contains[4]=UNREACHABLE".
+//            "&link[5]=AND&field[5]=8&searchtype[5]=equals&contains[5]=".$id.
+//            "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
+//      } else if ($stateg['WARNING'] > 0) {
+//         $count = $stateg['WARNING'];
+//         $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_warning.png"';
+//         $link = $CFG_GLPI['root_doc'].
+//         "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=WARNING".
+//            "&link[1]=AND&field[1]=8&searchtype[1]=equals&contains[1]=".$id.
+//            "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=UNKNOWN".
+//            "&link[3]=AND&field[3]=8&searchtype[3]=equals&contains[3]=".$id.
+//            "&link[4]=OR&field[4]=3&searchtype[4]=equals&contains[4]=RECOVERY".
+//            "&link[5]=AND&field[5]=8&searchtype[5]=equals&contains[5]=".$id.
+//            "&link[6]=OR&field[6]=3&searchtype[6]=equals&contains[6]=FLAPPING".
+//            "&link[7]=AND&field[7]=8&searchtype[7]=equals&contains[7]=".$id.
+//            "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
+//      } else if ($stateg['OK'] > 0) {
+//         $count = $stateg['OK'];
+//         $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_ok.png"';
+//         $link = $CFG_GLPI['root_doc'].
+//         "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=OK".
+//            "&link[1]=AND&field[1]=8&searchtype[1]=equals&contains[1]=".$id.
+//            "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=UP".
+//            "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
+//      }
+//      $input .= "<tr ".$background.">";
+//      $input .= '<th style="background-color:transparent;" '.$background.' colspan="2" height="100">';
+//      $input .= '<a href="'.$link.'"><font style="font-size: 52px; color:black">'.$count.'</font></a>';         
+//      $input .= '</th>';
+//      $input .= '</tr>';
+//
+//      $input .= '</table>';
+//      return $input;
+   }
+   
+   
+   
+   function showWidgetFrame($id) {
+      global $LANG, $DB, $CFG_GLPI;
       
       $this->getFromDB($id);
       $data = $this->fields;
-      $input .= '<table  class="tab_cadre_fixe" style="width:158px;">';
-      $input .= '<tr class="tab_bg_1">';
-      $input .= '<th colspan="2" style="font-size:18px;" height="60">';
-      $input .= $data['name']."&nbsp;";
-      $input .= '</th>';
-      $input .= '</tr>';
+      echo '<table  class="tab_cadre_fixe" style="width:158px;">';
+      echo '<tr class="tab_bg_1">';
+      echo '<th colspan="2" style="font-size:18px;" height="60">';
+      echo $data['name']."&nbsp;";
+      echo '</th>';
+      echo '</tr>';
          
       $ret = $this->getInfoOfCatalog($id);
       $nb_ressources = $ret[0];
       $stateg = $ret[1];
       
       
-      $input .= '<tr class="tab_bg_1">';
-      $input .= '<td>';
-      $input .= $LANG['plugin_monitoring']['service'][0]."&nbsp;:";
-      $input .= '</td>';
-      $input .= '<th align="center" height="40" width="50%">';
+      echo '<tr class="tab_bg_1">';
+      echo '<td>';
+      echo $LANG['plugin_monitoring']['service'][0]."&nbsp;:";
+      echo '</td>';
+      echo '<th align="center" height="40" width="50%">';
       $link = $CFG_GLPI['root_doc'].
          "/plugins/monitoring/front/service.php?reset=reset&field[0]=8&searchtype[0]=equals&contains[0]=".$id.
             "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
-      $input .= '<a href="'.$link.'">'.$nb_ressources.'</a>';
-      $input .= '</th>';
-      $input .= '</tr>';
+      echo '<a href="'.$link.'">'.$nb_ressources.'</a>';
+      echo '</th>';
+      echo '</tr>';
 
       $background = '';
       $count = 0;
@@ -269,14 +353,28 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=UP".
             "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
       }
-      $input .= "<tr ".$background.">";
-      $input .= '<th style="background-color:transparent;" '.$background.' colspan="2" height="100">';
-      $input .= '<a href="'.$link.'"><font style="font-size: 52px; color:black">'.$count.'</font></a>';         
-      $input .= '</th>';
-      $input .= '</tr>';
+      echo  "<tr ".$background.">";
+      echo  '<th style="background-color:transparent;" '.$background.' colspan="2" height="100">';
+      echo  '<a href="'.$link.'"><font style="font-size: 52px; color:black">'.$count.'</font></a>';         
+      echo  '</th>';
+      echo  '</tr>';
 
-      $input .= '</table>';
-      return $input;
+      echo  '</table>';
+   }
+   
+   
+   
+   function ajaxLoad($id) {
+      global $CFG_GLPI;
+      
+      echo "<script type=\"text/javascript\">
+
+      var elcc".$id." = Ext.get(\"updatecomponentscatalog".$id."\");
+      var mgrcc".$id." = elcc".$id.".getUpdateManager();
+      mgrcc".$id.".loadScripts=true;
+      mgrcc".$id.".showLoadIndicator=false;
+      mgrcc".$id.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateWidgetComponentscatalog.php\", \"id=".$id."\", \"\", true);
+      </script>";
    }
    
    
