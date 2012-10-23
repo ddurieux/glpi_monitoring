@@ -1132,7 +1132,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
             $a_views = $pmDisplayview->getViews();
             foreach ($a_views as $views_id=>$name) {
                if ($tabnum == $i) {
-                  if ($_SESSION['plugin_monitoring_displaytab'] != $tabnum) {
+                  if ($_SESSION['plugin_monitoring_displaytab'] != $tabnum
+                          && !strstr($_SERVER['PHP_SELF'], "displayfix.php")) {
                      echo '<script language="javascript">window.location.reload();</script>';
                      exit;
                   }
