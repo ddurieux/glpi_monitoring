@@ -82,7 +82,7 @@ if(!isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id'
 
 
 
-$formaty = ",.0f";
+$formaty = ".0f";
 $max = 0;
 $titleunit = '';
 foreach ($mydatat as $name=>$data) {
@@ -100,7 +100,7 @@ foreach ($mydatat as $name=>$data) {
    }
 }
 if ($max <= 2) {
-   $formaty = ",.2f";
+   $formaty = ".2f";
 }
 
 if ($max > 2000) {
