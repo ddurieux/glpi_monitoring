@@ -103,12 +103,8 @@ if ($max <= 2) {
    $formaty = ",.2f";
 }
 
-if ($max > 2000000) {
-//   $titleunit = " (in M)";
-   $formaty = "s,.2f";
-} else if ($max > 2000) {
-//   $titleunit = " (in K)";
-   $formaty = "s,0.2f";
+if ($max > 2000) {
+   $formaty = "0.3s";
 }
 
 $pmComponent = new PluginMonitoringComponent();
