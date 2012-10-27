@@ -46,6 +46,78 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringDisplay extends CommonDBTM {
    
+   function menu() {
+      global $LANG,$CFG_GLPI;
+      
+      echo "<table class='tab_cadre_fixe' width='950'>";
+      echo "<tr class='tab_bg_3'>";
+      echo "<td>";
+      
+      echo "<table class='tab_cadre_fixe' width='950'>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<th width='33%' colspan='2'>";
+      if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
+         $this->displayPuce('display_servicescatalog');
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_servicescatalog.php'>";
+         echo $LANG['plugin_monitoring']['servicescatalog'][0];
+         echo "</a>";
+      }
+      echo "</th>";
+      echo "<th width='33%' colspan='2'>";
+      if (PluginMonitoringProfile::haveRight("componentscatalog", 'r')) {
+         $this->displayPuce('display_componentscatalog');
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_componentscatalog.php'>";
+         echo $LANG['plugin_monitoring']['componentscatalog'][0];
+         echo "</a>";
+      }
+      echo "</th>";
+      echo "<th colspan='2'>";
+      $this->displayPuce('service');
+      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/service.php'>";
+      echo $LANG['plugin_monitoring']['service'][21];
+      echo "</a>";
+      echo "</th>";
+//      echo "<th>";
+//      echo $LANG['plugin_monitoring']['host'][1];
+//      echo "</th>";
+      echo "</tr>";
+      echo "</table>";
+      
+      echo "<table class='tab_cadre_fixe' width='950'>";
+      echo "<tr class='tab_bg_1'>";
+      $i = 1;
+      if (PluginMonitoringProfile::haveRight("view", 'r')) {
+         $pmDisplayview = new PluginMonitoringDisplayview();
+         $a_views = $pmDisplayview->getViews();
+         foreach ($a_views as $views_id=>$name) {
+            if ($i == 6) {
+               echo "</tr>";
+               echo "<tr class='tab_bg_1'>";
+               $i = 1;
+            }
+            echo "<th width='20%'>";
+            $this->displayPuce('display_view', $views_id);
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_view.php?id=".$views_id."'>";
+            echo htmlentities($name);
+            echo "</a>";
+            echo "</th>";
+            $i++;
+         }
+      }
+      for ($i;$i < 6; $i++) {
+         echo "<th width='20%'>";
+         echo "</th>";
+      }
+      
+      echo "</tr>";
+      echo "</table>";
+      
+      echo "</td>";
+      echo "</tr>";
+      echo "</table>";
+   }
+   
+   
    
    function defineTabs($options=array()){
       global $LANG,$CFG_GLPI;
@@ -257,22 +329,22 @@ class PluginMonitoringDisplay extends CommonDBTM {
       } else if ($limit == 'services') {
          $where = "`plugin_monitoring_services_id`>0 ";
       }      
-      if (isset($_SESSION['plugin_monitoring']['service']['field'])) {
-         foreach ($_SESSION['plugin_monitoring']['service']['field'] as $key=>$value) {
+      if (isset($_GET['field'])) {
+         foreach ($_GET['field'] as $key=>$value) {
             $wheretmp = '';
-            if (isset($_SESSION['plugin_monitoring']['service']['link'][$key])) {
-               $wheretmp.= " ".$_SESSION['plugin_monitoring']['service']['link'][$key]." ";
+            if (isset($_GET['link'][$key])) {
+               $wheretmp.= " ".$_GET['link'][$key]." ";
             }
             $wheretmp .= Search::addWhere(
                                    "",
                                    0,
                                    "PluginMonitoringService",
-                                   $_SESSION['plugin_monitoring']['service']['field'][$key],
-                                   $_SESSION['plugin_monitoring']['service']['searchtype'][$key],
-                                   $_SESSION['plugin_monitoring']['service']['contains'][$key]);
+                                   $_GET['field'][$key],
+                                   $_GET['searchtype'][$key],
+                                   $_GET['contains'][$key]);
             if (!strstr($wheretmp, "``.``")) {
                if ($where != ''
-                       AND !isset($_SESSION['plugin_monitoring']['service']['link'][$key])) {
+                       AND !isset($_GET['link'][$key])) {
                   $where .= " AND ";
                }
                $where .= $wheretmp;
@@ -293,8 +365,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       
       $leftjoin = '';
-      if (isset($_SESSION['plugin_monitoring']['service']['field'])) {         
-         foreach ($_SESSION['plugin_monitoring']['service']['field'] as $value) {
+      if (isset($_GET['field'])) {         
+         foreach ($_GET['field'] as $value) {
             if ($value == '20'
                     OR $value == '21'
                     OR $value == '22') {
@@ -1060,92 +1132,24 @@ class PluginMonitoringDisplay extends CommonDBTM {
    
    
    
-   static function addRemoveTab($type, $tabnum) {
-      global $CFG_GLPI,$LANG;
+   function displayPuce($scriptname, $items_id='') {
+      global $CFG_GLPI;
       
-      echo "<div style='z-index: 22;position:absolute;'>";
-      echo "<form name='form' method='post' action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/displayfix.php' >";
-      echo "<input type='hidden' name='type' value='".$type."' />";
-      echo "<input type='hidden' name='tabnum' value='".$tabnum."' />";
-      echo "<input type='submit' name='updateaddremovetab' value=\"\"
-         style='background:  url(\"".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/tab".$type.".png\");
-            width: 50px;height: 40px; border: 0px'>";
-      Html::closeForm();
-      echo "</div>";
-   }
-   
-   
-   
-   static function displayTab($tabnum) {
-      global $LANG;
-      
-      $pmDisplay = new PluginMonitoringDisplay();
-      switch($tabnum) {
-         case -1 :
-
-            break;
-
-         case 1 :
-            $pmServicescatalog = new PluginMonitoringServicescatalog();
-            $pmDisplay->displayCounters("Businessrules");
-            $pmServicescatalog->showBAChecks();
-            break;
-
-         case 2:
-            $pmComponentscatalog = new PluginMonitoringComponentscatalog();
-            $pmDisplay->displayCounters("Componentscatalog");
-            $pmComponentscatalog->showChecks();
-            break;
-
-         case 3:
-            PluginMonitoringServicegraph::loadLib();
-            $pmDisplay->displayCounters("Ressources");
-            // Manage search
-            if (isset($_SESSION['plugin_monitoring']['service'])) {
-               $_GET = $_SESSION['plugin_monitoring']['service'];
+      $split = explode("/", $_SERVER['PHP_SELF']);
+      if ($split[(count($split) -1)] == $scriptname.".php") {
+         $display = 0;
+         if ($items_id != '') {
+            if (isset($_GET['id'])
+                    && $_GET['id'] == $items_id) {
+               $display = 1;
             }
-            if (isset($_GET['reset'])) {
-               unset($_SESSION['glpisearch']['PluginMonitoringService']);
-            }
-            if (isset($_GET['glpi_tab'])) {
-               unset($_GET['glpi_tab']);
-            }
-            Search::manageGetValues("PluginMonitoringService");
-            Search::showGenericSearch("PluginMonitoringService", $_GET);
-            $_SESSION['plugin_monitoring']['service'] = $_GET;
-            $pmDisplay->showBoard(950);
-            if (isset($_SESSION['glpisearch']['PluginMonitoringService']['reset'])) {
-               unset($_SESSION['glpisearch']['PluginMonitoringService']['reset']);
-            }
-            break;
-
-         case 4:
-            PluginMonitoringCanvas::onload();
-
-            $pmCanvas = new PluginMonitoringCanvas();
-            $pmCanvas->show();      
-            break;
-
-         default :
-            $i = 5;
-            $pmDisplayview = new PluginMonitoringDisplayview();
-            $a_views = $pmDisplayview->getViews();
-            foreach ($a_views as $views_id=>$name) {
-               if ($tabnum == $i) {
-                  if ($_SESSION['plugin_monitoring_displaytab'] != $tabnum
-                          && !strstr($_SERVER['PHP_SELF'], "displayfix.php")) {
-                     echo '<script language="javascript">window.location.reload();</script>';
-                     exit;
-                  }
-                  $pmDisplayview_item = new PluginMonitoringDisplayview_item();
-                  $pmDisplayview_item->view($views_id);
-               }
-               $i++;
-            }
-            break;
-
+         } else {
+            $display = 1;
+         }
+         if ($display == 1) {
+            echo "<img src='".$CFG_GLPI['root_doc']."/pics/right.png' /> ";
+         }
       }
-      
    }
 }
 

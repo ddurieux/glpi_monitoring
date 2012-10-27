@@ -53,29 +53,14 @@ Html::header($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plug
 
 
 $pmDisplay = new PluginMonitoringDisplay();
+$pmComponentscatalog = new PluginMonitoringComponentscatalog();
 
 $pmDisplay->menu();
 
-echo '<meta http-equiv ="refresh" content="'.$_SESSION['glpi_plugin_monitoring']['_refresh'].'">';
-$pmDisplay->refreshPage();
+PluginMonitoringProfile::checkRight("componentscatalog", 'r');
 
-$pmDisplay->displayCounters("Ressources");
-// Manage search
-if (isset($_SESSION['plugin_monitoring']['service'])) {
-   $_GET = $_SESSION['plugin_monitoring']['service'];
-}
-if (isset($_GET['reset'])) {
-   unset($_SESSION['glpisearch']['PluginMonitoringService']);
-}
-if (isset($_GET['glpi_tab'])) {
-   unset($_GET['glpi_tab']);
-}
-Search::manageGetValues("PluginMonitoringService");
-Search::showGenericSearch("PluginMonitoringService", $_GET);
-$pmDisplay->showBoard(950);
-if (isset($_SESSION['glpisearch']['PluginMonitoringService']['reset'])) {
-   unset($_SESSION['glpisearch']['PluginMonitoringService']['reset']);
-}
+$pmDisplay->displayCounters("Componentscatalog");
+$pmComponentscatalog->showChecks();
 
 Html::footer();
 ?>

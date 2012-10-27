@@ -58,7 +58,7 @@ echo "<table class='tab_cadre' width='950'>";
 
 echo "<tr class='tab_bg_1'>";
 echo "<th height='80'>";
-echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php'>".$LANG['plugin_monitoring']['display'][0]."</a>";
+echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_servicescatalog.php'>".$LANG['plugin_monitoring']['display'][0]."</a>";
 echo "</th>";
 echo "</tr>";
 echo "</table>";
