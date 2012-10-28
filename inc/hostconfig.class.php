@@ -179,13 +179,13 @@ class PluginMonitoringHostconfig extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='4'>";
-      echo $LANG['plugin_monitoring']['hostconfig'][0];
+      echo __('Hosts configuration', 'monitoring');
       echo "</th>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
-      echo $LANG['plugin_monitoring']['service'][5]."&nbsp;:";
+      echo __('Command', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       $input = array();
@@ -204,7 +204,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
           'value'=>$this->fields['plugin_monitoring_commands_id']));
 
       echo "</td>";
-      echo "<td>".$LANG['plugin_monitoring']['check'][0]."&nbsp;:</td>";
+      echo "<td>".__('Check definition', 'monitoring')."&nbsp;:</td>";
       echo "<td>";
       $input = array();
       if ($entities_id != '0'
@@ -253,7 +253,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
       
       
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['plugin_monitoring']['realms'][1]."&nbsp;:</td>";
+      echo "<td>".__('Reaml', 'monitoring')."&nbsp;:</td>";
       echo "<td>";
       $input = array();
       if ($entities_id != '0'
@@ -270,7 +270,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
           'value'=>$this->fields['plugin_monitoring_realms_id']));
       echo "</td>";
 
-      echo "<td>".$LANG['plugin_monitoring']['host'][9]."&nbsp;:</td>";
+      echo "<td>".__('Check period', 'monitoring')."&nbsp;:</td>";
       echo "<td>";
       $input = array();
       if ($entities_id != '0'
@@ -327,7 +327,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
               AND $items_id == '0') {
          echo "<tr class='tab_bg_1'>";
          echo "<td>";
-         echo $LANG['plugin_monitoring']['config'][5]."&nbsp;:";
+         echo __('Shinken Server', 'monitoring')."&nbsp;:";
          echo "</td>";
          echo "<td>";
          Dropdown::show("Computer", array(

@@ -326,7 +326,7 @@ new CanvasXpress(
          
          echo "<tr class='tab_bg_1'>";
          echo "<th>";
-         echo $LANG['plugin_monitoring']['dependency'][0];
+         echo __('Dependencies;', 'monitoring');
          echo "</th>";
          echo "</tr>";
          

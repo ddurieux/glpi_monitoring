@@ -115,7 +115,7 @@ $LANG['plugin_monitoring']['entity'][1]="Set tag to link entity with a specific 
 $LANG['plugin_monitoring']['grouphost'][0]="Hostgruppen";
 $LANG['plugin_monitoring']['grouphost'][1]="Hostgruppe";
 
-$LANG['plugin_monitoring']['host'][0]="Hosts";
+__('Hosts', 'monitoring')="Hosts";
 $LANG['plugin_monitoring']['host'][10]="Letzter Monat";
 $LANG['plugin_monitoring']['host'][11]="Letzte 6 Monate";
 $LANG['plugin_monitoring']['host'][12]="Letztes Jahr";
@@ -171,5 +171,5 @@ $LANG['plugin_monitoring']['servicescatalog'][1]="Verschlechtert";
 
 $LANG['plugin_monitoring']['servicesuggest'][0]="Suggests";
 
-$LANG['plugin_monitoring']['title'][0]="Monitoring";
+__('Monitoring', 'monitoring')="Monitoring";
 ?>

@@ -115,7 +115,7 @@ $LANG['plugin_monitoring']['entity'][1]="Définir l'étiquette pour lier une ent
 $LANG['plugin_monitoring']['grouphost'][0]="Groupes de hôtes";
 $LANG['plugin_monitoring']['grouphost'][1]="Groupe de hôtes";
 
-$LANG['plugin_monitoring']['host'][0]="hôtes";
+__('Hosts', 'monitoring')="hôtes";
 $LANG['plugin_monitoring']['host'][10]="Dernier mois";
 $LANG['plugin_monitoring']['host'][11]="6 derniers mois";
 $LANG['plugin_monitoring']['host'][12]="Dernière année";
@@ -171,5 +171,5 @@ $LANG['plugin_monitoring']['servicescatalog'][1]="Mode dégradé";
 
 $LANG['plugin_monitoring']['servicesuggest'][0]="Suggestions";
 
-$LANG['plugin_monitoring']['title'][0]="Monitoring";
+__('Monitoring', 'monitoring')="Monitoring";
 ?>

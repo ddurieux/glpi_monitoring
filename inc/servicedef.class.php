@@ -87,7 +87,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
 
       $tab = array();
     
-      $tab['common'] = $LANG['plugin_monitoring']['service'][0];
+      $tab['common'] = __('Resources', 'monitoring');
 
 		$tab[1]['table'] = $this->getTable();
 		$tab[1]['field'] = 'name';
@@ -110,7 +110,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
 
       $ong = array();
 
-      $ong[2] = $LANG['plugin_monitoring']['businessrule'][0]; 
+      $ong[2] = __('Business rules', 'monitoring'); 
       
       return $ong;
    }
@@ -186,7 +186,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
       
       echo "<tr>";
       // * checks
-      echo "<td>".$LANG['plugin_monitoring']['check'][0]."&nbsp;:</td>";
+      echo "<td>".__('Check definition', 'monitoring')."&nbsp;:</td>";
       echo "<td align='center'>";
       if ($this->fields['is_template'] == '1') {
          $pMonitoringCheck = new PluginMonitoringCheck();
@@ -224,7 +224,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
       }
       echo "</td>";
       // * calendar
-      echo "<td>".$LANG['plugin_monitoring']['host'][9]."&nbsp;:</td>";
+      echo "<td>".__('Check period', 'monitoring')."&nbsp;:</td>";
       echo "<td align='center'>";
       if ($this->fields['is_template'] == '1') {
          $calendar = new Calendar();

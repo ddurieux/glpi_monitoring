@@ -56,7 +56,7 @@ class PluginMonitoringContact extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['plugin_monitoring']['contact'][0];
+      return __('Contact', 'monitoring');
    }
 
 
@@ -122,7 +122,7 @@ class PluginMonitoringContact extends CommonDBTM {
          echo "<tr>";
          echo "<td colspan='4' align='center'>";
          echo "<input name='users_id' type='hidden' value='".$_POST['id']."' />";
-         echo "<input name='add' value='".$LANG['plugin_monitoring']['contact'][1]."' class='submit' type='submit'></td>";
+         echo "<input name='add' value='".__('Manage this user for monitoring system', 'monitoring')."' class='submit' type='submit'></td>";
          echo "</tr>";
          $this->showFormButtons(array('canedit'=>false));
       }

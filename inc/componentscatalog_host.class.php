@@ -50,7 +50,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['plugin_monitoring']['host'][0];
+      return __('Hosts', 'monitoring');
    }
 
 
@@ -160,7 +160,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
      
       echo "<tr>";
       echo "<td colspan='2'>";
-      echo $LANG['plugin_monitoring']['component'][1]."&nbsp;:";
+      echo __('Add a new component', 'monitoring')."&nbsp;:";
       echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$componentscatalogs_id."'/>";
       echo "<input type='hidden' name='is_static' value='1'/>";
       echo "</td>";

@@ -55,7 +55,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['plugin_monitoring']['servicescatalog'][0];
+      return __('Services catalog', 'monitoring');
    }
 
 
@@ -90,7 +90,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       echo "<td>";
       echo "<input type='text' name='name' value='".$this->fields["name"]."' size='30'/>";
       echo "</td>";
-      echo "<td>".$LANG['plugin_monitoring']['check'][0]."&nbsp;:</td>";
+      echo "<td>".__('Check definition', 'monitoring')."&nbsp;:</td>";
       echo "<td>";
       Dropdown::show("PluginMonitoringCheck", 
                         array('name'=>'plugin_monitoring_checks_id',
@@ -103,7 +103,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       echo "<td>";
       echo "<textarea cols='45' rows='2' name='comment'>".$this->fields["comment"]."</textarea>";
       echo "</td>";
-      echo "<td>".$LANG['plugin_monitoring']['host'][9]."&nbsp;:</td>";
+      echo "<td>".__('Check period', 'monitoring')."&nbsp;:</td>";
       echo "<td>";
       dropdown::show("Calendar", array('name'=>'calendars_id',
                                  'value'=>$this->fields['calendars_id']));
@@ -283,7 +283,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
 
       $input .= '<tr class="tab_bg_1">';
       $input .= '<td>';
-      $input .= $LANG['plugin_monitoring']['servicescatalog'][1]."&nbsp;:";
+      $input .= __('Degraded mode', 'monitoring')."&nbsp;:";
       $input .= '</td>';
       $input .= '<td width="40" align="center">';
       $a_group = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_servicescatalogs_id`='".$data['id']."'");

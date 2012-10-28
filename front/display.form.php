@@ -48,7 +48,7 @@ include (GLPI_ROOT."/inc/includes.php");
 
 Session::checkCentralAccess();
 
-Html::header($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plugins",
+Html::header(__('Monitoring', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
              "monitoring", "display");
 
 if (isset($_POST['sessionupdate'])) {

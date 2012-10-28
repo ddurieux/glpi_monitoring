@@ -50,7 +50,7 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['plugin_monitoring']['component'][0];
+      return __('Components', 'monitoring');
    }
 
 
@@ -85,7 +85,7 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
 
       echo "<tr>";
       echo "<th>";
-      echo $LANG['plugin_monitoring']['component'][2];
+      echo __('Associated components', 'monitoring');
       echo "</th>";
       echo "</tr>";
       
@@ -96,10 +96,10 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
       echo "<tr>";
       echo "<th width='10'>&nbsp;</th>";
       echo "<th>".$LANG['common'][16]."</th>";
-      echo "<th>".$LANG['plugin_monitoring']['command'][2]."</th>";
-      echo "<th>".$LANG['plugin_monitoring']['check'][0]."</th>";      
-      echo "<th>".$LANG['plugin_monitoring']['host'][9]."</th>";
-      echo "<th>".$LANG['plugin_monitoring']['service'][8]."</th>";
+      echo "<th>".__('Command name', 'monitoring')."</th>";
+      echo "<th>".__('Check definition', 'monitoring')."</th>";      
+      echo "<th>".__('Check period', 'monitoring')."</th>";
+      echo "<th>".__('Remote check', 'monitoring')."</th>";
       echo "</tr>";
       
       $used = array();
@@ -166,7 +166,7 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
      
       echo "<tr>";
       echo "<td colspan='2'>";
-      echo $LANG['plugin_monitoring']['component'][1]."&nbsp;:";
+      echo __('Add a new component', 'monitoring')."&nbsp;:";
       echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$componentscatalogs_id."'/>";
       echo "</td>";
       echo "<td colspan='2'>";

@@ -50,7 +50,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['plugin_monitoring']['weathermap'][0];
+      return __('Weathermap', 'monitoring');
    }
    
    static function canCreate() {
@@ -72,8 +72,8 @@ class PluginMonitoringWeathermap extends CommonDBTM {
       
       if (isset($_GET['id'])
               AND $_GET['id'] > 0) {
-         $ong[1] = $LANG['plugin_monitoring']['weathermap'][0];
-         $ong[2] = $LANG['plugin_monitoring']['weathermap'][6];
+         $ong[1] = __('Weathermap', 'monitoring');
+         $ong[2] = __('Nodes and links', 'monitoring');
       }
       
       return $ong;
@@ -245,7 +245,7 @@ echo "
                              $this->getType());
       Html::autocompletionTextField($this, 'name', array('value' => $objectName));      
       echo "</td>";
-      echo "<td>".$LANG['plugin_monitoring']['weathermap'][3]."&nbsp;:</td>";
+      echo "<td>".__('Width', 'monitoring')."&nbsp;:</td>";
       echo "<td>";
       Dropdown::showInteger("width", $this->fields['width'], 100, 3000);
       echo "</td>";
@@ -253,7 +253,7 @@ echo "
       
       echo "<tr>";
       echo "<td>";
-      echo $LANG['plugin_monitoring']['weathermap'][5]."&nbsp;:";
+      echo __('Background image', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       if ($this->fields['background'] == '') {
@@ -265,7 +265,7 @@ echo "
 
       }
       echo "</td>";
-      echo "<td>".$LANG['plugin_monitoring']['weathermap'][4]."&nbsp;:</td>";
+      echo "<td>".__('Height', 'monitoring')."&nbsp;:</td>";
       echo "<td>";
       Dropdown::showInteger("height", $this->fields['height'], 100, 3000);
       echo "</td>";
@@ -292,7 +292,7 @@ echo "
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2'>";
-      echo $LANG['plugin_monitoring']['weathermap'][6];
+      echo __('Nodes and links', 'monitoring');
       echo "</th>";
       echo "</tr>";
       
@@ -365,7 +365,7 @@ function point_it(event){
          
          echo "<tr>";
          echo "<td>";
-         echo $LANG['plugin_monitoring']['weathermap'][7]."&nbsp;:";
+         echo __('Node', 'monitoring')."&nbsp;:";
          echo "</td>";
          echo "<td>";
          Dropdown::showAllItems("items_id");

@@ -50,7 +50,7 @@ class PluginMonitoringService extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['plugin_monitoring']['service'][0];
+      return __('Resources', 'monitoring');
    }
    
    
@@ -91,12 +91,12 @@ class PluginMonitoringService extends CommonDBTM {
       
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'last_check';
-      $tab[4]['name']          = $LANG['plugin_monitoring']['service'][18];
+      $tab[4]['name']          = __('Last check', 'monitoring');
       $tab[4]['datatype']      = 'datetime';
 
       $tab[5]['table'] = $this->getTable();
       $tab[5]['field'] = 'state_type';
-      $tab[5]['name']  = $LANG['plugin_monitoring']['service'][19];
+      $tab[5]['name']  = __('State type', 'monitoring');
       $tab[5]['searchtype'] = 'equals';
       
       $tab[6]['table'] = 'glpi_entities';
@@ -106,7 +106,7 @@ class PluginMonitoringService extends CommonDBTM {
       $tab[7]['table'] = "glpi_plugin_monitoring_components";
       $tab[7]['field'] = 'name';
       $tab[7]['linkfield'] = 'plugin_monitoring_components_id';
-      $tab[7]['name'] = $LANG['plugin_monitoring']['component'][6];
+      $tab[7]['name'] = __('Component', 'monitoring');
       $tab[7]['datatype'] = 'itemlink';
       $tab[7]['itemlink_type']  = 'PluginMonitoringComponent';
       
@@ -166,7 +166,7 @@ class PluginMonitoringService extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='5'>";
-      echo $LANG['plugin_monitoring']['service'][0];
+      echo __('Resources', 'monitoring');
 //      echo "&nbsp;<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/service.form.php?services_id=".$a_hosts['id']."'>
 //         <img src='".$CFG_GLPI['root_doc']."/pics/menu_add.png' /></a>";
 //      
@@ -194,7 +194,7 @@ class PluginMonitoringService extends CommonDBTM {
          echo $LANG['entity'][0];
          echo "</th>";
          echo "<th>";
-         echo $LANG['plugin_monitoring']['component'][0];
+         echo __('Components', 'monitoring');
          echo "</th>";
          echo "<th>";
          echo $LANG['state'][0];
@@ -203,10 +203,10 @@ class PluginMonitoringService extends CommonDBTM {
          echo $LANG['stats'][7];
          echo "</th>";
 //         echo "<th>";
-//         echo $LANG['plugin_monitoring']['servicescatalog'][1];
+//         echo __('Degraded mode', 'monitoring');
 //         echo "</th>";
          echo "<th>";
-         echo $LANG['plugin_monitoring']['service'][18];
+         echo __('Last check', 'monitoring');
          echo "</th>";
          echo "<th>";
          echo $LANG['rulesengine'][82];
@@ -331,7 +331,7 @@ class PluginMonitoringService extends CommonDBTM {
       }      
       // * command
       echo "<td>";
-      echo $LANG['plugin_monitoring']['service'][5]."&nbsp;:";
+      echo __('Command', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td align='center'>";
       if ($this->fields['plugin_monitoring_servicetemplates_id'] > 0) {
@@ -351,7 +351,7 @@ class PluginMonitoringService extends CommonDBTM {
       
       echo "<tr>";
       // * checks
-      echo "<td>".$LANG['plugin_monitoring']['check'][0]."&nbsp;:</td>";
+      echo "<td>".__('Check definition', 'monitoring')."&nbsp;:</td>";
       echo "<td align='center'>";
       if ($this->fields['plugin_monitoring_servicetemplates_id'] > 0) {
          $pMonitoringCheck = new PluginMonitoringCheck();
@@ -365,7 +365,7 @@ class PluginMonitoringService extends CommonDBTM {
       echo "</td>";
       // * active check
       echo "<td>";
-      echo $LANG['plugin_monitoring']['service'][6]."&nbsp;:";
+      echo __('Active check', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td align='center'>";
       if ($this->fields['plugin_monitoring_servicetemplates_id'] > 0) {
@@ -379,7 +379,7 @@ class PluginMonitoringService extends CommonDBTM {
       echo "<tr>";
       // * passive check
       echo "<td>";
-      echo $LANG['plugin_monitoring']['service'][7]."&nbsp;:";
+      echo __('Passive check', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td align='center'>";
       if ($this->fields['plugin_monitoring_servicetemplates_id'] > 0) {
@@ -389,7 +389,7 @@ class PluginMonitoringService extends CommonDBTM {
       }
       echo "</td>";
       // * calendar
-      echo "<td>".$LANG['plugin_monitoring']['host'][9]."&nbsp;:</td>";
+      echo "<td>".__('Check period', 'monitoring')."&nbsp;:</td>";
       echo "<td align='center'>";
       if ($this->fields['plugin_monitoring_servicetemplates_id'] > 0) {
          $calendar = new Calendar();
@@ -406,13 +406,13 @@ class PluginMonitoringService extends CommonDBTM {
               AND $pMonitoringServicetemplate->fields['remotesystem'] == '')) {
       
          echo "<tr>";
-         echo "<th colspan='4'>".$LANG['plugin_monitoring']['service'][8]."</th>";
+         echo "<th colspan='4'>".__('Remote check', 'monitoring')."</th>";
          echo "</tr>";
 
          echo "<tr>";
          // * remotesystem
          echo "<td>";
-         echo $LANG['plugin_monitoring']['service'][9]."&nbsp;:";
+         echo __('Utility used for remote check', 'monitoring')."&nbsp;:";
          echo "</td>";
          echo "<td>";
          $input = array();
@@ -430,7 +430,7 @@ class PluginMonitoringService extends CommonDBTM {
          echo "</td>";      
          // * is_argument
          echo "<td>";
-         echo $LANG['plugin_monitoring']['service'][10]."&nbsp;:";
+         echo __('Use arguments (NRPE only)', 'monitoring')."&nbsp;:";
          echo "</td>";
          echo "<td>";
          if ($this->fields['plugin_monitoring_servicetemplates_id'] > 0) {
@@ -444,7 +444,7 @@ class PluginMonitoringService extends CommonDBTM {
          echo "<tr>";
          // alias command
          echo "<td>";
-         echo $LANG['plugin_monitoring']['service'][11]."&nbsp;:";
+         echo __('Alias command if required (NRPE only)', 'monitoring')."&nbsp;:";
          echo "</td>";
          echo "<td>";
          if ($this->fields['plugin_monitoring_servicetemplates_id'] > 0) {
@@ -455,7 +455,7 @@ class PluginMonitoringService extends CommonDBTM {
          echo "</td>"; 
 
          echo "<td>";
-         echo $LANG['plugin_monitoring']['service'][12]."&nbsp;:GHJKL";
+         echo __('Template (for graphs generation)', 'monitoring')."&nbsp;:GHJKL";
          echo "</td>";
          echo "<td>";
          if ($this->fields['plugin_monitoring_servicetemplates_id'] > 0) {
@@ -493,7 +493,7 @@ class PluginMonitoringService extends CommonDBTM {
       if (count($a_displayarg) > 0) {
          $a_argtext = importArrayFromDB($pMonitoringCommand->fields['arguments']);
          echo "<tr>";
-         echo "<th colspan='4'>".$LANG['plugin_monitoring']['service'][13]."&nbsp;</th>";
+         echo "<th colspan='4'>".__('Argument ([text:text] is used to get values dynamically)', 'monitoring')."&nbsp;</th>";
          echo "</tr>";
           
          foreach ($a_displayarg as $key=>$value) {
@@ -503,7 +503,7 @@ class PluginMonitoringService extends CommonDBTM {
             if (isset($a_argtext[$key])) {
                echo nl2br($a_argtext[$key])."&nbsp;:";
             } else {
-               echo $LANG['plugin_monitoring']['service'][14]."&nbsp;:";
+               echo __('Argument', 'monitoring')."&nbsp;:";
             }
             
             if ($value == '') {

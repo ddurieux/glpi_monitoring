@@ -96,18 +96,18 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
       case 'Printer':
       case 'NetworkEquipment':
          $array = array();
-         //$array[0] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['state'][0];
+         //$array[0] = __('Monitoring', 'monitoring')."-".$LANG['state'][0];
          if ($_GET['id'] > 0) {
-            $array[2] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['service'][0];
+            $array[2] = __('Monitoring', 'monitoring')."-".__('Resources', 'monitoring');
          }
          return $array;
          break;
       
       case 'User':
          $array = array();
-         //$array[0] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['state'][0];
+         //$array[0] = __('Monitoring', 'monitoring')."-".$LANG['state'][0];
          if ($_GET['id'] > 0) {
-            $array[1] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['contact'][0];
+            $array[1] = __('Monitoring', 'monitoring')."-".__('Contact', 'monitoring');
          }
          return $array;
          break;
@@ -116,7 +116,7 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
          $array = array();
          if ($_GET['id'] > 0) {
             if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
-               $array[0] = $LANG['plugin_monitoring']['businessrule'][12];
+               $array[0] = __('Groups', 'monitoring');
             }
          }
          return $array;
@@ -125,7 +125,7 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
       case 'Entity':
          $array = array();
          if (PluginMonitoringProfile::haveRight("config", 'r')) {
-            $array[0] = $LANG['plugin_monitoring']['title'][0];
+            $array[0] = __('Monitoring', 'monitoring');
          }
          return $array;
          break;
@@ -133,14 +133,14 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
       case 'Central':
          $array = array();
          if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
-            $array[0] = $LANG['plugin_monitoring']['title'][0]."-".$LANG['plugin_monitoring']['servicescatalog'][0];
+            $array[0] = __('Monitoring', 'monitoring')."-".__('Services catalog', 'monitoring');
          }
          if (PluginMonitoringProfile::haveRight("viewshomepage", 'r')) {
             $pmDisplayview = new PluginMonitoringDisplayview();
             $i = 5;
             $a_views = $pmDisplayview->getViews(1);
             foreach ($a_views as $name) {
-               $array[$i] = $LANG['plugin_monitoring']['title'][0]."-".$name;
+               $array[$i] = __('Monitoring', 'monitoring')."-".$name;
                $i++;
             }
          }
@@ -150,7 +150,7 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
       case 'Profile':
          $array = array();
          if ($_GET['id'] > 0) {
-            $array[0] = $LANG['plugin_monitoring']['title'][0];
+            $array[0] = __('Monitoring', 'monitoring');
          }
          return $array;
          break;
@@ -343,7 +343,7 @@ function plugin_monitoring_MassiveActions($type) {
    switch ($type) {
       case "Computer":
          return array (
-            "plugin_monitoring_activatehosts" => $LANG['plugin_monitoring']['host'][18]
+            "plugin_monitoring_activatehosts" => __('Add these hosts to monitoring', 'monitoring')
          );
          break;
    }
@@ -512,11 +512,11 @@ function plugin_monitoring_registerMethods() {
 function plugin_monitoring_getDropdown(){
    global $LANG;
 
-   return array('PluginMonitoringServicescatalog'     => $LANG['plugin_monitoring']['servicescatalog'][0],
-                'PluginMonitoringCheck'               => $LANG['plugin_monitoring']['check'][0],
-                'PluginMonitoringCommand'             => $LANG['plugin_monitoring']['command'][0],
-                'PluginMonitoringComponentscatalog'   => $LANG['plugin_monitoring']['componentscatalog'][0],
-                'PluginMonitoringComponent'           => $LANG['plugin_monitoring']['component'][0]);
+   return array('PluginMonitoringServicescatalog'     => __('Services catalog', 'monitoring'),
+                'PluginMonitoringCheck'               => __('Check definition', 'monitoring'),
+                'PluginMonitoringCommand'             => __('Commands', 'monitoring'),
+                'PluginMonitoringComponentscatalog'   => __('Components catalog', 'monitoring'),
+                'PluginMonitoringComponent'           => __('Components', 'monitoring'));
 }
 
 function plugin_monitoring_searchOptionsValues($item) {

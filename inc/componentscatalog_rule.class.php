@@ -184,7 +184,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
 
       echo "<tr>";
       echo "<th>";
-      echo $LANG['plugin_monitoring']['host'][20];
+      echo __('Preview', 'monitoring');
       echo "</th>";
       echo "</tr>";
       

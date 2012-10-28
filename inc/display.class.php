@@ -54,13 +54,13 @@ class PluginMonitoringDisplay extends CommonDBTM {
       
       $ong = array();
       if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
-         $ong[1] = $LANG['plugin_monitoring']['servicescatalog'][0];
+         $ong[1] = __('Services catalog', 'monitoring');
       }
       if (PluginMonitoringProfile::haveRight("componentscatalog", 'r')) {
-         $ong[2] = $LANG['plugin_monitoring']['componentscatalog'][0];
+         $ong[2] = __('Components catalog', 'monitoring');
       }
-      $ong[3] = $LANG['plugin_monitoring']['service'][21];
-      $ong[4] = $LANG['plugin_monitoring']['dependency'][0];
+      $ong[3] = __('All resources', 'monitoring');
+      $ong[4] = __('Dependencies;', 'monitoring');
       if (PluginMonitoringProfile::haveRight("view", 'r')) {
          $i = 5;
          $a_views = $pmDisplayview->getViews();
@@ -359,7 +359,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo $LANG['state'][6]." - ".$LANG['common'][16];
       echo "</th>";
       echo "<th>";
-      echo $LANG['plugin_monitoring']['component'][0];
+      echo __('Components', 'monitoring');
       echo "</th>";
       echo "<th>";
       echo $LANG['state'][0];
@@ -368,7 +368,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo $LANG['stats'][7];
       echo "</th>";
       echo "<th>";
-      echo $LANG['plugin_monitoring']['service'][18];
+      echo __('Last check', 'monitoring');
       echo "</th>";
       echo "<th>";
       echo $LANG['rulesengine'][82];
@@ -421,7 +421,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
             echo "</td>";
 
          } else {
-            echo "<td>".$LANG['plugin_monitoring']['service'][0]."</td>";
+            echo "<td>".__('Resources', 'monitoring')."</td>";
          }
       }
       $pMonitoringComponent->getFromDB($data['plugin_monitoring_components_id']);
@@ -483,7 +483,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
 //      $globalserv_state['green_soft'] = 0;
 //      $tooltip = "<table class='tab_cadrehov' width='300'>";
 //      $tooltip .= "<tr class='tab_bg_1'>
-//         <td width='200'><strong>".$LANG['plugin_monitoring']['host'][8]."</strong> :</td><td>
+//         <td width='200'><strong>".__('Host', 'monitoring')."</strong> :</td><td>
 //         <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/></td></tr>";
 //      foreach ($a_serv as $sdata) {
 ////         $stateserv = self::getState($sdata['state'], $data['state_type']);
@@ -853,9 +853,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<th style='background-color:transparent;'>";
          if ($type == 'Ressources') {
             echo "<a href='".$critical_link.">".
-                    "<font color='black' style='font-size: 12px;font-weight: bold;'>".$LANG['plugin_monitoring']['display'][2]."</font></a>";
+                    "<font color='black' style='font-size: 12px;font-weight: bold;'>".__('Critical', 'monitoring')."</font></a>";
          } else {
-            echo $LANG['plugin_monitoring']['display'][2];
+            echo __('Critical', 'monitoring');
          }
          echo "</td>";
          echo "</tr>";
@@ -887,9 +887,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<th style='background-color:transparent;'>";
          if ($type == 'Ressources') {
             echo "<a href='".$warning_link.">".
-                    "<font color='black' style='font-size: 12px;font-weight: bold;'>".$LANG['plugin_monitoring']['display'][3]."</font></a>";
+                    "<font color='black' style='font-size: 12px;font-weight: bold;'>".__('Warning', 'monitoring')."</font></a>";
          } else {
-            echo $LANG['plugin_monitoring']['display'][3];
+            echo __('Warning', 'monitoring');
          }
          echo "</td>";
          echo "</tr>";
@@ -921,9 +921,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<th style='background-color:transparent;'>";
          if ($type == 'Ressources') {
             echo "<a href='".$ok_link.">".
-                    "<font color='black' style='font-size: 12px;font-weight: bold;'>".$LANG['plugin_monitoring']['display'][4]."</font></a>";
+                    "<font color='black' style='font-size: 12px;font-weight: bold;'>".__('OK', 'monitoring')."</font></a>";
          } else {
-            echo $LANG['plugin_monitoring']['display'][4];
+            echo __('OK', 'monitoring');
          }
          echo "</td>";
          echo "</tr>";
@@ -966,7 +966,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<table width='100%'>";
          echo "<tr>";
          echo "<td align='right'>";
-         echo $LANG['plugin_monitoring']['display'][1]." : ";
+         echo __('Page refresh (in seconds)', 'monitoring')." : ";
          echo "&nbsp;";
          Dropdown::showInteger("_refresh", $_SESSION['glpi_plugin_monitoring']['_refresh'], 30, 1000, 10);
          echo "&nbsp;";

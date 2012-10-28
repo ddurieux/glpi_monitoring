@@ -55,7 +55,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['plugin_monitoring']['componentscatalog'][0];
+      return __('Components catalog', 'monitoring');
    }
 
 
@@ -78,11 +78,11 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $ong = array();
       
       if ($_GET['id'] > 0) {
-         $ong[1] = $LANG['plugin_monitoring']['component'][0];
-         $ong[2] = $LANG['plugin_monitoring']['component'][3];
+         $ong[1] = __('Components', 'monitoring');
+         $ong[2] = __('Static hosts', 'monitoring');
          $ong[3] = $LANG['rulesengine'][17];
-         $ong[4] = $LANG['plugin_monitoring']['component'][4];
-         $ong[5] = $LANG['plugin_monitoring']['contact'][20];
+         $ong[4] = __('Dynamic hosts', 'monitoring');
+         $ong[5] = __('Contacts', 'monitoring');
       }
       
       return $ong;
@@ -221,7 +221,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       }
       $input .= '<tr class="tab_bg_1">';
       $input .= '<td>';
-      $input .= $LANG['plugin_monitoring']['service'][0]."&nbsp;:";
+      $input .= __('Resources', 'monitoring')."&nbsp;:";
       $input .= '</td>';
       $input .= '<th align="center" height="40" width="50%">';
       $input .= $nb_ressources;

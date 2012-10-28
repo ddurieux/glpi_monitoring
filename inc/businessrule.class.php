@@ -77,15 +77,15 @@ return;
       
       $first_operator = array();
       $first_operator['or'] = "------";
-      $first_operator['2 of:'] = $LANG['plugin_monitoring']['businessrule'][2];
-      $first_operator['3 of:'] = $LANG['plugin_monitoring']['businessrule'][3];
-      $first_operator['4 of:'] = $LANG['plugin_monitoring']['businessrule'][4];
-      $first_operator['5 of:'] = $LANG['plugin_monitoring']['businessrule'][5];
-      $first_operator['6 of:'] = $LANG['plugin_monitoring']['businessrule'][6];
-      $first_operator['7 of:'] = $LANG['plugin_monitoring']['businessrule'][7];
-      $first_operator['8 of:'] = $LANG['plugin_monitoring']['businessrule'][8];
-      $first_operator['9 of:'] = $LANG['plugin_monitoring']['businessrule'][9];
-      $first_operator['10 of:'] = $LANG['plugin_monitoring']['businessrule'][10];
+      $first_operator['2 of:'] = __('2 of', 'monitoring');
+      $first_operator['3 of:'] = __('3 of', 'monitoring');
+      $first_operator['4 of:'] = __('4 of', 'monitoring');
+      $first_operator['5 of:'] = __('5 of', 'monitoring');
+      $first_operator['6 of:'] = __('6 of', 'monitoring');
+      $first_operator['7 of:'] = __('7 of', 'monitoring');
+      $first_operator['8 of:'] = __('8 of', 'monitoring');
+      $first_operator['9 of:'] = __('9 of', 'monitoring');
+      $first_operator['10 of:'] = __('10 of', 'monitoring');
       
       $operator = array();
       $operator['and'] = $LANG['choice'][3];
@@ -227,7 +227,7 @@ return;
 //      
 //         echo "<table class='tab_cadre' width='600'>";
 //         echo "<tr class='tab_bg_1'>";
-//         echo "<th>".$LANG['plugin_monitoring']['service'][2]."&nbsp;:</th>";
+//         echo "<th>".__('Add a resource', 'monitoring')."&nbsp;:</th>";
 //         echo "</tr>";
 //         echo "<tr class='tab_bg_1'>";
 //         echo "<td>";
@@ -243,7 +243,7 @@ return;
 //         echo "<table class='tab_cadre' width='600'>";
 //         echo "<tr class='tab_bg_1'>";
 //         echo "<th></th>";
-//         echo "<th>".$LANG['plugin_monitoring']['service'][0]."</th>";
+//         echo "<th>".__('Resources', 'monitoring')."</th>";
 //         echo "</tr>";
 //         $a_services = $this->find("`plugin_monitoring_businessrulegroups_id`='".$data['id']."'");
 //         foreach ($a_services as $gdata) {
@@ -276,13 +276,13 @@ return;
       echo "<th>";
       echo "</th>";
       echo "<th>";
-      echo $LANG['plugin_monitoring']['businessrule'][11];
+      echo __('Group', 'monitoring');
       echo "</th>";
       echo "<th>";
       echo $LANG['rulesengine'][9];
       echo "</th>";
       echo "<th>";
-      echo $LANG['plugin_monitoring']['service'][20];
+      echo __('Resource', 'monitoring');
       echo "</th>";
       echo "</tr>";
       

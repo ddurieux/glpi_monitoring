@@ -50,7 +50,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['plugin_monitoring']['businessrule'][11];
+      return __('Group', 'monitoring');
    }
    
 
@@ -89,7 +89,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
       echo "</td>";
       if ($items_id!='') {
          echo "<th colspan='2' width='60%'>"; 
-         echo $LANG['plugin_monitoring']['service'][0];      
+         echo __('Resources', 'monitoring');      
          echo "&nbsp;";
          echo "<img onClick=\"Ext.get('ressources".$rand."').setDisplayed('block')\"
                     title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
@@ -106,15 +106,15 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
       echo "<td valign='top'>";
       $first_operator = array();
       $first_operator['or'] = "or";
-      $first_operator['2 of:'] = $LANG['plugin_monitoring']['businessrule'][2];
-      $first_operator['3 of:'] = $LANG['plugin_monitoring']['businessrule'][3];
-      $first_operator['4 of:'] = $LANG['plugin_monitoring']['businessrule'][4];
-      $first_operator['5 of:'] = $LANG['plugin_monitoring']['businessrule'][5];
-      $first_operator['6 of:'] = $LANG['plugin_monitoring']['businessrule'][6];
-      $first_operator['7 of:'] = $LANG['plugin_monitoring']['businessrule'][7];
-      $first_operator['8 of:'] = $LANG['plugin_monitoring']['businessrule'][8];
-      $first_operator['9 of:'] = $LANG['plugin_monitoring']['businessrule'][9];
-      $first_operator['10 of:'] = $LANG['plugin_monitoring']['businessrule'][10];
+      $first_operator['2 of:'] = __('2 of', 'monitoring');
+      $first_operator['3 of:'] = __('3 of', 'monitoring');
+      $first_operator['4 of:'] = __('4 of', 'monitoring');
+      $first_operator['5 of:'] = __('5 of', 'monitoring');
+      $first_operator['6 of:'] = __('6 of', 'monitoring');
+      $first_operator['7 of:'] = __('7 of', 'monitoring');
+      $first_operator['8 of:'] = __('8 of', 'monitoring');
+      $first_operator['9 of:'] = __('9 of', 'monitoring');
+      $first_operator['10 of:'] = __('10 of', 'monitoring');
       Dropdown::showFromArray('operator', $first_operator, array("value"=>$this->fields['operator']));
       echo "</td>";
       if ($items_id!='') {
@@ -167,7 +167,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
                // resource deleted
                echo "<tr class='tab_bg_1'>";
                echo "<td colspan='2' bgcolor='#ff0000'>";
-               echo $LANG['plugin_monitoring']['service'][23];
+               echo __('Resource deleted', 'monitoring');
                echo "</td>";
                echo "<td>";
                echo "<input type='submit' name='deletebusinessrules-".$gdata['id']."' value=\"".$LANG['buttons'][53]."\" class='submit'>";

@@ -135,18 +135,18 @@ class PluginMonitoringProfile extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr>";
-      echo "<th colspan='4'>".$LANG['plugin_monitoring']['title'][0]." :</th>";
+      echo "<th colspan='4'>".__('Monitoring', 'monitoring')." :</th>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
-      echo $LANG['plugin_monitoring']['display'][0]."&nbsp;:";
+      echo __('Dashboard', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       Profile::dropdownNoneReadWrite("dashboard", $this->fields["dashboard"], 1, 1, 1);
       echo "</td>";
       echo "<td>";
-      echo $LANG['plugin_monitoring']['servicescatalog'][0]."&nbsp;:";
+      echo __('Services catalog', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       Profile::dropdownNoneReadWrite("servicescatalog", $this->fields["servicescatalog"], 1, 1, 1);
@@ -155,13 +155,13 @@ class PluginMonitoringProfile extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
-      echo $LANG['plugin_monitoring']['displayview'][0]."&nbsp;:";
+      echo __('Views', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       Profile::dropdownNoneReadWrite("view", $this->fields["view"], 1, 1, 1);
       echo "</td>";
       echo "<td>";
-      echo $LANG['plugin_monitoring']['componentscatalog'][0]."&nbsp;:";
+      echo __('Components catalog', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       Profile::dropdownNoneReadWrite("componentscatalog", $this->fields["componentscatalog"], 1, 1, 1);
@@ -170,13 +170,13 @@ class PluginMonitoringProfile extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
-      echo $LANG['plugin_monitoring']['displayview'][4]."&nbsp;:";
+      echo __('Views in GLPI home page', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       Profile::dropdownNoneReadWrite("viewshomepage", $this->fields["viewshomepage"], 1, 1, 0);
       echo "</td>";
       echo "<td>";
-      echo $LANG['plugin_monitoring']['weathermap'][0]."&nbsp;:";
+      echo __('Weathermap', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       Profile::dropdownNoneReadWrite("weathermap", $this->fields["weathermap"], 1, 1, 1);
@@ -185,13 +185,13 @@ class PluginMonitoringProfile extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
-      echo $LANG['plugin_monitoring']['component'][0]."&nbsp;:";
+      echo __('Components', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       Profile::dropdownNoneReadWrite("component", $this->fields["component"], 1, 1, 1);
       echo "</td>";
       echo "<td>";
-      echo $LANG['plugin_monitoring']['command'][0]."&nbsp;:";
+      echo __('Commands', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       Profile::dropdownNoneReadWrite("command", $this->fields["command"], 1, 1, 1);
@@ -207,7 +207,7 @@ class PluginMonitoringProfile extends CommonDBTM {
       Profile::dropdownNoneReadWrite("config", $this->fields["config"], 1, 1, 1);
       echo "</td>";
       echo "<td>";
-      echo $LANG['plugin_monitoring']['check'][0]."&nbsp;:";
+      echo __('Check definition', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       Profile::dropdownNoneReadWrite("check", $this->fields["check"], 1, 1, 1);

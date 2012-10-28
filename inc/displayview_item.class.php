@@ -56,7 +56,7 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['plugin_monitoring']['displayview'][0];
+      return __('Views', 'monitoring');
    }
 
 
@@ -249,14 +249,14 @@ Ext.onReady(function() {
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
       echo "<input type='hidden' name='plugin_monitoring_displayviews_id' value='".$displayviews_id."' />";
-      echo $LANG['plugin_monitoring']['displayview'][3]." :</td>";
+      echo __('Element to display', 'monitoring')." :</td>";
       echo "<td>";
       $elements = array();
       $elements['NULL'] = Dropdown::EMPTY_VALUE;
-      $elements['PluginMonitoringServicescatalog'] = $LANG['plugin_monitoring']['businessrule'][0];
-      $elements['PluginMonitoringComponentscatalog'] = $LANG['plugin_monitoring']['componentscatalog'][0];
-      $elements['PluginMonitoringService'] = $LANG['plugin_monitoring']['service'][0];
-      $elements['PluginMonitoringWeathermap'] = $LANG['plugin_monitoring']['weathermap'][0];
+      $elements['PluginMonitoringServicescatalog'] = __('Business rules', 'monitoring');
+      $elements['PluginMonitoringComponentscatalog'] = __('Components catalog', 'monitoring');
+      $elements['PluginMonitoringService'] = __('Resources', 'monitoring');
+      $elements['PluginMonitoringWeathermap'] = __('Weathermap', 'monitoring');
       $rand = Dropdown::showFromArray('itemtype', $elements, array('value'=>$this->fields['itemtype']));
       
       $params = array('itemtype'        => '__VALUE__',

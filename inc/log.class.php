@@ -56,7 +56,7 @@ class PluginMonitoringLog extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['plugin_monitoring']['log'][0];
+      return __('Logs', 'monitoring');
    }
 
 

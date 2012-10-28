@@ -50,7 +50,7 @@ class PluginMonitoringContact_Item extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['plugin_monitoring']['contact'][20];
+      return __('Contacts', 'monitoring');
    }
 
 
@@ -83,7 +83,7 @@ class PluginMonitoringContact_Item extends CommonDBTM {
 
       echo "<tr>";
       echo "<th>";
-      echo $LANG['plugin_monitoring']['contact'][20];
+      echo __('Contacts', 'monitoring');
       echo "</th>";
       echo "</tr>";
       

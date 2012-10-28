@@ -48,9 +48,9 @@ require_once GLPI_ROOT."/inc/includes.php";
 
 Session::checkCentralAccess();
 
-Html::header($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plugins",
+Html::header(__('Monitoring', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
              "monitoring", "display");
-//Html::popHeader($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"]);
+//Html::popHeader(__('Monitoring', 'monitoring'), $_SERVER["PHP_SELF"]);
 
 if (isset($_POST['sessionupdate'])) {
    $_SESSION['glpi_plugin_monitoring']['_refresh'] = $_POST['_refresh'];

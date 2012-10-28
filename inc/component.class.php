@@ -55,7 +55,7 @@ class PluginMonitoringComponent extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['plugin_monitoring']['component'][0];
+      return __('Components', 'monitoring');
    }
    
    
@@ -88,7 +88,7 @@ class PluginMonitoringComponent extends CommonDBTM {
 
       $tab = array();
     
-      $tab['common'] = $LANG['plugin_monitoring']['component'][0];
+      $tab['common'] = __('Components', 'monitoring');
 
 		$tab[1]['table'] = $this->getTable();
 		$tab[1]['field'] = 'name';
@@ -165,7 +165,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       Html::autocompletionTextField($this, 'name', array('value' => $objectName));      
       echo "</td>";
       // * checks
-      echo "<td>".$LANG['plugin_monitoring']['check'][0]."<font class='red'>*</font>&nbsp;:</td>";
+      echo "<td>".__('Check definition', 'monitoring')."<font class='red'>*</font>&nbsp;:</td>";
       echo "<td>";
       Dropdown::show("PluginMonitoringCheck", 
                         array('name'=>'plugin_monitoring_checks_id',
@@ -187,7 +187,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "</td>";
       // * active check
       echo "<td>";
-      echo $LANG['plugin_monitoring']['host'][5]."<font class='red'>*</font>&nbsp;:";
+      echo __('Active checks', 'monitoring')."<font class='red'>*</font>&nbsp;:";
       echo "</td>";
       echo "<td>";
       echo Dropdown::showYesNo("active_checks_enabled", $this->fields['active_checks_enabled']);
@@ -197,7 +197,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       // * command
       echo "<tr>";
       echo "<td>";
-      echo $LANG['plugin_monitoring']['service'][5]."<font class='red'>*</font>&nbsp;:";
+      echo __('Command', 'monitoring')."<font class='red'>*</font>&nbsp;:";
       echo "</td>";
       echo "<td>";
       $pMonitoringCommand->getFromDB($this->fields['plugin_monitoring_commands_id']);
@@ -208,7 +208,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "</td>";
       // * passive check
       echo "<td>";
-      echo $LANG['plugin_monitoring']['service'][7]."<font class='red'>*</font>&nbsp;:";
+      echo __('Passive check', 'monitoring')."<font class='red'>*</font>&nbsp;:";
       echo "</td>";
       echo "<td>";
       echo Dropdown::showYesNo("passive_checks_enabled", $this->fields['passive_checks_enabled']);
@@ -217,7 +217,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       
       echo "<tr>";
       echo "<td>";
-      echo $LANG['plugin_monitoring']['service'][12]."&nbsp;:";
+      echo __('Template (for graphs generation)', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       $a_templates = array();
@@ -238,7 +238,7 @@ class PluginMonitoringComponent extends CommonDBTM {
                               array('value'=>$this->fields['graph_template']));
       echo "</td>";
       // * calendar
-      echo "<td>".$LANG['plugin_monitoring']['host'][9]."<font class='red'>*</font>&nbsp;:</td>";
+      echo "<td>".__('Check period', 'monitoring')."<font class='red'>*</font>&nbsp;:</td>";
       echo "<td>";
       dropdown::show("Calendar", array('name'=>'calendars_id',
                                  'value'=>$this->fields['calendars_id']));
@@ -246,13 +246,13 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "</tr>";
       
       echo "<tr>";
-      echo "<th colspan='4'>".$LANG['plugin_monitoring']['service'][8]."</th>";
+      echo "<th colspan='4'>".__('Remote check', 'monitoring')."</th>";
       echo "</tr>";
       
       echo "<tr>";
       // * remotesystem
       echo "<td>";
-      echo $LANG['plugin_monitoring']['service'][9]."&nbsp;:";
+      echo __('Utility used for remote check', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       $input = array();
@@ -266,7 +266,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "</td>";      
       // * is_argument
       echo "<td>";
-      echo $LANG['plugin_monitoring']['service'][10]."&nbsp;:";
+      echo __('Use arguments (NRPE only)', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       Dropdown::showYesNo("is_arguments", $this->fields['is_arguments']);
@@ -276,7 +276,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "<tr>";
       // alias command
       echo "<td>";
-      echo $LANG['plugin_monitoring']['service'][11]."&nbsp;:";
+      echo __('Alias command if required (NRPE only)', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       echo "<input type='text' name='alias_command' value='".$this->fields['alias_command']."' />";
@@ -305,7 +305,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       if (count($a_displayarg) > 0) {
          $a_argtext = importArrayFromDB($pMonitoringCommand->fields['arguments']);
          echo "<tr>";
-         echo "<th colspan='4'>".$LANG['plugin_monitoring']['service'][4]."&nbsp;</th>";
+         echo "<th colspan='4'>".__('Arguments', 'monitoring')."&nbsp;</th>";
          echo "</tr>";
           
          foreach ($a_displayarg as $key=>$value) {
@@ -315,7 +315,7 @@ class PluginMonitoringComponent extends CommonDBTM {
                     AND $a_argtext[$key] != '') {
                echo nl2br($a_argtext[$key])."&nbsp;:";
             } else {
-               echo $LANG['plugin_monitoring']['service'][14]." (".$key.")&nbsp;:";
+               echo __('Argument', 'monitoring')." (".$key.")&nbsp;:";
             }
             echo "</td>";
             echo "<td>";
@@ -327,18 +327,18 @@ class PluginMonitoringComponent extends CommonDBTM {
       }
       
       echo "<tr>";
-      echo "<th colspan='4'>".$LANG['plugin_monitoring']['weathermap'][0]."&nbsp;</th>";
+      echo "<th colspan='4'>".__('Weathermap', 'monitoring')."&nbsp;</th>";
       echo "</tr>";
       
       echo "<tr>";
       echo "<td>";
-      echo $LANG['plugin_monitoring']['weathermap'][1]."&nbsp;:";
+      echo __('Use this component for Weathermap', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       Dropdown::showYesNo("is_weathermap", $this->fields['is_weathermap']);
       echo "</td>";
       echo "<td>";
-      echo $LANG['plugin_monitoring']['weathermap'][2]."&nbsp;:";
+      echo __('Regex', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       echo "<input type='text' name='weathermap_regex' value='".$this->fields['weathermap_regex']."' />";

@@ -1,0 +1,509 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-10-28 10:36+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: hook.php:101 hook.php:110 hook.php:128 hook.php:136 hook.php:143
+#: hook.php:153 index.php:48 front/businessrule.form.php:49
+#: front/businessrulegroup.form.php:49 front/check.form.php:48
+#: front/check.php:51 front/command.form.php:48 front/command.php:51
+#: front/component.form.php:48 front/component.php:48
+#: front/componentscatalog.form.php:48 front/componentscatalog.php:48
+#: front/componentscatalog_rule.form.php:48 front/config.form.php:49
+#: front/contact.form.php:49 front/contacttemplate.form.php:49
+#: front/contacttemplate.php:48 front/display.form.php:51 front/display.php:51
+#: front/displayview.form.php:48 front/displayview.php:48
+#: front/displayview_item.form.php:48 front/entity.form.php:48
+#: front/host.form.php:49 front/host_contact.form.php:49
+#: front/host_host.form.php:49 front/hostaddress.form.php:49
+#: front/hostconfig.form.php:49 front/hostgroup.form.php:49 front/menu.php:51
+#: front/rrdtemplate.form.php:51 front/rrdtemplate.php:51
+#: front/service.form.php:49 front/servicedef.form.php:49
+#: front/servicescatalog.form.php:50 front/servicescatalog.form.php:55
+#: front/servicescatalog.php:48 front/weathermap.form.php:48
+#: front/weathermap.php:48 front/weathermaplink.form.php:48
+#: front/weathermapnode.form.php:48 inc/profile.class.php:138
+#: locales/de_DE.php:174 locales/fr_FR.php:174
+msgid "Monitoring"
+msgstr "Monitoring"
+
+#: front/component.form.php:62 front/component.form.php:80
+msgid "Fields with asterisk are required"
+msgstr "Fields with asterisk are required"
+
+#: front/menu.php:61 inc/profile.class.php:143
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: front/menu.php:72 inc/display.class.php:57 inc/profile.class.php:149
+#: inc/servicescatalog.class.php:58
+msgid "Services catalog"
+msgstr "Services catalog"
+
+#: front/menu.php:78 inc/component.class.php:330
+#: inc/displayview_item.class.php:259 inc/profile.class.php:179
+#: inc/weathermap.class.php:53 inc/weathermap.class.php:75
+msgid "Weathermap"
+msgstr "Weathermap"
+
+#: front/menu.php:84 inc/displayview.class.php:59 inc/displayview.class.php:81
+#: inc/displayview_item.class.php:59 inc/profile.class.php:158
+msgid "Views"
+msgstr "Views"
+
+#: front/menu.php:95 inc/componentscatalog.class.php:58
+#: inc/display.class.php:60 inc/displayview.class.php:153
+#: inc/displayview_item.class.php:257 inc/profile.class.php:164
+msgid "Components catalog"
+msgstr "Components catalog"
+
+#: front/menu.php:107 inc/component.class.php:58 inc/component.class.php:91
+#: inc/componentscatalog.class.php:81
+#: inc/componentscatalog_component.class.php:53 inc/display.class.php:362
+#: inc/profile.class.php:188 inc/service.class.php:197
+msgid "Components"
+msgstr "Components"
+
+#: front/menu.php:113 inc/contacttemplate.class.php:59
+msgid "Contact templates"
+msgstr "Contact templates"
+
+#: front/menu.php:119 inc/realm.class.php:55
+msgid "Reamls"
+msgstr "Reamls"
+
+#: front/menu.php:127 inc/command.class.php:273 inc/command.class.php:295
+#: inc/profile.class.php:194
+msgid "Commands"
+msgstr "Commands"
+
+#: front/menu.php:133 inc/check.class.php:86 inc/check.class.php:108
+#: inc/component.class.php:168 inc/componentscatalog_component.class.php:100
+#: inc/hostconfig.class.php:207 inc/profile.class.php:210
+#: inc/service.class.php:354 inc/servicedef.class.php:189
+#: inc/servicescatalog.class.php:93
+msgid "Check definition"
+msgstr "Check definition"
+
+#: front/menu.php:145 inc/rrdtool.class.php:258 inc/rrdtool.class.php:308
+msgid "RRDtool templates"
+msgstr "RRDtool templates"
+
+#: inc/businessrule.class.php:80 inc/businessrulegroup.class.php:109
+msgid "2 of"
+msgstr "2 of"
+
+#: inc/businessrule.class.php:81 inc/businessrulegroup.class.php:110
+msgid "3 of"
+msgstr "3 of"
+
+#: inc/businessrule.class.php:82 inc/businessrulegroup.class.php:111
+msgid "4 of"
+msgstr "4 of"
+
+#: inc/businessrule.class.php:83 inc/businessrulegroup.class.php:112
+msgid "5 of"
+msgstr "5 of"
+
+#: inc/businessrule.class.php:84 inc/businessrulegroup.class.php:113
+msgid "6 of"
+msgstr "6 of"
+
+#: inc/businessrule.class.php:85 inc/businessrulegroup.class.php:114
+msgid "7 of"
+msgstr "7 of"
+
+#: inc/businessrule.class.php:86 inc/businessrulegroup.class.php:115
+msgid "8 of"
+msgstr "8 of"
+
+#: inc/businessrule.class.php:87 inc/businessrulegroup.class.php:116
+msgid "9 of"
+msgstr "9 of"
+
+#: inc/businessrule.class.php:88 inc/businessrulegroup.class.php:117
+msgid "10 of"
+msgstr "10 of"
+
+#: inc/businessrule.class.php:279 inc/businessrulegroup.class.php:53
+msgid "Group"
+msgstr "Group"
+
+#: inc/businessrule.class.php:285
+msgid "Resource"
+msgstr "Resource"
+
+#: inc/businessrulegroup.class.php:92 inc/componentscatalog.class.php:224
+#: inc/display.class.php:424 inc/displayview.class.php:154
+#: inc/displayview_item.class.php:258 inc/service.class.php:53
+#: inc/service.class.php:169 inc/servicedef.class.php:90
+msgid "Resources"
+msgstr "Resources"
+
+#: inc/businessrulegroup.class.php:170
+msgid "Resource deleted"
+msgstr "Resource deleted"
+
+#: inc/canvas.class.php:329 inc/display.class.php:63
+msgid "Dependencies;"
+msgstr "Dependencies;"
+
+#: inc/check.class.php:134 inc/check.class.php:173
+msgid "Max check attempts (number of retries)"
+msgstr "Max check attempts (number of retries)"
+
+#: inc/check.class.php:135 inc/check.class.php:180
+msgid "Time in minutes between 2 checks"
+msgstr "Time in minutes between 2 checks"
+
+#: inc/check.class.php:136 inc/check.class.php:184
+msgid "Time in minutes between 2 retries"
+msgstr "Time in minutes between 2 retries"
+
+#: inc/command.class.php:350 inc/componentscatalog_component.class.php:99
+msgid "Command name"
+msgstr "Command name"
+
+#: inc/command.class.php:357
+msgid "Command line"
+msgstr "Command line"
+
+#: inc/command.class.php:364
+msgid "Arguments description"
+msgstr "Arguments description"
+
+#: inc/component.class.php:190
+msgid "Active checks"
+msgstr "Active checks"
+
+#: inc/component.class.php:200 inc/hostconfig.class.php:188
+#: inc/service.class.php:334
+msgid "Command"
+msgstr "Command"
+
+#: inc/component.class.php:211 inc/service.class.php:382
+msgid "Passive check"
+msgstr "Passive check"
+
+#: inc/component.class.php:220 inc/service.class.php:458
+msgid "Template (for graphs generation)"
+msgstr "Template (for graphs generation)"
+
+#: inc/component.class.php:241 inc/componentscatalog_component.class.php:101
+#: inc/hostconfig.class.php:273 inc/service.class.php:392
+#: inc/servicedef.class.php:227 inc/servicescatalog.class.php:106
+msgid "Check period"
+msgstr "Check period"
+
+#: inc/component.class.php:249 inc/componentscatalog_component.class.php:102
+#: inc/service.class.php:409
+msgid "Remote check"
+msgstr "Remote check"
+
+#: inc/component.class.php:255 inc/service.class.php:415
+msgid "Utility used for remote check"
+msgstr "Utility used for remote check"
+
+#: inc/component.class.php:269 inc/service.class.php:433
+msgid "Use arguments (NRPE only)"
+msgstr "Use arguments (NRPE only)"
+
+#: inc/component.class.php:279 inc/service.class.php:447
+msgid "Alias command if required (NRPE only)"
+msgstr "Alias command if required (NRPE only)"
+
+#: inc/component.class.php:308
+msgid "Arguments"
+msgstr "Arguments"
+
+#: inc/component.class.php:318 inc/service.class.php:506
+msgid "Argument"
+msgstr "Argument"
+
+#: inc/component.class.php:335
+msgid "Use this component for Weathermap"
+msgstr "Use this component for Weathermap"
+
+#: inc/component.class.php:341
+msgid "Regex"
+msgstr "Regex"
+
+#: inc/componentscatalog.class.php:82
+msgid "Static hosts"
+msgstr "Static hosts"
+
+#: inc/componentscatalog.class.php:84
+msgid "Dynamic hosts"
+msgstr "Dynamic hosts"
+
+#: inc/componentscatalog.class.php:85 inc/contact_item.class.php:53
+#: inc/contact_item.class.php:86 inc/host_contact.class.php:75
+msgid "Contacts"
+msgstr "Contacts"
+
+#: inc/componentscatalog_component.class.php:88
+msgid "Associated components"
+msgstr "Associated components"
+
+#: inc/componentscatalog_component.class.php:169
+#: inc/componentscatalog_host.class.php:163
+msgid "Add a new component"
+msgstr "Add a new component"
+
+#: inc/componentscatalog_host.class.php:53 inc/contacttemplate.class.php:123
+#: locales/de_DE.php:118 locales/fr_FR.php:118
+msgid "Hosts"
+msgstr "Hosts"
+
+#: inc/componentscatalog_rule.class.php:187
+msgid "Preview"
+msgstr "Preview"
+
+#: inc/config.class.php:59
+msgid "Configuration"
+msgstr "Configuration"
+
+#: inc/config.class.php:122
+msgid "Path of RRDtool"
+msgstr "Path of RRDtool"
+
+#: inc/config.class.php:127
+msgid "Timezones (for graph)"
+msgstr "Timezones (for graph)"
+
+#: inc/config.class.php:184
+msgid "Logs retention (in days)"
+msgstr "Logs retention (in days)"
+
+#: inc/contact.class.php:59
+msgid "Contact"
+msgstr "Contact"
+
+#: inc/contact.class.php:125
+msgid "Manage this user for monitoring system"
+msgstr "Manage this user for monitoring system"
+
+#: inc/contacttemplate.class.php:116
+msgid "Default template"
+msgstr "Default template"
+
+#: inc/contacttemplate.class.php:124
+msgid "Services"
+msgstr "Services"
+
+#: inc/contacttemplate.class.php:128 inc/contacttemplate.class.php:132
+msgid "Notifications"
+msgstr "Notifications"
+
+#: inc/contacttemplate.class.php:139 inc/contacttemplate.class.php:144
+msgid "Notification command"
+msgstr "Notification command"
+
+#: inc/contacttemplate.class.php:152 inc/contacttemplate.class.php:157
+msgid "Period"
+msgstr "Period"
+
+#: inc/contacttemplate.class.php:165
+msgid "Notify on DOWN host states"
+msgstr "Notify on DOWN host states"
+
+#: inc/contacttemplate.class.php:169
+msgid "Notify on WARNING service states"
+msgstr "Notify on WARNING service states"
+
+#: inc/contacttemplate.class.php:176
+msgid "Notify on UNREACHABLE host states"
+msgstr "Notify on UNREACHABLE host states"
+
+#: inc/contacttemplate.class.php:180
+msgid "Notify on UNKNOWN service states"
+msgstr "Notify on UNKNOWN service states"
+
+#: inc/contacttemplate.class.php:187
+msgid "Notify on host recoveries (UP states)"
+msgstr "Notify on host recoveries (UP states)"
+
+#: inc/contacttemplate.class.php:191
+msgid "Notify on CRITICAL service states"
+msgstr "Notify on CRITICAL service states"
+
+#: inc/contacttemplate.class.php:198
+msgid "Notify when the host starts and stops flapping"
+msgstr "Notify when the host starts and stops flapping"
+
+#: inc/contacttemplate.class.php:202
+msgid "Notify on service recoveries (OK states)"
+msgstr "Notify on service recoveries (OK states)"
+
+#: inc/contacttemplate.class.php:209
+msgid ""
+"Send notifications when host or service scheduled downtime starts and ends"
+msgstr "Send notifications when host or service scheduled downtime starts and ends"
+
+#: inc/contacttemplate.class.php:213
+msgid "Notify when the service starts and stops flapping"
+msgstr "Notify when the service starts and stops flapping"
+
+#: inc/contacttemplate.class.php:220
+msgid "The contact will not receive any type of host notifications"
+msgstr "The contact will not receive any type of host notifications"
+
+#: inc/contacttemplate.class.php:224
+msgid "The contact will not receive any type of service notifications"
+msgstr "The contact will not receive any type of service notifications"
+
+#: inc/display.class.php:62
+msgid "All resources"
+msgstr "All resources"
+
+#: inc/display.class.php:371 inc/service.class.php:94
+#: inc/service.class.php:209
+msgid "Last check"
+msgstr "Last check"
+
+#: inc/display.class.php:856 inc/display.class.php:858
+msgid "Critical"
+msgstr "Critical"
+
+#: inc/display.class.php:890 inc/display.class.php:892
+msgid "Warning"
+msgstr "Warning"
+
+#: inc/display.class.php:924 inc/display.class.php:926
+msgid "OK"
+msgstr "OK"
+
+#: inc/display.class.php:969
+msgid "Page refresh (in seconds)"
+msgstr "Page refresh (in seconds)"
+
+#: inc/displayview.class.php:148
+msgid "Header counter (critical/warning/ok)"
+msgstr "Header counter (critical/warning/ok)"
+
+#: inc/displayview.class.php:152 inc/displayview_item.class.php:256
+#: inc/servicedef.class.php:113
+msgid "Business rules"
+msgstr "Business rules"
+
+#: inc/displayview.class.php:159
+msgid "Display in GLPI home page"
+msgstr "Display in GLPI home page"
+
+#: inc/displayview_item.class.php:252
+msgid "Element to display"
+msgstr "Element to display"
+
+#: inc/entity.class.php:107
+msgid "Set tag to link entity with a specific Shinken server"
+msgstr "Set tag to link entity with a specific Shinken server"
+
+#: inc/entity.class.php:112
+msgid "Tag"
+msgstr "Tag"
+
+#: inc/hostconfig.class.php:182
+msgid "Hosts configuration"
+msgstr "Hosts configuration"
+
+#: inc/hostconfig.class.php:256
+msgid "Reaml"
+msgstr "Reaml"
+
+#: inc/hostconfig.class.php:330
+msgid "Shinken Server"
+msgstr "Shinken Server"
+
+#: inc/log.class.php:59
+msgid "Logs"
+msgstr "Logs"
+
+#: inc/message.class.php:122
+msgid "Services catalog with resources not available"
+msgstr "Services catalog with resources not available"
+
+#: inc/message.class.php:154
+msgid "The configuration has changed"
+msgstr "The configuration has changed"
+
+#: inc/message.class.php:156
+msgid "resources added"
+msgstr "resources added"
+
+#: inc/message.class.php:162
+msgid "resources deleted"
+msgstr "resources deleted"
+
+#: inc/message.class.php:165
+msgid "Restart Shinken to reload this new configuration"
+msgstr "Restart Shinken to reload this new configuration"
+
+#: inc/message.class.php:199
+msgid "No events found in last minutes, so Shinken seems stopped"
+msgstr "No events found in last minutes, so Shinken seems stopped"
+
+#: inc/profile.class.php:173
+msgid "Views in GLPI home page"
+msgstr "Views in GLPI home page"
+
+#: inc/rrdtool.class.php:308
+msgid "Find files on"
+msgstr "Find files on"
+
+#: inc/rrdtool.class.php:315
+msgid "Upload perfdata and graph files"
+msgstr "Upload perfdata and graph files"
+
+#: inc/service.class.php:99
+msgid "State type"
+msgstr "State type"
+
+#: inc/service.class.php:109
+msgid "Component"
+msgstr "Component"
+
+#: inc/service.class.php:368
+msgid "Active check"
+msgstr "Active check"
+
+#: inc/service.class.php:496
+msgid "Argument ([text:text] is used to get values dynamically)"
+msgstr "Argument ([text:text] is used to get values dynamically)"
+
+#: inc/servicescatalog.class.php:286
+msgid "Degraded mode"
+msgstr "Degraded mode"
+
+#: inc/weathermap.class.php:76 inc/weathermap.class.php:295
+msgid "Nodes and links"
+msgstr "Nodes and links"
+
+#: inc/weathermap.class.php:248
+msgid "Width"
+msgstr "Width"
+
+#: inc/weathermap.class.php:256
+msgid "Background image"
+msgstr "Background image"
+
+#: inc/weathermap.class.php:268
+msgid "Height"
+msgstr "Height"
+
+#: inc/weathermap.class.php:368
+msgid "Node"
+msgstr "Node"

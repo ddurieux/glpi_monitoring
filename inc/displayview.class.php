@@ -56,7 +56,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['plugin_monitoring']['displayview'][0];
+      return __('Views', 'monitoring');
    }
 
 
@@ -78,7 +78,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
 
       $tab = array();
     
-      $tab['common'] = $LANG['plugin_monitoring']['displayview'][0];
+      $tab['common'] = __('Views', 'monitoring');
 
 		$tab[1]['table'] = $this->getTable();
 		$tab[1]['field'] = 'name';
@@ -145,18 +145,18 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       echo "</tr>";
       
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['plugin_monitoring']['displayview'][1]."&nbsp;:</td>";
+      echo "<td>".__('Header counter (critical/warning/ok)', 'monitoring')."&nbsp;:</td>";
       echo "<td>";
       $elements = array();
       $elements['NULL'] = Dropdown::EMPTY_VALUE;
-      $elements['Businessrules'] = $LANG['plugin_monitoring']['businessrule'][0];
-      $elements['Componentscatalog'] = $LANG['plugin_monitoring']['componentscatalog'][0];
-      $elements['Ressources'] = $LANG['plugin_monitoring']['service'][0];
+      $elements['Businessrules'] = __('Business rules', 'monitoring');
+      $elements['Componentscatalog'] = __('Components catalog', 'monitoring');
+      $elements['Ressources'] = __('Resources', 'monitoring');
       Dropdown::showFromArray('counter', $elements, array('value'=>$this->fields['counter']));
       echo "</td>";
       
       echo "<td>";
-      echo $LANG['plugin_monitoring']['displayview'][2];
+      echo __('Display in GLPI home page', 'monitoring');
       echo "</td>";
       echo "<td>";
       Dropdown::showYesNo("in_central", $this->fields['in_central']);

@@ -104,12 +104,12 @@ class PluginMonitoringEntity extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2'>";
-      echo $LANG['plugin_monitoring']['entity'][1];
+      echo __('Set tag to link entity with a specific Shinken server', 'monitoring');
       echo "</th>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['plugin_monitoring']['entity'][0]." :</td>";
+      echo "<td>".__('Tag', 'monitoring')." :</td>";
       echo "<td>";
       echo "<input type='text' name='tag' value='".$this->fields["tag"]."' size='30'/>";
       

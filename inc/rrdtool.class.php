@@ -255,7 +255,7 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2'>";
-      echo $LANG['plugin_monitoring']['rrdtemplates'][0];
+      echo __('RRDtool templates', 'monitoring');
       echo "</th>";
       echo "</tr>";
       
@@ -305,14 +305,14 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2'>";
-      echo $LANG['plugin_monitoring']['rrdtemplates'][0]." (".$LANG['plugin_monitoring']['rrdtemplates'][2]."
+      echo __('RRDtool templates', 'monitoring')." (".__('Find files on', 'monitoring')."
           <a href='https://github.com/rrdtooltemplates/rrdtool_templates'>github</a>)";
       echo "</th>";
       echo "</tr>";
       
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
-      echo $LANG['plugin_monitoring']['rrdtemplates'][1]."&nbsp;:";
+      echo __('Upload perfdata and graph files', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       echo "<input type='file' name='filename' value='' size='39'>";

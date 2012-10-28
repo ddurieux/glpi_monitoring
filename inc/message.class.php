@@ -119,7 +119,7 @@ class PluginMonitoringMessage extends CommonDBTM {
          $a_catalogs[$data['id']] = $pmServicescatalog->getLink();
       }
       if (count($a_catalogs) > 0) {
-         $input = $LANG['plugin_monitoring']['servicescatalog'][2]." : <br/>";
+         $input = __('Services catalog with resources not available', 'monitoring')." : <br/>";
          $input .= implode(" - ", $a_catalogs);
       }
       return $input;
@@ -151,18 +151,18 @@ class PluginMonitoringMessage extends CommonDBTM {
          AND `action`='add'");
       
       if ($nb_delete > 0 OR $nb_add > 0) {
-         $input .= $LANG['plugin_monitoring']['log'][1]."<br/>";
+         $input .= __('The configuration has changed', 'monitoring')."<br/>";
          if ($nb_add > 0) {
-            $input .= $nb_add." ".$LANG['plugin_monitoring']['log'][2];
+            $input .= $nb_add." ".__('resources added', 'monitoring');
          }
          if ($nb_delete > 0) {
             if ($nb_add > 0) {
                $input .= " / ";
             }
-            $input .= $nb_delete." ".$LANG['plugin_monitoring']['log'][3];
+            $input .= $nb_delete." ".__('resources deleted', 'monitoring');
          }
          $input .= "<br/>";
-         $input .= $LANG['plugin_monitoring']['log'][4];
+         $input .= __('Restart Shinken to reload this new configuration', 'monitoring');
       }
       return $input;
    }
@@ -196,7 +196,7 @@ class PluginMonitoringMessage extends CommonDBTM {
                LIMIT 1";
          $result = $DB->query($query);
          if ($DB->numrows($result) == '0') {
-            $input = $LANG['plugin_monitoring']['config'][4];
+            $input = __('No events found in last minutes, so Shinken seems stopped', 'monitoring');
          }      
       }
       return $input;

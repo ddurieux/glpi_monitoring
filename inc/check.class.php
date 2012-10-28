@@ -83,7 +83,7 @@ class PluginMonitoringCheck extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['plugin_monitoring']['check'][0];
+      return __('Check definition', 'monitoring');
    }
 
 
@@ -105,7 +105,7 @@ class PluginMonitoringCheck extends CommonDBTM {
 
       $tab = array();
     
-      $tab['common'] = $LANG['plugin_monitoring']['check'][0];
+      $tab['common'] = __('Check definition', 'monitoring');
 
 		$tab[1]['table'] = $this->getTable();
 		$tab[1]['field'] = 'name';
@@ -131,9 +131,9 @@ class PluginMonitoringCheck extends CommonDBTM {
    function getComments() {
       global $LANG;
 
-      $comment = $LANG['plugin_monitoring']['check'][1].' : '.$this->fields['max_check_attempts'].'<br/>
-         '.$LANG['plugin_monitoring']['check'][2].' : '.$this->fields['check_interval'].' minutes<br/>
-         '.$LANG['plugin_monitoring']['check'][3].' : '.$this->fields['retry_interval'].' minutes';
+      $comment = __('Max check attempts (number of retries)', 'monitoring').' : '.$this->fields['max_check_attempts'].'<br/>
+         '.__('Time in minutes between 2 checks', 'monitoring').' : '.$this->fields['check_interval'].' minutes<br/>
+         '.__('Time in minutes between 2 retries', 'monitoring').' : '.$this->fields['retry_interval'].' minutes';
       
       if (!empty($comment)) {
          return Html::showToolTip($comment, array('display' => false));
@@ -170,18 +170,18 @@ class PluginMonitoringCheck extends CommonDBTM {
       echo "<td align='center'>";
       echo "<input type='text' name='name' value='".$this->fields["name"]."' size='30'/>";
       echo "</td>";
-      echo "<td>".$LANG['plugin_monitoring']['check'][1]."&nbsp;:</td>";
+      echo "<td>".__('Max check attempts (number of retries)', 'monitoring')."&nbsp;:</td>";
       echo "<td align='center'>";
       Dropdown::showInteger("max_check_attempts", $this->fields["max_check_attempts"], 1, 100);
       echo "</td>";
       echo "</tr>";
       
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['plugin_monitoring']['check'][2]."&nbsp;:</td>";
+      echo "<td>".__('Time in minutes between 2 checks', 'monitoring')."&nbsp;:</td>";
       echo "<td align='center'>";
       Dropdown::showInteger("check_interval", $this->fields["check_interval"], 1, 100);
       echo "</td>";
-      echo "<td>".$LANG['plugin_monitoring']['check'][3]."&nbsp;:</td>";
+      echo "<td>".__('Time in minutes between 2 retries', 'monitoring')."&nbsp;:</td>";
       echo "<td align='center'>";
       Dropdown::showInteger("retry_interval", $this->fields["retry_interval"], 1, 100);
       echo "</td>";

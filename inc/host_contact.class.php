@@ -72,7 +72,7 @@ class PluginMonitoringHost_Contact extends CommonDBRelation {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='3'>";
-      echo $LANG['plugin_monitoring']['contact'][20];
+      echo __('Contacts', 'monitoring');
       echo "</th>";
       echo "</tr>";
 

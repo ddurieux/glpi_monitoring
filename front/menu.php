@@ -48,7 +48,7 @@ include (GLPI_ROOT."/inc/includes.php");
 
 Session::checkCentralAccess();
 
-Html::header($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plugins",
+Html::header(__('Monitoring', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
              "monitoring", "menu");
 
 $pmMessage = new PluginMonitoringMessage();
@@ -58,7 +58,7 @@ echo "<table class='tab_cadre' width='950'>";
 
 echo "<tr class='tab_bg_1'>";
 echo "<th height='80'>";
-echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php'>".$LANG['plugin_monitoring']['display'][0]."</a>";
+echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php'>".__('Dashboard', 'monitoring')."</a>";
 echo "</th>";
 echo "</tr>";
 echo "</table>";
@@ -69,19 +69,19 @@ echo "<table class='tab_cadre' width='950'>";
 echo "<tr class='tab_bg_1'>";
 echo "<th align='center' height='50' width='33%'>";
 if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicescatalog.php'>".$LANG['plugin_monitoring']['servicescatalog'][0]."</a>";
+   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicescatalog.php'>".__('Services catalog', 'monitoring')."</a>";
 }
 echo "</th>";
 
 echo "<th width='33%'>";
 if (PluginMonitoringProfile::haveRight("weathermap", 'r')) {
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/weathermap.php'>".$LANG['plugin_monitoring']['weathermap'][0]."</a>";
+   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/weathermap.php'>".__('Weathermap', 'monitoring')."</a>";
 }
 echo "</th>";
 
 echo "<th>";
 if (PluginMonitoringProfile::haveRight("view", 'r')) {
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/displayview.php'>".$LANG['plugin_monitoring']['displayview'][0]."</a>";
+   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/displayview.php'>".__('Views', 'monitoring')."</a>";
 }
 echo "</th>";
 echo "</tr>";
@@ -92,7 +92,7 @@ echo "<br/>";
 echo "<table class='tab_cadre' width='950'>";
 echo "<th height='40'>";
 if (PluginMonitoringProfile::haveRight("componentscatalog", 'r')) {
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.php'>".$LANG['plugin_monitoring']['componentscatalog'][0]."</a>";
+   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.php'>".__('Components catalog', 'monitoring')."</a>";
 }
 echo "</th>";
 echo "</tr>";
@@ -104,19 +104,19 @@ echo "<table class='tab_cadre' width='950'>";
 echo "<tr class='tab_bg_1'>";
 echo "<th colspan='4' height='30' width='75%'>";
 if (PluginMonitoringProfile::haveRight("component", 'r')) {
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/component.php'>".$LANG['plugin_monitoring']['component'][0]."</a>";
+   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/component.php'>".__('Components', 'monitoring')."</a>";
 }
 echo "</th>";
 
 echo "<th rowspan='2'>";
 if (PluginMonitoringProfile::haveRight("config", 'r')) {
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/contacttemplate.php'>".$LANG['plugin_monitoring']['contacttemplate'][0]."</a>";
+   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/contacttemplate.php'>".__('Contact templates', 'monitoring')."</a>";
 }
 echo "</th>";
 
 echo "<th rowspan='2'>";
 if (PluginMonitoringProfile::haveRight("config", 'r')) {
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/realm.php'>".$LANG['plugin_monitoring']['realms'][0]."</a>";
+   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/realm.php'>".__('Reamls', 'monitoring')."</a>";
 }
 echo "</th>";
 echo "</tr>";
@@ -124,13 +124,13 @@ echo "</tr>";
 echo "<tr class='tab_bg_1'>";
 echo "<th width='18%' height='25'>";
 if (PluginMonitoringProfile::haveRight("command", 'r')) {
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/command.php'>".$LANG['plugin_monitoring']['command'][0]."</a>";
+   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/command.php'>".__('Commands', 'monitoring')."</a>";
 }
 echo "</th>";
 
 echo "<th width='18%'>";
 if (PluginMonitoringProfile::haveRight("check", 'r')) {
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/check.php'>".$LANG['plugin_monitoring']['check'][0]."</a>";
+   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/check.php'>".__('Check definition', 'monitoring')."</a>";
 }
 echo "</th>";
 
@@ -142,7 +142,7 @@ echo "</th>";
 
 echo "<th width='18%'>";
 if (PluginMonitoringProfile::haveRight("config", 'r')) {
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/rrdtemplate.php'>".$LANG['plugin_monitoring']['rrdtemplates'][0]."</a>";
+   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/rrdtemplate.php'>".__('RRDtool templates', 'monitoring')."</a>";
 }
 echo "</th>";
 

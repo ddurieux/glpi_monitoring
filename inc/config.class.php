@@ -56,7 +56,7 @@ class PluginMonitoringConfig extends CommonDBTM {
    static function getTypeName($nb=0) {
       global $LANG;
 
-      return $LANG['plugin_monitoring']['config'][1];
+      return __('Configuration', 'monitoring');
    }
 
 
@@ -119,12 +119,12 @@ class PluginMonitoringConfig extends CommonDBTM {
       $this->getFromDB($items_id);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['plugin_monitoring']['config'][2]."&nbsp;:</td>";
+      echo "<td>".__('Path of RRDtool', 'monitoring')."&nbsp;:</td>";
       echo "<td align='center'>";
       echo "<input name='rrdtoolpath' type='text' value='".$this->fields['rrdtoolpath']."' />";
       echo "</td>";
       echo "<td rowspan='2'>";
-      echo $LANG['plugin_monitoring']['config'][0]."&nbsp:";
+      echo __('Timezones (for graph)', 'monitoring')."&nbsp:";
       echo "</td>";
       echo "<td rowspan='2'>";
          $a_timezones = $this->getTimezones();
@@ -181,7 +181,7 @@ class PluginMonitoringConfig extends CommonDBTM {
       echo "</tr>";
       
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['plugin_monitoring']['config'][3]."&nbsp;:</td>";
+      echo "<td>".__('Logs retention (in days)', 'monitoring')."&nbsp;:</td>";
       echo "<td align='center'>";
       Dropdown::showInteger("logretention", $this->fields['logretention'], 0, 1000);
       echo "</td>";
