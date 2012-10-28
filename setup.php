@@ -202,7 +202,7 @@ function plugin_version_monitoring() {
 function plugin_monitoring_check_prerequisites() {
 
    if (version_compare(GLPI_VERSION,'0.84','lt') || version_compare(GLPI_VERSION,'0.85','ge')) {
-      echo "error";
+      echo "error, not compatible with this GLPI version";
    } else {
       return true;
    }
