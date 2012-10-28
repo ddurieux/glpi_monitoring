@@ -47,11 +47,13 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringProfile extends CommonDBTM {
 
-   function canView() {
+   static function canView() {
       return haveRight('profile','r');
    }
 
-   function canCreate() {
+   
+   
+   static function canCreate() {
       return haveRight('profile','w');
    }
 
@@ -62,7 +64,7 @@ class PluginMonitoringProfile extends CommonDBTM {
     *
     * @return name of the index field
    **/
-   function getIndexName() {
+   static function getIndexName() {
       return "profiles_id";
    }
 

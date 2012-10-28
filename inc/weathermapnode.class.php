@@ -47,26 +47,14 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringWeathermapnode extends CommonDBTM {
    
 
-   function canCreate() {
+   static function canCreate() {
       return PluginMonitoringProfile::haveRight("weathermap", 'w');
    }
 
 
    
-   function canView() {
+   static function canView() {
       return PluginMonitoringProfile::haveRight("weathermap", 'r');
-   }
-
-
-   
-   function canCancel() {
-      return PluginMonitoringProfile::haveRight("weathermap", 'w');
-   }
-
-
-   
-   function canUndo() {
-      return PluginMonitoringProfile::haveRight("weathermap", 'w');
    }
 
    

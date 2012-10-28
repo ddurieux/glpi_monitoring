@@ -47,32 +47,14 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringBusinessrule extends CommonDBTM {
    
 
-   function canCreate() {
+   static function canCreate() {
       return PluginMonitoringProfile::haveRight("servicescatalog", 'w');
    }
 
 
    
-   function canView() {
+   static function canView() {
       return PluginMonitoringProfile::haveRight("servicescatalog", 'r');
-   }
-
-
-   
-   function canCancel() {
-      return haveRight('computer', 'w');
-   }
-
-
-   
-   function canUndo() {
-      return haveRight('computer', 'w');
-   }
-
-
-   
-   function canValidate() {
-      return true;
    }
 
    

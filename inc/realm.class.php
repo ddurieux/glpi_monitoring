@@ -55,11 +55,15 @@ class PluginMonitoringRealm extends CommonDropdown {
       return $LANG['plugin_monitoring']['realms'][0];
    }
 
-   function canCreate() {
+   
+   
+   static function canCreate() {
       return PluginMonitoringProfile::haveRight("config", 'w');
    }
 
-   function canView() {
+   
+   
+   static function canView() {
       return PluginMonitoringProfile::haveRight("config", 'r');
    }
    

@@ -54,26 +54,14 @@ class PluginMonitoringContact_Item extends CommonDBTM {
    }
 
 
-   function canCreate() {
+   static function canCreate() {
       return PluginMonitoringProfile::haveRight("config", 'w');
    }
 
 
    
-   function canView() {
+   static function canView() {
       return PluginMonitoringProfile::haveRight("config", 'r');
-   }
-
-
-   
-   function canCancel() {
-      return PluginMonitoringProfile::haveRight("config", 'w');
-   }
-
-
-   
-   function canUndo() {
-      return PluginMonitoringProfile::haveRight("config", 'w');
    }
 
    

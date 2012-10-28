@@ -275,26 +275,14 @@ class PluginMonitoringCommand extends CommonDBTM {
 
 
 
-   function canCreate() {
+   static function canCreate() {
       return PluginMonitoringProfile::haveRight("command", 'w');
    }
 
 
    
-   function canView() {
+   static function canView() {
       return PluginMonitoringProfile::haveRight("command", 'r');
-   }
-
-
-   
-   function canCancel() {
-      return PluginMonitoringProfile::haveRight("command", 'w');
-   }
-
-
-   
-   function canUndo() {
-      return PluginMonitoringProfile::haveRight("command", 'w');
    }
 
    

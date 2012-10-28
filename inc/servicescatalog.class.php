@@ -60,26 +60,14 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
 
 
 
-   function canCreate() {
+   static function canCreate() {
       return PluginMonitoringProfile::haveRight("servicescatalog", 'w');
    }
 
 
    
-   function canView() {
+   static function canView() {
       return PluginMonitoringProfile::haveRight("servicescatalog", 'r');
-   }
-
-
-   
-   function canCancel() {
-      return PluginMonitoringProfile::haveRight("servicescatalog", 'w');
-   }
-
-
-   
-   function canUndo() {
-      return PluginMonitoringProfile::haveRight("servicescatalog", 'w');
    }
 
    

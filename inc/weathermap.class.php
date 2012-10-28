@@ -53,26 +53,14 @@ class PluginMonitoringWeathermap extends CommonDBTM {
       return $LANG['plugin_monitoring']['weathermap'][0];
    }
    
-   function canCreate() {
+   static function canCreate() {
       return PluginMonitoringProfile::haveRight("weathermap", 'w');
    }
 
 
    
-   function canView() {
+   static function canView() {
       return PluginMonitoringProfile::haveRight("weathermap", 'r');
-   }
-
-
-   
-   function canCancel() {
-      return PluginMonitoringProfile::haveRight("weathermap", 'w');
-   }
-
-
-   
-   function canUndo() {
-      return PluginMonitoringProfile::haveRight("weathermap", 'w');
    }
 
 

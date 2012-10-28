@@ -79,35 +79,17 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
 
 
 
-   function canCreate() {
+   static function canCreate() {
       return haveRight('computer', 'w');
    }
 
 
    
-   function canView() {
+   static function canView() {
       return haveRight('computer', 'r');
    }
 
 
-   
-   function canCancel() {
-      return haveRight('computer', 'w');
-   }
-
-
-   
-   function canUndo() {
-      return haveRight('computer', 'w');
-   }
-
-
-   
-   function canValidate() {
-      return true;
-   }
-
-   
 
    function getSearchOptions() {
       global $LANG;

@@ -60,26 +60,14 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
 
 
 
-   function canCreate() {
+   static function canCreate() {
       return PluginMonitoringProfile::haveRight("componentscatalog", 'w');
    }
 
 
    
-   function canView() {
+   static function canView() {
       return PluginMonitoringProfile::haveRight("componentscatalog", 'r');
-   }
-
-
-   
-   function canCancel() {
-      return PluginMonitoringProfile::haveRight("componentscatalog", 'w');
-   }
-
-
-   
-   function canUndo() {
-      return PluginMonitoringProfile::haveRight("componentscatalog", 'w');
    }
 
    
