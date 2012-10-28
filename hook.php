@@ -147,14 +147,6 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
          return $array;
          break;
          
-      case 'Profile':
-         $array = array();
-         if ($_GET['id'] > 0) {
-            $array[0] = __('Monitoring', 'monitoring');
-         }
-         return $array;
-         break;
-      
    }
 
    return false;
@@ -206,12 +198,6 @@ function plugin_headings_actions_monitoring($item) {
             $array[$i] = "plugin_headings_monitoring_dashboadview";
             $i++;
          }
-         return $array;
-         break;
-
-      case 'Profile':
-         $array = array();
-         $array[0] = "plugin_headings_monitoring_profile";
          return $array;
          break;
 
@@ -307,13 +293,6 @@ function plugin_headings_monitoring_dashboadview($item) {
       }
       $i++;
    }
-}
-
-
-
-function plugin_headings_monitoring_profile($item) {
-   $pmProfile = new PluginMonitoringProfile();
-   $pmProfile->showForm($item->getID());
 }
 
 

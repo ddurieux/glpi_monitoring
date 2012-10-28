@@ -104,6 +104,30 @@ class PluginMonitoringProfile extends CommonDBTM {
 
    
    
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
+      if (Session::haveRight('profile', "r")) {
+         if ($item->getID() > 0) {
+            return self::createTabEntry(__('Monitoring', 'monitoring'));
+         }
+      }
+      return '';
+   }
+
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getID() > 0) {
+         $pmProfile = new self();
+         $pmProfile->showForm($item->getID());
+      }
+
+      return true;
+   }
+
+   
+   
 
     /**
     * Show profile form
