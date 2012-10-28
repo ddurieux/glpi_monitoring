@@ -90,7 +90,7 @@ class PluginMonitoringComponent extends CommonDBTM {
 		$tab[1]['table'] = $this->getTable();
 		$tab[1]['field'] = 'name';
 		$tab[1]['linkfield'] = 'name';
-		$tab[1]['name'] = $LANG['common'][16];
+		$tab[1]['name'] = __('Name');
 		$tab[1]['datatype'] = 'itemlink';
 
       $tab[2]['table']         = $this->getTable();
@@ -153,7 +153,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       
       echo "<tr>";
       echo "<td>";
-      echo $LANG['common'][16]."<font class='red'>*</font>&nbsp;:";
+      echo __('Name')."<font class='red'>*</font>&nbsp;:";
       echo "</td>";
       echo "<td>";
       echo "<input type='hidden' name='is_template' value='1' />";

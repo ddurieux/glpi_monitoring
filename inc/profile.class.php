@@ -225,7 +225,7 @@ class PluginMonitoringProfile extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
-      echo $LANG['common'][12]."&nbsp;:";
+      echo __('Setup')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       Profile::dropdownNoneReadWrite("config", $this->fields["config"], 1, 1, 1);
@@ -242,7 +242,7 @@ class PluginMonitoringProfile extends CommonDBTM {
          echo "<tr>";
          echo "<th colspan='4'>";
          echo "<input type='hidden' name='profile_id' value='".$items_id."'/>";
-         echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\"".__('Save')."\" class='submit'>";
          echo "</td>";
          echo "</tr>";
          echo "</table>";

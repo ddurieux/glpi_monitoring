@@ -199,7 +199,7 @@ if ($item instanceof CommonTreeDropdown) {
       echo ">";
 
       if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
-         echo "<option class='tree' value='0'>--".$LANG['common'][11]."--</option>";
+         echo "<option class='tree' value='0'>--".__('Limited view')."--</option>";
       }
 
       $display_selected = true;
@@ -211,7 +211,7 @@ if ($item instanceof CommonTreeDropdown) {
                 && (($_POST["entity_restrict"]<=0 && in_array(0, $_SESSION['glpiactiveentities']))
                     || (is_array($_POST["entity_restrict"]) && in_array(0, $_POST["entity_restrict"])))) {
 
-               echo "<option class='tree' value='0'>".$LANG['entity'][2]."</option>";
+               echo "<option class='tree' value='0'>".__('Root entity')."</option>";
 
                // Entity=0 already add above
                if ($_POST['value']==0) {
@@ -450,7 +450,7 @@ if ($item instanceof CommonTreeDropdown) {
       echo ">";
 
       if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
-         echo "<option value='0'>--".$LANG['common'][11]."--</option>";
+         echo "<option value='0'>--".__('Limited view')."--</option>";
 
       } else if (!isset($_POST['display_emptychoice']) || $_POST['display_emptychoice']) {
          echo "<option value='0'>".$_POST["emptylabel"]."</option>";

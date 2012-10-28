@@ -136,7 +136,7 @@ echo "</th>";
 
 echo "<th width='18%'>";
 if (Session::haveRight('calendar', 'r')) {
-   echo "<a href='".$CFG_GLPI['root_doc']."/front/calendar.php'>".$LANG['buttons'][15]."</a>";
+   echo "<a href='".$CFG_GLPI['root_doc']."/front/calendar.php'>".__('Calendar')."</a>";
 }
 echo "</th>";
 

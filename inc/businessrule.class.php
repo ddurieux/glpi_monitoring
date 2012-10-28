@@ -88,8 +88,8 @@ return;
       $first_operator['10 of:'] = __('10 of', 'monitoring');
       
       $operator = array();
-      $operator['and'] = $LANG['choice'][3];
-      $operator['or']= $LANG['choice'][2];
+      $operator['and'] = __('and');
+      $operator['or']= __('or');
       
       echo "<form name='form' method='post' 
          action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/businessrule.form.php'>";
@@ -126,7 +126,7 @@ return;
             echo "<table class='tab_cadre'>";
             echo "<tr class='tab_bg_1'>";
             echo "<th>";
-            echo $LANG['choice'][3];
+            echo __('and');
             echo "</th>";
             echo "</tr>";
             echo "</table><br/>";
@@ -173,7 +173,7 @@ return;
          echo "<table class='tab_cadre'>";
          echo "<tr class='tab_bg_1'>";
          echo "<th>";
-         echo $LANG['choice'][3];
+         echo __('and');
          echo "</th>";
          echo "</tr>";
          echo "</table><br/>";
@@ -234,7 +234,7 @@ return;
 //         echo "<form name='form' method='post' action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/businessrule.form.php'>";
 //         echo "<input type='hidden' name='plugin_monitoring_businessrulegroups_id' value='".$data['id']."' />";
 //         self::dropdownService(0, array('name' => 'type'));         
-//         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+//         echo "<input type='submit' name='add' value=\"".__('add')."\" class='submit'>";
 //         echo "</form>";
 //         echo "</td>";
 //         echo "</tr>";

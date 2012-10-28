@@ -92,7 +92,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       echo "<tr>";
       echo "<th width='10'>&nbsp;</th>";
       echo "<th>".$LANG['common'][17]."</th>";
-      echo "<th>".$LANG['common'][16]."</th>";
+      echo "<th>".__('Name')."</th>";
       echo "</tr>";
       
       while ($data=$DB->fetch_array($result)) {
@@ -137,7 +137,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
-      echo $LANG['common'][16]."&nbsp;:";
+      echo __('Name')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       echo "<input type='text' name='name' value=''/>";

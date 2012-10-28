@@ -160,11 +160,11 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
          if ($first > 0) {
             echo "<li><a href='$cleantarget?id=$first$extraparamhtml'><img src='".
-                       $CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".$LANG['buttons'][55].
-                       "\" title=\"".$LANG['buttons'][55]."\"></a></li>";
+                       $CFG_GLPI["root_doc"]."/pics/first.png' alt=\"".__('First').
+                       "\" title=\"".__('First')."\"></a></li>";
          } else {
             echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/first_off.png' alt=\"".
-                       $LANG['buttons'][55]."\" title=\"".$LANG['buttons'][55]."\"></li>";
+                       __('First')."\" title=\"".__('First')."\"></li>";
          }
 
          if ($prev > 0) {
@@ -356,7 +356,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "</th>";
       
       echo "<th>";
-      echo $LANG['state'][6]." - ".$LANG['common'][16];
+      echo $LANG['state'][6]." - ".__('Name');
       echo "</th>";
       echo "<th>";
       echo __('Components', 'monitoring');
@@ -597,7 +597,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       Dropdown::showFromArray('plugin_monitoring_timezone', 
                               $a_timezones_allowed, 
                               array('value'=>$_SESSION['plugin_monitoring_timezone']));
-      echo "&nbsp;<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+      echo "&nbsp;<input type='submit' name='update' value=\"".__('Save')."\" class='submit'>";
       echo "</form>";
       echo "</th>";
       echo "</tr>";

@@ -93,7 +93,7 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
       
       echo "<tr>";
       echo "<th width='10'>&nbsp;</th>";
-      echo "<th>".$LANG['common'][16]."</th>";
+      echo "<th>".__('Name')."</th>";
       echo "<th>".__('Command name', 'monitoring')."</th>";
       echo "<th>".__('Check definition', 'monitoring')."</th>";      
       echo "<th>".__('Check period', 'monitoring')."</th>";

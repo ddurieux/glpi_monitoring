@@ -82,7 +82,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][16]." :</td>";
+      echo "<td>".__('Name')." :</td>";
       echo "<td>";
       echo "<input type='text' name='name' value='".$this->fields["name"]."' size='30'/>";
       echo "</td>";

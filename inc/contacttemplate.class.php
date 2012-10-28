@@ -104,7 +104,7 @@ class PluginMonitoringContacttemplate extends CommonDBTM {
       $this->getFromDB($items_id);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][16]."&nbsp;:</td>";
+      echo "<td>".__('Name')."&nbsp;:</td>";
       echo "<td align='center'>";
       
       $objectName = autoName($this->fields["name"], "name", false,

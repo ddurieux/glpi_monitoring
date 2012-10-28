@@ -345,7 +345,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
       }
       echo "<input type='hidden' name='itemtype' value='".$itemtype."'/>";
       echo "<input type='hidden' name='items_id' value='".$items_id."'/>";
-      echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+      echo "<input type='submit' name='update' value=\"".__('Save')."\" class='submit'>";
       echo "</td>";
       echo "</tr>";
       

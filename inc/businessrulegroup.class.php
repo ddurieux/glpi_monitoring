@@ -80,7 +80,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
       echo "<input type='hidden' name='plugin_monitoring_servicescatalogs_id' value='".$servicescatalogs_id."'/>";
-      echo $LANG['common'][16]."&nbsp;:";
+      echo __('Name')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       echo "<input type='text' name='name' value='".$this->fields["name"]."' size='30'/>";
@@ -90,7 +90,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
          echo __('Resources', 'monitoring');      
          echo "&nbsp;";
          echo "<img onClick=\"Ext.get('ressources".$rand."').setDisplayed('block')\"
-                    title=\"".$LANG['buttons'][8]."\" alt=\"".$LANG['buttons'][8]."\"
+                    title=\"".__('add')."\" alt=\"".__('add')."\"
                     class='pointer'  src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
       
          echo "</th>";
@@ -125,7 +125,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
             echo "<form name='form' method='post' action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/businessrule.form.php'>";
             echo "<input type='hidden' name='plugin_monitoring_businessrulegroups_id' value='".$items_id."' />";
             PluginMonitoringBusinessrule::dropdownService(0, array('name' => 'type'));         
-            echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+            echo "<input type='submit' name='add' value=\"".__('add')."\" class='submit'>";
             echo "</form>";
             echo "</td>";
             echo "</tr>";

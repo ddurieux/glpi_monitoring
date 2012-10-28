@@ -70,7 +70,7 @@ class PluginMonitoringService extends CommonDBTM {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
-      $tab[1]['name']          = $LANG['common'][16];
+      $tab[1]['name']          = __('Name');
       $tab[1]['datatype']      = 'itemlink';
       $tab[1]['itemlink_type'] = $this->getType();
       $tab[1]['massiveaction'] = false; // implicit key==1
@@ -108,17 +108,17 @@ class PluginMonitoringService extends CommonDBTM {
       
       $tab[20]['table'] = $this->getTable();
       $tab[20]['field'] = 'Computer';
-      $tab[20]['name']  = $LANG['common'][1]." > ".$LANG['help'][25];
+      $tab[20]['name']  = __('Item')." > ".__('Computer');
       $tab[20]['searchtype'] = 'equals';
       
       $tab[21]['table'] = $this->getTable();
       $tab[21]['field'] = 'Printer';
-      $tab[21]['name']  = $LANG['common'][1]." > ".$LANG['help'][27];
+      $tab[21]['name']  = __('Item')." > ".__('Printer');
       $tab[21]['searchtype'] = 'equals';
       
       $tab[22]['table'] = $this->getTable();
       $tab[22]['field'] = 'NetworkEquipment';
-      $tab[22]['name']  = $LANG['common'][1]." > ".$LANG['help'][26];
+      $tab[22]['name']  = __('Item')." > ".__('Network device');
       $tab[22]['searchtype'] = 'equals';
      
       return $tab;
@@ -226,7 +226,7 @@ class PluginMonitoringService extends CommonDBTM {
 
 //      echo "<tr class='tab_bg_1'>";
 //      echo "<td colspan='8' align='center'>";
-//      echo "<input type='submit' class='submit' name='update' value='".$LANG['buttons'][7]."'>";
+//      echo "<input type='submit' class='submit' name='update' value='".__('Save')."'>";
 //      echo "</td>";
 //      echo "</tr>";
       
@@ -268,7 +268,7 @@ class PluginMonitoringService extends CommonDBTM {
       if ($services_id!='') {
          echo "<input type='hidden' name='plugin_monitoring_services_id' value='".$services_id."' />";
       }
-      echo $LANG['common'][16]."&nbsp;:";
+      echo __('Name')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"),

@@ -91,7 +91,7 @@ class PluginMonitoringContact_Item extends CommonDBTM {
       
       echo "<tr>";
       echo "<th width='10'>&nbsp;</th>";
-      echo "<th>".$LANG['common'][35]." - ".$LANG['common'][16]."</th>";
+      echo "<th>".$LANG['common'][35]." - ".__('Name')."</th>";
       echo "<th colspan='2'></th>";
       echo "</tr>";
       
@@ -121,7 +121,7 @@ class PluginMonitoringContact_Item extends CommonDBTM {
       
       echo "<tr>";
       echo "<th width='10'>&nbsp;</th>";
-      echo "<th>".$LANG['common'][34]." - ".$LANG['common'][16]."</th>";
+      echo "<th>".$LANG['common'][34]." - ".__('Name')."</th>";
       echo "<th>".$LANG['setup'][14]."</th>";
       echo "<th>".$LANG['help'][35]."</th>";
       echo "</tr>";

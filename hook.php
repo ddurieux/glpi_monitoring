@@ -344,7 +344,7 @@ function plugin_monitoring_MassiveActionsDisplay($options=array()) {
                   $a_elements[$data['id']] = $data['template_name'];
                }
                $rand = Dropdown::showFromArray("template_id", $a_elements);
-               echo "<img alt='' title=\"".$LANG['buttons'][8]."\" src='".$CFG_GLPI["root_doc"].
+               echo "<img alt='' title=\"".__('add')."\" src='".$CFG_GLPI["root_doc"].
                      "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
                      onClick=\"var w = window.open('".$pmHost->getFormURL()."?withtemplate=1&popup=1&amp;rand=".
                      $rand."' ,'glpipopup', 'height=400, ".

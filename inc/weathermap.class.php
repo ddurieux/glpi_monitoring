@@ -234,7 +234,7 @@ echo "
 
       echo "<tr>";
       echo "<td>";
-      echo $LANG['common'][16]."&nbsp;:";
+      echo __('Name')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name", 1,
@@ -371,7 +371,7 @@ function point_it(event){
          
          echo "<tr>";
          echo "<td>";
-         echo $LANG['common'][16]."&nbsp;:";
+         echo __('Name')."&nbsp;:";
          echo "</td>";
          echo "<td>";
          echo "<input type='text' name='name' value='' />";     
@@ -380,7 +380,7 @@ function point_it(event){
          
          echo "<tr>";
          echo "<td align='center' colspan='2'>";
-         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\"".__('add')."\" class='submit'>";
          echo "</td>";
          echo "</tr>";
             
@@ -421,7 +421,7 @@ function point_it(event){
          
          echo "<tr>";
          echo "<td align='center' colspan='2'>";
-         echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+         echo "<input type='submit' name='update' value=\"".__('Save')."\" class='submit'>";
          echo "</td>";
          echo "</tr>";
          
@@ -460,7 +460,7 @@ function point_it(event){
          
          echo "<tr>";
          echo "<td align='center' colspan='2'>";
-         echo "<input type='submit' name='purge' value=\"".$LANG['buttons'][22]."\" class='submit'>";
+         echo "<input type='submit' name='purge' value=\"".__('Delete permanently')."\" class='submit'>";
          echo "</td>";
          echo "</tr>";
          
@@ -663,7 +663,7 @@ function point_it(event){
          
          echo "<tr>";
          echo "<td align='center' colspan='2'>";
-         echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\"".__('add')."\" class='submit'>";
          echo "</td>";
          echo "</tr>";
          
@@ -730,7 +730,7 @@ function point_it(event){
          
          echo "<tr>";
          echo "<td align='center' colspan='2'>";
-         echo "<input type='submit' name='purge' value=\"".$LANG['buttons'][22]."\" class='submit'>";
+         echo "<input type='submit' name='purge' value=\"".__('Delete permanently')."\" class='submit'>";
          echo "</td>";
          echo "</tr>";
       
