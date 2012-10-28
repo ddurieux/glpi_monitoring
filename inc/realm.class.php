@@ -49,7 +49,7 @@ class PluginMonitoringRealm extends CommonDropdown {
    public $first_level_menu  = "plugins";
    public $second_level_menu = "monitoring";
 
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
       return $LANG['plugin_monitoring']['realms'][0];

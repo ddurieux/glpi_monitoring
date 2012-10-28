@@ -267,7 +267,7 @@ class PluginMonitoringCommand extends CommonDBTM {
    *@return text name of this type by language of the user connected
    *
    **/
-   static function getTypeName() {
+   static function getTypeName($nb=0) {
       global $LANG;
 
       return $LANG['plugin_monitoring']['command'][0];
