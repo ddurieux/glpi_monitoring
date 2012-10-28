@@ -46,6 +46,8 @@ define ("PLUGIN_MONITORING_VERSION","0.80+1.3");
 function plugin_init_monitoring() {
    global $PLUGIN_HOOKS,$LANG;
    
+   $PLUGIN_HOOKS['csrf_compliant']['monitoring'] = true;
+   
    if (!strstr($_SERVER["PHP_SELF"], 'xmlrpc')) {
       echo "
        <!--[if IE]><script type='text/javascript' src='".GLPI_ROOT."/plugins/monitoring/lib/canvas/excanvas.js'></script><![endif]-->
@@ -199,7 +201,7 @@ function plugin_version_monitoring() {
 // Optional : check prerequisites before install : may print errors or add to message after redirect
 function plugin_monitoring_check_prerequisites() {
 
-   if (version_compare(GLPI_VERSION,'0.83','lt') || version_compare(GLPI_VERSION,'0.84','ge')) {
+   if (version_compare(GLPI_VERSION,'0.84','lt') || version_compare(GLPI_VERSION,'0.85','ge')) {
       echo "error";
    } else {
       return true;
