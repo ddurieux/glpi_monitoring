@@ -54,8 +54,6 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
    *
    **/
    static function getTypeName($nb=0) {
-      global $LANG;
-      
       return $LANG['rulesengine'][17];
    }
 
@@ -74,7 +72,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
 
 
    function showRules($componentscatalogs_id) {
-      global $DB,$LANG;
+      global $DB;
 
       $this->preaddRule($componentscatalogs_id);
 
@@ -119,7 +117,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
    
    
    function preaddRule($componentscatalogs_id) {
-      global $LANG,$CFG_GLPI,$DB;
+      global $CFG_GLPI,$DB;
       
       $a_usedItemtypes = array();
       $query = "SELECT * FROM `".$this->getTable()."`
@@ -162,7 +160,6 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
    
    
    function addRule() {
-      global $LANG;
       
 //      $param = array();
 //      if (isset($_SESSION['plugin_monitoring_rules'])) {
@@ -445,7 +442,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
     * Cloned Core function to display with our require.
     */
    function showGenericSearch($itemtype, $params) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
      
       if (!isset($_GET['id'])) {
          $this->getEmpty();

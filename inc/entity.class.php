@@ -55,8 +55,6 @@ class PluginMonitoringEntity extends CommonDBTM {
    *
    **/
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return "entity";
    }
 
@@ -84,7 +82,7 @@ class PluginMonitoringEntity extends CommonDBTM {
    *
    **/
    function showForm($items_id, $options=array()) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $DB,$CFG_GLPI;
 
       $a_entities = $this->find("`entities_id`='".$items_id."'", "", 1);
       if (count($a_entities) == '0') {

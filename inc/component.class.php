@@ -53,8 +53,6 @@ class PluginMonitoringComponent extends CommonDBTM {
    *
    **/
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return __('Components', 'monitoring');
    }
    
@@ -84,7 +82,6 @@ class PluginMonitoringComponent extends CommonDBTM {
    
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
     
@@ -107,7 +104,7 @@ class PluginMonitoringComponent extends CommonDBTM {
    
 
    function defineTabs($options=array()){
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
 
       $ong = array();
       
@@ -126,7 +123,7 @@ class PluginMonitoringComponent extends CommonDBTM {
    *
    **/
    function showForm($items_id, $options=array()) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $DB,$CFG_GLPI;
 
 
       $pMonitoringCommand = new PluginMonitoringCommand();

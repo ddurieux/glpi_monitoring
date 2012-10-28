@@ -48,8 +48,6 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
    
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return __('Hosts', 'monitoring');
    }
 
@@ -67,7 +65,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
    
    
    function showHosts($componentscatalogs_id, $static) {
-      global $DB,$LANG,$CFG_GLPI;
+      global $DB,$CFG_GLPI;
       
       if ($static == '1') {
          $this->addHost($componentscatalogs_id);
@@ -144,7 +142,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
    
    
    function addHost($componentscatalogs_id) {
-      global $DB,$LANG;
+      global $DB;
       
       $this->getEmpty();
       

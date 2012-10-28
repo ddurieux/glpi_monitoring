@@ -54,8 +54,6 @@ class PluginMonitoringContacttemplate extends CommonDBTM {
    *
    **/
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return __('Contact templates', 'monitoring');
    }
 
@@ -83,7 +81,7 @@ class PluginMonitoringContacttemplate extends CommonDBTM {
    *
    **/
    function showForm($items_id, $options=array()) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $DB,$CFG_GLPI;
 
       if ($items_id == '') {
          if (isset($_POST['id'])) {

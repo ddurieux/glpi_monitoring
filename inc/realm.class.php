@@ -50,8 +50,6 @@ class PluginMonitoringRealm extends CommonDropdown {
    public $second_level_menu = "monitoring";
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return __('Reamls', 'monitoring');
    }
 
@@ -70,8 +68,6 @@ class PluginMonitoringRealm extends CommonDropdown {
    
 //   
 //   function getSearchOptions() {
-//      global $LANG;
-//
 //      $tab = array();
 //
 //      $tab['common'] = $LANG['plugin_fusioninventory']['menu'][5];

@@ -48,8 +48,6 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
    
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return __('Components', 'monitoring');
    }
 
@@ -67,7 +65,7 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
    
    
    function showComponents($componentscatalogs_id) {
-      global $DB,$LANG,$CFG_GLPI;
+      global $DB,$CFG_GLPI;
 
       $this->addComponent($componentscatalogs_id);
       
@@ -148,7 +146,7 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
    
    
    function addComponent($componentscatalogs_id) {
-      global $DB,$LANG;
+      global $DB;
       
       $this->getEmpty();
       

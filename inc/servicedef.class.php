@@ -83,8 +83,6 @@ class PluginMonitoringServicedef extends CommonDBTM {
    
 
    function getSearchOptions() {
-      global $LANG;
-
       $tab = array();
     
       $tab['common'] = __('Resources', 'monitoring');
@@ -106,8 +104,6 @@ class PluginMonitoringServicedef extends CommonDBTM {
    
 
    function defineTabs($options=array()){
-      global $LANG;
-
       $ong = array();
 
       $ong[2] = __('Business rules', 'monitoring'); 
@@ -141,9 +137,6 @@ class PluginMonitoringServicedef extends CommonDBTM {
    *
    **/
    function showForm($items_id, $options=array()) {
-      global $LANG;
-
-
       $pMonitoringCommand = new PluginMonitoringCommand();
       
 

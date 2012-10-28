@@ -54,8 +54,6 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
    *
    **/
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return __('Views', 'monitoring');
    }
 
@@ -138,7 +136,7 @@ Ext.onReady(function() {
    
    
    function displayItem($data, $config) {
-      global $CFG_GLPI,$LANG;
+      global $CFG_GLPI;
 
       $itemtype = $data['itemtype'];
       $item = new $itemtype();
@@ -226,7 +224,7 @@ Ext.onReady(function() {
    
    
    function addItem($displayviews_id) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $DB,$CFG_GLPI;
 
       $this->getEmpty();
       

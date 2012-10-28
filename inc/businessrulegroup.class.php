@@ -48,8 +48,6 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
    
    
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return __('Group', 'monitoring');
    }
    
@@ -67,7 +65,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
    
    
    function showForm($items_id, $servicescatalogs_id, $options=array()) {
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
 
       if ($items_id!='') {
          $this->getFromDB($items_id);

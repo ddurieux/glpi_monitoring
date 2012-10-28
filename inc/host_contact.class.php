@@ -59,8 +59,6 @@ class PluginMonitoringHost_Contact extends CommonDBRelation {
     * $items_id id of the host PluginMonitoringHost
     */
    function manageContacts($items_id) {
-      global $LANG;
-
       $pmContact = new PluginMonitoringContact();
       $user = new User();
 

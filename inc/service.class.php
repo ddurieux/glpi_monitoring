@@ -48,8 +48,6 @@ class PluginMonitoringService extends CommonDBTM {
 
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return __('Resources', 'monitoring');
    }
    
@@ -67,8 +65,6 @@ class PluginMonitoringService extends CommonDBTM {
    
    
    function getSearchOptions() {
-      global $LANG;
-
       $tab = array();
       $tab['common'] = $LANG['common'][32];
 
@@ -150,7 +146,7 @@ class PluginMonitoringService extends CommonDBTM {
     *
     **/
    function listByHost($itemtype, $items_id) {
-      global $LANG,$CFG_GLPI,$DB;
+      global $CFG_GLPI,$DB;
 
       $pmComponentscatalog = new PluginMonitoringComponentscatalog();
       
@@ -242,8 +238,6 @@ class PluginMonitoringService extends CommonDBTM {
    
    
    function showForm($items_id, $options=array(), $services_id='') {
-      global $LANG;
-      
       $pMonitoringCommand = new PluginMonitoringCommand();
       $pMonitoringServicedef = new PluginMonitoringServicedef();
       
@@ -663,7 +657,7 @@ class PluginMonitoringService extends CommonDBTM {
 
    
    function showWidget($id, $time) {
-      global $LANG, $DB, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
       
       $pmRrdtool = new PluginMonitoringRrdtool();
       $pmComponent = new PluginMonitoringComponent();

@@ -48,8 +48,6 @@ class PluginMonitoringContact_Item extends CommonDBTM {
    
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return __('Contacts', 'monitoring');
    }
 
@@ -67,7 +65,7 @@ class PluginMonitoringContact_Item extends CommonDBTM {
    
    
    function showContacts($itemtype, $items_id) {
-      global $DB,$LANG,$CFG_GLPI;
+      global $DB,$CFG_GLPI;
 
       $this->addContact($itemtype, $items_id);
       
@@ -164,7 +162,7 @@ class PluginMonitoringContact_Item extends CommonDBTM {
    
    
    function addContact($itemtype, $items_id) {
-      global $DB,$LANG;
+      global $DB;
       
       $this->getEmpty();
       

@@ -54,8 +54,6 @@ class PluginMonitoringConfig extends CommonDBTM {
    *
    **/
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return __('Configuration', 'monitoring');
    }
 
@@ -101,7 +99,7 @@ class PluginMonitoringConfig extends CommonDBTM {
    *
    **/
    function showForm($items_id, $options=array()) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $DB,$CFG_GLPI;
 
       $options['candel'] = false;
 

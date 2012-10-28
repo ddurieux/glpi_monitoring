@@ -55,8 +55,6 @@ class PluginMonitoringHostaddress extends CommonDBTM {
    *
    **/
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return "Host address";
    }
 
@@ -84,7 +82,7 @@ class PluginMonitoringHostaddress extends CommonDBTM {
    *
    **/
    function showForm($items_id, $itemtype, $options=array()) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $DB,$CFG_GLPI;
 
       $query = "SELECT * FROM `".$this->getTable()."`
          WHERE `items_id`='".$items_id."'

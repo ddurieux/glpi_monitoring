@@ -48,8 +48,6 @@ class PluginMonitoringWeathermap extends CommonDBTM {
    
 
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return __('Weathermap', 'monitoring');
    }
    
@@ -66,8 +64,6 @@ class PluginMonitoringWeathermap extends CommonDBTM {
 
    
    function defineTabs($options=array()){
-      global $LANG;
-
       $ong = array();
       
       if (isset($_GET['id'])
@@ -224,7 +220,7 @@ echo "
    
    
    function showForm($items_id, $options=array()) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $DB,$CFG_GLPI;
 
       if ($items_id == '0') {
          $this->getEmpty();
@@ -281,7 +277,7 @@ echo "
    
    
    function configureNodesLinks($weathermaps_id) {
-      global $LANG,$DB,$CFG_GLPI;
+      global $DB,$CFG_GLPI;
       
       $networkPort = new NetworkPort();
       $pmWeathermapnode = new PluginMonitoringWeathermapnode();
@@ -782,7 +778,7 @@ function point_it(event){
    
    
    function showWidget($id) {
-      global $LANG, $DB, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
    
       $this->generateWeathermap($id);
       return '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/send.php?file=weathermap-'.$id.'.png"/>';

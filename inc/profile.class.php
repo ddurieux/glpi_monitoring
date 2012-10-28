@@ -138,7 +138,7 @@ class PluginMonitoringProfile extends CommonDBTM {
     * @return nothing
     **/
    function showForm($items_id) {
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
       
       if ($items_id > 0 
               AND $this->getFromDB($items_id)) {
@@ -147,10 +147,10 @@ class PluginMonitoringProfile extends CommonDBTM {
          $this->getEmpty();
       }
       
-      if (!haveRight("profile","r")) {
+      if (!Session::haveRight("profile","r")) {
          return false;
       }
-      if ($canedit=haveRight("profile","w")) {
+      if ($canedit=Session::haveRight("profile","w")) {
          echo "<form method='post' action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/profile.form.php'>";
          echo '<input type="hidden" name="profiles_id" value="'.$items_id.'"/>';
       }
@@ -348,7 +348,7 @@ class PluginMonitoringProfile extends CommonDBTM {
     * Add a message on update action
    **/
    function addMessageOnUpdateAction() {
-      global $CFG_GLPI, $LANG;
+      global $CFG_GLPI;
 
       $link = $this->getFormURL();
       if (!isset($link)) {

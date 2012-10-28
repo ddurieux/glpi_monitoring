@@ -53,8 +53,6 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    *
    **/
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return __('Services catalog', 'monitoring');
    }
 
@@ -73,8 +71,6 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    
    
    function showForm($items_id, $options=array()) {
-      global $LANG;
-
       if ($items_id!=''
               AND $items_id != '-1') {
          $this->getFromDB($items_id);
@@ -119,7 +115,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    
    
    function showBAChecks() {
-      global $CFG_GLPI,$LANG;
+      global $CFG_GLPI;
       
       echo "<table class='tab_cadre' width='100%'>";
       echo "<tr class='tab_bg_4' style='background: #cececc;'>";
@@ -234,7 +230,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    
    
    function showWidget($id) {
-      global $LANG, $DB, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $pMonitoringBusinessrule = new PluginMonitoringBusinessrule();
       $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();

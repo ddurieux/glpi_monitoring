@@ -81,8 +81,6 @@ class PluginMonitoringCheck extends CommonDBTM {
    *
    **/
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return __('Check definition', 'monitoring');
    }
 
@@ -101,7 +99,6 @@ class PluginMonitoringCheck extends CommonDBTM {
    
 
    function getSearchOptions() {
-      global $LANG;
 
       $tab = array();
     
@@ -119,7 +116,7 @@ class PluginMonitoringCheck extends CommonDBTM {
 
 
    function defineTabs($options=array()){
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
 
       $ong = array();
 
@@ -129,7 +126,6 @@ class PluginMonitoringCheck extends CommonDBTM {
    
    
    function getComments() {
-      global $LANG;
 
       $comment = __('Max check attempts (number of retries)', 'monitoring').' : '.$this->fields['max_check_attempts'].'<br/>
          '.__('Time in minutes between 2 checks', 'monitoring').' : '.$this->fields['check_interval'].' minutes<br/>

@@ -48,7 +48,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
    
    
    function defineTabs($options=array()){
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
 
       $pmDisplayview = new PluginMonitoringDisplayview();
       
@@ -75,7 +75,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
    
    
    function showTabs($options=array()) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
       
       // for objects not in table like central
       if (isset($this->fields['id'])) {
@@ -247,7 +247,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
    
 
    function showBoard($width='', $limit='') {
-      global $DB,$CFG_GLPI,$LANG;
+      global $DB,$CFG_GLPI;
 
       $where = '';
       if ($limit == 'hosts') {
@@ -390,7 +390,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
    
    
    static function displayLine($data, $displayhost=1) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $DB,$CFG_GLPI;
 
       $pMonitoringService = new PluginMonitoringService();
       $pMonitoringServiceH = new PluginMonitoringService();
@@ -560,7 +560,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
    
    
    function displayGraphs($itemtype, $items_id) {
-      global $CFG_GLPI,$LANG;
+      global $CFG_GLPI;
 
       $to = new PluginMonitoringRrdtool();
       $plu = new PluginMonitoringServiceevent();
@@ -644,7 +644,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
    
    
    function displayCounters($type, $display=1) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $DB,$CFG_GLPI;
       
       $ok = 0;
       $warning = 0;
@@ -960,8 +960,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
    
    
    function refreshPage() {
-      global $LANG;
-      
       echo "<form name='form' method='post' action='".$_SERVER["PHP_SELF"]."' >";
          echo "<table width='100%'>";
          echo "<tr>";

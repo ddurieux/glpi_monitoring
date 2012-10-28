@@ -53,8 +53,6 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    *
    **/
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return __('Components catalog', 'monitoring');
    }
 
@@ -73,7 +71,6 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    
    
    function defineTabs($options=array()){
-      global $LANG;
 
       $ong = array();
       
@@ -91,7 +88,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    
    
    function showChecks() {
-      global $DB,$CFG_GLPI,$LANG;
+      global $DB,$CFG_GLPI;
       
 
       echo "<table class='tab_cadre' width='100%'>";
@@ -145,7 +142,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    
    
    function showWidget($id) {
-      global $LANG, $DB, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
       
       $pmService = new PluginMonitoringService();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();

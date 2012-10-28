@@ -54,8 +54,6 @@ class PluginMonitoringDisplayview extends CommonDBTM {
    *
    **/
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return __('Views', 'monitoring');
    }
 
@@ -74,8 +72,6 @@ class PluginMonitoringDisplayview extends CommonDBTM {
    
 
    function getSearchOptions() {
-      global $LANG;
-
       $tab = array();
     
       $tab['common'] = __('Views', 'monitoring');
@@ -93,7 +89,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
 
 
    function defineTabs($options=array()){
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
 
       $ong = array();
       $ong[1] = 'items';
@@ -113,7 +109,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
    *
    **/
    function showForm($items_id, $options=array()) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $DB,$CFG_GLPI;
 
       if ($items_id!='') {
          $this->getFromDB($items_id);

@@ -102,7 +102,7 @@ class PluginMonitoringMessage extends CommonDBTM {
     * 
     */
    function servicescatalogMessage() {
-      global $DB,$LANG;
+      global $DB;
       
       $pmServicescatalog = new PluginMonitoringServicescatalog();
       $input = '';
@@ -131,7 +131,7 @@ class PluginMonitoringMessage extends CommonDBTM {
     * Get modifications of resources (if have modifications);
     */
    function configurationchangesMessage() {
-      global $DB,$LANG;
+      global $DB;
       
       $input = '';
       $pmLog = new PluginMonitoringLog();
@@ -173,7 +173,7 @@ class PluginMonitoringMessage extends CommonDBTM {
     * 
     */
    function ShinkennotrunMessage() {
-      global $DB,$LANG;
+      global $DB;
 
       $input = '';
       $query = "SELECT * FROM `glpi_plugin_monitoring_checks`

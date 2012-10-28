@@ -69,7 +69,7 @@ class PluginMonitoringBusinessrule extends CommonDBTM {
    *
    **/
    function showFormTest($servicescatalogs_id, $options=array()) {
-      global $CFG_GLPI,$LANG;
+      global $CFG_GLPI;
 
       $this->showFormTest($servicescatalogs_id, $options);
 return;
@@ -210,7 +210,7 @@ return;
    
    
    function showForm($servicescatalogs_id, $options=array()) {
-      global $DB,$LANG;
+      global $DB;
 
       $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
       
@@ -314,7 +314,6 @@ return;
    
    
    static function showService($items_id, $itemtype, $businessrules_id=0) {
-      global $LANG;
 
       if (!empty($items_id)) {
          $pMonitoringService = new PluginMonitoringService();

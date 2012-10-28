@@ -41,7 +41,7 @@
  */
 
 function pluginMonitoringInstall($version) {
-   global $DB,$LANG,$CFG_GLPI;
+   global $DB,$CFG_GLPI;
 
    // ** Insert in DB
    $DB_file = GLPI_ROOT ."/plugins/monitoring/install/mysql/plugin_monitoring-"

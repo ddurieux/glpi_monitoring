@@ -44,7 +44,7 @@ define ("PLUGIN_MONITORING_VERSION","0.80+1.3");
 
 // Init the hooks of monitoring
 function plugin_init_monitoring() {
-   global $PLUGIN_HOOKS,$LANG;
+   global $PLUGIN_HOOKS;
    
    $PLUGIN_HOOKS['csrf_compliant']['monitoring'] = true;
    

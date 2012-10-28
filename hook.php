@@ -87,7 +87,6 @@ function plugin_monitoring_uninstall() {
 
 // Define headings added by the plugin //
 function plugin_get_headings_monitoring($item,$withtemplate) {
-   global $LANG;
 
    switch (get_class($item)) {
       
@@ -317,7 +316,6 @@ function plugin_monitoring_MassiveActionsFieldsDisplay($options=array()) {
 
 
 function plugin_monitoring_MassiveActions($type) {
-   global $LANG;
 
    switch ($type) {
       case "Computer":
@@ -333,7 +331,7 @@ function plugin_monitoring_MassiveActions($type) {
 
 
 function plugin_monitoring_MassiveActionsDisplay($options=array()) {
-   global $LANG, $CFG_GLPI;
+   global $CFG_GLPI;
 
    switch ($options['itemtype']) {
       case "Computer":
@@ -489,7 +487,6 @@ function plugin_monitoring_registerMethods() {
  * Define Dropdown tables to be manage in GLPI :
 **/
 function plugin_monitoring_getDropdown(){
-   global $LANG;
 
    return array('PluginMonitoringServicescatalog'     => __('Services catalog', 'monitoring'),
                 'PluginMonitoringCheck'               => __('Check definition', 'monitoring'),

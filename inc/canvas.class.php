@@ -200,7 +200,7 @@ class PluginMonitoringCanvas {
    
    
    private function drawCanvas($root, $ancestors, $params) {
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
 
       $link= array();
       $in_link = array();

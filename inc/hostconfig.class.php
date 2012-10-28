@@ -108,8 +108,6 @@ class PluginMonitoringHostconfig extends CommonDBTM {
    *
    **/
    static function getTypeName($nb=0) {
-      global $LANG;
-
       return "Host config";
    }
 
@@ -136,7 +134,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
    *
    **/
    function showForm($items_id, $itemtype, $options=array()) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $DB,$CFG_GLPI;
       
       $pmCommand = new PluginMonitoringCommand();
       $pmCheck = new PluginMonitoringCheck();

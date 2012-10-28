@@ -222,8 +222,6 @@ class PluginMonitoringRrdtool extends CommonDBTM {
    
    
    function showRRDTemplates() {
-      global $LANG;
-      
       $a_templates = array();
       $a_perfdata= array();
       if ($handle = opendir(GLPI_PLUGIN_DOC_DIR."/monitoring/templates/")) {
@@ -296,7 +294,7 @@ class PluginMonitoringRrdtool extends CommonDBTM {
    
    
    function addTemplate() {
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
       
       echo "<form name='form' method='post' enctype='multipart/form-data'
          action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/rrdtemplate.form.php'>";
