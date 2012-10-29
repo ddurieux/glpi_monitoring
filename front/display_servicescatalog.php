@@ -48,14 +48,8 @@ require_once GLPI_ROOT."/inc/includes.php";
 
 Session::checkCentralAccess();
 
-<<<<<<< HEAD:front/rrdtemplate.php
 Html::header(__('Monitoring', 'monitoring'), $_SERVER["PHP_SELF"], "plugins", 
-             "monitoring", "rrdtemplates");
-=======
-Html::header($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plugins",
              "monitoring", "display");
->>>>>>> glpi0.83:front/display_servicescatalog.php
-
 
 $pmDisplay = new PluginMonitoringDisplay();
 $pmServicescatalog = new PluginMonitoringServicescatalog();
