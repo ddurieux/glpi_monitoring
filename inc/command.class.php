@@ -327,13 +327,19 @@ class PluginMonitoringCommand extends CommonDBTM {
    *@return bool true if form is ok
    *
    **/
-   function showForm($items_id, $options=array()) {
+   function showForm($items_id, $options=array(), $copy=array()) {
       global $DB,$CFG_GLPI;
 
       if ($items_id!='') {
          $this->getFromDB($items_id);
       } else {
          $this->getEmpty();
+      }
+      
+      if (count($copy) > 0) {
+         foreach ($copy as $key=>$value) {
+            $this->fields[$key] = stripslashes($value);
+         }
       }
 
       $this->showTabs($options);
@@ -384,7 +390,26 @@ class PluginMonitoringCommand extends CommonDBTM {
       echo "</tr>";
       
       $this->showFormButtons($options);
-      $this->addDivForTabs();
+      
+      // Add form for copy item
+      if ($items_id!='') {
+         $this->fields['id'] = 0;
+         $this->showFormHeader($options);
+         
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='4' class='center'>";
+         foreach ($this->fields as $key=>$value) {
+            if ($key != 'id') {
+               echo "<input type='hidden' name='".$key."' value='".$value."'/>";
+            }
+         }
+         echo "<input type='submit' name='copy' value=\"".$LANG['setup'][283]."\" class='submit'>";
+         echo "</td>";
+         echo "</tr>";
+         
+         echo "</table>";
+         Html::closeForm();
+      }
 
       return true;
    }

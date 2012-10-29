@@ -114,13 +114,13 @@ class PluginMonitoringHostconfig extends CommonDBTM {
 
 
    static function canCreate() {
-      return haveRight('computer', 'w');
+      return Session::haveRight('computer', 'w');
    }
 
 
    
    static function canView() {
-      return haveRight('computer', 'r');
+      return Session::haveRight('computer', 'r');
    }
 
 
@@ -270,25 +270,29 @@ class PluginMonitoringHostconfig extends CommonDBTM {
 
       echo "<td>".__('Check period', 'monitoring')."&nbsp;:</td>";
       echo "<td>";
-      $input = array();
-      if ($entities_id != '0'
-              OR $itemtype != 'Entity') {
-         $input["-1"] = __('Inheritance of the parent entity');
-      }
-      $entities_ancestors = getAncestorsOf("glpi_entities", $entities_id);
-      if (!isset($entities_ancestors[$entities_id])) {
-         $entities_ancestors[$entities_id] = $entities_id;
-      }
+      if (Session::isMultiEntitiesMode()) {
+         $input = array();
+         if ($entities_id != '0'
+                 OR $itemtype != 'Entity') {
+            $input["-1"] = __('Inheritance of the parent entity');
+         }
+         $entities_ancestors = getAncestorsOf("glpi_entities", $entities_id);
+         if (!isset($entities_ancestors[$entities_id])) {
+            $entities_ancestors[$entities_id] = $entities_id;
+         }
 
-      $query = "SELECT * FROM `".getTableForItemType("Calendar")."`
-         WHERE `entities_id` IN ('".implode(",", $entities_ancestors)."') AND `is_recursive`='1'
-         ORDER BY `name`";
-      $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
-         $input[$data['id']] = $data['name'];
+         $query = "SELECT * FROM `".getTableForItemType("Calendar")."`
+            WHERE `entities_id` IN ('".implode(",", $entities_ancestors)."') AND `is_recursive`='1'
+            ORDER BY `name`";
+         $result = $DB->query($query);
+         while ($data=$DB->fetch_array($result)) {
+            $input[$data['id']] = $data['name'];
+         }
+         Dropdown::showFromArray('calendars_id', $input, array(
+             'value'=>$this->fields['calendars_id']));
+      } else {
+         Dropdown::show("Calendar", array('value' => $this->fields['calendars_id']));
       }
-      Dropdown::showFromArray('calendars_id', $input, array(
-          'value'=>$this->fields['calendars_id']));
 
       echo "</td>";
       echo "</tr>";
@@ -350,7 +354,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
       echo "</tr>";
       
       echo "</table>";
-      echo "</form>";
+      Html::closeForm();
 
       return true;
    }

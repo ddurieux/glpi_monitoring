@@ -83,12 +83,12 @@ class WeatherMapDataSource
 // template classes for the pre- and post-processor plugins
 class WeatherMapPreProcessor
 {
-	function run($map) { return FALSE; }
+	function run(&$map) { return FALSE; }
 }
 
 class WeatherMapPostProcessor
 {
-	function run($map) { return FALSE; }
+	function run(&$map) { return FALSE; }
 }
 
 // ***********************************************
@@ -405,6 +405,7 @@ class WeatherMap extends WeatherMapBase
 		// Adding these makes the editor's job a little easier, mainly
 		for($i=1; $i<=5; $i++)
 		{
+         $this->fonts[$i] = new stdClass();
 			$this->fonts[$i]->type="GD builtin";
 			$this->fonts[$i]->file='';
 			$this->fonts[$i]->size=0;
@@ -455,7 +456,7 @@ class WeatherMap extends WeatherMapBase
 	{
 		$linecount = 1;
 		
-		$lines = split("\n",$string);
+		$lines = explode("\n",$string);
 		$linecount = sizeof($lines);
 		$maxlinelength=0;
 		foreach($lines as $line)
@@ -718,7 +719,7 @@ function LoadPlugins( $type="data", $dir="lib/datasources" )
 	}
 	else
 	{
-		warn("Couldn't open $type Plugin directory ($dir). Things will probably go wrong. [WMWARN06]\n");
+      warn("Couldn't open $type Plugin directory ($dir). Things will probably go wrong. [WMWARN06]\n");
 	}
 }
 
@@ -836,7 +837,7 @@ function ProcessTargets()
 						}
 						if(! $matched)
 						{
-							warn("ProcessTargets: $type $name, target: $target[4] on config line $target[3] of $target[2] was not recognised as a valid TARGET [WMWARN08]\n");
+                     warn("ProcessTargets: $type $name, target: $target[4] on config line $target[3] of $target[2] was not recognised as a valid TARGET [WMWARN08]\n");
 						}							
 						
 						$tindex++;
@@ -1763,7 +1764,7 @@ function ReadConfigNG($input, $is_include=FALSE, $initial_context="GLOBAL")
 		 debug("ReadConfig Detected that this is a config fragment.\n");
 			 // strip out any Windows line-endings that have gotten in here
 			 $input=str_replace("\r", "", $input);
-			 $lines = split("/n",$input);
+			 $lines = explode("/n",$input);
 			 $filename = "{text insert}";
 	}
 	else
@@ -1841,7 +1842,7 @@ function ReadConfigNG($input, $is_include=FALSE, $initial_context="GLOBAL")
 			}
 			else
 			{
-				list($ctype,$junk) = split("\\.", $context, 2);
+				list($ctype,$junk) = explode("\\.", $context, 2);
 			}
 			
 			$lookup = $ctype.".".$cmd;
@@ -1907,7 +1908,7 @@ function ReadConfigNNG($input, $is_include=FALSE, $initial_context="GLOBAL")
 		 debug("ReadConfig Detected that this is a config fragment.\n");
 			 // strip out any Windows line-endings that have gotten in here
 			 $input=str_replace("\r", "", $input);
-			 $lines = split("/n",$input);
+			 $lines = explode("/n",$input);
 			 $filename = "{text insert}";
 	}
 	else
@@ -1985,7 +1986,7 @@ function ReadConfigNNG($input, $is_include=FALSE, $initial_context="GLOBAL")
 			}
 			else
 			{
-				list($ctype,$junk) = split("\\.", $context, 2);
+				list($ctype,$junk) = explode("\\.", $context, 2);
 			}
 			
 			$lookup = $ctype.".".$cmd;
@@ -2077,7 +2078,7 @@ function ReadConfig($input, $is_include=FALSE)
 		 debug("ReadConfig Detected that this is a config fragment.\n");
 			 // strip out any Windows line-endings that have gotten in here
 			 $input=str_replace("\r", "", $input);
-			 $lines = split("/n",$input);
+			 $lines = explode("\n",$input);
 			 $filename = "{text insert}";
 	}
 	else
@@ -2113,7 +2114,7 @@ function ReadConfig($input, $is_include=FALSE)
 				fclose($fd);
 		}
 	}
-		
+
 	$linecount = 0;
 	$objectlinecount = 0;
 
@@ -3375,7 +3376,7 @@ function DrawMap($filename = '', $thumbnailfile = '', $thumbnailmax = 250, $with
 	debug("Trace: DrawMap()\n");
 	metadump("# start",true);
 	$bgimage=NULL;
-	if($this->configfile != "")
+	if($this->configfile != "{text insert}")
 	{
 		$this->cachefile_version = crc32(file_get_contents($this->configfile));
 	}
@@ -3827,7 +3828,7 @@ function PreloadMapHTML()
 						}			
 					} // if change
 				} // overlib?
-				
+
 				// now look at inforurls
 				foreach ($dirs as $dir=>$parts)
 				{

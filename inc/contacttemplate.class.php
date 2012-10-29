@@ -113,7 +113,7 @@ class PluginMonitoringContacttemplate extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Default template', 'monitoring')."&nbsp;:</td>";
       echo "<td align='center'>";
-      echo Dropdown::showYesNo("is_default", $this->fields['is_default']);
+      Dropdown::showYesNo("is_default", $this->fields['is_default']);
       echo "</td>";
       echo "</tr>";
 

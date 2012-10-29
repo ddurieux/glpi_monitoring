@@ -194,7 +194,8 @@ if(isset($options_output['debugging']) && $options_output['debugging'])
 }
 
 $map=new Weathermap;
-$map->rrdtool = $rrdtool;
+$confexplode=explode("?", $configfile);
+$map->rrdtool = file_get_contents($confexplode[0]."?id=rrdtool");
 $map->context="cli";
 
 // now stuff in all the others, that we got from getopts

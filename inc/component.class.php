@@ -62,8 +62,7 @@ class PluginMonitoringComponent extends CommonDBTM {
     * 
     */
    function initComponents() {
-      
-      
+            
       
    }
 
@@ -101,17 +100,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       return $tab;
    }
 
-   
 
-   function defineTabs($options=array()){
-      global $CFG_GLPI;
-
-      $ong = array();
-      
-      return $ong;
-   }
-
-  
    
    /**
    * Display form for service configuration
@@ -122,19 +111,23 @@ class PluginMonitoringComponent extends CommonDBTM {
    *@return bool true if form is ok
    *
    **/
-   function showForm($items_id, $options=array()) {
+   function showForm($items_id, $options=array(), $copy=array()) {
       global $DB,$CFG_GLPI;
-
 
       $pMonitoringCommand = new PluginMonitoringCommand();
       
-
       if ($items_id == '0') {
          $this->getEmpty();
          $this->fields['active_checks_enabled']  = 1;
          $this->fields['passive_checks_enabled'] = 1;
       } else {
          $this->getFromDB($items_id);
+      }
+      
+      if (count($copy) > 0) {
+         foreach ($copy as $key=>$value) {
+            $this->fields[$key] = stripslashes($value);
+         }
       }
      
       $this->showTabs($options);
@@ -187,7 +180,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo __('Active checks', 'monitoring')."<font class='red'>*</font>&nbsp;:";
       echo "</td>";
       echo "<td>";
-      echo Dropdown::showYesNo("active_checks_enabled", $this->fields['active_checks_enabled']);
+      Dropdown::showYesNo("active_checks_enabled", $this->fields['active_checks_enabled']);
       echo "</td>";
       echo "</tr>";
       
@@ -208,7 +201,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo __('Passive check', 'monitoring')."<font class='red'>*</font>&nbsp;:";
       echo "</td>";
       echo "<td>";
-      echo Dropdown::showYesNo("passive_checks_enabled", $this->fields['passive_checks_enabled']);
+      Dropdown::showYesNo("passive_checks_enabled", $this->fields['passive_checks_enabled']);
       echo "</td>";
       echo "</tr>";
       
@@ -217,21 +210,8 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo __('Template (for graphs generation)', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
-      $a_templates = array();
-      $a_templates[''] = Dropdown::EMPTY_VALUE;
-      if ($handle = opendir(GLPI_PLUGIN_DOC_DIR."/monitoring/templates/")) {
-          while (false !== ($entry = readdir($handle))) {
-              if ($entry != "." && $entry != "..") {
-                 if (strstr($entry, "_graph.json")) {
-                    $entry = str_replace("_graph.json", "", $entry);
-                    $a_templates[$entry] = $entry;
-                 }
-              }
-          }
-          closedir($handle);
-      }
       Dropdown::showFromArray("graph_template", 
-                              $a_templates, 
+                              PluginMonitoringPerfdata::listPerfdata(), 
                               array('value'=>$this->fields['graph_template']));
       echo "</td>";
       // * calendar
@@ -295,11 +275,11 @@ class PluginMonitoringComponent extends CommonDBTM {
                   $a_arguments[$arg] = '';
                }
                $a_displayarg[$arg] = $a_arguments[$arg];
-               
             }
          }
       }
       if (count($a_displayarg) > 0) {
+         $a_tags = $this->tagsAvailable();
          $a_argtext = importArrayFromDB($pMonitoringCommand->fields['arguments']);
          echo "<tr>";
          echo "<th colspan='4'>".__('Arguments', 'monitoring')."&nbsp;</th>";
@@ -318,7 +298,31 @@ class PluginMonitoringComponent extends CommonDBTM {
             echo "<td>";
             echo "<input type='text' name='arg[".$key."]' value='".$value."'/><br/>";
             echo "</td>";
+            if (count($a_tags) > 0) {
+               foreach ($a_tags as $key=>$value) {
+                  echo "<td class='tab_bg_3'>";
+                  echo "<strong>".$key."</strong>&nbsp;:";
+                  echo "</td>";
+                  echo "<td class='tab_bg_3'>";
+                  echo $value;
+                  echo "</td>";
+                  unset($a_tags[$key]);
+                  break;
+               }
+            } else {
+               echo "<td colspan='2'></td>";
+            }
+            echo "</tr>";
+         }
+         foreach ($a_tags as $key=>$value) {
+            echo "<tr>";
             echo "<td colspan='2'></td>";
+            echo "<td class='tab_bg_3'>";
+            echo "<strong>".$key."</strong>&nbsp;:";
+            echo "</td>";
+            echo "<td class='tab_bg_3'>";
+            echo $value;
+            echo "</td>";
             echo "</tr>";
          }
       }
@@ -335,16 +339,104 @@ class PluginMonitoringComponent extends CommonDBTM {
       Dropdown::showYesNo("is_weathermap", $this->fields['is_weathermap']);
       echo "</td>";
       echo "<td>";
-      echo __('Regex', 'monitoring')."&nbsp;:";
+      $tooltip = $LANG['plugin_monitoring']['component'][15]." :<br/><br/>";
+      $tooltip .= "perfdata : <i>inUsage=0.00%;85;98 outUsage=0.00%;85;98 inBandwidth=<strong>789944</strong>.00bps outBandwidth=486006.00bps inAbsolut=0 outAbsolut=12665653</i><br/><br/>";
+      $tooltip .= $LANG['plugin_monitoring']['weathermap'][18]." : <i><strong>(?:.*)inBandwidth=(\d+)(?:.*)</strong></i><br/><br/>";
+      $tooltip .= $LANG['rulesengine'][85]." : <strong>789944</strong>";
+      echo $LANG['plugin_monitoring']['weathermap'][18]."&nbsp;";
+      Html::showToolTip($tooltip, array('autoclose'=>false));
+      echo "&nbsp;:";
       echo "</td>";
       echo "<td>";
-      echo "<input type='text' name='weathermap_regex' value='".$this->fields['weathermap_regex']."' />";
+      echo "<input type='text' name='weathermap_regex_in' value='".$this->fields['weathermap_regex_in']."' size='40' />";
       echo "</td>"; 
       echo "</tr>";
       
+      echo "<tr>";
+      echo "<td colspan='2'>";
+      echo "</td>";
+      echo "<td>";
+      $tooltip = $LANG['plugin_monitoring']['component'][15]." :<br/><br/>";
+      $tooltip .= "perfdata : <i>inUsage=0.00%;85;98 outUsage=0.00%;85;98 inBandwidth=789944.00bps outBandwidth=<strong>486006</strong>.00bps inAbsolut=0 outAbsolut=12665653</i><br/><br/>";
+      $tooltip .= $LANG['plugin_monitoring']['weathermap'][19]." : <i><strong>(?:.*)outBandwidth=(\d+)(?:.*)</strong></i><br/><br/>";
+      $tooltip .= $LANG['rulesengine'][85]." : <strong>789944</strong>";
+      echo $LANG['plugin_monitoring']['weathermap'][19]."&nbsp;";
+      Html::showToolTip($tooltip, array('autoclose'=>false));
+      echo "&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      echo "<input type='text' name='weathermap_regex_out' value='".$this->fields['weathermap_regex_out']."' size='40' />";
+      echo "</td>"; 
+      echo "</tr>";
       
       $this->showFormButtons($options);
+      $this->addDivForTabs();
+      
       return true;
+   }
+   
+   
+   
+   function copyItem($items_id) {
+      global $LANG;
+      // Add form for copy item
+
+      $this->getFromDB($items_id);
+      $this->fields['id'] = 0;
+      $this->showFormHeader(array());
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='4' class='center'>";
+      foreach ($this->fields as $key=>$value) {
+         if ($key != 'id') {
+            echo "<input type='hidden' name='".$key."' value='".$value."'/>";
+         }
+      }
+      echo "<input type='submit' name='copy' value=\"".$LANG['setup'][283]."\" class='submit'>";
+      echo "</td>";
+      echo "</tr>";
+
+      echo "</table>";
+      Html::closeForm();
+   }
+   
+   
+   
+   function tagsAvailable() {
+      global $LANG;
+      
+      $elements = array();
+      $elements[$LANG['plugin_monitoring']['component'][11]] = '';
+      $elements["[[HOSTNAME]]"] = $LANG['plugin_monitoring']['component'][7];
+      $elements["[[NETWORKPORTNUM]]"] = $LANG['plugin_monitoring']['component'][12];
+      $elements["[[NETWORKPORTNAME]]"] = $LANG['plugin_monitoring']['component'][13];
+      if (class_exists("PluginFusinvsnmpNetworkPort")) {
+         $elements["[[NETWORKPORTDESCR]]"] = $LANG['plugin_monitoring']['component'][8];
+         $elements["[SNMP:version]"] = $LANG['plugin_monitoring']['component'][9];
+         $elements["[SNMP:authentication]"] = $LANG['plugin_monitoring']['component'][10];
+      }      
+      return $elements;
+   }
+   
+   
+   
+   function preferences($components_id) {
+      global $LANG;
+      
+      echo "<table class='tab_cadre_fixe'>"; 
+            
+      echo "<tr class='tab_bg_1'>";
+      echo "<th>";
+      echo $LANG['Menu'][11];      
+      echo "</th>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_3'>";
+      echo "<td>";
+      PluginMonitoringServicegraph::preferences($components_id);
+      echo "</td>";
+      echo "</tr>";
+      echo "</table>";
    }
 }
 

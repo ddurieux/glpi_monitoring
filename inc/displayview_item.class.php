@@ -60,13 +60,13 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
 
 
    static function canCreate() {
-      return haveRight('computer', 'w');
+      return Session::haveRight('computer', 'w');
    }
 
 
    
    static function canView() {
-      return haveRight('computer', 'r');
+      return Session::haveRight('computer', 'r');
    }
 
    
@@ -76,6 +76,8 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
 
       $pmDisplayview = new PluginMonitoringDisplayview();
       $pmDisplayview->getFromDB($id);
+      
+      PluginMonitoringServicegraph::loadLib();
       
       if ($config == '1') {
          $this->addItem($id);
@@ -87,7 +89,7 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
          }
       }
       
-      echo "<table class='tab_cadre_fixe' id='test'>";
+      echo "<table class='tab_cadre_fixe' id='test' style='width:".$pmDisplayview->fields['width']."px'>";
       
       echo "<tr class='tab_bg_1'>";
       echo "<th>";
@@ -97,7 +99,7 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
       echo "</tr>";
       
       echo "<tr class='tab_bg_1'>";
-      echo "<td height='1000' id='panel'>";
+      echo "<td height='1200' id='panel'>";
 
       $query = "SELECT * FROM `glpi_plugin_monitoring_displayviews_items`
          WHERE `plugin_monitoring_displayviews_id`='".$id."'";
@@ -113,8 +115,8 @@ Ext.onReady(function() {
 
   //Simple 'border layout' panel to house both grids
   var displayPanel = new Ext.Panel({
-    width    : 950,
-    height   : 1000,
+    width    : ".$pmDisplayview->fields['width'].",
+    height   : 1200,
     layout: 'absolute',
     renderTo : 'panel',
     items    : [
@@ -142,8 +144,11 @@ Ext.onReady(function() {
       $item = new $itemtype();
       $content = '';
       $title = $item->getTypeName();
+      $event = '';
+      $width='';
       if ($itemtype == "PluginMonitoringService") {
          $content = $item->showWidget($data['items_id'], $data['extra_infos']);
+
          $title .= " : ".Dropdown::getDropdownName(getTableForItemType('PluginMonitoringComponent'), $item->fields['plugin_monitoring_components_id']);
          $title .= ' '.$LANG['networking'][25].' ';
          $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
@@ -154,11 +159,23 @@ Ext.onReady(function() {
             $itemtype2 = $pmComponentscatalog_Host->fields['itemtype'];
             $item2 = new $itemtype2();
             $item2->getFromDB($pmComponentscatalog_Host->fields['items_id']);
-            $title .= $item2->getName()." (".$item2->getTypeName().")";
-            
+            $title .= str_replace("'", "\"", $item2->getLink()." (".$item2->getTypeName().")");            
          }
+         $width = "width: 475,";
+      } else if ($itemtype == "PluginMonitoringWeathermap") {
+         $content = $item->showWidget($data['items_id'], $data['extra_infos']);
+         $content = '<div id="weathermap-'.$data['items_id'].'">'.$content."</div>";
+         $event = ", ".$item->widgetEvent($data['items_id']);
+         $title .= " : ".Dropdown::getDropdownName(getTableForItemType('PluginMonitoringWeathermap'), $data['items_id']);
+         $item->getFromDB($data['items_id']);
+         $width = "width:".(($item->fields['width'] * $data['extra_infos']) / 100).",";
       } else {
          $content = $item->showWidget($data['items_id']);
+         if ($data['itemtype'] == 'PluginMonitoringServicescatalog') {
+            $width = "width: 202,";
+         } else {
+            $width = "width: 160,";
+         }
       }
       echo "<script>
          var left = 0;
@@ -172,6 +189,7 @@ Ext.onReady(function() {
          }
 
         var item".$data['id']." = new Ext.Panel({
+             closable: true,           
              title: '".$title."',
              x: ".$data['x'].",
              y: ".$data['y'].",
@@ -179,46 +197,89 @@ Ext.onReady(function() {
              baseCls : 'x-panel',
              layout : 'fit',
              renderTo: Ext.getBody(),
-//             floating: true,
+             floating: false,
              frame: false,
-                         autoHeight  : true,
-                         autoWidth   : true,
-                         layout: 'fit',
+             ".$width."
+             autoHeight  : true,
+             layout: 'fit',
              draggable: {
-         //      Config option of Ext.Panel.DD class.
-         //      It's a floating Panel, so do not show a placeholder proxy in the original position.
+                 //Config option of Ext.Panel.DD class.
+                 //It's a floating Panel, so do not show a placeholder proxy in the original position.
                  insertProxy: false,
 
-         //      Called for each mousemove event while dragging the DD object.
+                 //Called for each mousemove event while dragging the DD object.
                  onDrag : function(e){
-         //          Record the x,y position of the drag proxy so that we can
-         //          position the Panel at end of drag.
+                     //Record the x,y position of the drag proxy so that we can
+                     //position the Panel at end of drag.
                      var el = this.proxy.getEl();
                      this.x = el.getLeft(true) - left - 5;
                      this.y = el.getTop(true) - top - 5;
 
 
-         //          Keep the Shadow aligned if there is one.
+                     //Keep the Shadow aligned if there is one.
                      var s = this.panel.getEl().shadow;
                      if (s) {
                          s.realign(this.x, this.y, pel.getWidth(), pel.getHeight());
                      }
                  },
 
-         //      Called on the mouseup event.
+                 //Called on the mouseup event.
                  endDrag : function(e){
                      this.panel.setPosition(this.x, this.y);\n";
       if ($config == '1') {
-         echo "                     Ext.get('updatecoordonates').load({
-                     url: '".$CFG_GLPI['root_doc']."/plugins/monitoring/ajax/displayview_itemcoordinates.php',
-                     scripts: true,
-                     params:'id=".$data['id']."&x=' + (this.x)  + '&y=' + (this.y)});\n";
+         echo "      Ext.get('updatecoordonates').load({
+                        url: '".$CFG_GLPI['root_doc']."/plugins/monitoring/ajax/displayview_itemcoordinates.php',
+                        scripts: true,
+                        params:'id=".$data['id']."&x=' + (this.x)  + '&y=' + (this.y)
+                     });\n";
+         echo "      if (this.x < 1) {
+                        this.panel.destroy();
+                     }
+                     if (this.y < 0) {
+                        this.panel.destroy();
+                     }
+            
+            ";
       }
-      echo "           }
+      echo "      }
              }
+             ".$event."
          });
      </script>";//.show()
+
+      if ($itemtype == "PluginMonitoringService") {
+         $pmComponent = new PluginMonitoringComponent();
+         $item = new $itemtype();
+         
+         $item->getFromDB($data['items_id']);
+         $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
+         $pmServicegraph = new PluginMonitoringServicegraph();
+         $pmServicegraph->displayGraph($pmComponent->fields['graph_template'], 
+                                       "PluginMonitoringService", 
+                                       $data['items_id'], 
+                                       "0", 
+                                       $data['extra_infos'], 
+                                       "js");
+      } else if($itemtype == "PluginMonitoringComponentscatalog") {
+         $pmComponentscatalog = new PluginMonitoringComponentscatalog();
+         $pmComponentscatalog->ajaxLoad($data['items_id']);
+      }
       
+      if ($itemtype == "PluginMonitoringWeathermap") {
+//         echo "<script type='text/javascript'>
+//            function updateimagew".$data['items_id']."() {
+//               var demain=new Date();
+//               document.getElementById('weathermap-".$data['items_id']."').innerHTML = demain.getTime() + '".$content."';
+//            }
+//            setInterval(updateimagew".$data['items_id'].", 50000);
+//         </script>";
+//      }
+         echo "<script type='text/javascript'>
+         var mgr = new Ext.UpdateManager('weathermap-".$data['items_id']."');
+         mgr.startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/widgetWeathermap.php\", \"id=".$data['items_id']."&extra_infos=".$data['extra_infos']."\", \"\", true);
+         </script>";
+      }
+
    }
 
    
@@ -266,7 +327,8 @@ Ext.onReady(function() {
                                   $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownDisplayviewItemtype.php",
                                   $params);
       echo "<span id='items_id'></span>";
-            
+      echo "<input type='hidden' name='x' value='1' />";
+      echo "<input type='hidden' name='y' value='1' />";
       echo "</td>";
 
       echo "<td colspan='2'></td>";

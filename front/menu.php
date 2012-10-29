@@ -58,7 +58,7 @@ echo "<table class='tab_cadre' width='950'>";
 
 echo "<tr class='tab_bg_1'>";
 echo "<th height='80'>";
-echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php'>".__('Dashboard', 'monitoring')."</a>";
+echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_servicescatalog.php'>".__('Dashboard', 'monitoring')."</a>";
 echo "</th>";
 echo "</tr>";
 echo "</table>";
@@ -102,7 +102,7 @@ echo "<br/>";
 
 echo "<table class='tab_cadre' width='950'>";
 echo "<tr class='tab_bg_1'>";
-echo "<th colspan='4' height='30' width='75%'>";
+echo "<th colspan='3' height='30' width='75%'>";
 if (PluginMonitoringProfile::haveRight("component", 'r')) {
    echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/component.php'>".__('Components', 'monitoring')."</a>";
 }
@@ -122,27 +122,21 @@ echo "</th>";
 echo "</tr>";
 
 echo "<tr class='tab_bg_1'>";
-echo "<th width='18%' height='25'>";
+echo "<th width='22%' height='25'>";
 if (PluginMonitoringProfile::haveRight("command", 'r')) {
    echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/command.php'>".__('Commands', 'monitoring')."</a>";
 }
 echo "</th>";
 
-echo "<th width='18%'>";
+echo "<th width='22%'>";
 if (PluginMonitoringProfile::haveRight("check", 'r')) {
    echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/check.php'>".__('Check definition', 'monitoring')."</a>";
 }
 echo "</th>";
 
-echo "<th width='18%'>";
+echo "<th width='22%'>";
 if (Session::haveRight('calendar', 'r')) {
    echo "<a href='".$CFG_GLPI['root_doc']."/front/calendar.php'>".__('Calendar')."</a>";
-}
-echo "</th>";
-
-echo "<th width='18%'>";
-if (PluginMonitoringProfile::haveRight("config", 'r')) {
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/rrdtemplate.php'>".__('RRDtool templates', 'monitoring')."</a>";
 }
 echo "</th>";
 

@@ -57,13 +57,20 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
       $this->add($input);
 
       $input = array();
-      $input['name'] = 'Service : notify by mail';
-      $input['command_name'] = 'notify-service-by-email';
+      $input['name'] = 'Service : notify by mail (perl)';
+      $input['command_name'] = 'notify-service-by-email-perl';
       $input['command_line'] = "\$PLUGINSDIR\$/sendmailservices.pl \"\$NOTIFICATIONTYPE\$\" \"\$SERVICEDESC\$\" \"\$HOSTALIAS\$\" \"\$HOSTADDRESS\$\" \"\$SERVICESTATE\$\" \"\$SHORTDATETIME\$\" \"\$SERVICEOUTPUT\$\" \"\$CONTACTEMAIL\$\" \"\$SERVICENOTESURL\$\"";
+      $this->add($input);
+      
+      $input = array();
+      $input['name'] = 'Service : notify by mail (python)';
+      $input['command_name'] = 'notify-service-by-email-py';
+      $input['command_line'] = "\$PLUGINSDIR\$/sendmailservices.py -s \"\$SERVICEDESC\$\" -n \"\$SERVICESTATE\$\" -H \"\$HOSTALIAS\$\" -a \"\$HOSTADDRESS\$\" -i \"\$SHORTDATETIME\$\" -o \"\$SERVICEOUTPUT\$\" -t \"\$CONTACTEMAIL\$\" -r \"\$SERVICESTATE\$\"";
       $this->add($input);
       
    }
 
+   
 
    /**
    * Get name of this type
@@ -78,16 +85,16 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
 
 
    static function canCreate() {
-      return haveRight('computer', 'w');
+      return Session::haveRight('computer', 'w');
    }
 
 
    
    static function canView() {
-      return haveRight('computer', 'r');
+      return Session::haveRight('computer', 'r');
    }
 
-
+   
 
    function getSearchOptions() {
       $tab = array();
@@ -149,8 +156,6 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
 
       return true;
    }
-
-
 }
 
 ?>

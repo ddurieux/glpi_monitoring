@@ -45,9 +45,8 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringServiceevent extends CommonDBTM {
-   
 
-   function convert_datetime_timestamp($str) {
+   static function convert_datetime_timestamp($str) {
 
       list($date, $time) = explode(' ', $str);
       list($year, $month, $day) = explode('-', $date);
@@ -57,6 +56,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
 
       return $timestamp;
    }
+   
    
 
    function calculateUptime($hosts_id, $startDate, $endDate) {
@@ -119,87 +119,134 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                    'critical_p'=> round(($count['critical'] * 100) / $total, 3));
       
    }
+ 
    
    
-   
-   function parseToRrdtool($plugin_monitoring_services_id) {
-      global $DB;
-      
-      $pmRrdtool = new PluginMonitoringRrdtool();
-      $pmCommand = new PluginMonitoringCommand();
+   static function cronUpdaterrd() {
+      ini_set("max_execution_time", "0");
+//      $pmServiceevent = new PluginMonitoringServiceevent();
       $pmService = new PluginMonitoringService();
-      $pmComponent = new PluginMonitoringComponent();
+      $pmServicegraph = new PluginMonitoringServicegraph();
       
-      $pmService->getFromDB($plugin_monitoring_services_id);
-      $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
-      if (!isset($pmComponent->fields['plugin_monitoring_commands_id'])) {
-         return;
+      $a_lisths = $pmService->find();
+      foreach ($a_lisths as $data) {
+         $pmServicegraph->parseToDB($data['id']);
       }
-      if (is_null($pmComponent->fields['graph_template'])) {
-         return;
-      }
-      $pmCommand->getFromDB($pmComponent->fields['plugin_monitoring_commands_id']);
-      
-      $query = "SELECT * FROM `".$this->getTable()."`
-         WHERE `plugin_monitoring_services_id`='".$plugin_monitoring_services_id."'
-         ORDER BY `date`";
-      $result = $DB->query($query);
-               
-      $i = 0;
-      while ($edata=$DB->fetch_array($result)) {
-         $i++;
-         if ($i < $DB->numrows($result)) {
-
-            if (!is_null($pmComponent->fields['graph_template'])) {
-               $perf_data = $edata['perf_data'];
-               if ($edata['perf_data'] == '') {
-                  $perf_data = $edata['output'];                     
-               }
-               $pmRrdtool->addData($pmComponent->fields['graph_template'], 
-                                              $plugin_monitoring_services_id, 
-                                              $this->convert_datetime_timestamp($edata['date']), 
-                                              $perf_data);
-
-            }
-            $this->delete($edata);
-         }
-      }
-      $a_list = array();
-      $a_list[] = "2h";
-      $a_list[] = "12h";
-      $a_list[] = "1d";
-      $a_list[] = "1w";
-      $a_list[] = "1m";
-      $a_list[] = "0y6m";
-      $a_list[] = "1y";
-      
-      $pmConfig = new PluginMonitoringConfig();
-      $pmConfig->getFromDB(1);
-      $a_timezones = importArrayFromDB($pmConfig->fields['timezones']);
-      
-      foreach ($a_list as $time) {
-         foreach ($a_timezones as $timezone) {
-            $pmRrdtool->displayGLPIGraph($pmComponent->fields['graph_template'],
-                                                       "PluginMonitoringService", 
-                                                       $plugin_monitoring_services_id, 
-                                                       $timezone,
-                                                       $time);
-         }
-      }
+      return true;
    }
    
    
    
-   static function cronUpdaterrd() {
-
-      $pmServiceevent = new PluginMonitoringServiceevent();
-      $pmService = new PluginMonitoringService();
+   function getData($result, $rrdtool_template, $ret=array()) {
+      global $DB;
       
-      $a_lisths = $pmService->find();
-      foreach ($a_lisths as $data) {
-         $pmServiceevent->parseToRrdtool($data['id']);
+      if (empty($ret)) {
+         $ret = $this->getRef($rrdtool_template);
       }
-      return true;
+      $a_ref = $ret[0];
+      $a_convert = $ret[1];
+      
+      $mydatat = array();
+      $a_labels = array();
+      $func = "perfdata_".$rrdtool_template;
+      $a_json = json_decode(PluginMonitoringPerfdata::$func());
+      
+      while ($edata=$DB->fetch_array($result)) {
+         $a_perfdata = explode(" ", $edata['perf_data']);
+         $a_time = explode(" ", $edata['date']);
+         $a_time2 = explode(":", $a_time[1]);
+         $day = explode("-", $a_time[0]);
+         array_push($a_labels, "(".$day[2].")".$a_time2[0].":".$a_time2[1]);
+         foreach ($a_json->parseperfdata as $num=>$data) {
+            if (isset($a_perfdata[$num])) {
+               $a_a_perfdata = explode("=", $a_perfdata[$num]);
+               if (($a_a_perfdata[0] == $data->name
+                       OR $data->name == '')
+                       AND isset($a_a_perfdata[1])) {
+                  $a_perfdata_final = explode(";", $a_a_perfdata[1]);
+                  foreach ($a_perfdata_final as $nb_val=>$val) {
+//                     if (isset($a_ref[$data->DS[$nb_val]->dsname])) {
+                        if ($val != '') {
+                           if (strstr($val, "ms")) {
+                              $val = round(str_replace("ms", "", $val),0);
+                           } else if (strstr($val, "bps")) {
+                              $val = round(str_replace("bps", "", $val),0);
+                           } else if (strstr($val, "MB")) {
+                              $val = round(str_replace("MB", "", $val),0);
+                           } else if (strstr($val, "s")) {
+                              $val = round((str_replace("s", "", $val) * 1000),0);
+                           } else if (strstr($val, "%")) {
+                              $val = round(str_replace("%", "", $val),0);
+                           } else if (!strstr($val, "timeout")){
+                              if ($val > 2) {
+                                 $val = round($val);
+                              } else {
+                                 $val = round($val, 2);
+                              }
+                           } else {
+                              $val = 0;
+                           }                           
+                           if (!isset($mydatat[$data->DS[$nb_val]->dsname])) {
+                              $mydatat[$data->DS[$nb_val]->dsname] = array();
+                           }
+                           array_push($mydatat[$data->DS[$nb_val]->dsname], $val);
+                        }
+//                     }
+                  }
+               } else {
+                  for ($nb_val=0; $nb_val < count($data->DS); $nb_val++) {
+                     if (!isset($mydatat[$data->DS[$nb_val]->dsname])) {
+                        $mydatat[$data->DS[$nb_val]->dsname] = array();
+                     }
+                     array_push($mydatat[$data->DS[$nb_val]->dsname], 0);                     
+                  }                  
+               }
+            } else {
+               for ($nb_val=0; $nb_val < count($data->DS); $nb_val++) {
+                  if (!isset($mydatat[$data->DS[$nb_val]->dsname])) {
+                     $mydatat[$data->DS[$nb_val]->dsname] = array();
+                  }
+                  array_push($mydatat[$data->DS[$nb_val]->dsname], 0);                     
+               } 
+            }        
+         }
+      }
+      return array($mydatat, $a_labels, $a_ref, $a_convert);
+   }
+   
+   
+   
+   function getRef($rrdtool_template) {
+      
+      $a_convert = array();
+      $a_ref = array();
+      return array($a_ref, $a_convert);
+      
+      
+      
+      $func = "perfdata_".$rrdtool_template;
+      $a_jsong = json_decode(PluginMonitoringPerfdata::$func());
+      // Get data 
+      $a_convert = array();
+      $a_ref = array();
+      foreach ($a_jsong->data[0]->data as $data) {
+         $data = str_replace("'", "", $data);
+         if (strstr($data, "DEF")
+                 AND !strstr($data, "CDEF")) {
+            $a_explode = explode(":", $data);
+            $a_name = explode("=", $a_explode[1]);
+            if ($a_name[0] == 'outboundtmp') {
+               $a_name[0] = 'outbound';
+            }
+            $a_convert[$a_name[0]] = $a_explode[2];
+         }
+         if (strstr($data, "AREA")) {
+            $a_explode = explode(":", $data);
+            $a_split = explode("#", $a_explode[1]);
+            $a_ref[$a_convert[$a_split[0]]] = $a_split[1];
+         } 
+      }
+      return array($a_ref, $a_convert);
    }
 }
 

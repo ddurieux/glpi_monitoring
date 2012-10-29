@@ -40,7 +40,7 @@
    ------------------------------------------------------------------------
  */
 
-define ("PLUGIN_MONITORING_VERSION","0.80+1.3");
+define ("PLUGIN_MONITORING_VERSION","0.83+2.0");
 
 // Init the hooks of monitoring
 function plugin_init_monitoring() {
@@ -48,13 +48,9 @@ function plugin_init_monitoring() {
    
    $PLUGIN_HOOKS['csrf_compliant']['monitoring'] = true;
    
-   if (!strstr($_SERVER["PHP_SELF"], 'xmlrpc')) {
-      echo "
-       <!--[if IE]><script type='text/javascript' src='".GLPI_ROOT."/plugins/monitoring/lib/canvas/excanvas.js'></script><![endif]-->
-       <script type='text/javascript' src='".GLPI_ROOT."/plugins/monitoring/lib/canvas/canvasXpress.min.js'></script>";
-   }
-   
    $PLUGIN_HOOKS['change_profile']['monitoring'] = array('PluginMonitoringProfile','changeprofile');
+   
+   $PLUGIN_HOOKS['csrf_compliant']['monitoring'] = true;
    
    $Plugin = new Plugin();
    if ($Plugin->isActivated('monitoring')) {
@@ -63,13 +59,14 @@ function plugin_init_monitoring() {
          
          Plugin::registerClass('PluginMonitoringProfile',
               array('addtabon' => array('Profile')));
-      
+         Plugin::registerClass('PluginMonitoringComponent');
          
          $PLUGIN_HOOKS['use_massive_action']['monitoring']=1;
          $PLUGIN_HOOKS['add_css']['monitoring']="css/views.css";
          
          $plugin = new Plugin();
-         if ($plugin->isActivated('monitoring')) {
+         if ($plugin->isActivated('monitoring')
+                 AND isset($_SESSION['glpi_plugin_monitoring_profile'])) {
             
             $PLUGIN_HOOKS['menu_entry']['monitoring'] = true;
          }
@@ -82,8 +79,8 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['headings_action']['monitoring'] = 'plugin_headings_actions_monitoring';
          
          // Icons add, search...
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['commands'] = 'front/command.form.php?add=1';
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['commands'] = 'front/command.php';
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['command'] = 'front/command.form.php?add=1';
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['command'] = 'front/command.php';
 
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['checks'] = 'front/check.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['checks'] = 'front/check.php';
@@ -103,9 +100,6 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['displayview'] = 'front/displayview.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['displayview'] = 'front/displayview.php';
          
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['rrdtemplates'] = 'front/rrdtemplate.form.php?add=1';
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['rrdtemplates'] = 'front/rrdtemplate.php';
-
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['PluginMonitoringRealm'] = 'front/realm.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['PluginMonitoringRealm'] = 'front/realm.php';
 
@@ -148,20 +142,26 @@ function plugin_init_monitoring() {
          
          // Define hook item
          $rule_check = array('PluginMonitoringComponentscatalog_rule','isThisItemCheckRule');
+         $rule_check_networkport = array('PluginMonitoringComponentscatalog_rule', 'isThisItemCheckRuleNetworkport');
          $PLUGIN_HOOKS['item_add']['monitoring'] = 
                                  array('Computer'         => $rule_check,
                                        'NetworkEquipment' => $rule_check,
                                        'Printer'          => $rule_check,
                                        'Peripheral'       => $rule_check,
                                        'Phone'            => $rule_check,
+                                       'PluginMonitoringNetworkport' => $rule_check_networkport,
                                        'PluginMonitoringComponentscatalog_rule' =>
-                                             array('PluginMonitoringComponentscatalog_rule','getItemsDynamicly'));
+                                             array('PluginMonitoringComponentscatalog_rule','getItemsDynamicly'),
+                                       'PluginMonitoringComponentscatalog_Host' =>
+                                             array('PluginMonitoringHost','addHost'));
          $PLUGIN_HOOKS['item_update']['monitoring'] = 
                                  array('Computer'         => $rule_check,
                                        'NetworkEquipment' => $rule_check,
                                        'Printer'          => $rule_check,
                                        'Peripheral'       => $rule_check,
                                        'Phone'            => $rule_check,
+                                       'PluginMonitoringComponentscatalog' =>
+                                             array('PluginMonitoringComponentscatalog','replayRulesCatalog'),
                                        'PluginMonitoringComponentscatalog_rule' =>
                                              array('PluginMonitoringComponentscatalog_rule','getItemsDynamicly'));
          $PLUGIN_HOOKS['item_purge']['monitoring'] = 
@@ -170,6 +170,7 @@ function plugin_init_monitoring() {
                                        'Printer'          => $rule_check,
                                        'Peripheral'       => $rule_check,
                                        'Phone'            => $rule_check,
+                                       'PluginMonitoringNetworkport' => $rule_check_networkport,
                                        'PluginMonitoringComponentscatalog_rule' =>
                                              array('PluginMonitoringComponentscatalog_rule','getItemsDynamicly'),
                                        'PluginMonitoringComponentscatalog_Host' =>
@@ -197,7 +198,7 @@ function plugin_version_monitoring() {
                 'version'        => PLUGIN_MONITORING_VERSION,
                 'author'         =>'<a href="mailto:d.durieux@siprossii.com">David DURIEUX</a>',
                 'homepage'       =>'https://forge.indepnet.net/projects/monitoring/',
-                'minGlpiVersion' => '0.83'
+                'minGlpiVersion' => '0.83.3'
    );
 }
 
@@ -206,7 +207,7 @@ function plugin_version_monitoring() {
 function plugin_monitoring_check_prerequisites() {
 
    if (version_compare(GLPI_VERSION,'0.84','lt') || version_compare(GLPI_VERSION,'0.85','ge')) {
-      echo "error, not compatible with this GLPI version";
+      echo "error, require GLPI 0.84.x";
    } else {
       return true;
    }

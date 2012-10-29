@@ -60,13 +60,13 @@ class PluginMonitoringDisplayview extends CommonDBTM {
 
 
    static function canCreate() {
-      return haveRight('computer', 'w');
+      return Session::haveRight('computer', 'w');
    }
 
 
    
    static function canView() {
-      return haveRight('computer', 'r');
+      return Session::haveRight('computer', 'r');
    }
 
    
@@ -92,7 +92,9 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       global $CFG_GLPI;
 
       $ong = array();
-      $ong[1] = 'items';
+      if ($this->fields['id'] > 0) {
+         $ong[1] = 'items';
+      }
       
       return $ong;
    }
@@ -115,6 +117,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
          $this->getFromDB($items_id);
       } else {
          $this->getEmpty();
+         $this->fields['width'] = 950;
       }
 
       $this->showTabs($options);
@@ -160,7 +163,11 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       echo "</tr>";
       
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='2'>";
+      echo "<td>";
+      echo $LANG['plugin_monitoring']['weathermap'][3]." (px) :";
+      echo "</td>";
+      echo "<td>";
+      Dropdown::showInteger("width", $this->fields['width'], 950, 3000);
       echo "</td>";
       echo "<td>";
       echo $LANG['common'][60];

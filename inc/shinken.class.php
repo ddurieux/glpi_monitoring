@@ -53,6 +53,7 @@ class PluginMonitoringShinken extends CommonDBTM {
    }
 
 
+   
    function constructFile($name, $array) {
       $config = '';
       $config .= "define ".$name."{\n";
@@ -70,6 +71,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       return $config;
    }
 
+   
 
    function generateCommandsCfg($file=0) {
       
@@ -114,9 +116,13 @@ class PluginMonitoringShinken extends CommonDBTM {
       $pmComponent   = new PluginMonitoringComponent();
       $pmEntity      = new PluginMonitoringEntity();
       $pmHostconfig  = new PluginMonitoringHostconfig();
+      $pmHost  = new PluginMonitoringHost();
       $calendar      = new Calendar();
       $pmRealm       = new PluginMonitoringRealm();
       $networkEquipment = new NetworkEquipment();
+      $pmContact_Item  = new PluginMonitoringContact_Item();
+      $profile_User = new Profile_User();
+      $user = new User();
 
       $a_hosts = array();
       $i=0;
@@ -125,8 +131,17 @@ class PluginMonitoringShinken extends CommonDBTM {
       
       $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
       
-      $command_ping = current($pmCommand->find("`command_name`='check_host_alive'", "", 1));
-      $a_component = current($pmComponent->find("`plugin_monitoring_commands_id`='".$command_ping['id']."'", "", 1));
+      // * Prepare contacts
+      $a_contacts_entities = array();
+      $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
+         AND `users_id`>0");
+      foreach ($a_list_contact as $data) {
+         $contactentities = getSonsOf('glpi_entities', $data['entities_id']);
+         if (isset($a_contacts_entities[$data['items_id']][$data['users_id']])) {
+            $contactentities = array_merge($contactentities, $a_contacts_entities[$data['items_id']][$data['users_id']]);
+         }
+         $a_contacts_entities[$data['items_id']][$data['users_id']] = $contactentities;
+      }
 
       $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
          GROUP BY `itemtype`, `items_id`";
@@ -142,7 +157,20 @@ class PluginMonitoringShinken extends CommonDBTM {
 
                $a_hosts[$i]['host_name'] = $classname."-".$data['items_id']."-".preg_replace("/[^A-Za-z0-9]/","",$class->fields['name']);
                $a_hosts_found[$a_hosts[$i]['host_name']] = 1;
-               $a_hosts[$i]['alias'] = $a_hosts[$i]['host_name'];
+               $a_hosts[$i]['alias'] = preg_replace("/[^A-Za-z0-9]/","",$class->fields['name'])." / ".$classname."-".$data['items_id'];
+               if (isset($class->fields['networkequipmenttypes_id'])) {                  
+                  if ($class->fields['networkequipmenttypes_id'] > 0) {
+                     $a_hosts[$i]['alias'] .= " (".Dropdown::getDropdownName("glpi_networkequipmenttypes", $class->fields['networkequipmenttypes_id']).")";
+                  }
+               } else if (isset($class->fields['computertypes_id'])) {
+                  if ($class->fields['computertypes_id'] > 0) {
+                     $a_hosts[$i]['alias'] .= " (".Dropdown::getDropdownName("glpi_computertypes", $class->fields['computertypes_id']).")";
+                  }
+               } else if (isset($class->fields['printertypes_id'])) {
+                  if ($class->fields['printertypes_id'] > 0) {
+                     $a_hosts[$i]['alias'] .= " (".Dropdown::getDropdownName("glpi_printertypes", $class->fields['printertypes_id']).")";
+                  }
+               }
                $ip = PluginMonitoringHostaddress::getIp($data['items_id'], $data['itemtype'], $class->fields['name']);
 
                $a_hosts[$i]['address'] = $ip;
@@ -160,6 +188,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                               $networkEquipment->getFromDB($networkPort->fields['items_id']);
                               $parent = 'NetworkEquipment-'.$networkPort->fields['items_id'].'-'.preg_replace("/[^A-Za-z0-9]/","",$networkEquipment->fields['name']);
                               $a_parents_found[$parent] = 1;
+                              $pmHost->updateDependencies($classname, $data['items_id'], 'NetworkEquipment-'.$networkPort->fields['items_id']);
                            }
                         }
                      }
@@ -169,12 +198,16 @@ class PluginMonitoringShinken extends CommonDBTM {
 
                $a_fields = array();
 
-               $a_fields = $a_component;
-
                $pmCommand->getFromDB($pmHostconfig->getValueAncestor('plugin_monitoring_commands_id', 
                                                                                     $class->fields['entities_id'],
                                                                                     $classname,
                                                                                     $class->getID()));
+
+               $a_component = current($pmComponent->find("`plugin_monitoring_commands_id`='".$pmCommand->fields['id']."'", "", 1));
+               
+               $a_fields = $a_component;
+
+               
                $a_hosts[$i]['check_command'] = $pmCommand->fields['command_name'];
                   $pmCheck->getFromDB($pmHostconfig->getValueAncestor('plugin_monitoring_checks_id', 
                                                                                      $class->fields['entities_id'],
@@ -197,9 +230,42 @@ class PluginMonitoringShinken extends CommonDBTM {
                                                                                     $classname,
                                                                                     $class->getID()));
                $a_hosts[$i]['realm'] = $pmRealm->fields['name'];
-               $a_hosts[$i]['contacts'] = '';
                $a_hosts[$i]['process_perf_data'] = '1';
                $a_hosts[$i]['notification_interval'] = '30';
+               // For contact check if a service with this component
+                  $a_hosts[$i]['contacts'] = '';
+                  $querycont = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+                     LEFT JOIN `glpi_plugin_monitoring_services`
+                        ON `plugin_monitoring_componentscatalogs_hosts_id`
+                           = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
+                     WHERE `plugin_monitoring_components_id`='".$a_component['id']."'
+                        AND `items_id`='".$data['items_id']."'
+                        AND `itemtype`='".$data['itemtype']."'
+                        LIMIT 1";
+                  $resultcont = $DB->query($querycont);
+                  if ($DB->numrows($resultcont) != 0) {
+                     $a_componentscatalogs_hosts = $DB->fetch_assoc($resultcont);
+                        // Notification interval
+                        $pmComponentscatalog = new PluginMonitoringComponentscatalog();
+                        $pmComponentscatalog->getFromDB($a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']);
+                        $a_hosts[$i]['notification_interval'] = $pmComponentscatalog->fields['notification_interval'];
+                     $a_contacts = array();
+                     $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
+                        AND `items_id`='".$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']."'");
+                     foreach ($a_list_contact as $data_contact) {
+                        if (isset($a_contacts_entities[$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']][$data_contact['users_id']])) {
+                           if (in_array($class->fields['entities_id'], $a_contacts_entities[$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']][$data_contact['users_id']])) {
+                              $user->getFromDB($data_contact['users_id']);
+                              $a_contacts[] = $user->fields['name'];
+                           }
+                        }
+                     }
+                     if (count($a_contacts) > 0) {
+                        $a_contacts_unique = array_unique($a_contacts);
+                        $a_hosts[$i]['contacts'] = implode(',', $a_contacts_unique);
+                     }
+                  }
+               
                if ($calendar->getFromDB($a_fields['calendars_id'])) {
                   $a_hosts[$i]['notification_period'] = $calendar->fields['name'];
                } else {
@@ -247,9 +313,13 @@ class PluginMonitoringShinken extends CommonDBTM {
       $pmComponent             = new PluginMonitoringComponent();
       $pmEntity                = new PluginMonitoringEntity();
       $pmContact_Item          = new PluginMonitoringContact_Item();
+      $pmService               = new PluginMonitoringService();
+      $pmComponentscatalog     = new PluginMonitoringComponentscatalog();
       $calendar                = new Calendar();
       $user                    = new User();
       $pmLog                   = new PluginMonitoringLog();
+      $profile_User = new Profile_User();
+      
       if (isset($_SERVER['HTTP_USER_AGENT'])
               AND strstr($_SERVER['HTTP_USER_AGENT'], 'xmlrpclib.py')) {
          if (!isset($_SESSION['glpi_currenttime'])) {
@@ -267,11 +337,25 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_services = array();
       $i=0;
       
+      // * Prepare contacts
+      $a_contacts_entities = array();
+      $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
+         AND `users_id`>0");
+      foreach ($a_list_contact as $data) {
+         $contactentities = getSonsOf('glpi_entities', $data['entities_id']);
+         if (isset($a_contacts_entities[$data['items_id']][$data['users_id']])) {
+            $contactentities = array_merge($contactentities, $a_contacts_entities[$data['items_id']][$data['users_id']]);
+         }
+         $a_contacts_entities[$data['items_id']][$data['users_id']] = $contactentities;
+      }
+      
       $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
       
       $query = "SELECT * FROM `glpi_plugin_monitoring_services`";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
+         $notadd = 0;
+         $notadddescription = '';
          $a_component = current($pmComponent->find("`id`='".$data['plugin_monitoring_components_id']."'", "", 1));
          $a_hostname = array();
          $queryh = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts` 
@@ -308,6 +392,10 @@ class PluginMonitoringShinken extends CommonDBTM {
             preg_match_all("/\\$(ARG\d+)\\$/", $pMonitoringCommand->fields['command_line'], $array);
             sort($array[0]);
             $a_arguments = importArrayFromDB($a_component['arguments']);
+            $a_argumentscustom = importArrayFromDB($data['arguments']);
+            foreach ($a_argumentscustom as $key=>$value) {
+               $a_arguments[$key] = $value;
+            }
             $args = '';
             foreach ($array[0] as $arg) {
                if ($arg != '$PLUGINSDIR$'
@@ -320,8 +408,33 @@ class PluginMonitoringShinken extends CommonDBTM {
                   } else {
                      if (strstr($a_arguments[$arg], "[[HOSTNAME]]")) {
                         $a_arguments[$arg] = str_replace("[[HOSTNAME]]", $hostname, $a_arguments[$arg]);
+                     } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTDESCR]]")){
+                        if (class_exists("PluginFusinvsnmpNetworkPort")) {
+                           $pfNetworkPort = new PluginFusinvsnmpNetworkPort();
+                           $pfNetworkPort->loadNetworkport($data['networkports_id']);
+                           $descr = '';
+                           $descr = $pfNetworkPort->getValue("ifdescr");
+                           $a_arguments[$arg] = str_replace("[[NETWORKPORTDESCR]]", $descr, $a_arguments[$arg]);
+                        }
+                     } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTNUM]]")){
+                        $networkPort = new NetworkPort();
+                        $networkPort->getFromDB($data['networkports_id']);
+                        $logicalnum = $pfNetworkPort->fields['logical_number'];
+                        $a_arguments[$arg] = str_replace("[[NETWORKPORTNUM]]", $logicalnum, $a_arguments[$arg]);
+                     } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTNAME]]")){
+                        $networkPort = new NetworkPort();
+                        $networkPort->getFromDB($data['networkports_id']);
+                        $portname = $pfNetworkPort->fields['name'];
+                        $a_arguments[$arg] = str_replace("[[NETWORKPORTNAME]]", $portname, $a_arguments[$arg]);
                      } else if (strstr($a_arguments[$arg], "[")) {
                         $a_arguments[$arg] = PluginMonitoringService::convertArgument($data['id'], $a_arguments[$arg]);
+                     }
+                     if ($a_arguments == '') {
+                        $notadd = 1;
+                        if ($notadddescription != '') {
+                           $notadddescription .= ", ";
+                        }
+                        $notadddescription .= "Argument ".$a_arguments[$arg]." Not have value";
                      }
                      $args .= '!'.$a_arguments[$arg];
                      if ($a_arguments[$arg] == ''
@@ -341,18 +454,24 @@ class PluginMonitoringShinken extends CommonDBTM {
             } else {
                $a_services[$i]['check_command'] = $pMonitoringCommand->fields['command_name'].$args;
             }
+            // * Contacts
                $a_contacts = array();
                $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
                   AND `items_id`='".$plugin_monitoring_componentscatalogs_id."'");
                foreach ($a_list_contact as $data_contact) {
-//                  $pmContact->getFromDB($data_contact['plugin_monitoring_contacts_id']);
-                  $user->getFromDB($data_contact['users_id']);
-                  $a_contacts[] = $user->fields['name'];
+                  if (isset($a_contacts_entities[$plugin_monitoring_componentscatalogs_id][$data_contact['users_id']])) {
+                     if (in_array($data['entities_id'], $a_contacts_entities[$plugin_monitoring_componentscatalogs_id][$data_contact['users_id']])) {
+      //                  $pmContact->getFromDB($data_contact['plugin_monitoring_contacts_id']);
+                        $user->getFromDB($data_contact['users_id']);
+                        $a_contacts[] = $user->fields['name'];
+                     }
+                  }
                }
-            $a_services[$i]['contacts'] = implode(',', $a_contacts);
+            $a_contacts_unique = array_unique($a_contacts);
+            $a_services[$i]['contacts'] = implode(',', $a_contacts_unique);
 
             // ** If shinken not use templates or template not defined : 
-            if (isset($_SESSION['plugin_monitoring']['servicetemplates'][$a_component['id']])) {
+            if (!isset($_SESSION['plugin_monitoring']['servicetemplates'][$a_component['id']])) {
                   $pMonitoringCheck->getFromDB($a_component['plugin_monitoring_checks_id']);
                $a_services[$i]['check_interval'] = $pMonitoringCheck->fields['check_interval'];
                $a_services[$i]['retry_interval'] = $pMonitoringCheck->fields['retry_interval'];
@@ -377,7 +496,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_services[$i]['freshness_threshold'] = '1';
                $a_services[$i]['notifications_enabled'] = '1';
                $a_services[$i]['event_handler_enabled'] = '0';
-               $a_services[$i]['event_handler'] = 'super_event_kill_everyone!DIE';
+               //$a_services[$i]['event_handler'] = 'super_event_kill_everyone!DIE';
                $a_services[$i]['flap_detection_enabled'] = '1';
                $a_services[$i]['failure_prediction_enabled'] = '1';
                $a_services[$i]['retain_status_information'] = '1';
@@ -385,8 +504,22 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_services[$i]['is_volatile'] = '0';
                $a_services[$i]['_httpstink'] = 'NO';
             }
+            $pmComponentscatalog->getFromDB($plugin_monitoring_componentscatalogs_id);
+            if ($pmComponentscatalog->fields['notification_interval'] != '30') {
+               $a_services[$i]['notification_interval'] = $pmComponentscatalog->fields['notification_interval'];
+            }
             
-            $i++;
+            if ($notadd == '1') {
+               unset($a_services[$i]);
+               $input = array();
+               $input['id'] = $data['id'];
+               $input['event'] = $notadddescription;
+               $input['state'] = "CRITICAL";
+               $input['state_type'] = "HARD";
+               $pmService->update($input);
+            } else {
+               $i++;
+            }
          }
       }
 
@@ -478,7 +611,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_services[$i]['freshness_threshold'] = '1';
                $a_services[$i]['notifications_enabled'] = '1';
                $a_services[$i]['event_handler_enabled'] = '0';
-               $a_services[$i]['event_handler'] = 'super_event_kill_everyone!DIE';
+               //$a_services[$i]['event_handler'] = 'super_event_kill_everyone!DIE';
                $a_services[$i]['flap_detection_enabled'] = '1';
                $a_services[$i]['failure_prediction_enabled'] = '1';
                $a_services[$i]['retain_status_information'] = '1';
@@ -548,7 +681,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_servicetemplates[$i]['freshness_threshold'] = '1';
          $a_servicetemplates[$i]['notifications_enabled'] = '1';
          $a_servicetemplates[$i]['event_handler_enabled'] = '0';
-         $a_servicetemplates[$i]['event_handler'] = 'super_event_kill_everyone!DIE';
+         //$a_servicetemplates[$i]['event_handler'] = 'super_event_kill_everyone!DIE';
          $a_servicetemplates[$i]['flap_detection_enabled'] = '1';
          $a_servicetemplates[$i]['failure_prediction_enabled'] = '1';
          $a_servicetemplates[$i]['retain_status_information'] = '1';
@@ -649,9 +782,30 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_pmcontact = current($pmContacttemplate->find("`is_default`='1'", "", 1));
       } else {
          $a_pmcontact = current($pmContacttemplate->find("`id`='".$a_pmcontact['plugin_monitoring_contacttemplates_id']."'", "", 1));
-      }     
+      }
       $a_contacts[$i]['contact_name'] = $user->fields['name'];
       $a_contacts[$i]['alias'] = $user->getName();
+      if (!isset($a_pmcontact['host_notification_period'])) {
+         $a_calendars = current($calendar->find("", "", 1));
+         $a_pmcontact['host_notifications_enabled'] = '0';
+         $a_pmcontact['service_notifications_enabled'] = '0';
+         $a_pmcontact['service_notification_period'] = $a_calendars['id'];
+         $a_pmcontact['host_notification_period'] = $a_calendars['id'];
+         $a_pmcontact['service_notification_options_w'] = '0';
+         $a_pmcontact['service_notification_options_u'] = '0';
+         $a_pmcontact['service_notification_options_c'] = '0';
+         $a_pmcontact['service_notification_options_r'] = '0';
+         $a_pmcontact['service_notification_options_f'] = '0';
+         $a_pmcontact['service_notification_options_n'] = '0';
+         $a_pmcontact['host_notification_options_d'] = '0';
+         $a_pmcontact['host_notification_options_u'] = '0';
+         $a_pmcontact['host_notification_options_r'] = '0';
+         $a_pmcontact['host_notification_options_f'] = '0';
+         $a_pmcontact['host_notification_options_s'] = '0';
+         $a_pmcontact['host_notification_options_n'] = '0';
+         $a_pmcontact['service_notification_commands'] = '2';
+         $a_pmcontact['host_notification_commands'] = '1';
+      }
       $a_contacts[$i]['host_notifications_enabled'] = $a_pmcontact['host_notifications_enabled'];
       $a_contacts[$i]['service_notifications_enabled'] = $a_pmcontact['service_notifications_enabled'];
          $calendar->getFromDB($a_pmcontact['service_notification_period']);
@@ -694,8 +848,18 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_contacts[$i]['service_notification_commands'] = $pmNotificationcommand->fields['command_name'];
          $pmNotificationcommand->getFromDB($a_pmcontact['host_notification_commands']);
       $a_contacts[$i]['host_notification_commands'] = $pmNotificationcommand->fields['command_name'];
-      $a_contacts[$i]['email'] = $user->fields['email'];
+        
+      // Get first email
+      $a_emails = UserEmail::getAllForUser($users_id);
+      $first = 0;
+      foreach ($a_emails as $email) {
+         if ($first == 0) {
+            $a_contacts[$i]['email'] = $email;
+         }
+         $first++;
+      }
       $a_contacts[$i]['pager'] = $user->fields['phone'];
+      
       return $a_contacts;
    }
 

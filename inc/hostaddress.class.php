@@ -61,13 +61,13 @@ class PluginMonitoringHostaddress extends CommonDBTM {
 
 
    static function canCreate() {
-      return haveRight('computer', 'w');
+      return Session::haveRight('computer', 'w');
    }
 
 
    
    static function canView() {
-      return haveRight('computer', 'r');
+      return Session::haveRight('computer', 'r');
    }
 
    

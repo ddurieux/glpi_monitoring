@@ -80,8 +80,7 @@ class PluginMonitoringConfig extends CommonDBTM {
       $result = $DB->query($query);
       if ($DB->numrows($result) == '0') {
          $input = array();
-         $input['rrdtoolpath'] = '/usr/bin/';
-         $input['timezones'] = 0;
+         $input['timezones'] = '["0"]';
          $input['logretention'] = 30;
          $this->add($input);         
       }
@@ -107,7 +106,6 @@ class PluginMonitoringConfig extends CommonDBTM {
          
       } else {
          $input = array();
-         $input['rrdtoolpath'] = "/usr/local/bin/";
          $this->add($input);
          $this->getFromDB("1");
       }
@@ -117,14 +115,14 @@ class PluginMonitoringConfig extends CommonDBTM {
       $this->getFromDB($items_id);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Path of RRDtool', 'monitoring')."&nbsp;:</td>";
+      echo "<td>".$LANG['plugin_monitoring']['config'][3]."&nbsp;:</td>";
       echo "<td align='center'>";
-      echo "<input name='rrdtoolpath' type='text' value='".$this->fields['rrdtoolpath']."' />";
+      Dropdown::showInteger("logretention", $this->fields['logretention'], 0, 1000);
       echo "</td>";
-      echo "<td rowspan='2'>";
+      echo "<td>";
       echo __('Timezones (for graph)', 'monitoring')."&nbsp:";
       echo "</td>";
-      echo "<td rowspan='2'>";
+      echo "<td>";
          $a_timezones = $this->getTimezones();
       
          $a_timezones_selected = importArrayFromDB($this->fields['timezones']);
@@ -177,27 +175,21 @@ class PluginMonitoringConfig extends CommonDBTM {
          echo "</table>";
       echo "</td>";
       echo "</tr>";
-      
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Logs retention (in days)', 'monitoring')."&nbsp;:</td>";
-      echo "<td align='center'>";
-      Dropdown::showInteger("logretention", $this->fields['logretention'], 0, 1000);
-      echo "</td>";
-      echo "</tr>";
 
       $this->showFormButtons($options);
 
       return true;
    }
-
    
    
-   static function getRRDPath() {
+   
+   static function getPHPPath() {
       
       $pmConfig = new PluginMonitoringConfig();
       $pmConfig->getFromDB("1");
-      return $pmConfig->getField("rrdtoolpath");
+      return $pmConfig->getField("phppath");
    }
+   
    
    
    static function getTimezones() {

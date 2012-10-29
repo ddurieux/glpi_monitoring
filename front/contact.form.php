@@ -68,12 +68,6 @@ if (isset($_POST["add"])) {
    Html::back();
 }
 
-//if (isset($_GET["id"])) {
-//   $pmHost->showForm($_GET["id"]);
-//} else {
-//   $pmHost->showForm("");
-//}
-
 Html::footer();
 
 ?>

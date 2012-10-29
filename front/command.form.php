@@ -50,7 +50,11 @@ Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
 
 $pMonitoringCommand = new PluginMonitoringCommand();
 
-if (isset ($_POST["add"])) {
+if (isset($_POST["copy"])) {
+   $pMonitoringCommand->showForm("", array(), $_POST);
+   Html::footer();
+   exit;
+} else if (isset ($_POST["add"])) {
    $_POST = $pMonitoringCommand->convertPostdata($_POST);
    $pMonitoringCommand->add($_POST);
    Html::back();

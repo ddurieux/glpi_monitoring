@@ -53,16 +53,10 @@ class PluginMonitoringService extends CommonDBTM {
    
    
    static function canCreate() {
-      return haveRight('computer', 'w');
+      return Session::haveRight('computer', 'w');
    }
 
 
-   
-   static function canView() {
-      return haveRight('computer', 'r');
-   }
-
-   
    
    function getSearchOptions() {
       $tab = array();
@@ -83,7 +77,8 @@ class PluginMonitoringService extends CommonDBTM {
       $tab[3]['table'] = $this->getTable();
       $tab[3]['field'] = 'state';
       $tab[3]['name']  = "Status";
-      $tab[3]['searchtype'] = 'equals';
+      $tab[3]['datatype'] = 'string';
+      //$tab[3]['searchtype'] = 'equals';
       
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'last_check';
@@ -105,6 +100,11 @@ class PluginMonitoringService extends CommonDBTM {
       $tab[7]['name'] = __('Component', 'monitoring');
       $tab[7]['datatype'] = 'itemlink';
       $tab[7]['itemlink_type']  = 'PluginMonitoringComponent';
+      
+      $tab[8]['table'] = "glpi_plugin_monitoring_componentscatalogs";
+      $tab[8]['field'] = 'name';
+      $tab[8]['name'] = $LANG['plugin_monitoring']['componentscatalog'][0];
+      $tab[8]['datatype'] = 'itemlink';
       
       $tab[20]['table'] = $this->getTable();
       $tab[20]['field'] = 'Computer';
@@ -179,7 +179,7 @@ class PluginMonitoringService extends CommonDBTM {
          echo "<table class='tab_cadre_fixe'>";
          
          echo "<tr class='tab_bg_1'>";
-         echo "<th colspan='8'>".$pmComponentscatalog->getTypeName()."&nbsp;:&nbsp;".$pmComponentscatalog->getLink()."</th>";
+         echo "<th colspan='12'>".$pmComponentscatalog->getTypeName()."&nbsp;:&nbsp;".$pmComponentscatalog->getLink()."</th>";
          echo "</tr>";
          
          echo "<tr class='tab_bg_1'>";
@@ -193,24 +193,33 @@ class PluginMonitoringService extends CommonDBTM {
          echo __('Components', 'monitoring');
          echo "</th>";
          echo "<th>";
-         echo $LANG['state'][0];
+         echo $LANG['plugin_monitoring']['component'][0];
          echo "</th>";
          echo "<th>";
-         echo $LANG['stats'][7];
+         echo $LANG['state'][0];
          echo "</th>";
-//         echo "<th>";
-//         echo __('Degraded mode', 'monitoring');
-//         echo "</th>";
          echo "<th>";
          echo __('Last check', 'monitoring');
          echo "</th>";
          echo "<th>";
          echo $LANG['rulesengine'][82];
-         echo "</th>";    
+         echo "</th>";
+         echo "<th>";
+         echo $LANG['plugin_monitoring']['host'][9];
+         echo "</th>";
+         echo "<th>".$LANG['plugin_monitoring']['availability'][1]." ".Html::showToolTip($LANG['plugin_monitoring']['availability'][0], array('display'=>false))."</th>";
+         echo "<th>".$LANG['plugin_monitoring']['availability'][2]." ".Html::showToolTip($LANG['plugin_monitoring']['availability'][0], array('display'=>false))."</th>";
+         echo "<th>".$LANG['plugin_monitoring']['availability'][3]." ".Html::showToolTip($LANG['plugin_monitoring']['availability'][0], array('display'=>false))."</th>";
+         echo "<th>";
+         echo $LANG['plugin_monitoring']['service'][4];
+         echo "</th>"; 
          echo "</tr>";
          
-         $querys = "SELECT * FROM `glpi_plugin_monitoring_services`
-            WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$data['id']."'";
+         $querys = "SELECT `glpi_plugin_monitoring_services`.* FROM `glpi_plugin_monitoring_services`
+            LEFT JOIN `glpi_plugin_monitoring_components`
+               on `plugin_monitoring_components_id` = `glpi_plugin_monitoring_components`.`id`
+            WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$data['id']."'
+               ORDER BY `name`";
          $results = $DB->query($querys);
          while ($datas=$DB->fetch_array($results)) {
             $this->getFromDB($datas['id']);            
@@ -232,7 +241,7 @@ class PluginMonitoringService extends CommonDBTM {
       
       echo "</table>";
 
-      echo "</form>";
+      Html::closeForm();
    }
    
    
@@ -365,7 +374,7 @@ class PluginMonitoringService extends CommonDBTM {
       if ($this->fields['plugin_monitoring_servicetemplates_id'] > 0) {
          echo Dropdown::getYesNo($pMonitoringServicetemplate->fields['active_checks_enabled']);
       } else {
-         echo Dropdown::showYesNo("active_checks_enabled", $pMonitoringServicedef->fields['active_checks_enabled']);
+         Dropdown::showYesNo("active_checks_enabled", $pMonitoringServicedef->fields['active_checks_enabled']);
       }
       echo "</td>";
       echo "</tr>";
@@ -379,7 +388,7 @@ class PluginMonitoringService extends CommonDBTM {
       if ($this->fields['plugin_monitoring_servicetemplates_id'] > 0) {
          echo Dropdown::getYesNo($pMonitoringServicetemplate->fields['passive_checks_enabled']);
       } else {
-         echo Dropdown::showYesNo("passive_checks_enabled", $pMonitoringServicedef->fields['passive_checks_enabled']);
+         Dropdown::showYesNo("passive_checks_enabled", $pMonitoringServicedef->fields['passive_checks_enabled']);
       }
       echo "</td>";
       // * calendar
@@ -627,16 +636,161 @@ class PluginMonitoringService extends CommonDBTM {
    
    
    
+   function showCustomArguments($services_id) {
+      global $LANG;
+      
+      $pmComponent = new PluginMonitoringComponent();
+      $pmCommand = new PluginMonitoringCommand();
+      $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+      
+      $this->getFromDB($services_id);
+      
+      $options = array();
+      $options['target'] = str_replace("service.form.php", "servicearg.form.php", $this->getFormURL());
+      
+      $this->showFormHeader($options);
+      
+      $pmComponentscatalog_Host->getFromDB($this->fields['plugin_monitoring_componentscatalogs_hosts_id']);
+      $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
+      $item = new $itemtype();
+      $item->getFromDB($pmComponentscatalog_Host->fields['items_id']);
+      echo "<tr>";
+      echo "<td>";
+      echo $item->getTypeName()." :";
+      echo "</td>";
+      echo "<td>";
+      echo $item->getLink();
+      echo "</td>";
+      echo "<td colspan='2'></td>";
+      echo "</tr>";
+      
+      $pmComponent->getFromDB($this->fields['plugin_monitoring_components_id']);
+      $pmCommand->getFromDB($pmComponent->fields['plugin_monitoring_commands_id']);
+      
+      $array = array();
+      $a_displayarg = array();
+      if (isset($pmCommand->fields['command_line'])) {
+         preg_match_all("/\\$(ARG\d+)\\$/", $pmCommand->fields['command_line'], $array);
+         $a_arguments = importArrayFromDB($pmComponent->fields['arguments']);
+         foreach ($array[0] as $arg) {
+            if (strstr($arg, "ARG")) {
+               $arg = str_replace('$', '', $arg);
+               if (!isset($a_arguments[$arg])) {
+                  $a_arguments[$arg] = '';
+               }
+               $a_displayarg[$arg] = $a_arguments[$arg];
+            }
+         }
+      }
+      if (count($a_displayarg) > 0) {
+         $a_tags = $pmComponent->tagsAvailable();
+         array_shift($a_tags);
+         $a_argtext = importArrayFromDB($pmCommand->fields['arguments']);
+         echo "<tr>";
+         echo "<th colspan='2'>".$LANG['plugin_monitoring']['component'][14]."</th>";
+         echo "<th colspan='2'>".$LANG['plugin_monitoring']['component'][11]."&nbsp;</th>";
+         echo "</tr>";
+          
+         foreach ($a_displayarg as $key=>$value) {
+         echo "<tr>";
+         echo "<td>";
+            if (isset($a_argtext[$key])
+                    AND $a_argtext[$key] != '') {
+               echo nl2br($a_argtext[$key])."&nbsp;:";
+            } else {
+               echo $LANG['plugin_monitoring']['service'][14]." (".$key.")&nbsp;:";
+            }
+            echo "</td>";
+            echo "<td>";
+            echo $value."<br/>";
+            echo "</td>";
+            if (count($a_tags) > 0) {
+               foreach ($a_tags as $key=>$value) {
+                  echo "<td class='tab_bg_3'>";
+                  echo "<strong>".$key."</strong>&nbsp;:";
+                  echo "</td>";
+                  echo "<td class='tab_bg_3'>";
+                  echo $value;
+                  echo "</td>";
+                  unset($a_tags[$key]);
+                  break;
+               }
+            } else {
+               echo "<td colspan='2'></td>";
+            }
+            echo "</tr>";
+         }
+         foreach ($a_tags as $key=>$value) {
+            echo "<tr>";
+            echo "<td colspan='2'></td>";
+            echo "<td class='tab_bg_3'>";
+            echo "<strong>".$key."</strong>&nbsp;:";
+            echo "</td>";
+            echo "<td class='tab_bg_3'>";
+            echo $value;
+            echo "</td>";
+            echo "</tr>";
+         }
+      }
+      
+      // customized arguments 
+      echo "<tr>";
+      echo "<th colspan='4'>".$LANG['plugin_monitoring']['service'][24]."</th>";
+      echo "</tr>";
+      $array = array();
+      $a_displayarg = array();
+      if (isset($pmCommand->fields['command_line'])) {
+         preg_match_all("/\\$(ARG\d+)\\$/", $pmCommand->fields['command_line'], $array);
+         $a_arguments = importArrayFromDB($this->fields['arguments']);
+         foreach ($array[0] as $arg) {
+            if (strstr($arg, "ARG")) {
+               $arg = str_replace('$', '', $arg);
+               if (!isset($a_arguments[$arg])) {
+                  $a_arguments[$arg] = '';
+               }
+               $a_displayarg[$arg] = $a_arguments[$arg];
+            }
+         }
+      }
+      $a_argtext = importArrayFromDB($pmCommand->fields['arguments']);
+      foreach ($a_displayarg as $key=>$value) {
+         echo "<tr>";
+         echo "<td>";
+         if (isset($a_argtext[$key])
+                 AND $a_argtext[$key] != '') {
+            echo nl2br($a_argtext[$key])."&nbsp;:";
+         } else {
+            echo $LANG['plugin_monitoring']['service'][14]." (".$key.")&nbsp;:";
+         }
+         echo "</td>";
+         echo "<td>";
+         echo "<input type='text' name='arg[".$key."]' value='".$value."'/><br/>";
+         echo "</td>";
+         echo "<td colspan='2'></td>";
+         echo "</tr>";
+      }
+      
+      $this->showFormButtons($options);
+      
+   }
+   
+   
+   
    function post_addItem() {
       global $DB;
 
       $pmLog = new PluginMonitoringLog();
+      $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
       
       $input = array();
       $input['itemtype'] = "PluginMonitoringService";
       $input['items_id'] = $this->fields['id'];
       $input['action'] = "add";
-      $input['value'] = "New service";
+      $pmComponentscatalog_Host->getFromDB($this->fields['plugin_monitoring_componentscatalogs_hosts_id']);
+      $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
+      $item = new $itemtype();
+      $item->getFromDB($pmComponentscatalog_Host->fields['items_id']);      
+      $input['value'] = "New service ".$this->fields['name']." for ".$item->getTypeName()." ".$item->getName();
       $pmLog->add($input);
    }
 
@@ -651,27 +805,39 @@ class PluginMonitoringService extends CommonDBTM {
       $input['itemtype'] = "PluginMonitoringService";
       $input['items_id'] = $this->fields['id'];
       $input['action'] = "delete";
-      $input['value'] = "Service xx of computer yy";
+
+      $itemtype = $_SESSION['plugin_monitoring_hosts']['itemtype'];
+      $item = new $itemtype();
+      $item->getFromDB($_SESSION['plugin_monitoring_hosts']['items_id']);
+      
+      $input['value'] = "Service ".$this->fields['name']." of ".$item->getTypeName()." ".$item->getName();
       $pmLog->add($input);
+      
+      unset($_SESSION['plugin_monitoring_hosts']);
    }
+   
 
    
    function showWidget($id, $time) {
       global $DB, $CFG_GLPI;
       
-      $pmRrdtool = new PluginMonitoringRrdtool();
       $pmComponent = new PluginMonitoringComponent();
       
       $this->getFromDB($id);
       $pmComponent->getFromDB($this->fields['plugin_monitoring_components_id']);
       
-      $pmRrdtool->displayGLPIGraph($pmComponent->fields['graph_template'], 
-                            "PluginMonitoringService", 
-                            $id, 
-                            "0", 
-                            $time);
-      return '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/send.php?file=PluginMonitoringService-'.$id.'-'.$time.'0.gif"/>';
-      
+      $pmServicegraph = new PluginMonitoringServicegraph();
+      ob_start();
+      $pmServicegraph->displayGraph($pmComponent->fields['graph_template'], 
+                                    "PluginMonitoringService", 
+                                    $id, 
+                                    "0", 
+                                    $time, 
+                                    "div", 
+                                    "475");
+      $chart = ob_get_contents();
+      ob_end_clean();
+      return $chart;
    }
    
 }

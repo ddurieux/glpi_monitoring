@@ -47,67 +47,19 @@ header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
 if (!isset($_POST["id"])) {
-   exit();
+   Html::redirect($CFG_GLPI["root_doc"]."/plugins/monitoring/front/display.php");
 }
+
 $pmDisplay = new PluginMonitoringDisplay();
 $pmBusinessrule = new PluginMonitoringBusinessrule();
 
 $pmDisplayview = new PluginMonitoringDisplayview();
 $a_views = $pmDisplayview->getViews();
 
-switch($_REQUEST['glpi_tab']) {
-   case -1 :
 
-      break;
+PluginMonitoringDisplay::addRemoveTab('remove', $_REQUEST['glpi_tab']);
 
-   case 1 :
-      $pmServicescatalog = new PluginMonitoringServicescatalog();
-      $pmDisplay->displayCounters("Businessrules");
-      $pmServicescatalog->showBAChecks();
-      break;
-   
-   case 2:
-      $pmComponentscatalog = new PluginMonitoringComponentscatalog();
-      $pmDisplay->displayCounters("Componentscatalog");
-      $pmComponentscatalog->showChecks();
-      break;
-
-   case 3:
-      $pmDisplay->displayCounters("Ressources");
-      // Manage search
-      $_GET = $_SESSION['plugin_monitoring']['service'];
-      if (isset($_GET['reset'])) {
-         unset($_SESSION['glpisearch']['PluginMonitoringService']);
-      }
-      Search::manageGetValues("PluginMonitoringService");
-      Search::showGenericSearch("PluginMonitoringService", $_SESSION['plugin_monitoring']['service']);
-
-      $pmDisplay->showBoard(950);
-      if (isset($_SESSION['glpisearch']['PluginMonitoringService']['reset'])) {
-         unset($_SESSION['glpisearch']['PluginMonitoringService']['reset']);
-      }
-      break;
-
-   case 4:
-PluginMonitoringCanvas::onload();
-
-$pmCanvas = new PluginMonitoringCanvas();
-$pmCanvas->show();
-      
-      break;
-
-   default :
-      $i = 5;
-      foreach ($a_views as $views_id=>$name) {
-         if ($_REQUEST['glpi_tab'] == $i) {
-            $pmDisplayview_item = new PluginMonitoringDisplayview_item();
-            $pmDisplayview_item->view($views_id);
-         }
-         $i++;
-      }
-      break;
-
-}
+PluginMonitoringDisplay::displayTab($_REQUEST['glpi_tab']);
 
 Html::ajaxFooter();
 

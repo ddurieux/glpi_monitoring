@@ -122,7 +122,7 @@ class PluginMonitoringEntity extends CommonDBTM {
       echo "</tr>";
       
       echo "</table>";
-      echo "</form>";
+      Html::closeForm();
 
       return true;
    }

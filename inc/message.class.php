@@ -61,38 +61,29 @@ class PluginMonitoringMessage extends CommonDBTM {
       $i = 0;
       if ($servicecatalog != ''
               OR $confchanges != '') {
-         echo "<table class='tab_cadre' width='600'>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<th><font class='red'>";
+         echo "<div class='msgboxmonit msgboxmonit-orange'>";
          if ($confchanges != '') {
             echo $confchanges;
             $i++;
          }
          if ($servicecatalog != '') {
             if($i > 0) {
-               echo "</font></th>";
-               echo "</tr>";
-               echo "<tr class='tab_bg_1'>";
-               echo "<th><font class='red'>";
+               echo "</div>";
+               echo "<div class='msgboxmonit msgboxmonit-orange'>";
             }
             echo $servicecatalog;
             $i++;
          }
          if ($runningshinken != '') {
             if($i > 0) {
-               echo "</font></th>";
-               echo "</tr>";
-               echo "<tr class='tab_bg_1'>";
-               echo "<th><font class='red'>";
+               echo "</div>";
+               echo "<div class='msgboxmonit msgboxmonit-red'>";
             }
             echo $runningshinken."!";
             $i++;
          }
-         echo "</font></th>";
-         echo "</tr>";
-         echo "</table>";
-         echo "<br/>";
-      }      
+         echo "</div>";
+      }
    }
    
    
@@ -149,17 +140,38 @@ class PluginMonitoringMessage extends CommonDBTM {
          AND `action`='delete'");
       $nb_add = countElementsInTable(getTableForItemType('PluginMonitoringLog'), "`id` > '".$id_restart."'
          AND `action`='add'");
-      
       if ($nb_delete > 0 OR $nb_add > 0) {
          $input .= __('The configuration has changed', 'monitoring')."<br/>";
          if ($nb_add > 0) {
-            $input .= $nb_add." ".__('resources added', 'monitoring');
+            $input .= "<a onClick='Ext.get(\"addelements\").toggle();'>".$nb_add."</a> ".__('resources added', 'monitoring');
+            echo "<div style='position:absolute;z-index:10;left: 50%; 
+               margin-left: -350px;margin-top:40px;display:none'
+               class='msgboxmonit msgboxmonit-grey' id='addelements'>";
+            $query = "SELECT * FROM `".getTableForItemType('PluginMonitoringLog')."`
+               WHERE `id` > '".$id_restart."' AND `action`='add'
+               ORDER BY `id` DESC";
+            $result = $DB->query($query);
+            while ($data=$DB->fetch_array($result)) {
+               echo "[".Html::convDateTime($data['date_mod'])."] Add ".$data['value']."<br/>";
+            }            
+            echo "</div>";
          }
          if ($nb_delete > 0) {
             if ($nb_add > 0) {
                $input .= " / ";
             }
-            $input .= $nb_delete." ".__('resources deleted', 'monitoring');
+            $input .= "<a onClick='Ext.get(\"deleteelements\").toggle();'>".$nb_delete."</a> ".__('resources deleted', 'monitoring');
+            echo "<div style='position:absolute;z-index:10;left: 50%; 
+               margin-left: -350px;margin-top:40px;display:none'
+               class='msgboxmonit msgboxmonit-grey' id='deleteelements'>";
+            $query = "SELECT * FROM `".getTableForItemType('PluginMonitoringLog')."`
+               WHERE `id` > '".$id_restart."' AND `action`='delete'
+               ORDER BY `id` DESC";
+            $result = $DB->query($query);
+            while ($data=$DB->fetch_array($result)) {
+               echo "[".Html::convDateTime($data['date_mod'])."] Delete ".$data['value']."<br/>";
+            }            
+            echo "</div>";
          }
          $input .= "<br/>";
          $input .= __('Restart Shinken to reload this new configuration', 'monitoring');

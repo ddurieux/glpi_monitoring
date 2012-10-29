@@ -71,13 +71,13 @@ class PluginMonitoringServicedef extends CommonDBTM {
 
 
    static function canCreate() {
-      return haveRight('computer', 'w');
+      return Session::haveRight('computer', 'w');
    }
 
 
    
    static function canView() {
-      return haveRight('computer', 'r');
+      return Session::haveRight('computer', 'r');
    }
 
    
@@ -199,7 +199,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
       if ($this->fields['is_template'] == '1') {
          echo Dropdown::getYesNo($this->fields['active_checks_enabled']);
       } else {
-         echo Dropdown::showYesNo("active_checks_enabled", $this->fields['active_checks_enabled']);
+         Dropdown::showYesNo("active_checks_enabled", $this->fields['active_checks_enabled']);
       }
       echo "</td>";
       echo "</tr>";
@@ -213,7 +213,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
       if ($this->fields['is_template'] == '1') {
          echo Dropdown::getYesNo($this->fields['passive_checks_enabled']);
       } else {
-         echo Dropdown::showYesNo("passive_checks_enabled", $this->fields['passive_checks_enabled']);
+         Dropdown::showYesNo("passive_checks_enabled", $this->fields['passive_checks_enabled']);
       }
       echo "</td>";
       // * calendar

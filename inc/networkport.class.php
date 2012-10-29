@@ -1,0 +1,151 @@
+<?php
+
+/*
+   ------------------------------------------------------------------------
+   Plugin Monitoring for GLPI
+   Copyright (C) 2011-2012 by the Plugin Monitoring for GLPI Development Team.
+
+   https://forge.indepnet.net/projects/monitoring/
+   ------------------------------------------------------------------------
+
+   LICENSE
+
+   This file is part of Plugin Monitoring project.
+
+   Plugin Monitoring for GLPI is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Affero General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
+
+   Plugin Monitoring for GLPI is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+   GNU Affero General Public License for more details.
+
+   You should have received a copy of the GNU Affero General Public License
+   along with Behaviors. If not, see <http://www.gnu.org/licenses/>.
+
+   ------------------------------------------------------------------------
+
+   @package   Plugin Monitoring for GLPI
+   @author    David Durieux
+   @co-author 
+   @comment   
+   @copyright Copyright (c) 2011-2012 Plugin Monitoring for GLPI team
+   @license   AGPL License 3.0 or (at your option) any later version
+              http://www.gnu.org/licenses/agpl-3.0-standalone.html
+   @link      https://forge.indepnet.net/projects/monitoring/
+   @since     2011
+ 
+   ------------------------------------------------------------------------
+ */
+
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
+}
+
+class PluginMonitoringNetworkport extends CommonDBTM {
+   
+   /**
+   * Get name of this type
+   *
+   *@return text name of this type by language of the user connected
+   *
+   **/
+   static function getTypeName($nb=0) {
+      global $LANG;
+
+      return $LANG['plugin_monitoring']['networkport'][0];
+   }
+   
+   
+   function canCreate() {
+      return PluginMonitoringProfile::haveRight("componentscatalog", 'w');
+   }
+
+
+   
+   function canView() {
+      return PluginMonitoringProfile::haveRight("componentscatalog", 'r');
+   }
+
+   
+
+   function getSearchOptions() {
+      global $LANG;
+
+      $tab = array();
+    
+      $tab['common'] = $LANG['plugin_monitoring']['networkport'][0];
+
+      $tab[1]['table']         = $this->getTable();
+      $tab[1]['field']         = 'id';
+      $tab[1]['name']          = $LANG['common'][2];
+      $tab[1]['massiveaction'] = false; // implicit field is id
+
+      $tab[2]['table'] = 'glpi_networkports';
+      $tab[2]['field'] = 'name';
+      $tab[2]['name']  = $LANG['networking'][4];
+      
+      $tab['networkequipment'] = $LANG['help'][26];
+      
+      $tab[3]['table']         = 'glpi_networkequipments';
+      $tab[3]['field']         = 'name';
+      $tab[3]['name']          = $LANG['common'][16];
+      $tab[3]['forcegroupby']  = true;
+
+      $tab[4]['table']         = 'glpi_states';
+      $tab[4]['field']         = 'name';
+      $tab[4]['name']          = $LANG['Menu'][28];
+      $tab[4]['forcegroupby']  = true;
+      
+      return $tab;
+   }
+
+   
+   
+   static function isMonitoredNetworkport($networkports_id) {
+      global $DB;
+      
+      $nb = countElementsInTable("glpi_plugin_monitoring_networkports", 
+              "`networkports_id` = '".$networkports_id."'");
+      if ($nb > 0) {
+         return true;
+      }
+      return false;
+   }
+
+   
+   
+   function updateNetworkports() {
+      global $DB;
+      
+      // Get all networkports in DB
+      $networkportInDB = array();
+      $query = "SELECT * FROM `".$this->getTable()."`
+         WHERE `itemtype`='".$_POST['itemtype']."'
+            AND `items_id`='".$_POST['items_id']."'";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         $networkportInDB[$data['networkports_id']] = $data['id'];
+      }
+      
+      foreach ($_POST['networkports_id'] as $networkports_id) {
+         if (isset($networkportInDB[$networkports_id])) {
+            unset($networkportInDB[$networkports_id]);
+         } else {
+            $input = array();
+            $input['itemtype'] = $_POST['itemtype'];
+            $input['items_id'] = $_POST['items_id'];
+            $input['networkports_id'] = $networkports_id;
+            $this->add($input);
+         }
+      }
+      // Remove old
+      foreach ($networkportInDB as $id) {
+         $this->delete(array('id'=>$id));
+      }
+   }   
+}
+
+?>

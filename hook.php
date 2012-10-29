@@ -66,10 +66,14 @@ function plugin_monitoring_install() {
 
    include (GLPI_ROOT . "/plugins/monitoring/install/update.php");
    $version_detected = pluginMonitoringGetCurrentVersion(PLUGIN_MONITORING_VERSION);
+
    if ((isset($version_detected)) 
            AND ($version_detected != PLUGIN_MONITORING_VERSION)
            AND $version_detected != '0') {
       pluginMonitoringUpdate($version_detected);
+   } else if ((isset($version_detected)) 
+           AND ($version_detected == PLUGIN_MONITORING_VERSION)) {
+      // Yet at right version
    } else {
       include (GLPI_ROOT . "/plugins/monitoring/install/install.php");
       pluginMonitoringInstall(PLUGIN_MONITORING_VERSION);
@@ -130,6 +134,12 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
          break;
       
       case 'Central':
+         if (isset($_SESSION['glpi_tabs']['central'])) {
+            $_SESSION['plugin_monitoring_displaytab'] = $_SESSION['glpi_tabs']['central'];
+         } else {
+            $_SESSION['plugin_monitoring_displaytab'] = '';
+         }
+         
          $array = array();
          if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
             $array[0] = __('Monitoring', 'monitoring')."-".__('Services catalog', 'monitoring');
@@ -139,7 +149,7 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
             $i = 5;
             $a_views = $pmDisplayview->getViews(1);
             foreach ($a_views as $name) {
-               $array[$i] = __('Monitoring', 'monitoring')."-".$name;
+               $array[$i] = __('Monitoring', 'monitoring')."-".htmlentities($name);
                $i++;
             }
          }
@@ -187,6 +197,11 @@ function plugin_headings_actions_monitoring($item) {
          break;
       
       case 'Central':
+         if ($_SESSION['plugin_monitoring_displaytab'] != $_SESSION['glpi_tabs']['central']) {
+            echo '<script language="javascript">window.location.reload();</script>';
+            exit;
+         }
+         
          $array = array();
          $array[0] = "plugin_headings_monitoring_dashboadservicecatalog";
          $pmDisplayview = new PluginMonitoringDisplayview();
@@ -208,25 +223,7 @@ function plugin_headings_actions_monitoring($item) {
 
 function plugin_headings_monitoring_status($item) {
 
-$plu = new PluginMonitoringHostevent();
-$plu->parseToRrdtool($item->fields['id'], get_class($item));
-$to = new PluginMonitoringRrdtool();
-//$to->displayGLPIGraph("Computer", $item->fields['id'], "3h");
-//$to->displayGLPIGraph("Computer", $item->fields['id']);
-//$to->displayGLPIGraph("Computer", $item->fields['id'], "1w");
-
-//echo "<img src='".GLPI_ROOT."/plugins/monitoring/front/send.php?file=Computer-".$item->fields['id']."-3h.gif' />";
-//echo "<br/>";
-//echo "<img src='".GLPI_ROOT."/plugins/monitoring/front/send.php?file=Computer-".$item->fields['id']."-1d.gif' />";
-
-$plus = new PluginMonitoringServiceevent();
-$plus->parseToRrdtool($item->fields['id'], get_class($item));
-$to = new PluginMonitoringRrdtool();
-
-echo "<br/>Http :<br/>";
-//$to->displayGLPIGraph("PluginMonitoringHost_Service", 5, "12h");
-//echo "<img src='".GLPI_ROOT."/plugins/monitoring/front/send.php?file=PluginMonitoringService-5-12h.gif' />";
-
+   echo "<br/>Http :<br/>";
    
    $pmHostevent = new PluginMonitoringHostevent();
    $pmHostevent->showForm($item);
@@ -236,7 +233,7 @@ echo "<br/>Http :<br/>";
 
 
 function plugin_headings_monitoring_resources($item) {
-
+   PluginMonitoringServicegraph::loadLib();
    $pmService = new PluginMonitoringService();
    $pmService->manageServices(get_class($item), $item->fields['id']);
    $pmHostconfig = new PluginMonitoringHostconfig();
@@ -286,7 +283,7 @@ function plugin_headings_monitoring_dashboadview($item) {
 
    $i = 5;
    foreach ($a_views as $views_id=>$name) {
-      if ($_SESSION['plugin_monitoring_displayviews_num'] == $i) {
+      if ($_SESSION['plugin_monitoring_displaytab'] == "monitoring_".$i) {
          $pmDisplayview_item = new PluginMonitoringDisplayview_item();
          $pmDisplayview_item->view($views_id);
       }
@@ -400,7 +397,35 @@ function plugin_monitoring_addLeftJoin($itemtype,$ref_table,$new_table,$linkfiel
 
    switch ($itemtype) {
       
-      
+      case 'PluginMonitoringNetworkport':
+         $already_link_tables_tmp = $already_link_tables;
+         array_pop($already_link_tables_tmp);
+         
+         $leftjoin_networkequipments = 1;
+         if (in_array('glpi_states', $already_link_tables_tmp)
+                 OR in_array('glpi_networkequipments', $already_link_tables_tmp)) {
+            $leftjoin_networkequipments = 0;
+         }
+         switch ($new_table.".".$linkfield) {
+
+            case "glpi_networkequipments.networkequipments_id" :
+               if ($leftjoin_networkequipments == '0') {
+                  return " ";
+               }
+               return " LEFT JOIN `glpi_networkequipments` ON (`glpi_plugin_monitoring_networkports`.`items_id` = `glpi_networkequipments`.`id` ) ";
+               break;
+            
+            case "glpi_states.states_id":
+               if ($leftjoin_networkequipments == '1') {
+                  return " LEFT JOIN `glpi_networkequipments` ON (`glpi_plugin_monitoring_networkports`.`items_id` = `glpi_networkequipments`.`id` ) 
+                     LEFT JOIN `glpi_states` ON (`glpi_networkequipments`.`states_id` = `glpi_states`.`id` ) ";
+               } else {
+                  return " LEFT JOIN `glpi_states` ON (`glpi_networkequipments`.`states_id` = `glpi_states`.`id` ) ";
+               }
+               break;
+            
+         }
+         break;
       
    }
    return "";

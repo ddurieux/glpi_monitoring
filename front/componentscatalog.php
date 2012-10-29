@@ -48,6 +48,9 @@ PluginMonitoringProfile::checkRight("componentscatalog","r");
 Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
        "monitoring", "componentscatalog");
 
+$pmMessage = new PluginMonitoringMessage();
+$pmMessage->getMessages();
+
 $dropdown = new PluginMonitoringComponentscatalog();
 include (GLPI_ROOT . "/front/dropdown.common.php");
 ?>

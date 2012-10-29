@@ -48,8 +48,6 @@ Html::header_nocache();
 
 // Make a select box
 if (class_exists($_POST["itemtype"]) && isset($_POST["hosts"])) {
-   $table = getTableForItemType($_POST["itemtype"]);
-   $pmService = new PluginMonitoringService();
    $a_services = array();
    $a_services[] = Dropdown::EMPTY_VALUE;
    $query = "SELECT `".getTableForItemType("PluginMonitoringService")."`.*
@@ -69,14 +67,15 @@ if (class_exists($_POST["itemtype"]) && isset($_POST["hosts"])) {
 
    if ($_POST['selectgraph'] == '1') {
 
-      $params = array('hosts'           => '__VALUE__',
-                      'rand'            => $rand);
+      $params = array('hosts'    => '__VALUE__',
+                      'entity'   => '',
+                      'rand'     => $rand);
 
       Ajax::updateItemOnSelectEvent("dropdown_plugin_monitoring_services_id".$rand, "show_extrainfos$rand",
                                   $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownDisplayviewExtrainfos.php",
                                   $params);
 
-      echo "<span id='show_extrainfos$rand'></span>";
+      echo "<br/><span id='show_extrainfos$rand'></span>";
    }
 }
 

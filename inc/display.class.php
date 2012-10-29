@@ -46,10 +46,86 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringDisplay extends CommonDBTM {
    
+   function menu() {
+      global $LANG,$CFG_GLPI;
+      
+      echo "<table class='tab_cadre_fixe' width='950'>";
+      echo "<tr class='tab_bg_3'>";
+      echo "<td>";
+      
+      echo "<table class='tab_cadre_fixe' width='950'>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<th width='33%' colspan='2'>";
+      if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
+         $this->displayPuce('display_servicescatalog');
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_servicescatalog.php'>";
+         echo $LANG['plugin_monitoring']['servicescatalog'][0];
+         echo "</a>";
+      }
+      echo "</th>";
+      echo "<th width='33%' colspan='2'>";
+      if (PluginMonitoringProfile::haveRight("componentscatalog", 'r')) {
+         $this->displayPuce('display_componentscatalog');
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_componentscatalog.php'>";
+         echo $LANG['plugin_monitoring']['componentscatalog'][0];
+         echo "</a>";
+      }
+      echo "</th>";
+      echo "<th colspan='2'>";
+      $this->displayPuce('service');
+      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/service.php'>";
+      echo $LANG['plugin_monitoring']['service'][21];
+      echo "</a>";
+      echo "</th>";
+//      echo "<th>";
+//      echo $LANG['plugin_monitoring']['host'][1];
+//      echo "</th>";
+      echo "</tr>";
+      echo "</table>";
+      
+      echo "<table class='tab_cadre_fixe' width='950'>";
+      echo "<tr class='tab_bg_1'>";
+      $i = 1;
+      if (PluginMonitoringProfile::haveRight("view", 'r')) {
+         $pmDisplayview = new PluginMonitoringDisplayview();
+         $a_views = $pmDisplayview->getViews();
+         foreach ($a_views as $views_id=>$name) {
+            if ($i == 6) {
+               echo "</tr>";
+               echo "<tr class='tab_bg_1'>";
+               $i = 1;
+            }
+            echo "<th width='20%'>";
+            $this->displayPuce('display_view', $views_id);
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_view.php?id=".$views_id."'>";
+            echo htmlentities($name);
+            echo "</a>";
+            echo "</th>";
+            $i++;
+         }
+      }
+      for ($i;$i < 6; $i++) {
+         echo "<th width='20%'>";
+         echo "</th>";
+      }
+      
+      echo "</tr>";
+      echo "</table>";
+      
+      echo "</td>";
+      echo "</tr>";
+      echo "</table>";
+   }
+   
+   
    
    function defineTabs($options=array()){
       global $CFG_GLPI;
 
+      if (isset($_GET['glpi_tab'])) {
+         Session::setActiveTab("PluginMonitoringDisplay",$_GET['glpi_tab']);
+      }
+      
       $pmDisplayview = new PluginMonitoringDisplayview();
       
       $ong = array();
@@ -64,8 +140,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
       if (PluginMonitoringProfile::haveRight("view", 'r')) {
          $i = 5;
          $a_views = $pmDisplayview->getViews();
-         foreach ($a_views as $views_id=>$name) {
-            $ong[$i] = $name;
+         foreach ($a_views as $name) {
+            $ong[$i] = htmlentities($name);
             $i++;
          }
       }
@@ -78,10 +154,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
       global $CFG_GLPI;
       
       // for objects not in table like central
+      $ID = 0;
       if (isset($this->fields['id'])) {
          $ID = $this->fields['id'];
-      } else {
-        $ID = 0;
       }
 
       $target         = $_SERVER['PHP_SELF'];
@@ -203,7 +278,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
       echo "<div id='tabspanel' class='center-h'></div>";
 
-      $active      = 0;
       $onglets     = $this->defineTabs($options);
       $display_all = true;
       if (isset($onglets['no_all_tab'])) {
@@ -255,22 +329,22 @@ class PluginMonitoringDisplay extends CommonDBTM {
       } else if ($limit == 'services') {
          $where = "`plugin_monitoring_services_id`>0 ";
       }      
-      if (isset($_SESSION['plugin_monitoring']['service']['field'])) {
-         foreach ($_SESSION['plugin_monitoring']['service']['field'] as $key=>$value) {
+      if (isset($_GET['field'])) {
+         foreach ($_GET['field'] as $key=>$value) {
             $wheretmp = '';
-            if (isset($_SESSION['plugin_monitoring']['service']['link'][$key])) {
-               $wheretmp.= " ".$_SESSION['plugin_monitoring']['service']['link'][$key]." ";
+            if (isset($_GET['link'][$key])) {
+               $wheretmp.= " ".$_GET['link'][$key]." ";
             }
             $wheretmp .= Search::addWhere(
                                    "",
                                    0,
                                    "PluginMonitoringService",
-                                   $_SESSION['plugin_monitoring']['service']['field'][$key],
-                                   $_SESSION['plugin_monitoring']['service']['searchtype'][$key],
-                                   $_SESSION['plugin_monitoring']['service']['contains'][$key]);
+                                   $_GET['field'][$key],
+                                   $_GET['searchtype'][$key],
+                                   $_GET['contains'][$key]);
             if (!strstr($wheretmp, "``.``")) {
                if ($where != ''
-                       AND !isset($_SESSION['plugin_monitoring']['service']['link'][$key])) {
+                       AND !isset($_GET['link'][$key])) {
                   $where .= " AND ";
                }
                $where .= $wheretmp;
@@ -278,9 +352,10 @@ class PluginMonitoringDisplay extends CommonDBTM {
          }
       }
       if ($where != '') {
-         $where .= " AND ";
+         $where = "(".$where;
+         $where .= ") AND ";
       }
-      $where .= ' `entities_id` IN ('.$_SESSION['glpiactiveentities_string'].')';
+      $where .= ' `glpi_plugin_monitoring_services`.`entities_id` IN ('.$_SESSION['glpiactiveentities_string'].')';
 
       if ($where != '') {
          $where = " WHERE ".$where;
@@ -290,8 +365,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       
       $leftjoin = '';
-      if (isset($_SESSION['plugin_monitoring']['service']['field'])) {
-         foreach ($_SESSION['plugin_monitoring']['service']['field'] as $key=>$value) {
+      if (isset($_GET['field'])) {         
+         foreach ($_GET['field'] as $value) {
             if ($value == '20'
                     OR $value == '21'
                     OR $value == '22') {
@@ -302,6 +377,17 @@ class PluginMonitoringDisplay extends CommonDBTM {
                $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_components`
                   ON `plugin_monitoring_components_id` = 
                   `glpi_plugin_monitoring_components`.`id` ";
+            } else if ($value == '8') {
+               if (!strstr($leftjoin, 'LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`')) {
+                  $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
+                  ON `plugin_monitoring_componentscatalogs_hosts_id` = 
+                  `glpi_plugin_monitoring_componentscatalogs_hosts`.`id` ";
+               }
+               if (!strstr($leftjoin, 'LEFT JOIN `glpi_plugin_monitoring_componentscatalogs`')) {
+                  $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_componentscatalogs`
+                     ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`plugin_monitoring_componentscalalog_id` = 
+                     `glpi_plugin_monitoring_componentscatalogs`.`id` ";
+               }
             }
          }
       }
@@ -331,7 +417,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
                 Search::getArrayUrlLink("link2",$_GET['link2']);
 
       $parameters = "sort=".$_GET['sort']."&amp;order=".$_GET['order'].$globallinkto;
-      Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php", $parameters);
+      if (strstr($_SERVER['PHP_SELF'], "displayfix.php")) {
+         $parameters .= "&tab=".$_GET['tab'];
+         Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/displayfix.php", $parameters);
+      } else {
+         Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php", $parameters);
+      }
 
       $limit = $numrows;
       if ($_SESSION["glpilist_limit"] < $numrows) {
@@ -354,7 +445,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "<th>";
       echo $LANG['entity'][0];
       echo "</th>";
-      
+      echo "<th>";
+      echo $LANG['stats'][7];
+      echo "</th>";
       echo "<th>";
       echo $LANG['state'][6]." - ".__('Name');
       echo "</th>";
@@ -365,15 +458,16 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo $LANG['state'][0];
       echo "</th>";
       echo "<th>";
-      echo $LANG['stats'][7];
-      echo "</th>";
-      echo "<th>";
       echo __('Last check', 'monitoring');
       echo "</th>";
       echo "<th>";
       echo $LANG['rulesengine'][82];
-      echo "</th>";     
+      echo "</th>";
+      echo "<th>";
+      echo $LANG['plugin_monitoring']['host'][9];
+      echo "</th>";
       echo "</tr>";
+      PluginMonitoringServicegraph::loadLib();
       while ($data=$DB->fetch_array($result)) {
          echo "<tr class='tab_bg_3'>";
 
@@ -383,8 +477,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       echo "</table>";
       echo "<br/>";
-      Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php", $parameters);
-
+      if (strstr($_SERVER['PHP_SELF'], "displayfix.php")) {
+         $parameters .= "&tab=".$_GET['tab'];
+         Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/displayfix.php", $parameters);
+      } else {
+         Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php", $parameters);
+      }
    }
    
    
@@ -393,7 +491,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       global $DB,$CFG_GLPI;
 
       $pMonitoringService = new PluginMonitoringService();
-      $pMonitoringServiceH = new PluginMonitoringService();
+      $networkPort = new NetworkPort();
       $pMonitoringComponent = new PluginMonitoringComponent();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
       $entity = new Entity();
@@ -408,6 +506,41 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $entity->getFromDB($data['entities_id']);
       echo $entity->fields['completename'];
       echo "</td>";
+      
+
+      $pMonitoringComponent->getFromDB($data['plugin_monitoring_components_id']);
+      echo "<td class='center'>";
+      $timezone = '0';
+      if (isset($_SESSION['plugin_monitoring_timezone'])) {
+         $timezone = $_SESSION['plugin_monitoring_timezone'];
+      }
+      $timezone_file = str_replace("+", ".", $timezone);
+         
+      if ($pMonitoringComponent->fields['graph_template'] != '') {
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$data['id']."'>";
+         $pmServicegraph = new PluginMonitoringServicegraph();
+         ob_start();
+         $pmServicegraph->displayGraph($pMonitoringComponent->fields['graph_template'], 
+                                       "PluginMonitoringService", 
+                                       $data['id'], 
+                                       "0", 
+                                       '2h', 
+                                       "div", 
+                                       "600");
+         $chart = ob_get_contents();
+         ob_end_clean();
+         $chart = "<table width='600' class='tab_cadre'><tr><td>".$chart."</td></tr></table>";
+         Html::showToolTip($chart, array('img'=>$CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"));
+         $pmServicegraph->displayGraph($pMonitoringComponent->fields['graph_template'], 
+                                       "PluginMonitoringService", 
+                                       $data['id'], 
+                                       "0", 
+                                       '2h', 
+                                       "js");
+      }
+      echo "</a>";
+      echo "</td>";
+      
       if ($displayhost == '1') {
          $pmComponentscatalog_Host->getFromDB($data["plugin_monitoring_componentscatalogs_hosts_id"]);
          if (isset($pmComponentscatalog_Host->fields['itemtype']) 
@@ -418,18 +551,29 @@ class PluginMonitoringDisplay extends CommonDBTM {
             $item->getFromDB($pmComponentscatalog_Host->fields['items_id']);
             echo "<td>";
             echo $item->getTypeName()." : ".$item->getLink();
+            if (!is_null($pMonitoringService->fields['networkports_id'])
+                    AND $pMonitoringService->fields['networkports_id'] > 0) {
+               $networkPort->getFromDB($pMonitoringService->fields['networkports_id']);
+               echo " [".$networkPort->getLink()."]";
+            }
             echo "</td>";
 
          } else {
             echo "<td>".__('Resources', 'monitoring')."</td>";
          }
       }
-      $pMonitoringComponent->getFromDB($data['plugin_monitoring_components_id']);
-      echo "<td>".$pMonitoringComponent->getLink()."</td>";
-      $nameitem = '';
-      if (isset($itemmat->fields['name'])) {
-         $nameitem = "[".$itemmat->getLink(1)."]";
+
+      echo "<td>".$pMonitoringComponent->getLink();
+      if (!is_null($pMonitoringService->fields['networkports_id'])
+              AND $pMonitoringService->fields['networkports_id'] > 0) {
+         $networkPort->getFromDB($pMonitoringService->fields['networkports_id']);
+         echo " [".$networkPort->getLink()."]";
       }
+      echo "</td>";
+//      $nameitem = '';
+//      if (isset($itemmat->fields['name'])) {
+//         $nameitem = "[".$itemmat->getLink(1)."]";
+//      }
       //if ($pMonitoringService->fields['plugin_monitoring_services_id'] == '0') {
          //echo "<td>".$itemmat->getLink(1)."</td>";
 //      } else {
@@ -439,82 +583,10 @@ class PluginMonitoringDisplay extends CommonDBTM {
 //         $itemmat->getFromDB($pMonitoringServiceH->fields['items_id']);
 //         echo "<td>".$pMonitoringService->getLink(1).$nameitem." ".$LANG['networking'][25]." ".$itemmat->getLink(1)."</td>";
 //      }
-      
-      
-
-      unset($itemmat);
+//      unset($itemmat);
       echo "<td class='center'>";
       echo $data['state'];
       echo "</td>";
-
-      echo "<td class='center'>";
-      $to = new PluginMonitoringRrdtool();
-      $plu = new PluginMonitoringServiceevent();
-      $img = '';
-      $timezone = '0';
-      if (isset($_SESSION['plugin_monitoring_timezone'])) {
-         $timezone = $_SESSION['plugin_monitoring_timezone'];
-      }
-      $timezone_file = str_replace("+", ".", $timezone);
-         
-      $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$data['id']."-2h".$timezone_file.".gif'/>";
-         
-
-      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$data['id']."'>";
-      if (file_exists(GLPI_ROOT."/files/_plugins/monitoring/PluginMonitoringService-".$data['id']."-2h".$timezone_file.".gif")) {
-         $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$data['id']."-2h".$timezone_file.".gif'/>";
-         Html::showToolTip($img, array('img'=>$CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"));
-      } else {
-         
-      }
-      echo "</a>";
-      echo "</td>";
-
-      // Mode dégradé
-//      echo "<td align='center'>";
-//      // Get all services of this host
-//      $a_serv = $pMonitoringComponent->find("`id`='".$data['plugin_monitoring_components_id']."'");
-//      $globalserv_state = array();
-//      $globalserv_state['red'] = 0;
-//      $globalserv_state['red_soft'] = 0;
-//      $globalserv_state['orange'] = 0;
-//      $globalserv_state['orange_soft'] = 0;
-//      $globalserv_state['green'] = 0;
-//      $globalserv_state['green_soft'] = 0;
-//      $tooltip = "<table class='tab_cadrehov' width='300'>";
-//      $tooltip .= "<tr class='tab_bg_1'>
-//         <td width='200'><strong>".__('Host', 'monitoring')."</strong> :</td><td>
-//         <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/></td></tr>";
-//      foreach ($a_serv as $sdata) {
-////         $stateserv = self::getState($sdata['state'], $data['state_type']);
-////         if (isset($globalserv_state[$stateserv])) {
-////            $globalserv_state[$stateserv]++;
-////         }
-////         $tooltip .= "<tr class='tab_bg_1'><td>".$sdata['name']." :</td><td>
-////                  <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$stateserv."_32.png'/></td></tr>";
-//      }
-//      $tooltip .= "</table>";
-//      if (!isset($globalserv_state[$shortstate])) {
-//         $globalserv_state[$shortstate] = 0;
-//      }
-//      $globalserv_state[$shortstate]++;
-//
-//      $img = '';
-//      if ($globalserv_state['red'] > 0) {
-//         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_32.png";
-//      } else if ($globalserv_state['red_soft'] > 0) {
-//         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_red_32_soft.png";
-//      } else if ($globalserv_state['orange'] > 0) {
-//         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_32.png";
-//      } else if ($globalserv_state['orange_soft'] > 0) {
-//         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_orange_32_soft.png";
-//      } else if ($globalserv_state['green'] > 0) {
-//         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_32.png";
-//      } else if ($globalserv_state['green_soft'] > 0) {
-//         $img = $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_green_32_soft.png";
-//      }
-//      Html::showToolTip($tooltip, array('img'=>$img));
-//      echo "</td>";
 
       echo "<td>";
       echo Html::convDate($data['last_check']).' '. substr($data['last_check'], 11, 8);
@@ -523,8 +595,37 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "<td>";
       echo $data['event'];
       echo "</td>";
+      
+      echo "<td align='center'>";
+      $segments = CalendarSegment::getSegmentsBetween($pMonitoringComponent->fields['calendars_id'], 
+              date('w', date('U')), date('H:i:s'), 
+              date('w', date('U')), date('H:i:s'));
+      if (count($segments) == '0') {
+         echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/service_pause.png' />";
+      } else {
+         echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/service_run.png' />";
+      }
+      echo "</td>";
+      
+      if ($displayhost == '0') {
+         $pmUnavaibility = new PluginMonitoringUnavaibility();
+         $pmUnavaibility->displayValues($pMonitoringService->fields['id'], 'currentmonth', 1);
+         $pmUnavaibility->displayValues($pMonitoringService->fields['id'], 'lastmonth', 1);
+         $pmUnavaibility->displayValues($pMonitoringService->fields['id'], 'currentyear', 1);
+         
+         echo "<td>";
+         $a_arg = importArrayFromDB($pMonitoringService->fields['arguments']);
+         $cnt = '';
+         if (count($a_arg) > 0) {
+            $cnt = " (".count($a_arg).")";
+         }
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicearg.form.php?id=".$data['id']."'>".
+                 $LANG['plugin_monitoring']['service'][25].$cnt."</a>";
+         echo "</td>";
+      }
    }
 
+   
    
    static function getState($state, $state_type) {
       $shortstate = '';
@@ -562,54 +663,90 @@ class PluginMonitoringDisplay extends CommonDBTM {
    function displayGraphs($itemtype, $items_id) {
       global $CFG_GLPI;
 
-      $to = new PluginMonitoringRrdtool();
-      $plu = new PluginMonitoringServiceevent();
-      $pmComponent = new PluginMonitoringComponent();
-      $pmConfig = new PluginMonitoringConfig();
+      $pmComponent              = new PluginMonitoringComponent();
+      $pmConfig                 = new PluginMonitoringConfig();
+      $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
 
       $item = new $itemtype();
       $item->getFromDB($items_id);
- 
       $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
-
-      echo "<table class='tab_cadre_fixe'>";
+      if(!isset($_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->fields['id']])) {
+         PluginMonitoringServicegraph::loadPreferences($pmComponent->fields['id']);
+      }
+      $css_width = '950';
+      if (isset($_GET['mobile'])) {
+         $css_width = '300';
+      }
+      echo "<table class='tab_cadre' width='".$css_width."'>";
       
       echo "<tr class='tab_bg_1'>";
       echo "<th>";
-      echo $item->getLink(1);
+      $title = Dropdown::getDropdownName(getTableForItemType('PluginMonitoringComponent'), $item->fields['plugin_monitoring_components_id']);
+      $title .= ' '.$LANG['networking'][25].' ';
+      $pmComponentscatalog_Host->getFromDB($item->fields["plugin_monitoring_componentscatalogs_hosts_id"]);
+      if (isset($pmComponentscatalog_Host->fields['itemtype']) 
+              AND $pmComponentscatalog_Host->fields['itemtype'] != '') {
+          
+          $itemtype2 = $pmComponentscatalog_Host->fields['itemtype'];
+          $item2 = new $itemtype2();
+          $item2->getFromDB($pmComponentscatalog_Host->fields['items_id']);
+          $title .= str_replace("'", "\"", $item2->getLink()." (".$item2->getTypeName().")");    
+      }
+      echo $title;
       echo "</th>";
       echo "<th width='200'>";
-      echo "<form method='post'>";
-      $a_timezones = PluginMonitoringConfig::getTimezones();
-       if (!isset($_SESSION['plugin_monitoring_timezone'])) {
-         $_SESSION['plugin_monitoring_timezone'] = '0';
+      if (!isset($_GET['mobile'])) {
+         echo "<form method='post'>";
+         $a_timezones = PluginMonitoringConfig::getTimezones();
+          if (!isset($_SESSION['plugin_monitoring_timezone'])) {
+            $_SESSION['plugin_monitoring_timezone'] = '0';
+         }
+         $a_timezones_allowed = array();
+         $pmConfig->getFromDB(1);
+         $a_temp = importArrayFromDB($pmConfig->fields['timezones']);
+         foreach ($a_temp as $key) {
+            $a_timezones_allowed[$key] = $a_timezones[$key];
+         }
+         if (count($a_timezones_allowed) == '0') {
+            $a_timezones_allowed['0'] = $a_timezones['0'];
+         }
+
+         Dropdown::showFromArray('plugin_monitoring_timezone', 
+                                 $a_timezones_allowed, 
+                                 array('value'=>$_SESSION['plugin_monitoring_timezone']));
+         echo "&nbsp;<input type='submit' name='update' value=\"".__('Save')."\" class='submit'>";
+         Html::closeForm();
       }
-      $a_timezones_allowed = array();
-      $pmConfig->getFromDB(1);
-      $a_temp = importArrayFromDB($pmConfig->fields['timezones']);
-      foreach ($a_temp as $key) {
-         $a_timezones_allowed[$key] = $a_timezones[$key];
-      }
-      if (count($a_timezones_allowed) == '0') {
-         $a_timezones_allowed['0'] = $a_timezones['0'];
-      }
-      
-      Dropdown::showFromArray('plugin_monitoring_timezone', 
-                              $a_timezones_allowed, 
-                              array('value'=>$_SESSION['plugin_monitoring_timezone']));
-      echo "&nbsp;<input type='submit' name='update' value=\"".__('Save')."\" class='submit'>";
-      echo "</form>";
       echo "</th>";
       echo "</tr>";
+      
+      if (!isset($_GET['mobile'])) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<th colspan='2'>";
+         echo "<div id='legendlink'><a onClick='Ext.get(\"options\").toggle();'>[ Options ]</a></div>";
+         echo "</th>";
+         echo "</tr>";
+      
+         // * Display perfname
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='2'>";
+         echo "<div id='options' style='display:none'>";
+         PluginMonitoringServicegraph::preferences($pmComponent->fields['id'], 0);
+         echo "</div>";
+         echo "</td>";
+         echo "</tr>";
+      }      
 
       $a_list = array();
       $a_list[] = "2h";
       $a_list[] = "12h";
       $a_list[] = "1d";
-      $a_list[] = "1w";
-      $a_list[] = "1m";
-      $a_list[] = "0y6m";
-      $a_list[] = "1y";
+      if (!isset($_GET['mobile'])) {
+         $a_list[] = "1w";
+         $a_list[] = "1m";
+         $a_list[] = "0y6m";
+         $a_list[] = "1y";
+      }
        
       foreach ($a_list as $time) {
       
@@ -627,14 +764,21 @@ class PluginMonitoringDisplay extends CommonDBTM {
             $timezone = $_SESSION['plugin_monitoring_timezone'];
          }
          $timezone_file = str_replace("+", ".", $timezone);
-         
-         $to->displayGLPIGraph($pmComponent->fields['graph_template'], 
-                               $itemtype, 
-                               $items_id, 
-                               $timezone, 
-                               $time);
-         $img = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=".$itemtype."-".$items_id."-".$time.$timezone_file.".gif'/>";
-         echo $img;
+
+         $pmServicegraph = new PluginMonitoringServicegraph();
+         $part = '';
+         $width='';
+         if (isset($_GET['mobile'])) {
+            $width='294';
+         }
+         $pmServicegraph->displayGraph($pmComponent->fields['graph_template'], 
+                                       $itemtype, 
+                                       $items_id, 
+                                       $timezone, 
+                                       $time,
+                                       $part,
+                                       $width);
+
          echo "</td>";
          echo "</tr>";
       }
@@ -704,7 +848,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
                   ON `plugin_monitoring_componentscatalogs_hosts_id`=`".$pmComponentscatalog_Host->getTable()."`.`id`
                WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'
                   AND (`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
-                          AND `state_type`='HARD'";
+                  AND `state_type`='HARD'
+                  AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
             $result = $DB->query($query);
             $data2 = $DB->fetch_assoc($result);
             if ($data2['cpt'] > 0) {
@@ -715,7 +860,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
                      ON `plugin_monitoring_componentscatalogs_hosts_id`=`".$pmComponentscatalog_Host->getTable()."`.`id`
                   WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'
                      AND (`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
-                             AND `state_type`='HARD'";
+                     AND `state_type`='HARD'
+                     AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
                $result = $DB->query($query);
                $data2 = $DB->fetch_assoc($result);
                if ($data2['cpt'] > 0) {
@@ -725,7 +871,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
                      LEFT JOIN `glpi_plugin_monitoring_services` 
                         ON `plugin_monitoring_componentscatalogs_hosts_id`=`".$pmComponentscatalog_Host->getTable()."`.`id`
                      WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'
-                        AND (`state`='OK' OR `state`='UP') AND `state_type`='HARD'";
+                     AND (`state`='OK' OR `state`='UP') AND `state_type`='HARD'
+                     AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
                   $result = $DB->query($query);
                   $data2 = $DB->fetch_assoc($result);
                   if ($data2['cpt'] > 0) {
@@ -739,7 +886,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
                   ON `plugin_monitoring_componentscatalogs_hosts_id`=`".$pmComponentscatalog_Host->getTable()."`.`id`
                WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'
                   AND (`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
-                          AND `state_type`='SOFT'";
+                  AND `state_type`='SOFT'
+                  AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
             $result = $DB->query($query);
             $data2 = $DB->fetch_assoc($result);
             if ($data2['cpt'] > 0) {
@@ -750,7 +898,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
                      ON `plugin_monitoring_componentscatalogs_hosts_id`=`".$pmComponentscatalog_Host->getTable()."`.`id`
                   WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'
                      AND (`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
-                             AND `state_type`='SOFT'";
+                     AND `state_type`='SOFT'
+                     AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
                $result = $DB->query($query);
                $data2 = $DB->fetch_assoc($result);
                if ($data2['cpt'] > 0) {
@@ -760,7 +909,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
                      LEFT JOIN `glpi_plugin_monitoring_services` 
                         ON `plugin_monitoring_componentscatalogs_hosts_id`=`".$pmComponentscatalog_Host->getTable()."`.`id`
                      WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'
-                        AND (`state`='OK' OR `state`='UP') AND `state_type`='SOFT'";
+                        AND (`state`='OK' OR `state`='UP') AND `state_type`='SOFT'
+                        AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
                   $result = $DB->query($query);
                   $data2 = $DB->fetch_assoc($result);
                   if ($data2['cpt'] > 0) {
@@ -780,26 +930,32 @@ class PluginMonitoringDisplay extends CommonDBTM {
             
       } else if ($type == 'Businessrules') {
          $ok = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
-                 "(`state`='OK' OR `state`='UP') AND `state_type`='HARD'");
+                 "(`state`='OK' OR `state`='UP') AND `state_type`='HARD'
+                 AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
          $warning = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
                  "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
-                    AND `state_type`='HARD'");
+                    AND `state_type`='HARD'
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
          $critical = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
                  "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
-                    AND `state_type`='HARD'");
+                    AND `state_type`='HARD'
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
          $warning_soft = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
                  "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
-                    AND `state_type`='SOFT'");
+                    AND `state_type`='SOFT'
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
          $critical_soft = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
                  "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
-                    AND `state_type`='SOFT'");
+                    AND `state_type`='SOFT'
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
          $ok_soft = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
-                 "(`state`='OK' OR `state`='UP') AND `state_type`='SOFT'");
+                 "(`state`='OK' OR `state`='UP') AND `state_type`='SOFT'
+                  AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
          
          // ** Manage play sound if critical increase since last refresh
             if (isset($_SESSION['plugin_monitoring_dashboard_Businessrules'])) {
@@ -820,26 +976,23 @@ class PluginMonitoringDisplay extends CommonDBTM {
          $a_return['critical_soft'] = strval($critical_soft);
          return $a_return;
       }
-      // *** Test new presentation
-      
+
       $critical_link = $CFG_GLPI['root_doc'].
                "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=CRITICAL&link[1]=OR".
                   "&field[1]=3&searchtype[1]=equals&contains[1]=DOWN&link[2]=OR".
                   "&field[2]=3&searchtype[2]=equals&contains[2]=UNREACHABLE". 
-                  "&itemtype=PluginMonitoringService&start=0'";
+                  "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
       $warning_link = $CFG_GLPI['root_doc'].
                "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=WARNING&link[1]=OR".
                   "&field[1]=3&searchtype[1]=equals&contains[1]=UNKNOWN&link[2]=OR".
                   "&field[2]=3&searchtype[2]=equals&contains[2]=RECOVERY&link[3]=OR".
-                  "&field[3]=3&searchtype[3]=equals&contains[3]=UNKNOWN&link[4]=OR".
-                  "&field[4]=3&searchtype[4]=equals&contains[4]=FLAPPING&link[5]=OR".
-                  "&field[5]=3&searchtype[5]=equals&contains[5]=NULL".
-                  "&itemtype=PluginMonitoringService&start=0'";
+                  "&field[3]=3&searchtype[3]=equals&contains[3]=FLAPPING&link[4]=OR".
+                  "&field[5]=3&searchtype[4]=equals&contains[4]=NULL".
+                  "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
       $ok_link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=WARNING&link[1]=OR".
-                  "&field[1]=3&searchtype[1]=equals&contains[1]=OK&link[2]=OR".
-                  "&field[2]=3&searchtype[2]=equals&contains[2]=UP".
-                  "&itemtype=PluginMonitoringService&start=0'";
+               "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=OK&link[1]=OR".
+                  "&field[1]=3&searchtype[1]=equals&contains[1]=UP".
+                  "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
       
       echo "<table align='center'>";
       echo "<tr>";
@@ -851,7 +1004,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<table class='tab_cadre' width='474' height='100' ".$background." >";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
-         if ($type == 'Ressources') {
+         if ($type == 'Ressources' OR $type == 'Componentscatalog') {
             echo "<a href='".$critical_link.">".
                     "<font color='black' style='font-size: 12px;font-weight: bold;'>".__('Critical', 'monitoring')."</font></a>";
          } else {
@@ -861,12 +1014,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "</tr>";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
-         if ($type == 'Ressources') {
+         if ($type == 'Ressources' OR $type == 'Componentscatalog') {
             echo "<a href='".$critical_link.">".
                     "<font color='black' style='font-size: 52px;font-weight: bold;'>".$critical."</font></a>";
          } else {
             echo "<font style='font-size: 52px;'>".$critical."</font>";
-         }
+        }
          echo "</th>";
          echo "</tr>";
          echo "<tr>";
@@ -885,7 +1038,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<table class='tab_cadre' width='316' height='100' ".$background." >";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
-         if ($type == 'Ressources') {
+         if ($type == 'Ressources' OR $type == 'Componentscatalog') {
             echo "<a href='".$warning_link.">".
                     "<font color='black' style='font-size: 12px;font-weight: bold;'>".__('Warning', 'monitoring')."</font></a>";
          } else {
@@ -895,7 +1048,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "</tr>";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
-         if ($type == 'Ressources') {
+         if ($type == 'Ressources' OR $type == 'Componentscatalog') {
             echo "<a href='".$warning_link.">".
                     "<font color='black' style='font-size: 52px;'>".$warning."</font></a>";
          } else {
@@ -919,7 +1072,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<table class='tab_cadre' width='158' height='100' ".$background." >";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
-         if ($type == 'Ressources') {
+         if ($type == 'Ressources' OR $type == 'Componentscatalog') {
             echo "<a href='".$ok_link.">".
                     "<font color='black' style='font-size: 12px;font-weight: bold;'>".__('OK', 'monitoring')."</font></a>";
          } else {
@@ -929,7 +1082,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "</tr>";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
-         if ($type == 'Ressources') {
+         if ($type == 'Ressources' OR $type == 'Componentscatalog') {
             echo "<a href='".$ok_link.">".
                     "<font color='black' style='font-size: 52px;font-weight: bold;'>".$ok."</font></a>";
          } else {
@@ -972,11 +1125,30 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "</td>";
          echo "</tr>";
          echo "</table>";
-      echo "</form>";
-      
+      Html::closeForm();
    }
    
    
+   
+   function displayPuce($scriptname, $items_id='') {
+      global $CFG_GLPI;
+      
+      $split = explode("/", $_SERVER['PHP_SELF']);
+      if ($split[(count($split) -1)] == $scriptname.".php") {
+         $display = 0;
+         if ($items_id != '') {
+            if (isset($_GET['id'])
+                    && $_GET['id'] == $items_id) {
+               $display = 1;
+            }
+         } else {
+            $display = 1;
+         }
+         if ($display == 1) {
+            echo "<img src='".$CFG_GLPI['root_doc']."/pics/right.png' /> ";
+         }
+      }
+   }
 }
 
 ?>

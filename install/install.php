@@ -50,7 +50,7 @@ function pluginMonitoringInstall($version) {
    $sql_query = fread($DBf_handle, filesize($DB_file));
    fclose($DBf_handle);
    foreach ( explode(";\n", "$sql_query") as $sql_line) {
-      if (get_magic_quotes_runtime()) $sql_line=stripslashes_deep($sql_line);
+      if (get_magic_quotes_runtime()) $sql_line=Toolbox::stripslashes_deep($sql_line);
       if (!empty($sql_line)) $DB->query($sql_line);
    }
 
@@ -92,6 +92,8 @@ function pluginMonitoringInstall($version) {
    CronTask::Register('PluginMonitoringServiceevent', 'updaterrd', '300', 
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
    CronTask::Register('PluginMonitoringLog', 'cleanlogs', '96400', 
+                      array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
+   CronTask::Register('PluginMonitoringUnavaibility', 'unavaibility', '300', 
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
 
 }
