@@ -99,7 +99,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
          echo "<tr>";
       }
       echo "<td valign='top'>";
-      echo $LANG['rulesengine'][9]."&nbsp;:";
+      echo __('Logical operator')."&nbsp;:";
       echo "</td>";
       echo "<td valign='top'>";
       $first_operator = array();
@@ -168,7 +168,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
                echo __('Resource deleted', 'monitoring');
                echo "</td>";
                echo "<td>";
-               echo "<input type='submit' name='deletebusinessrules-".$gdata['id']."' value=\"".$LANG['buttons'][53]."\" class='submit'>";
+               echo "<input type='submit' name='deletebusinessrules-".$gdata['id']."' value=\"".__('Clean')."\" class='submit'>";
                echo "</td>";
             }
          }

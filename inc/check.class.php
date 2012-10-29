@@ -150,7 +150,7 @@ class PluginMonitoringCheck extends CommonDBTM {
    *
    **/
    function showForm($items_id, $options=array()) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $DB,$CFG_GLPI;
 
       if ($items_id!='') {
          $this->getFromDB($items_id);

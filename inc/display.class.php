@@ -169,11 +169,11 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
          if ($prev > 0) {
             echo "<li><a href='$cleantarget?id=$prev$extraparamhtml'><img src='".
-                       $CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".$LANG['buttons'][12].
-                       "\" title=\"".$LANG['buttons'][12]."\"></a></li>";
+                       $CFG_GLPI["root_doc"]."/pics/left.png' alt=\"".__('Previous').
+                       "\" title=\"".__('Previous')."\"></a></li>";
          } else {
             echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/left_off.png' alt=\"".
-                       $LANG['buttons'][12]."\" title=\"".$LANG['buttons'][12]."\"></li>";
+                       __('Previous')."\" title=\"".__('Previous')."\"></li>";
          }
 
          if ($current !== false) {
@@ -182,20 +182,20 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
          if ($next > 0) {
             echo "<li><a href='$cleantarget?id=$next$extraparamhtml'><img src='".
-                       $CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".$LANG['buttons'][11].
-                       "\" title=\"".$LANG['buttons'][11]."\"></a></li>";
+                       $CFG_GLPI["root_doc"]."/pics/right.png' alt=\"".__('Next').
+                       "\" title=\"".__('Next')."\"></a></li>";
          } else {
             echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/right_off.png' alt=\"".
-                       $LANG['buttons'][11]."\" title=\"".$LANG['buttons'][11]."\"></li>";
+                       __('Next')."\" title=\"".__('Next')."\"></li>";
          }
 
          if ($last > 0) {
             echo "<li><a href='$cleantarget?id=$last$extraparamhtml'><img src=\"".
-                       $CFG_GLPI["root_doc"]."/pics/last.png\" alt=\"".$LANG['buttons'][56].
-                       "\" title=\"".$LANG['buttons'][56]."\"></a></li>";
+                       $CFG_GLPI["root_doc"]."/pics/last.png\" alt=\"".__('Last').
+                       "\" title=\"".__('Last')."\"></a></li>";
          } else {
             echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/last_off.png' alt=\"".
-                       $LANG['buttons'][56]."\" title=\"".$LANG['buttons'][56]."\"></li>";
+                       __('Last')."\" title=\"".__('Last')."\"></li>";
          }
          echo "</ul></div>";
          echo "<div class='sep'></div>";

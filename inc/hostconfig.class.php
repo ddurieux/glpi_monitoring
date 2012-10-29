@@ -190,7 +190,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
 
       if ($entities_id != '0'
               OR $itemtype != 'Entity') {
-         $input["-1"] = $LANG['common'][102];
+         $input["-1"] = __('Inheritance of the parent entity');
       }
       $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringCommand")."`
          ORDER BY `name`";
@@ -207,7 +207,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
       $input = array();
       if ($entities_id != '0'
               OR $itemtype != 'Entity') {
-         $input["-1"] = $LANG['common'][102];
+         $input["-1"] = __('Inheritance of the parent entity');
       }
       $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringCheck")."`
          ORDER BY `name`";
@@ -228,7 +228,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          if ($this->fields['plugin_monitoring_commands_id'] == '-1') {
             echo "<td colspan='2' class='green center'>";
-            echo $LANG['common'][102]."&nbsp;:&nbsp;";
+            echo __('Inheritance of the parent entity')."&nbsp;:&nbsp;";
             $pmCommand->getFromDB($this->getValueAncestor("plugin_monitoring_commands_id", $entities_id));
             echo $pmCommand->fields['name'];
             echo "</td>";
@@ -238,7 +238,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
          }
          if ($this->fields['plugin_monitoring_checks_id'] == '-1') {
             echo "<td colspan='2' class='green center'>";
-            echo $LANG['common'][102]."&nbsp;:&nbsp;";
+            echo __('Inheritance of the parent entity')."&nbsp;:&nbsp;";
             $pmCheck->getFromDB($this->getValueAncestor("plugin_monitoring_checks_id", $entities_id));
             echo $pmCheck->fields['name'];
             echo "</td>";
@@ -256,7 +256,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
       $input = array();
       if ($entities_id != '0'
               OR $itemtype != 'Entity') {
-         $input["-1"] = $LANG['common'][102];
+         $input["-1"] = __('Inheritance of the parent entity');
       }
       $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringRealm")."`
          ORDER BY `name`";
@@ -273,7 +273,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
       $input = array();
       if ($entities_id != '0'
               OR $itemtype != 'Entity') {
-         $input["-1"] = $LANG['common'][102];
+         $input["-1"] = __('Inheritance of the parent entity');
       }
       $entities_ancestors = getAncestorsOf("glpi_entities", $entities_id);
       if (!isset($entities_ancestors[$entities_id])) {
@@ -300,7 +300,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          if ($this->fields['plugin_monitoring_realms_id'] == '-1') {
             echo "<td colspan='2' class='green center'>";
-            echo $LANG['common'][102]."&nbsp;:&nbsp;";
+            echo __('Inheritance of the parent entity')."&nbsp;:&nbsp;";
             $pmRealm->getFromDB($this->getValueAncestor("plugin_monitoring_realms_id", $entities_id));
             echo $pmRealm->fields['name'];
             echo "</td>";
@@ -310,7 +310,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
          }
          if ($this->fields['calendars_id'] == '-1') {     
             echo "<td colspan='2' class='green center'>";
-            echo $LANG['common'][102]."&nbsp;:&nbsp;";
+            echo __('Inheritance of the parent entity')."&nbsp;:&nbsp;";
             $calendar->getFromDB($this->getValueAncestor("calendars_id", $entities_id));
             echo $calendar->fields['name'];
             echo "</td>";
