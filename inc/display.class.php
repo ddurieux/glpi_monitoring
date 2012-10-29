@@ -47,7 +47,7 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringDisplay extends CommonDBTM {
    
    function menu() {
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
       
       echo "<table class='tab_cadre_fixe' width='950'>";
       echo "<tr class='tab_bg_3'>";
@@ -59,7 +59,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
          $this->displayPuce('display_servicescatalog');
          echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_servicescatalog.php'>";
-         echo $LANG['plugin_monitoring']['servicescatalog'][0];
+         echo __('Services catalog', 'monitoring');
          echo "</a>";
       }
       echo "</th>";
@@ -67,14 +67,14 @@ class PluginMonitoringDisplay extends CommonDBTM {
       if (PluginMonitoringProfile::haveRight("componentscatalog", 'r')) {
          $this->displayPuce('display_componentscatalog');
          echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_componentscatalog.php'>";
-         echo $LANG['plugin_monitoring']['componentscatalog'][0];
+         echo __('Components catalog', 'monitoring');
          echo "</a>";
       }
       echo "</th>";
       echo "<th colspan='2'>";
       $this->displayPuce('service');
       echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/service.php'>";
-      echo $LANG['plugin_monitoring']['service'][21];
+      echo __('All resources', 'monitoring');
       echo "</a>";
       echo "</th>";
 //      echo "<th>";
@@ -464,7 +464,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo $LANG['rulesengine'][82];
       echo "</th>";
       echo "<th>";
-      echo $LANG['plugin_monitoring']['host'][9];
+      echo __('Check period', 'monitoring');
       echo "</th>";
       echo "</tr>";
       PluginMonitoringServicegraph::loadLib();
@@ -581,7 +581,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
 //         $itemtypemat = $pMonitoringServiceH->fields['itemtype'];
 //         $itemmat = new $itemtypemat();
 //         $itemmat->getFromDB($pMonitoringServiceH->fields['items_id']);
-//         echo "<td>".$pMonitoringService->getLink(1).$nameitem." ".$LANG['networking'][25]." ".$itemmat->getLink(1)."</td>";
+//         echo "<td>".$pMonitoringService->getLink(1).$nameitem." ".__('on', 'monitoring')." ".$itemmat->getLink(1)."</td>";
 //      }
 //      unset($itemmat);
       echo "<td class='center'>";
@@ -620,7 +620,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
             $cnt = " (".count($a_arg).")";
          }
          echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicearg.form.php?id=".$data['id']."'>".
-                 $LANG['plugin_monitoring']['service'][25].$cnt."</a>";
+                 __('Configure', 'monitoring').$cnt."</a>";
          echo "</td>";
       }
    }
@@ -682,7 +682,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<th>";
       $title = Dropdown::getDropdownName(getTableForItemType('PluginMonitoringComponent'), $item->fields['plugin_monitoring_components_id']);
-      $title .= ' '.$LANG['networking'][25].' ';
+      $title .= ' '.__('on', 'monitoring').' ';
       $pmComponentscatalog_Host->getFromDB($item->fields["plugin_monitoring_componentscatalogs_hosts_id"]);
       if (isset($pmComponentscatalog_Host->fields['itemtype']) 
               AND $pmComponentscatalog_Host->fields['itemtype'] != '') {

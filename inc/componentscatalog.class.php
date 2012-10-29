@@ -77,10 +77,10 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       if ($_GET['id'] > 0) {
          $ong[1] = __('Components', 'monitoring');
          $ong[2] = __('Static hosts', 'monitoring');
-         $ong[3] = $LANG['rulesengine'][17];
+         $ong[3] = _n('Rule', 'Rules', 2);
          $ong[4] = __('Dynamic hosts', 'monitoring');
          $ong[5] = __('Contacts', 'monitoring');
-         $ong[6] = $LANG['plugin_monitoring']['availability'][0];
+         $ong[6] = __('Availability', 'monitoring');
       }
       
       return $ong;
@@ -92,7 +92,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       global $LANG;
 
       return array(array('name'  => 'notification_interval',
-                         'label' => $LANG['plugin_monitoring']['componentscatalog'][1],
+                         'label' => __('Interval between 2 notifications (in minutes)', 'monitoring'),
                          'type'  => 'notificationinterval'));
    }
    
@@ -213,7 +213,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
 //      
 //      $input .= '<tr class="tab_bg_1">';
 //      $input .= '<td>';
-//      $input .= $LANG['plugin_monitoring']['service'][0]."&nbsp;:";
+//      $input .= __('Resources', 'monitoring')."&nbsp;:";
 //      $input .= '</td>';
 //      $input .= '<th align="center" height="40" width="50%">';
 //      $link = $CFG_GLPI['root_doc'].
@@ -291,7 +291,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       
       echo '<tr class="tab_bg_1">';
       echo '<td>';
-      echo $LANG['plugin_monitoring']['service'][0]."&nbsp;:";
+      echo __('Resources', 'monitoring')."&nbsp;:";
       echo '</td>';
       echo '<th align="center" height="40" width="50%">';
       $link = $CFG_GLPI['root_doc'].

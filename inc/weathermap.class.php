@@ -457,7 +457,7 @@ LINK DEFAULT
          // * Add node
          echo "<tr>";
          echo "<th colspan='2'>";
-         echo $LANG['plugin_monitoring']['weathermap'][8];
+         echo __('Add a node', 'monitoring');
          echo "</th>";
          echo "</tr>";
          
@@ -490,7 +490,7 @@ LINK DEFAULT
          // * Change node position
          echo "<tr>";
          echo "<th colspan='2'>";
-         echo $LANG['plugin_monitoring']['weathermap'][9];
+         echo __('Edit a node', 'monitoring');
          echo "</th>";
          echo "</tr>";
         
@@ -538,7 +538,7 @@ LINK DEFAULT
          // * Delete node
          echo "<tr>";
          echo "<th colspan='2'>";
-         echo $LANG['plugin_monitoring']['weathermap'][10];
+         echo __('Delete a node', 'monitoring');
          echo "</th>";
          echo "</tr>";
 
@@ -584,13 +584,13 @@ LINK DEFAULT
          // *Add Link
          echo "<tr>";
          echo "<th colspan='2'>";
-         echo $LANG['plugin_monitoring']['weathermap'][11];
+         echo __('Add a link', 'monitoring');
          echo "</th>";
          echo "</tr>";
          
          echo "<tr>";
          echo "<td>";
-         echo $LANG['plugin_monitoring']['weathermap'][14]."*&nbsp;:";
+         echo __('Source', 'monitoring')."*&nbsp;:";
          echo "</td>";
          echo "<td>";
 
@@ -744,7 +744,7 @@ LINK DEFAULT
          
          echo "<tr>";
          echo "<td>";
-         echo $LANG['plugin_monitoring']['weathermap'][15]."&nbsp;:";
+         echo __('Destination', 'monitoring')."&nbsp;:";
          echo "</td>";
          echo "<td>";
 
@@ -774,7 +774,7 @@ LINK DEFAULT
          
          echo "<tr>";
          echo "<td>";
-         echo $LANG['plugin_monitoring']['weathermap'][16]."&nbsp;:";
+         echo __('Max bandwidth input', 'monitoring')."&nbsp;:";
          echo "</td>";
          echo "<td>";
          echo "<input type='text' name='bandwidth_in' value=''/>";
@@ -783,7 +783,7 @@ LINK DEFAULT
          
          echo "<tr>";
          echo "<td>";
-         echo $LANG['plugin_monitoring']['weathermap'][17]."&nbsp;:";
+         echo __('Max bandwidth output', 'monitoring')."&nbsp;:";
          echo "</td>";
          echo "<td>";
          echo "<input type='text' name='bandwidth_out' value=''/>";
@@ -799,7 +799,7 @@ LINK DEFAULT
          // * Edit link
          echo "<tr>";
          echo "<th colspan='2'>";
-         echo $LANG['plugin_monitoring']['weathermap'][12];
+         echo __('Edit a link', 'monitoring');
          echo "</th>";
          echo "</tr>";
          echo "<tr>";
@@ -851,7 +851,7 @@ LINK DEFAULT
          // * Delete link
          echo "<tr>";
          echo "<th colspan='2'>";
-         echo $LANG['plugin_monitoring']['weathermap'][13];
+         echo __('Delete a link', 'monitoring');
          echo "</th>";
          echo "</tr>";
          

@@ -300,7 +300,7 @@ class PluginMonitoringCommand extends CommonDBTM {
       $tab[2]['table']     = $this->getTable();
       $tab[2]['field']     = 'is_active';
       $tab[2]['linkfield'] = 'is_active';
-      $tab[2]['name']      = $LANG['common'][60];
+      $tab[2]['name']      = __('Active');
       $tab[2]['datatype']  = 'bool';
 
       return $tab;
@@ -403,7 +403,7 @@ class PluginMonitoringCommand extends CommonDBTM {
                echo "<input type='hidden' name='".$key."' value='".$value."'/>";
             }
          }
-         echo "<input type='submit' name='copy' value=\"".$LANG['setup'][283]."\" class='submit'>";
+         echo "<input type='submit' name='copy' value=\"".__('copy', 'monitoring')."\" class='submit'>";
          echo "</td>";
          echo "</tr>";
          

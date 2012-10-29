@@ -110,7 +110,7 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
       $tab[2]['table']     = $this->getTable();
       $tab[2]['field']     = 'is_active';
       $tab[2]['linkfield'] = 'is_active';
-      $tab[2]['name']      = $LANG['common'][60];
+      $tab[2]['name']      = __('Active');
       $tab[2]['datatype']  = 'bool';
 
       return $tab;

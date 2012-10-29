@@ -339,11 +339,11 @@ class PluginMonitoringComponent extends CommonDBTM {
       Dropdown::showYesNo("is_weathermap", $this->fields['is_weathermap']);
       echo "</td>";
       echo "<td>";
-      $tooltip = $LANG['plugin_monitoring']['component'][15]." :<br/><br/>";
+      $tooltip = __('Example', 'monitoring')." :<br/><br/>";
       $tooltip .= "perfdata : <i>inUsage=0.00%;85;98 outUsage=0.00%;85;98 inBandwidth=<strong>789944</strong>.00bps outBandwidth=486006.00bps inAbsolut=0 outAbsolut=12665653</i><br/><br/>";
-      $tooltip .= $LANG['plugin_monitoring']['weathermap'][18]." : <i><strong>(?:.*)inBandwidth=(\d+)(?:.*)</strong></i><br/><br/>";
-      $tooltip .= $LANG['rulesengine'][85]." : <strong>789944</strong>";
-      echo $LANG['plugin_monitoring']['weathermap'][18]."&nbsp;";
+      $tooltip .= __('Regex bandwidth input', 'monitoring')." : <i><strong>(?:.*)inBandwidth=(\d+)(?:.*)</strong></i><br/><br/>";
+      $tooltip .= __('Assign the value from regular expression')." : <strong>789944</strong>";
+      echo __('Regex bandwidth input', 'monitoring')."&nbsp;";
       Html::showToolTip($tooltip, array('autoclose'=>false));
       echo "&nbsp;:";
       echo "</td>";
@@ -356,11 +356,11 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "<td colspan='2'>";
       echo "</td>";
       echo "<td>";
-      $tooltip = $LANG['plugin_monitoring']['component'][15]." :<br/><br/>";
+      $tooltip = __('Example', 'monitoring')." :<br/><br/>";
       $tooltip .= "perfdata : <i>inUsage=0.00%;85;98 outUsage=0.00%;85;98 inBandwidth=789944.00bps outBandwidth=<strong>486006</strong>.00bps inAbsolut=0 outAbsolut=12665653</i><br/><br/>";
-      $tooltip .= $LANG['plugin_monitoring']['weathermap'][19]." : <i><strong>(?:.*)outBandwidth=(\d+)(?:.*)</strong></i><br/><br/>";
-      $tooltip .= $LANG['rulesengine'][85]." : <strong>789944</strong>";
-      echo $LANG['plugin_monitoring']['weathermap'][19]."&nbsp;";
+      $tooltip .= __('Regex bandwidth output', 'monitoring')." : <i><strong>(?:.*)outBandwidth=(\d+)(?:.*)</strong></i><br/><br/>";
+      $tooltip .= __('Assign the value from regular expression')." : <strong>789944</strong>";
+      echo __('Regex bandwidth output', 'monitoring')."&nbsp;";
       Html::showToolTip($tooltip, array('autoclose'=>false));
       echo "&nbsp;:";
       echo "</td>";
@@ -392,7 +392,7 @@ class PluginMonitoringComponent extends CommonDBTM {
             echo "<input type='hidden' name='".$key."' value='".$value."'/>";
          }
       }
-      echo "<input type='submit' name='copy' value=\"".$LANG['setup'][283]."\" class='submit'>";
+      echo "<input type='submit' name='copy' value=\"".__('copy', 'monitoring')."\" class='submit'>";
       echo "</td>";
       echo "</tr>";
 
@@ -406,14 +406,14 @@ class PluginMonitoringComponent extends CommonDBTM {
       global $LANG;
       
       $elements = array();
-      $elements[$LANG['plugin_monitoring']['component'][11]] = '';
-      $elements["[[HOSTNAME]]"] = $LANG['plugin_monitoring']['component'][7];
-      $elements["[[NETWORKPORTNUM]]"] = $LANG['plugin_monitoring']['component'][12];
-      $elements["[[NETWORKPORTNAME]]"] = $LANG['plugin_monitoring']['component'][13];
+      $elements[__('List of tags available', 'monitoring')] = '';
+      $elements["[[HOSTNAME]]"] = __('Hostname of the device', 'monitoring');
+      $elements["[[NETWORKPORTNUM]]"] = __('Network port number', 'monitoring');
+      $elements["[[NETWORKPORTNAME]]"] = __('Network port name', 'monitoring');
       if (class_exists("PluginFusinvsnmpNetworkPort")) {
-         $elements["[[NETWORKPORTDESCR]]"] = $LANG['plugin_monitoring']['component'][8];
-         $elements["[SNMP:version]"] = $LANG['plugin_monitoring']['component'][9];
-         $elements["[SNMP:authentication]"] = $LANG['plugin_monitoring']['component'][10];
+         $elements["[[NETWORKPORTDESCR]]"] = __('Network port ifDescr of networking devices', 'monitoring');
+         $elements["[SNMP:version]"] = __('SNMP version of network equipment or printer', 'monitoring');
+         $elements["[SNMP:authentication]"] = __('SNMP community of network equipment or printer', 'monitoring');
       }      
       return $elements;
    }

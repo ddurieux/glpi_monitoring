@@ -45,7 +45,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 PluginMonitoringProfile::checkRight("componentscatalog", 'w');
 
-Html::simpleHeader($LANG['plugin_monitoring']['title'][0]);
+Html::simpleHeader(__('Monitoring', 'monitoring'));
 
 if (isset($_POST['update'])) {
    $pmNetworkport = new PluginMonitoringNetworkport();

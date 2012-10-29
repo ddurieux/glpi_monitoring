@@ -115,7 +115,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
    
    function preaddRule($componentscatalogs_id) {
       global $CFG_GLPI,$DB;
-      
+ 
       $networkport_types = $CFG_GLPI['networkport_types'];
       $networkport_types[] = "PluginMonitoringNetworkport";
       
@@ -124,7 +124,10 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
-         $a_usedItemtypes[$data['itemtype']] = $data['itemtype'];
+         $key = array_search($data['itemtype'], $networkport_types);
+         if (isset($key)) {
+            unset($networkport_types[$key]);
+         }
       }
       
       if (count($a_usedItemtypes) == count($networkport_types)) {
@@ -143,13 +146,11 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       echo "<input type='text' name='name' value=''/>";
       echo "</td>";
       echo "<td>";
-      echo $LANG['state'][6]."&nbsp;:";
+      echo __('Item type')."&nbsp;:";
       echo "</td>";
       echo "<td>";
-      Dropdown::dropdownTypes("itemtypen", 
-                              "",
-                              $networkport_types,
-                              $a_usedItemtypes);
+      Dropdown::showItemType("itemtype", 
+                              $networkport_types);
       echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$componentscatalogs_id."' >";
       echo "</td>";
       echo "</tr>";

@@ -129,11 +129,11 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       echo "<input type='text' name='name' value='".$this->fields["name"]."' size='30'/>";
       echo "</td>";
 
-      echo "<td>".$LANG['common'][17]."&nbsp;:</td>";
+      echo "<td>"._n('Type','Types',1)."&nbsp;:</td>";
       echo "<td>";
       $elements = array();
-      $elements['public'] = $LANG['common'][76];
-      $elements['private'] = $LANG['common'][77];
+      $elements['public'] = __('Public');
+      $elements['private'] = __('Private');
       
       $value = 'public';
       if ($this->fields["users_id"] > '0') {
@@ -164,13 +164,13 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
-      echo $LANG['plugin_monitoring']['weathermap'][3]." (px) :";
+      echo __('Width', 'monitoring')." (px) :";
       echo "</td>";
       echo "<td>";
       Dropdown::showInteger("width", $this->fields['width'], 950, 3000);
       echo "</td>";
       echo "<td>";
-      echo $LANG['common'][60];
+      echo __('Active');
       echo "</td>";
       echo "<td>";
       Dropdown::showYesNo("is_active", $this->fields['is_active']);

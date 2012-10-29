@@ -103,7 +103,7 @@ class PluginMonitoringService extends CommonDBTM {
       
       $tab[8]['table'] = "glpi_plugin_monitoring_componentscatalogs";
       $tab[8]['field'] = 'name';
-      $tab[8]['name'] = $LANG['plugin_monitoring']['componentscatalog'][0];
+      $tab[8]['name'] = __('Components catalog', 'monitoring');
       $tab[8]['datatype'] = 'itemlink';
       
       $tab[20]['table'] = $this->getTable();
@@ -193,7 +193,7 @@ class PluginMonitoringService extends CommonDBTM {
          echo __('Components', 'monitoring');
          echo "</th>";
          echo "<th>";
-         echo $LANG['plugin_monitoring']['component'][0];
+         echo __('Components', 'monitoring');
          echo "</th>";
          echo "<th>";
          echo $LANG['state'][0];
@@ -205,13 +205,13 @@ class PluginMonitoringService extends CommonDBTM {
          echo $LANG['rulesengine'][82];
          echo "</th>";
          echo "<th>";
-         echo $LANG['plugin_monitoring']['host'][9];
+         echo __('Check period', 'monitoring');
          echo "</th>";
-         echo "<th>".$LANG['plugin_monitoring']['availability'][1]." ".Html::showToolTip($LANG['plugin_monitoring']['availability'][0], array('display'=>false))."</th>";
-         echo "<th>".$LANG['plugin_monitoring']['availability'][2]." ".Html::showToolTip($LANG['plugin_monitoring']['availability'][0], array('display'=>false))."</th>";
-         echo "<th>".$LANG['plugin_monitoring']['availability'][3]." ".Html::showToolTip($LANG['plugin_monitoring']['availability'][0], array('display'=>false))."</th>";
+         echo "<th>".__('Current month', 'monitoring')." ".Html::showToolTip(__('Availability', 'monitoring'), array('display'=>false))."</th>";
+         echo "<th>".__('Last month', 'monitoring')." ".Html::showToolTip(__('Availability', 'monitoring'), array('display'=>false))."</th>";
+         echo "<th>".__('Current year', 'monitoring')." ".Html::showToolTip(__('Availability', 'monitoring'), array('display'=>false))."</th>";
          echo "<th>";
-         echo $LANG['plugin_monitoring']['service'][4];
+         echo __('Arguments', 'monitoring');
          echo "</th>"; 
          echo "</tr>";
          
@@ -687,8 +687,8 @@ class PluginMonitoringService extends CommonDBTM {
          array_shift($a_tags);
          $a_argtext = importArrayFromDB($pmCommand->fields['arguments']);
          echo "<tr>";
-         echo "<th colspan='2'>".$LANG['plugin_monitoring']['component'][14]."</th>";
-         echo "<th colspan='2'>".$LANG['plugin_monitoring']['component'][11]."&nbsp;</th>";
+         echo "<th colspan='2'>".__('Component arguments', 'monitoring')."</th>";
+         echo "<th colspan='2'>".__('List of tags available', 'monitoring')."&nbsp;</th>";
          echo "</tr>";
           
          foreach ($a_displayarg as $key=>$value) {
@@ -698,7 +698,7 @@ class PluginMonitoringService extends CommonDBTM {
                     AND $a_argtext[$key] != '') {
                echo nl2br($a_argtext[$key])."&nbsp;:";
             } else {
-               echo $LANG['plugin_monitoring']['service'][14]." (".$key.")&nbsp;:";
+               echo __('Argument', 'monitoring')." (".$key.")&nbsp;:";
             }
             echo "</td>";
             echo "<td>";
@@ -735,7 +735,7 @@ class PluginMonitoringService extends CommonDBTM {
       
       // customized arguments 
       echo "<tr>";
-      echo "<th colspan='4'>".$LANG['plugin_monitoring']['service'][24]."</th>";
+      echo "<th colspan='4'>".__('Custom arguments for this resource (empty : inherit)', 'monitoring')."</th>";
       echo "</tr>";
       $array = array();
       $a_displayarg = array();
@@ -760,7 +760,7 @@ class PluginMonitoringService extends CommonDBTM {
                  AND $a_argtext[$key] != '') {
             echo nl2br($a_argtext[$key])."&nbsp;:";
          } else {
-            echo $LANG['plugin_monitoring']['service'][14]." (".$key.")&nbsp;:";
+            echo __('Argument', 'monitoring')." (".$key.")&nbsp;:";
          }
          echo "</td>";
          echo "<td>";

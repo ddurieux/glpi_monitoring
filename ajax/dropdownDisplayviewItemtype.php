@@ -41,7 +41,7 @@ switch ($_POST['itemtype']) {
 
    case 'PluginMonitoringWeathermap':
       Dropdown::show('PluginMonitoringWeathermap', array('name'=>'items_id'));
-      echo "&nbsp;&nbsp;&nbsp;".$LANG['plugin_monitoring']['displayview'][5]."&nbsp: ".
+      echo "&nbsp;&nbsp;&nbsp;".__('% of the width of the frame', 'monitoring')."&nbsp: ".
               Dropdown::showInteger("extra_infos", 100, 0, 100, 5);
       break;
 

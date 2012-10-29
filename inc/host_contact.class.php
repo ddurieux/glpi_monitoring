@@ -93,7 +93,7 @@ class PluginMonitoringHost_Contact extends CommonDBRelation {
 
       if ($a_list) {
          echo "<input type='submit' class='submit' name='parent_delete' value='<< ".
-               $LANG['buttons'][6]."'>";
+               _sx('button', 'Delete permanently')."'>";
       }
       echo "</td>";
       echo "<td>";

@@ -115,7 +115,7 @@ class PluginMonitoringConfig extends CommonDBTM {
       $this->getFromDB($items_id);
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['plugin_monitoring']['config'][3]."&nbsp;:</td>";
+      echo "<td>".__('Logs retention (in days)', 'monitoring')."&nbsp;:</td>";
       echo "<td align='center'>";
       Dropdown::showInteger("logretention", $this->fields['logretention'], 0, 1000);
       echo "</td>";
@@ -157,7 +157,7 @@ class PluginMonitoringConfig extends CommonDBTM {
 
             if (count($a_timezones_selected2)) {
                echo "<input type='submit' class='submit' name='timezones_delete' value='<< ".
-                     $LANG['buttons'][6]."'>";
+                     _sx('button', 'Delete permanently')."'>";
             }
             echo "</td><td>";
 

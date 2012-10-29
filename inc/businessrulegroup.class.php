@@ -152,14 +152,14 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
                $pmService->getFromDB($gdata["plugin_monitoring_services_id"]);
                $pmComponentscatalog_Host->getFromDB($pmService->fields['plugin_monitoring_componentscatalogs_hosts_id']);
                echo $pmService->getLink(1);
-               echo " ".$LANG['networking'][25]." ";
+               echo " ".__('on', 'monitoring')." ";
                $itemtype2 = $pmComponentscatalog_Host->fields['itemtype'];
                $item2 = new $itemtype2();
                $item2->getFromDB($pmComponentscatalog_Host->fields['items_id']);
                echo $item2->getLink(1);
                echo "</td>";
                echo "<td>";
-               echo "<input type='submit' name='deletebusinessrules-".$gdata['id']."' value=\"".$LANG['buttons'][6]."\" class='submit'>";
+               echo "<input type='submit' name='deletebusinessrules-".$gdata['id']."' value=\""._sx('button', 'Delete permanently')."\" class='submit'>";
                echo "</td>";
             } else {
                // resource deleted

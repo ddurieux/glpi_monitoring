@@ -53,9 +53,7 @@ class PluginMonitoringNetworkport extends CommonDBTM {
    *
    **/
    static function getTypeName($nb=0) {
-      global $LANG;
-
-      return $LANG['plugin_monitoring']['networkport'][0];
+      return __('Network ports of networking devices', 'monitoring');
    }
    
    
@@ -72,11 +70,9 @@ class PluginMonitoringNetworkport extends CommonDBTM {
    
 
    function getSearchOptions() {
-      global $LANG;
-
       $tab = array();
     
-      $tab['common'] = $LANG['plugin_monitoring']['networkport'][0];
+      $tab['common'] = __('Network ports of networking devices', 'monitoring');
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'id';

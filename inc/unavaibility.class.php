@@ -156,10 +156,10 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
       echo "<th>".$LANG['common'][17]."</th>";
       echo "<th>".$LANG['entity'][0]."</th>";
       echo "<th>".$LANG['common'][16]."</th>";
-      echo "<th>".$LANG['plugin_monitoring']['service'][20]."</th>";
-      echo "<th>".$LANG['plugin_monitoring']['availability'][1]."</th>";
-      echo "<th>".$LANG['plugin_monitoring']['availability'][2]."</th>";
-      echo "<th>".$LANG['plugin_monitoring']['availability'][3]."</th>";
+      echo "<th>".__('Resource', 'monitoring')."</th>";
+      echo "<th>".__('Current month', 'monitoring')."</th>";
+      echo "<th>".__('Last month', 'monitoring')."</th>";
+      echo "<th>".__('Current year', 'monitoring')."</th>";
       echo "</tr>";
 
       

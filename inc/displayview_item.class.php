@@ -150,7 +150,7 @@ Ext.onReady(function() {
          $content = $item->showWidget($data['items_id'], $data['extra_infos']);
 
          $title .= " : ".Dropdown::getDropdownName(getTableForItemType('PluginMonitoringComponent'), $item->fields['plugin_monitoring_components_id']);
-         $title .= ' '.$LANG['networking'][25].' ';
+         $title .= ' '.__('on', 'monitoring').' ';
          $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
          $pmComponentscatalog_Host->getFromDB($item->fields["plugin_monitoring_componentscatalogs_hosts_id"]);
          if (isset($pmComponentscatalog_Host->fields['itemtype']) 
