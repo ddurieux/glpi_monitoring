@@ -77,9 +77,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo __('All resources', 'monitoring');
       echo "</a>";
       echo "</th>";
-//      echo "<th>";
-//      echo $LANG['plugin_monitoring']['host'][1];
-//      echo "</th>";
       echo "</tr>";
       echo "</table>";
       
@@ -229,7 +226,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
             echo $glpilisttitle;
 
          } else {
-            echo $LANG['common'][53];
+            echo __('List');
          }
          echo "</a>&nbsp;:&nbsp;</li>";
 
@@ -291,7 +288,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
               || in_array($class, $CFG_GLPI["infocom_types"])
               || in_array($class, $CFG_GLPI["reservation_types"]))) {
 
-            $onglets[-2] = $LANG['setup'][137];
+            $onglets[-2] = __('Debug');
       }
 
       if (count($onglets)) {
@@ -309,7 +306,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          $tabs += $plug_tabs;
          // Not all tab for templates and if only 1 tab
          if ($display_all && empty($withtemplate) && count($tabs)>1) {
-            $tabs[-1] = array('title'  => $LANG['common'][66],
+            $tabs[-1] = array('title'  => __('All'),
                               'url'    => $tabpage,
                               'params' => "target=$target&itemtype=".$this->getType().
                                           "&glpi_tab=-1&id=$ID$extraparam");
@@ -439,29 +436,29 @@ class PluginMonitoringDisplay extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'>";
       echo "<th>";
-      echo $LANG['joblist'][0];
+      echo __('Status');
       echo "</th>";
       
       echo "<th>";
-      echo $LANG['entity'][0];
+      echo __('Entity');
       echo "</th>";
       echo "<th>";
-      echo $LANG['stats'][7];
+      echo __('Show graphics');
       echo "</th>";
       echo "<th>";
-      echo $LANG['state'][6]." - ".__('Name');
+      echo __('Item type')." - ".__('Name');
       echo "</th>";
       echo "<th>";
       echo __('Components', 'monitoring');
       echo "</th>";
       echo "<th>";
-      echo $LANG['state'][0];
+      echo __('Status');
       echo "</th>";
       echo "<th>";
       echo __('Last check', 'monitoring');
       echo "</th>";
       echo "<th>";
-      echo $LANG['rulesengine'][82];
+      echo __('Result details');
       echo "</th>";
       echo "<th>";
       echo __('Check period', 'monitoring');
@@ -1121,7 +1118,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "&nbsp;";
          Dropdown::showInteger("_refresh", $_SESSION['glpi_plugin_monitoring']['_refresh'], 30, 1000, 10);
          echo "&nbsp;";
-         echo "<input type='submit' name='sessionupdate' class='submit' value=\"".$LANG['buttons'][2]."\">";
+         echo "<input type='submit' name='sessionupdate' class='submit' value=\"".__('Post')."\">";
          echo "</td>";
          echo "</tr>";
          echo "</table>";
