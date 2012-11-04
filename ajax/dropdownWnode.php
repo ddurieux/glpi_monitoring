@@ -56,7 +56,7 @@ $item = new $itemtype();
 $item->getFromDB($pmWeathermapnode->fields['items_id']);
 echo $item->getLink(1);
 echo "<br/>";
-echo $LANG['common'][16]."&nbsp;:&nbsp;";
+echo __('Name')."&nbsp;:&nbsp;";
 echo "<input type='text' name='nameupdate' value='".$pmWeathermapnode->fields['name']."' />";
 
 echo "<script language='JavaScript'>

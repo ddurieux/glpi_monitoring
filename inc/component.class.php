@@ -94,7 +94,7 @@ class PluginMonitoringComponent extends CommonDBTM {
 
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'id';
-      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['name']          = __('ID');
       $tab[2]['massiveaction'] = false; // implicit field is id
      
       return $tab;
@@ -378,7 +378,7 @@ class PluginMonitoringComponent extends CommonDBTM {
    
    
    function copyItem($items_id) {
-      global $LANG;
+
       // Add form for copy item
 
       $this->getFromDB($items_id);
@@ -403,7 +403,6 @@ class PluginMonitoringComponent extends CommonDBTM {
    
    
    function tagsAvailable() {
-      global $LANG;
       
       $elements = array();
       $elements[__('List of tags available', 'monitoring')] = '';
@@ -421,13 +420,11 @@ class PluginMonitoringComponent extends CommonDBTM {
    
    
    function preferences($components_id) {
-      global $LANG;
-      
       echo "<table class='tab_cadre_fixe'>"; 
             
       echo "<tr class='tab_bg_1'>";
       echo "<th>";
-      echo $LANG['Menu'][11];      
+      echo __('Settings');      
       echo "</th>";
       echo "</tr>";
       

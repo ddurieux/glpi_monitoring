@@ -99,7 +99,6 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
       case 'Printer':
       case 'NetworkEquipment':
          $array = array();
-         //$array[0] = __('Monitoring', 'monitoring')."-".$LANG['state'][0];
          if ($_GET['id'] > 0) {
             $array[2] = __('Monitoring', 'monitoring')."-".__('Resources', 'monitoring');
          }
@@ -108,7 +107,6 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
       
       case 'User':
          $array = array();
-         //$array[0] = __('Monitoring', 'monitoring')."-".$LANG['state'][0];
          if ($_GET['id'] > 0) {
             $array[1] = __('Monitoring', 'monitoring')."-".__('Contact', 'monitoring');
          }

@@ -195,8 +195,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       Session::changeActiveEntities($pmComponentscatalog->fields['entities_id'], 
                            $pmComponentscatalog->fields['is_recursive']);
       
-      $array_return = Search::constructSQL($_GET['itemtype'], $_GET);
-      Search::showList($_GET['itemtype'], $_GET, $array_return);
+      Search::showList($_GET['itemtype'], $_GET);
 
       Session::changeActiveEntities($default_entity,
                            $entities_isrecursive);

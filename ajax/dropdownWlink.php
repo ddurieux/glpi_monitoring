@@ -56,6 +56,6 @@ echo "<br/>";
 echo $LANG['plugin_monitoring']['weathermap'][17]."&nbsp;:&nbsp;";
 echo "<input type='text' name='up_bandwidth_out' value='".$pmWeathermaplink->fields['bandwidth_out']."'/>";
 echo "<br/>";
-echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+echo "<input type='submit' name='update' value=\"".__('Save')."\" class='submit'>";
 
 ?>

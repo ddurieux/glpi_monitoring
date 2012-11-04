@@ -373,11 +373,11 @@ class PluginMonitoringProfile extends CommonDBTM {
          if (isset($profile->fields['name'])) {
             $profile->fields['name'] = stripslashes($profile->fields['name']);
          } else {
-            $profile->fields['name'] = $profile->getTypeName()." : ".$LANG['common'][2]." ".
+            $profile->fields['name'] = $profile->getTypeName()." : ".__('ID')." ".
                                     $profile->fields['id'];
          }
 
-         Session::addMessageAfterRedirect($LANG['common'][71] . "&nbsp;: " .
+         Session::addMessageAfterRedirect(__('Item successfully updated')."&nbsp;: " .
                                  (isset($this->input['_no_message_link'])?$profile->getNameID()
                                                                          :$profile->getLink()));
       }

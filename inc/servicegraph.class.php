@@ -50,7 +50,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
 
    
    function displayGraph($rrdtool_template, $itemtype, $items_id, $timezone, $time='1d', $part='', $width='900') {
-      global $LANG,$CFG_GLPI;
+      global $CFG_GLPI;
 
       $pmComponent = new PluginMonitoringComponent();
 //      if (isset($_GET['itemtype'])) {
@@ -87,7 +87,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       
       
    function generateData($rrdtool_template, $itemtype, $items_id, $timezone, $time) { 
-      global $DB,$LANG;      
+      global $DB;      
 
       // Manage timezones
       $converttimezone = '0';
@@ -828,8 +828,6 @@ class PluginMonitoringServicegraph extends CommonDBTM {
    
    
    static function preferences($components_id, $loadpreferences=1) {
-      global $LANG;
-      
       if ($loadpreferences == 1) {
          PluginMonitoringServicegraph::loadPreferences($components_id);
       }
@@ -984,7 +982,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       echo "<tr>";
       echo "<td colspan='9' align='center'>";
       echo "<input type='hidden' name='id' value='".$components_id."'/>";
-      echo "<input type='submit' name='updateperfdata' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+      echo "<input type='submit' name='updateperfdata' value=\"".__('Save')."\" class='submit'>";
       echo "</td>";
       echo "</tr>";
       echo "</table>";

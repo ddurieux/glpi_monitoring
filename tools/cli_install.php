@@ -155,7 +155,7 @@ if (!isset($_SERVER['argv'][1])) {
 
 if (in_array('--optimize', $_SERVER['argv'])) {
 
-   $migration->displayTitle($LANG['update'][139]);
+   $migration->displayTitle(__('Optimizing tables'));
    DBmysql::optimize_tables($migration);
 
    $migration->displayWarning("Optimize done.");

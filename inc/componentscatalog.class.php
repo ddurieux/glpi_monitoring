@@ -89,8 +89,6 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    
    
    function getAdditionalFields() {
-      global $LANG;
-
       return array(array('name'  => 'notification_interval',
                          'label' => __('Interval between 2 notifications (in minutes)', 'monitoring'),
                          'type'  => 'notificationinterval'));
@@ -273,7 +271,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    
    
    function showWidgetFrame($id) {
-      global $LANG, $DB, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
       
       $this->getFromDB($id);
       $data = $this->fields;

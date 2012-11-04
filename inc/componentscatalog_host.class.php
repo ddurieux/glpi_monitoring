@@ -85,9 +85,9 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
       echo "<tr>";
       echo "<th colspan='5'>";
       if ($DB->numrows($result)==0) {
-         echo $LANG['document'][13];
+         echo __('No associated item');
       } else {
-         echo $LANG['document'][19];
+         echo __('Associated item');
       }
       echo "</th>";
       echo "</tr>";
@@ -98,11 +98,11 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
       
       echo "<tr>";
       echo "<th width='10'>&nbsp;</th>";
-      echo "<th>".$LANG['common'][17]."</th>";
-      echo "<th>".$LANG['entity'][0]."</th>";
+      echo "<th>".__('Type')."</th>";
+      echo "<th>".__('Entity')."</th>";
       echo "<th>".__('Name')."</th>";
-      echo "<th>".$LANG['common'][19]."</th>";
-      echo "<th>".$LANG['common'][20]."</th>";
+      echo "<th>".__('Serial number')."</th>";
+      echo "<th>".__('Inventory number')."</th>";
       echo "</tr>";
       
       while ($data=$DB->fetch_array($result)) {
