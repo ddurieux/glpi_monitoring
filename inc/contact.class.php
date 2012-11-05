@@ -103,7 +103,7 @@ class PluginMonitoringContact extends CommonDBTM {
          $this->getFromDB($items_id);
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td>".$LANG['common'][13]."&nbsp;:</td>";
+         echo "<td>".__('Template name')."&nbsp;:</td>";
          echo "<td align='center'>";
          Dropdown::show("PluginMonitoringContacttemplate", 
                  array('name' => 'plugin_monitoring_contacttemplates_id',

@@ -91,7 +91,7 @@ class PluginMonitoringContact_Item extends CommonDBTM {
       
       echo "<tr>";
       echo "<th width='10'>&nbsp;</th>";
-      echo "<th>".$LANG['common'][35]." - ".__('Name')."</th>";
+      echo "<th>".__('Group')." - ".__('Name')."</th>";
       echo "<th colspan='3'></th>";
       echo "</tr>";
       
@@ -121,10 +121,10 @@ class PluginMonitoringContact_Item extends CommonDBTM {
       
       echo "<tr>";
       echo "<th width='10'>&nbsp;</th>";
-      echo "<th>".$LANG['common'][34]." - ".__('Name')."</th>";
-      echo "<th>".$LANG['entity'][0]."</th>";
-      echo "<th>".$LANG['setup'][14]."</th>";
-      echo "<th>".$LANG['help'][35]."</th>";
+      echo "<th>".__('User')." - ".__('Name')."</th>";
+      echo "<th>".__('Entity')."</th>";
+      echo "<th>".__('Email address')."</th>";
+      echo "<th>".__('Phone')."</th>";
       echo "</tr>";
       
       $entity = new Entity();
@@ -183,7 +183,7 @@ class PluginMonitoringContact_Item extends CommonDBTM {
      
       echo "<tr>";
       echo "<td>";
-      echo $LANG['common'][34]."&nbsp;:";
+      echo __('User')."&nbsp;:";
       echo "<input type='hidden' name='items_id' value='".$items_id."'/>";
       echo "<input type='hidden' name='itemtype' value='".$itemtype."'/>";
       echo "</td>";
@@ -200,7 +200,7 @@ class PluginMonitoringContact_Item extends CommonDBTM {
   
       echo "</td>";
       echo "<td>";
-      echo $LANG['entity'][0]." (".strtolower($LANG['profiles'][28]).")&nbsp;:";
+      echo __('Entity')." (".strtolower(__('Recursive')).")&nbsp;:";
       echo "</td>";
       echo "<td>";
       echo "<span id='show_entity'></span>\n";
@@ -212,7 +212,7 @@ class PluginMonitoringContact_Item extends CommonDBTM {
      
       echo "<tr>";
       echo "<td>";
-      echo $LANG['common'][35]."&nbsp;:";
+      echo __('Group')."&nbsp;:";
       echo "<input type='hidden' name='items_id' value='".$items_id."'/>";
       echo "<input type='hidden' name='itemtype' value='".$itemtype."'/>";
       echo "</td>";

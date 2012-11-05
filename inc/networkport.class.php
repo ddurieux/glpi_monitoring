@@ -76,23 +76,23 @@ class PluginMonitoringNetworkport extends CommonDBTM {
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'id';
-      $tab[1]['name']          = $LANG['common'][2];
+      $tab[1]['name']          = __('ID');
       $tab[1]['massiveaction'] = false; // implicit field is id
 
       $tab[2]['table'] = 'glpi_networkports';
       $tab[2]['field'] = 'name';
-      $tab[2]['name']  = $LANG['networking'][4];
+      $tab[2]['name']  = __('Network port');
       
-      $tab['networkequipment'] = $LANG['help'][26];
+      $tab['networkequipment'] = __('Networking device');
       
       $tab[3]['table']         = 'glpi_networkequipments';
       $tab[3]['field']         = 'name';
-      $tab[3]['name']          = $LANG['common'][16];
+      $tab[3]['name']          = __('Name');
       $tab[3]['forcegroupby']  = true;
 
       $tab[4]['table']         = 'glpi_states';
       $tab[4]['field']         = 'name';
-      $tab[4]['name']          = $LANG['Menu'][28];
+      $tab[4]['name']          = __('Status');
       $tab[4]['forcegroupby']  = true;
       
       return $tab;

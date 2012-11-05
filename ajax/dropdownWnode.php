@@ -50,7 +50,7 @@ $pmWeathermapnode = new PluginMonitoringWeathermapnode();
 $pmWeathermapnode->getFromDB($_POST['items_id']);
 
 echo "<br/>";
-echo $LANG['plugin_monitoring']['host'][8]."&nbsp:&nbsp";
+echo __('Host', 'monitoring')."&nbsp:&nbsp";
 $itemtype = $pmWeathermapnode->fields['itemtype'];
 $item = new $itemtype();
 $item->getFromDB($pmWeathermapnode->fields['items_id']);

@@ -54,7 +54,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
    *
    **/
    static function getTypeName($nb=0) {
-      return $LANG['rulesengine'][17];
+      return _n('Rule', 'Rules', $nb);
    }
 
 
@@ -82,13 +82,13 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
       echo "<th colspan='3'>";
-      echo $LANG['rulesengine'][17];
+      echo __('Rule');
       echo "</th>";
       echo "</tr>";
       
       echo "<tr>";
       echo "<th width='10'>&nbsp;</th>";
-      echo "<th>".$LANG['common'][17]."</th>";
+      echo "<th>".__('Type')."</th>";
       echo "<th>".__('Name')."</th>";
       echo "</tr>";
       
