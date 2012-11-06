@@ -428,7 +428,7 @@ function plugin_monitoring_addSelect($type,$id,$num) {
    if ($type == 'Computer') {
 
       if ($table.".".$field == "glpi_plugin_monitoring_computers_deviceprocessors.count") {
-         return " COUNT(`processormonit`.`id`) AS ITEM_$num,";
+         return " COUNT(DISTINCT `processormonit`.`id`) AS ITEM_$num,";
       }
    }
    return "";
