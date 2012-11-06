@@ -528,27 +528,6 @@ function plugin_monitoring_addWhere($link,$nott,$type,$id,$val) {
 
 
 
-function plugin_monitoring_addHaving($link,$nott,$type,$id,$val,$num) {
-   global $SEARCH_OPTION;
-   
-   $searchopt = &Search::getOptions($type);
-   $table = $searchopt[$id]["table"];
-   $field = $searchopt[$id]["field"];
-
-  switch ($type) {
-      
-      case 'Computer':  
-         
-         if ($table.".".$field == "glpi_plugin_monitoring_computers_deviceprocessors.count") {
-            return " (`ITEM_".$num."` = ".$val.") ";
-         }
-         
-   }
-
-   return "";
-}
-
-
 /*
  * Webservices
  */
