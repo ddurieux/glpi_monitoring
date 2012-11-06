@@ -55,6 +55,27 @@ function plugin_monitoring_giveItem($type,$id,$data,$num) {
 
 
 
+function plugin_monitoring_getAddSearchOptions($itemtype) {
+   global $LANG;
+
+   $sopt = array();
+   
+   if ($itemtype == 'Computer') {
+      $sopt[9100]['table']          = 'glpi_plugin_monitoring_computers_deviceprocessors';
+      $sopt[9100]['field']          = 'count';
+      $sopt[9100]['forcegroupby']   = true;      
+      $sopt[9100]['usehaving']      = true;
+      $sopt[9100]['datatype']       = 'number';
+      $sopt[9100]['width']          = 64;
+      $sopt[9100]['name']           = $LANG['computers'][61];
+      $sopt[9100]['massiveaction'] = false;
+      $sopt[9100]['joinparams']    = array('jointype' => 'child');
+   }
+   return $sopt;
+}
+
+
+
 /* Cron */
 function cron_plugin_monitoring() {
    return 1;
@@ -400,13 +421,16 @@ function plugin_monitoring_MassiveActionsProcess($data) {
 
 function plugin_monitoring_addSelect($type,$id,$num) {
 
-//   $searchopt = &Search::getOptions($type);
-//   $table = $searchopt[$id]["table"];
-//   $field = $searchopt[$id]["field"];
-//
-//   switch ($type) {
-//
-//   }
+   $searchopt = &Search::getOptions($type);
+   $table = $searchopt[$id]["table"];
+   $field = $searchopt[$id]["field"];
+   
+   if ($type == 'Computer') {
+
+      if ($table.".".$field == "glpi_plugin_monitoring_computers_deviceprocessors.count") {
+         return " COUNT(`processormonit`.`id`) AS ITEM_$num,";
+      }
+   }
    return "";
 }
 
@@ -450,6 +474,10 @@ function plugin_monitoring_addLeftJoin($itemtype,$ref_table,$new_table,$linkfiel
          }
          break;
       
+      case 'Computer':
+         if ($new_table.".".$linkfield == "glpi_plugin_monitoring_computers_deviceprocessors.plugin_monitoring_computers_deviceprocessors_id") {
+            return " LEFT JOIN `glpi_computers_deviceprocessors` AS `processormonit` ON (`glpi_computers`.`id` = `processormonit`.`computers_id` ) ";           
+         }
    }
    return "";
 }
@@ -479,7 +507,7 @@ function plugin_monitoring_addWhere($link,$nott,$type,$id,$val) {
    $searchopt = &Search::getOptions($type);
    $table = $searchopt[$id]["table"];
    $field = $searchopt[$id]["field"];
- 
+
   switch ($type) {
       // * Computer List (front/computer.php)
       case 'PluginMonitoringService':
@@ -489,8 +517,30 @@ function plugin_monitoring_addWhere($link,$nott,$type,$id,$val) {
             case "glpi_plugin_monitoring_services.Printer":
             case "glpi_plugin_monitoring_services.NetworkEquipment":
                return $link." (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = '".$val."') ";
-               break;
 
+         }
+         break;
+         
+   }
+
+   return "";
+}
+
+
+
+function plugin_monitoring_addHaving($link,$nott,$type,$id,$val,$num) {
+   global $SEARCH_OPTION;
+   
+   $searchopt = &Search::getOptions($type);
+   $table = $searchopt[$id]["table"];
+   $field = $searchopt[$id]["field"];
+
+  switch ($type) {
+      
+      case 'Computer':  
+         
+         if ($table.".".$field == "glpi_plugin_monitoring_computers_deviceprocessors.count") {
+            return " (`ITEM_".$num."` = ".$val.") ";
          }
          
    }
