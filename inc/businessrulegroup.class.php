@@ -155,7 +155,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
             echo "<table width='100%'>";
          $pmBusinessrule = new PluginMonitoringBusinessrule();
          $pmService = new PluginMonitoringService();
-         $a_services = $pmBusinessrule->find("`plugin_monitoring_businessrulegroups_id`='".$servicescatalogs_id."'");
+         $a_services = $pmBusinessrule->find("`plugin_monitoring_businessrulegroups_id`='".$items_id."'");
          foreach ($a_services as $gdata) {
             if ($pmService->getFromDB($gdata['plugin_monitoring_services_id'])) {
 
