@@ -121,7 +121,7 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['contacttemplates']['page']  = '/plugins/monitoring/front/contacttemplate.php';
 
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['display']['title'] = $LANG['plugin_monitoring']['display'][0];
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['display']['page']  = '/plugins/monitoring/front/display.php';
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['display']['page']  = '/plugins/monitoring/front/display_servicescatalog.php';
 
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['displayview']['title'] = $LANG['plugin_monitoring']['displayview'][0];
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['displayview']['page']  = '/plugins/monitoring/front/displayview.php';
