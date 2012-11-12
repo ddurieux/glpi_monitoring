@@ -83,34 +83,40 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "</tr>";
       echo "</table>";
       
-      echo "<table class='tab_cadre_fixe' width='950'>";
-      echo "<tr class='tab_bg_1'>";
+
       $i = 1;
       if (PluginMonitoringProfile::haveRight("view", 'r')) {
          $pmDisplayview = new PluginMonitoringDisplayview();
          $a_views = $pmDisplayview->getViews();
-         foreach ($a_views as $views_id=>$name) {
-            if ($i == 6) {
-               echo "</tr>";
-               echo "<tr class='tab_bg_1'>";
-               $i = 1;
+         if (count($a_views) > 0) {
+            echo "<table class='tab_cadre_fixe' width='950'>";
+            echo "<tr class='tab_bg_1'>";
+
+            foreach ($a_views as $views_id=>$name) {
+               if ($i == 6) {
+                  echo "</tr>";
+                  echo "<tr class='tab_bg_1'>";
+                  $i = 1;
+               }
+               echo "<th width='20%'>";
+               $this->displayPuce('display_view', $views_id);
+               echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_view.php?id=".$views_id."'>";
+               echo htmlentities($name);
+               echo "</a>";
+               echo "</th>";
+               $i++;
             }
-            echo "<th width='20%'>";
-            $this->displayPuce('display_view', $views_id);
-            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_view.php?id=".$views_id."'>";
-            echo htmlentities($name);
-            echo "</a>";
-            echo "</th>";
-            $i++;
+            for ($i;$i < 6; $i++) {
+               echo "<td width='20%'>";
+               echo "</td>";
+            }
+            echo "</tr>";
+            echo "</table>";
          }
       }
-      for ($i;$i < 6; $i++) {
-         echo "<th width='20%'>";
-         echo "</th>";
-      }
       
-      echo "</tr>";
-      echo "</table>";
+      
+
       
       echo "</td>";
       echo "</tr>";
