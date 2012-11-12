@@ -85,7 +85,7 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
       } else {
          if (!is_null($pmDisplayview->fields['counter'])) {
             $pmDisplay = new PluginMonitoringDisplay();
-            $pmDisplay->displayCounters($pmDisplayview->fields['counter']);
+            $pmDisplay->showCounters($pmDisplayview->fields['counter']);
          }
       }
       
@@ -263,6 +263,9 @@ Ext.onReady(function() {
       } else if($itemtype == "PluginMonitoringComponentscatalog") {
          $pmComponentscatalog = new PluginMonitoringComponentscatalog();
          $pmComponentscatalog->ajaxLoad($data['items_id']);
+      } else if($itemtype == "PluginMonitoringServicescatalog") {
+         $pmServicescatalog = new PluginMonitoringServicescatalog();
+         $pmServicescatalog->ajaxLoad($data['items_id']);
       }
       
       if ($itemtype == "PluginMonitoringWeathermap") {

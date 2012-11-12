@@ -80,34 +80,40 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "</tr>";
       echo "</table>";
       
-      echo "<table class='tab_cadre_fixe' width='950'>";
-      echo "<tr class='tab_bg_1'>";
+
       $i = 1;
       if (PluginMonitoringProfile::haveRight("view", 'r')) {
          $pmDisplayview = new PluginMonitoringDisplayview();
          $a_views = $pmDisplayview->getViews();
-         foreach ($a_views as $views_id=>$name) {
-            if ($i == 6) {
-               echo "</tr>";
-               echo "<tr class='tab_bg_1'>";
-               $i = 1;
+         if (count($a_views) > 0) {
+            echo "<table class='tab_cadre_fixe' width='950'>";
+            echo "<tr class='tab_bg_1'>";
+
+            foreach ($a_views as $views_id=>$name) {
+               if ($i == 6) {
+                  echo "</tr>";
+                  echo "<tr class='tab_bg_1'>";
+                  $i = 1;
+               }
+               echo "<th width='20%'>";
+               $this->displayPuce('display_view', $views_id);
+               echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_view.php?id=".$views_id."'>";
+               echo htmlentities($name);
+               echo "</a>";
+               echo "</th>";
+               $i++;
             }
-            echo "<th width='20%'>";
-            $this->displayPuce('display_view', $views_id);
-            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_view.php?id=".$views_id."'>";
-            echo htmlentities($name);
-            echo "</a>";
-            echo "</th>";
-            $i++;
+            for ($i;$i < 6; $i++) {
+               echo "<td width='20%'>";
+               echo "</td>";
+            }
+            echo "</tr>";
+            echo "</table>";
          }
       }
-      for ($i;$i < 6; $i++) {
-         echo "<th width='20%'>";
-         echo "</th>";
-      }
       
-      echo "</tr>";
-      echo "</table>";
+      
+
       
       echo "</td>";
       echo "</tr>";
@@ -1104,6 +1110,30 @@ class PluginMonitoringDisplay extends CommonDBTM {
                  <source src="../audio/star-trek.ogg" type="audio/ogg" />
                  Your browser does not support the audio element.
                </audio>';
+      }
+   }
+   
+   
+   
+   function showCounters($type, $display=1, $ajax=1) { 
+      global $CFG_GLPI;
+
+      if ($display == 0) {
+         return $this->displayCounters($type, $display);
+      }
+            
+      if ($ajax == 1) {
+         echo "<div id=\"updatecounter".$type."\"></div>";
+         echo "<script type=\"text/javascript\">
+
+         var elcc".$type." = Ext.get(\"updatecounter".$type."\");
+         var mgrcc".$type." = elcc".$type.".getUpdateManager();
+         mgrcc".$type.".loadScripts=true;
+         mgrcc".$type.".showLoadIndicator=false;
+         mgrcc".$type.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateCounter.php\", \"type=".$type."\", \"\", true);
+         </script>";
+      } else {
+         $this->displayCounters($type);
       }
    }
 

@@ -40,14 +40,6 @@
    ------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   define('GLPI_ROOT', '../../..');
-   require GLPI_ROOT . "/inc/includes.php";
-   restore_error_handler();
-
-   error_reporting(E_ALL | E_STRICT);
-   ini_set('display_errors','On');
-}
 
 class b_MonitoringInstall extends PHPUnit_Framework_TestCase {
 
@@ -58,7 +50,7 @@ class b_MonitoringInstall extends PHPUnit_Framework_TestCase {
          return;
       }
       
-       $comparaisonSQLFile = "plugin_".$pluginname."-0.80+1.3-empty.sql";
+       $comparaisonSQLFile = "plugin_".$pluginname."-0.83+2.0-empty.sql";
        // See http://joefreeman.co.uk/blog/2009/07/php-script-to-compare-mysql-database-schemas/
        
        $file_content = file_get_contents("../../".$pluginname."/install/mysql/".$comparaisonSQLFile);
@@ -157,10 +149,13 @@ class b_MonitoringInstall extends PHPUnit_Framework_TestCase {
          if (isset($a_tables_ref[$table])) {
             $fields_toremove = array_diff_assoc($data, $a_tables_ref[$table]);
             $fields_toadd = array_diff_assoc($a_tables_ref[$table], $data);
-            echo "======= DB ============== Ref =======> ".$table."\n";
-            
-            print_r($data);
-            print_r($a_tables_ref[$table]);
+            if (count($fields_toadd) > 0 
+                    && count($fields_toremove) > 0) {
+               echo "======= DB ============== Ref =======> ".$table."\n";
+
+               print_r($data);
+               print_r($a_tables_ref[$table]);
+            }
             
             // See tables missing or to delete
             $this->assertEquals(count($fields_toadd), 0, 'Fields missing/not good in '.$table.' '.print_r($fields_toadd));
@@ -184,14 +179,4 @@ class b_MonitoringInstall extends PHPUnit_Framework_TestCase {
 require_once 'Install/AllTest.php';
 require_once 'Update/AllTest.php';
 
-//class MonitoringInstall_AllTests  {
-//
-//   public static function suite() {
-//
-//      $suite = new PHPUnit_Framework_TestSuite('MonitoringInstall');
-//      $suite->addTest(Install_AllTests::suite());      
-//      $suite->addTest(Update_AllTests::suite());
-//      return $suite;
-//   }
-//}
 ?>

@@ -45,15 +45,6 @@ class Install extends PHPUnit_Framework_TestCase {
    public function testInstall($verify=1) {
       global $DB;
 
-      // Delete if Table of Monitoring yet in DB
-      $query = "SHOW FULL TABLES WHERE TABLE_TYPE LIKE 'VIEW'";
-      $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
-         if (strstr($data[0], "monitoring")) {
-            $DB->query("DROP VIEW ".$data[0]);
-         }
-      } 
-      
       $query = "SHOW TABLES";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {

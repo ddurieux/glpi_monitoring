@@ -188,7 +188,7 @@ class PluginMonitoringWebservice {
       }
       
       $pm = new PluginMonitoringDisplay();
-      $array = $pm->displayCounters($params['view'], 0);
+      $array = $pm->showCounters($params['view'], 0);
             
       return $array;
    }

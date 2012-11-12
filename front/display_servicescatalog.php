@@ -58,8 +58,8 @@ $pmDisplay->menu();
 
 PluginMonitoringProfile::checkRight("servicescatalog", 'r');
 
-$pmDisplay->displayCounters("Businessrules");
-$pmServicescatalog->showBAChecks();
+$pmDisplay->showCounters("Businessrules");
+$pmServicescatalog->showChecks();
 
 Html::footer();
 ?>

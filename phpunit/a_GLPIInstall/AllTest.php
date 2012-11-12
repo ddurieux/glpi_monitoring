@@ -46,10 +46,22 @@ function displayMigrationMessage ($id, $msg="") {
 }
 
 
+if (!defined('GLPI_ROOT')) {
+   define('GLPI_ROOT', '../../..');
+   require GLPI_ROOT . "/inc/includes.php";
+   restore_error_handler();
+
+   error_reporting(E_ALL | E_STRICT);
+   ini_set('display_errors','On');
+}
+
 class a_GLPIInstall extends PHPUnit_Framework_TestCase {
 
    public function testInstall() {
       global $DB, $CFG_GLPI;
+      
+//      include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
+//      include_once (GLPI_CONFIG_DIR . "/config_db.php");
       
       $CFG_GLPI['root_doc'] = "http://127.0.0.1/glpi083_phpunit/";
       echo "TEST";
@@ -65,8 +77,7 @@ class a_GLPIInstall extends PHPUnit_Framework_TestCase {
          $DB->query("DROP TABLE ".$data[0]);
       }
       
-      include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
-      include_once (GLPI_CONFIG_DIR . "/config_db.php");
+
       
       // Install a fresh 0.80.5 DB
       $DB  = new DB();

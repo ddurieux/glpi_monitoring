@@ -114,25 +114,39 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
 
    
    
-   function showBAChecks() {
-      global $CFG_GLPI;
+   function showChecks() {
       
       echo "<table class='tab_cadre' width='100%'>";
       echo "<tr class='tab_bg_4' style='background: #cececc;'>";
       
       $a_ba = $this->find();
+      $i = 0;
       foreach ($a_ba as $data) {
          echo "<td>";
 
          echo $this->showWidget($data['id']);
-         
+         $this->ajaxLoad($data['id']);
 
          echo "</td>";
+         
+         $i++;
+         if ($i == '6') {
+            echo "</tr>";
+            echo "<tr class='tab_bg_4' style='background: #cececc;'>";
+            $i = 0;
+         }
       }      
       
       echo "</tr>";
       echo "</table>";      
    }
+   
+   
+   
+   function showWidget($id) {
+      return "<div id=\"updateservicescatalog".$id."\"></div>";
+   }
+   
    
    
    function showBADetail($id) {
@@ -227,8 +241,9 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    
    
    
-   function showWidget($id) {
-      global $DB, $CFG_GLPI;
+
+   function showWidgetFrame($id) {
+      global $LANG, $DB, $CFG_GLPI;
 
       $pMonitoringBusinessrule = new PluginMonitoringBusinessrule();
       $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
@@ -236,31 +251,31 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
 
       $this->getFromDB($id);
       $data = $this->fields;
-      $input = '';
-      $input .= '<table  class="tab_cadre_fixe" style="width:200px;height:200px">';
-      $input .= '<tr class="tab_bg_1">';
-      $input .= '<th colspan="2" style="font-size:20px;" height="50">';
-      $input .= $data['name'];
-      $input .= '</th>';
-      $input .= '</tr>';
+      
+      echo '<table  class="tab_cadre_fixe" style="width:200px;height:200px">';
+      echo '<tr class="tab_bg_1">';
+      echo '<th colspan="2" style="font-size:20px;" height="50">';
+      echo $data['name'];
+      echo '</th>';
+      echo '</tr>';
 
-      $input .= '<tr class="tab_bg_1">';
-      $input .= '<td>';
-      $input .= $LANG['state'][0]."&nbsp;:";
-      $input .= '</td>';
-      $input .= '<td width="40">';
+      echo '<tr class="tab_bg_1">';
+      echo '<td>';
+      echo $LANG['state'][0]."&nbsp;:";
+      echo '</td>';
+      echo '<td width="40">';
       switch($data['state']) {
 
          case 'UP':
          case 'OK':
-            $input .= '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/box_green_40.png"/>';
+            echo '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/box_green_40.png"/>';
             break;
 
          case 'DOWN':
          case 'UNREACHABLE':
          case 'CRITICAL':
          case 'DOWNTIME':
-            $input .= '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/box_red_40.png"/>';
+            echo '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/box_red_40.png"/>';
             break;
 
          case 'WARNING':
@@ -268,18 +283,19 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
          case 'RECOVERY':
          case 'FLAPPING':
          case '':
-            $input .= '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/box_orange_40.png"/>';
+            echo '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/box_orange_40.png"/>';
             break;
 
       }
-      $input .= '</td>';
-      $input .= '</tr>';
 
-      $input .= '<tr class="tab_bg_1">';
-      $input .= '<td>';
-      $input .= __('Degraded mode', 'monitoring')."&nbsp;:";
-      $input .= '</td>';
-      $input .= '<td width="40" align="center">';
+      echo '</td>';
+      echo '</tr>';
+
+      echo '<tr class="tab_bg_1">';
+      echo '<td>';
+      echo __('Degraded mode', 'monitoring')."&nbsp;:";
+      echo '</td>';
+      echo '<td width="40" align="center">';
       $a_group = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_servicescatalogs_id`='".$data['id']."'");
       $a_gstate = array();
       foreach ($a_group as $gdata) {
@@ -336,18 +352,33 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       } else if ($state['WARNING'] > 0) {
          $color = 'orange';
       }
-      $input .= '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/box_'.$color.'_32.png" />';
-      $input .= '</td>';
-      $input .= '</tr>';
+      echo '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/box_'.$color.'_32.png" />';
+      echo '</td>';
+      echo '</tr>';
 
-      $input .= '<tr class="tab_bg_1">';
-      $input .= '<td colspan="2" align="center">';
-      $input .= '<a href="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/servicescatalog.form.php?id='.$data['id'].'&detail=1">Détail</a>';
-      $input .= '</td>';
-      $input .= '</tr>';
+      echo '<tr class="tab_bg_1">';
+      echo '<td colspan="2" align="center">';
 
-      $input .= '</table>';
-      return $input;
+      echo '<a href="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/servicescatalog.form.php?id='.$data['id'].'&detail=1">Détail</a>';
+      echo '</td>';
+      echo '</tr>';
+
+      echo '</table>';
+   }
+   
+   
+   
+   function ajaxLoad($id) {
+      global $CFG_GLPI;
+      
+      echo "<script type=\"text/javascript\">
+
+      var elcc".$id." = Ext.get(\"updateservicescatalog".$id."\");
+      var mgrcc".$id." = elcc".$id.".getUpdateManager();
+      mgrcc".$id.".loadScripts=true;
+      mgrcc".$id.".showLoadIndicator=false;
+      mgrcc".$id.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateWidgetServicescatalog.php\", \"id=".$id."\", \"\", true);
+      </script>";
    }
 }
 

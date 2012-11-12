@@ -580,6 +580,8 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'networkports_id', 
                                  'networkports_id', 
                                  "int(11) NOT NULL DEFAULT '0'");
+         $migration->dropField($newTable,
+                               'alias_command');
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable, 
                               'entities_id',
@@ -1170,11 +1172,11 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               'plugin_monitoring_displayviews_id', 
                               "int(11) NOT NULL DEFAULT '0'");      
          $migration->addField($newTable, 
-                              'column', 
-                              "tinyint(1) NOT NULL DEFAULT '0'");
+                              'x', 
+                              "int(5) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
-                              'position', 
-                              "tinyint(2) NOT NULL DEFAULT '0'");   
+                              'y', 
+                              "int(5) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                               'items_id', 
                               "int(11) NOT NULL DEFAULT '0'");   
@@ -2234,12 +2236,12 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  "int(11) NOT NULL AUTO_INCREMENT");
          $migration->changeField($newTable, 
                                  'items_id', 
-                                 'items_id', 
+                                 'plugin_monitoring_services_id', 
                                  "int(11) NOT NULL DEFAULT '0'");
          $migration->changeField($newTable, 
-                                 'itemtype', 
-                                 'itemtype', 
-                                 "varchar(100) DEFAULT NULL");
+                                 'plugin_monitoring_services_id', 
+                                 'plugin_monitoring_services_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
          $migration->changeField($newTable, 
                                  'begin_date', 
                                  'begin_date', 
@@ -2248,13 +2250,12 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'end_date', 
                                  'end_date', 
                                  "datetime DEFAULT NULL");
+         $migration->dropField($newTable, 
+                                 'itemtype');
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable, 
-                              'items_id', 
+                              'plugin_monitoring_services_id', 
                               "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'itemtype', 
-                              "varchar(100) DEFAULT NULL");
          $migration->addField($newTable, 
                               'begin_date', 
                               "datetime DEFAULT NULL");

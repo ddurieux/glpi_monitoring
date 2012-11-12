@@ -324,7 +324,7 @@ CREATE TABLE `glpi_plugin_monitoring_logs` (
   `id` bigint(30) NOT NULL AUTO_INCREMENT,
   `date_mod` datetime DEFAULT NULL,
   `user_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `itemtype` varchar(100) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `itemtype` varchar(100) DEFAULT NULL,
   `items_id` int(11) NOT NULL DEFAULT '0',
   `action` varchar(100) DEFAULT NULL,
   `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
