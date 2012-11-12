@@ -40,14 +40,6 @@
    ------------------------------------------------------------------------
  */
 
-if (!defined('GLPI_ROOT')) {
-   define('GLPI_ROOT', '../../..');
-   require GLPI_ROOT . "/inc/includes.php";
-   restore_error_handler();
-
-   error_reporting(E_ALL | E_STRICT);
-   ini_set('display_errors','On');
-}
 
 class b_MonitoringInstall extends PHPUnit_Framework_TestCase {
 
@@ -58,7 +50,7 @@ class b_MonitoringInstall extends PHPUnit_Framework_TestCase {
          return;
       }
       
-       $comparaisonSQLFile = "plugin_".$pluginname."-0.80+1.3-empty.sql";
+       $comparaisonSQLFile = "plugin_".$pluginname."-0.83+2.0-empty.sql";
        // See http://joefreeman.co.uk/blog/2009/07/php-script-to-compare-mysql-database-schemas/
        
        $file_content = file_get_contents("../../".$pluginname."/install/mysql/".$comparaisonSQLFile);
