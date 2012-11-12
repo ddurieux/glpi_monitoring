@@ -175,14 +175,4 @@ class c_ManageRessources extends PHPUnit_Framework_TestCase {
    
 }
 
-
-
-//class ManageRessources_AllTests  {
-//
-//   public static function suite() {
-//      
-//      $suite = new PHPUnit_Framework_TestSuite('ManageRessources');
-//      return $suite;
-//   }
-//}
 ?>
