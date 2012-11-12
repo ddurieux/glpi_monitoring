@@ -283,6 +283,9 @@ Ext.onReady(function() {
       } else if($itemtype == "PluginMonitoringComponentscatalog") {
          $pmComponentscatalog = new PluginMonitoringComponentscatalog();
          $pmComponentscatalog->ajaxLoad($data['items_id']);
+      } else if($itemtype == "PluginMonitoringServicescatalog") {
+         $pmServicescatalog = new PluginMonitoringServicescatalog();
+         $pmServicescatalog->ajaxLoad($data['items_id']);
       }
       
       if ($itemtype == "PluginMonitoringWeathermap") {
