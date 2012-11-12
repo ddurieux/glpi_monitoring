@@ -307,7 +307,7 @@ function plugin_headings_monitoring_dashboadservicecatalog($item) {
    $pmServicescatalog   = new PluginMonitoringServicescatalog();
    $pmDisplay           = new PluginMonitoringDisplay();
    
-   $pmDisplay->displayCounters("Businessrules");
+   $pmDisplay->showCounters("Businessrules");
    $pmServicescatalog->showBAChecks();   
 }
 

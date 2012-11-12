@@ -59,7 +59,7 @@ $pmDisplay->menu();
 
 PluginMonitoringProfile::checkRight("componentscatalog", 'r');
 
-$pmDisplay->displayCounters("Componentscatalog");
+$pmDisplay->showCounters("Componentscatalog");
 $pmComponentscatalog->showChecks();
 
 Html::footer();

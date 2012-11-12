@@ -1109,6 +1109,30 @@ class PluginMonitoringDisplay extends CommonDBTM {
                </audio>';
       }
    }
+   
+   
+   
+   function showCounters($type, $display=1, $ajax=1) { 
+      global $CFG_GLPI;
+
+      if ($display == 0) {
+         return $this->displayCounters($type, $display);
+      }
+            
+      if ($ajax == 1) {
+         echo "<div id=\"updatecounter".$type."\"></div>";
+         echo "<script type=\"text/javascript\">
+
+         var elcc".$type." = Ext.get(\"updatecounter".$type."\");
+         var mgrcc".$type." = elcc".$type.".getUpdateManager();
+         mgrcc".$type.".loadScripts=true;
+         mgrcc".$type.".showLoadIndicator=false;
+         mgrcc".$type.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateCounter.php\", \"type=".$type."\", \"\", true);
+         </script>";
+      } else {
+         $this->displayCounters($type);
+      }
+   }
 
    
    

@@ -105,7 +105,7 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
       } else {
          if (!is_null($pmDisplayview->fields['counter'])) {
             $pmDisplay = new PluginMonitoringDisplay();
-            $pmDisplay->displayCounters($pmDisplayview->fields['counter']);
+            $pmDisplay->showCounters($pmDisplayview->fields['counter']);
          }
       }
       

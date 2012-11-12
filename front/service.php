@@ -59,7 +59,7 @@ $pmDisplay->menu();
 echo '<meta http-equiv ="refresh" content="'.$_SESSION['glpi_plugin_monitoring']['_refresh'].'">';
 $pmDisplay->refreshPage();
 
-$pmDisplay->displayCounters("Ressources");
+$pmDisplay->showCounters("Ressources", 1, 0);
 // Manage search
 if (isset($_SESSION['plugin_monitoring']['service'])) {
    $_GET = $_SESSION['plugin_monitoring']['service'];
