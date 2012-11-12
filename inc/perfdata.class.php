@@ -63,6 +63,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       $a_list["check_http"]         = "check_http";
       $a_list["check_pop"]          = "check_pop";
       $a_list["check_smtp"]         = "check_smtp";
+      $a_list["check_mysql_health__connection-time"] = "check_mysql_health__connection_time";
       $a_list["check_mysql_health__tmp_disk_tables"] = "check_mysql_health__tmp_disk_tables";
       $a_list["check_mysql_health__threads_connected"] = "check_mysql_health__threads_connected";
       
@@ -375,6 +376,23 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       $ds[] = array('dsname' => 'time_critical');
       $ds[] = array('dsname' => 'time_other');
       $data['parseperfdata'][] = array('name' => 'time',
+                                       'DS'   => $ds);
+      return json_encode($data);      
+   }
+   
+   
+   
+   static function perfdata_check_mysql_health__connection_time() {
+      
+      $data = array();
+      $data['command'] = 'check_mysql_health__connection-time';
+      $data['parseperfdata'] = array();
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'connection-time_current');
+      $ds[] = array('dsname' => 'tconnection-time_warning');
+      $ds[] = array('dsname' => 'connection-time_critical');
+      $data['parseperfdata'][] = array('name' => 'connection-time',
                                        'DS'   => $ds);
       return json_encode($data);      
    }
