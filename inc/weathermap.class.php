@@ -737,10 +737,10 @@ LINK DEFAULT
             }
             if ($device_connected == '') {
                $networkPort->getFromDB($data['networkports_id']);
-               $elements2[$data['id']."-".$data['services_id']] = $name." [".$networkPort->fields['name']."] (".$data['components_name'].")";
+               $elements2[$data['id']."-".$data['services_id']] = $name." [".$networkPort->getfield('name')."] (".$data['components_name'].")";
             } else {
                $networkPort->getFromDB($data['networkports_id']);
-               $elements[$data['id']."-".$data['services_id']] = $name." [".$networkPort->fields['name']."] (".$data['components_name'].") > ".$device_connected;
+               $elements[$data['id']."-".$data['services_id']] = $name." [".$networkPort->getfield('name')."] (".$data['components_name'].") > ".$device_connected;
             }
          }
          if (count($elements) > 1
