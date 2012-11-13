@@ -787,8 +787,15 @@ class PluginMonitoringServicegraph extends CommonDBTM {
             $a_colors["0066cb"] = "0066cb";
             $a_colors["0099ff"] = "0099ff";
             $a_colors["99cdff"] = "99cdff";
+            
+            $a_colors["6c6024"] = "6c6024";
+            $a_colors["a39136"] = "a39136";
+            $a_colors["d3c57e"] = "d3c57e";
 
-            $a_colors["feccff"] = "feccff";
+            $a_colors["66246c"] = "66246c";
+            $a_colors["9a36a3"] = "9a36a3";
+            $a_colors["cd7ed3"] = "cd7ed3";
+            $a_colors["eacaed"] = "eacaed";
 
             break;
 
