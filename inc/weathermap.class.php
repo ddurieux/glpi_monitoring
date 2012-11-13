@@ -522,13 +522,17 @@ LINK DEFAULT
          $result = $DB->query($query);
          while ($data=$DB->fetch_array($result)) {
             $itemtype = $data['itemtype'];
-            $item = new $itemtype();
-            $item->getFromDB($data['items_id']);
-            $name = $data['name'];
-            if ($name == '') {
-               $name = $item->getName();
+            if ($itemtype == '0') {
+               $pmWeathermapnode->delete($data);
+            } else {
+               $item = new $itemtype();
+               $item->getFromDB($data['items_id']);
+               $name = $data['name'];
+               if ($name == '') {
+                  $name = $item->getName();
+               }
+               $elements[$data['id']] = $name;  
             }
-            $elements[$data['id']] = $name;            
          }
          $rand = Dropdown::showFromArray('id_update', $elements);         
          
