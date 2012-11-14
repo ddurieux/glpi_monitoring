@@ -73,17 +73,88 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    function defineTabs($options=array()){
 
       $ong = array();
-      
-      if ($_GET['id'] > 0) {
+      $this->addStandardTab("PluginMonitoringComponentscatalog", $ong, $options);
+      return $ong;
+   }
+   
+   
+   
+   /**
+    * Display tab
+    *
+    * @param CommonGLPI $item
+    * @param integer $withtemplate
+    *
+    * @return varchar name of the tab(s) to display
+    */
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
+      if ($item->getID() > 0) {
+         $ong = array();
          $ong[1] = __('Components', 'monitoring');
          $ong[2] = __('Static hosts', 'monitoring');
          $ong[3] = _n('Rule', 'Rules', 2);
          $ong[4] = __('Dynamic hosts', 'monitoring');
          $ong[5] = __('Contacts', 'monitoring');
          $ong[6] = __('Availability', 'monitoring');
+         return $ong;
       }
+      return '';
+   }
+   
+   
+   
+   
+   /**
+    * Display content of tab
+    *
+    * @param CommonGLPI $item
+    * @param integer $tabnum
+    * @param interger $withtemplate
+    *
+    * @return boolean true
+    */
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
       
-      return $ong;
+      if ($item->getID() > 0) {
+         switch($tabnum) {
+
+            case 1:
+               $pmComponentscatalog_Component = new PluginMonitoringComponentscatalog_Component();
+               $pmComponentscatalog_Component->showComponents($item->getID());         
+               break;
+
+            case 2 :
+               $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+               $pmComponentscatalog_Host->showHosts($item->getID(), 1);
+               break;
+
+            case 3 :
+               $pmComponentscatalog_rule = new PluginMonitoringComponentscatalog_rule();
+               $pmComponentscatalog_rule->showRules($item->getID());
+               break;
+
+            case 4 :
+               $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+               $pmComponentscatalog_Host->showHosts($item->getID(), 0);
+               break;
+
+            case 5 : 
+               $pmContact_Item = new PluginMonitoringContact_Item();
+               $pmContact_Item->showContacts("PluginMonitoringComponentscatalog", $item->getID());
+               break;
+
+            case 6:
+               $pmUnavaibility = new PluginMonitoringUnavaibility();
+               $pmUnavaibility->displayComponentscatalog($item->getID());
+               break;
+
+            default :
+
+         }
+         
+      }
+      return true;
    }
    
    

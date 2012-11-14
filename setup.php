@@ -60,6 +60,7 @@ function plugin_init_monitoring() {
          Plugin::registerClass('PluginMonitoringProfile',
               array('addtabon' => array('Profile')));
          Plugin::registerClass('PluginMonitoringComponent');
+         Plugin::registerClass('PluginMonitoringComponentscatalog');
          
          $PLUGIN_HOOKS['use_massive_action']['monitoring']=1;
          $PLUGIN_HOOKS['add_css']['monitoring']="css/views.css";
