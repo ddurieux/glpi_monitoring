@@ -62,25 +62,25 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
 
 
    function canCreate() {
-      return Session::haveRight('computer', 'w');
+      return PluginMonitoringProfile::haveRight("view", 'w');
    }
 
 
    
    function canView() {
-      return Session::haveRight('computer', 'r');
+      return PluginMonitoringProfile::haveRight("view", 'r');
    }
 
 
    
    function canCancel() {
-      return Session::haveRight('computer', 'w');
+      return PluginMonitoringProfile::haveRight("view", 'w');
    }
 
 
    
    function canUndo() {
-      return Session::haveRight('computer', 'w');
+      return PluginMonitoringProfile::haveRight("view", 'w');
    }
 
 
