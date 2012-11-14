@@ -149,6 +149,10 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       $mydatat = array();
       $a_labels = array();
       $func = "perfdata_".$rrdtool_template;
+      if (!function_exists(PluginMonitoringPerfdata::$func())) {
+         return array($mydatat, $a_labels, $a_ref, $a_convert);
+      }
+
       $a_json = json_decode(PluginMonitoringPerfdata::$func());
       
       while ($edata=$DB->fetch_array($result)) {
