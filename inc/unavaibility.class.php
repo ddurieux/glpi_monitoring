@@ -153,9 +153,9 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";     
       
       echo "<tr>";
-      echo "<th>".$LANG['common'][17]."</th>";
-      echo "<th>".$LANG['entity'][0]."</th>";
-      echo "<th>".$LANG['common'][16]."</th>";
+      echo "<th>".__('Type')."</th>";
+      echo "<th>".__('Entity')."</th>";
+      echo "<th>".__('Name')."</th>";
       echo "<th>".__('Resource', 'monitoring')."</th>";
       echo "<th>".__('Current month', 'monitoring')."</th>";
       echo "<th>".__('Last month', 'monitoring')."</th>";
