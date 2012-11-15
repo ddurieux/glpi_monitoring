@@ -2238,6 +2238,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'items_id', 
                                  'plugin_monitoring_services_id', 
                                  "int(11) NOT NULL DEFAULT '0'");
+      $migration->migrationOneTable($newTable);
          $migration->changeField($newTable, 
                                  'plugin_monitoring_services_id', 
                                  'plugin_monitoring_services_id', 

@@ -757,7 +757,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
    
    
    
-   static function getperfdataNames($rrdtool_template) {
+   static function getperfdataNames($rrdtool_template,$keepwarcrit=1) {
       
       $a_name = array();
 
@@ -766,7 +766,14 @@ class PluginMonitoringServicegraph extends CommonDBTM {
 
       foreach ($a_json->parseperfdata as $data) {
          foreach ($data->DS as $data2) {
-            $a_name[] = $data2->dsname;
+            if ($keepwarcrit == 0) {
+               if (!strstr($data2->dsname, "warning")
+                       && !strstr($data2->dsname, "critical")) {
+                  $a_name[] = $data2->dsname;
+               }
+            } else {
+               $a_name[] = $data2->dsname;
+            }
          }
       }
       return $a_name;
@@ -834,7 +841,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
    
    
    
-   static function preferences($components_id, $loadpreferences=1) {
+   static function preferences($components_id, $loadpreferences=1, $displayonly=0) {
       if ($loadpreferences == 1) {
          PluginMonitoringServicegraph::loadPreferences($components_id);
       }
@@ -887,7 +894,9 @@ class PluginMonitoringServicegraph extends CommonDBTM {
 
       echo "</table>";
 
-      
+      if ($displayonly == 1) {
+         return;
+      }
       // * Invert perfname
 
       $a_perfnames = array();

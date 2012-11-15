@@ -97,6 +97,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          $ong[4] = __('Dynamic hosts', 'monitoring');
          $ong[5] = __('Contacts', 'monitoring');
          $ong[6] = __('Availability', 'monitoring');
+         $ong[7] = __('Report');
          return $ong;
       }
       return '';
@@ -147,6 +148,11 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             case 6:
                $pmUnavaibility = new PluginMonitoringUnavaibility();
                $pmUnavaibility->displayComponentscatalog($item->getID());
+               break;
+            
+            case 7:
+               $pmPluginMonitoringComponentscatalog = new PluginMonitoringComponentscatalog();
+               $pmPluginMonitoringComponentscatalog->showReport($item->getID());
                break;
 
             default :
@@ -415,6 +421,209 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          }
       }
       return $a_services;      
+   }
+   
+   
+   
+   function showReport($componentscatalogs_id) {
+      global $CFG_GLPI;
+
+      $pmComponentscatalog_Component = new PluginMonitoringComponentscatalog_Component();
+      $pmComponent = new PluginMonitoringComponent();
+      
+      $this->getFromDB($componentscatalogs_id);
+      
+      echo "<form name='form' method='post' 
+         action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/report_componentscatalog.form.php'>";
+      
+      echo "<table class='tab_cadre_fixe'>";
+      echo '<tr class="tab_bg_1">';
+      echo '<th colspan="4">';
+      echo __('Report');
+      echo "<input type='hidden' name='componentscatalogs_id' value='".$componentscatalogs_id."' />";
+      echo '</th>';
+      echo '</tr>';
+
+      echo '<tr class="tab_bg_1">';
+      echo "<td>".__('Start date')."</td>";
+      echo "<td>";
+      Html::showDateFormItem("date_start", date('Y-m-d H:i:s', date('U') - (24 * 3600 * 7)));
+      echo "</td>";
+      echo "<td>".__('End date')."</td>";
+      echo "<td>";
+      Html::showDateFormItem("date_end", date('Y-m-d'));
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "</table>";
+      echo "TODO : faire synthese semaine par semaine depuis 6 mois par exemple";
+      echo "<table class='tab_cadre_fixe'>";      
+      $a_composants = $pmComponentscatalog_Component->find("`plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'");
+      foreach ($a_composants as $comp_data) {
+         $pmComponent->getFromDB($comp_data['plugin_monitoring_components_id']);
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td width='10'>";
+         echo "<input type='checkbox' name='components_id[]' value='".$pmComponent->getID()."' checked />";
+         echo "</td>";
+         echo "<td>";
+         echo $pmComponent->getLink();
+         echo "</td>";      
+         echo "</tr>";
+         
+         echo "<tr class='tab_bg_1'>";
+         echo "<td width='10'>";
+         echo "</td>";
+         echo "<td>";
+         PluginMonitoringServicegraph::preferences($pmComponent->getID(), 1, 1);
+         echo "</td>";
+      
+         echo "</tr>";
+      }
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='2' align='center'>";
+      echo "<input type='submit' class='submit' name='generate' value='".__('Generate the report', 'monitoring')."'/>";
+      echo "</td>";
+      echo "</tr>";
+      
+      Html::closeForm();
+   }
+   
+   
+   
+   function generateReport($array) {
+      global $DB,$CFG_GLPI;
+      
+      $componentscatalogs_id = $array['componentscatalogs_id'];
+      
+      // define time for the report:
+      // Week, week -1, week -2, month, month -1, month -2, year, year -1
+      
+      $pmUnavaibility = new PluginMonitoringUnavaibility();
+      $pmComponent = new PluginMonitoringComponent();
+      $pmServiceevent = new PluginMonitoringServiceevent();
+      
+      PluginMonitoringReport::beginCapture();
+      
+      $this->getFromDB($componentscatalogs_id);
+      echo '<h1>'.$this->getTypeName().' : '.$this->getName().'<br/>
+         Mois de Novembre</h1>';
+      
+      echo '<br/>';
+      
+      foreach ($array['components_id'] as $components_id) {
+         $pmComponent->getFromDB($components_id);
+         
+         $a_name = $array['perfname'];
+         
+         
+         echo "<table class='tab_cadre_fixe'>";
+         echo '<tr class="tab_bg_1">';
+         echo '<th colspan="'.(6 + (count($a_name) * 3)).'">';
+         echo $pmComponent->getName();
+         echo '</th>';
+         echo '</tr>';
+         
+         echo '<tr class="tab_bg_1">';
+         echo '<th>';
+         echo __('Name');
+         echo '</th>';
+         echo '<th>';
+         echo __('Entity');
+         echo '</th>';
+         echo '<th>';
+         echo __('Itemtype');
+         echo '</th>';
+         echo '<th>';
+         echo __('Trend', 'monitoring');
+         echo '</th>';
+         echo '<th>';
+         echo __('Avaibility', 'monitoring');
+         echo '</th>';
+         echo '<th>';
+         echo __('Unavaibility (time)', 'monitoring');
+         echo '</th>';
+         foreach ($a_name as $name) {
+            echo '<th>';
+            echo str_replace('_', ' ', $name).' '.__('min', 'monitoring');
+            echo '</th>';
+            echo '<th>';
+            echo str_replace('_', ' ', $name).' '.__('avg', 'monitoring');
+            echo '</th>';
+            echo '<th>';
+            echo str_replace('_', ' ', $name).' '.__('max', 'monitoring');
+            echo '</th>';
+         }
+         echo '</tr>';
+
+         $query = "SELECT `glpi_plugin_monitoring_componentscatalogs_hosts`.*, 
+               `glpi_plugin_monitoring_services`.`id` as sid FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+            LEFT JOIN `glpi_plugin_monitoring_services`
+               ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`=`plugin_monitoring_componentscatalogs_hosts_id`
+            WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'
+               AND `plugin_monitoring_components_id`='".$components_id."'";
+         $result = $DB->query($query);
+         while ($data=$DB->fetch_array($result)) {
+            $itemtype = $data['itemtype'];
+            $item = new $itemtype();
+            $item->getFromDB($data['items_id']);
+            
+            $ret = array();
+            if (count($a_name) > 0) {
+               $queryevents = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
+                  WHERE `plugin_monitoring_services_id`='".$data['sid']."'
+                     AND `date` >= '".$array['date_start']."'
+                     AND `date` <= '".$array['date_end']."'
+                  ORDER BY `date`";
+               $resultevents = $DB->query($queryevents);
+               $ret = $pmServiceevent->getData($resultevents, $pmComponent->fields['graph_template']);
+            }
+            
+
+            echo '<tr class="tab_bg_1">';
+            echo '<td>';
+            echo $item->getName();
+            echo '</td>';
+            echo '<td>';
+            echo Dropdown::getDropdownName("glpi_entities", $item->fields['entities_id']);
+            echo '</td>';
+            echo '<td>';
+            echo $item->getTypeName();
+            echo '</td>';
+            echo '<td>';
+            //echo '<img src="../pics/right.png" width="10" />';
+            echo "->";
+            echo '</td>';
+            echo '<td>';
+            $a_times = $pmUnavaibility->parseEvents($data['id'], 'currentmonth');
+            echo round(((($a_times[1] - $a_times[0]) / $a_times[1]) * 100), 3)."%";
+            echo '</td>';
+            echo '<td>';
+            if ($a_times[0] == 0) {
+               echo "-";
+            } else {
+               echo Html::timestampToString($a_times[0]);
+            }
+            echo '</td>';
+            foreach ($a_name as $name) {
+               echo '<td>';
+               echo min($ret[0][$name]);
+               echo '</td>';
+               echo '<td>';
+               echo round(array_sum($ret[0][$name]) / count($ret[0][$name]), 3);
+               echo '</td>';
+               echo '<td>';
+               echo max($ret[0][$name]);
+               echo '</td>';
+            }
+            echo '</tr>';
+         }
+         echo '</table>';
+      }
+      
+      $content = PluginMonitoringReport::endCapture();
+      PluginMonitoringReport::generatePDF($content);
+//      echo $content;
    }
 }
 
