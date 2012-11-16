@@ -50,7 +50,7 @@ class b_MonitoringInstall extends PHPUnit_Framework_TestCase {
          return;
       }
       
-       $comparaisonSQLFile = "plugin_".$pluginname."-0.83+2.0-empty.sql";
+       $comparaisonSQLFile = "plugin_".$pluginname."-0.83+2.1-empty.sql";
        // See http://joefreeman.co.uk/blog/2009/07/php-script-to-compare-mysql-database-schemas/
        
        $file_content = file_get_contents("../../".$pluginname."/install/mysql/".$comparaisonSQLFile);

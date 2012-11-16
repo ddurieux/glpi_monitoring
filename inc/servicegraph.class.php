@@ -766,9 +766,9 @@ class PluginMonitoringServicegraph extends CommonDBTM {
 
       foreach ($a_json->parseperfdata as $data) {
          foreach ($data->DS as $data2) {
-            $a_name[] = $data2->dsname;
-         }
-      }
+                  $a_name[] = $data2->dsname;
+               }
+            }
       return $a_name;
    }
    
