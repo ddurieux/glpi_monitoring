@@ -49,6 +49,11 @@ PluginMonitoringProfile::checkRight("componentscatalog","w");
 //       "monitoring", "reports");
 
 $pmComponentscatalog = new PluginMonitoringComponentscatalog();
-$pmComponentscatalog->generateReport($_POST);
+if ($_POST['reporttype'] == 'simplereport') {
+   $pmComponentscatalog->generateReport($_POST);
+} else {
+   $pmComponentscatalog->generateSyntheseReport($_POST);
+}
+
 
 ?>

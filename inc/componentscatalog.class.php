@@ -438,25 +438,93 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       
       echo "<table class='tab_cadre_fixe'>";
       echo '<tr class="tab_bg_1">';
-      echo '<th colspan="4">';
+      echo '<th colspan="5">';
       echo __('Report');
       echo "<input type='hidden' name='componentscatalogs_id' value='".$componentscatalogs_id."' />";
       echo '</th>';
       echo '</tr>';
 
+      // ** simple report
       echo '<tr class="tab_bg_1">';
-      echo "<td>".__('Start date')."</td>";
+      echo '<tr class="tab_bg_1">';
+      echo '<td>';
+      echo '<input type="radio" name="reporttype" value="simplereport" checked />'; 
+      echo '</td>';
+      echo '<td colspan="4">';
+      echo '<strong>'.__('Simple report', "monitoring").'</strong>';
+      echo '</td>';
+      echo '</tr>';
+      
+      echo '<tr class="tab_bg_1">';
+      echo '<td>';
+      echo '</td>';
+      echo "<td>".__('Start date')." :</td>";
       echo "<td>";
       Html::showDateFormItem("date_start", date('Y-m-d H:i:s', date('U') - (24 * 3600 * 7)));
       echo "</td>";
-      echo "<td>".__('End date')."</td>";
+      echo "<td>".__('End date')." :</td>";
       echo "<td>";
       Html::showDateFormItem("date_end", date('Y-m-d'));
       echo "</td>";
       echo "</tr>";
       
+      // ** synthese
+      echo '<tr class="tab_bg_1">';
+      echo '<td>';
+      echo '<input type="radio" name="reporttype" value="synthese" />'; 
+      echo '</td>';
+      echo '<td colspan="4">';
+      echo '<strong>'.__('Synthese', "monitoring").'</strong>';
+      echo '</td>';
+      echo '</tr>';
+      
+      echo '<tr class="tab_bg_1">';
+      echo '<td>';
+      echo '</td>';
+      echo '<td colspan="2">';
+      Dropdown::showInteger("synthesenumber", "12", "2", "30");
+      echo "&nbsp;";
+      $a_time = array('week' => __('Week'),
+                      'month' => __('Month'),
+                      'year' => __('Year'));
+      Dropdown::showFromArray("syntheseperiod", $a_time);
+      echo '</td>';
+      echo "<td>".__('End date')." :</td>";
+      echo "<td>";
+      Html::showDateFormItem("synthesedate_end", date('Y-m-d'));
+      echo "</td>";
+      echo '</tr>';
+      
+      // ** synthese ++
+      echo '<tr class="tab_bg_1">';      
+      echo '<td>';
+      echo '<input type="radio" name="reporttype" value="syntheseplus" />'; 
+      echo '</td>';
+      echo '<td colspan="4">';
+      echo '<strong>'.__('Synthese detail', "monitoring").'</strong>';
+      echo '</td>';
+      echo '</tr>';   
+      
+      echo '<tr class="tab_bg_1">';
+      echo '<td>';
+      echo '</td>';
+      echo '<td colspan="2">';
+      Dropdown::showInteger("syntheseplusnumber", "12", "2", "30");
+      echo "&nbsp;";
+      $a_time = array('week' => __('Week'),
+                      'month' => __('Month'),
+                      'year' => __('Year'));
+      Dropdown::showFromArray("syntheseplusperiod", $a_time);
+      echo '</td>';
+      echo "<td>".__('End date')." :</td>";
+      echo "<td>";
+      Html::showDateFormItem("syntheseplusdate_end", date('Y-m-d'));
+      echo "</td>";
+      echo '</tr>';
+      
       echo "</table>";
-      echo "TODO : faire synthese semaine par semaine depuis 6 mois par exemple";
+      
+      
       echo "<table class='tab_cadre_fixe'>";      
       $a_composants = $pmComponentscatalog_Component->find("`plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'");
       foreach ($a_composants as $comp_data) {
@@ -514,8 +582,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       foreach ($array['components_id'] as $components_id) {
          $pmComponent->getFromDB($components_id);
          
-         $a_name = $array['perfname'];
-         
+         $a_name = $array['perfname'];         
          
          echo "<table class='tab_cadre_fixe'>";
          echo '<tr class="tab_bg_1">';
@@ -525,36 +592,45 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          echo '</tr>';
          
          echo '<tr class="tab_bg_1">';
-         echo '<th>';
+         echo '<th rowspan="2">';
          echo __('Name');
          echo '</th>';
-         echo '<th>';
+         echo '<th rowspan="2">';
          echo __('Entity');
          echo '</th>';
-         echo '<th>';
+         echo '<th rowspan="2">';
          echo __('Itemtype');
          echo '</th>';
-         echo '<th>';
+         echo '<th rowspan="2">';
          echo __('Trend', 'monitoring');
          echo '</th>';
-         echo '<th>';
+         echo '<th rowspan="2">';
          echo __('Avaibility', 'monitoring');
          echo '</th>';
-         echo '<th>';
+         echo '<th rowspan="2">';
          echo __('Unavaibility (time)', 'monitoring');
          echo '</th>';
          foreach ($a_name as $name) {
-            echo '<th>';
-            echo str_replace('_', ' ', $name).' '.__('min', 'monitoring');
-            echo '</th>';
-            echo '<th>';
-            echo str_replace('_', ' ', $name).' '.__('avg', 'monitoring');
-            echo '</th>';
-            echo '<th>';
-            echo str_replace('_', ' ', $name).' '.__('max', 'monitoring');
+            echo '<th colspan="3">';
+            echo str_replace('_', ' ', $name);
             echo '</th>';
          }
          echo '</tr>';
+         
+         echo '<tr class="tab_bg_1">';
+         foreach ($a_name as $name) {
+            echo '<th>';
+            echo __('Min', 'monitoring');
+            echo '</th>';
+            echo '<th>';
+            echo __('Avg', 'monitoring');
+            echo '</th>';
+            echo '<th>';
+            echo __('Max', 'monitoring');
+            echo '</th>';
+         }
+         echo '</tr>';
+         
 
          $query = "SELECT `glpi_plugin_monitoring_componentscatalogs_hosts`.*, 
                `glpi_plugin_monitoring_services`.`id` as sid FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
@@ -563,6 +639,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'
                AND `plugin_monitoring_components_id`='".$components_id."'";
          $result = $DB->query($query);
+         $rownb = true;
          while ($data=$DB->fetch_array($result)) {
             $itemtype = $data['itemtype'];
             $item = new $itemtype();
@@ -578,9 +655,8 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                $resultevents = $DB->query($queryevents);
                $ret = $pmServiceevent->getData($resultevents, $pmComponent->fields['graph_template']);
             }
-            
 
-            echo '<tr class="tab_bg_1">';
+            echo '<tr class="tab_bg_1'.(($rownb = !$rownb)?'_2':'').'">';
             echo '<td>';
             echo $item->getName();
             echo '</td>';
@@ -623,7 +699,109 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       
       $content = PluginMonitoringReport::endCapture();
       PluginMonitoringReport::generatePDF($content);
-//      echo $content;
+
+   }
+   
+   
+   
+   function generateSyntheseReport($array) {
+      global $DB;
+
+      $end_date = $array[$array['reporttype'].'date_end'];
+      $end_date_timestamp = strtotime($end_date);
+      $number   = $array[$array['reporttype'].'number'];
+      $period   = $array[$array['reporttype'].'period'];
+      
+      $componentscatalogs_id = $array['componentscatalogs_id'];
+      
+      $pmComponent    = new PluginMonitoringComponent();
+      $pmUnavaibility = new PluginMonitoringUnavaibility();
+      $pmServiceevent = new PluginMonitoringServiceevent();
+      
+      PluginMonitoringReport::beginCapture();
+      
+      // ** Unavaibility
+      foreach ($array['components_id'] as $components_id) {
+         $pmComponent->getFromDB($components_id);
+      
+         echo "<table class='tab_cadre_fixe'>";
+         echo '<tr class="tab_bg_1">';
+         echo '<th colspan="'.(3 + ($number * 2)).'">';
+         echo $pmComponent->getName()." / ".__('Avaibility', 'monitoring');
+         echo '</th>';
+         echo '</tr>';
+         
+         echo '<tr class="tab_bg_1">';
+         echo '<th>';
+         echo __('Name');
+         echo '</th>';
+         echo '<th>';
+         echo __('Entity');
+         echo '</th>';
+         echo '<th>';
+         echo __('Itemtype');
+         echo '</th>';
+         for ($i = $number; $i >= 1;$i--) {
+            echo '<th colspan="2">';
+            echo Html::convDate(date('Y-m-d', strtotime("-".$i." ".$period, $end_date_timestamp)));
+            echo "<br/>";
+            echo Html::convDate(date('Y-m-d', strtotime("-".($i-1)." ".$period, $end_date_timestamp)));
+            echo '</th>';           
+         }
+         echo '</tr>';
+         
+         $query = "SELECT `glpi_plugin_monitoring_componentscatalogs_hosts`.*, 
+               `glpi_plugin_monitoring_services`.`id` as sid FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+            LEFT JOIN `glpi_plugin_monitoring_services`
+               ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`=`plugin_monitoring_componentscatalogs_hosts_id`
+            WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'
+               AND `plugin_monitoring_components_id`='".$components_id."'";
+         $result = $DB->query($query);
+         $rownb = true;
+         while ($data=$DB->fetch_array($result)) {
+            $itemtype = $data['itemtype'];
+            $item = new $itemtype();
+            $item->getFromDB($data['items_id']);
+            $previous_value = -1;
+         
+            echo '<tr class="tab_bg_1'.(($rownb = !$rownb)?'_2':'').'">';
+            echo '<td>';
+            echo $item->getName();
+            echo '</td>';
+            echo '<td>';
+            echo Dropdown::getDropdownName("glpi_entities", $item->fields['entities_id']);
+            echo '</td>';
+            echo '<td>';
+            echo $item->getTypeName();
+            echo '</td>';
+            for ($i = $number; $i >= 1;$i--) {
+               echo '<td>';
+               $a_times = $pmUnavaibility->parseEvents($data['id'], '', 
+                                                    date('Y-m-d', strtotime("-".$i." ".$period, $end_date_timestamp)),
+                                                    date('Y-m-d', strtotime("-".($i-1)." ".$period, $end_date_timestamp)));
+               $percentage = round(((($a_times[1] - $a_times[0]) / $a_times[1]) * 100), 3);
+               echo $percentage."%";
+               echo '</td>';
+               echo '<td>';
+               if ($previous_value > -1) {
+                  if ($previous_value < $percentage) {
+                     echo "+";
+                  } else if ($previous_value == $percentage) {
+                     echo "=";
+                  } else if ($previous_value < $percentage) {
+                     echo "-";
+                  }
+               }
+               $previous_value = $percentage;
+               echo '</td>';
+            }
+            echo "</tr>";
+
+         }
+         echo "</table>";
+      }
+      $content = PluginMonitoringReport::endCapture();
+      PluginMonitoringReport::generatePDF($content);
    }
 }
 

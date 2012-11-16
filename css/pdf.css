@@ -51,7 +51,6 @@ td { }
 .tab_cadre td, .tab_cadre_fixe td, .tab_cadre_fixehov td, .tab_cadrehov td, .tab_cadrehov_pointer td, 
 .tab_cadre_report td {
    padding: 3px 5px;
-   background-color: #F0EDCC;
 }
 
 .tab_bg_1 {
@@ -59,7 +58,7 @@ td { }
 }
 
 .tab_bg_1_2 {
-   background-color: #cf9b9b;
+   background-color: #F0EDCC;
 }
 
 td.numeric {

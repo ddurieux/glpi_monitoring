@@ -205,11 +205,59 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
     * @param type $services_id
     * @param type $period can have values 'currentmonth','lastmonth', 'currentyear'
     */
-   function parseEvents($services_id,$period) {
+   function parseEvents($services_id,$period, $startp='', $endp='') {
       global $DB;
 
       $timecriticalSeconds = 0;
       $totaltime = 0;
+      if ($period == ''
+              AND $startp != '') {
+         
+         $begindate = $startp;
+         $enddate   = $endp;
+         $timestart   = strtotime($begindate);
+         $timeend     = strtotime($enddate);
+         $totaltime = $timeend - $timestart;
+
+         $month = date('Y-m-',mktime(1,1,1,$m-1,1,date('Y')));
+         $query = "SELECT * FROM `glpi_plugin_monitoring_unavaibilities`
+            WHERE `plugin_monitoring_services_id`='".$services_id."'
+               AND `begin_date` >= '".$begindate."'
+               AND `end_date` <= '".$enddate."'";
+         $result = $DB->query($query);
+         while ($data=$DB->fetch_array($result)) {
+            $timestart   = strtotime($data['begin_date']);
+            $timeend     = strtotime($data['end_date']);
+            $activetime = $timeend-$timestart;
+            $timecriticalSeconds += $activetime;
+         }            
+         // unvaibility when more than end
+         $query = "SELECT * FROM `glpi_plugin_monitoring_unavaibilities`
+            WHERE `plugin_monitoring_services_id`='".$services_id."'
+               AND `begin_date` >= '".$begindate."'
+               AND `end_date` > '".$enddate."'";
+         $result = $DB->query($query);
+         while ($data=$DB->fetch_array($result)) {
+            $timestart   = strtotime($begindate);
+            $timeend     = strtotime($data['end_date']);
+            $activetime = $timeend-$timestart;
+            $timecriticalSeconds += $activetime;
+         }
+         // unvaibility when before start
+         $query = "SELECT * FROM `glpi_plugin_monitoring_unavaibilities`
+            WHERE `plugin_monitoring_services_id`='".$services_id."'
+               AND `begin_date` < '".$begindate."'
+               AND `end_date` <= '".$enddate."'";
+         $result = $DB->query($query);
+         while ($data=$DB->fetch_array($result)) {
+            $timestart   = strtotime($data['begin_date']);
+            $timeend     = strtotime($enddate);
+            $activetime = $timeend-$timestart;
+            $timecriticalSeconds += $activetime;
+         }
+         return array($timecriticalSeconds, $totaltime);
+      }
+      
       switch ($period) {
 
          case 'currentmonth':
