@@ -86,7 +86,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
             ORDER BY `date`";
          $result2 = $DB->query($query2);
          while ($data2=$DB->fetch_array($result2)) {
-            $pmUnavaibility->checkState($data2['state'], $data2['date'], $data['id']);
+            $pmUnavaibility->checkState($data2['state'], $data2['date']);
             $input = array();
             $input['id'] = $data2['id'];
             $input['unavailability'] = 1;
@@ -119,7 +119,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
    
    
    
-   function checkState($stateevent, $date, $services_id) {
+   function checkState($stateevent, $date) {
       
       $state = PluginMonitoringDisplay::getState($stateevent, "HARD");
       
@@ -127,7 +127,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
          if ($this->currentstate == 'ok') {
             // Add 
             $input = array();
-            $input['plugin_monitoring_services_id'] = $services_id;
+            $input['plugin_monitoring_services_id'] = $this->plugin_monitoring_services_id;
             $input['begin_date'] = $date;
             $this->unavaibilities_id = $this->add($input);
             $this->currentstate = 'critical';
@@ -228,31 +228,33 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
          while ($data=$DB->fetch_array($result)) {
             $timestart   = strtotime($data['begin_date']);
             $timeend     = strtotime($data['end_date']);
-            $activetime = $timeend-$timestart;
+            $activetime  = $timeend-$timestart;
             $timecriticalSeconds += $activetime;
          }            
          // unvaibility when more than end
          $query = "SELECT * FROM `glpi_plugin_monitoring_unavaibilities`
             WHERE `plugin_monitoring_services_id`='".$services_id."'
                AND `begin_date` >= '".$begindate."'
+               AND `begin_date` <= '".$enddate."'
                AND `end_date` > '".$enddate."'";
          $result = $DB->query($query);
          while ($data=$DB->fetch_array($result)) {
-            $timestart   = strtotime($begindate);
-            $timeend     = strtotime($data['end_date']);
-            $activetime = $timeend-$timestart;
+            $timestart   = strtotime($data['begin_date']);
+            $timeend     = strtotime($enddate);
+            $activetime  = $timeend-$timestart;
             $timecriticalSeconds += $activetime;
          }
          // unvaibility when before start
          $query = "SELECT * FROM `glpi_plugin_monitoring_unavaibilities`
             WHERE `plugin_monitoring_services_id`='".$services_id."'
                AND `begin_date` < '".$begindate."'
-               AND `end_date` <= '".$enddate."'";
+               AND `end_date` <= '".$enddate."'
+               AND `end_date` >= '".$begindate."'";
          $result = $DB->query($query);
          while ($data=$DB->fetch_array($result)) {
-            $timestart   = strtotime($data['begin_date']);
-            $timeend     = strtotime($enddate);
-            $activetime = $timeend-$timestart;
+            $timestart   = strtotime($begindate);
+            $timeend     = strtotime($data['end_date']);
+            $activetime  = $timeend-$timestart;
             $timecriticalSeconds += $activetime;
          }
          return array($timecriticalSeconds, $totaltime);

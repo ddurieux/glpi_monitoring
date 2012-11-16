@@ -788,7 +788,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                      echo "+";
                   } else if ($previous_value == $percentage) {
                      echo "=";
-                  } else if ($previous_value < $percentage) {
+                  } else if ($previous_value > $percentage) {
                      echo "-";
                   }
                }
