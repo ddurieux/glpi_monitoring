@@ -86,7 +86,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
             ORDER BY `date`";
          $result2 = $DB->query($query2);
          while ($data2=$DB->fetch_array($result2)) {
-            $pmUnavaibility->checkState($data2['state'], $data2['date']);
+            $pmUnavaibility->checkState($data2['state'], $data2['date'], $data['id']);
             $input = array();
             $input['id'] = $data2['id'];
             $input['unavailability'] = 1;
@@ -119,7 +119,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
    
    
    
-   function checkState($stateevent, $date) {
+   function checkState($stateevent, $date, $services_id) {
       
       $state = PluginMonitoringDisplay::getState($stateevent, "HARD");
       
@@ -127,7 +127,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
          if ($this->currentstate == 'ok') {
             // Add 
             $input = array();
-            $input['plugin_monitoring_services_id'] = $this->plugin_monitoring_services_id;
+            $input['plugin_monitoring_services_id'] = $services_id;
             $input['begin_date'] = $date;
             $this->unavaibilities_id = $this->add($input);
             $this->currentstate = 'critical';
