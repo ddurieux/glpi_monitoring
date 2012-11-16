@@ -60,15 +60,34 @@ class PluginMonitoringDisplayview extends CommonDBTM {
 
 
    static function canCreate() {
-      return Session::haveRight('computer', 'w');
+      return PluginMonitoringProfile::haveRight("view", 'w');
    }
 
 
    
    static function canView() {
-      return Session::haveRight('computer', 'r');
+      return PluginMonitoringProfile::haveRight("view", 'r');
    }
 
+
+   
+   function canCancel() {
+      return PluginMonitoringProfile::haveRight("view", 'w');
+   }
+
+
+   
+   function canUndo() {
+      return PluginMonitoringProfile::haveRight("view", 'w');
+   }
+
+
+   
+   function canValidate() {
+      return true;
+   }
+
+>>>>>>> glpi0.83
    
 
    function getSearchOptions() {

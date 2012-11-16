@@ -2234,10 +2234,12 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'id', 
                                  'id', 
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'items_id', 
-                                 'plugin_monitoring_services_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");
+         if (!FieldExists($newTable, "plugin_monitoring_services_id")) {
+            $migration->changeField($newTable, 
+                                    'items_id', 
+                                    'plugin_monitoring_services_id', 
+                                    "int(11) NOT NULL DEFAULT '0'");
+         }
       $migration->migrationOneTable($newTable);
          $migration->changeField($newTable, 
                                  'plugin_monitoring_services_id', 
