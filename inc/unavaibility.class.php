@@ -219,7 +219,6 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
          $timeend     = strtotime($enddate);
          $totaltime = $timeend - $timestart;
 
-         $month = date('Y-m-',mktime(1,1,1,$m-1,1,date('Y')));
          $query = "SELECT * FROM `glpi_plugin_monitoring_unavaibilities`
             WHERE `plugin_monitoring_services_id`='".$services_id."'
                AND `begin_date` >= '".$begindate."'

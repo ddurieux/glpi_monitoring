@@ -667,12 +667,25 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             echo $item->getTypeName();
             echo '</td>';
             echo '<td>';
-            //echo '<img src="../pics/right.png" width="10" />';
-            echo "->";
+            $a_times = $pmUnavaibility->parseEvents($data['id'], '', $array['date_start'], $array['date_end']);
+            // previous unavaibility
+            $str_start = strtotime($array['date_start']);
+            $str_end   = strtotime($array['date_end']);
+            $a_times_previous = $pmUnavaibility->parseEvents($data['id'], '', 
+                                 date('Y-m-d', $str_start - ($str_end - $str_start)), 
+                                 $array['date_star']);
+            $previous_percentage = round(((($a_times_previous[1] - $a_times_previous[0]) / $a_times_previous[1]) * 100), 3);
+            $percentage = round(((($a_times[1] - $a_times[0]) / $a_times[1]) * 100), 3);
+            if ($previous_percentage < $percentage) {
+               echo '<img src="../pics/arrow-up-right.png" width="16" />';
+            } else if ($previous_percentage == $percentage) {
+               echo '<img src="../pics/arrow-right.png" width="16" />';
+            } else if ($previous_percentage > $percentage) {
+               echo '<img src="../pics/arrow-down-right.png" width="16" />';
+            }
             echo '</td>';
             echo '<td>';
-            $a_times = $pmUnavaibility->parseEvents($data['id'], 'currentmonth');
-            echo round(((($a_times[1] - $a_times[0]) / $a_times[1]) * 100), 3)."%";
+            echo $percentage."%";
             echo '</td>';
             echo '<td>';
             if ($a_times[0] == 0) {
@@ -720,85 +733,116 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       
       PluginMonitoringReport::beginCapture();
       
-      // ** Unavaibility
-      foreach ($array['components_id'] as $components_id) {
-         $pmComponent->getFromDB($components_id);
+      $a_groups = array("avaibility");
+      foreach ($array['perfname'] as $perfname) {
+         $a_groups[] = $perfname; 
+      }
+      $a_groups = array_unique($a_groups);
       
-         echo "<table class='tab_cadre_fixe'>";
-         echo '<tr class="tab_bg_1">';
-         echo '<th colspan="'.(3 + ($number * 2)).'">';
-         echo $pmComponent->getName()." / ".__('Avaibility', 'monitoring');
-         echo '</th>';
-         echo '</tr>';
-         
-         echo '<tr class="tab_bg_1">';
-         echo '<th>';
-         echo __('Name');
-         echo '</th>';
-         echo '<th>';
-         echo __('Entity');
-         echo '</th>';
-         echo '<th>';
-         echo __('Itemtype');
-         echo '</th>';
-         for ($i = $number; $i >= 1;$i--) {
-            echo '<th colspan="2">';
-            echo Html::convDate(date('Y-m-d', strtotime("-".$i." ".$period, $end_date_timestamp)));
-            echo "<br/>";
-            echo Html::convDate(date('Y-m-d', strtotime("-".($i-1)." ".$period, $end_date_timestamp)));
-            echo '</th>';           
-         }
-         echo '</tr>';
-         
-         $query = "SELECT `glpi_plugin_monitoring_componentscatalogs_hosts`.*, 
-               `glpi_plugin_monitoring_services`.`id` as sid FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
-            LEFT JOIN `glpi_plugin_monitoring_services`
-               ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`=`plugin_monitoring_componentscatalogs_hosts_id`
-            WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'
-               AND `plugin_monitoring_components_id`='".$components_id."'";
-         $result = $DB->query($query);
-         $rownb = true;
-         while ($data=$DB->fetch_array($result)) {
-            $itemtype = $data['itemtype'];
-            $item = new $itemtype();
-            $item->getFromDB($data['items_id']);
-            $previous_value = -1;
-         
-            echo '<tr class="tab_bg_1'.(($rownb = !$rownb)?'_2':'').'">';
-            echo '<td>';
-            echo $item->getName();
-            echo '</td>';
-            echo '<td>';
-            echo Dropdown::getDropdownName("glpi_entities", $item->fields['entities_id']);
-            echo '</td>';
-            echo '<td>';
-            echo $item->getTypeName();
-            echo '</td>';
-            for ($i = $number; $i >= 1;$i--) {
-               echo '<td>';
-               $a_times = $pmUnavaibility->parseEvents($data['id'], '', 
-                                                    date('Y-m-d', strtotime("-".$i." ".$period, $end_date_timestamp)),
-                                                    date('Y-m-d', strtotime("-".($i-1)." ".$period, $end_date_timestamp)));
-               $percentage = round(((($a_times[1] - $a_times[0]) / $a_times[1]) * 100), 3);
-               echo $percentage."%";
-               echo '</td>';
-               echo '<td>';
-               if ($previous_value > -1) {
-                  if ($previous_value < $percentage) {
-                     echo "+";
-                  } else if ($previous_value == $percentage) {
-                     echo "=";
-                  } else if ($previous_value > $percentage) {
-                     echo "-";
-                  }
-               }
-               $previous_value = $percentage;
-               echo '</td>';
-            }
-            echo "</tr>";
+      foreach ($a_groups as $groupname) {
+         foreach ($array['components_id'] as $components_id) {
+            $pmComponent->getFromDB($components_id);
 
+            echo "<table class='tab_cadre_fixe'>";
+            echo '<tr class="tab_bg_1">';
+            echo '<th colspan="'.(3 + ($number * 2)).'">';
+            echo $pmComponent->getName()." / ";
+            if ($groupname == 'avaibility') {
+               echo __('Avaibility', 'monitoring');
+            } else {
+               echo $groupname;
+            }
+            echo '</th>';
+            echo '</tr>';
+
+            echo '<tr class="tab_bg_1">';
+            echo '<th>';
+            echo __('Name');
+            echo '</th>';
+            echo '<th>';
+            echo __('Entity');
+            echo '</th>';
+            echo '<th>';
+            echo __('Itemtype');
+            echo '</th>';
+            for ($i = $number; $i >= 1;$i--) {
+               echo '<th colspan="2">';
+               echo Html::convDate(date('Y-m-d', strtotime("-".$i." ".$period, $end_date_timestamp)));
+               echo "<br/>";
+               echo Html::convDate(date('Y-m-d', strtotime("-".($i-1)." ".$period, $end_date_timestamp)));
+               echo '</th>';           
+            }
+            echo '</tr>';
+
+            $query = "SELECT `glpi_plugin_monitoring_componentscatalogs_hosts`.*, 
+                  `glpi_plugin_monitoring_services`.`id` as sid FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+               LEFT JOIN `glpi_plugin_monitoring_services`
+                  ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`=`plugin_monitoring_componentscatalogs_hosts_id`
+               WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'
+                  AND `plugin_monitoring_components_id`='".$components_id."'";
+            $result = $DB->query($query);
+            $rownb = true;
+            while ($data=$DB->fetch_array($result)) {
+               $itemtype = $data['itemtype'];
+               $item = new $itemtype();
+               $item->getFromDB($data['items_id']);
+
+               if ($groupname == 'avaibility') {
+                  $a_times = $pmUnavaibility->parseEvents($data['id'], '', 
+                                                          date('Y-m-d', strtotime("-".($number + 1)." ".$period, $end_date_timestamp)),
+                                                          date('Y-m-d', strtotime("-".$number." ".$period, $end_date_timestamp)));
+                  $previous_value = round(((($a_times[1] - $a_times[0]) / $a_times[1]) * 100), 3);
+               } else {
+                  $previous_value = 0;
+               }
+               echo '<tr class="tab_bg_1'.(($rownb = !$rownb)?'_2':'').'">';
+               echo '<td>';
+               echo $item->getName();
+               echo '</td>';
+               echo '<td>';
+               echo Dropdown::getDropdownName("glpi_entities", $item->fields['entities_id']);
+               echo '</td>';
+               echo '<td>';
+               echo $item->getTypeName();
+               echo '</td>';
+               for ($i = $number; $i >= 1;$i--) {
+                  echo '<td>';
+                  $startdatet = date('Y-m-d', strtotime("-".$i." ".$period, $end_date_timestamp));
+                  $enddatet   = date('Y-m-d', strtotime("-".($i-1)." ".$period, $end_date_timestamp));
+                  if ($groupname == 'avaibility') {
+                     $a_times = $pmUnavaibility->parseEvents($data['id'], '', $startdatet, $enddatet);
+                     $value = round(((($a_times[1] - $a_times[0]) / $a_times[1]) * 100), 3);
+                     echo $value."%";
+                  } else {
+                     $queryevents = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
+                        WHERE `plugin_monitoring_services_id`='".$data['sid']."'
+                           AND `date` >= '".$startdatet."'
+                           AND `date` <= '".$enddatet."'
+                        ORDER BY `date`";
+                     $resultevents = $DB->query($queryevents);
+                     $ret = $pmServiceevent->getData($resultevents, $pmComponent->fields['graph_template']);
+                     
+                     $value = round(array_sum($ret[0][$groupname]) / count($ret[0][$groupname]), 3);
+                     echo $value;
+                  }
+                  echo '</td>';
+                  echo '<td>';
+                  if ($previous_value < $value) {
+                     echo '<img src="../pics/arrow-up-right.png" width="16" />';
+                  } else if ($previous_value == $value) {
+                     echo '<img src="../pics/arrow-right.png" width="16" />';
+                  } else if ($previous_value > $value) {
+                     echo '<img src="../pics/arrow-down-right.png" width="16" />';
+                  }
+                  $previous_value = $value;
+                  echo '</td>';
+               }
+               echo "</tr>";
+
+            }
+            echo "</table>";
          }
-         echo "</table>";
+         echo "<br/><br/>";
       }
       $content = PluginMonitoringReport::endCapture();
       PluginMonitoringReport::generatePDF($content);
