@@ -63,7 +63,7 @@ class a_GLPIInstall extends PHPUnit_Framework_TestCase {
 //      include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
 //      include_once (GLPI_CONFIG_DIR . "/config_db.php");
       
-      $CFG_GLPI['root_doc'] = "http://127.0.0.1/glpi083_phpunit/";
+      $CFG_GLPI['root_doc'] = "http://127.0.0.1/monitoring0.83/";
       echo "TEST";
       $query = "SHOW FULL TABLES WHERE TABLE_TYPE LIKE 'VIEW'";
       $result = $DB->query($query);
