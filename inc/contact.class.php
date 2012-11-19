@@ -95,7 +95,7 @@ class PluginMonitoringContact extends CommonDBTM {
    *
    **/
    function showForm($items_id, $options=array()) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $LANG;
 
       if ($items_id == '0') {
          $a_list = $this->find("`users_id`='".$_POST['id']."'", '', 1);

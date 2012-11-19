@@ -101,7 +101,7 @@ class PluginMonitoringHostaddress extends CommonDBTM {
    *
    **/
    function showForm($items_id, $itemtype, $options=array()) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $DB;
 
       $query = "SELECT * FROM `".$this->getTable()."`
          WHERE `items_id`='".$items_id."'

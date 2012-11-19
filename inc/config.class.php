@@ -112,7 +112,7 @@ class PluginMonitoringConfig extends CommonDBTM {
    *
    **/
    function showForm($items_id, $options=array()) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $LANG;
 
       $options['candel'] = false;
 

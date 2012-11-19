@@ -95,7 +95,7 @@ class PluginMonitoringContacttemplate extends CommonDBTM {
    *
    **/
    function showForm($items_id, $options=array()) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $LANG;
 
       if ($items_id == '') {
          if (isset($_POST['id'])) {

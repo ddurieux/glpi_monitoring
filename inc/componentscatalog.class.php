@@ -160,7 +160,6 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    
    
    static function replayRulesCatalog($item) {
-      global $DB;
       
       $datas = getAllDatasFromTable("glpi_plugin_monitoring_componentscatalogs_rules", 
               "`plugin_monitoring_componentscalalog_id`='".$item->getID()."'");
@@ -204,7 +203,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    
    
    function showWidgetFrame($id) {
-      global $LANG, $DB, $CFG_GLPI;
+      global $LANG,$CFG_GLPI;
       
       $this->getFromDB($id);
       $data = $this->fields;

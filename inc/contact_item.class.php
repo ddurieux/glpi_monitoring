@@ -189,7 +189,7 @@ class PluginMonitoringContact_Item extends CommonDBTM {
    
    
    function addContact($itemtype, $items_id) {
-      global $DB,$LANG,$CFG_GLPI;
+      global $LANG,$CFG_GLPI;
       
       $this->getEmpty();
       

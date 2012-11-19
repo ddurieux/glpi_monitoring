@@ -156,7 +156,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
    
    
    function addHost($componentscatalogs_id) {
-      global $DB,$LANG;
+      global $LANG;
       
       $this->getEmpty();
       

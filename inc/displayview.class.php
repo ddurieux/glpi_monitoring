@@ -111,7 +111,6 @@ class PluginMonitoringDisplayview extends CommonDBTM {
 
 
    function defineTabs($options=array()){
-      global $LANG,$CFG_GLPI;
 
       $ong = array();
       if ($this->fields['id'] > 0) {
@@ -133,7 +132,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
    *
    **/
    function showForm($items_id, $options=array()) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $LANG;
 
       if ($items_id!='') {
          $this->getFromDB($items_id);

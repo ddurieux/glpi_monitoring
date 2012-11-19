@@ -92,7 +92,7 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
    
    
    function view($id, $config=0) {
-      global $DB,$CFG_GLPI;
+      global $DB;
 
       $pmDisplayview = new PluginMonitoringDisplayview();
       $pmDisplayview->getFromDB($id);
@@ -308,7 +308,7 @@ Ext.onReady(function() {
    
    
    function addItem($displayviews_id) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $CFG_GLPI,$LANG;
 
       $this->getEmpty();
       
