@@ -502,7 +502,6 @@ function plugin_monitoring_addDefaultWhere($type) {
 
 
 function plugin_monitoring_addWhere($link,$nott,$type,$id,$val) {
-   global $SEARCH_OPTION;
    
    $searchopt = &Search::getOptions($type);
    $table = $searchopt[$id]["table"];
