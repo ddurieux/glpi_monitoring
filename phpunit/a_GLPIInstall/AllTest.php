@@ -60,6 +60,9 @@ class a_GLPIInstall extends PHPUnit_Framework_TestCase {
    public function testInstall() {
       global $DB, $CFG_GLPI;
       
+   file_put_contents(GLPI_ROOT."/files/_log/sql-errors.log", '');
+   file_put_contents(GLPI_ROOT."/files/_log/php-errors.log", '');
+      
 //      include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
 //      include_once (GLPI_CONFIG_DIR . "/config_db.php");
       
