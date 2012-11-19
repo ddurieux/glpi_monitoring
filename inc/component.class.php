@@ -95,8 +95,6 @@ class PluginMonitoringComponent extends CommonDBTM {
    
    
    function defineTabs($options=array()){
-      global $LANG,$CFG_GLPI;
-
       $ong = array();
       $this->addStandardTab("PluginMonitoringComponent", $ong, $options);    
       return $ong;
@@ -184,7 +182,7 @@ class PluginMonitoringComponent extends CommonDBTM {
    *
    **/
    function showForm($items_id, $options=array(), $copy=array()) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $LANG;
 
 
       $pMonitoringCommand = new PluginMonitoringCommand();

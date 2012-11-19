@@ -299,7 +299,7 @@ LINK DEFAULT
    
    
    function showForm($items_id, $options=array()) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $CFG_GLPI,$LANG;
 
       if ($items_id == '0') {
          $this->getEmpty();
@@ -901,8 +901,7 @@ LINK DEFAULT
    
    
    function generateWeathermap($weathermaps_id, $force=0, $makehtml=0) {
-      global $CFG_GLPI;
-            
+      
       if ($force == '0'
               AND file_exists(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png")) {
          $time_generate = filectime(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png");
@@ -1036,7 +1035,7 @@ LINK DEFAULT
    
    
    function showWidget($id, $pourcentage) {
-      global $LANG, $DB, $CFG_GLPI;
+      global $CFG_GLPI;
 
       $this->generateWeathermap($id);
       $imgdisplay = $CFG_GLPI['root_doc'].'/plugins/monitoring/front/send.php?file=weathermap-'.$id.'.png&date='.date('U');

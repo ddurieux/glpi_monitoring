@@ -174,7 +174,7 @@ class PluginMonitoringService extends CommonDBTM {
     *
     **/
    function listByHost($itemtype, $items_id) {
-      global $LANG,$CFG_GLPI,$DB;
+      global $LANG,$DB;
 
       $pmComponentscatalog = new PluginMonitoringComponentscatalog();
       
@@ -807,7 +807,6 @@ class PluginMonitoringService extends CommonDBTM {
    
    
    function post_addItem() {
-      global $DB;
 
       $pmLog = new PluginMonitoringLog();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
@@ -827,7 +826,6 @@ class PluginMonitoringService extends CommonDBTM {
    
 
    function post_purgeItem() {
-      global $DB;
 
       $pmLog = new PluginMonitoringLog();
       
@@ -849,7 +847,6 @@ class PluginMonitoringService extends CommonDBTM {
 
    
    function showWidget($id, $time) {
-      global $LANG, $DB, $CFG_GLPI;
       
       $pmComponent = new PluginMonitoringComponent();
       

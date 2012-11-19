@@ -126,7 +126,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
    
    
    function defineTabs($options=array()){
-      global $LANG,$CFG_GLPI;
+      global $LANG;
 
       if (isset($_GET['glpi_tab'])) {
          Session::setActiveTab("PluginMonitoringDisplay",$_GET['glpi_tab']);
@@ -494,7 +494,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
    
    
    static function displayLine($data, $displayhost=1) {
-      global $DB,$CFG_GLPI,$LANG;
+      global $CFG_GLPI,$LANG;
 
       $pMonitoringService = new PluginMonitoringService();
       $networkPort = new NetworkPort();
@@ -520,7 +520,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
       if (isset($_SESSION['plugin_monitoring_timezone'])) {
          $timezone = $_SESSION['plugin_monitoring_timezone'];
       }
-      $timezone_file = str_replace("+", ".", $timezone);
          
       if ($pMonitoringComponent->fields['graph_template'] != '') {
          echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$data['id']."'>";
@@ -667,7 +666,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
    
    
    function displayGraphs($itemtype, $items_id) {
-      global $CFG_GLPI,$LANG;
+      global $LANG;
 
       $pmComponent              = new PluginMonitoringComponent();
       $pmConfig                 = new PluginMonitoringConfig();
@@ -764,12 +763,10 @@ class PluginMonitoringDisplay extends CommonDBTM {
          
          echo "<tr class='tab_bg_1'>";
          echo "<td align='center' colspan='2'>";
-         $img = '';
          $timezone = '0';
          if (isset($_SESSION['plugin_monitoring_timezone'])) {
             $timezone = $_SESSION['plugin_monitoring_timezone'];
          }
-         $timezone_file = str_replace("+", ".", $timezone);
 
          $pmServicegraph = new PluginMonitoringServicegraph();
          $part = '';

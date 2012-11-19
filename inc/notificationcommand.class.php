@@ -48,7 +48,6 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
    
 
    function initCommands() {
-      global $DB;
 
       $input = array();
       $input['name'] = 'Host : notify by mail';
@@ -80,8 +79,8 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
    **/
    static function getTypeName() {
       global $LANG;
-
-      return "notification commands";
+      
+      return $LANG['plugin_monitoring']['contact'][19];
    }
 
 
@@ -141,10 +140,7 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
 
 
    function defineTabs($options=array()){
-      global $LANG,$CFG_GLPI;
-
       $ong = array();
-
       return $ong;
    }
 
@@ -160,7 +156,6 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
    *
    **/
    function showForm($items_id, $options=array()) {
-      global $DB,$CFG_GLPI,$LANG;
 
       if ($items_id!='') {
          $this->getFromDB($items_id);
