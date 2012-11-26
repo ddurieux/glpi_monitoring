@@ -79,6 +79,39 @@ function pluginMonitoringInstall($version) {
          WHERE `id`='1'";
    $DB->query($query);
    
+   $query = "SELECT * FROM `glpi_calendars`
+      WHERE `name`='24x7'
+      LIMIT 1";
+   $result=$DB->query($query);
+   if ($DB->numrows($result) == 0) {
+      $calendar = new Calendar();
+      $input = array();
+      $input['name'] = '24x7';
+      $input['is_recursive'] = 1;
+      $calendars_id = $calendar->add($input);
+      
+      $calendarSegment = new CalendarSegment();
+      $input = array();
+      $input['calendars_id'] = $calendars_id;
+      $input['is_recursive'] = 1;
+      $input['begin'] = '00:00:00';
+      $input['end'] = '24:00:00';
+      $input['day'] = '0';
+      $calendarSegment->add($input);
+      $input['day'] = '1';
+      $calendarSegment->add($input);
+      $input['day'] = '2';
+      $calendarSegment->add($input);
+      $input['day'] = '3';
+      $calendarSegment->add($input);
+      $input['day'] = '4';
+      $calendarSegment->add($input);
+      $input['day'] = '5';
+      $calendarSegment->add($input);
+      $input['day'] = '6';
+      $calendarSegment->add($input);
+   }
+   
    if (!is_dir(GLPI_PLUGIN_DOC_DIR.'/monitoring')) {
       mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring");
    }
