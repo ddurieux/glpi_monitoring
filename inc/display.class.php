@@ -423,12 +423,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                 Search::getArrayUrlLink("link2",$_GET['link2']);
 
       $parameters = "sort=".$_GET['sort']."&amp;order=".$_GET['order'].$globallinkto;
-      if (strstr($_SERVER['PHP_SELF'], "displayfix.php")) {
-         $parameters .= "&tab=".$_GET['tab'];
-         Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/displayfix.php", $parameters);
-      } else {
-         Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php", $parameters);
-      }
+      Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/service.php", $parameters);
 
       $limit = $numrows;
       if ($_SESSION["glpilist_limit"] < $numrows) {
@@ -483,12 +478,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       echo "</table>";
       echo "<br/>";
-      if (strstr($_SERVER['PHP_SELF'], "displayfix.php")) {
-         $parameters .= "&tab=".$_GET['tab'];
-         Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/displayfix.php", $parameters);
-      } else {
-         Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php", $parameters);
-      }
+      Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/service.php", $parameters);
    }
    
    
