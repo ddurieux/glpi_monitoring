@@ -742,7 +742,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                if ((!isset($a_users_used[$datag['users_id']]))) {
                   $a_contacts = $this->_addContactUser($a_contacts, $datag['users_id'], $i);
                   $i++;
-                  $a_users_used[$data['users_id']] = 1;
+                  $a_users_used[$datag['users_id']] = 1;
                }
             }
          }        
