@@ -67,6 +67,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       $a_list["check_mysql_health__tmp_disk_tables"] = "check_mysql_health__tmp_disk_tables";
       $a_list["check_mysql_health__threads_connected"] = "check_mysql_health__threads_connected";
       $a_list["check_snmp_memory"] = "check_snmp_memory";
+      $a_list["check_snmp_load__stand"] = "check_snmp_load__stand";
       
       ksort($a_list);
       return $a_list;
@@ -487,6 +488,23 @@ class PluginMonitoringPerfdata extends CommonDBTM {
                                        'DS'   => $ds);
       return json_encode($data);      
    }
+
+   
+   
+   static function perfdata_check_snmp_load__stand() {
+      
+      $data = array();
+      $data['command'] = 'check_snmp_load__stand';
+      $data['parseperfdata'] = array();
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'cpu_load');
+      $ds[] = array('dsname' => 'cpu_warning');
+      $ds[] = array('dsname' => 'cpu_critical');
+      $data['parseperfdata'][] = array('name' => 'cpu_prct_used',
+                                       'DS'   => $ds);
+      return json_encode($data);      
+   }   
 
 }
 ?>
