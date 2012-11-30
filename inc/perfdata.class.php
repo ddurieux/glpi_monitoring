@@ -66,6 +66,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       $a_list["check_mysql_health__connection-time"] = "check_mysql_health__connection_time";
       $a_list["check_mysql_health__tmp_disk_tables"] = "check_mysql_health__tmp_disk_tables";
       $a_list["check_mysql_health__threads_connected"] = "check_mysql_health__threads_connected";
+      $a_list["check_snmp_memory"] = "check_snmp_memory";
       
       ksort($a_list);
       return $a_list;
@@ -434,6 +435,55 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       $ds[] = array('dsname' => 'threads_connected_warning');
       $ds[] = array('dsname' => 'threads_connected_critical');
       $data['parseperfdata'][] = array('name' => 'threads_connected',
+                                       'DS'   => $ds);
+      return json_encode($data);      
+   }   
+   
+   
+   static function perfdata_check_snmp_memory() {
+      
+      $data = array();
+      $data['command'] = 'check_snmp_memory';
+      $data['parseperfdata'] = array();
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'memory_total');
+      $ds[] = array('dsname' => 'memory_warning');
+      $ds[] = array('dsname' => 'memory_total');
+      $ds[] = array('dsname' => 'memory_other');
+      $data['parseperfdata'][] = array('name' => 'total',
+                                       'DS'   => $ds);
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'memory_used');
+      $ds[] = array('dsname' => 'memory_other1');
+      $ds[] = array('dsname' => 'memory_other2');
+      $ds[] = array('dsname' => 'memory_other3');
+      $data['parseperfdata'][] = array('name' => 'used',
+                                       'DS'   => $ds);
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'swap_used');
+      $ds[] = array('dsname' => 'swap_other1');
+      $ds[] = array('dsname' => 'swap_other2');
+      $ds[] = array('dsname' => 'swap_other3');
+      $data['parseperfdata'][] = array('name' => 'swap',
+                                       'DS'   => $ds);
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'buffer_used');
+      $ds[] = array('dsname' => 'buffer_other1');
+      $ds[] = array('dsname' => 'buffer_other2');
+      $ds[] = array('dsname' => 'buffer_other3');
+      $data['parseperfdata'][] = array('name' => 'buffer',
+                                       'DS'   => $ds);
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'cache_used');
+      $ds[] = array('dsname' => 'cache_other1');
+      $ds[] = array('dsname' => 'cache_other2');
+      $ds[] = array('dsname' => 'cache_other3');
+      $data['parseperfdata'][] = array('name' => 'cache',
                                        'DS'   => $ds);
       return json_encode($data);      
    }
