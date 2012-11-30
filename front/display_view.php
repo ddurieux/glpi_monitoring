@@ -55,6 +55,9 @@ Html::header($LANG['plugin_monitoring']['title'][0], $_SERVER["PHP_SELF"], "plug
 $pmDisplay = new PluginMonitoringDisplay();
 $pmDisplayview = new PluginMonitoringDisplayview();
 $pmDisplayview_item = new PluginMonitoringDisplayview_item();
+$pmMessage = new PluginMonitoringMessage();
+
+$pmMessage->getMessages();
 
 $pmDisplay->menu();
 
