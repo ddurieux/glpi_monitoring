@@ -449,7 +449,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       $ds = array();
       $ds[] = array('dsname' => 'memory_total');
       $ds[] = array('dsname' => 'memory_warning');
-      $ds[] = array('dsname' => 'memory_total');
+      $ds[] = array('dsname' => 'memory_critical');
       $ds[] = array('dsname' => 'memory_other');
       $data['parseperfdata'][] = array('name' => 'total',
                                        'DS'   => $ds);
