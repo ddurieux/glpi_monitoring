@@ -40,7 +40,7 @@
    ------------------------------------------------------------------------
  */
 
-define ("PLUGIN_MONITORING_VERSION","0.84+3.0");
+define ("PLUGIN_MONITORING_VERSION","0.84+1.0");
 
 // Init the hooks of monitoring
 function plugin_init_monitoring() {
