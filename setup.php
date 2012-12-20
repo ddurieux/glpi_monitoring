@@ -57,12 +57,21 @@ function plugin_init_monitoring() {
       if (isset($_SESSION["glpiID"])) {
          Plugin::loadLang("monitoring");
          
-         Plugin::registerClass('PluginMonitoringProfile',
-              array('addtabon' => array('Profile')));
+
+         Plugin::registerClass('PluginMonitoringEntity',
+              array('addtabon' => array('Entity')));
          Plugin::registerClass('PluginMonitoringComponent');
          Plugin::registerClass('PluginMonitoringComponentscatalog');
+         Plugin::registerClass('PluginMonitoringContact',
+              array('addtabon' => array('User')));
+         Plugin::registerClass('PluginMonitoringDisplayview',
+              array('addtabon' => array('Central')));
          Plugin::registerClass('PluginMonitoringHost',
               array('addtabon' => array('Computer', 'Device', 'Printer', 'NetworkEquipment')));
+         Plugin::registerClass('PluginMonitoringProfile',
+              array('addtabon' => array('Profile')));
+         Plugin::registerClass('PluginMonitoringServicescatalog',
+              array('addtabon' => array('Central')));
          
          
          

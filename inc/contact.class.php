@@ -70,6 +70,27 @@ class PluginMonitoringContact extends CommonDBTM {
    }
 
    
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
+      $array_ret = array();
+      if ($item->getID() > 0) {
+         $array_ret[0] = self::createTabEntry(
+                 __('Monitoring', 'monitoring')."-".__('Contact', 'monitoring'));
+      }
+      return $array_ret;
+   }
+
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getID() > 0) {
+         $pmContact = new PluginMonitoringContact();
+         $pmContact->showForm(0);
+      }
+      return true;
+   }
+   
    
    /**
    * Display form for agent configuration

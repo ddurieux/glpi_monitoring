@@ -48,7 +48,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
    
    
    static function getTypeName($nb=0) {
-      return __('Group', 'monitoring');
+      return _n('Group', 'Groups', $nb, 'monitoring');
    }
    
 
@@ -61,6 +61,34 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
    static function canView() {
       return PluginMonitoringProfile::haveRight("servicescatalog", 'r');
    }
+
+   
+   
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
+      // can exists for template
+      if (($item->getType() == 'PluginMonitoringServicescatalog')
+          && $item->getID() > 0) {
+
+         return self::createTabEntry(self::getTypeName(2), 0);
+      }
+      return '';
+   }
+
+
+   /**
+    * @param $item            CommonGLPI object
+    * @param $tabnum          (default 1)
+    * @param $withtemplate    (default 0)
+    */
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      $pmBusinessrule = new PluginMonitoringBusinessrule();
+      $pmBusinessrule->showForm($item->fields['id']);
+      return true;
+   }
+   
+   
 
    
    

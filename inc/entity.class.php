@@ -69,6 +69,33 @@ class PluginMonitoringEntity extends CommonDBTM {
    static function canView() {
       return PluginMonitoringProfile::haveRight("config", 'r');
    }
+   
+   
+   
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
+      $array_ret = array();
+      if ($item->getID() > -1) {
+         if (PluginMonitoringProfile::haveRight("config", 'r')) {
+            $array_ret[0] = self::createTabEntry(__('Monitoring', 'monitoring'));
+         }
+      }
+      return $array_ret;
+   }
+
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getID() > -1) {
+         $pmEntity = new PluginMonitoringEntity();
+         $pmHostconfig = new PluginMonitoringHostconfig();
+
+         $pmHostconfig->showForm($item->getID(), "Entity");
+         $pmEntity->showForm($item->fields['id']);
+      }
+      return true;
+   }
 
 
 

@@ -58,7 +58,7 @@ class PluginMonitoringBusinessrule extends CommonDBTM {
    }
 
    
-
+   
    /**
    * Display form for agent configuration
    *

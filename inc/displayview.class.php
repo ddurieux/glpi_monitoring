@@ -69,24 +69,6 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       return PluginMonitoringProfile::haveRight("view", 'r');
    }
 
-
-   
-   function canCancel() {
-      return PluginMonitoringProfile::haveRight("view", 'w');
-   }
-
-
-   
-   function canUndo() {
-      return PluginMonitoringProfile::haveRight("view", 'w');
-   }
-
-
-   
-   function canValidate() {
-      return true;
-   }
-
    
 
    function getSearchOptions() {
@@ -115,6 +97,44 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       }
       
       return $ong;
+   }
+   
+   
+   
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
+      $array_ret = array();
+
+      if (PluginMonitoringProfile::haveRight("viewshomepage", 'r')) {
+         $pmDisplayview = new PluginMonitoringDisplayview();
+         $i = 50;
+         $a_views = $pmDisplayview->getViews(1);
+         foreach ($a_views as $name) {
+            $array_ret[$i] = self::createTabEntry(
+                    __('Monitoring', 'monitoring')."-".htmlentities($name));
+            $i++;
+         }
+      }
+      return $array_ret;
+   }
+
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      $pmDisplayview = new PluginMonitoringDisplayview();
+      $a_views = $pmDisplayview->getViews();
+
+      $i = 50;
+      foreach ($a_views as $views_id=>$name) {
+         if ($tabnum == $i) {
+            $pmDisplayview_item = new PluginMonitoringDisplayview_item();
+            $pmDisplayview_item->view($views_id);
+            break;
+         }
+         $i++;
+      }
+      return true;
    }
 
 

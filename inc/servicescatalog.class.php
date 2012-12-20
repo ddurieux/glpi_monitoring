@@ -70,6 +70,44 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
 
    
    
+   function defineTabs($options=array()){
+      
+      $ong = array();
+      $this->addStandardTab('PluginMonitoringBusinessrulegroup', $ong, $options);
+     
+      return $ong;
+   }
+
+   
+ 
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
+      $array_ret = array();
+
+      if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
+         $array_ret[49] = self::createTabEntry(
+                 __('Monitoring', 'monitoring')."-".__('Services catalog', 'monitoring'));
+      }
+      return $array_ret;
+   }
+
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($tabnum == 49) {
+         $pmServicescatalog   = new PluginMonitoringServicescatalog();
+         $pmDisplay           = new PluginMonitoringDisplay();
+
+         $pmDisplay->showCounters("Businessrules");
+         $pmServicescatalog->showChecks();  
+      }
+      
+      return true;
+   }
+
+   
+   
    function showForm($items_id, $options=array()) {
       if ($items_id!=''
               AND $items_id != '-1') {

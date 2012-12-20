@@ -110,113 +110,7 @@ function plugin_monitoring_uninstall() {
    return true;
 }
 
-// Define headings added by the plugin //
-function plugin_get_headings_monitoring($item,$withtemplate) {
 
-   switch (get_class($item)) {
-      
-      case 'User':
-         $array = array();
-         if ($_GET['id'] > 0) {
-            $array[1] = __('Monitoring', 'monitoring')."-".__('Contact', 'monitoring');
-         }
-         return $array;
-         break;
-      
-      case 'PluginMonitoringServicescatalog':
-         $array = array();
-         if ($_GET['id'] > 0) {
-            if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
-               $array[0] = __('Groups', 'monitoring');
-            }
-         }
-         return $array;
-         break;
-      
-      case 'Entity':
-         $array = array();
-         if (PluginMonitoringProfile::haveRight("config", 'r')) {
-            $array[0] = __('Monitoring', 'monitoring');
-         }
-         return $array;
-         break;
-      
-      case 'Central':
-         if (isset($_SESSION['glpi_tabs']['central'])) {
-            $_SESSION['plugin_monitoring_displaytab'] = $_SESSION['glpi_tabs']['central'];
-         } else {
-            $_SESSION['plugin_monitoring_displaytab'] = '';
-         }
-         
-         $array = array();
-         if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
-            $array[0] = __('Monitoring', 'monitoring')."-".__('Services catalog', 'monitoring');
-         }
-         if (PluginMonitoringProfile::haveRight("viewshomepage", 'r')) {
-            $pmDisplayview = new PluginMonitoringDisplayview();
-            $i = 5;
-            $a_views = $pmDisplayview->getViews(1);
-            foreach ($a_views as $name) {
-               $array[$i] = __('Monitoring', 'monitoring')."-".htmlentities($name);
-               $i++;
-            }
-         }
-         return $array;
-         break;
-         
-   }
-
-   return false;
-}
-
-// Define headings actions added by the plugin
-//function plugin_headings_actions_fusioninventory($type) {
-function plugin_headings_actions_monitoring($item) {
-
-   switch (get_class($item)) {
-      
-      case 'User':
-         $array = array ();
-//         $array[0] = "plugin_headings_monitoring_status";
-         $array[1] = "plugin_headings_monitoring_contacts";
-         return $array;
-         break;
-      
-      case 'PluginMonitoringServicescatalog':
-         $array = array ();
-         $array[0] = "plugin_headings_monitoring_businessrules";
-         return $array;
-         break;
-      
-      case 'Entity':
-         $array = array();
-         $array[0] = "plugin_headings_monitoring_entitytag";
-         return $array;
-         break;
-      
-      case 'Central':
-         if ($_SESSION['plugin_monitoring_displaytab'] != $_SESSION['glpi_tabs']['central']) {
-            echo '<script language="javascript">window.location.reload();</script>';
-            exit;
-         }
-         
-         $array = array();
-         $array[0] = "plugin_headings_monitoring_dashboadservicecatalog";
-         $pmDisplayview = new PluginMonitoringDisplayview();
-         $i = 5;
-         $a_views = $pmDisplayview->getViews(1);
-         foreach ($a_views as $name) {
-            $_SESSION['plugin_monitoring_displayviews_num'] = $i;
-            $array[$i] = "plugin_headings_monitoring_dashboadview";
-            $i++;
-         }
-         return $array;
-         break;
-
-      
-   }
-   return false;
-}
 
 
 function plugin_headings_monitoring_status($item) {
@@ -230,31 +124,6 @@ function plugin_headings_monitoring_status($item) {
 
 
 
-function plugin_headings_monitoring_businessrules($item) {
-   $pMonitoringBusinessrule = new PluginMonitoringBusinessrule();
-   $pMonitoringBusinessrule->showForm($item->fields['id']);
-}
-
-
-
-function plugin_headings_monitoring_contacts($item) {
-
-   $pmContact = new PluginMonitoringContact();
-   $pmContact->showForm(0);
-}
-
-
-
-function plugin_headings_monitoring_entitytag($item) {
-   $pmEntity = new PluginMonitoringEntity();
-   $pmHostconfig = new PluginMonitoringHostconfig();
-   
-   $pmHostconfig->showForm($item->getID(), "Entity");
-   $pmEntity->showForm($item->fields['id']);
-}
-
-
-
 function plugin_headings_monitoring_dashboadservicecatalog($item) {
    $pmServicescatalog   = new PluginMonitoringServicescatalog();
    $pmDisplay           = new PluginMonitoringDisplay();
@@ -263,21 +132,6 @@ function plugin_headings_monitoring_dashboadservicecatalog($item) {
    $pmServicescatalog->showChecks();   
 }
 
-
-
-function plugin_headings_monitoring_dashboadview($item) {
-   $pmDisplayview = new PluginMonitoringDisplayview();
-   $a_views = $pmDisplayview->getViews();
-
-   $i = 5;
-   foreach ($a_views as $views_id=>$name) {
-      if ($_SESSION['plugin_monitoring_displaytab'] == "monitoring_".$i) {
-         $pmDisplayview_item = new PluginMonitoringDisplayview_item();
-         $pmDisplayview_item->view($views_id);
-      }
-      $i++;
-   }
-}
 
 
 
