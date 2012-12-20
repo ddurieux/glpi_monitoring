@@ -82,7 +82,7 @@ class PluginMonitoringReport {
       $pdf->WriteHTML($content, 2);
       $pdf->output();
 //      $out = $pdf->output(GLPI_PLUGIN_DOC_DIR.'/monitoring/example_001.pdf', 'F');
-      
+      exit;
    }
 
 }
