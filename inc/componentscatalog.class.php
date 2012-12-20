@@ -673,7 +673,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             $str_end   = strtotime($array['date_end']);
             $a_times_previous = $pmUnavaibility->parseEvents($data['id'], '', 
                                  date('Y-m-d', $str_start - ($str_end - $str_start)), 
-                                 $array['date_star']);
+                                 $array['date_start']);
             $previous_percentage = round(((($a_times_previous[1] - $a_times_previous[0]) / $a_times_previous[1]) * 100), 3);
             $percentage = round(((($a_times[1] - $a_times[0]) / $a_times[1]) * 100), 3);
             if ($previous_percentage < $percentage) {

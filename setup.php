@@ -42,6 +42,8 @@
 
 define ("PLUGIN_MONITORING_VERSION","0.84+1.0");
 
+define('_MPDF_TEMP_PATH', GLPI_PLUGIN_DOC_DIR.'/monitoring/pdf/');
+
 // Init the hooks of monitoring
 function plugin_init_monitoring() {
    global $PLUGIN_HOOKS;

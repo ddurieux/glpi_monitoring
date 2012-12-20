@@ -68,7 +68,6 @@ class PluginMonitoringReport {
    
    static function generatePDF($content) {
 
-      define(_MPDF_TEMP_PATH, GLPI_PLUGIN_DOC_DIR.'/monitoring/');
       include(GLPI_ROOT . "/plugins/monitoring/lib/mpdf/mpdf.php");
       $pdf=new mPDF('c', 'A4', '', '', 7, 7, 10, 10);
       $pdf->mirrorMargins = true;
@@ -81,7 +80,6 @@ class PluginMonitoringReport {
 
       $content = "<body>".$content."</body>";
       $pdf->WriteHTML($content, 2);
-
       $pdf->output();
 //      $out = $pdf->output(GLPI_PLUGIN_DOC_DIR.'/monitoring/example_001.pdf', 'F');
       
