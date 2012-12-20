@@ -61,6 +61,11 @@ function plugin_init_monitoring() {
               array('addtabon' => array('Profile')));
          Plugin::registerClass('PluginMonitoringComponent');
          Plugin::registerClass('PluginMonitoringComponentscatalog');
+         Plugin::registerClass('PluginMonitoringHost',
+              array('addtabon' => array('Computer', 'Device', 'Printer', 'NetworkEquipment')));
+         
+         
+         
          
          $PLUGIN_HOOKS['use_massive_action']['monitoring']=1;
          $PLUGIN_HOOKS['add_css']['monitoring']="css/views.css";

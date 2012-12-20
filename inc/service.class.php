@@ -171,12 +171,10 @@ class PluginMonitoringService extends CommonDBTM {
       echo "</th>";
       echo "</tr>";
       
-      echo "<table>";
+      echo "<table class='tab_cadre_fixe'>";
 
       while ($data=$DB->fetch_array($result)) {
          $pmComponentscatalog->getFromDB($data['plugin_monitoring_componentscalalog_id']);
-         
-         echo "<table class='tab_cadre_fixe'>";
          
          echo "<tr class='tab_bg_1'>";
          echo "<th colspan='12'>".$pmComponentscatalog->getTypeName()."&nbsp;:&nbsp;".$pmComponentscatalog->getLink()."</th>";
@@ -184,25 +182,25 @@ class PluginMonitoringService extends CommonDBTM {
          
          echo "<tr class='tab_bg_1'>";
          echo "<th>";
-         echo $LANG['joblist'][0];
+         echo __('Status');
          echo "</th>";
          echo "<th>";
-         echo $LANG['entity'][0];
-         echo "</th>";
-         echo "<th>";
-         echo __('Components', 'monitoring');
+         echo __('Entity');
          echo "</th>";
          echo "<th>";
          echo __('Components', 'monitoring');
          echo "</th>";
          echo "<th>";
-         echo $LANG['state'][0];
+         echo __('Components', 'monitoring');
+         echo "</th>";
+         echo "<th>";
+         echo __('Status');
          echo "</th>";
          echo "<th>";
          echo __('Last check', 'monitoring');
          echo "</th>";
          echo "<th>";
-         echo $LANG['rulesengine'][82];
+         echo __('Result details');
          echo "</th>";
          echo "<th>";
          echo __('Check period', 'monitoring');
@@ -229,15 +227,11 @@ class PluginMonitoringService extends CommonDBTM {
             echo "</tr>";
             
          }
-         echo "</table>";
-         
+                  
+         echo "<tr style='border:1px solid #ccc;background-color:#ffffff'>";
+         echo "<td colspan='12' height='5'></td>";
+         echo "</tr>";
       }
-
-//      echo "<tr class='tab_bg_1'>";
-//      echo "<td colspan='8' align='center'>";
-//      echo "<input type='submit' class='submit' name='update' value='".__('Save')."'>";
-//      echo "</td>";
-//      echo "</tr>";
       
       echo "</table>";
 

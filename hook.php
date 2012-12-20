@@ -115,17 +115,6 @@ function plugin_get_headings_monitoring($item,$withtemplate) {
 
    switch (get_class($item)) {
       
-      case 'Computer' :
-      case 'Device':
-      case 'Printer':
-      case 'NetworkEquipment':
-         $array = array();
-         if ($_GET['id'] > 0) {
-            $array[2] = __('Monitoring', 'monitoring')."-".__('Resources', 'monitoring');
-         }
-         return $array;
-         break;
-      
       case 'User':
          $array = array();
          if ($_GET['id'] > 0) {
@@ -186,16 +175,6 @@ function plugin_headings_actions_monitoring($item) {
 
    switch (get_class($item)) {
       
-      case 'Computer':
-      case 'Device':
-      case 'Printer':
-      case 'NetworkEquipment':
-         $array = array ();
-//         $array[0] = "plugin_headings_monitoring_status";
-         $array[2] = "plugin_headings_monitoring_resources";
-         return $array;
-         break;
-      
       case 'User':
          $array = array ();
 //         $array[0] = "plugin_headings_monitoring_status";
@@ -247,16 +226,6 @@ function plugin_headings_monitoring_status($item) {
    $pmHostevent = new PluginMonitoringHostevent();
    $pmHostevent->showForm($item);
 
-}
-
-
-
-function plugin_headings_monitoring_resources($item) {
-   PluginMonitoringServicegraph::loadLib();
-   $pmService = new PluginMonitoringService();
-   $pmService->manageServices(get_class($item), $item->fields['id']);
-   $pmHostconfig = new PluginMonitoringHostconfig();
-   $pmHostconfig->showForm($item->getID(), get_class($item));
 }
 
 

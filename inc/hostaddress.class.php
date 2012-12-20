@@ -109,17 +109,18 @@ class PluginMonitoringHostaddress extends CommonDBTM {
       }
       $a_networkport = array();
       $a_networkport['0'] = Dropdown::EMPTY_VALUE;
-      $query = "SELECT * FROM `".getTableForItemType("NetworkPort")."`
-         WHERE `items_id`='".$items_id."' 
-            AND `itemtype`='".$itemtype."'
-            AND `ip` IS NOT NULL
-            AND `ip` != '127.0.0.1'
-            AND `ip` != ''
-         ORDER BY `name`";
-      $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
-         $a_networkport[$data['id']] = $data['name'];
-      }      
+//      $query = "SELECT * FROM `".getTableForItemType("NetworkPort")."`
+//         WHERE `items_id`='".$items_id."' 
+//            AND `itemtype`='".$itemtype."'
+//            AND `ip` IS NOT NULL
+//            AND `ip` != '127.0.0.1'
+//            AND `ip` != ''
+//         ORDER BY `name`";
+//      echo $query;
+//      $result = $DB->query($query);
+//      while ($data=$DB->fetch_array($result)) {
+//         $a_networkport[$data['id']] = $data['name'];
+//      }      
       Dropdown::showFromArray("networkports_id", $a_networkport, array('value'=>$this->fields['networkports_id']));
       echo "</td>";
       echo "<td colspan='2'>";

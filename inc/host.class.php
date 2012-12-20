@@ -47,6 +47,33 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringHost extends CommonDBTM {
 
    
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
+      $array_ret = array();
+      if ($item->getID() > 0) {
+         $array_ret[0] = self::createTabEntry(
+                 __('Monitoring', 'monitoring')."-".__('Resources', 'monitoring'));
+      }
+      return $array_ret;
+   }
+
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getID() > 0) {
+         PluginMonitoringServicegraph::loadLib();
+         $pmService = new PluginMonitoringService();
+         $pmService->manageServices(get_class($item), $item->fields['id']);
+         $pmHostconfig = new PluginMonitoringHostconfig();
+         $pmHostconfig->showForm($item->getID(), get_class($item));
+      }
+      return true;
+   }
+   
+   
+   
    function verifyHosts() {
       global $DB;
       
