@@ -87,7 +87,6 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
       return true;
    }
 
->>>>>>> glpi0.83
    
    
    function view($id, $config=0) {

@@ -87,7 +87,6 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       return true;
    }
 
->>>>>>> glpi0.83
    
 
    function getSearchOptions() {
