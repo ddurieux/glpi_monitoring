@@ -8790,7 +8790,7 @@ function _enddoc() {
 	if ($this->progressBar) { $this->UpdateProgressBar(2,'20','Writing Pages'); }	// *PROGRESS-BAR*
 	// Remove references to unused fonts (usually default font)
 	foreach($this->fonts as $fk=>$font) {
-	   if (!$font['used'] && ($font['type']=='TTF')) { 
+	   if ((!isset($font['used']) || !$font['used']) && ($font['type']=='TTF')) { 
 		if ($font['sip'] || $font['smp']) {
 			foreach($font['subsetfontids'] AS $k => $fid) {
 				foreach($this->pages AS $pn=>$page) { 
@@ -14239,10 +14239,14 @@ function array_merge_recursive_unique($array1, $array2) {
 
 
 function _mergeFullCSS($p, &$t, $tag, $classes, $id) {	// mPDF 5.3.82 $p changed to &$p
-		$this->_mergeCSS($p[$tag], $t);
+      if (isset($p[$tag])) {
+   		$this->_mergeCSS($p[$tag], $t);
+   	}
 		// STYLESHEET CLASS e.g. .smallone{}  .redletter{}
 		foreach($classes AS $class) {
-		  $this->_mergeCSS($p['CLASS>>'.$class], $t);
+			if (isset($p['CLASS>>'.$class])) {
+		      $this->_mergeCSS($p['CLASS>>'.$class], $t);
+		   }
 		}
 		// STYLESHEET nth-child SELECTOR e.g. tr:nth-child(odd)  td:nth-child(2n+1)
 		// mPDF 5.3.82
@@ -14276,15 +14280,17 @@ function _mergeFullCSS($p, &$t, $tag, $classes, $id) {	// mPDF 5.3.82 $p changed
 			}
 		}
 		// STYLESHEET CLASS e.g. #smallone{}  #redletter{}
-		if (isset($id) && $id) {
+		if (isset($id) && $id && isset($p['ID>>'.$id])) {
 		  $this->_mergeCSS($p['ID>>'.$id], $t);
 		}
 		// STYLESHEET CLASS e.g. .smallone{}  .redletter{}
 		foreach($classes AS $class) {
-		  $this->_mergeCSS($p[$tag.'>>CLASS>>'.$class], $t);
+			if (isset($p[$tag.'>>CLASS>>'.$class])) {
+		      $this->_mergeCSS($p[$tag.'>>CLASS>>'.$class], $t);
+		   }
 		}
 		// STYLESHEET CLASS e.g. #smallone{}  #redletter{}
-		if (isset($id)) {
+		if (isset($id) && isset($p[$tag.'>>ID>>'.$id])) {
 		  $this->_mergeCSS($p[$tag.'>>ID>>'.$id], $t);
 		}
 }
@@ -14418,7 +14424,9 @@ function MergeCSS($inherit,$tag,$attr) {
 		//===============================================
 		// Cascading forward CSS
 		//===============================================
-		$this->_mergeFullCSS($this->blk[$this->blklvl-1]['cascadeCSS'], $this->blk[$this->blklvl]['cascadeCSS'], $tag, $classes, $attr['ID']);
+		if (isset($this->blk[$this->blklvl-1])) {
+		   $this->_mergeFullCSS($this->blk[$this->blklvl-1]['cascadeCSS'], $this->blk[$this->blklvl]['cascadeCSS'], $tag, $classes, $attr['ID']);
+		}
 		//===============================================
 		  // Block properties
 		  if (isset($this->blk[$this->blklvl-1]['margin_collapse']) && $this->blk[$this->blklvl-1]['margin_collapse']) { $p['MARGIN-COLLAPSE'] = 'COLLAPSE'; }	// custom tag, but follows CSS principle that border-collapse is inherited
@@ -26861,7 +26869,11 @@ function _tableWrite(&$table, $split=false, $startrow=0, $startcol=0, $splitpg=0
 							$cell['textbuffer'][0][0] = preg_replace('/{colsum[0-9_]*}/', $rep ,$cell['textbuffer'][0][0]);
 						}
 					}
-					else { $this->colsums[$j] += floatval(preg_replace('/^[^0-9\.\,]*/','',$cell['textbuffer'][0][0])); }
+					else { 
+					   if (!isset($this->colsums[$j])) {
+					   	$this->colsums[$j] = 0;	
+					   }
+					   $this->colsums[$j] += floatval(preg_replace('/^[^0-9\.\,]*/','',$cell['textbuffer'][0][0])); }
 				}
 				$opy = $this->y;
 				// mPDF ITERATION
@@ -27876,7 +27888,7 @@ function _putresources() {
 /*-- END BACKGROUNDS --*/
 
 	// mPDF 5.3.41  Visibility
-	if ($this->hasOC) 	// mPDF 5.3.45
+	if (isset($this->hasOC) && ($this->hasOC)) 	// mPDF 5.3.45
 		$this->_out('/Properties <</OC1 '.$this->n_ocg_print.' 0 R /OC2 '.$this->n_ocg_view.' 0 R /OC3 '.$this->n_ocg_hidden.' 0 R>>');
 
 	$this->_out('>>');
