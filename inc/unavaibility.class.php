@@ -148,7 +148,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
    
    
    function displayComponentscatalog($componentscatalogs_id) {
-      global $DB,$LANG;
+      global $DB;
       
       echo "<table class='tab_cadre_fixe'>";     
       

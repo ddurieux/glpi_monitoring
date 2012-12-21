@@ -133,7 +133,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       echo "</tr>";
       
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".$LANG['common'][25]."&nbsp;: </td>";
+      echo "<td>"._n('Comment', 'Comments', 2)."&nbsp;: </td>";
       echo "<td>";
       echo "<textarea cols='45' rows='2' name='comment'>".$this->fields["comment"]."</textarea>";
       echo "</td>";
@@ -281,7 +281,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    
 
    function showWidgetFrame($id) {
-      global $LANG, $DB, $CFG_GLPI;
+      global $DB, $CFG_GLPI;
 
       $pMonitoringBusinessrule = new PluginMonitoringBusinessrule();
       $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
@@ -299,7 +299,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
 
       echo '<tr class="tab_bg_1">';
       echo '<td>';
-      echo $LANG['state'][0]."&nbsp;:";
+      echo __('Status')."&nbsp;:";
       echo '</td>';
       echo '<td width="40">';
       switch($data['state']) {

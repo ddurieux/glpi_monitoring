@@ -60,7 +60,7 @@ class PluginMonitoringService extends CommonDBTM {
    
    function getSearchOptions() {
       $tab = array();
-      $tab['common'] = $LANG['common'][32];
+      $tab['common'] = _n('Characteristic', 'Characteristics', 2);
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'name';
@@ -71,7 +71,7 @@ class PluginMonitoringService extends CommonDBTM {
       
       $tab[2]['table']         = $this->getTable();
       $tab[2]['field']         = 'id';
-      $tab[2]['name']          = $LANG['common'][2];
+      $tab[2]['name']          = __('ID');
       $tab[2]['massiveaction'] = false;
       
       $tab[3]['table'] = $this->getTable();
@@ -92,7 +92,7 @@ class PluginMonitoringService extends CommonDBTM {
       
       $tab[6]['table'] = 'glpi_entities';
       $tab[6]['field'] = 'completename';
-      $tab[6]['name']  = $LANG['entity'][0];
+      $tab[6]['name']  = __('Entity');
       
       $tab[7]['table'] = "glpi_plugin_monitoring_components";
       $tab[7]['field'] = 'name';
@@ -279,7 +279,7 @@ class PluginMonitoringService extends CommonDBTM {
       Html::autocompletionTextField($this, 'name', array('value' => $objectName));      
       echo "</td>";
       echo "<td>";
-      echo $LANG['common'][13]."&nbsp;:";
+      echo __('Template')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       if ($items_id != '0') {
@@ -316,7 +316,7 @@ class PluginMonitoringService extends CommonDBTM {
          $item = new $itemtype();
          $item->getFromDB($this->fields['items_id']);
          echo "<td>";
-         echo $LANG['state'][6]." <i>".$item->getTypeName()."</i>";
+         echo __('Item Type')." <i>".$item->getTypeName()."</i>";
          echo "&nbsp;:</td>";
          echo "<td>";
          echo $item->getLink(1);
@@ -631,7 +631,6 @@ class PluginMonitoringService extends CommonDBTM {
    
    
    function showCustomArguments($services_id) {
-      global $LANG;
       
       $pmComponent = new PluginMonitoringComponent();
       $pmCommand = new PluginMonitoringCommand();

@@ -60,7 +60,7 @@ class PluginMonitoringSearch extends CommonDBTM {
     * Cloned Core function to display with our require.
     */
    function showGenericSearch($itemtype, $params) {
-      global $LANG, $CFG_GLPI;
+      global $CFG_GLPI;
 
       // Default values of parameters
 $p = array();
@@ -107,13 +107,13 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
 //      echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
-      echo $LANG['common'][16]."&nbsp;:";
+      echo __('Name')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       echo "<input type='text' name='name' value='".$_GET['name']."'/>";
       echo "</td>";
       echo "<td>";
-      echo $LANG['state'][6]."&nbsp;:";
+      echo __('Status')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       echo $_GET['itemtype'];
@@ -135,14 +135,14 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
             echo "<a href='#' onClick = \"document.getElementById('add_search_count').disabled=false;
                    document.forms['searchform$itemtype'].submit();\">";
             echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title=\"".
-                   $LANG['search'][17]."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+                   __s('Add a search criterion')."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
             if ($_SESSION["glpisearchcount"][$itemtype]>1) {
                echo "<input type='hidden' disabled id='delete_search_count'
                       name='delete_search_count' value='1'>";
                echo "<a href='#' onClick = \"document.getElementById('delete_search_count').disabled=false;
                       document.forms['searchform$itemtype'].submit();\">";
                echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='-' title=\"".
-                     $LANG['search'][18]."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+                     __s('Delete a search criterion')."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
             }
             if (is_array($linked) && count($linked)>0) {
                echo "<input type='hidden' disabled id='add_search_count2' name='add_search_count2'
@@ -150,7 +150,7 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
                echo "<a href='#' onClick=\"document.getElementById('add_search_count2').disabled=false;
                       document.forms['searchform$itemtype'].submit();\">";
                echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_plus.png\" alt='+' title=\"".
-                      $LANG['search'][19]."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+                      __s('Add a global search criterion')."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 
                if ($_SESSION["glpisearchcount2"][$itemtype]>0) {
                   echo "<input type='hidden' disabled id='delete_search_count2'
@@ -158,7 +158,7 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
                   echo "<a href='#' onClick=\"document.getElementById('delete_search_count2').disabled=false;
                          document.forms['searchform$itemtype'].submit();\">";
                   echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_moins.png\" alt='-' title=\"".
-                        $LANG['search'][20]."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+                        __s('Delete a global search criterion')."\"></a>&nbsp;&nbsp;&nbsp;&nbsp;";
                }
             }
 
@@ -215,7 +215,7 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
          if (is_array($p['field']) && isset($p['field'][$i]) && $p['field'][$i] == "view") {
             echo "selected";
          }
-         echo ">".$LANG['search'][11]."</option>\n";
+         echo ">".__('Items seen')."</option>\n";
 
          reset($options);
          $first_group = true;
@@ -262,7 +262,7 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
          if (is_array($p['field']) && isset($p['field'][$i]) && $p['field'][$i] == "all") {
             echo "selected";
          }
-         echo ">".$LANG['common'][66]."</option>";
+         echo ">".__('All')."</option>";
          echo "</select>\n";
 
          echo "</td><td class='left'>";
@@ -409,13 +409,13 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
 
       // Display submit button
       echo "<td width='80' class='center'>";
-      echo "<input type='submit' value=\"".$LANG['buttons'][0]."\" class='submit' >";
+      echo "<input type='submit' value=\""._sx('button', 'Search')."\" class='submit' >";
       echo "</td><td>";
 //      Bookmark::showSaveButton(Bookmark::SEARCH,$itemtype);
       echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog_rule.form.php?reset=reset&".
          "name=".$_GET['name']."&plugin_monitoring_componentscalalog_id=".$_GET['plugin_monitoring_componentscalalog_id'].
               "&itemtype=".$_GET['itemtype']."' >";
-      echo "&nbsp;&nbsp;<img title=\"".$LANG['buttons'][16]."\" alt=\"".$LANG['buttons'][16]."\" src='".
+      echo "&nbsp;&nbsp;<img title=\"".__s('Blank')."\" alt=\"".__s('Blank')."\" src='".
             $CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
 
       echo "</td></tr>";

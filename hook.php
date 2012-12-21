@@ -56,7 +56,6 @@ function plugin_monitoring_giveItem($type,$id,$data,$num) {
 
 
 function plugin_monitoring_getAddSearchOptions($itemtype) {
-   global $LANG;
 
    $sopt = array();
    
@@ -67,7 +66,7 @@ function plugin_monitoring_getAddSearchOptions($itemtype) {
       $sopt[9100]['usehaving']      = true;
       $sopt[9100]['datatype']       = 'number';
       $sopt[9100]['width']          = 64;
-      $sopt[9100]['name']           = $LANG['computers'][61];
+      $sopt[9100]['name']           = __('Processor number', 'monitoring');
       $sopt[9100]['massiveaction'] = false;
       $sopt[9100]['joinparams']    = array('jointype' => 'child');
    }
