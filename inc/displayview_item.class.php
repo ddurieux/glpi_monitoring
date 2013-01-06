@@ -126,8 +126,9 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
       $result = $DB->query($query);
       $a_items = array();
       while ($data=$DB->fetch_array($result)) {
-         $this->displayItem($data, $config);
-         $a_items[] = "item".$data['id'];
+         if ($this->displayItem($data, $config)) {
+            $a_items[] = "item".$data['id'];
+         }
       }
       
 echo "<script type='text/javascript'>
@@ -168,7 +169,9 @@ Ext.onReady(function() {
       $width='';
       if ($itemtype == "PluginMonitoringService") {
          $content = $item->showWidget($data['items_id'], $data['extra_infos']);
-
+         if (!isset($item->fields['plugin_monitoring_components_id'])) {
+            return false;
+         }
          $title .= " : ".Dropdown::getDropdownName(getTableForItemType('PluginMonitoringComponent'), $item->fields['plugin_monitoring_components_id']);
          $title .= ' '.$LANG['networking'][25].' ';
          $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
@@ -302,7 +305,7 @@ Ext.onReady(function() {
          mgr.startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/widgetWeathermap.php\", \"id=".$data['items_id']."&extra_infos=".$data['extra_infos']."\", \"\", true);
          </script>";
       }
-
+      return true;
    }
 
    
