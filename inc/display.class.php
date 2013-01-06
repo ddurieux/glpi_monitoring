@@ -760,7 +760,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
          $pmServicegraph = new PluginMonitoringServicegraph();
          $part = '';
-         $width='';
+         $width='950';
          if (isset($_GET['mobile'])) {
             $width='294';
          }
