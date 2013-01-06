@@ -64,7 +64,7 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
       $input = array();
       $input['name'] = 'Service : notify by mail (python)';
       $input['command_name'] = 'notify-service-by-email-py';
-      $input['command_line'] = "\$PLUGINSDIR\$/sendmailservices.py -s \"\$SERVICEDESC\$\" -n \"\$SERVICESTATE\$\" -H \"\$HOSTALIAS\$\" -a \"\$HOSTADDRESS\$\" -i \"\$SHORTDATETIME\$\" -o \"\$SERVICEOUTPUT\$\" -t \"\$CONTACTEMAIL\$\" -r \"\$SERVICESTATE\$\"";
+      $input['command_line'] = "\$PLUGINSDIR\$/sendmailservice.py -s \"\$SERVICEDESC\$\" -n \"\$SERVICESTATE\$\" -H \"\$HOSTALIAS\$\" -a \"\$HOSTADDRESS\$\" -i \"\$SHORTDATETIME\$\" -o \"\$SERVICEOUTPUT\$\" -t \"\$CONTACTEMAIL\$\" -r \"\$SERVICESTATE\$\"";
       $this->add($input);
       
    }
