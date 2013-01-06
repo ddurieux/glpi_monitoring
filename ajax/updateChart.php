@@ -99,7 +99,7 @@ foreach ($mydatat as $name=>$data) {
       }
    }
 }
-if ($max <= 2) {
+if ($max <= 4) {
    $formaty = ".2f";
 }
 
