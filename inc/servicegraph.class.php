@@ -820,8 +820,8 @@ class PluginMonitoringServicegraph extends CommonDBTM {
    
    static function loadLib() {
       echo '<link href="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/src/nv.d3.css" rel="stylesheet" type="text/css">   
-      <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/lib/d3.v2.js"></script>
-      <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/nv.d3.js"></script>
+      <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/lib/d3.v2.min.js"></script>
+      <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/nv.d3.min.js"></script>
       <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/src/tooltip.js"></script>
       <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/src/utils.js"></script>
       <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/src/models/legend.js"></script>
