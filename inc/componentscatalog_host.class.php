@@ -120,28 +120,69 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
       echo "</tr>";
       
       while ($data=$DB->fetch_array($result)) {
-         
          $itemtype = $data['itemtype'];
          $item = new $itemtype();
+           
+         $display_normal = 1;
+         $networkports = false;
+         if ($itemtype == 'NetworkEquipment') {
+            $querys = "SELECT * FROM `glpi_plugin_monitoring_services`
+               WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$data['id']."'
+                  AND `networkports_id`='0'";
+            $results = $DB->query($querys);
+            if ($DB->numrows($results) == 0) {
+               $display_normal = 0;
+            }
+            
+            $querys = "SELECT * FROM `glpi_plugin_monitoring_services`
+               WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$data['id']."'
+                  AND `networkports_id`!='0'";
+            $results = $DB->query($querys);
+            if ($DB->numrows($results) > 0) {
+               $networkports = true;
+            }
+         }
          $item->getFromDB($data['items_id']);
-         echo "<tr>";
-         echo "<td>";
-         echo "<input type='checkbox' name='item[".$data["id"]."]' value='1'>";
-         echo "</td>";
-         echo "<td class='center'>";
-         echo $item->getTypeName();
-         echo "</td>";
-         echo "<td class='center'>";
-         echo Dropdown::getDropdownName("glpi_entities",$item->fields['entities_id'])."</td>";
-         echo "<td class='center".
-               (isset($item->fields['is_deleted']) && $item->fields['is_deleted'] ? " tab_bg_2_2'" : "'");
-         echo ">".$item->getLink()."</td>";
-         echo "<td class='center'>".
-               (isset($item->fields["serial"])? "".$item->fields["serial"]."" :"-")."</td>";
-         echo "<td class='center'>".
-               (isset($item->fields["otherserial"])? "".$item->fields["otherserial"]."" :"-")."</td>";
+         if ($display_normal == 1) {
+            echo "<tr>";
+            echo "<td>";
+            echo "<input type='checkbox' name='item[".$data["id"]."]' value='1'>";
+            echo "</td>";
+            echo "<td class='center'>";
+            echo $item->getTypeName();
+            echo "</td>";
+            echo "<td class='center'>";
+            echo Dropdown::getDropdownName("glpi_entities",$item->fields['entities_id'])."</td>";
+            echo "<td class='center".
+                  (isset($item->fields['is_deleted']) && $item->fields['is_deleted'] ? " tab_bg_2_2'" : "'");
+            echo ">".$item->getLink()."</td>";
+            echo "<td class='center'>".
+                  (isset($item->fields["serial"])? "".$item->fields["serial"]."" :"-")."</td>";
+            echo "<td class='center'>".
+                  (isset($item->fields["otherserial"])? "".$item->fields["otherserial"]."" :"-")."</td>";
+
+            echo "</tr>";
+         }
          
-         echo "</tr>";
+         if ($networkports) {
+            $itemport = new NetworkPort();
+            while ($datas = $DB->fetch_array($results)) {
+               $itemport->getFromDB($datas['networkports_id']);
+               echo "<tr>";
+               echo "<td>";
+               echo "<input type='checkbox' name='item[".$data["id"]."]' value='1'>";
+               echo "</td>";
+               echo "<td class='center'>";
+               echo $itemport->getTypeName();
+               echo "</td>";
+               echo "<td class='center'>";
+               echo Dropdown::getDropdownName("glpi_entities",$item->fields['entities_id'])."</td>";
+               echo "<td colspan='3' class='left".
+                     (isset($item->fields['is_deleted']) && $item->fields['is_deleted'] ? " tab_bg_2_2'" : "'");
+               echo ">".$itemport->getLink()." on ".$item->getLink(1)."</td>";
+               echo "</tr>";
+            }
+         }
       }
       
       if ($static == '1') {
