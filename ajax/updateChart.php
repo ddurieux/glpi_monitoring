@@ -99,8 +99,10 @@ foreach ($mydatat as $name=>$data) {
       }
    }
 }
-if ($max <= 4) {
+if ($max <= 2) {
    $formaty = ".2f";
+} else if ($max <= 4) {
+   $formaty = ".1f";
 }
 
 if ($max > 2000) {
