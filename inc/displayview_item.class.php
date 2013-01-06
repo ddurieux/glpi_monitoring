@@ -172,8 +172,10 @@ Ext.onReady(function() {
          if (!isset($item->fields['plugin_monitoring_components_id'])) {
             return false;
          }
-         $title .= " : ".Dropdown::getDropdownName(getTableForItemType('PluginMonitoringComponent'), $item->fields['plugin_monitoring_components_id']);
-         $title .= ' '.$LANG['networking'][25].' ';
+         $title .= " : <a href=\"".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$data['items_id']."\">".
+            Dropdown::getDropdownName(getTableForItemType('PluginMonitoringComponent'), 
+                                      $item->fields['plugin_monitoring_components_id']);
+         $title .= '</a> '.$LANG['networking'][25].' ';
          $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
          $pmComponentscatalog_Host->getFromDB($item->fields["plugin_monitoring_componentscatalogs_hosts_id"]);
          if (isset($pmComponentscatalog_Host->fields['itemtype']) 
