@@ -420,12 +420,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                 Search::getArrayUrlLink("link2",$_GET['link2']);
 
       $parameters = "sort=".$_GET['sort']."&amp;order=".$_GET['order'].$globallinkto;
-      if (strstr($_SERVER['PHP_SELF'], "displayfix.php")) {
-         $parameters .= "&tab=".$_GET['tab'];
-         Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/displayfix.php", $parameters);
-      } else {
-         Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php", $parameters);
-      }
+      Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/service.php", $parameters);
 
       $limit = $numrows;
       if ($_SESSION["glpilist_limit"] < $numrows) {
@@ -480,12 +475,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       echo "</table>";
       echo "<br/>";
-      if (strstr($_SERVER['PHP_SELF'], "displayfix.php")) {
-         $parameters .= "&tab=".$_GET['tab'];
-         Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/displayfix.php", $parameters);
-      } else {
-         Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/display.php", $parameters);
-      }
+      Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/service.php", $parameters);
    }
    
    
@@ -517,7 +507,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
       if (isset($_SESSION['plugin_monitoring_timezone'])) {
          $timezone = $_SESSION['plugin_monitoring_timezone'];
       }
-      $timezone_file = str_replace("+", ".", $timezone);
          
       if ($pMonitoringComponent->fields['graph_template'] != '') {
          echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$data['id']."'>";
@@ -761,16 +750,14 @@ class PluginMonitoringDisplay extends CommonDBTM {
          
          echo "<tr class='tab_bg_1'>";
          echo "<td align='center' colspan='2'>";
-         $img = '';
          $timezone = '0';
          if (isset($_SESSION['plugin_monitoring_timezone'])) {
             $timezone = $_SESSION['plugin_monitoring_timezone'];
          }
-         $timezone_file = str_replace("+", ".", $timezone);
 
          $pmServicegraph = new PluginMonitoringServicegraph();
          $part = '';
-         $width='';
+         $width='950';
          if (isset($_GET['mobile'])) {
             $width='294';
          }

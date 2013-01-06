@@ -48,7 +48,6 @@ class PluginMonitoringCheck extends CommonDBTM {
    
 
    function initChecks() {
-      global $DB;
 
       $input = array();
       $input['name'] = '5 minutes / 5 retry';
@@ -116,7 +115,6 @@ class PluginMonitoringCheck extends CommonDBTM {
 
 
    function defineTabs($options=array()){
-      global $CFG_GLPI;
 
       $ong = array();
 

@@ -90,7 +90,7 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
    
    
    function view($id, $config=0) {
-      global $DB,$CFG_GLPI;
+      global $DB;
 
       $pmDisplayview = new PluginMonitoringDisplayview();
       $pmDisplayview->getFromDB($id);
@@ -124,8 +124,9 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
       $result = $DB->query($query);
       $a_items = array();
       while ($data=$DB->fetch_array($result)) {
-         $this->displayItem($data, $config);
-         $a_items[] = "item".$data['id'];
+         if ($this->displayItem($data, $config)) {
+            $a_items[] = "item".$data['id'];
+         }
       }
       
 echo "<script type='text/javascript'>
@@ -166,9 +167,13 @@ Ext.onReady(function() {
       $width='';
       if ($itemtype == "PluginMonitoringService") {
          $content = $item->showWidget($data['items_id'], $data['extra_infos']);
-
-         $title .= " : ".Dropdown::getDropdownName(getTableForItemType('PluginMonitoringComponent'), $item->fields['plugin_monitoring_components_id']);
-         $title .= ' '.__('on', 'monitoring').' ';
+         if (!isset($item->fields['plugin_monitoring_components_id'])) {
+            return false;
+         }
+         $title .= " : <a href=\"".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$data['items_id']."\">".
+            Dropdown::getDropdownName(getTableForItemType('PluginMonitoringComponent'), 
+                                      $item->fields['plugin_monitoring_components_id']);
+         $title .= '</a> '.__('on', 'monitoring').' ';
          $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
          $pmComponentscatalog_Host->getFromDB($item->fields["plugin_monitoring_componentscatalogs_hosts_id"]);
          if (isset($pmComponentscatalog_Host->fields['itemtype']) 
@@ -300,7 +305,7 @@ Ext.onReady(function() {
          mgr.startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/widgetWeathermap.php\", \"id=".$data['items_id']."&extra_infos=".$data['extra_infos']."\", \"\", true);
          </script>";
       }
-
+      return true;
    }
 
    

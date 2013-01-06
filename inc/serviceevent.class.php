@@ -164,8 +164,16 @@ class PluginMonitoringServiceevent extends CommonDBTM {
          foreach ($a_json->parseperfdata as $num=>$data) {
             if (isset($a_perfdata[$num])) {
                $a_a_perfdata = explode("=", $a_perfdata[$num]);
+               $regex = 0;
+               if (strstr($data->name, "*")) {
+                  $datanameregex = str_replace("*", "(.*)", $data->name);
+                  $regex = 1;
+               }
                if (($a_a_perfdata[0] == $data->name
-                       OR $data->name == '')
+                       OR $data->name == ''
+                       OR ($regex == 1
+                               AND preg_match("/".$datanameregex."/", $data->name))
+                    )
                        AND isset($a_a_perfdata[1])) {
                   $a_perfdata_final = explode(";", $a_a_perfdata[1]);
                   foreach ($a_perfdata_final as $nb_val=>$val) {
@@ -177,6 +185,8 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                               $val = round(str_replace("bps", "", $val),0);
                            } else if (strstr($val, "MB")) {
                               $val = round(str_replace("MB", "", $val),0);
+                           } else if (strstr($val, "B")) {
+                              $val = round(str_replace("B", "", $val),0);
                            } else if (strstr($val, "s")) {
                               $val = round((str_replace("s", "", $val) * 1000),0);
                            } else if (strstr($val, "%")) {

@@ -48,7 +48,6 @@ class PluginMonitoringCommand extends CommonDBTM {
    
 
    function initCommands() {
-      global $DB;
 
       $input = array();
       $input['name'] = 'Simple tcp port check';
@@ -309,10 +308,7 @@ class PluginMonitoringCommand extends CommonDBTM {
 
 
    function defineTabs($options=array()){
-      global $CFG_GLPI;
-
       $ong = array();
-
       return $ong;
    }
 

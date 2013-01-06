@@ -885,8 +885,7 @@ LINK DEFAULT
    
    
    function generateWeathermap($weathermaps_id, $force=0, $makehtml=0) {
-      global $CFG_GLPI;
-            
+      
       if ($force == '0'
               AND file_exists(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png")) {
          $time_generate = filectime(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png");

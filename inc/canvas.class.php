@@ -49,8 +49,6 @@ class PluginMonitoringCanvas {
    private $a_points             = array();
    private $a_devices            = array();
    private $a_devices_link       = array();
-   private $a_networkequipments2 = array();
-
    
    
    static function onload() {

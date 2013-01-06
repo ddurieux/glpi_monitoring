@@ -48,7 +48,6 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
    
 
    function initCommands() {
-      global $DB;
 
       $input = array();
       $input['name'] = 'Host : notify by mail';
@@ -65,7 +64,7 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
       $input = array();
       $input['name'] = 'Service : notify by mail (python)';
       $input['command_name'] = 'notify-service-by-email-py';
-      $input['command_line'] = "\$PLUGINSDIR\$/sendmailservices.py -s \"\$SERVICEDESC\$\" -n \"\$SERVICESTATE\$\" -H \"\$HOSTALIAS\$\" -a \"\$HOSTADDRESS\$\" -i \"\$SHORTDATETIME\$\" -o \"\$SERVICEOUTPUT\$\" -t \"\$CONTACTEMAIL\$\" -r \"\$SERVICESTATE\$\"";
+      $input['command_line'] = "\$PLUGINSDIR\$/sendmailservice.py -s \"\$SERVICEDESC\$\" -n \"\$SERVICESTATE\$\" -H \"\$HOSTALIAS\$\" -a \"\$HOSTADDRESS\$\" -i \"\$SHORTDATETIME\$\" -o \"\$SERVICEOUTPUT\$\" -t \"\$CONTACTEMAIL\$\" -r \"\$SERVICESTATE\$\"";
       $this->add($input);
       
    }
@@ -119,10 +118,7 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
 
 
    function defineTabs($options=array()){
-      global $CFG_GLPI;
-
       $ong = array();
-
       return $ong;
    }
 

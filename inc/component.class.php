@@ -78,6 +78,61 @@ class PluginMonitoringComponent extends CommonDBTM {
       return PluginMonitoringProfile::haveRight("component", 'r');
    }
 
+
+   
+   function defineTabs($options=array()){
+      $ong = array();
+      $this->addStandardTab("PluginMonitoringComponent", $ong, $options);    
+      return $ong;
+   }
+   
+   
+   
+   /**
+    * Display tab
+    * 
+    * @global array $LANG
+    * 
+    * @param CommonGLPI $item
+    * @param integer $withtemplate
+    * 
+    * @return varchar name of the tab(s) to display
+    */
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      global $LANG;
+
+      if ($item->getID() > 0
+              AND $item->fields['graph_template'] != '') {
+         return array(__('Copy'), "Graph configuration");
+      } else if ($item->getID() > 0) {
+         return array(__('Copy'));
+      }
+      return '';
+   }
+   
+   
+ 
+   /**
+    * Display content of tab
+    * 
+    * @param CommonGLPI $item
+    * @param integer $tabnum
+    * @param interger $withtemplate
+    * 
+    * @return boolean true
+    */
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType()=='PluginMonitoringComponent') {
+         if ($tabnum == '0') {
+            $item->copyItem($item->getID());
+         } else if ($tabnum == '1') {
+            $item->preferences($item->getID());
+         }         
+      }
+      return true;
+   }
+
    
 
    function getSearchOptions() {

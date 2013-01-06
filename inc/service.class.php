@@ -770,7 +770,6 @@ class PluginMonitoringService extends CommonDBTM {
    
    
    function post_addItem() {
-      global $DB;
 
       $pmLog = new PluginMonitoringLog();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
@@ -790,7 +789,6 @@ class PluginMonitoringService extends CommonDBTM {
    
 
    function post_purgeItem() {
-      global $DB;
 
       $pmLog = new PluginMonitoringLog();
       
@@ -816,23 +814,23 @@ class PluginMonitoringService extends CommonDBTM {
       
       $pmComponent = new PluginMonitoringComponent();
       
-      $this->getFromDB($id);
-      $pmComponent->getFromDB($this->fields['plugin_monitoring_components_id']);
-      
-      $pmServicegraph = new PluginMonitoringServicegraph();
-      ob_start();
-      $pmServicegraph->displayGraph($pmComponent->fields['graph_template'], 
-                                    "PluginMonitoringService", 
-                                    $id, 
-                                    "0", 
-                                    $time, 
-                                    "div", 
-                                    "475");
-      $chart = ob_get_contents();
-      ob_end_clean();
-      return $chart;
+      if ($this->getFromDB($id)) {
+         $pmComponent->getFromDB($this->fields['plugin_monitoring_components_id']);
+
+         $pmServicegraph = new PluginMonitoringServicegraph();
+         ob_start();
+         $pmServicegraph->displayGraph($pmComponent->fields['graph_template'], 
+                                       "PluginMonitoringService", 
+                                       $id, 
+                                       "0", 
+                                       $time, 
+                                       "div", 
+                                       "475");
+         $chart = ob_get_contents();
+         ob_end_clean();
+         return $chart;
+      }
    }
-   
 }
 
 ?>
