@@ -172,6 +172,8 @@ $LANG['plugin_monitoring']['display'][1]="Page refresh (in seconds)";
 $LANG['plugin_monitoring']['display'][2]="Critical";
 $LANG['plugin_monitoring']['display'][3]="Warning";
 $LANG['plugin_monitoring']['display'][4]="OK";
+$LANG['plugin_monitoring']['display'][5]="Warning (data)";
+$LANG['plugin_monitoring']['display'][6]="Warning (connection)";
 
 $LANG['plugin_monitoring']['rrdtemplates'][0]="RRDtool templates";
 $LANG['plugin_monitoring']['rrdtemplates'][1]="Upload perfdata and graph files";

@@ -232,8 +232,10 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       $pmComponentscatalog_Host  = new PluginMonitoringComponentscatalog_Host();
       $pmComponentscatalog       = new PluginMonitoringComponentscatalog();
       $pmSearch                  = new PluginMonitoringSearch();
+      $pmService                 = new PluginMonitoringService();
       
       $devices_present = array();
+      $devicesnetworkport_present = array();
       if ($pmCc_Rule->getFromDB($parm->fields['id'])) {
       
          // Load right entity
@@ -280,6 +282,19 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
          while ($data=$DB->fetch_array($result)) {
             $devices_present[$data['id']] = 1;
          }
+         
+         $queryd = "SELECT `glpi_plugin_monitoring_services`.`id` FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+               LEFT JOIN `glpi_plugin_monitoring_services`
+                  ON `plugin_monitoring_componentscatalogs_hosts_id` = 
+                     `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
+            WHERE `plugin_monitoring_componentscalalog_id`='".$pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"]."'
+               AND `itemtype`='NetworkEquipment'
+               AND `is_static`='0'";
+         $result = $DB->query($queryd);
+         while ($data=$DB->fetch_array($result)) {
+            $devicesnetworkport_present[$data['id']] = 1;
+         }
+         
          $glpilist_limit = $_SESSION['glpilist_limit'];
          $_SESSION['glpilist_limit'] = 500000;
          $result = $pmSearch->constructSQL($itemtype, 
@@ -296,37 +311,78 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                $itemtype_device = $pmNetworkport->fields['itemtype'];
                $items_id_device = $pmNetworkport->fields['items_id'];
                $networkports_id = $pmNetworkport->fields['networkports_id'];
-            }
-            
-            $queryh = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
-               WHERE `plugin_monitoring_componentscalalog_id`='".$pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"]."'
-                  AND `itemtype`='".$itemtype_device."'
-                  AND `items_id`='".$items_id_device."'
-                     LIMIT 1";
-            $resulth = $DB->query($queryh);
-            if ($DB->numrows($resulth) == '0') {
-               $input = array();
-               $input['plugin_monitoring_componentscalalog_id'] = $pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"];
-               $input['is_static'] = '0';
-               $input['items_id'] = $items_id_device;
-               $input['itemtype'] = $itemtype_device;
-               $componentscatalogs_hosts_id = $pmComponentscatalog_Host->add($input);
-               $pmComponentscatalog_Host->linkComponentsToItem($pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"], 
-                                                               $componentscatalogs_hosts_id,
-                                                               $networkports_id);
+               
+               $queryh = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+                  LEFT JOIN `glpi_plugin_monitoring_services`
+                     ON `plugin_monitoring_componentscatalogs_hosts_id` = 
+                        `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
+                  WHERE `plugin_monitoring_componentscalalog_id`='".$pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"]."'
+                     AND `itemtype`='".$itemtype_device."'
+                     AND `items_id`='".$items_id_device."'
+                     AND `networkports_id`='".$networkports_id."'
+                        LIMIT 1";
+               $resulth = $DB->query($queryh);
+               if ($DB->numrows($resulth) == '0') {
+                  $input = array();
+                  $input['plugin_monitoring_componentscalalog_id'] = $pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"];
+                  $input['is_static'] = '0';
+                  $input['items_id'] = $items_id_device;
+                  $input['itemtype'] = $itemtype_device;
+                  $componentscatalogs_hosts_id = $pmComponentscatalog_Host->add($input);
+                  $pmComponentscatalog_Host->linkComponentsToItem($pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"], 
+                                                                  $componentscatalogs_hosts_id,
+                                                                  $networkports_id);
+               } else {
+                  $data2 = $DB->fetch_assoc($resulth);
+                  // modify entity of services (if entity of device is changed)
+                     $itemtype = $data2['itemtype'];
+                     $item = new $itemtype();
+                     $item->getFromDB($data2['items_id']);
+                     $queryu = "UPDATE `glpi_plugin_monitoring_services`
+                        SET `entities_id`='".$item->fields['entities_id']."'
+                           WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$data2['id']."'";
+                     $DB->query($queryu);                  
+
+
+                  unset($devicesnetworkport_present[$data2['id']]);
+               }
+               // Reload current entity
+               Session::changeActiveEntities($default_entity,
+                             $entities_isrecursive);
+               foreach ($devicesnetworkport_present as $id => $num) {
+                  $pmService->delete(array('id'=>$id));
+               }
             } else {
-               $data2 = $DB->fetch_assoc($resulth);
-               // modify entity of services (if entity of device is changed)
-                  $itemtype = $data2['itemtype'];
-                  $item = new $itemtype();
-                  $item->getFromDB($data2['items_id']);
-                  $queryu = "UPDATE `glpi_plugin_monitoring_services`
-                     SET `entities_id`='".$item->fields['entities_id']."'
-                        WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$data2['id']."'";
-                  $DB->query($queryu);                  
-               
-               
-               unset($devices_present[$data2['id']]);
+               $queryh = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+                  WHERE `plugin_monitoring_componentscalalog_id`='".$pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"]."'
+                     AND `itemtype`='".$itemtype_device."'
+                     AND `items_id`='".$items_id_device."'
+                        LIMIT 1";
+               $resulth = $DB->query($queryh);
+               if ($DB->numrows($resulth) == '0') {
+                  $input = array();
+                  $input['plugin_monitoring_componentscalalog_id'] = $pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"];
+                  $input['is_static'] = '0';
+                  $input['items_id'] = $items_id_device;
+                  $input['itemtype'] = $itemtype_device;
+                  $componentscatalogs_hosts_id = $pmComponentscatalog_Host->add($input);
+                  $pmComponentscatalog_Host->linkComponentsToItem($pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"], 
+                                                                  $componentscatalogs_hosts_id,
+                                                                  $networkports_id);
+               } else {
+                  $data2 = $DB->fetch_assoc($resulth);
+                  // modify entity of services (if entity of device is changed)
+                     $itemtype = $data2['itemtype'];
+                     $item = new $itemtype();
+                     $item->getFromDB($data2['items_id']);
+                     $queryu = "UPDATE `glpi_plugin_monitoring_services`
+                        SET `entities_id`='".$item->fields['entities_id']."'
+                           WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$data2['id']."'";
+                     $DB->query($queryu);                  
+
+
+                  unset($devices_present[$data2['id']]);
+               }
             }
          }
          

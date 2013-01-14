@@ -319,10 +319,14 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             if ($dataService['state_type'] != "HARD") {
                $a_gstate[$dataService['id']] = "OK";
             } else {
-               $statecurrent = PluginMonitoringDisplay::getState($dataService['state'], $dataService['state_type']);
+               $statecurrent = PluginMonitoringDisplay::getState($dataService['state'], 
+                                                                 $dataService['state_type'],
+                                                                 $dataService['event']);
                if ($statecurrent == 'green') {
                   $a_gstate[$dataService['id']] = "OK";
                } else if ($statecurrent == 'orange') {
+                  $a_gstate[$dataService['id']] = "WARNING";
+               } else if ($statecurrent == 'yellow') {
                   $a_gstate[$dataService['id']] = "WARNING";
                } else if ($statecurrent == 'red') {
                   $a_gstate[$dataService['id']] = "CRITICAL";

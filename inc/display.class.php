@@ -495,7 +495,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $pMonitoringService->getFromDB($data['id']);
       
       echo "<td width='32' class='center'>";
-      $shortstate = self::getState($data['state'], $data['state_type']);
+      $shortstate = self::getState($data['state'], $data['state_type'], $data['event']);
       echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/>";
       echo "</td>";
       echo "<td>";
@@ -622,7 +622,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
    
    
-   static function getState($state, $state_type) {
+   static function getState($state, $state_type, $event) {
       $shortstate = '';
       switch($state) {
 
@@ -639,13 +639,21 @@ class PluginMonitoringDisplay extends CommonDBTM {
             break;
 
          case 'WARNING':
-         case 'UNKNOWN':
          case 'RECOVERY':
          case 'FLAPPING':
-         case '':
             $shortstate = 'orange';
             break;
-
+         
+         
+         case 'UNKNOWN':
+         case '':
+            $shortstate = 'yellow';
+            break;
+         
+      }
+      if ($state == 'WARNING'
+              && $event == '') {
+         $shortstate = 'yellow';
       }
       if ($state_type == 'SOFT') {
          $shortstate.= '_soft';
@@ -784,10 +792,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
       global $DB,$CFG_GLPI,$LANG;
       
       $ok = 0;
-      $warning = 0;
+      $warningdata = 0;
+      $warningconnection = 0;
       $critical = 0;
       $ok_soft = 0;
-      $warning_soft = 0;
+      $warningdata_soft = 0;
+      $warningconnection_soft = 0;
       $critical_soft = 0;
       
       $play_sound = 0;
@@ -798,8 +808,16 @@ class PluginMonitoringDisplay extends CommonDBTM {
                  "(`state`='OK' OR `state`='UP') AND `state_type`='HARD'
                     AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
-         $warning = countElementsInTable("glpi_plugin_monitoring_services", 
-                 "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
+         $warningdata = countElementsInTable("glpi_plugin_monitoring_services", 
+                 "((`state`='WARNING' AND `event` IS NOT NULL) 
+                        OR `state`='RECOVERY' OR `state`='FLAPPING')
+                    AND `event` IS NOT NULL
+                    AND `state_type`='HARD'
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+         
+         $warningconnection = countElementsInTable("glpi_plugin_monitoring_services", 
+                 "(`state`='UNKNOWN' OR `state` IS NULL
+                    OR (`state`='WARNING' AND `event` IS NULL))
                     AND `state_type`='HARD'
                     AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
@@ -808,8 +826,15 @@ class PluginMonitoringDisplay extends CommonDBTM {
                     AND `state_type`='HARD'
                     AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
-         $warning_soft = countElementsInTable("glpi_plugin_monitoring_services", 
-                 "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
+         $warningdata_soft = countElementsInTable("glpi_plugin_monitoring_services", 
+                 "((`state`='WARNING' AND `event` IS NOT NULL) 
+                        OR `state`='RECOVERY' OR `state`='FLAPPING')
+                    AND `state_type`='SOFT'
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+         
+         $warningconnection_soft = countElementsInTable("glpi_plugin_monitoring_services", 
+                 "(`state`='UNKNOWN' OR `state` IS NULL
+                    OR (`state`='WARNING' AND `event` IS NULL))
                     AND `state_type`='SOFT'
                     AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
@@ -848,7 +873,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
             if ($data2['cpt'] > 0) {
                $critical++;
             } else {
-               $query = "SELECT COUNT(*) AS cpt FROM `".$pmComponentscatalog_Host->getTable()."`
+               $query = "SELECT COUNT(*) AS cpt, `glpi_plugin_monitoring_services`.`state` 
+                     FROM `".$pmComponentscatalog_Host->getTable()."`
                   LEFT JOIN `glpi_plugin_monitoring_services` 
                      ON `plugin_monitoring_componentscatalogs_hosts_id`=`".$pmComponentscatalog_Host->getTable()."`.`id`
                   WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'
@@ -858,7 +884,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                $result = $DB->query($query);
                $data2 = $DB->fetch_assoc($result);
                if ($data2['cpt'] > 0) {
-                  $warning++;
+                  $warningdata++;
                } else {
                   $query = "SELECT COUNT(*) AS cpt FROM `".$pmComponentscatalog_Host->getTable()."`
                      LEFT JOIN `glpi_plugin_monitoring_services` 
@@ -896,7 +922,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                $result = $DB->query($query);
                $data2 = $DB->fetch_assoc($result);
                if ($data2['cpt'] > 0) {
-                  $warning_soft++;
+                  $warningdata_soft++;
                } else {
                   $query = "SELECT COUNT(*) AS cpt FROM `".$pmComponentscatalog_Host->getTable()."`
                      LEFT JOIN `glpi_plugin_monitoring_services` 
@@ -926,8 +952,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
                  "(`state`='OK' OR `state`='UP') AND `state_type`='HARD'
                  AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
-         $warning = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
-                 "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
+         $warningdata = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
+                 "(`state`='WARNING' OR `state`='UNKNOWN'
+                        OR `state`='RECOVERY' OR `state`='FLAPPING')
                     AND `state_type`='HARD'
                     AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
@@ -936,8 +963,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
                     AND `state_type`='HARD'
                     AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
-         $warning_soft = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
-                 "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
+         $warningdata_soft = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
+                 "(`state`='WARNING' OR `state`='UNKNOWN' 
+                        OR `state`='RECOVERY' OR `state`='FLAPPING')
                     AND `state_type`='SOFT'
                     AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
@@ -963,8 +991,10 @@ class PluginMonitoringDisplay extends CommonDBTM {
          $a_return = array();
          $a_return['ok'] = strval($ok);
          $a_return['ok_soft'] = strval($ok_soft);
-         $a_return['warning'] = strval($warning);
-         $a_return['warning_soft'] = strval($warning_soft);
+         $a_return['warningdata'] = strval($warningdata);
+         $a_return['warningconnection'] = strval($warningconnection);
+         $a_return['warningdata_soft'] = strval($warningdata_soft);
+         $a_return['warningconnection_soft'] = strval($warningconnection_soft);
          $a_return['critical'] = strval($critical);
          $a_return['critical_soft'] = strval($critical_soft);
          return $a_return;
@@ -975,12 +1005,18 @@ class PluginMonitoringDisplay extends CommonDBTM {
                   "&field[1]=3&searchtype[1]=equals&contains[1]=DOWN&link[2]=OR".
                   "&field[2]=3&searchtype[2]=equals&contains[2]=UNREACHABLE". 
                   "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
-      $warning_link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=WARNING&link[1]=OR".
-                  "&field[1]=3&searchtype[1]=equals&contains[1]=UNKNOWN&link[2]=OR".
-                  "&field[2]=3&searchtype[2]=equals&contains[2]=RECOVERY&link[3]=OR".
-                  "&field[3]=3&searchtype[3]=equals&contains[3]=FLAPPING&link[4]=OR".
-                  "&field[5]=3&searchtype[4]=equals&contains[4]=NULL".
+      $warningdata_link = $CFG_GLPI['root_doc'].
+               "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=FLAPPING&link[1]=OR".
+                  "&field[1]=3&searchtype[1]=equals&contains[1]=RECOVERY&link[2]=OR".
+                  "&field[2]=3&searchtype[2]=equals&contains[2]=WARNING&link[3]=AND".
+                  "&field[3]=9&searchtype[3]=equals&contains[3]=^".
+                  "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
+      $warningconnection_link = $CFG_GLPI['root_doc'].
+               "/plugins/monitoring/front/service.php?reset=reset".
+                  "&field[0]=3&searchtype[0]=equals&contains[0]=UNKNOWN&link[1]=OR".
+                  "&field[1]=3&searchtype[1]=equals&contains[1]=NULL&link[2]=OR".
+                  "&field[2]=3&searchtype[2]=equals&contains[2]=WARNING&link[3]=AND".
+                  "&field[3]=9&searchtype[3]=equals&contains[3]=^$".
                   "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
       $ok_link = $CFG_GLPI['root_doc'].
                "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=OK&link[1]=OR".
@@ -994,7 +1030,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          if ($critical > 0) {
             $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_critical.png"';
          }
-         echo "<table class='tab_cadre' width='474' height='100' ".$background." >";
+         echo "<table class='tab_cadre' width='414' height='100' ".$background." >";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
          if ($type == 'Ressources' OR $type == 'Componentscatalog') {
@@ -1025,37 +1061,77 @@ class PluginMonitoringDisplay extends CommonDBTM {
       
       echo "<td>";
          $background = '';
-         if ($warning > 0) {
+         if ($warningdata > 0) {
             $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_warning.png"';
          }
-         echo "<table class='tab_cadre' width='316' height='100' ".$background." >";
+         if ($type == 'Ressources') {
+            echo "<table class='tab_cadre' width='188' height='100' ".$background." >";
+         } else {
+            echo "<table class='tab_cadre' width='316' height='100' ".$background." >";
+         }
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
          if ($type == 'Ressources' OR $type == 'Componentscatalog') {
-            echo "<a href='".$warning_link.">".
-                    "<font color='black' style='font-size: 12px;font-weight: bold;'>".$LANG['plugin_monitoring']['display'][3]."</font></a>";
+            echo "<a href='".$warningdata_link.">".
+                    "<font color='black' style='font-size: 12px;font-weight: bold;'>".$LANG['plugin_monitoring']['display'][5]."</font></a>";
          } else {
-            echo $LANG['plugin_monitoring']['display'][3];
+            echo $LANG['plugin_monitoring']['display'][5];
          }
          echo "</td>";
          echo "</tr>";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
          if ($type == 'Ressources' OR $type == 'Componentscatalog') {
-            echo "<a href='".$warning_link.">".
-                    "<font color='black' style='font-size: 52px;'>".$warning."</font></a>";
+            echo "<a href='".$warningdata_link.">".
+                    "<font color='black' style='font-size: 52px;'>".$warningdata."</font></a>";
          } else {
-            echo "<font style='font-size: 52px;'>".$warning."</font>";
+            echo "<font style='font-size: 52px;'>".$warningdata."</font>";
          }
          echo "</th>";
          echo "</tr>";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
-         echo "<font style='font-size: 11px;'>Soft : ".$warning_soft."</font>";         
+         echo "<font style='font-size: 11px;'>Soft : ".$warningdata_soft."</font>";         
          echo "</th>";
          echo "</tr>";
          echo "</table>";         
       echo "</td>";
+      
+      if ($type == 'Ressources') {
+         echo "<td>";
+            $background = '';
+            if ($warningconnection > 0) {
+               $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_warning_yellow.png"';
+            }
+            echo "<table class='tab_cadre' width='188' height='100' ".$background." >";
+            echo "<tr>";
+            echo "<th style='background-color:transparent;'>";
+            if ($type == 'Ressources' OR $type == 'Componentscatalog') {
+               echo "<a href='".$warningconnection_link.">".
+                       "<font color='black' style='font-size: 12px;font-weight: bold;'>".$LANG['plugin_monitoring']['display'][6]."</font></a>";
+            } else {
+               echo $LANG['plugin_monitoring']['display'][6];
+            }
+            echo "</td>";
+            echo "</tr>";
+            echo "<tr>";
+            echo "<th style='background-color:transparent;'>";
+            if ($type == 'Ressources' OR $type == 'Componentscatalog') {
+               echo "<a href='".$warningconnection_link.">".
+                       "<font color='black' style='font-size: 52px;'>".$warningconnection."</font></a>";
+            } else {
+               echo "<font style='font-size: 52px;'>".$warningconnection."</font>";
+            }
+            echo "</th>";
+            echo "</tr>";
+            echo "<tr>";
+            echo "<th style='background-color:transparent;'>";
+            echo "<font style='font-size: 11px;'>Soft : ".$warningconnection_soft."</font>";         
+            echo "</th>";
+            echo "</tr>";
+            echo "</table>";         
+         echo "</td>";
+      }
       
       echo "<td>";
          $background = '';
