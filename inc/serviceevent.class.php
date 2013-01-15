@@ -176,6 +176,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                     )
                        AND isset($a_a_perfdata[1])) {
                   $a_perfdata_final = explode(";", $a_a_perfdata[1]);
+                  $is_mb = 0;
                   foreach ($a_perfdata_final as $nb_val=>$val) {
 //                     if (isset($a_ref[$data->DS[$nb_val]->dsname])) {
                         if ($val != '') {
@@ -185,6 +186,8 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                               $val = round(str_replace("bps", "", $val),0);
                            } else if (strstr($val, "MB")) {
                               $val = round(str_replace("MB", "", $val),0);
+                              $val = $val * 1000000; // Have in B
+                              $is_mb = 1;
                            } else if (strstr($val, "B")) {
                               $val = round(str_replace("B", "", $val),0);
                            } else if (strstr($val, "s")) {
@@ -192,10 +195,14 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                            } else if (strstr($val, "%")) {
                               $val = round(str_replace("%", "", $val),0);
                            } else if (!strstr($val, "timeout")){
-                              if ($val > 2) {
-                                 $val = round($val);
-                              } else {
-                                 $val = round($val, 2);
+                              if ($is_mb == 1) {
+                                 $val = $val * 1000000;
+                              } else {                              
+                                 if ($val > 2) {
+                                    $val = round($val);
+                                 } else {
+                                    $val = round($val, 2);
+                                 }
                               }
                            } else {
                               $val = 0;
