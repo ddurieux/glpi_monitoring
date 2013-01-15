@@ -1015,6 +1015,13 @@ class PluginMonitoringDisplay extends CommonDBTM {
                   "&field[1]=3&searchtype[1]=contains&contains[1]=DOWN&link[2]=OR".
                   "&field[2]=3&searchtype[2]=contains&contains[2]=UNREACHABLE". 
                   "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
+      $warning_link = $CFG_GLPI['root_doc'].
+               "/plugins/monitoring/front/service.php?reset=reset".
+                  "&field[0]=3&searchtype[0]=contains&contains[0]=FLAPPING&link[1]=OR".
+                  "&field[1]=3&searchtype[1]=contains&contains[1]=RECOVERY&link[2]=OR".
+                  "&field[2]=3&searchtype[2]=contains&contains[2]=WARNING&link[3]=OR".
+                  "&field[3]=3&searchtype[3]=contains&contains[3]=UNKNOWN".
+                  "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
       $warningdata_link = $CFG_GLPI['root_doc'].
                "/plugins/monitoring/front/service.php?reset=reset".
                   "&field[0]=3&searchtype[0]=contains&contains[0]=FLAPPING&link[1]=OR".
@@ -1083,18 +1090,26 @@ class PluginMonitoringDisplay extends CommonDBTM {
          }
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
-         if ($type == 'Ressources' OR $type == 'Componentscatalog') {
+         if ($type == 'Ressources') {
             echo "<a href='".$warningdata_link.">".
                     "<font color='black' style='font-size: 12px;font-weight: bold;'>".$LANG['plugin_monitoring']['display'][5]."</font></a>";
          } else {
-            echo $LANG['plugin_monitoring']['display'][5];
+            if ($type == 'Componentscatalog') {
+               echo "<a href='".$warning_link.">".
+                       "<font color='black' style='font-size: 12px;font-weight: bold;'>".$LANG['plugin_monitoring']['display'][3]."</font></a>";
+            } else {
+               echo $LANG['plugin_monitoring']['display'][3];
+            }
          }
          echo "</td>";
          echo "</tr>";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
-         if ($type == 'Ressources' OR $type == 'Componentscatalog') {
+         if ($type == 'Ressources') {
             echo "<a href='".$warningdata_link.">".
+                    "<font color='black' style='font-size: 52px;'>".$warningdata."</font></a>";
+         } else if ($type == 'Componentscatalog') {
+            echo "<a href='".$warning_link.">".
                     "<font color='black' style='font-size: 52px;'>".$warningdata."</font></a>";
          } else {
             echo "<font style='font-size: 52px;'>".$warningdata."</font>";
