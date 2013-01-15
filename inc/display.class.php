@@ -1234,7 +1234,13 @@ class PluginMonitoringDisplay extends CommonDBTM {
    
    function refreshPage() {
       global $LANG;
+
+      if (isset($_POST['_refresh'])) {
+         $_SESSION['glpi_plugin_monitoring']['_refresh'] = $_POST['_refresh'];
+      }
       
+      echo '<meta http-equiv ="refresh" content="'.$_SESSION['glpi_plugin_monitoring']['_refresh'].'">';
+
       echo "<form name='form' method='post' action='".$_SERVER["PHP_SELF"]."' >";
          echo "<table width='100%'>";
          echo "<tr>";
