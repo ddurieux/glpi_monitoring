@@ -1042,7 +1042,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          if ($critical > 0) {
             $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_critical.png"';
          }
-         echo "<table class='tab_cadre' width='414' height='100' ".$background." >";
+         echo "<table class='tab_cadre' width='414' height='130' ".$background." >";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
          if ($type == 'Ressources' OR $type == 'Componentscatalog') {
@@ -1077,9 +1077,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
             $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_warning.png"';
          }
          if ($type == 'Ressources') {
-            echo "<table class='tab_cadre' width='188' height='100' ".$background." >";
+            echo "<table class='tab_cadre' width='188' height='130' ".$background." >";
          } else {
-            echo "<table class='tab_cadre' width='316' height='100' ".$background." >";
+            echo "<table class='tab_cadre' width='316' height='130' ".$background." >";
          }
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
@@ -1115,7 +1115,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
             if ($warningconnection > 0) {
                $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_warning_yellow.png"';
             }
-            echo "<table class='tab_cadre' width='188' height='100' ".$background." >";
+            echo "<table class='tab_cadre' width='188' height='130' ".$background." >";
             echo "<tr>";
             echo "<th style='background-color:transparent;'>";
             if ($type == 'Ressources' OR $type == 'Componentscatalog') {
@@ -1150,7 +1150,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          if ($ok > 0) {
             $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_ok.png"';
          }
-         echo "<table class='tab_cadre' width='158' height='100' ".$background." >";
+         echo "<table class='tab_cadre' width='158' height='130' ".$background." >";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
          if ($type == 'Ressources' OR $type == 'Componentscatalog') {
