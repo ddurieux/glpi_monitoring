@@ -496,7 +496,16 @@ class PluginMonitoringDisplay extends CommonDBTM {
       
       echo "<td width='32' class='center'>";
       $shortstate = self::getState($data['state'], $data['state_type'], $data['event']);
-      echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/>";
+      $alt = $LANG['plugin_monitoring']['display'][4];
+      if ($shortstate == 'orange') {
+         $alt = $LANG['plugin_monitoring']['display'][5];
+      } else if ($shortstate == 'yellow') {
+         $alt = $LANG['plugin_monitoring']['display'][6];
+      } else if ($shortstate == 'red') {
+         $alt = $LANG['plugin_monitoring']['display'][2];
+      }
+      echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'
+         title='".$alt."' alt='".$alt."' />";
       echo "</td>";
       echo "<td>";
       $entity->getFromDB($data['entities_id']);
