@@ -199,6 +199,7 @@ $LANG['plugin_monitoring']['service'][22]="Zeit in ms";
 $LANG['plugin_monitoring']['service'][23]="Resource deleted";
 $LANG['plugin_monitoring']['service'][24]="Custom arguments for this resource (empty : inherit)";
 $LANG['plugin_monitoring']['service'][25]="Configure";
+$LANG['plugin_monitoring']['service'][26]="Display search form";
 $LANG['plugin_monitoring']['service'][2]="Ressource hinzufügen";
 $LANG['plugin_monitoring']['service'][3]="und / oder diese Werte definieren";
 $LANG['plugin_monitoring']['service'][4]="Argumente";

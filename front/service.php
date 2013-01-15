@@ -74,7 +74,24 @@ if (isset($_GET['glpi_tab'])) {
    unset($_GET['glpi_tab']);
 }
 Search::manageGetValues("PluginMonitoringService");
+if (isset($_GET['hidesearch'])) {
+   echo "<table class='tab_cadre_fixe'>";
+   echo "<tr class='tab_bg_1'>";
+   echo "<th>";
+   echo "<a onClick='Ext.get(\"searchform\").toggle();'>
+      <img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' />&nbsp;
+         ".$LANG['plugin_monitoring']['service'][26]."
+      &nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' /></a>";
+   echo "</th>";
+   echo "</tr>";
+   echo "</table>";
+   echo "<div style='display: none;' id='searchform'>";
+}
 Search::showGenericSearch("PluginMonitoringService", $_GET);
+if (isset($_GET['hidesearch'])) {
+   echo "</div>";
+}
+
 $pmDisplay->showBoard(950);
 if (isset($_SESSION['glpisearch']['PluginMonitoringService']['reset'])) {
    unset($_SESSION['glpisearch']['PluginMonitoringService']['reset']);

@@ -1010,34 +1010,34 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
 
       $critical_link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/service.php?reset=reset".
+               "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
                   "&field[0]=3&searchtype[0]=contains&contains[0]=CRITICAL&link[1]=OR".
                   "&field[1]=3&searchtype[1]=contains&contains[1]=DOWN&link[2]=OR".
                   "&field[2]=3&searchtype[2]=contains&contains[2]=UNREACHABLE". 
                   "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
       $warning_link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/service.php?reset=reset".
+               "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
                   "&field[0]=3&searchtype[0]=contains&contains[0]=FLAPPING&link[1]=OR".
                   "&field[1]=3&searchtype[1]=contains&contains[1]=RECOVERY&link[2]=OR".
                   "&field[2]=3&searchtype[2]=contains&contains[2]=WARNING&link[3]=OR".
                   "&field[3]=3&searchtype[3]=contains&contains[3]=UNKNOWN".
                   "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
       $warningdata_link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/service.php?reset=reset".
+               "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
                   "&field[0]=3&searchtype[0]=contains&contains[0]=FLAPPING&link[1]=OR".
                   "&field[1]=3&searchtype[1]=contains&contains[1]=RECOVERY&link[2]=OR".
                   "&field[2]=3&searchtype[2]=contains&contains[2]=WARNING&link[3]=AND".
                   "&field[3]=9&searchtype[3]=contains&contains[3]=^".
                   "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
       $warningconnection_link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/service.php?reset=reset".
+               "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
                   "&field[0]=3&searchtype[0]=contains&contains[0]=UNKNOWN&link[1]=OR".
                   "&field[1]=3&searchtype[1]=contains&contains[1]=NULL&link[2]=OR".
                   "&field[2]=3&searchtype[2]=contains&contains[2]=WARNING&link[3]=AND".
                   "&field[3]=9&searchtype[3]=contains&contains[3]=^$".
                   "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
       $ok_link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/service.php?reset=reset&".
+               "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&".
                   "field[0]=3&searchtype[0]=contains&contains[0]=OK&link[1]=OR".
                   "&field[1]=3&searchtype[1]=contains&contains[1]=UP".
                   "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";

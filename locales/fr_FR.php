@@ -199,6 +199,7 @@ $LANG['plugin_monitoring']['service'][22]="Temps en ms";
 $LANG['plugin_monitoring']['service'][23]="Ressource ajoutée";
 $LANG['plugin_monitoring']['service'][24]="Arguments personalisés pour cette ressource (vide = hérité)";
 $LANG['plugin_monitoring']['service'][25]="Configurer";
+$LANG['plugin_monitoring']['service'][26]="Afficher le formulaire de recherche";
 $LANG['plugin_monitoring']['service'][2]="Ajout d'une ressource";
 $LANG['plugin_monitoring']['service'][3]="ou/et dinifi ces valeurs";
 $LANG['plugin_monitoring']['service'][4]="Arguments";

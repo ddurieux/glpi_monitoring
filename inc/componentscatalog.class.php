@@ -225,7 +225,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       echo '</td>';
       echo '<th align="center" height="40" width="50%">';
       $link = $CFG_GLPI['root_doc'].
-         "/plugins/monitoring/front/service.php?reset=reset&field[0]=8&searchtype[0]=equals&contains[0]=".$id.
+         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&field[0]=8&searchtype[0]=equals&contains[0]=".$id.
             "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
       echo '<a href="'.$link.'">'.$nb_ressources.'</a>';
       echo '</th>';
@@ -239,7 +239,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          $count = $stateg['CRITICAL'];
          $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_critical.png"';
          $link = $CFG_GLPI['root_doc'].
-         "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=CRITICAL".
+         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=CRITICAL".
             "&link[1]=AND&field[1]=8&searchtype[1]=equals&contains[1]=".$id.
             "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=DOWN".
             "&link[3]=AND&field[3]=8&searchtype[3]=equals&contains[3]=".$id.
@@ -250,7 +250,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          $count = $stateg['WARNING'];
          $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_warning.png"';
          $link = $CFG_GLPI['root_doc'].
-         "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=WARNING".
+         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=WARNING".
             "&link[1]=AND&field[1]=8&searchtype[1]=equals&contains[1]=".$id.
             "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=UNKNOWN".
             "&link[3]=AND&field[3]=8&searchtype[3]=equals&contains[3]=".$id.
@@ -263,7 +263,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          $count = $stateg['OK'];
          $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_ok.png"';
          $link = $CFG_GLPI['root_doc'].
-         "/plugins/monitoring/front/service.php?reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=OK".
+         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=OK".
             "&link[1]=AND&field[1]=8&searchtype[1]=equals&contains[1]=".$id.
             "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=UP".
             "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
