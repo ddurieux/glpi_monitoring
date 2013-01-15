@@ -59,7 +59,6 @@ $pmMessage->getMessages();
 
 $pmDisplay->menu();
 
-echo '<meta http-equiv ="refresh" content="'.$_SESSION['glpi_plugin_monitoring']['_refresh'].'">';
 $pmDisplay->refreshPage();
 
 $pmDisplay->showCounters("Ressources", 1, 0);
