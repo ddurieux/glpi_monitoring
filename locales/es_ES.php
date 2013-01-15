@@ -128,6 +128,8 @@ $LANG['plugin_monitoring']['display'][1]="Refresco de página (en segundos)";
 $LANG['plugin_monitoring']['display'][2]="Crítico";
 $LANG['plugin_monitoring']['display'][3]="Advertencia";
 $LANG['plugin_monitoring']['display'][4]="Correcto";
+$LANG['plugin_monitoring']['display'][5]="Advertencia (data)";
+$LANG['plugin_monitoring']['display'][6]="Advertencia (connection)";
 
 $LANG['plugin_monitoring']['displayview'][0]="Views";
 $LANG['plugin_monitoring']['displayview'][1]="Header counter (critical/warning/ok)";

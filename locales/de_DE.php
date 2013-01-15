@@ -128,6 +128,8 @@ $LANG['plugin_monitoring']['display'][1]="Seite autom. neu laden (in Sekunden)";
 $LANG['plugin_monitoring']['display'][2]="Kritisch";
 $LANG['plugin_monitoring']['display'][3]="Warnung";
 $LANG['plugin_monitoring']['display'][4]="OK";
+$LANG['plugin_monitoring']['display'][5]="Warnung (data)";
+$LANG['plugin_monitoring']['display'][6]="Warnung (connection)";
 
 $LANG['plugin_monitoring']['displayview'][0]="Views";
 $LANG['plugin_monitoring']['displayview'][1]="Header counter (critical/warning/ok)";

@@ -128,6 +128,8 @@ $LANG['plugin_monitoring']['display'][1]="Rechargement de la page (en secondes)"
 $LANG['plugin_monitoring']['display'][2]="Critique";
 $LANG['plugin_monitoring']['display'][3]="Avertissement";
 $LANG['plugin_monitoring']['display'][4]="OK";
+$LANG['plugin_monitoring']['display'][5]="Avertissement (données)";
+$LANG['plugin_monitoring']['display'][6]="Avertissement (connexion)";
 
 $LANG['plugin_monitoring']['displayview'][0]="Vues";
 $LANG['plugin_monitoring']['displayview'][1]="Compteurs en titre (critique/warning/ok)";
