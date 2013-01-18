@@ -398,7 +398,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
          }
       }
 
-      $query = "SELECT `".getTableForItemType("PluginMonitoringService")."`.* FROM `".getTableForItemType("PluginMonitoringService")."`
+      $query = "SELECT `".getTableForItemType("PluginMonitoringService")."`.* 
+         FROM `".getTableForItemType("PluginMonitoringService")."`
          ".$leftjoin."
          ".$where."
          ORDER BY `name`";
@@ -437,7 +438,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       } else {
          echo "<table class='tab_cadrehov' style='width:100%;'>";
       }
-      
+ 
       echo "<tr class='tab_bg_1'>";
       echo "<th>";
       echo $LANG['joblist'][0];
