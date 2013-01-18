@@ -138,7 +138,12 @@ class PluginMonitoringService extends CommonDBTM {
       $tab[9]['field']         = 'event';
       $tab[9]['name']          = "Event";
       $tab[9]['massiveaction'] = false;
-      
+
+      $tab[10]['table'] = $this->getTable();
+      $tab[10]['field'] = 'state';
+      $tab[10]['name']  = "Status";
+      $tab[10]['datatype'] = 'string';
+
       $tab[20]['table'] = $this->getTable();
       $tab[20]['field'] = 'Computer';
       $tab[20]['name']  = $LANG['common'][1]." > ".$LANG['help'][25];

@@ -329,6 +329,11 @@ class PluginMonitoringDisplay extends CommonDBTM {
    function showBoard($width='', $limit='') {
       global $DB,$CFG_GLPI,$LANG;
 
+      $order = "ASC";
+      if (isset($_GET['order'])) {
+         $order = $_GET['order'];
+      }
+      
       $where = '';
       if ($limit == 'hosts') {
          $where = "`plugin_monitoring_services_id`='0' ";
@@ -371,6 +376,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       
       $leftjoin = '';
+      $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_components`
+         ON `plugin_monitoring_components_id` = 
+         `glpi_plugin_monitoring_components`.`id` ";
+      $leftjoin .= " LEFT JOIN `glpi_entities`
+         ON `".getTableForItemType("PluginMonitoringService")."`.`entities_id` = 
+               `glpi_entities`.`id`";
       if (isset($_GET['field'])) {         
          foreach ($_GET['field'] as $value) {
             if ($value == '20'
@@ -380,9 +391,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
                   ON `plugin_monitoring_componentscatalogs_hosts_id` = 
                   `glpi_plugin_monitoring_componentscatalogs_hosts`.`id` ";
             } else if ($value == '7') {
-               $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_components`
-                  ON `plugin_monitoring_components_id` = 
-                  `glpi_plugin_monitoring_components`.`id` ";
             } else if ($value == '8') {
                if (!strstr($leftjoin, 'LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`')) {
                   $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
@@ -398,11 +406,34 @@ class PluginMonitoringDisplay extends CommonDBTM {
          }
       }
 
-      $query = "SELECT `".getTableForItemType("PluginMonitoringService")."`.* 
+      // * ORDER
+      $ORDERQUERY = " ORDER BY `name` ";
+      $toview = array(3, 6, 7, 10, 4, 9);
+      $toviewComplete = array(
+          'ITEM_0' => 'state', 
+          'ITEM_1' => 'completename',
+          'ITEM_2' => 'component_name',
+          'ITEM_3' => 'state',
+          'ITEM_4' => 'last_check',
+          'ITEM_5' => 'event'
+      );
+      foreach ($toview as $key => $val) {
+         if ($_GET['sort']==$val) {
+            $ORDERQUERY = Search::addOrderBy("PluginMonitoringService", $_GET['sort'], 
+                                             $_GET['order'], $key);
+            foreach ($toviewComplete as $keyi=>$vali) {
+               $ORDERQUERY= str_replace($keyi, $vali, $ORDERQUERY);
+            }
+         }
+      }
+      
+      $query = "SELECT `".getTableForItemType("PluginMonitoringService")."`.*,
+            `glpi_plugin_monitoring_components`.`name` as component_name, 
+            `glpi_entities`.`completename`
          FROM `".getTableForItemType("PluginMonitoringService")."`
          ".$leftjoin."
          ".$where."
-         ORDER BY `name`";
+         ".$ORDERQUERY;
       $result = $DB->query($query);
       
       $start = 0;
@@ -438,48 +469,50 @@ class PluginMonitoringDisplay extends CommonDBTM {
       } else {
          echo "<table class='tab_cadrehov' style='width:100%;'>";
       }
+      $num = 0;
  
       echo "<tr class='tab_bg_1'>";
-      echo "<th>";
-      echo $LANG['joblist'][0];
-      echo "</th>";
-      
-      echo "<th>";
-      echo $LANG['entity'][0];
-      echo "</th>";
-      echo "<th>";
-      echo $LANG['stats'][7];
-      echo "</th>";
-      echo "<th>";
-      echo $LANG['state'][6]." - ".$LANG['common'][16];
-      echo "</th>";
-      echo "<th>";
-      echo $LANG['plugin_monitoring']['component'][0];
-      echo "</th>";
-      echo "<th>";
-      echo $LANG['state'][0];
-      echo "</th>";
-      echo "<th>";
-      echo $LANG['plugin_monitoring']['service'][18];
-      echo "</th>";
-      echo "<th>";
-      echo $LANG['rulesengine'][82];
-      echo "</th>";
-      echo "<th>";
-      echo $LANG['plugin_monitoring']['host'][9];
-      echo "</th>";
+      $this->showHeaderItem($LANG['joblist'][0], 3, $num, $start, $globallinkto);
+      $this->showHeaderItem($LANG['entity'][0], 6, $num, $start, $globallinkto);
+      echo Search::showHeaderItem(0, $LANG['stats'][7], $num);
+      echo Search::showHeaderItem(0, $LANG['state'][6]." - ".$LANG['common'][16], $num);
+      $this->showHeaderItem($LANG['plugin_monitoring']['component'][6], 7, $num, $start, 
+                            $globallinkto);
+      $this->showHeaderItem($LANG['state'][0], 10, $num, $start, $globallinkto);
+      $this->showHeaderItem($LANG['plugin_monitoring']['service'][18], 4, $num, $start, 
+                            $globallinkto);
+      $this->showHeaderItem($LANG['rulesengine'][82], 9, $num, $start, $globallinkto);
+      echo Search::showHeaderItem(0, $LANG['plugin_monitoring']['host'][9], $num);
       echo "</tr>";
+      
       PluginMonitoringServicegraph::loadLib();
       while ($data=$DB->fetch_array($result)) {
          echo "<tr class='tab_bg_3'>";
-
          $this->displayLine($data);
-         
          echo "</tr>";         
       }
       echo "</table>";
       echo "<br/>";
       Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/service.php", $parameters);
+   }
+   
+   
+   
+   /**
+    * Manage header of list
+    */
+   function showHeaderItem($title, $numoption, &$num, $start, $globallinkto) {
+      global $CFG_GLPI;
+      
+      $linkto = $CFG_GLPI['root_doc']."/plugins/monitoring/front/service.php?".
+              "itemtype=PluginMonitoringService&amp;sort=".$numoption."&amp;order=".
+                ($_GET['order']=="ASC"?"DESC":"ASC")."&amp;start=".$start.
+                $globallinkto;
+      $issort = false;
+      if ($_GET['sort'] == $numoption) {
+         $issort = true;
+      }
+      echo Search::showHeaderItem(0, $title, $num, $linkto, $issort, $_GET['order']);
    }
    
    
