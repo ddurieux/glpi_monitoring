@@ -418,6 +418,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       
       $a_find = array();
       $pmComponentscatalog_rule = new PluginMonitoringComponentscatalog_rule();
+      $pmComponentscatalog      = new PluginMonitoringComponentscatalog();
       $pmSearch                 = new PluginMonitoringSearch();
 
       $query = "SELECT * FROM `".$pmComponentscatalog_rule->getTable()."`
@@ -446,6 +447,30 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
             $_SESSION['glpiactiveentities_string'] = $parm->fields['entities_id'];
          }
          
+         // Load right entity
+            $pmComponentscatalog->getFromDB($data['plugin_monitoring_componentscalalog_id']);
+            $default_entity = 0;
+            if (isset($_SESSION['glpiactive_entity'])) {
+               $default_entity = $_SESSION['glpiactive_entity'];
+            }
+            $entities_isrecursive = 0;
+            if (isset($_SESSION['glpiactiveentities'])
+                    AND count($_SESSION['glpiactiveentities']) > 1) {
+               $entities_isrecursive = 1;
+            }
+            if (!isset($_SESSION['glpiactiveprofile']['entities'])) {
+               $_SESSION['glpiactiveprofile']['entities'] = array(
+                   $pmComponentscatalog->fields['entities_id'] => array(
+                       'id'           => $pmComponentscatalog->fields['entities_id'],
+                       'name'         => '',
+                       'is_recursive' => $pmComponentscatalog->fields['is_recursive']
+                   )
+               );
+            }
+            Session::changeActiveEntities($pmComponentscatalog->fields['entities_id'], 
+                                 $pmComponentscatalog->fields['is_recursive']);
+            
+         
          Search::manageGetValues($data['itemtype']);
 
          $resultr = $pmSearch->constructSQL($itemtype, 
@@ -458,6 +483,10 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                $a_find[$data['plugin_monitoring_componentscalalog_id']] = 0;
             }
          }
+         
+         // Reload current entity
+            Session::changeActiveEntities($default_entity,
+                                 $entities_isrecursive);
       }
       if (count($get_tmp) > 0) {
          $_GET = $get_tmp; 
