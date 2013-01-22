@@ -893,6 +893,9 @@ class PluginMonitoringShinken extends CommonDBTM {
          }
          $first++;
       }
+      if (!isset($a_contacts[$i]['email'])) {
+         $a_contacts[$i]['email'] = '';
+      }
       $a_contacts[$i]['pager'] = $user->fields['phone'];
       
       return $a_contacts;
