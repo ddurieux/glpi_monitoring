@@ -106,6 +106,16 @@ class PluginMonitoringService extends CommonDBTM {
       $tab[8]['name'] = __('Components catalog', 'monitoring');
       $tab[8]['datatype'] = 'itemlink';
       
+      $tab[9]['table']         = $this->getTable();
+      $tab[9]['field']         = 'event';
+      $tab[9]['name']          = "Event";
+      $tab[9]['massiveaction'] = false;
+
+      $tab[10]['table'] = $this->getTable();
+      $tab[10]['field'] = 'state';
+      $tab[10]['name']  = "Status";
+      $tab[10]['datatype'] = 'string';
+
       $tab[20]['table'] = $this->getTable();
       $tab[20]['field'] = 'Computer';
       $tab[20]['name']  = __('Item')." > ".__('Computer');

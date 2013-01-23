@@ -81,6 +81,8 @@ $LANG['plugin_monitoring']['service'][22]="Time in ms";
 $LANG['plugin_monitoring']['service'][23]="Resource deleted";
 $LANG['plugin_monitoring']['service'][24]="Custom arguments for this resource (empty : inherit)";
 $LANG['plugin_monitoring']['service'][25]="Configure";
+$LANG['plugin_monitoring']['service'][26]="Display search form";
+
 $LANG['plugin_monitoring']['servicesuggest'][0]="Suggests";
 $LANG['plugin_monitoring']['servicescatalog'][0]="Services catalog";
 $LANG['plugin_monitoring']['servicescatalog'][1]="Degraded mode";
@@ -121,6 +123,10 @@ $LANG['plugin_monitoring']['display'][1]="Page refresh (in seconds)";
 $LANG['plugin_monitoring']['display'][2]="Critical";
 $LANG['plugin_monitoring']['display'][3]="Warning";
 $LANG['plugin_monitoring']['display'][4]="OK";
+
+$LANG['plugin_monitoring']['display'][5]="Warning (data)";
+$LANG['plugin_monitoring']['display'][6]="Warning (connection)";
+
 $LANG['plugin_monitoring']['rrdtemplates'][0]="RRDtool templates";
 $LANG['plugin_monitoring']['rrdtemplates'][1]="Upload perfdata and graph files";
 $LANG['plugin_monitoring']['rrdtemplates'][2]="Find files on";

@@ -128,6 +128,8 @@ $LANG['plugin_monitoring']['display'][1]="Seite autom. neu laden (in Sekunden)";
 $LANG['plugin_monitoring']['display'][2]="Kritisch";
 $LANG['plugin_monitoring']['display'][3]="Warnung";
 $LANG['plugin_monitoring']['display'][4]="OK";
+$LANG['plugin_monitoring']['display'][5]="Warnung (data)";
+$LANG['plugin_monitoring']['display'][6]="Warnung (connection)";
 
 $LANG['plugin_monitoring']['displayview'][0]="Views";
 $LANG['plugin_monitoring']['displayview'][1]="Header counter (critical/warning/ok)";
@@ -197,6 +199,7 @@ $LANG['plugin_monitoring']['service'][22]="Zeit in ms";
 $LANG['plugin_monitoring']['service'][23]="Resource deleted";
 $LANG['plugin_monitoring']['service'][24]="Custom arguments for this resource (empty : inherit)";
 $LANG['plugin_monitoring']['service'][25]="Configure";
+$LANG['plugin_monitoring']['service'][26]="Display search form";
 $LANG['plugin_monitoring']['service'][2]="Ressource hinzufügen";
 $LANG['plugin_monitoring']['service'][3]="und / oder diese Werte definieren";
 $LANG['plugin_monitoring']['service'][4]="Argumente";

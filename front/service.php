@@ -59,7 +59,6 @@ $pmMessage->getMessages();
 
 $pmDisplay->menu();
 
-echo '<meta http-equiv ="refresh" content="'.$_SESSION['glpi_plugin_monitoring']['_refresh'].'">';
 $pmDisplay->refreshPage();
 
 $pmDisplay->showCounters("Ressources", 1, 0);
@@ -74,7 +73,24 @@ if (isset($_GET['glpi_tab'])) {
    unset($_GET['glpi_tab']);
 }
 Search::manageGetValues("PluginMonitoringService");
+if (isset($_GET['hidesearch'])) {
+   echo "<table class='tab_cadre_fixe'>";
+   echo "<tr class='tab_bg_1'>";
+   echo "<th>";
+   echo "<a onClick='Ext.get(\"searchform\").toggle();'>
+      <img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' />&nbsp;
+         ".__('Display search form', 'monitoring')."
+      &nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' /></a>";
+   echo "</th>";
+   echo "</tr>";
+   echo "</table>";
+   echo "<div style='display: none;' id='searchform'>";
+}
 Search::showGenericSearch("PluginMonitoringService", $_GET);
+if (isset($_GET['hidesearch'])) {
+   echo "</div>";
+}
+
 $pmDisplay->showBoard(950);
 if (isset($_SESSION['glpisearch']['PluginMonitoringService']['reset'])) {
    unset($_SESSION['glpisearch']['PluginMonitoringService']['reset']);

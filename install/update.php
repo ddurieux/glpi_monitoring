@@ -57,6 +57,10 @@ function pluginMonitoringGetCurrentVersion($version) {
       $result = $DB->query($query);
       if ($DB->numrows($result) > 0) {
          $data = $DB->fetch_assoc($result);
+         if (is_null($data['version'])
+                 || $data['version'] == '') {
+            $data['version'] = '0.80+1.0';
+         }
          if ($data['version'] != $version) {
             return $data['version'];
          }

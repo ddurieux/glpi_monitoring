@@ -128,6 +128,8 @@ $LANG['plugin_monitoring']['display'][1]="Rechargement de la page (en secondes)"
 $LANG['plugin_monitoring']['display'][2]="Critique";
 $LANG['plugin_monitoring']['display'][3]="Avertissement";
 $LANG['plugin_monitoring']['display'][4]="OK";
+$LANG['plugin_monitoring']['display'][5]="Avertissement (données)";
+$LANG['plugin_monitoring']['display'][6]="Avertissement (connexion)";
 
 $LANG['plugin_monitoring']['displayview'][0]="Vues";
 $LANG['plugin_monitoring']['displayview'][1]="Compteurs en titre (critique/warning/ok)";
@@ -199,6 +201,7 @@ $LANG['plugin_monitoring']['service'][22]="Temps en ms";
 $LANG['plugin_monitoring']['service'][23]="Ressource ajoutée";
 $LANG['plugin_monitoring']['service'][24]="Arguments personalisés pour cette ressource (vide = hérité)";
 $LANG['plugin_monitoring']['service'][25]="Configurer";
+$LANG['plugin_monitoring']['service'][26]="Afficher le formulaire de recherche";
 $LANG['plugin_monitoring']['service'][2]="Ajout d'une ressource";
 $LANG['plugin_monitoring']['service'][3]="ou/et dinifi ces valeurs";
 $LANG['plugin_monitoring']['service'][4]="Arguments";
