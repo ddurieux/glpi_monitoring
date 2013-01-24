@@ -69,6 +69,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       $a_list["check_snmp_memory"] = "check_snmp_memory";
       $a_list["check_snmp_load__stand"] = "check_snmp_load__stand";
       $a_list["check_snmp_storage"] = "check_snmp_storage";
+      $a_list["check_tcp"] = "check_tcp";
             
       ksort($a_list);
       return $a_list;
@@ -522,6 +523,25 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       $ds[] = array('dsname' => 'other');
       $ds[] = array('dsname' => 'total');
       $data['parseperfdata'][] = array('name' => '*',
+                                       'DS'   => $ds);
+      return json_encode($data);
+   }   
+
+   
+   
+   static function perfdata_check_tcp() {
+
+      $data = array();
+      $data['command'] = 'check_tcp';
+      $data['parseperfdata'] = array();
+
+      $ds = array();
+      $ds[] = array('dsname' => 'response_time');
+      $ds[] = array('dsname' => 'warning');
+      $ds[] = array('dsname' => 'critical');
+      $ds[] = array('dsname' => 'other');
+      $ds[] = array('dsname' => 'timeout');
+      $data['parseperfdata'][] = array('name' => 'time',
                                        'DS'   => $ds);
       return json_encode($data);
    }
