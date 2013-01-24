@@ -190,6 +190,8 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                               $is_mb = 1;
                            } else if (strstr($val, "B")) {
                               $val = round(str_replace("B", "", $val),0);
+                           } else if (strstr($val, "Bits/s")) {
+                              $val = round(str_replace("Bits/s", "", $val),0);
                            } else if (strstr($val, "s")) {
                               $val = round((str_replace("s", "", $val) * 1000),0);
                            } else if (strstr($val, "%")) {
