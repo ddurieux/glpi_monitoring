@@ -266,6 +266,36 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
       }
    }
    
+   
+   
+   static function listForComponents($components_id) {
+      global $DB;
+      
+      $pmComponentscatalog = new PluginMonitoringComponentscatalog();
+      
+      echo "<table class='tab_cadre' width='400'>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<th>".__('Components catalog', 'monitoring')."</th>";
+      echo "</tr>";
+      
+      $query = "SELECT `glpi_plugin_monitoring_componentscatalogs`.* FROM `glpi_plugin_monitoring_componentscatalogs_components`
+         LEFT JOIN `glpi_plugin_monitoring_componentscatalogs` 
+            ON `plugin_monitoring_componentscalalog_id` = 
+               `glpi_plugin_monitoring_componentscatalogs`.`id`
+         WHERE `plugin_monitoring_components_id`='".$components_id."'
+         ORDER BY `glpi_plugin_monitoring_componentscatalogs`.`name`";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>";
+         $pmComponentscatalog->getFromDB($data['id']);
+         echo $pmComponentscatalog->getLink(1);
+         echo "</td>";
+         echo "</tr>";
+      }
+      echo "</table>";
+   }
 }
 
 ?>

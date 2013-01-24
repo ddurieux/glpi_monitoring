@@ -103,9 +103,16 @@ class PluginMonitoringComponent extends CommonDBTM {
 
       if ($item->getID() > 0
               AND $item->fields['graph_template'] != '') {
-         return array(__('Copy'), "Graph configuration");
+         return array(
+               __('Copy'),
+               __('Components catalog', 'monitoring'),
+               __('Graph configuration', 'monitoring')
+             );
       } else if ($item->getID() > 0) {
-         return array(__('Copy'));
+         return array(
+               __('Copy'),
+               __('Components catalog', 'monitoring')
+             );
       }
       return '';
    }
@@ -127,6 +134,8 @@ class PluginMonitoringComponent extends CommonDBTM {
          if ($tabnum == '0') {
             $item->copyItem($item->getID());
          } else if ($tabnum == '1') {
+            PluginMonitoringComponentscatalog_Component::listForComponents($item->getID());
+         } else if ($tabnum == '2') {
             $item->preferences($item->getID());
          }         
       }
