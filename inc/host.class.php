@@ -53,9 +53,31 @@ class PluginMonitoringHost extends CommonDBTM {
       $array_ret = array();
       if ($item->getID() > 0) {
          $array_ret[0] = self::createTabEntry(
-                 __('Monitoring', 'monitoring')."-".__('Resources', 'monitoring'));
+                 __('Monitoring', 'monitoring')."-".__('Resources', 'monitoring'),
+                 self::countForItem($item));
       }
       return $array_ret;
+   }
+   
+   
+   
+   /**
+    * @param CommonDBTM $item
+   **/
+   static function countForItem(CommonDBTM $item) {
+      global $DB;
+      
+      $query = "SELECT COUNT(*) AS cpt FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+         LEFT JOIN `glpi_plugin_monitoring_services`
+            ON `glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` =
+               `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
+         WHERE `itemtype` = '".$item->getType()."'
+            AND `items_id` ='".$item->getField('id')."'
+            AND `glpi_plugin_monitoring_services`.`id` IS NOT NULL";
+      
+      $result = $DB->query($query);
+      $ligne  = $DB->fetch_assoc($result);
+      return $ligne['cpt'];
    }
 
 
