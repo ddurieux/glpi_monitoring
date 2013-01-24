@@ -642,11 +642,18 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       echo "</td>";
       
-      if ($displayhost == '0') {
+      if ($displayhost == '0') {         
          $pmUnavaibility = new PluginMonitoringUnavaibility();
          $pmUnavaibility->displayValues($pMonitoringService->fields['id'], 'currentmonth', 1);
          $pmUnavaibility->displayValues($pMonitoringService->fields['id'], 'lastmonth', 1);
          $pmUnavaibility->displayValues($pMonitoringService->fields['id'], 'currentyear', 1);
+         
+         echo "<td class='center'>";
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/unavaibility.php?".
+                 "field[0]=2&searchtype[0]=equals&contains[0]=".$pMonitoringService->fields['id'].
+                 "&sort=3&order=DESC&itemtype=PluginMonitoringUnavaibility'>
+            <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/info.png'/></a>";
+         echo "</td>";
          
          echo "<td>";
          $a_arg = importArrayFromDB($pMonitoringService->fields['arguments']);

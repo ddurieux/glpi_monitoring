@@ -50,6 +50,12 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
    private $unavaibilities_id = 0;
    
    
+   static function getTypeName($nb=0) {
+      return __('Unavaibility', 'monitoring');
+   }
+   
+   
+   
    static function cronUnavaibility() {      
       
       ini_set("max_execution_time", "0");
@@ -58,6 +64,46 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
       $pmUnavaibility->runUnavaibility();
       
       return true;
+   }
+   
+   
+  
+   function getSearchOptions() {
+      $tab = array();
+      $tab['common'] = _n('Characteristic', 'Characteristics', 2);
+
+      $tab[1]['table']         = $this->getTable();
+      $tab[1]['field']         = 'id';
+      $tab[1]['name']          = __('ID');
+      $tab[1]['massiveaction'] = false;
+      
+      $tab[2]['table'] = "glpi_plugin_monitoring_services";
+      $tab[2]['field'] = 'name';
+      $tab[2]['linkfield'] = 'plugin_monitoring_services_id';
+      $tab[2]['name'] = __('Ressource', 'monitoring');
+      $tab[2]['datatype'] = 'itemlink';
+      $tab[2]['itemlink_type']  = 'PluginMonitoringService';
+      
+      $tab[3]['table']         = $this->getTable();
+      $tab[3]['field']         = 'begin_date';
+      $tab[3]['name']          = __('Start', 'monitoring');
+      $tab[3]['datatype']      = 'datetime';
+      $tab[3]['massiveaction'] = false;
+      
+      $tab[4]['table']         = $this->getTable();
+      $tab[4]['field']         = 'end_date';
+      $tab[4]['name']          = __('End', 'monitoring');
+      $tab[4]['datatype']      = 'datetime';
+      $tab[4]['massiveaction'] = false;
+      
+      $tab[5]['table']         = $this->getTable();
+      $tab[5]['field']         = 'duration';
+      $tab[5]['name']          = __('Duration', 'monitoring');
+      $tab[5]['datatype']      = 'timestamp';
+      $tab[5]['withseconds']   = true;
+      $tab[5]['massiveaction'] = false;
+      
+      return $tab;
    }
    
    
@@ -141,6 +187,8 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
             $input = array();
             $input['id'] = $this->unavaibilities_id;
             $input['end_date'] = $date;
+            $this->getFromDB($this->unavaibilities_id);
+            $input['duration'] =  strtotime($date) - strtotime($this->fields['begin_date']);
             $this->update($input);
             $this->unavaibilities_id = 0;
             $this->currentstate = 'ok';
@@ -151,7 +199,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
    
    
    function displayComponentscatalog($componentscatalogs_id) {
-      global $DB;
+      global $DB, $CFG_GLPI;
       
       echo "<table class='tab_cadre_fixe'>";     
       
@@ -163,6 +211,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
       echo "<th>".__('Current month', 'monitoring')."</th>";
       echo "<th>".__('Last month', 'monitoring')."</th>";
       echo "<th>".__('Current year', 'monitoring')."</th>";
+      echo "<th>".__('Detail', 'monitoring')."</th>";
       echo "</tr>";
 
       
@@ -195,6 +244,12 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
 
             $this->displayValues($data['id'], 'currentyear');
 
+            echo "<td class='center'>";
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/unavaibility.php?".
+                    "field[0]=2&searchtype[0]=equals&contains[0]=".$data['id'].
+                    "&sort=3&order=DESC&itemtype=PluginMonitoringUnavaibility'>
+               <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/info.png'/></a>";
+            echo "</td>";
             echo "</tr>";
          }
       }      
@@ -420,6 +475,12 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
       
    }
    
+   
+   
+   function showList($get) {
+      Search::manageGetValues("PluginMonitoringUnavaibility");
+      Search::showList("PluginMonitoringUnavaibility", $get);
+   }
+   
 }
-
 ?>

@@ -187,7 +187,7 @@ class PluginMonitoringService extends CommonDBTM {
          $pmComponentscatalog->getFromDB($data['plugin_monitoring_componentscalalog_id']);
          
          echo "<tr class='tab_bg_1'>";
-         echo "<th colspan='12'>".$pmComponentscatalog->getTypeName()."&nbsp;:&nbsp;".$pmComponentscatalog->getLink()."</th>";
+         echo "<th colspan='13'>".$pmComponentscatalog->getTypeName()."&nbsp;:&nbsp;".$pmComponentscatalog->getLink()."</th>";
          echo "</tr>";
          
          echo "<tr class='tab_bg_1'>";
@@ -218,6 +218,7 @@ class PluginMonitoringService extends CommonDBTM {
          echo "<th>".__('Current month', 'monitoring')." ".Html::showToolTip(__('Availability', 'monitoring'), array('display'=>false))."</th>";
          echo "<th>".__('Last month', 'monitoring')." ".Html::showToolTip(__('Availability', 'monitoring'), array('display'=>false))."</th>";
          echo "<th>".__('Current year', 'monitoring')." ".Html::showToolTip(__('Availability', 'monitoring'), array('display'=>false))."</th>";
+         echo "<th>".__('Detail', 'monitoring')."</th>";
          echo "<th>";
          echo __('Arguments', 'monitoring');
          echo "</th>"; 
@@ -239,7 +240,7 @@ class PluginMonitoringService extends CommonDBTM {
          }
                   
          echo "<tr style='border:1px solid #ccc;background-color:#ffffff'>";
-         echo "<td colspan='12' height='5'></td>";
+         echo "<td colspan='13' height='5'></td>";
          echo "</tr>";
       }
       

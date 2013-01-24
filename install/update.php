@@ -90,7 +90,12 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermapbg");
    }
    
-
+   $unavaibility_recalculate = 0;
+   if (!TableExists("glpi_plugin_monitoring_unavaibilities")
+           || !FieldExists("glpi_plugin_monitoring_unavaibilities", "duration")) {
+      $unavaibility_recalculate = 1;
+   }
+   
     /*
     * Table glpi_plugin_monitoring_servicescatalogs
     */
@@ -2269,6 +2274,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                               'end_date', 
                               "datetime DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'duration', 
+                              "int(15) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
       
       
@@ -2542,7 +2550,23 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    include (GLPI_ROOT . "/plugins/monitoring/inc/config.class.php");
    $pmConfig = new PluginMonitoringConfig();
    $pmConfig->initConfig();
+   
+   
+   // * Recalculate unavaibility
+      if ($unavaibility_recalculate == 1) {
+         $query = "SELECT * FROM `glpi_plugin_monitoring_unavaibilities`
+            WHERE `end_date` IS NOT NULL";
+         $result = $DB->query($query);
+         while ($data=$DB->fetch_array($result)) {
+            $time = strtotime($data['end_date']) - strtotime($data['begin_date']);
+            $queryd = "UPDATE `glpi_plugin_monitoring_unavaibilities`
+               SET `duration`='".$time."'
+               WHERE `id`='".$data['id']."'";
+            $DB->query($queryd);
+         }
+      }
 
+   
    $query = "UPDATE `glpi_plugin_monitoring_configs`
       SET `version`='".PLUGIN_MONITORING_VERSION."'
          WHERE `id`='1'";

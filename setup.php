@@ -74,7 +74,7 @@ function plugin_init_monitoring() {
               array('addtabon' => array('Profile')));
          Plugin::registerClass('PluginMonitoringServicescatalog',
               array('addtabon' => array('Central')));
-         
+         Plugin::registerClass('PluginMonitoringUnavaibility');
          
          
          
