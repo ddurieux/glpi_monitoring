@@ -607,11 +607,8 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          echo '<th rowspan="2">';
          echo __('Trend', 'monitoring');
          echo '</th>';
-         echo '<th rowspan="2">';
+         echo '<th colspan="2">';
          echo __('Avaibility', 'monitoring');
-         echo '</th>';
-         echo '<th rowspan="2">';
-         echo __('Unavaibility (time)', 'monitoring');
          echo '</th>';
          foreach ($a_name as $name) {
             echo '<th colspan="3">';
@@ -621,6 +618,12 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          echo '</tr>';
          
          echo '<tr class="tab_bg_1">';
+         echo '<th>';
+         echo __('%', 'monitoring');
+         echo '</th>';
+         echo '<th>';
+         echo __('Time', 'monitoring');
+         echo '</th>';
          foreach ($a_name as $name) {
             echo '<th>';
             echo __('Min', 'monitoring');
@@ -841,14 +844,14 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                   echo '</td>';
                }
                echo "</tr>";
-
+               
             }
             echo "</table>";
          }
          echo "<br/><br/>";
       }
       $content = PluginMonitoringReport::endCapture();
-      PluginMonitoringReport::generatePDF($content);
+      PluginMonitoringReport::generatePDF($content, 'L');
    }
 }
 

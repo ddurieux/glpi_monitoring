@@ -66,10 +66,14 @@ class PluginMonitoringReport {
    
    
    
-   static function generatePDF($content) {
+   static function generatePDF($content, $orientation='P') {
 
       include(GLPI_ROOT . "/plugins/monitoring/lib/mpdf/mpdf.php");
-      $pdf=new mPDF('c', 'A4', '', '', 7, 7, 10, 10);
+      $format = 'A4';
+      if ($orientation == 'L') {
+         $format .= '-L';
+      }
+      $pdf=new mPDF('c', $format, '', '', 5, 5, 10, 10, 2, 2, $orientation);
       $pdf->mirrorMargins = true;
       $pdf->SetDisplayMode('fullpage');
 
