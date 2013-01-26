@@ -41,14 +41,14 @@
  */
 
 if(!defined('GLPI_ROOT')) {
-   define('GLPI_ROOT', '../..');
+   define('GLPI_ROOT', realpath('../..'));
 }
 include (GLPI_ROOT."/inc/includes.php");
 
 Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
              "monitoring");
 
-Html::redirect(GLPI_ROOT ."/plugins/monitoring/front/menu.php");
+Html::redirect($CFG_GLPI["root_doc"]."/plugins/monitoring/front/menu.php");
 Html::footer();
 
 ?>

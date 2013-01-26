@@ -42,7 +42,7 @@
 
 
 if (!defined('GLPI_ROOT')) {   
-   define('GLPI_ROOT', '../../..');
+   define('GLPI_ROOT', realpath('../../..'));
    
    file_put_contents(GLPI_ROOT."/files/_log/sql-errors.log", '');
    file_put_contents(GLPI_ROOT."/files/_log/php-errors.log", '');

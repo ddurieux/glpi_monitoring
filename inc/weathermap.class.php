@@ -61,7 +61,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
       return PluginMonitoringProfile::haveRight("weathermap", 'r');
    }
 
-
+   
    
    function defineTabs($options=array()){
       $ong = array();
