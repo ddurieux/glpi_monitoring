@@ -33,8 +33,7 @@
 // ----------------------------------------------------------------------
 
 
-define('GLPI_ROOT', realpath('../../..'));
-include (GLPI_ROOT . "/inc/includes.php");
+include ("../../../inc/includes.php");
 
 Html::header("Essai",
              $_SERVER["PHP_SELF"], "plugins", "canvas", '', PluginMonitoringCanvas::onload());

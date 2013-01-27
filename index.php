@@ -40,10 +40,7 @@
    ------------------------------------------------------------------------
  */
 
-if(!defined('GLPI_ROOT')) {
-   define('GLPI_ROOT', realpath('../..'));
-}
-include (GLPI_ROOT."/inc/includes.php");
+include ("s../../inc/includes.php");
 
 Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
              "monitoring");
