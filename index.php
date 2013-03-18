@@ -40,7 +40,7 @@
    ------------------------------------------------------------------------
  */
 
-include ("s../../inc/includes.php");
+include ("../../inc/includes.php");
 
 Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
              "monitoring");
