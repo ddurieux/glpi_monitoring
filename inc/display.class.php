@@ -712,7 +712,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
    
    function displayGraphs($itemtype, $items_id) {
       global $CFG_GLPI;
-
+      
       $pmComponent              = new PluginMonitoringComponent();
       $pmConfig                 = new PluginMonitoringConfig();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
@@ -727,6 +727,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
       if (isset($_GET['mobile'])) {
          $css_width = '300';
       }
+
+
       echo "<table class='tab_cadre' width='".$css_width."'>";
       
       echo "<tr class='tab_bg_1'>";
@@ -770,6 +772,11 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "</th>";
       echo "</tr>";
       
+      $timezone = '0';
+      if (isset($_SESSION['plugin_monitoring_timezone'])) {
+         $timezone = $_SESSION['plugin_monitoring_timezone'];
+      }
+      
       if (!isset($_GET['mobile'])) {
          echo "<tr class='tab_bg_1'>";
          echo "<th colspan='2'>";
@@ -785,33 +792,161 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "</div>";
          echo "</td>";
          echo "</tr>";
+         
+         // * Display date slider
+         echo "<tr class='tab_bg_1'>";
+         echo "<th colspan='2'>";
+         echo __('Select date (only last 2 and 12 hours)', 'monitoring');
+         echo "</th>";
+         echo "</tr>";
+         
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='2'>";
+         
+         $end = time();
+         
+         $oldvalue = current(getAllDatasFromTable('glpi_plugin_monitoring_serviceevents', 
+                                                  "`plugin_monitoring_services_id`='".$items_id."'",
+                                                  false,
+                                                  'date ASC LIMIT 1'));
+         $date = new DateTime($oldvalue['date']);
+         $start = $date->getTimestamp();
+         $pmServicegraph = new PluginMonitoringServicegraph();
+echo "
+<script type=\"text/javascript\">
+
+Ext.onReady(function(){
+
+    var tip = new Ext.slider.Tip({
+        getText: function(thumb){
+            return String.format('<b> ' + new Date(thumb.value * 1000).format('Y-m-d') + '</b>');
+        }
+    });
+
+    new Ext.Slider({
+        renderTo: 'custom-tip-slider',
+        width: 940,
+        increment: 86400,
+        minValue: ".$start.",
+        maxValue: ".$end.",
+        value: ".$end.",
+        plugins: tip,
+        listeners: {
+            dragend: function(slider, thumb, value){
+               document.getElementById('custom_date').textContent = slider.getValue();
+               mgr".$items_id."2h.stopAutoRefresh();
+               mgr".$items_id."12h.stopAutoRefresh();
+                  ";
+               $pmServicegraph->startAutoRefresh($pmComponent->fields['graph_template'], 
+                                                 $itemtype, 
+                                                 $items_id, 
+                                                 $timezone, 
+                                                 '2h', 
+                                                 $pmComponent->fields['id']);
+               
+               $pmServicegraph->startAutoRefresh($pmComponent->fields['graph_template'], 
+                                                 $itemtype, 
+                                                 $items_id, 
+                                                 $timezone, 
+                                                 '12h', 
+                                                 $pmComponent->fields['id']);
+               echo "
+            }
+        }
+    });
+
+});
+</script>";
+         echo '<center><div id="custom-tip-slider"></div></center>';
+         echo '<div id="custom_date" style="display:none"></div>';
+         echo "</td>";
+         echo "</tr>";   
+         
+         // * Display time slider
+         echo "<tr class='tab_bg_1'>";
+         echo "<th colspan='2'>";
+         echo __('Select time (only last 2 and 12 hours)', 'monitoring');
+         echo "</th>";
+         echo "</tr>";
+         
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='2'>";
+         
+         $start = 0 + 86400 - 3600;
+         $end = 86400 + 86400 - 3600 - 300;
+         $current = mktime(date('H'), date('i'), 0, 1, 2, 1970);
+
+echo "
+<script type=\"text/javascript\">
+
+Ext.onReady(function(){
+
+    var tiptime = new Ext.slider.Tip({
+        getText: function(thumb){
+            return String.format('<b> ' + new Date(thumb.value * 1000).format('H:i:s') + '</b>');
+        }
+    });
+
+    new Ext.Slider({
+        renderTo: 'custom-tip-slider-time',
+        width: 940,
+        increment: 300,
+        minValue: ".$start.",
+        maxValue: ".$end.",
+        value: ".$current.",
+        plugins: tiptime,
+        listeners: {
+            dragend: function(slider, thumb, value){
+               document.getElementById('custom_time').textContent = slider.getValue();
+               mgr".$items_id."2h.stopAutoRefresh();
+               mgr".$items_id."12h.stopAutoRefresh();
+                  ";
+               $pmServicegraph->startAutoRefresh($pmComponent->fields['graph_template'], 
+                                                 $itemtype, 
+                                                 $items_id, 
+                                                 $timezone, 
+                                                 '2h', 
+                                                 $pmComponent->fields['id']);
+               
+               $pmServicegraph->startAutoRefresh($pmComponent->fields['graph_template'], 
+                                                 $itemtype, 
+                                                 $items_id, 
+                                                 $timezone, 
+                                                 '12h', 
+                                                 $pmComponent->fields['id']);
+               echo "
+            }
+        }
+    });
+});
+</script>";
+         echo '<center><div id="custom-tip-slider-time"></div></center>';
+         echo '<div id="custom_time" style="display:none"></div>';
+         echo "</td>";
+         echo "</tr>"; 
       }      
 
       $a_list = array();
-      $a_list[] = "2h";
-      $a_list[] = "12h";
-      $a_list[] = "1d";
+      $a_list["2h"]  = __("Last 2 hours", "monitoring");
+      $a_list["12h"] = __("Last 12 hours", "monitoring");
+      $a_list["1d"]  = __("Last 24 hours (average)", "monitoring");
       if (!isset($_GET['mobile'])) {
-         $a_list[] = "1w";
-         $a_list[] = "1m";
-         $a_list[] = "0y6m";
-         $a_list[] = "1y";
+         $a_list["1w"]     = __("Last 7 days (average)", "monitoring");
+         $a_list["1m"]     = __("Last month (average)", "monitoring");
+         $a_list["0y6m"]   = __("Last 6 months (average)", "monitoring");
+         $a_list["1y"]     = __("Last year (average)", "monitoring");
       }
        
-      foreach ($a_list as $time) {
+      foreach ($a_list as $time=>$name) {
       
-      echo "<tr class='tab_bg_1'>";
-      echo "<th colspan='2'>";
-      echo $time;
-      echo "</th>";
-      echo "</tr>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<th colspan='2'>";
+         echo $name;
+         echo "</th>";
+         echo "</tr>";
          
          echo "<tr class='tab_bg_1'>";
          echo "<td align='center' colspan='2'>";
-         $timezone = '0';
-         if (isset($_SESSION['plugin_monitoring_timezone'])) {
-            $timezone = $_SESSION['plugin_monitoring_timezone'];
-         }
 
          $pmServicegraph = new PluginMonitoringServicegraph();
          $part = '';

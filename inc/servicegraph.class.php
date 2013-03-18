@@ -76,19 +76,41 @@ class PluginMonitoringServicegraph extends CommonDBTM {
          var mgr".$items_id.$time." = el".$items_id.$time.".getUpdateManager();
          mgr".$items_id.$time.".loadScripts=true;
          mgr".$items_id.$time.".showLoadIndicator=false;
-         mgr".$items_id.$time.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateChart.php\", \"rrdtool_template=".$rrdtool_template."&itemtype=".$itemtype."&items_id=".$items_id."&timezone=".$timezone."&time=".$time."&components_id=".$pmComponent->fields['id']."\", \"\", true);
+            ";
+         $this->startAutoRefresh($rrdtool_template, $itemtype, $items_id, $timezone, $time,$pmComponent->fields['id']);
+         echo "
          </script>";
       }
-
       return;
-
+   }
+   
+   
+   
+   function startAutoRefresh($rrdtool_template, $itemtype, $items_id, $timezone, $time, $pmComponents_id) {
+      global $CFG_GLPI;
+      
+      echo "mgr".$items_id.$time.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"].
+                 "/plugins/monitoring/ajax/updateChart.php\", ".
+                 "\"rrdtool_template=".$rrdtool_template.
+                 "&itemtype=".$itemtype.
+                 "&items_id=".$items_id.
+                 "&timezone=".$timezone.
+                 "&time=".$time.
+                 "&customdate=\" + document.getElementById('custom_date').textContent + \"".
+                 "&customtime=\" + document.getElementById('custom_time').textContent + \"".
+                 "&components_id=".$pmComponents_id."\", \"\", true);
+                    ";
    }
       
       
       
-   function generateData($rrdtool_template, $itemtype, $items_id, $timezone, $time) { 
+   function generateData($rrdtool_template, $itemtype, $items_id, $timezone, $time, $enddate='') { 
       global $DB;      
 
+      if ($enddate == '') {
+         $enddate = date('U');
+      }
+      
       // Manage timezones
       $converttimezone = '0';
       if (strstr($timezone, '-')) {
@@ -115,12 +137,13 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       switch ($time) {
          
          case '2h':
-            $begin = date('Y-m-d H:i:s', date('U') - (2 * 3600));
+            $begin = date('Y-m-d H:i:s', $enddate - (2 * 3600));
             $dateformat = "(%d)%H:%M";
             
             $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
                   AND `date` > '".$begin."'
+                  AND `date` <= '".date('Y-m-d H:i:s', $enddate)."'
                ORDER BY `date`";
             $result = $DB->query($query);
             $ret = array();
@@ -143,12 +166,13 @@ class PluginMonitoringServicegraph extends CommonDBTM {
             break;
          
          case '12h':
-            $begin = date('Y-m-d H:i:s', date('U') - (12 * 3600));
+            $begin = date('Y-m-d H:i:s', $enddate - (12 * 3600));
             $dateformat = "(%d)%H:%M";
             
             $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
                   AND `date` > '".$begin."'
+                  AND `date` <= '".date('Y-m-d H:i:s', $enddate)."'
                ORDER BY `date`";
             $result = $DB->query($query);
             $ret = $pmServiceevent->getData($result, $rrdtool_template);
@@ -826,16 +850,18 @@ class PluginMonitoringServicegraph extends CommonDBTM {
    
    
    static function loadLib() {
-      echo '<link href="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/src/nv.d3.css" rel="stylesheet" type="text/css">   
-      <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/lib/d3.v2.min.js"></script>
-      <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/nv.d3.min.js"></script>
-      <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/src/tooltip.js"></script>
-      <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/src/utils.js"></script>
-      <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/src/models/legend.js"></script>
-      <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/src/models/axis.js"></script>
-      <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/src/models/scatter.js"></script>
-      <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/src/models/line.js"></script>
-      <script src="'.GLPI_ROOT.'/plugins/monitoring/lib/nvd3/src/models/lineChart.js"></script>';
+      global $CFG_GLPI;
+      
+      echo '<link href="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/nv.d3.css" rel="stylesheet" type="text/css">   
+      <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/lib/d3.v2.min.js"></script>
+      <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/nv.d3.min.js"></script>
+      <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/tooltip.js"></script>
+      <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/utils.js"></script>
+      <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/models/legend.js"></script>
+      <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/models/axis.js"></script>
+      <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/models/scatter.js"></script>
+      <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/models/line.js"></script>
+      <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/models/lineChart.js"></script>';
 
    }
    

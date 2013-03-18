@@ -48,11 +48,32 @@ Session::checkLoginUser();
 
 $pmServicegraph = new PluginMonitoringServicegraph();
 
+$enddate = '';
+if ($_POST['customdate'] == ''
+        && $_POST['customtime'] == '') {
+   $enddate = '';
+} else if ($_POST['customdate'] == '') {  
+   $enddate =  mktime(date('H', $_POST['customtime']), 
+                      date('i', $_POST['customtime']), 
+                      date('s', $_POST['customtime']));
+} else if ($_POST['customtime'] == '') {
+   $enddate = $_POST['customdate'];
+} else {
+   // have the 2 defined   
+   $enddate =  mktime(date('H', $_POST['customtime']), 
+                      date('i', $_POST['customtime']), 
+                      date('s', $_POST['customtime']),
+                      date('n', $_POST['customdate']), 
+                      date('d', $_POST['customdate']), 
+                      date('Y', $_POST['customdate']));
+}
+
 $a_ret = $pmServicegraph->generateData($_POST['rrdtool_template'], 
                              $_POST['itemtype'], 
                              $_POST['items_id'], 
                              $_POST['timezone'], 
-                             $_POST['time']);
+                             $_POST['time'],
+                             $enddate);
 $mydatat = $a_ret[0];
 $a_labels = $a_ret[1];
 $format = $a_ret[2];
