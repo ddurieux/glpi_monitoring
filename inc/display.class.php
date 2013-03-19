@@ -796,7 +796,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          // * Display date slider
          echo "<tr class='tab_bg_1'>";
          echo "<th colspan='2'>";
-         echo __('Select date (only last 2 and 12 hours)', 'monitoring');
+         echo __('Select date (only last 2, 12 and 24 hours)', 'monitoring');
          echo "</th>";
          echo "</tr>";
          
@@ -862,7 +862,7 @@ Ext.onReady(function(){
          // * Display time slider
          echo "<tr class='tab_bg_1'>";
          echo "<th colspan='2'>";
-         echo __('Select time (only last 2 and 12 hours)', 'monitoring');
+         echo __('Select time (only last 2, 12 and 24 hours)', 'monitoring');
          echo "</th>";
          echo "</tr>";
          
