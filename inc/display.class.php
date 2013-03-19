@@ -836,20 +836,17 @@ Ext.onReady(function(){
                document.getElementById('custom_date').textContent = slider.getValue();
                mgr".$items_id."2h.stopAutoRefresh();
                mgr".$items_id."12h.stopAutoRefresh();
+               mgr".$items_id."1d.stopAutoRefresh();
                   ";
-               $pmServicegraph->startAutoRefresh($pmComponent->fields['graph_template'], 
-                                                 $itemtype, 
-                                                 $items_id, 
-                                                 $timezone, 
-                                                 '2h', 
-                                                 $pmComponent->fields['id']);
-               
-               $pmServicegraph->startAutoRefresh($pmComponent->fields['graph_template'], 
-                                                 $itemtype, 
-                                                 $items_id, 
-                                                 $timezone, 
-                                                 '12h', 
-                                                 $pmComponent->fields['id']);
+               $a_graphlist = array('2h', '12h', '1d');
+               foreach ($a_graphlist as $time) {
+                  $pmServicegraph->startAutoRefresh($pmComponent->fields['graph_template'], 
+                                                    $itemtype, 
+                                                    $items_id, 
+                                                    $timezone, 
+                                                    $time, 
+                                                    $pmComponent->fields['id']);
+               }
                echo "
             }
         }
@@ -900,20 +897,17 @@ Ext.onReady(function(){
                document.getElementById('custom_time').textContent = slider.getValue();
                mgr".$items_id."2h.stopAutoRefresh();
                mgr".$items_id."12h.stopAutoRefresh();
+               mgr".$items_id."1d.stopAutoRefresh();
                   ";
-               $pmServicegraph->startAutoRefresh($pmComponent->fields['graph_template'], 
-                                                 $itemtype, 
-                                                 $items_id, 
-                                                 $timezone, 
-                                                 '2h', 
-                                                 $pmComponent->fields['id']);
-               
-               $pmServicegraph->startAutoRefresh($pmComponent->fields['graph_template'], 
-                                                 $itemtype, 
-                                                 $items_id, 
-                                                 $timezone, 
-                                                 '12h', 
-                                                 $pmComponent->fields['id']);
+               $a_graphlist = array('2h', '12h', '1d');
+               foreach ($a_graphlist as $time) {
+                  $pmServicegraph->startAutoRefresh($pmComponent->fields['graph_template'], 
+                                                    $itemtype, 
+                                                    $items_id, 
+                                                    $timezone, 
+                                                    $time, 
+                                                    $pmComponent->fields['id']);
+               }
                echo "
             }
         }
@@ -929,7 +923,7 @@ Ext.onReady(function(){
       $a_list = array();
       $a_list["2h"]  = __("Last 2 hours", "monitoring");
       $a_list["12h"] = __("Last 12 hours", "monitoring");
-      $a_list["1d"]  = __("Last 24 hours (average)", "monitoring");
+      $a_list["1d"]  = __("Last 24 hours", "monitoring");
       if (!isset($_GET['mobile'])) {
          $a_list["1w"]     = __("Last 7 days (average)", "monitoring");
          $a_list["1m"]     = __("Last month (average)", "monitoring");

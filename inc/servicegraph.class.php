@@ -184,30 +184,21 @@ class PluginMonitoringServicegraph extends CommonDBTM {
             break;
          
          case '1d':
-            $begin = date('Y-m-d H:i:s', date('U') - (24 * 3600));
+            $begin = date('Y-m-d H:i:s', $enddate - (24 * 3600));
             $dateformat = "(%d)%H:%M";
             
-            $query = "SELECT * FROM `".$this->getTable()."`
+            $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
-                  AND `type`='30m'
+                  AND `date` > '".$begin."'
+                  AND `date` <= '".date('Y-m-d H:i:s', $enddate)."'
                ORDER BY `date`";
             $result = $DB->query($query);
-            while ($edata=$DB->fetch_array($result)) {
-               $dat = importArrayFromDB($edata['data']);
-               $datemod = $edata['date'];
-               $split = explode(' ', $datemod);
-               $split2 = explode(':', $split[1]);
-               $day = explode("-", $split[0]);
-               array_push($a_labels, "(".$day[2].")".$split2[0].':'.$split2[1]);
-               foreach ($dat as $name=>$value) {
-                  if (!isset($mydatat[$name])) {
-                     $mydatat[$name] = array();
-                  }
-                  array_push($mydatat[$name], $value);
-               }
+            $ret = $pmServiceevent->getData($result, $rrdtool_template);
+            if (is_array($ret)) {
+               $mydatat  = $ret[0];
+               $a_labels = $ret[1];
+               $a_ref    = $ret[2];
             }
-            $ret = $pmServiceevent->getRef($rrdtool_template);
-            $a_ref = $ret[0];
             break;
          
          case '1w':
