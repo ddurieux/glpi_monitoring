@@ -119,6 +119,9 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td height='1200' id='panel'>";
 
+      echo '<div id="custom_date" style="display:none"></div>';
+      echo '<div id="custom_time" style="display:none"></div>';
+      
       $query = "SELECT * FROM `glpi_plugin_monitoring_displayviews_items`
          WHERE `plugin_monitoring_displayviews_id`='".$id."'";
       $result = $DB->query($query);
@@ -142,7 +145,7 @@ Ext.onReady(function() {
       ".implode(",", $a_items)."
     ]
   });
-
+  
 });
 </script>";
 
