@@ -25,7 +25,7 @@ text {
   </div>
 
   <div>
-    <svg id="chart2"></svg>
+    <!--<svg id="chart2"></svg>-->
   </div>
 
 <script src="../lib/d3.v2.js"></script>
@@ -190,12 +190,15 @@ var histcatexpshort = [
 var colors = d3.scale.category20();
 keyColor = function(d, i) {return colors(d.key)};
 
+var chart;
 nv.addGraph(function() {
-  var chart = nv.models.stackedAreaChart()
+  chart = nv.models.stackedAreaChart()
                 .x(function(d) { return d[0] })
                 .y(function(d) { return d[1] })
                 .color(keyColor)
                 //.clipEdge(true);
+
+// chart.stacked.scatter.clipVoronoi(false);
 
   chart.xAxis
       .tickFormat(function(d) { return d3.time.format('%x')(new Date(d)) });
@@ -209,6 +212,8 @@ nv.addGraph(function() {
 
   nv.utils.windowResize(chart.update);
 
+  chart.dispatch.on('stateChange', function(e) { nv.log('New State:', JSON.stringify(e)); });
+
   return chart;
 });
 
@@ -216,7 +221,7 @@ nv.addGraph(function() {
   var chart = nv.models.stackedAreaChart()
                 .x(function(d) { return d[0] })
                 .y(function(d) { return d[1] })
-                .color(keyColor)
+                .color(keyColor);
                 //.clipEdge(true);
 
   chart.xAxis
@@ -227,7 +232,8 @@ nv.addGraph(function() {
 
   d3.select('#chart2')
     .datum(histcatexpshort)
-      .transition().duration(500).call(chart);
+      //.transition().duration(500)
+      .call(chart);
 
   nv.utils.windowResize(chart.update);
 
