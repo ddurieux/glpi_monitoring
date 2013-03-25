@@ -70,6 +70,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       $a_list["check_snmp_load__stand"] = "check_snmp_load__stand";
       $a_list["check_snmp_storage"] = "check_snmp_storage";
       $a_list["check_tcp"] = "check_tcp";
+      $a_list["check_iostat_bsd"] = "check_iostat_bsd";
             
       ksort($a_list);
       return $a_list;
@@ -543,6 +544,47 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       $ds[] = array('dsname' => 'timeout');
       $data['parseperfdata'][] = array('name' => 'time',
                                        'DS'   => $ds);
+      return json_encode($data);
+   }
+   
+
+   
+   static function perfdata_check_iostat_bsd() {
+
+      $data = array();
+      $data['command'] = 'check_iostat_bsd';
+      $data['parseperfdata'] = array();
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'IOTPS_read_write');
+      $data['parseperfdata'][] = array('name' => 'tps',
+                                       'DS'   => $ds);
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'IOTPS_read');
+      $data['parseperfdata'][] = array('name' => 'tpsr',
+                                       'DS'   => $ds);
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'IOTPS_write');
+      $data['parseperfdata'][] = array('name' => 'tpsw',
+                                       'DS'   => $ds);
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'Kbps_read');
+      $data['parseperfdata'][] = array('name' => 'reads',
+                                       'DS'   => $ds);
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'Kbps_write');
+      $data['parseperfdata'][] = array('name' => 'writes',
+                                       'DS'   => $ds);
+
+      $ds = array();
+      $ds[] = array('dsname' => 'transactiontime');
+      $data['parseperfdata'][] = array('name' => 'svc_t',
+                                       'DS'   => $ds);
+      
       return json_encode($data);
    }
 
