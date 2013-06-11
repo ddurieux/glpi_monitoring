@@ -213,6 +213,7 @@ function plugin_version_monitoring() {
    return array('name'           => 'Monitoring',
                 'shortname'      => 'monitoring',
                 'version'        => PLUGIN_MONITORING_VERSION,
+                'license'        => 'AGPLv3+',
                 'author'         =>'<a href="mailto:d.durieux@siprossii.com">David DURIEUX</a>',
                 'homepage'       =>'https://forge.indepnet.net/projects/monitoring/',
                 'minGlpiVersion' => '0.83.3'
