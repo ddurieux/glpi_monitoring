@@ -113,6 +113,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
    }
    
    
+   
    function preaddRule($componentscatalogs_id) {
       global $CFG_GLPI,$DB;
  
@@ -149,8 +150,8 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       echo __('Item type')."&nbsp;:";
       echo "</td>";
       echo "<td>";
-      Dropdown::showItemType("itemtype", 
-                              $networkport_types);
+      
+      Dropdown::showItemType($networkport_types);
       echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$componentscatalogs_id."' >";
       echo "</td>";
       echo "</tr>";
