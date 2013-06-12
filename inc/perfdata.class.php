@@ -56,6 +56,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       $a_list["check_mem"]          = "check_mem";
       $a_list["check_users"]        = "check_users";
       $a_list["check_iftraffic41"]  = "check_iftraffic41";
+      $a_list["check_iftraffic5"]   = "check_iftraffic5";
       $a_list["check_pf"]           = "check_pf";
       $a_list["check_dig"]          = "check_dig";
       $a_list["check_disk"]         = "check_disk";
@@ -237,6 +238,97 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       $ds[] = array('dsname' => 'outbound');
       $data['parseperfdata'][] = array('name' => 'outAbsolut',
                                        'DS'   => $ds);
+      return json_encode($data);      
+   }
+   
+   
+   
+   static function perfdata_check_iftraffic5() {
+      
+      $data = array();
+      $data['command'] = 'check_iftraffic5';
+      $data['parseperfdata'] = array();
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'inUse');
+      $data['parseperfdata'][] = array('name' => 'inUse',
+                                       'DS'   => $ds);
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'outUse');
+      $data['parseperfdata'][] = array('name' => 'outUse',
+                                       'DS'   => $ds);
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'Warn');
+      $data['parseperfdata'][] = array('name' => 'Warn',
+                                       'DS'   => $ds);
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'Crit');
+      $data['parseperfdata'][] = array('name' => 'Crit',
+                                       'DS'   => $ds);
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'inBW');
+      $data['parseperfdata'][] = array('name' => 'inBW',
+                                       'DS'   => $ds);
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'outBW');
+      $data['parseperfdata'][] = array('name' => 'outBW',
+                                       'DS'   => $ds);
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'inUcast');
+      $data['parseperfdata'][] = array('name' => 'inUcast',
+                                       'DS'   => $ds);
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'inMcast');
+      $data['parseperfdata'][] = array('name' => 'inMcast',
+                                       'DS'   => $ds);
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'inBcast');
+      $data['parseperfdata'][] = array('name' => 'inBcast',
+                                       'DS'   => $ds);
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'outUcast');
+      $data['parseperfdata'][] = array('name' => 'outUcast',
+                                       'DS'   => $ds);
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'outMcast');
+      $data['parseperfdata'][] = array('name' => 'outMcast',
+                                       'DS'   => $ds);
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'outBcast');
+      $data['parseperfdata'][] = array('name' => 'outBcast',
+                                       'DS'   => $ds);
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'inDis');
+      $data['parseperfdata'][] = array('name' => 'inDis',
+                                       'DS'   => $ds);
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'inErr');
+      $data['parseperfdata'][] = array('name' => 'inErr',
+                                       'DS'   => $ds);
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'outDis');
+      $data['parseperfdata'][] = array('name' => 'outDis',
+                                       'DS'   => $ds);
+      
+      $ds = array();
+      $ds[] = array('dsname' => 'outErr');
+      $data['parseperfdata'][] = array('name' => 'outErr',
+                                       'DS'   => $ds);
+      
       return json_encode($data);      
    }
    

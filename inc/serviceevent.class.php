@@ -163,6 +163,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
          array_push($a_labels, "(".$day[2].")".$a_time2[0].":".$a_time2[1]);
          foreach ($a_json->parseperfdata as $num=>$data) {
             if (isset($a_perfdata[$num])) {
+               $a_perfdata[$num] = trim($a_perfdata[$num], ", ");
                $a_a_perfdata = explode("=", $a_perfdata[$num]);
                $regex = 0;
                if (strstr($data->name, "*")) {
@@ -175,9 +176,10 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                                AND preg_match("/".$datanameregex."/", $data->name))
                     )
                        AND isset($a_a_perfdata[1])) {
+                     
                   $a_perfdata_final = explode(";", $a_a_perfdata[1]);
                   $is_mb = 0;
-                  foreach ($a_perfdata_final as $nb_val=>$val) {
+                  foreach ($a_perfdata_final as $nb_val=>$val) {                     
 //                     if (isset($a_ref[$data->DS[$nb_val]->dsname])) {
                         if ($val != '') {
                            if (strstr($val, "ms")) {
