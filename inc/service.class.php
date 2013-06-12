@@ -568,7 +568,7 @@ class PluginMonitoringService extends CommonDBTM {
       }
       
       if ($devicetype == "NetworkEquipment") {
-         if (class_exists("PluginFusinvsnmpCommonDBTM")) {
+         if (class_exists("PluginFusioninventoryNetworkEquipment")) {
             $pfNetworkEquipment = new PluginFusioninventoryNetworkEquipment();
             $a_pfNetworkEquipment = current($pfNetworkEquipment->find("`networkequipments_id`='".$devicedata['id']."'", "", 1));
             
@@ -582,7 +582,7 @@ class PluginMonitoringService extends CommonDBTM {
                                  LEFT JOIN `glpi_plugin_fusioninventory_mappings`
                                            ON `glpi_plugin_fusioninventory_snmpmodelmibs`.`plugin_fusioninventory_mappings_id`=
                                               `glpi_plugin_fusioninventory_mappings`.`id`
-                            WHERE `plugin_fusioninventory_snmpmodels_id`='".$a_pfNetworkEquipment->fields['plugin_fusioninventory_snmpmodels_id']."'
+                            WHERE `plugin_fusioninventory_snmpmodels_id`='".$a_pfNetworkEquipment['plugin_fusioninventory_snmpmodels_id']."'
                               AND `is_active`='1'
                               AND `oid_port_counter`='0'
                               AND `glpi_plugin_fusioninventory_mappings`.`name`='".$a_arg[1]."'";
@@ -598,7 +598,7 @@ class PluginMonitoringService extends CommonDBTM {
                   break;
 
                case 'SNMP':
-                  if ($a_pfNetworkEquipment->fields['plugin_fusioninventory_configsecurities_id'] == '0') {
+                  if ($a_pfNetworkEquipment['plugin_fusioninventory_configsecurities_id'] == '0') {
                      
                      switch ($a_arg[1]) {
 
@@ -614,7 +614,7 @@ class PluginMonitoringService extends CommonDBTM {
                      
                   }
                   $pfConfigSecurity = new PluginFusioninventoryConfigSecurity();
-                  $pfConfigSecurity->getFromDB($a_pfNetworkEquipment->fields['plugin_fusioninventory_configsecurities_id']);
+                  $pfConfigSecurity->getFromDB($a_pfNetworkEquipment['plugin_fusioninventory_configsecurities_id']);
 
                   switch ($a_arg[1]) {
 
