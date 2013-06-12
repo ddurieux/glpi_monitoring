@@ -473,7 +473,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       $elements["[[HOSTNAME]]"] = __('Hostname of the device', 'monitoring');
       $elements["[[NETWORKPORTNUM]]"] = __('Network port number', 'monitoring');
       $elements["[[NETWORKPORTNAME]]"] = __('Network port name', 'monitoring');
-      if (class_exists("PluginFusinvsnmpNetworkPort")) {
+      if (class_exists("PluginFusioninventoryNetworkPort")) {
          $elements["[[NETWORKPORTDESCR]]"] = __('Network port ifDescr of networking devices', 'monitoring');
          $elements["[SNMP:version]"] = __('SNMP version of network equipment or printer', 'monitoring');
          $elements["[SNMP:authentication]"] = __('SNMP community of network equipment or printer', 'monitoring');

@@ -136,36 +136,40 @@ class PluginMonitoringHostaddress extends CommonDBTM {
    static function getIp($items_id, $itemtype, $hostname) {
       global $DB;
       
-      $networkPort = new NetworkPort();
+      $networkPort   = new NetworkPort();
+      $networkName   = new NetworkName();
+      $iPAddress     = new IPAddress();
       $pmHostaddress = new PluginMonitoringHostaddress();
       
       $ip = $hostname;
-      if ($itemtype == 'NetworkEquipment') {
-         $class = new $itemtype();
-         $class->getFromDB($items_id);
-         if ($class->fields['ip'] != '') {
-            $ip = $class->fields['ip'];
-         }
+
+      $query = "SELECT * FROM `".$pmHostaddress->getTable()."`
+      WHERE `items_id`='".$items_id."'
+         AND `itemtype`='".$itemtype."'
+      LIMIT 1";      
+      $result = $DB->query($query);
+      if ($DB->numrows($result) == '1') {
+         $data = $DB->fetch_assoc($result);
+         $pmHostaddress->getFromDB($data['id']);
+         $networkPort->getFromDB($pmHostaddress->fields['networkports_id']);
+         $ip = $networkPort->fields['ip'];
       } else {
-         $query = "SELECT * FROM `".$pmHostaddress->getTable()."`
-         WHERE `items_id`='".$items_id."'
-            AND `itemtype`='".$itemtype."'
-         LIMIT 1";      
-         $result = $DB->query($query);
-         if ($DB->numrows($result) == '1') {
-            $data = $DB->fetch_assoc($result);
-            $pmHostaddress->getFromDB($data['id']);
-            $networkPort->getFromDB($pmHostaddress->fields['networkports_id']);
-            $ip = $networkPort->fields['ip'];
-         } else {
-            $a_listnetwork = $networkPort->find("`itemtype`='".$itemtype."'
-               AND `items_id`='".$items_id."'", "`id`");
-            foreach ($a_listnetwork as $datanetwork) {
-               if ($datanetwork['ip'] != '' 
-                       AND $datanetwork['ip'] != '127.0.0.1'
-                       AND $ip != '') {
-                  $ip = $datanetwork['ip'];
-                  break;
+         $a_listnetwork = $networkPort->find("`itemtype`='".$itemtype."'
+            AND `items_id`='".$items_id."'", "`id`");
+         foreach ($a_listnetwork as $networkports_id=>$datanetwork) {
+            $a_networknames_find = current($networkName->find("`items_id`='".$networkports_id."'
+                                                               AND `itemtype`='NetworkPort'", "", 1));
+            if (isset($a_networknames_find['id'])) {
+               $networknames_id = $a_networknames_find['id'];
+               $a_ips_fromDB = $iPAddress->find("`itemtype`='NetworkName'
+                                                 AND `items_id`='".$networknames_id."'");
+               foreach ($a_ips_fromDB as $data) {
+                  if ($data['name'] != '' 
+                          && $data['name'] != '127.0.0.1'
+                          && $ip != '') {
+                     $ip = $data['name'];
+                     break;
+                  }
                }
             }
          }

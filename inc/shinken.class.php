@@ -432,10 +432,9 @@ class PluginMonitoringShinken extends CommonDBTM {
                      if (strstr($a_arguments[$arg], "[[HOSTNAME]]")) {
                         $a_arguments[$arg] = str_replace("[[HOSTNAME]]", $hostname, $a_arguments[$arg]);
                      } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTDESCR]]")){
-                        if (class_exists("PluginFusinvsnmpNetworkPort")) {
-                           $pfNetworkPort = new PluginFusinvsnmpNetworkPort();
+                        if (class_exists("PluginFusioninventoryNetworkPort")) {
+                           $pfNetworkPort = new PluginFusioninventoryNetworkPort();
                            $pfNetworkPort->loadNetworkport($data['networkports_id']);
-                           $descr = '';
                            $descr = $pfNetworkPort->getValue("ifdescr");
                            $a_arguments[$arg] = str_replace("[[NETWORKPORTDESCR]]", $descr, $a_arguments[$arg]);
                         }
