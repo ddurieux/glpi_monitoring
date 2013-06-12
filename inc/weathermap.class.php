@@ -457,30 +457,40 @@ LINK DEFAULT
       echo "</td>";
       echo "<td valign='top'>";
       
- 
-   echo '<form name="pointform" method="post" action="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/weathermapnode.form.php">';
-      echo "<table align='center'>";
+      echo "<div style='position: fixed;top: 30px;right: 0;z-index:999;' >";
+      echo "<table class='tab_cadre' width='100%'>";
       echo "<tr>";
       echo "<td>";
-      echo "x :";
-      echo "</td>";
-      echo "<td>";
-      echo '<input type="text" name="x" size="4" />';
-      echo "</td>";
-      echo "<td>";
-      echo "y :";
-      echo "</td>";
-      echo "<td>";
-      echo '<input type="text" name="y" size="4" />';
+      echo "<a onClick='Ext.get(\"weathermapform\").toggle();'>
+      <img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' />&nbsp;
+         ".__('Display weathermap form', 'monitoring')."
+      &nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' /></a>";
       echo "</td>";
       echo "</tr>";
-      echo "</table>";
-      echo "<input type='hidden' name='plugin_monitoring_weathermaps_id' value='".$weathermaps_id."' />";
+      echo"</table>";
+      echo "</div>";
       
-         echo "<table class='tab_cadre'>";
+      echo "<div style='position: fixed;top: 50px;right: 0;z-index:1000;' id='weathermapform' >";
+      echo '<form name="pointform" method="post" action="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/weathermapnode.form.php">';
+      echo "<table>";
+      echo "<tr>";
+      echo "<td>";
+      
+         echo "<table class='tab_cadre' width='100%'>";
+         echo "<tr>";
+         echo "<th colspan='2'>";
+         echo "x : ";
+         echo '<input type="text" name="x" size="4" />';
+         echo " ";
+         echo "y : ";
+         echo '<input type="text" name="y" size="4" />';
+         echo "</th>";
+         echo "</tr>";
+         
          // * Add node
          echo "<tr>";
          echo "<th colspan='2'>";
+         echo "<input type='hidden' name='plugin_monitoring_weathermaps_id' value='".$weathermaps_id."' />";
          echo __('Add a node', 'monitoring');
          echo "</th>";
          echo "</tr>";
@@ -490,8 +500,7 @@ LINK DEFAULT
          echo __('Node', 'monitoring')."&nbsp;:";
          echo "</td>";
          echo "<td>";
-         Dropdown::showAllItems("items_id");
-         
+         Dropdown::showAllItems("items_id");         
          echo "</td>";
          echo "</tr>";
          
@@ -603,12 +612,14 @@ LINK DEFAULT
          
          echo "</table>";
          Html::closeForm();
-         echo "<br/>";
-
          
+      echo "</td>";
+      echo "</tr>";
+      echo "<tr>";
+      echo "<td>";
          
          echo '<form name="formlink" method="post" action="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/weathermaplink.form.php">';
-         echo "<table class='tab_cadre'>";
+         echo "<table class='tab_cadre' width='100%'>";
          // *Add Link
          echo "<tr>";
          echo "<th colspan='2'>";
@@ -900,6 +911,11 @@ LINK DEFAULT
       
          echo "</table>";
          Html::closeForm();
+         
+      echo "</td>";
+      echo "</tr>";
+      echo "</table>";
+      echo "</div>";
       
       echo "</td>";
       echo "</tr>";
