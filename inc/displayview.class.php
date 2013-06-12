@@ -89,30 +89,28 @@ class PluginMonitoringDisplayview extends CommonDBTM {
 
 
    function defineTabs($options=array()){
-      global $CFG_GLPI;
-
       $ong = array();
-      if ($this->fields['id'] > 0) {
-         $ong[1] = 'items';
-      }
-      
+      $this->addStandardTab(__CLASS__, $ong, $options);
       return $ong;
    }
    
    
-   
+
+   /**
+    * Display tab
+    *
+    * @param CommonGLPI $item
+    * @param integer $withtemplate
+    *
+    * @return varchar name of the tab(s) to display
+    */
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       $array_ret = array();
 
-      if (PluginMonitoringProfile::haveRight("viewshomepage", 'r')) {
-         $pmDisplayview = new PluginMonitoringDisplayview();
-         $i = 50;
-         $a_views = $pmDisplayview->getViews(1);
-         foreach ($a_views as $name) {
-            $array_ret[$i] = self::createTabEntry(
-                    __('Monitoring', 'monitoring')."-".htmlentities($name));
-            $i++;
+      if ($item->getType() == 'PluginMonitoringDisplayview') {
+         if ($item->getID() > 0) {
+            $array_ret[-2] = 'items';
          }
       }
       return $array_ret;
@@ -122,17 +120,9 @@ class PluginMonitoringDisplayview extends CommonDBTM {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      $pmDisplayview = new PluginMonitoringDisplayview();
-      $a_views = $pmDisplayview->getViews();
-
-      $i = 50;
-      foreach ($a_views as $views_id=>$name) {
-         if ($tabnum == $i) {
-            $pmDisplayview_item = new PluginMonitoringDisplayview_item();
-            $pmDisplayview_item->view($views_id);
-            break;
-         }
-         $i++;
+      if ($item->getType() == 'PluginMonitoringDisplayview') {
+         $pmDisplayview_item = new PluginMonitoringDisplayview_item();
+         $pmDisplayview_item->view($item->getID(), 1);
       }
       return true;
    }
