@@ -65,14 +65,38 @@ class PluginMonitoringWeathermap extends CommonDBTM {
    
    function defineTabs($options=array()){
       $ong = array();
-      
-      if (isset($_GET['id'])
-              AND $_GET['id'] > 0) {
+      $this->addStandardTab(__CLASS__, $ong, $options);
+      return $ong;
+   }
+   
+   
+   
+   /**
+    * Display tab
+    *
+    * @param CommonGLPI $item
+    * @param integer $withtemplate
+    *
+    * @return varchar name of the tab(s) to display
+    */
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
+      $ong = array();
+      if ($item->getID() > 0) {
          $ong[1] = __('Weathermap', 'monitoring');
          $ong[2] = __('Nodes and links', 'monitoring');
       }
-      
       return $ong;
+   }
+   
+   
+   
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($tabnum == 2) {
+         echo $item->configureNodesLinks($item->getID());
+      }
+      return TRUE;
    }
    
    
