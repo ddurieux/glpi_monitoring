@@ -425,7 +425,21 @@ LINK DEFAULT
          myImg.onmousedown = GetCoordinates;
 
          </script>';
-         echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=weathermap-".$weathermaps_id.".png' id='myImgId' />";
+         echo "<div><img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=weathermap-".$weathermaps_id.".png'/>";
+         echo "<div style='position: absolute; top:40px;' id='myImgId' >
+            <table class='gridweathermap' width='".$this->fields['width']."' 
+               height='".$this->fields['height']."'>";
+         $line = '';
+         $nbcol = ceil($this->fields['width'] / 15);
+         for ($num=0; $num < $nbcol; $num++) {
+            $line .= "<td></td>";
+         }
+         $line = '<tr>'.$line.'</tr>';
+         $nbline = ceil($this->fields['height'] / 15);
+         for ($num=0; $num < $nbline; $num++) {
+            echo $line;
+         }
+         echo "</table></div></div>";
          
       } else {
          echo '<div id="pointer_div" onclick="point_it(event)" style = "background-image:url(\''.$this->fields['background'].'\');">

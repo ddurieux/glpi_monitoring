@@ -58,3 +58,13 @@
     background-image: -o-linear-gradient(top,#FFF,#DDD);
     background-image: linear-gradient(top,#FFF,#DDD);
 }
+
+.gridweathermap {
+   border: 1px solid rgba(0, 0, 0, .1);
+   border-collapse:collapse;
+}
+
+.gridweathermap td {
+   border: 1px solid rgba(0, 0, 0, .1);
+
+}
