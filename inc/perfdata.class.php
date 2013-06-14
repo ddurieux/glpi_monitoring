@@ -596,7 +596,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       $ds[] = array('dsname' => 'cpu_load');
       $ds[] = array('dsname' => 'cpu_warning');
       $ds[] = array('dsname' => 'cpu_critical');
-      $data['parseperfdata'][] = array('name' => 'cpu_prct_used',
+      $data['parseperfdata'][] = array('name' => 'cpu_used',
                                        'DS'   => $ds);
       return json_encode($data);      
    }   
