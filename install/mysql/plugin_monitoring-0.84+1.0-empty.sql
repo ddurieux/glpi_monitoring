@@ -281,6 +281,7 @@ CREATE TABLE `glpi_plugin_monitoring_hostaddresses` (
   `items_id` int(11) NOT NULL DEFAULT '0',
   `itemtype` varchar(100) DEFAULT NULL,
   `networkports_id` int(11) NOT NULL DEFAULT '0',
+  `ipaddresses_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

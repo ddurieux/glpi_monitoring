@@ -1265,6 +1265,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'networkports_id', 
                                  'networkports_id', 
                                  "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'ipaddresses_id', 
+                                 'ipaddresses_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable, 
                                  'items_id', 
@@ -1275,6 +1279,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                                  'networkports_id', 
                                  "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'ipaddresses_id', 
+                              "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
 
       
