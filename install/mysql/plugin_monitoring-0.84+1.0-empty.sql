@@ -54,6 +54,7 @@ CREATE TABLE `glpi_plugin_monitoring_components` (
    `perfname` text DEFAULT NULL COLLATE utf8_unicode_ci,
    `perfnameinvert` text DEFAULT NULL COLLATE utf8_unicode_ci,
    `perfnamecolor` text DEFAULT NULL COLLATE utf8_unicode_ci,
+   `plugin_monitoring_eventhandlers_id` int(11) NOT NULL DEFAULT '0',
    PRIMARY KEY (`id`),
    KEY `plugin_monitoring_commands_id` (`plugin_monitoring_commands_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -434,6 +435,21 @@ CREATE TABLE `glpi_plugin_monitoring_businessrulegroups` (
    `plugin_monitoring_servicescatalogs_id` int(11) NOT NULL DEFAULT '0',
    `operator` varchar(255) DEFAULT NULL,
    PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_eventhandlers`;
+
+CREATE TABLE `glpi_plugin_monitoring_eventhandlers` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `is_active` tinyint(1) NOT NULL DEFAULT '1',
+   `name` varchar(255) DEFAULT NULL,
+   `command_name` varchar(255) DEFAULT NULL,
+   `command_line` text DEFAULT NULL COLLATE utf8_unicode_ci,
+   PRIMARY KEY (`id`),
+   KEY `name` (`name`),
+   KEY `command_name` (`command_name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

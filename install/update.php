@@ -392,6 +392,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                               'perfnamecolor', 
                               "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->addField($newTable, 
+                              'plugin_monitoring_eventhandlers_id', 
+                              "int(11) NOT NULL DEFAULT '0'");
          $migration->addKey($newTable, 
                             "plugin_monitoring_commands_id");
       $migration->migrationOneTable($newTable);
@@ -1901,6 +1904,58 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $migration->migrationOneTable($newTable);
 
 
+      
+    /*
+    * Table glpi_plugin_monitoring_eventhandlers
+    */
+      $newTable = "glpi_plugin_monitoring_eventhandlers";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+         $DB->query($query);
+      }
+         $migration->changeField($newTable, 
+                                 'id', 
+                                 'id', 
+                                 "int(11) NOT NULL AUTO_INCREMENT");
+         $migration->changeField($newTable, 
+                                 'is_active', 
+                                 'is_active', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->changeField($newTable, 
+                                 'name', 
+                                 'name', 
+                                 "varchar(255) DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'command_name', 
+                                 'command_name', 
+                                 "varchar(255) DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'command_line', 
+                                 'command_line', 
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
+      $migration->migrationOneTable($newTable);
+         $migration->addField($newTable, 
+                                 'is_active', 
+                                 "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->addField($newTable, 
+                                 'name', 
+                                 "varchar(255) DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'command_name', 
+                                 "varchar(255) DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'command_line', 
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->addKey($newTable, 
+                            "name");
+         $migration->addKey($newTable, 
+                            "command_name");
+      $migration->migrationOneTable($newTable);      
+      
+      
       
     /*
     * Table glpi_plugin_monitoring_notificationcommands

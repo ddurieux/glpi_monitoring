@@ -62,6 +62,8 @@ function plugin_init_monitoring() {
 
          Plugin::registerClass('PluginMonitoringEntity',
               array('addtabon' => array('Entity')));
+         Plugin::registerClass('PluginMonitoringCommmand');
+         Plugin::registerClass('PluginMonitoringEventhandler');
          Plugin::registerClass('PluginMonitoringComponent');
          Plugin::registerClass('PluginMonitoringComponentscatalog');
          Plugin::registerClass('PluginMonitoringContact',
@@ -123,6 +125,9 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['weathermap'] = 'front/weathermap.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['weathermap'] = 'front/weathermap.php';
          
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['eventhandler'] = 'front/eventhandler.form.php?add=1';
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['eventhandler'] = 'front/eventhandler.php';
+         
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['service'] = 'front/display.php';
          
          // Fil ariane
@@ -155,6 +160,9 @@ function plugin_init_monitoring() {
 
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['weathermap']['title'] = __('Weathermap', 'monitoring');
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['weathermap']['page']  = '/plugins/monitoring/front/weathermap.php';
+
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['eventhandler']['title'] = __('Event handler', 'monitoring');
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['eventhandler']['page']  = '/plugins/monitoring/front/eventhandler.php';
 
          
          // Define hook item

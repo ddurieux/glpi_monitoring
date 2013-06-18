@@ -287,6 +287,19 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "</tr>";
       
       echo "<tr>";
+      echo "<td>";
+      echo __('Event handler', 'monitoring')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      dropdown::show("PluginMonitoringEventhandler", 
+                     array('name'  => 'plugin_monitoring_eventhandlers_id',
+                           'value' => $this->fields['plugin_monitoring_eventhandlers_id']));
+      echo "</td>";
+      echo "<td colspan='2'>";
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr>";
       echo "<th colspan='4'>".__('Remote check', 'monitoring')."</th>";
       echo "</tr>";
       
