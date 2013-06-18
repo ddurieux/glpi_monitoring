@@ -151,7 +151,7 @@ class PluginMonitoringConfig extends CommonDBTM {
 
             if (count($a_timezones)) {
                echo "<input type='submit' class='submit' name='timezones_add' value='".
-                     __('add')." >>'>";
+                     __('Add')." >>'>";
             }
             echo "<br><br>";
 

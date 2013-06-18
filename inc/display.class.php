@@ -477,6 +477,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                             $globallinkto);
       $this->showHeaderItem(__('Result details'), 9, $num, $start, $globallinkto);
       echo Search::showHeaderItem(0, __('Check period', 'monitoring'), $num);
+      echo '<th>'.__('Acknowledge', 'monitoring').'</th>';
       echo "</tr>";
       
       PluginMonitoringServicegraph::loadLib();
@@ -622,7 +623,25 @@ class PluginMonitoringDisplay extends CommonDBTM {
 //      }
 //      unset($itemmat);
       echo "<td class='center'>";
-      echo $data['state'];
+      
+      if ($shortstate == 'red') {
+         echo "<table>";
+         echo "<tr>";
+         echo "<td>";
+         echo $data['state'];
+         echo "</td>";
+         echo "<td>";
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?id=".$data['id']."'>"
+                  ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_checked.png'"
+                 ." alt='".__('Define an acknowledge', 'monitoring')."'"
+                 ." title='".__('Define an acknowledge', 'monitoring')."'/>"
+              ."</a>";
+         echo "</td>";
+         echo "</tr>";
+         echo "</table>";
+      } else {
+         echo $data['state'];
+      }
       echo "</td>";
 
       echo "<td>";
@@ -667,6 +686,17 @@ class PluginMonitoringDisplay extends CommonDBTM {
                  __('Configure', 'monitoring').$cnt."</a>";
          echo "</td>";
       }
+
+      echo "<td>";
+      if ($shortstate == 'redblue') {
+         echo "<i>"._n('User', 'Users', 1)." : </i>";
+         $user = new User();
+         $user->getFromDB($data['acknowledge_users_id']);
+         echo $user->getName(1);
+         echo "<br/>";
+         echo"<i>". __('Comments')." : </i>".$data['acknowledge_comment'];
+      }
+      echo "</td>";
    }
 
    

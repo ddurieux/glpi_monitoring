@@ -529,7 +529,7 @@ LINK DEFAULT
          
          echo "<tr>";
          echo "<td align='center' colspan='2'>";
-         echo "<input type='submit' name='add' value=\"".__('add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\"".__('Add')."\" class='submit'>";
          echo "</td>";
          echo "</tr>";
             
@@ -845,7 +845,7 @@ LINK DEFAULT
          
          echo "<tr>";
          echo "<td align='center' colspan='2'>";
-         echo "<input type='submit' name='add' value=\"".__('add')."\" class='submit'>";
+         echo "<input type='submit' name='add' value=\"".__('Add')."\" class='submit'>";
          echo "</td>";
          echo "</tr>";
          

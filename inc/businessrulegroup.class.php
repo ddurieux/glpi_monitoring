@@ -153,7 +153,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
             echo "<form name='form' method='post' action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/businessrule.form.php'>";
             echo "<input type='hidden' name='plugin_monitoring_businessrulegroups_id' value='".$items_id."' />";
             PluginMonitoringBusinessrule::dropdownService(0, array('name' => 'type'));         
-            echo "<input type='submit' name='add' value=\"".__('add')."\" class='submit'>";
+            echo "<input type='submit' name='add' value=\"".__('Add')."\" class='submit'>";
             Html::closeForm();
             echo "</td>";
             echo "</tr>";

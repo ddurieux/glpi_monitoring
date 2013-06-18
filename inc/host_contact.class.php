@@ -88,7 +88,7 @@ class PluginMonitoringHost_Contact extends CommonDBRelation {
       echo "</td>";
       echo "<td class='center'>";
       echo "<input type='submit' class='submit' name='parent_add' value='".
-            __('add')." >>'>";
+            __('Add')." >>'>";
       echo "<br><br>";
 
       if ($a_list) {

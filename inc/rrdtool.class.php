@@ -319,7 +319,7 @@ class PluginMonitoringRrdtool extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='2' align='center'>";
-      echo "<input type='submit' name='add' value=\"".__('add')."\" class='submit'>";
+      echo "<input type='submit' name='add' value=\"".__('Add')."\" class='submit'>";
       echo "</td>";
       echo "</tr>";
       
