@@ -975,6 +975,7 @@ Ext.onReady(function(){
       $warningdata_soft = 0;
       $warningconnection_soft = 0;
       $critical_soft = 0;
+      $acknowledge = 0;
       
       $play_sound = 0;
       
@@ -982,46 +983,59 @@ Ext.onReady(function(){
          
          $ok = countElementsInTable("glpi_plugin_monitoring_services", 
                  "(`state`='OK' OR `state`='UP') AND `state_type`='HARD'
-                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
+                    AND `is_acknowledged`='0'");
 
          $warningdata = countElementsInTable("glpi_plugin_monitoring_services", 
                  "((`state`='WARNING' AND `event` IS NOT NULL) 
                         OR `state`='RECOVERY' OR `state`='FLAPPING')
                     AND `event` IS NOT NULL
                     AND `state_type`='HARD'
-                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
+                    AND `is_acknowledged`='0'");
          
          $warningconnection = countElementsInTable("glpi_plugin_monitoring_services", 
                  "(`state`='UNKNOWN' OR `state` IS NULL
                     OR (`state`='WARNING' AND `event` IS NULL))
                     AND `state_type`='HARD'
-                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
+                    AND `is_acknowledged`='0'");
 
          $critical = countElementsInTable("glpi_plugin_monitoring_services", 
                  "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
                     AND `state_type`='HARD'
-                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
+                    AND `is_acknowledged`='0'");
 
          $warningdata_soft = countElementsInTable("glpi_plugin_monitoring_services", 
                  "((`state`='WARNING' AND `event` IS NOT NULL) 
                         OR `state`='RECOVERY' OR `state`='FLAPPING')
                     AND `state_type`='SOFT'
-                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
+                    AND `is_acknowledged`='0'");
          
          $warningconnection_soft = countElementsInTable("glpi_plugin_monitoring_services", 
                  "(`state`='UNKNOWN' OR `state` IS NULL
                     OR (`state`='WARNING' AND `event` IS NULL))
                     AND `state_type`='SOFT'
-                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
+                    AND `is_acknowledged`='0'");
 
          $critical_soft = countElementsInTable("glpi_plugin_monitoring_services", 
                  "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
                     AND `state_type`='SOFT'
-                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
+                    AND `is_acknowledged`='0'");
 
          $ok_soft = countElementsInTable("glpi_plugin_monitoring_services", 
                  "(`state`='OK' OR `state`='UP') AND `state_type`='SOFT'
-                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
+                    AND `is_acknowledged`='0'");
+         
+         $acknowledge = countElementsInTable("glpi_plugin_monitoring_services", 
+                 "`state_type`='HARD'
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
+                    AND `is_acknowledged`='1'");
          
          // ** Manage play sound if critical increase since last refresh
             if (isset($_SESSION['plugin_monitoring_dashboard_Ressources'])) {
@@ -1043,7 +1057,8 @@ Ext.onReady(function(){
                WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'
                   AND (`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
                   AND `state_type`='HARD'
-                  AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
+                  AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
+                  AND `is_acknowledged`='0'";
             $result = $DB->query($query);
             $data2 = $DB->fetch_assoc($result);
             if ($data2['cpt'] > 0) {
@@ -1056,7 +1071,8 @@ Ext.onReady(function(){
                   WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'
                      AND (`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
                      AND `state_type`='HARD'
-                     AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
+                     AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
+                     AND `is_acknowledged`='0'";
                $result = $DB->query($query);
                $data2 = $DB->fetch_assoc($result);
                if ($data2['cpt'] > 0) {
@@ -1067,7 +1083,8 @@ Ext.onReady(function(){
                         ON `plugin_monitoring_componentscatalogs_hosts_id`=`".$pmComponentscatalog_Host->getTable()."`.`id`
                      WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'
                      AND (`state`='OK' OR `state`='UP') AND `state_type`='HARD'
-                     AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
+                     AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
+                     AND `is_acknowledged`='0'";
                   $result = $DB->query($query);
                   $data2 = $DB->fetch_assoc($result);
                   if ($data2['cpt'] > 0) {
@@ -1082,7 +1099,8 @@ Ext.onReady(function(){
                WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'
                   AND (`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
                   AND `state_type`='SOFT'
-                  AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
+                  AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
+                  AND `is_acknowledged`='0'";
             $result = $DB->query($query);
             $data2 = $DB->fetch_assoc($result);
             if ($data2['cpt'] > 0) {
@@ -1094,7 +1112,8 @@ Ext.onReady(function(){
                   WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'
                      AND (`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
                      AND `state_type`='SOFT'
-                     AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
+                     AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
+                     AND `is_acknowledged`='0'";
                $result = $DB->query($query);
                $data2 = $DB->fetch_assoc($result);
                if ($data2['cpt'] > 0) {
@@ -1105,7 +1124,8 @@ Ext.onReady(function(){
                         ON `plugin_monitoring_componentscatalogs_hosts_id`=`".$pmComponentscatalog_Host->getTable()."`.`id`
                      WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'
                         AND (`state`='OK' OR `state`='UP') AND `state_type`='SOFT'
-                        AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
+                        AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
+                        AND `is_acknowledged`='0'";
                   $result = $DB->query($query);
                   $data2 = $DB->fetch_assoc($result);
                   if ($data2['cpt'] > 0) {
@@ -1126,33 +1146,39 @@ Ext.onReady(function(){
       } else if ($type == 'Businessrules') {
          $ok = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
                  "(`state`='OK' OR `state`='UP') AND `state_type`='HARD'
-                 AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+                 AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
+                 AND `is_acknowledged`='0'");
 
          $warningdata = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
                  "(`state`='WARNING' OR `state`='UNKNOWN'
                         OR `state`='RECOVERY' OR `state`='FLAPPING')
                     AND `state_type`='HARD'
-                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
+                    AND `is_acknowledged`='0'");
 
          $critical = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
                  "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
                     AND `state_type`='HARD'
-                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
+                    AND `is_acknowledged`='0'");
 
          $warningdata_soft = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
                  "(`state`='WARNING' OR `state`='UNKNOWN' 
                         OR `state`='RECOVERY' OR `state`='FLAPPING')
                     AND `state_type`='SOFT'
-                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
+                    AND `is_acknowledged`='0'");
 
          $critical_soft = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
                  "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
                     AND `state_type`='SOFT'
-                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+                    AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
+                    AND `is_acknowledged`='0'");
 
          $ok_soft = countElementsInTable("glpi_plugin_monitoring_servicescatalogs", 
                  "(`state`='OK' OR `state`='UP') AND `state_type`='SOFT'
-                  AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+                  AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
+                    AND `is_acknowledged`='0'");
          
          // ** Manage play sound if critical increase since last refresh
             if (isset($_SESSION['plugin_monitoring_dashboard_Businessrules'])) {
@@ -1173,6 +1199,7 @@ Ext.onReady(function(){
          $a_return['warningconnection_soft'] = strval($warningconnection_soft);
          $a_return['critical'] = strval($critical);
          $a_return['critical_soft'] = strval($critical_soft);
+         $a_return['acknowledge'] = strval($acknowledge);
          return $a_return;
       }
 
@@ -1323,7 +1350,7 @@ Ext.onReady(function(){
             echo "<font style='font-size: 11px;'>Soft : ".$warningconnection_soft."</font>";         
             echo "</th>";
             echo "</tr>";
-            echo "</table>";         
+            echo "</table>";
          echo "</td>";
       }
       
@@ -1359,6 +1386,39 @@ Ext.onReady(function(){
          echo "</th>";
          echo "</tr>";
          echo "</table>";         
+      echo "</td>";
+
+      echo "<td>";
+         $background = '';
+         if ($acknowledge > 0) {
+            $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_acknowledge.png"';
+         }
+         echo "<table class='tab_cadre' width='120' height='130' ".$background." >";
+         echo "<tr>";
+         echo "<th style='background-color:transparent;'>";
+         if ($type == 'Ressources' OR $type == 'Componentscatalog') {
+            echo "<a href=''>".
+                    "<font color='black' style='font-size: 12px;font-weight: bold;'>".__('Acknowledge', 'monitoring')."</font></a>";
+         } else {
+            echo __('Acknowledge', 'monitoring');
+         }
+         echo "</td>";
+         echo "</tr>";
+         echo "<tr>";
+         echo "<th style='background-color:transparent;'>";
+         if ($type == 'Ressources' OR $type == 'Componentscatalog') {
+            echo "<a href=''>".
+                    "<font color='black' style='font-size: 52px;font-weight: bold;'>".$acknowledge."</font></a>";
+         } else {
+            echo "<font style='font-size: 52px;'>".$acknowledge."</font>";
+         }
+         echo "</th>";
+         echo "</tr>";
+         echo "<tr>";
+         echo "<th style='background-color:transparent;'>&nbsp;";
+         echo "</th>";
+         echo "</tr>";
+         echo "</table>";   
       echo "</td>";
       
       echo "</tr>";

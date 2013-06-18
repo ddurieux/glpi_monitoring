@@ -116,6 +116,10 @@ CREATE TABLE `glpi_plugin_monitoring_services` (
   `last_check` datetime DEFAULT NULL,
   `arguments` text DEFAULT NULL COLLATE utf8_unicode_ci,
   `networkports_id` int(11) NOT NULL DEFAULT '0',
+  `is_acknowledge` tinyint(1) NOT NULL DEFAULT '0',
+  `is_acknowledgeconfirmed` tinyint(1) NOT NULL DEFAULT '0',
+  `acknowledge_comment` text DEFAULT NULL COLLATE utf8_unicode_ci,
+  `acknowledge_users_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `state` (`state`(50),`state_type`(50)),
   KEY `plugin_monitoring_componentscatalogs_hosts_id` (`plugin_monitoring_componentscatalogs_hosts_id`)

@@ -175,7 +175,19 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                               'calendars_id', 
-                              "int(11) NOT NULL DEFAULT '0'");
+                              "int(11) NOT NULL DEFAULT '0'");        
+         $migration->addField($newTable,
+                              'is_acknowledged', 
+                              "tinyint(1) NOT NULL DEFAULT '0'");         
+         $migration->addField($newTable,
+                              'is_acknowledgeconfirmed', 
+                              "tinyint(1) NOT NULL DEFAULT '0'");   
+         $migration->addField($newTable, 
+                              'acknowledge_comment', 
+                              "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->addField($newTable, 
+                              'acknowledge_users_id', 
+                              "int(11) NOT NULL DEFAULT '0'"); 
          $migration->addKey($newTable, 
                             "name");
       $migration->migrationOneTable($newTable);
@@ -620,8 +632,20 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'arguments', 
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci"); 
          $migration->addField($newTable, 
-                                 'networkports_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");
+                              'networkports_id', 
+                              "int(11) NOT NULL DEFAULT '0'");         
+         $migration->addField($newTable,
+                              'is_acknowledged', 
+                              "tinyint(1) NOT NULL DEFAULT '0'");         
+         $migration->addField($newTable,
+                              'is_acknowledgeconfirmed', 
+                              "tinyint(1) NOT NULL DEFAULT '0'");   
+         $migration->addField($newTable, 
+                              'acknowledge_comment', 
+                              "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->addField($newTable, 
+                              'acknowledge_users_id', 
+                              "int(11) NOT NULL DEFAULT '0'");  
          $migration->addKey($newTable,
                             array('state',
                                   'state_type'),
