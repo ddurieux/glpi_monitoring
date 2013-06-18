@@ -192,7 +192,7 @@ class PluginMonitoringService extends CommonDBTM {
          $pmComponentscatalog->getFromDB($data['plugin_monitoring_componentscalalog_id']);
          
          echo "<tr class='tab_bg_1'>";
-         echo "<th colspan='13'>".$pmComponentscatalog->getTypeName()."&nbsp;:&nbsp;".$pmComponentscatalog->getLink()."</th>";
+         echo "<th colspan='14'>".$pmComponentscatalog->getTypeName()."&nbsp;:&nbsp;".$pmComponentscatalog->getLink()."</th>";
          echo "</tr>";
          
          echo "<tr class='tab_bg_1'>";
@@ -246,7 +246,7 @@ class PluginMonitoringService extends CommonDBTM {
          }
                   
          echo "<tr style='border:1px solid #ccc;background-color:#ffffff'>";
-         echo "<td colspan='13' height='5'></td>";
+         echo "<td colspan='14' height='5'></td>";
          echo "</tr>";
       }
       

@@ -675,16 +675,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
                  "&sort=3&order=DESC&itemtype=PluginMonitoringUnavaibility'>
             <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/info.png'/></a>";
          echo "</td>";
-         
-         echo "<td>";
-         $a_arg = importArrayFromDB($pMonitoringService->fields['arguments']);
-         $cnt = '';
-         if (count($a_arg) > 0) {
-            $cnt = " (".count($a_arg).")";
-         }
-         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicearg.form.php?id=".$data['id']."'>".
-                 __('Configure', 'monitoring').$cnt."</a>";
-         echo "</td>";
       }
 
       echo "<td>";
@@ -697,6 +687,18 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo"<i>". __('Comments')." : </i>".$data['acknowledge_comment'];
       }
       echo "</td>";
+      
+      if ($displayhost == '0') { 
+         echo "<td>";
+         $a_arg = importArrayFromDB($pMonitoringService->fields['arguments']);
+         $cnt = '';
+         if (count($a_arg) > 0) {
+            $cnt = " (".count($a_arg).")";
+         }
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicearg.form.php?id=".$data['id']."'>".
+                 __('Configure', 'monitoring').$cnt."</a>";
+         echo "</td>";
+      }
    }
 
    
