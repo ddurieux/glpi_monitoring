@@ -169,7 +169,10 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
          foreach ($a_services as $gdata) {
             if ($pmService->getFromDB($gdata['plugin_monitoring_services_id'])) {
 
-               $shortstate = PluginMonitoringDisplay::getState($pmService->fields['state'], $pmService->fields['state_type']);
+               $shortstate = PluginMonitoringDisplay::getState($pmService->fields['state'], 
+                                                               $pmService->fields['state_type'],
+                                                               '',
+                                                               $pmService->fields['is_acknowledged']);
 
                echo "<tr class='tab_bg_1'>";
                echo "<td>";

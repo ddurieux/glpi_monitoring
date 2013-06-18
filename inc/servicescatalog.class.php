@@ -202,7 +202,8 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       
       $color = PluginMonitoringDisplay::getState($this->fields['state'], 
                                                  $this->fields['state_type'],
-                                                 'data');
+                                                 'data',
+                                                 $this->fields['is_acknowledged']);
       $pic = $color;
       $color = str_replace("_soft", "", $color);
       
@@ -230,7 +231,8 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
             $pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id']);
             $state[PluginMonitoringDisplay::getState($pMonitoringService->fields['state'], 
                                                      $pMonitoringService->fields['state_type'],
-                                                     'data')]++;
+                                                     'data',
+                                                     $pMonitoringService->fields['is_acknowledged'])]++;
          }
          $color = "";
          if ($gdata['operator'] == 'or') {

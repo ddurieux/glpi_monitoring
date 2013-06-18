@@ -381,7 +381,8 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             } else {
                $statecurrent = PluginMonitoringDisplay::getState($dataService['state'], 
                                                                  $dataService['state_type'],
-                                                                 $dataService['event']);
+                                                                 $dataService['event'],
+                                                                 $dataService['is_acknowledged']);
                if ($statecurrent == 'green') {
                   $a_gstate[$dataService['id']] = "OK";
                } else if ($statecurrent == 'orange') {
@@ -419,7 +420,10 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          ORDER BY `name`";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
-         if (PluginMonitoringDisplay::getState($data['state'], $data['state_type']) == $state) {
+         if (PluginMonitoringDisplay::getState($data['state'], 
+                                               $data['state_type'],
+                                               '',
+                                               $data['is_acknowledged']) == $state) {
             $a_services[] = $data;
          }
       }

@@ -111,10 +111,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
             echo "</table>";
          }
       }
-      
-      
-
-      
+            
       echo "</td>";
       echo "</tr>";
       echo "</table>";
@@ -526,14 +523,19 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $pMonitoringService->getFromDB($data['id']);
       
       echo "<td width='32' class='center'>";
-      $shortstate = self::getState($data['state'], $data['state_type'], $data['event']);
+      $shortstate = self::getState($data['state'], 
+                                   $data['state_type'], 
+                                   $data['event'], 
+                                   $data['is_acknowledged']);
       $alt = __('Ok', 'monitoring');
       if ($shortstate == 'orange') {
          $alt = __('Warning (data)', 'monitoring');
       } else if ($shortstate == 'yellow') {
          $alt = __('Warning (connection)', 'monitoring');
       } else if ($shortstate == 'red') {
-         $alt = __('Critical, monitoring');
+         $alt = __('Critical', 'monitoring');
+      } else if ($shortstate == 'redblue') {
+         $alt = __('Critical / Acknowledge', 'monitoring');
       }
       echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'
          title='".$alt."' alt='".$alt."' />";
@@ -669,7 +671,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
    
    
-   static function getState($state, $state_type, $event) {
+   static function getState($state, $state_type, $event, $acknowledge) {
       $shortstate = '';
       switch($state) {
 
@@ -682,7 +684,11 @@ class PluginMonitoringDisplay extends CommonDBTM {
          case 'UNREACHABLE':
          case 'CRITICAL':
          case 'DOWNTIME':
-            $shortstate = 'red';
+            if ($acknowledge) {
+               $shortstate = 'redblue';
+            } else {
+               $shortstate = 'red';
+            }
             break;
 
          case 'WARNING':
@@ -1205,9 +1211,12 @@ Ext.onReady(function(){
 
       $critical_link = $CFG_GLPI['root_doc'].
                "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-                  "&field[0]=3&searchtype[0]=contains&contains[0]=CRITICAL&link[1]=OR".
-                  "&field[1]=3&searchtype[1]=contains&contains[1]=DOWN&link[2]=OR".
-                  "&field[2]=3&searchtype[2]=contains&contains[2]=UNREACHABLE". 
+                  "&field[0]=3&searchtype[0]=contains&contains[0]=CRITICAL&link[1]=AND".
+                  "&field[1]=23&searchtype[1]=equals&contains[1]=0&link[2]=OR".
+                  "&field[2]=3&searchtype[2]=contains&contains[2]=DOWN&link[3]=AND".
+                  "&field[3]=23&searchtype[3]=equals&contains[3]=0&link[4]=OR".
+                  "&field[4]=3&searchtype[4]=contains&contains[4]=UNREACHABLE&link[5]=AND".
+                  "&field[5]=23&searchtype[5]=equals&contains[5]=0".
                   "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
       $warning_link = $CFG_GLPI['root_doc'].
                "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
@@ -1234,6 +1243,10 @@ Ext.onReady(function(){
                "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&".
                   "field[0]=3&searchtype[0]=contains&contains[0]=OK&link[1]=OR".
                   "&field[1]=3&searchtype[1]=contains&contains[1]=UP".
+                  "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
+      $acknowledge_link = $CFG_GLPI['root_doc'].
+               "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&".
+                  "field[0]=23&searchtype[0]=equals&contains[0]=1".
                   "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
       
       echo "<table align='center'>";
@@ -1397,7 +1410,7 @@ Ext.onReady(function(){
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
          if ($type == 'Ressources' OR $type == 'Componentscatalog') {
-            echo "<a href=''>".
+            echo "<a href='".$acknowledge_link."'>".
                     "<font color='black' style='font-size: 12px;font-weight: bold;'>".__('Acknowledge', 'monitoring')."</font></a>";
          } else {
             echo __('Acknowledge', 'monitoring');
@@ -1407,7 +1420,7 @@ Ext.onReady(function(){
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
          if ($type == 'Ressources' OR $type == 'Componentscatalog') {
-            echo "<a href=''>".
+            echo "<a href='".$acknowledge_link."'>".
                     "<font color='black' style='font-size: 52px;font-weight: bold;'>".$acknowledge."</font></a>";
          } else {
             echo "<font style='font-size: 52px;'>".$acknowledge."</font>";

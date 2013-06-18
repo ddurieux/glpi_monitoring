@@ -130,6 +130,11 @@ class PluginMonitoringService extends CommonDBTM {
       $tab[22]['field'] = 'NetworkEquipment';
       $tab[22]['name']  = __('Item')." > ".__('Network device');
       $tab[22]['searchtype'] = 'equals';
+      
+      $tab[23]['table'] = $this->getTable();
+      $tab[23]['field'] = 'is_acknowledged';
+      $tab[23]['name']  = __('Acknowledge', 'monitoring');
+      $tab[23]['datatype'] = 'bool';
      
       return $tab;
    }
