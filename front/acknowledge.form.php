@@ -51,7 +51,10 @@ $pmService = new PluginMonitoringService();
 
 if (isset($_POST['add'])) {
    $pmService->update($_POST);
-   // Send acknowledge command to shinken via webservice
+   // Send acknowledge command to shinken via webservice   
+   $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
+   $pmShinkenwebservice->sendAcknowledge($_POST['id']);
+   
    // "[date('U')] ACKNOWLEDGE_SVC_PROBLEM;Computer-11-debian;rrrrr-1;1;1;1;glpi;comment ddurieux\n"
    Html::redirect($_POST['referer']);
 }

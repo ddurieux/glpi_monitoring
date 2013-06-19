@@ -399,7 +399,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
     */
    static function isThisItemCheckRule($parm) {
       global $DB;
-      
+
       $itemtype = get_class($parm);
       $items_id = $parm->fields['id'];
       
