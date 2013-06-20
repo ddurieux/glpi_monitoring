@@ -80,6 +80,7 @@ class PluginMonitoringTag extends CommonDBTM {
 		$tab[1]['field']     = 'tag';
 		$tab[1]['linkfield'] = 'tag';
 		$tab[1]['name']      = __('Tag', 'monitoring');
+      $tab[1]['datatype']  = 'itemlink';
 
 		$tab[2]['table']     = $this->getTable();
 		$tab[2]['field']     = 'ip';
@@ -89,9 +90,59 @@ class PluginMonitoringTag extends CommonDBTM {
 		$tab[3]['table']     = $this->getTable();
 		$tab[3]['field']     = 'username';
 		$tab[3]['linkfield'] = 'username';
-		$tab[3]['name']      = __('Login');
+		$tab[3]['name']      = __('Username (Shinken webservice)', 'monitoring');
    
       return $tab;
+   }
+   
+   
+   
+   /**
+   * Display form for agent configuration
+   *
+   * @param $items_id integer ID 
+   * @param $options array
+   *
+   *@return bool true if form is ok
+   *
+   **/
+   function showForm($items_id, $options=array(), $copy=array()) {
+      global $DB,$CFG_GLPI;
+
+      if ($items_id!='') {
+         $this->getFromDB($items_id);
+      } else {
+         $this->getEmpty();
+      }
+      
+      $this->showTabs($options);
+      $this->showFormHeader($options);
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Tag', 'monitoring')." :</td>";
+      echo "<td>";
+      echo "<input type='text' name='tag' value='".$this->fields["tag"]."' size='30'/>";
+      echo "</td>";
+      echo "<td>".__('Username (Shinken webservice)', 'monitoring')."&nbsp;:</td>";
+      echo "<td>";
+      echo "<input type='text' name='username' value='".$this->fields["username"]."' size='30'/>";
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('IP address')." :</td>";
+      echo "<td>";
+      echo "<input type='text' name='ip' value='".$this->fields["ip"]."' size='30'/>";
+      echo "</td>";
+      echo "<td>".__('Password (Shinken webservice)', 'monitoring')."&nbsp;:</td>";
+      echo "<td>";
+      echo "<input type='text' name='password' value='".$this->fields["password"]."' size='30'/>";
+      echo "</td>";
+      echo "</tr>";      
+      
+      $this->showFormButtons($options);
+      
+      return true;
    }
    
    
@@ -113,6 +164,18 @@ class PluginMonitoringTag extends CommonDBTM {
       if (count($a_tags) == 1) {
          $a_tag = current($a_tags);
          return $a_tag['ip'];
+      }
+      return '';
+   }
+   
+   
+   
+   function getAuth($tag) {
+      
+      $a_tags = $this->find("`tag`='".$tag."'", '', 1);
+      if (count($a_tags) == 1) {
+         $a_tag = current($a_tags);
+         return $a_tag['username'].":".$a_tag['password'];
       }
       return '';
    }

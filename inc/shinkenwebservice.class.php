@@ -72,6 +72,7 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       
       $tag = PluginMonitoringEntity::getTagByEntities($pmService->fields['entities_id']);
       $ip = $pmTag->getIP($tag);
+      $auth = $pmTag->getAuth($tag);
       
       $url = 'http://'.$ip.':7760/';
       $action = 'acknowledge';
@@ -82,7 +83,7 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
           'comment'              => urlencode('')
       );
       
-      $this->sendCommand($url, $action, $a_fields);
+      $this->sendCommand($url, $action, $a_fields,'', $auth);
    }
    
    
@@ -90,13 +91,25 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
    function sendRestartArbiter() {
       
       $pmTag = new PluginMonitoringTag();
+      $pmLog = new PluginMonitoringLog();
+      
       $a_tags = $pmTag->find();
       foreach ($a_tags as $data) {
          $url = 'http://'.$data['ip'].':7760/';
          $action = 'restart';
          $a_fields = array();
-
-         $this->sendCommand($url, $action, $a_fields);
+         
+         $auth = $pmTag->getAuth($data['tag']);
+         $restart = $this->sendCommand($url, $action, $a_fields, '', $auth);
+         
+         if ($restart) {
+            $input = array();
+            $input['user_name'] = $_SESSION['glpifirstname'].' '.$_SESSION['glpirealname'].
+                    ' ('.$_SESSION['glpiname'].')';
+            $input['action']    = "restart_planned";
+            $input['date_mod']  = date("Y-m-d H:i:s");
+            $pmLog->add($input);
+         }
       }
    }
    
@@ -122,11 +135,24 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       }
       
       $ret = curl_exec($ch);
-      
+      $return = true;
+      if ($ret === false) {
+         Session::addMessageAfterRedirect(
+                 __('Shinken restart failed:', 'monitoring').' '.curl_error($ch), 
+                 false, 
+                 ERROR);
+         $return = false;
+      } else if (strstr($ret, 'error')) {
+         Session::addMessageAfterRedirect(
+                 __('Shinken restart failed:', 'monitoring').' '.$ret, 
+                 false, 
+                 ERROR);
+         $return = false;
+      } else {         
+         Session::addMessageAfterRedirect(__('Shinken restarting, wait some seconds...', 'monitoring'));
+      }
       curl_close($ch);
-//      echo "<hr>";
-//      echo $ret;
-//      exit;
+      return $return;
    }   
    
 }
