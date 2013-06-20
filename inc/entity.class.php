@@ -173,6 +173,20 @@ class PluginMonitoringEntity extends CommonDBTM {
       }
    }
    
+   
+   
+   static function getTagByEntities($entities_id) {
+      global $DB;
+      
+      $query = "SELECT * FROM `glpi_plugin_monitoring_entities`
+         WHERE `entities_id`='".$entities_id."'
+            LIMIT 1";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         return $data['tag'];
+      }
+   }
+   
 }
 
 ?>

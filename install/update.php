@@ -2532,6 +2532,58 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       
       
       
+    /*
+    * Table glpi_plugin_monitoring_shinkenwebservices
+    */
+      $newTable = "glpi_plugin_monitoring_shinkenwebservices";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+         $DB->query($query);
+      }
+         $migration->addField($newTable, 
+                              'url', 
+                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'action', 
+                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'cnt', 
+                              "tinyint(2) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'fields_string', 
+                              "text DEFAULT NULL COLLATE utf8_unicode_ci");
+      $migration->migrationOneTable($newTable);  
+      
+      
+      
+    /*
+    * Table glpi_plugin_monitoring_tags
+    */
+      $newTable = "glpi_plugin_monitoring_tags";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+         $DB->query($query);
+      }
+         $migration->addField($newTable, 
+                              'tag', 
+                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'ip', 
+                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'username', 
+                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'password', 
+                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+      $migration->migrationOneTable($newTable);      
+      
       
          
    /*

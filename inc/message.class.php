@@ -174,7 +174,12 @@ class PluginMonitoringMessage extends CommonDBTM {
             echo "</div>";
          }
          $input .= "<br/>";
-         $input .= __('Restart Shinken to reload this new configuration', 'monitoring');
+         
+         // Try to restart Shinken vi webservice
+         $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
+         $pmShinkenwebservice->sendRestartArbiter();
+         $input .= __('Shinken is restarted automatically', 'monitoring');
+         //$input .= __('Restart Shinken to reload this new configuration', 'monitoring');
       }
       return $input;
    }

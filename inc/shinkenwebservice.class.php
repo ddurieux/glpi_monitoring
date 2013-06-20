@@ -51,8 +51,8 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       
       $pmService   = new PluginMonitoringService();
       $pmComponent = new PluginMonitoringComponent();
+      $pmTag       = new PluginMonitoringTag();
       $pmService->getFromDB($services_id);
-      
       
       $hostname = '';
       $queryh = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts` 
@@ -70,8 +70,10 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       $a_component = current($pmComponent->find("`id`='".$pmService->fields['plugin_monitoring_components_id']."'", "", 1));
       $service_description = preg_replace("/[^A-Za-z0-9]/","",$a_component['name'])."-".$pmService->fields['id'];
       
+      $tag = PluginMonitoringEntity::getTagByEntities($pmService->fields['entities_id']);
+      $ip = $pmTag->getIP($tag);
       
-      $url = 'http://127.0.0.1:7760/';
+      $url = 'http://'.$ip.':7760/';
       $action = 'acknowledge';
       $a_fields = array(
           'host_name'            => urlencode($hostname),
@@ -87,34 +89,45 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
    
    function sendRestartArbiter() {
       
-      $url = 'http://127.0.0.1:7760/';
-      $action = 'restart';
-      $a_fields = array();
-      
-      $this->sendCommand($url, $action, $a_fields);
+      $pmTag = new PluginMonitoringTag();
+      $a_tags = $pmTag->find();
+      foreach ($a_tags as $data) {
+         $url = 'http://'.$data['ip'].':7760/';
+         $action = 'restart';
+         $a_fields = array();
+
+         $this->sendCommand($url, $action, $a_fields);
+      }
    }
    
    
    
-   function sendCommand($url, $action, $a_fields) {
+   function sendCommand($url, $action, $a_fields, $fields_string='', $auth='') {
 
-      $fields_string = '';
-      foreach($a_fields as $key=>$value) { 
-         $fields_string .= $key.'='.$value.'&'; 
+      if ($fields_string == '') {
+         foreach($a_fields as $key=>$value) { 
+            $fields_string .= $key.'='.$value.'&'; 
+         }
+         rtrim($fields_string, '&');
       }
-      rtrim($fields_string, '&');
       
       $ch = curl_init();
       
       curl_setopt($ch,CURLOPT_URL, $url.$action);
       curl_setopt($ch,CURLOPT_POST, count($a_fields));
       curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+      if ($auth != '') {
+         curl_setopt($ch,CURLOPT_USERPWD, $auth);
+      }
       
-      curl_exec($ch);
+      $ret = curl_exec($ch);
       
       curl_close($ch);
-   }
-   
+//      echo "<hr>";
+//      echo $ret;
+//      exit;
+   }   
    
 }
 

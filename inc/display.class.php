@@ -55,7 +55,11 @@ class PluginMonitoringDisplay extends CommonDBTM {
       
       echo "<table class='tab_cadre_fixe' width='950'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th width='33%' colspan='2'>";
+      echo "<th width='19%' colspan='2'>";
+      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/restartshinken.form.php'>".
+              __('Restart Shinken', 'monitoring')."</a>";
+      echo "</th>";
+      echo "<th width='27%' colspan='2'>";
       if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
          $this->displayPuce('display_servicescatalog');
          echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_servicescatalog.php'>";
@@ -63,7 +67,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "</a>";
       }
       echo "</th>";
-      echo "<th width='33%' colspan='2'>";
+      echo "<th width='27%' colspan='2'>";
       if (PluginMonitoringProfile::haveRight("componentscatalog", 'r')) {
          $this->displayPuce('display_componentscatalog');
          echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_componentscatalog.php'>";
@@ -457,7 +461,11 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       $query .= " LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
       
-      $result = $DB->query($query);      
+      $result = $DB->query($query); 
+      
+      echo '<div id="custom_date" style="display:none"></div>';
+      echo '<div id="custom_time" style="display:none"></div>';
+      
       if ($width == '') {
          echo "<table class='tab_cadrehov' style='width:100%;'>";
       } else {
@@ -565,9 +573,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
                                        '2h', 
                                        "div", 
                                        "600");
-         $chart = ob_get_contents();
+         $div = ob_get_contents();
          ob_end_clean();
-         $chart = "<table width='600' class='tab_cadre'><tr><td>".$chart."</td></tr></table>";
+         $chart = "<table width='600' class='tab_cadre'><tr><td>".$div."</td></tr></table>";
          Html::showToolTip($chart, array('img'=>$CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"));
          $pmServicegraph->displayGraph($pMonitoringComponent->fields['graph_template'], 
                                        "PluginMonitoringService", 

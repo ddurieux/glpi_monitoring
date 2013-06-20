@@ -98,7 +98,7 @@ echo "<br/>";
 
 echo "<table class='tab_cadre' width='950'>";
 echo "<tr class='tab_bg_1'>";
-echo "<th colspan='4' height='30' width='75%'>";
+echo "<th colspan='4' height='30' width='65%'>";
 if (PluginMonitoringProfile::haveRight("component", 'r')) {
    echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/component.php'>".__('Components', 'monitoring')."</a>";
 }
@@ -115,28 +115,35 @@ if (PluginMonitoringProfile::haveRight("config", 'r')) {
    echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/realm.php'>".__('Reamls', 'monitoring')."</a>";
 }
 echo "</th>";
+
+echo "<th rowspan='2'>";
+if (PluginMonitoringProfile::haveRight("config", 'r')) {
+   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/tag.php'>".__('Tag', 'monitoring')."</a>";
+}
+echo "</th>";
 echo "</tr>";
 
+
 echo "<tr class='tab_bg_1'>";
-echo "<th width='18%' height='25'>";
+echo "<th width='15%' height='25'>";
 if (PluginMonitoringProfile::haveRight("command", 'r')) {
    echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/command.php'>".__('Commands', 'monitoring')."</a>";
 }
 echo "</th>";
 
-echo "<th width='18%'>";
+echo "<th width='15%'>";
 if (PluginMonitoringProfile::haveRight("check", 'r')) {
    echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/check.php'>".__('Check definition', 'monitoring')."</a>";
 }
 echo "</th>";
 
-echo "<th width='18%'>";
+echo "<th width='15%'>";
 if (Session::haveRight('calendar', 'r')) {
    echo "<a href='".$CFG_GLPI['root_doc']."/front/calendar.php'>".__('Calendar')."</a>";
 }
 echo "</th>";
 
-echo "<th width='18%'>";
+echo "<th width='15%'>";
 if (PluginMonitoringProfile::haveRight("command", 'r')) {
    echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/eventhandler.php'>".__('Event handler', 'monitoring')."</a>";
 }

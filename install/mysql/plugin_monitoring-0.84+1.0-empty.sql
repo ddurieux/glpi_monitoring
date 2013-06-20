@@ -599,3 +599,30 @@ CREATE TABLE `glpi_plugin_monitoring_weathermaplinks` (
 
 INSERT INTO `glpi_plugin_monitoring_realms`
    (`id` ,`name` ,`comment` ,`date_mod`) VALUES (NULL , 'All', NULL , NULL);
+
+
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_shinkenwebservices`;
+
+CREATE TABLE `glpi_plugin_monitoring_shinkenwebservices` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `url` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `action` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cnt` tinyint(2) NOT NULL DEFAULT '0',
+  `fields_string` text DEFAULT NULL COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_tags`;
+
+CREATE TABLE `glpi_plugin_monitoring_tags` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tag` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `ip` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `username` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+

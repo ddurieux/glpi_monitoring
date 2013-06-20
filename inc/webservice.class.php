@@ -57,9 +57,10 @@ class PluginMonitoringWebservice {
       if (!isset($params['tag'])) {
          $params['tag'] = '';
       }
-
+      
       ini_set("max_execution_time", "0");
       ini_set("memory_limit", "-1");
+      
       $pmShinken = new PluginMonitoringShinken();
       switch ($params['file']) {
 
@@ -127,6 +128,12 @@ class PluginMonitoringWebservice {
    static function methodShinkenHosts($params, $protocol) {
       if (!isset($params['tag'])) {
          $params['tag'] = '';
+      }
+      
+      // Update ip with Tag
+      if (isset($_SERVER['REMOTE_ADDR'])) {
+         $pmTag = new PluginMonitoringTag();
+         $pmTag->setIP($params['tag'], $_SERVER['REMOTE_ADDR']);
       }
       
       $pmShinken = new PluginMonitoringShinken();
