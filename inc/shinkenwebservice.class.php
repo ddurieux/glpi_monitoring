@@ -95,20 +95,22 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       
       $a_tags = $pmTag->find();
       foreach ($a_tags as $data) {
-         $url = 'http://'.$data['ip'].':7760/';
-         $action = 'restart';
-         $a_fields = array();
-         
-         $auth = $pmTag->getAuth($data['tag']);
-         $restart = $this->sendCommand($url, $action, $a_fields, '', $auth);
-         
-         if ($restart) {
-            $input = array();
-            $input['user_name'] = $_SESSION['glpifirstname'].' '.$_SESSION['glpirealname'].
-                    ' ('.$_SESSION['glpiname'].')';
-            $input['action']    = "restart_planned";
-            $input['date_mod']  = date("Y-m-d H:i:s");
-            $pmLog->add($input);
+         if (!$pmLog->isRestartLessThanFiveMinutes()) {         
+            $url = 'http://'.$data['ip'].':7760/';
+            $action = 'restart';
+            $a_fields = array();
+
+            $auth = $pmTag->getAuth($data['tag']);
+            $restart = $this->sendCommand($url, $action, $a_fields, '', $auth);
+
+            if ($restart) {
+               $input = array();
+               $input['user_name'] = $_SESSION['glpifirstname'].' '.$_SESSION['glpirealname'].
+                       ' ('.$_SESSION['glpiname'].')';
+               $input['action']    = "restart_planned";
+               $input['date_mod']  = date("Y-m-d H:i:s");
+               $pmLog->add($input);
+            }
          }
       }
    }
@@ -148,8 +150,6 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
                  false, 
                  ERROR);
          $return = false;
-      } else {         
-         Session::addMessageAfterRedirect(__('Shinken restarting, wait some seconds...', 'monitoring'));
       }
       curl_close($ch);
       return $return;

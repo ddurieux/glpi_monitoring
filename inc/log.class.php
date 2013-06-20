@@ -104,6 +104,16 @@ class PluginMonitoringLog extends CommonDBTM {
       
       return true;
    }
+   
+   
+   
+   function isRestartLessThanFiveMinutes() {     
+      $a_restarts = $this->find("`action` LIKE 'restart%' AND `date_mod` > date_add(now(), interval - 5 MINUTE)", "`id` DESC", 1);
+      if (count($a_restarts) > 0) {
+         return true;
+      }      
+      return false;
+   }
 
 }
 

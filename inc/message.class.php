@@ -48,8 +48,22 @@ class PluginMonitoringMessage extends CommonDBTM {
    
    
    static function getMessages() {
+      global $CFG_GLPI;
+      
       $pmMessage = new self();
 
+      // Display if shinken is in restart or if restarted less than 5 minutes
+      echo "<div id='shikenrestart'></div>";
+      echo "<script type=\"text/javascript\">
+      var elshikenrestart = Ext.get(\"shikenrestart\");
+      var mgrshikenrestart = elshikenrestart.getUpdateManager();
+      mgrshikenrestart.loadScripts=true;
+      mgrshikenrestart.showLoadIndicator=false;
+      mgrshikenrestart.startAutoRefresh(20, \"".$CFG_GLPI["root_doc"].
+                 "/plugins/monitoring/ajax/updateshinkenrestartmessage.php\", \"\", \"\", true);";
+      echo "</script>";
+
+      
       $servicecatalog = '';
       $confchanges = '';
       
@@ -217,6 +231,29 @@ class PluginMonitoringMessage extends CommonDBTM {
          }      
       }
       return $input;
+   }
+   
+   
+   
+   function displayShinkenRestart() {
+      global $CFG_GLPI;
+      
+      $pmLog = new PluginMonitoringLog();
+      
+      $a_restart_planned = $pmLog->find("`action` LIKE 'restart%' AND "
+              ."`date_mod` > date_add(now(), interval - 10 MINUTE)", "`id` DESC", 1);
+      if (count($a_restart_planned) == 1) {
+         $a_restart = current($a_restart_planned);
+         if ($a_restart['action'] == 'restart_planned') {
+            echo "<div class='msgboxmonit msgboxmonit-red'>";
+            echo __('Shiken restart order has been made at '.Html::convDateTime($a_restart['date_mod']));
+            echo "</div>";
+         } else {
+            echo "<div class='msgboxmonit msgboxmonit-orange'>";
+            echo __('Shiken has restarted at '.Html::convDateTime($a_restart['date_mod']));
+            echo "</div>";
+         }
+      }
    }
 }
 
