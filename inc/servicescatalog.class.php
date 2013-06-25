@@ -300,6 +300,9 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       echo '<tr class="tab_bg_1">';
       echo '<th colspan="2" style="font-size:20px;" height="50">';
       echo $data['name'];
+      if ($data['comment'] != '') {
+         echo ' '.$this->getComments();
+      }
       echo '</th>';
       echo '</tr>';
 

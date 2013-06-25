@@ -311,7 +311,11 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       
       echo '<div class="ch-item">
          <div class="ch-info-'.$colorclass.'">
-			<h1>'.ucfirst($data['name']).'</h1>
+			<h1>'.ucfirst($data['name']);
+         if ($data['comment'] != '') {
+            echo ' '.$this->getComments();
+         }
+         echo '</h1>
 			<p><a href="'.$link.'">'.$count.'</a></p>
          </div>
 		</div>';
