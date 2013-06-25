@@ -91,15 +91,12 @@ class PluginMonitoringComponent extends CommonDBTM {
    /**
     * Display tab
     * 
-    * @global array $LANG
-    * 
     * @param CommonGLPI $item
     * @param integer $withtemplate
     * 
     * @return varchar name of the tab(s) to display
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $LANG;
 
       if ($item->getID() > 0
               AND $item->fields['graph_template'] != '') {

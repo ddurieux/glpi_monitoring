@@ -52,12 +52,10 @@ function plugin_init_monitoring() {
    
    $PLUGIN_HOOKS['change_profile']['monitoring'] = array('PluginMonitoringProfile','changeprofile');
    
-   $PLUGIN_HOOKS['csrf_compliant']['monitoring'] = true;
-   
    $Plugin = new Plugin();
    if ($Plugin->isActivated('monitoring')) {
       if (isset($_SESSION["glpiID"])) {
-         Plugin::loadLang("monitoring");
+//         Plugin::loadLang("monitoring");
          
 
          Plugin::registerClass('PluginMonitoringEntity',
