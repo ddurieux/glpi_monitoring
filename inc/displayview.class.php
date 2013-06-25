@@ -103,6 +103,11 @@ class PluginMonitoringDisplayview extends CommonDBTM {
 		$tab[1]['name'] = __('Name');
 		$tab[1]['datatype'] = 'itemlink';
 
+		$tab[2]['table'] = $this->getTable();
+		$tab[2]['field'] = 'is_frontview';
+		$tab[2]['linkfield'] = 'is_frontview';
+		$tab[2]['name'] = __('Front view', 'monitoring');
+		$tab[2]['datatype'] = 'bool';
 
       return $tab;
    }

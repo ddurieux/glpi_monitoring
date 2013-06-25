@@ -156,11 +156,25 @@ function plugin_monitoring_MassiveActionsFieldsDisplay($options=array()) {
 function plugin_monitoring_MassiveActions($type) {
 
    switch ($type) {
+      
       case "Computer":
          return array (
             "plugin_monitoring_activatehosts" => __('Add these hosts to monitoring', 'monitoring')
          );
          break;
+      
+      case "PluginMonitoringComponentscatalog":
+         return array (
+            "plugin_monitoring_playrule_componentscatalog" => __('Force play rules', 'monitoring')
+         );
+         break;
+      
+      case "PluginMonitoringDisplayview":
+         return array (
+            "plugin_monitoring_playrule_displayview" => __('Force play rules', 'monitoring')
+         );
+         break;
+      
    }
 
    return array ();
@@ -191,6 +205,26 @@ function plugin_monitoring_MassiveActionsDisplay($options=array()) {
                break;
          }
          break;
+
+      case "PluginMonitoringComponentscatalog":
+         switch ($options['action']) {
+         
+            case "plugin_monitoring_playrule_componentscatalog":
+               echo "<input name='add' value='Post' class='submit' type='submit'>";
+               break;
+            
+         }
+         break;
+
+      case "PluginMonitoringDisplayview":
+         switch ($options['action']) {
+         
+            case "plugin_monitoring_playrule_displayview":
+               echo "<input name='add' value='Post' class='submit' type='submit'>";
+               break;
+            
+         }
+         break;
    }
 
    return "";
@@ -212,6 +246,27 @@ function plugin_monitoring_MassiveActionsProcess($data) {
          }
          break;
          
+      case 'plugin_monitoring_playrule_componentscatalog':
+         $pmComponentscatalog_rule = new PluginMonitoringComponentscatalog_rule();
+         foreach ($data['item'] as $key => $val) {
+            $a_rules = $pmComponentscatalog_rule->find("`plugin_monitoring_componentscalalog_id`='".$key."'");
+            foreach ($a_rules as $data) {
+               $pmComponentscatalog_rule->getFromDB($data['id']);
+               PluginMonitoringComponentscatalog_rule::getItemsDynamicly($pmComponentscatalog_rule);
+            }
+         }
+         break;
+         
+      case 'plugin_monitoring_playrule_displayview':
+         $pmDisplayview_rule = new PluginMonitoringDisplayview_rule();
+         foreach ($data['item'] as $key => $val) {
+            $a_rules = $pmDisplayview_rule->find("`plugin_monitoring_displayviews_id`='".$key."'");
+            foreach ($a_rules as $data) {
+               $pmDisplayview_rule->getFromDB($data['id']);
+               PluginMonitoringDisplayview_rule::getItemsDynamicly($pmDisplayview_rule);
+            }
+         }
+         break;
    }
 }
 

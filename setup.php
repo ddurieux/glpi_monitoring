@@ -54,7 +54,7 @@ function plugin_init_monitoring() {
    
    $Plugin = new Plugin();
    if ($Plugin->isActivated('monitoring')) {
-      if (isset($_SESSION["glpiID"])) {
+//      if (isset($_SESSION["glpiID"])) {
 //         Plugin::loadLang("monitoring");
          
 
@@ -168,9 +168,6 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['notificationcommand']['title'] = __('Notification commands', 'monitoring');
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['notificationcommand']['page']  = '/plugins/monitoring/front/notificationcommand.php';
        
-         
-         
-         // Define hook item
          $rule_check = array('PluginMonitoringComponentscatalog_rule','isThisItemCheckRule');
          $rule_check_networkport = array('PluginMonitoringComponentscatalog_rule', 'isThisItemCheckRuleNetworkport');
          $PLUGIN_HOOKS['item_add']['monitoring'] = 
@@ -213,7 +210,7 @@ function plugin_init_monitoring() {
          if (!isset($_SESSION['glpi_plugin_monitoring']['_refresh'])) {
             $_SESSION['glpi_plugin_monitoring']['_refresh'] = '60';
          }
-      }
+//      }
 
       $PLUGIN_HOOKS['webservices']['monitoring'] = 'plugin_monitoring_registerMethods';
       
