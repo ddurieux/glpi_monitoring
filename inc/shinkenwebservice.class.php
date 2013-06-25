@@ -88,14 +88,15 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
    
    
    
-   function sendRestartArbiter() {
+   function sendRestartArbiter($force=0) {
       
       $pmTag = new PluginMonitoringTag();
       $pmLog = new PluginMonitoringLog();
       
       $a_tags = $pmTag->find();
       foreach ($a_tags as $data) {
-         if (!$pmLog->isRestartLessThanFiveMinutes()) {         
+         if (!$pmLog->isRestartLessThanFiveMinutes()
+                 || $force) {         
             $url = 'http://'.$data['ip'].':7760/';
             $action = 'restart';
             $a_fields = array();

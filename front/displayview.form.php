@@ -66,6 +66,51 @@ if (isset ($_POST["add"])) {
 } else if (isset ($_POST["delete"])) {
    $pmDisplayview->delete($_POST);
    $pmDisplayview->redirectToList();
+} else if (isset($_POST["update"])) {
+   $remind->check($_POST["id"],'w');   // Right to update the reminder
+
+   $remind->update($_POST);
+   Event::log($_POST["id"], "reminder", 4, "tools",
+              //TRANS: %s is the user login
+              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
+   Html::back();
+
+}  else if (isset($_POST["addvisibility"])) {
+   if (isset($_POST["_type"]) 
+       && !empty($_POST["_type"])
+       && isset($_POST["pluginmonitoringdisplayviews_id"]) 
+       && $_POST["pluginmonitoringdisplayviews_id"]) {
+      $item = NULL;
+      switch ($_POST["_type"]) {
+         case 'User' :
+            if (isset($_POST['users_id']) && $_POST['users_id']) {
+               $item = new Reminder_User();
+            }
+            break;
+
+         case 'Group' :
+            if (isset($_POST['groups_id']) && $_POST['groups_id']) {
+               $item = new PluginMonitoringDisplayview_Group();
+            }
+            break;
+
+         case 'Profile' :
+            if (isset($_POST['profiles_id']) && $_POST['profiles_id']) {
+               $item = new Profile_Reminder();
+            }
+            break;
+
+         case 'Entity' :
+            $item = new Entity_Reminder();
+            break;
+      }
+      if (!is_null($item)) {
+         $item->add($_POST);
+         Event::log($_POST["pluginmonitoringdisplayviews_id"], "pluginmonitoringdisplayview", 4, "tools",
+                    //TRANS: %s is the user login
+                    sprintf(__('%s adds a target'), $_SESSION["glpiname"]));
+      }
+   }
 }
 
 if (isset($_GET["id"])) {

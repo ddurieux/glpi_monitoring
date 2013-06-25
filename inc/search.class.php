@@ -90,15 +90,20 @@ $p = array();
       }
 
       $linked =  Search::getMetaItemtypeAvailable($itemtype);
-      if (!isset($_GET['id'])) {
+      if (!isset($_GET['id'])
+              || strstr($_SERVER['REQUEST_URI'], 'displayview_rule.form.php')) {
          $item->getEmpty();
       } else {
          $item->getFromDB($_GET['id']);
       }
-      
-echo "<form name='searchform$itemtype' method='get' action=\"".
-              $CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog_rule.form.php\">";
 
+if (strstr($_SERVER['REQUEST_URI'], 'displayview_rule.form.php')) {
+   echo "<form name='searchform$itemtype' method='get' action=\"".
+              $CFG_GLPI['root_doc']."/plugins/monitoring/front/displayview_rule.form.php\">";
+} else {
+   echo "<form name='searchform$itemtype' method='get' action=\"".
+              $CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog_rule.form.php\">";
+}
       
       $item->showFormHeader();
 
@@ -412,9 +417,15 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
       echo "<input type='submit' value=\""._sx('button', 'Search')."\" class='submit' >";
       echo "</td><td>";
 //      Bookmark::showSaveButton(Bookmark::SEARCH,$itemtype);
-      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog_rule.form.php?reset=reset&".
-         "name=".$_GET['name']."&plugin_monitoring_componentscalalog_id=".$_GET['plugin_monitoring_componentscalalog_id'].
-              "&itemtype=".$_GET['itemtype']."' >";
+      if (strstr($_SERVER['REQUEST_URI'], 'displayview_rule.form.php')) {
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/displayview_rule.form.php?reset=reset&".
+            "name=".$_GET['name']."&plugin_monitoring_displayviews_id=".$_GET['plugin_monitoring_displayviews_id'].
+                 "&itemtype=".$_GET['itemtype']."' >";
+      } else {
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog_rule.form.php?reset=reset&".
+            "name=".$_GET['name']."&plugin_monitoring_componentscalalog_id=".$_GET['plugin_monitoring_componentscalalog_id'].
+                 "&itemtype=".$_GET['itemtype']."' >";
+      }
       echo "&nbsp;&nbsp;<img title=\"".__s('Blank')."\" alt=\"".__s('Blank')."\" src='".
             $CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
 
@@ -428,7 +439,11 @@ echo "<form name='searchform$itemtype' method='get' action=\"".
 
       if (isset($_GET['id'])) {
          echo "<td colspan='2' class='center'>";
-         echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$_GET['plugin_monitoring_componentscalalog_id']."' >";
+         if (strstr($_SERVER['REQUEST_URI'], 'displayview_rule.form.php')) {
+            echo "<input type='hidden' name='plugin_monitoring_displayviews_id' value='".$_GET['plugin_monitoring_displayviews_id']."' >";
+         } else {
+            echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$_GET['plugin_monitoring_componentscalalog_id']."' >";
+         }
          echo "<input type='hidden' name='id' value='".$_GET['id']."' >";
          echo "<input type='submit' name='updaterule' value=\"Update this rule\" class='submit' >";
          echo "</td>";

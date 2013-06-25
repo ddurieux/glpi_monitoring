@@ -35,49 +35,25 @@
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
-   @since     2011
+   @since     2013
  
    ------------------------------------------------------------------------
  */
 
-include ("../../../inc/includes.php");
-
-PluginMonitoringProfile::checkRight("view","w");
-
-Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins", 
-             "monitoring", "displayview_item");
-
-$pmDisplayview_item = new PluginMonitoringDisplayview_item();
-   
-if (isset($_POST['plugin_monitoring_services_id'])
-        AND $_POST['plugin_monitoring_services_id'] > 0) {
-   $_POST['items_id'] = $_POST['plugin_monitoring_services_id'];
-   $_POST['itemtype'] = "PluginMonitoringService";
-   
+// Direct access to file
+if (strpos($_SERVER['PHP_SELF'],"updateWidgetDisplayview2.php")) {
+   include ("../../../inc/includes.php");
+   header("Content-Type: text/html; charset=UTF-8");
+   Html::header_nocache();
 }
 
-if (isset ($_POST["add"])) {
-   if ($_POST['itemtype'] == 'host'
-           || $_POST['itemtype'] == 'service') {
-      
-      $input = $_POST;
-      $input['itemtype'] = $_POST['type'];
-      $input['type'] = $_POST['itemtype'];
-      $input['condition'] = exportArrayToDB(array(
-          'name'     => '',
-          'itemtype' => $input['itemtype']
-      ));
-      $pmDisplayview_rule = new PluginMonitoringDisplayview_rule();
-      $pmDisplayview_rule->add($input);
-   } else {
-      $pmDisplayview_item->add($_POST);
-   }
-   Html::back();
-} else if (isset ($_POST["delete"])) {
-   $pmDisplayview_item->delete($_POST);
-   Html::back();
+if (!defined('GLPI_ROOT')) {
+   die("Can not acces directly to this file");
 }
 
-Html::footer();
+Session::checkLoginUser();
+
+$pmDisplayview = new PluginMonitoringDisplayview();
+$pmDisplayview->showWidget2Frame($_POST['id']);
 
 ?>

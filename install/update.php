@@ -187,7 +187,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               "text DEFAULT NULL COLLATE utf8_unicode_ci");
          $migration->addField($newTable, 
                               'acknowledge_users_id', 
-                              "int(11) NOT NULL DEFAULT '0'"); 
+                              "int(11) NOT NULL DEFAULT '0'");
          $migration->addKey($newTable, 
                             "name");
       $migration->migrationOneTable($newTable);
@@ -1159,7 +1159,45 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               "tinyint(1) NOT NULL DEFAULT '0'");         
          $migration->addField($newTable, 
                               'width', 
-                              "int(5) NOT NULL DEFAULT '950'");   
+                              "int(5) NOT NULL DEFAULT '950'");          
+         $migration->addField($newTable, 
+                              'is_frontview', 
+                              "tinyint(1) NOT NULL DEFAULT '0'"); 
+      $migration->migrationOneTable($newTable);
+      
+      
+      
+    /*
+    * Table glpi_plugin_monitoring_displayviews_groups
+    */
+      $newTable = "glpi_plugin_monitoring_displayviews_groups";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+         $DB->query($query);
+      }             
+         $migration->addField($newTable, 
+                              'pluginmonitoringdisplayviews_id', 
+                              "int(11) NOT NULL DEFAULT '0'");      
+         $migration->addField($newTable, 
+                              'groups_id', 
+                              "int(11) NOT NULL DEFAULT '0'");   
+         $migration->addField($newTable, 
+                              'entities_id', 
+                              "int(11) NOT NULL DEFAULT '0'");   
+         $migration->addField($newTable, 
+                              'is_recursive', 
+                              "tinyint(1) NOT NULL DEFAULT '0'");   
+         $migration->addKey($newTable, 
+                            "plugin_monitoring_displayviews_id");  
+         $migration->addKey($newTable, 
+                            "groups_id");  
+         $migration->addKey($newTable, 
+                            "entities_id");  
+         $migration->addKey($newTable, 
+                            "is_recursive");
       $migration->migrationOneTable($newTable);
       
       
@@ -1224,6 +1262,39 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               "varchar(255) DEFAULT NULL"); 
          $migration->addKey($newTable, 
                             "plugin_monitoring_displayviews_id");
+      $migration->migrationOneTable($newTable);
+      
+      
+      
+    /*
+    * Table glpi_plugin_monitoring_displayviews_rules
+    */
+      $newTable = "glpi_plugin_monitoring_displayviews_rules";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+         $DB->query($query);
+      }
+      $migration->migrationOneTable($newTable);
+         $migration->addField($newTable, 
+                              'plugin_monitoring_displayviews_id', 
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'name', 
+                              "varchar(255) DEFAULT NULL");
+         $migration->addField($newTable,
+                              'itemtype', 
+                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable,
+                              'type', 
+                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable,
+                              'condition', 
+                              "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->addKey($newTable,
+                            'plugin_monitoring_displayviews_id');
       $migration->migrationOneTable($newTable);
       
       

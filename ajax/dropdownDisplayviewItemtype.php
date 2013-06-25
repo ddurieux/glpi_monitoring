@@ -43,6 +43,25 @@ switch ($_POST['itemtype']) {
       echo "&nbsp;&nbsp;&nbsp;".__('% of the width of the frame', 'monitoring')."&nbsp: ".
               Dropdown::showInteger("extra_infos", 100, 0, 100, 5);
       break;
+   
+   case 'PluginMonitoringDisplayview':
+      Dropdown::show('PluginMonitoringDisplayview', 
+                     array('name'=>'items_id',
+                           'condition' => "`is_frontview`='0'"));
+      break;
+   
+   case 'service':
+   case 'host':
+      
+      $elements = array(
+          'Computer' => __('Computer'),
+          'NetworkEquipment' => __('NetworkEquipment'),
+          'Peripheral' => __('Peripheral'),
+          'Phone' => __('Phone'),
+          'Printer' => __('Printer')
+      );
+      Dropdown::showFromArray('type', $elements);
+      break;
 
    default:
       break;

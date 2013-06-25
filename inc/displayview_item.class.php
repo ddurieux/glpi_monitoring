@@ -90,7 +90,7 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
    
    
    function view($id, $config=0) {
-      global $DB;
+      global $DB, $CFG_GLPI;
 
       $pmDisplayview = new PluginMonitoringDisplayview();
       $pmDisplayview->getFromDB($id);
@@ -118,11 +118,21 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<th>";
+      echo "<a onClick='Ext.get(\"date_text\").toggle();Ext.get(\"date_select\").toggle();".
+              "Ext.get(\"time_text\").toggle();Ext.get(\"time_select\").toggle();'>
+      <img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' />&nbsp;
+         ".__('Date and time select', 'monitoring')."
+      &nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' /></a>";
+      echo "</th>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1' id='date_text' style='display: none;'>";
+      echo "<th>";
       echo __('Select date', 'monitoring');
       echo "</th>";
       echo "</tr>";
       
-      echo "<tr class='tab_bg_1'>";
+      echo "<tr class='tab_bg_1' id='date_select' style='display: none;'>";
       echo "<td>";
 
       $query = "SELECT * FROM `glpi_plugin_monitoring_displayviews_items`
@@ -205,13 +215,13 @@ Ext.onReady(function(){
       echo "</td>";
       echo "</tr>";   
 
-     echo "<tr class='tab_bg_1'>";
+     echo "<tr class='tab_bg_1' id='time_text' style='display: none;'>";
       echo "<th>";
       echo __('Select time', 'monitoring');
       echo "</th>";
       echo "</tr>";
       
-      echo "<tr class='tab_bg_1'>";
+      echo "<tr class='tab_bg_1' id='time_select' style='display: none;'>";
       echo "<td>";
       
       $start = 0 + 86400 - 3600;
@@ -268,6 +278,29 @@ Ext.onReady(function(){
       echo __('View', 'monitoring');
       echo "</th>";
       echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo "<input type='hidden' name='updateviewid' id='updateviewid' value='".$id."' />";
+      if ($config == 0) {
+         echo "<div id='filariane'>&nbsp;</div>";
+         echo "<input type='hidden' name='updatefil' id='updatefil' value='".$id."!' />";
+         
+      
+         echo "<script type=\"text/javascript\">
+            function reloadfil() {
+               Ext.get('filariane').load({
+                   url: '".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateFilariane.php',
+                   scripts: true,
+                      params:'updatefil=' + Ext.get('updatefil').getValue() + '&id=".$_GET['id'].
+                 "&currentview=' + Ext.get('updateviewid').getValue()
+               });
+            }
+            reloadfil();
+         </script>";
+      }
+      echo "</td>";
+      echo "</tr>";
 
          
       echo "<tr class='tab_bg_1'>";
@@ -276,33 +309,32 @@ Ext.onReady(function(){
       echo '<div id="custom_date" style="display:none"></div>';
       echo '<div id="custom_time" style="display:none"></div>';
       
-      $query = "SELECT * FROM `glpi_plugin_monitoring_displayviews_items`
-         WHERE `plugin_monitoring_displayviews_id`='".$id."'";
-      $result = $DB->query($query);
-      $a_items = array();
-      while ($data=$DB->fetch_array($result)) {
-         if ($this->displayItem($data, $config)) {
-            $a_items[] = "item".$data['id'];
-         }
-      }
+      echo "<div id='viewform'>";
+      echo "<script type='text/javascript'>
+        
+        //Simple 'border layout' panel to house both grids
+        var displayPanel = new Ext.Panel({
+          id       : 'viewpanel',
+          width    : ".$pmDisplayview->fields['width'].",
+          height   : 1200,
+          layout: 'absolute',
+          renderTo : 'panel',
+          items    : []
+        });
+
+      </script>";
       
-echo "<script type='text/javascript'>
-Ext.onReady(function() {
-
-  //Simple 'border layout' panel to house both grids
-  var displayPanel = new Ext.Panel({
-    width    : ".$pmDisplayview->fields['width'].",
-    height   : 1200,
-    layout: 'absolute',
-    renderTo : 'panel',
-    items    : [
-      ".implode(",", $a_items)."
-    ]
-  });
-  
-});
-</script>";
-
+      echo "</div>";
+      echo "<script type=\"text/javascript\">
+         function reloadview() {
+            Ext.get('viewform').load({
+                url: '".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/loadView.php',
+                scripts: true,
+                   params:'id=' + Ext.get('updateviewid').getValue() + '&config=".$config."'
+            });
+         }
+         reloadview();
+      </script>";
       
       echo "</td>";
       echo "</tr>";
@@ -313,10 +345,57 @@ Ext.onReady(function() {
    
    
    
+   function reloadView($id, $config) {
+      global $DB;
+      
+      $pmDisplayview = new PluginMonitoringDisplayview();
+      $pmDisplayview->getFromDB($id);
+      
+      $query = "SELECT * FROM `glpi_plugin_monitoring_displayviews_items`
+         WHERE `plugin_monitoring_displayviews_id`='".$id."'";
+      $result = $DB->query($query);
+      $a_items = array();
+      while ($data=$DB->fetch_array($result)) {
+         if ($this->displayItem($data, $config)) {
+            $a_items[] = "item".$data['id'];
+         }
+      }
+//      echo "<script type='text/javascript'>
+//        
+//        //Simple 'border layout' panel to house both grids
+//        var displayPanel = new Ext.Panel({
+//          width    : ".$pmDisplayview->fields['width'].",
+//          height   : 1200,
+//          layout: 'absolute',
+//          renderTo : 'panel',
+//          items    : [
+//            ".implode(",", $a_items)."
+//          ]
+//        });
+//
+//      </script>";
+      
+      echo "<script type='text/javascript'>
+        
+        Ext.getCmp('viewpanel').items.each(function(c){Ext.getCmp('viewpanel').remove(c);});
+
+        Ext.getCmp('viewpanel').add(".implode(",", $a_items).");
+        Ext.getCmp('viewpanel').doLayout();
+      </script>";
+   }
+   
+   
+   
    function displayItem($data, $config) {
       global $CFG_GLPI;
 
       $itemtype = $data['itemtype'];
+      $itemtype2 = '';
+      if ($itemtype == 'host'
+              || $itemtype == 'service') {
+         $itemtype2 = $itemtype;
+         $itemtype = 'PluginMonitoringDisplayview';
+      }
       $item = new $itemtype();
       $content = '';
       $title = $item->getTypeName();
@@ -350,21 +429,29 @@ Ext.onReady(function() {
          $item->getFromDB($data['items_id']);
          $width = "width:".(($item->fields['width'] * $data['extra_infos']) / 100).",";
       } else {
-         $content = $item->showWidget($data['items_id']);
+         if ($itemtype2 != '') {
+            $content = $item->showWidget2($data['id']);
+         } else {
+            $content = $item->showWidget($data['items_id']);
+         }
          if ($data['itemtype'] == 'PluginMonitoringServicescatalog') {
             $width = "width: 202,";
          } else {
-            $width = "width: 160,";
+            $width = "width: 180,";
          }
+      }
+      if ($config == 0
+              && $itemtype != "PluginMonitoringService") {
+         $title = '';
       }
       echo "<script>
          var left = 0;
-         var top = 0;
+         var topd = 0;
          var obj = document.getElementById('panel');
          if (obj.offsetParent) {
            do {
              left += obj.offsetLeft;
-             top += obj.offsetTop;
+             topd += obj.offsetTop;
            } while (obj = obj.offsetParent);
          }
 
@@ -376,7 +463,13 @@ Ext.onReady(function() {
              html       : '".$content."',
              baseCls : 'x-panel',
              layout : 'fit',
-             renderTo: Ext.getBody(),
+             bodyStyle: 'background:transparent',
+             ";
+      if ($config == 0
+              && $itemtype != "PluginMonitoringService") {
+         echo "border: false,";
+      }
+       echo "renderTo: Ext.getBody(),
              floating: false,
              frame: false,
              ".$width."
@@ -393,7 +486,7 @@ Ext.onReady(function() {
                      //position the Panel at end of drag.
                      var el = this.proxy.getEl();
                      this.x = el.getLeft(true) - left - 5;
-                     this.y = el.getTop(true) - top - 5;
+                     this.y = el.getTop(true) - topd - 5;
 
 
                      //Keep the Shadow aligned if there is one.
@@ -446,6 +539,12 @@ Ext.onReady(function() {
       } else if($itemtype == "PluginMonitoringServicescatalog") {
          $pmServicescatalog = new PluginMonitoringServicescatalog();
          $pmServicescatalog->ajaxLoad($data['items_id']);
+      } else if ($itemtype2 != '') {
+         $pmDisplayview = new PluginMonitoringDisplayview();
+         $pmDisplayview->ajaxLoad2($data['id']);
+      } else if($itemtype == "PluginMonitoringDisplayview") {
+         $pmDisplayview = new PluginMonitoringDisplayview();
+         $pmDisplayview->ajaxLoad($data['items_id']);
       }
       
       if ($itemtype == "PluginMonitoringWeathermap") {
@@ -495,10 +594,14 @@ Ext.onReady(function() {
       echo "<td>";
       $elements = array();
       $elements['NULL'] = Dropdown::EMPTY_VALUE;
-      $elements['PluginMonitoringServicescatalog'] = __('Business rules', 'monitoring');
-      $elements['PluginMonitoringComponentscatalog'] = __('Components catalog', 'monitoring');
-      $elements['PluginMonitoringService'] = __('Resources', 'monitoring');
-      $elements['PluginMonitoringWeathermap'] = __('Weathermap', 'monitoring');
+      $elements['PluginMonitoringDisplayview']         = __('Views', 'monitoring');
+      $elements['PluginMonitoringServicescatalog']     = __('Business rules', 'monitoring');
+      $elements['service']                             = __('Resources (info)', 'monitoring');
+      $elements['host']                                = __('Host (info)', 'monitoring');
+      $elements['PluginMonitoringService_graph']       = __('Resources (graph)', 'monitoring');
+      $elements['PluginMonitoringComponentscatalog']   = __('Components catalog', 'monitoring');
+      $elements['PluginMonitoringWeathermap']          = __('Weathermap', 'monitoring');
+      
       $rand = Dropdown::showFromArray('itemtype', $elements, array('value'=>$this->fields['itemtype']));
       
       $params = array('itemtype'        => '__VALUE__',
@@ -520,6 +623,54 @@ Ext.onReady(function() {
       $this->showFormButtons($options);
 
       return true;
+   }
+   
+   
+   
+   function getCounterOfViews($id, $a_counter) {
+      $a_views = $this->find("`itemtype`='PluginMonitoringDisplayview'"
+              ." AND `items_id`='".$id."'");
+      foreach ($a_views as $data) {
+         $a_counter = $this->getCounterOfViews($data['plugin_monitoring_displayviews_id'], $a_counter);
+      }
+      $a_counter = $this->getCounterOfView($id, $a_counter);
+      return $a_counter;
+   }
+   
+   
+   
+   function getCounterOfView($id, $a_counter) {
+      global $DB;
+      
+     $a_hosts = $this->find("`itemtype`='host'"
+              ." AND `plugin_monitoring_displayviews_id`='".$id."'");
+      foreach ($a_hosts as $data) {
+         $query = "SELECT * FROM `glpi_plugin_monitoring_services`"
+                          . " LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`"
+                          . "    ON `plugin_monitoring_componentscatalogs_hosts_id`="
+                          . " `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`"
+                          . " WHERE `items_id`='".$data['items_id']."'"
+                          . "    AND `itemtype`='".$data['extra_infos']."'"
+                          . "    AND `glpi_plugin_monitoring_services`.`id` IS NOT NULL";
+         $result = $DB->query($query);
+         while ($data=$DB->fetch_array($result)) {
+            $ret = PluginMonitoringDisplay::getState($data['state'], 
+                                                     $data['state_type'], 
+                                                     '', 
+                                                     1);
+            if (strstr($ret, '_soft')) {
+               $a_counter['ok']++;
+            } else if ($ret == 'red') {
+               $a_counter['critical']++;
+            } else if ($ret == 'redblue') {
+               $a_counter['acknowledge']++;
+            } else if ($ret == 'orange'
+                    || $ret == 'yellow') {
+               $a_counter['warning']++;
+            }
+         }
+      }
+      return $a_counter;
    }
 }
 

@@ -11,6 +11,10 @@ CREATE TABLE `glpi_plugin_monitoring_servicescatalogs` (
    `state_type` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
    `plugin_monitoring_checks_id` int(11) NOT NULL DEFAULT '0',
    `calendars_id` int(11) NOT NULL DEFAULT '0',
+   `is_acknowledged` tinyint(1) NOT NULL DEFAULT '0',
+   `is_acknowledgeconfirmed` tinyint(1) NOT NULL DEFAULT '0',
+   `acknowledge_comment` text DEFAULT NULL COLLATE utf8_unicode_ci,
+   `acknowledge_users_id` int(11) NOT NULL DEFAULT '0',
    PRIMARY KEY (`id`),
    KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -117,7 +121,7 @@ CREATE TABLE `glpi_plugin_monitoring_services` (
   `last_check` datetime DEFAULT NULL,
   `arguments` text DEFAULT NULL COLLATE utf8_unicode_ci,
   `networkports_id` int(11) NOT NULL DEFAULT '0',
-  `is_acknowledge` tinyint(1) NOT NULL DEFAULT '0',
+  `is_acknowledged` tinyint(1) NOT NULL DEFAULT '0',
   `is_acknowledgeconfirmed` tinyint(1) NOT NULL DEFAULT '0',
   `acknowledge_comment` text DEFAULT NULL COLLATE utf8_unicode_ci,
   `acknowledge_users_id` int(11) NOT NULL DEFAULT '0',
@@ -245,8 +249,26 @@ CREATE TABLE `glpi_plugin_monitoring_displayviews` (
    `counter` varchar(255) DEFAULT NULL,
    `in_central` tinyint(1) NOT NULL DEFAULT '0',
    `width` int(5) NOT NULL DEFAULT '950',
+   `is_frontview` tinyint(1) NOT NULL DEFAULT '0',
    PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_displayviews_groups`;
+
+CREATE TABLE `glpi_plugin_monitoring_displayviews_groups` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `pluginmonitoringdisplayviews_id` int(11) NOT NULL DEFAULT '0',
+  `groups_id` int(11) NOT NULL DEFAULT '0',
+  `entities_id` int(11) NOT NULL DEFAULT '-1',
+  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `pluginmonitoringdisplayviews_id` (`pluginmonitoringdisplayviews_id`),
+  KEY `groups_id` (`groups_id`),
+  KEY `entities_id` (`entities_id`),
+  KEY `is_recursive` (`is_recursive`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 
@@ -263,6 +285,21 @@ CREATE TABLE `glpi_plugin_monitoring_displayviews_items` (
    PRIMARY KEY (`id`),
    KEY `plugin_monitoring_displayviews_id` (`plugin_monitoring_displayviews_id`) 
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_displayviews_rules`;
+
+CREATE TABLE `glpi_plugin_monitoring_displayviews_rules` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `plugin_monitoring_displayviews_id` int(11) NOT NULL DEFAULT '0',
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `itemtype` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `condition` text DEFAULT NULL COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`),
+  KEY `plugin_monitoring_displayviews_id` (`plugin_monitoring_displayviews_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 

@@ -35,49 +35,48 @@
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
-   @since     2011
+   @since     2013
  
    ------------------------------------------------------------------------
  */
 
-include ("../../../inc/includes.php");
-
-PluginMonitoringProfile::checkRight("view","w");
-
-Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins", 
-             "monitoring", "displayview_item");
-
-$pmDisplayview_item = new PluginMonitoringDisplayview_item();
-   
-if (isset($_POST['plugin_monitoring_services_id'])
-        AND $_POST['plugin_monitoring_services_id'] > 0) {
-   $_POST['items_id'] = $_POST['plugin_monitoring_services_id'];
-   $_POST['itemtype'] = "PluginMonitoringService";
-   
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
 }
 
-if (isset ($_POST["add"])) {
-   if ($_POST['itemtype'] == 'host'
-           || $_POST['itemtype'] == 'service') {
-      
-      $input = $_POST;
-      $input['itemtype'] = $_POST['type'];
-      $input['type'] = $_POST['itemtype'];
-      $input['condition'] = exportArrayToDB(array(
-          'name'     => '',
-          'itemtype' => $input['itemtype']
-      ));
-      $pmDisplayview_rule = new PluginMonitoringDisplayview_rule();
-      $pmDisplayview_rule->add($input);
-   } else {
-      $pmDisplayview_item->add($_POST);
+
+class PluginMonitoringDisplayview_Group extends CommonDBRelation {
+
+   // From CommonDBRelation
+   static public $itemtype_1          = 'PluginMonitoringDisplayview';
+   static public $items_id_1          = 'pluginmonitoringdisplayviews_id';
+   static public $itemtype_2          = 'Group';
+   static public $items_id_2          = 'groups_id';
+
+   static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
+   static public $logs_for_item_2     = false;
+
+
+   /**
+    * Get groups for a displayview
+    *
+    * @param $pluginmonitoringdisplayviews_id ID of the displayview
+    *
+    * @return array of groups linked to a displayview
+   **/
+   static function getGroups($pluginmonitoringdisplayviews_id) {
+      global $DB;
+
+      $groups = array();
+      $query  = "SELECT `glpi_plugin_monitoring_displayviews_groups`.*
+                 FROM `glpi_plugin_monitoring_displayviews_groups`
+                 WHERE `pluginmonitoringdisplayviews_id` = '$pluginmonitoringdisplayviews_id'";
+
+      foreach ($DB->request($query) as $data) {
+         $groups[$data['groups_id']][] = $data;
+      }
+      return $groups;
    }
-   Html::back();
-} else if (isset ($_POST["delete"])) {
-   $pmDisplayview_item->delete($_POST);
-   Html::back();
+
 }
-
-Html::footer();
-
 ?>

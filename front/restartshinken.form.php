@@ -45,7 +45,7 @@ include ("../../../inc/includes.php");
 PluginMonitoringProfile::checkRight("command","w");
 
 $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
-$pmShinkenwebservice->sendRestartArbiter();
+$pmShinkenwebservice->sendRestartArbiter(1);
 Html::back();
 
 ?>

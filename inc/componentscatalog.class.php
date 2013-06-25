@@ -267,6 +267,57 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       
       $this->getFromDB($id);
       $data = $this->fields;
+      
+      $ret = $this->getInfoOfCatalog($id);
+      $nb_ressources = $ret[0];
+      $stateg = $ret[1];
+      
+      $colorclass = 'ok';
+      $count = 0;
+            
+      $link = '';
+      if ($stateg['CRITICAL'] > 0) {
+         $count = $stateg['CRITICAL'];
+         $colorclass = 'crit';
+         $link = $CFG_GLPI['root_doc'].
+         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=CRITICAL".
+            "&link[1]=AND&field[1]=8&searchtype[1]=equals&contains[1]=".$id.
+            "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=DOWN".
+            "&link[3]=AND&field[3]=8&searchtype[3]=equals&contains[3]=".$id.
+            "&link[4]=OR&field[4]=3&searchtype[4]=equals&contains[4]=UNREACHABLE".
+            "&link[5]=AND&field[5]=8&searchtype[5]=equals&contains[5]=".$id.
+            "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
+      } else if ($stateg['WARNING'] > 0) {
+         $count = $stateg['WARNING'];
+         $colorclass = 'warn';
+         $link = $CFG_GLPI['root_doc'].
+         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=WARNING".
+            "&link[1]=AND&field[1]=8&searchtype[1]=equals&contains[1]=".$id.
+            "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=UNKNOWN".
+            "&link[3]=AND&field[3]=8&searchtype[3]=equals&contains[3]=".$id.
+            "&link[4]=OR&field[4]=3&searchtype[4]=equals&contains[4]=RECOVERY".
+            "&link[5]=AND&field[5]=8&searchtype[5]=equals&contains[5]=".$id.
+            "&link[6]=OR&field[6]=3&searchtype[6]=equals&contains[6]=FLAPPING".
+            "&link[7]=AND&field[7]=8&searchtype[7]=equals&contains[7]=".$id.
+            "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
+      } else if ($stateg['OK'] > 0) {
+         $count = $stateg['OK'];
+         $link = $CFG_GLPI['root_doc'].
+         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=OK".
+            "&link[1]=AND&field[1]=8&searchtype[1]=equals&contains[1]=".$id.
+            "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=UP".
+            "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
+      }
+      
+      echo '<div class="ch-item">
+         <div class="ch-info-'.$colorclass.'">
+			<h1>'.ucfirst($data['name']).'</h1>
+			<p><a href="'.$link.'">'.$count.'</a></p>
+         </div>
+		</div>';
+      return;
+      /////////////////////// This is the end !! ///////////////////////
+      
       echo '<table  class="tab_cadre_fixe" style="width:158px;">';
       echo '<tr class="tab_bg_1">';
       echo '<th colspan="2" style="font-size:18px;" height="60">';
@@ -274,9 +325,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       echo '</th>';
       echo '</tr>';
          
-      $ret = $this->getInfoOfCatalog($id);
-      $nb_ressources = $ret[0];
-      $stateg = $ret[1];
+
       
       
       echo '<tr class="tab_bg_1">';
