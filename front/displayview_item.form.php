@@ -65,7 +65,9 @@ if (isset ($_POST["add"])) {
       $input['type'] = $_POST['itemtype'];
       $input['condition'] = exportArrayToDB(array(
           'name'     => '',
-          'itemtype' => $input['itemtype']
+          'itemtype' => $input['itemtype'],
+          'field'    => array(1),
+          'searchtype' => array('contains')
       ));
       $pmDisplayview_rule = new PluginMonitoringDisplayview_rule();
       $pmDisplayview_rule->add($input);
