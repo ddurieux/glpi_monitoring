@@ -78,19 +78,19 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
    *
    **/
    static function getTypeName($nb=0) {
-      return "notification commands";
+      return __('Notification commands', 'monitoring');
    }
 
 
 
    static function canCreate() {
-      return Session::haveRight('computer', 'w');
+      return PluginMonitoringProfile::haveRight("config", 'w');
    }
 
 
    
    static function canView() {
-      return Session::haveRight('computer', 'r');
+      return PluginMonitoringProfile::haveRight("config", 'r');
    }
 
    
@@ -145,7 +145,23 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
       $this->showTabs($options);
       $this->showFormHeader($options);
 
-
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Name')." :</td>";
+      echo "<td>";
+      echo "<input type='text' name='name' value='".$this->fields["name"]."' size='30'/>";
+      echo "</td>";
+      echo "<td>".__('Command name', 'monitoring')."&nbsp;:</td>";
+      echo "<td>";
+      echo "<input type='text' name='command_name' value='".$this->fields["command_name"]."' size='30'/>";
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Command line', 'monitoring')."&nbsp;:</td>";
+      echo "<td colspan='3'>";
+      echo "<input type='text' name='command_line' value='".$this->fields["command_line"]."' size='97'/>";
+      echo "</td>";
+      echo "</tr>";
       
       $this->showFormButtons($options);
       $this->addDivForTabs();

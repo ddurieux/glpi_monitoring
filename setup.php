@@ -125,6 +125,9 @@ function plugin_init_monitoring() {
          
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['eventhandler'] = 'front/eventhandler.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['eventhandler'] = 'front/eventhandler.php';
+
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['notificationcommand'] = 'front/notificationcommand.form.php?add=1';
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['notificationcommand'] = 'front/notificationcommand.php';
          
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['service'] = 'front/display.php';
          
@@ -162,6 +165,10 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['eventhandler']['title'] = __('Event handler', 'monitoring');
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['eventhandler']['page']  = '/plugins/monitoring/front/eventhandler.php';
 
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['notificationcommand']['title'] = __('Notification commands', 'monitoring');
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['notificationcommand']['page']  = '/plugins/monitoring/front/notificationcommand.php';
+       
+         
          
          // Define hook item
          $rule_check = array('PluginMonitoringComponentscatalog_rule','isThisItemCheckRule');

@@ -112,6 +112,12 @@ echo "</th>";
 
 echo "<th rowspan='2'>";
 if (PluginMonitoringProfile::haveRight("config", 'r')) {
+   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/notificationcommand.php'>".__('Notification commands', 'monitoring')."</a>";
+}
+echo "</th>";
+
+echo "<th rowspan='2'>";
+if (PluginMonitoringProfile::haveRight("config", 'r')) {
    echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/realm.php'>".__('Reamls', 'monitoring')."</a>";
 }
 echo "</th>";
