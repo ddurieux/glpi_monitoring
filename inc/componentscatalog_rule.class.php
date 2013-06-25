@@ -337,6 +337,8 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                Session::changeActiveEntities($default_entity,
                              $entities_isrecursive);
                foreach ($devicesnetworkport_present as $id => $num) {
+                  $_SESSION['plugin_monitoring_hosts']['itemtype'] = $itemtype_device;
+                  $_SESSION['plugin_monitoring_hosts']['items_id'] = $items_id_device;
                   $pmService->delete(array('id'=>$id));
                }
             } else {
@@ -399,7 +401,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
     */
    static function isThisItemCheckRule($parm) {
       global $DB;
-Toolbox::logInFile("kOIN", print_r($parm, true));
+
       $itemtype = get_class($parm);
       $items_id = $parm->fields['id'];
       
