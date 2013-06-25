@@ -633,9 +633,9 @@ Ext.onReady(function(){
    
    function getCounterOfViews($id, $a_counter) {
       $a_views = $this->find("`itemtype`='PluginMonitoringDisplayview'"
-              ." AND `items_id`='".$id."'");
+              ." AND `plugin_monitoring_displayviews_id`='".$id."'");
       foreach ($a_views as $data) {
-         $a_counter = $this->getCounterOfViews($data['plugin_monitoring_displayviews_id'], $a_counter);
+         $a_counter = $this->getCounterOfViews($data['items_id'], $a_counter);
       }
       $a_counter = $this->getCounterOfView($id, $a_counter);
       return $a_counter;
@@ -645,9 +645,11 @@ Ext.onReady(function(){
    
    function getCounterOfView($id, $a_counter) {
       global $DB;
-      
-     $a_hosts = $this->find("`itemtype`='host'"
+                  
+
+      $a_hosts = $this->find("`itemtype`='host'"
               ." AND `plugin_monitoring_displayviews_id`='".$id."'");
+
       foreach ($a_hosts as $data) {
          $query = "SELECT * FROM `glpi_plugin_monitoring_services`"
                           . " LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`"
@@ -656,10 +658,11 @@ Ext.onReady(function(){
                           . " WHERE `items_id`='".$data['items_id']."'"
                           . "    AND `itemtype`='".$data['extra_infos']."'"
                           . "    AND `glpi_plugin_monitoring_services`.`id` IS NOT NULL";
+         
          $result = $DB->query($query);
-         while ($data=$DB->fetch_array($result)) {
-            $ret = PluginMonitoringDisplay::getState($data['state'], 
-                                                     $data['state_type'], 
+         while ($data2=$DB->fetch_array($result)) {
+            $ret = PluginMonitoringDisplay::getState($data2['state'], 
+                                                     $data2['state_type'], 
                                                      '', 
                                                      1);
             if (strstr($ret, '_soft')) {
@@ -671,7 +674,10 @@ Ext.onReady(function(){
             } else if ($ret == 'orange'
                     || $ret == 'yellow') {
                $a_counter['warning']++;
+            } else {
+               $a_counter['ok']++;
             }
+
          }
       }
       return $a_counter;

@@ -566,6 +566,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
                        . " WHERE `items_id`='".$item->fields['id']."'"
                        . "    AND `itemtype`='".$itemtype."'"
                        . "    AND `glpi_plugin_monitoring_services`.`id` IS NOT NULL";
+
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
          $ret = PluginMonitoringDisplay::getState($data['state'], 
@@ -581,6 +582,8 @@ class PluginMonitoringDisplayview extends CommonDBTM {
          } else if ($ret == 'orange'
                  || $ret == 'yellow') {
             $warning++;
+         } else {
+            $ok++;
          }
       }
       
@@ -597,7 +600,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
 
       echo '<div class="ch-item">
          <div class="ch-info-'.$class.'">
-			<h1><a href="'.$item->getFormURL().'?id=11&forcetab=pluginmonitoringhost$0">'.$item->getName().'</a></h1>
+			<h1><a href="'.$item->getFormURL().'?id='.$item->getID().'&forcetab=PluginMonitoringHost$0">'.$item->getName().'</a></h1>
 			<p>'.$nb_ressources.'<font style="font-size: 14px;"> / '.($ok + $warning + $critical + $acknowledge).'</font></p>
          <h2><font style="color: #9f3030;">crit '.$critical.'</font>  
              <font style="color: #d4a15e;">warn'.$warning.'</font><br/>
