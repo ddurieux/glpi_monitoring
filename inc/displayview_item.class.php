@@ -360,25 +360,13 @@ Ext.onReady(function(){
             $a_items[] = "item".$data['id'];
          }
       }
-
-//      echo "<script type='text/javascript'>
-//        
-//        //Simple 'border layout' panel to house both grids
-//        var displayPanel = new Ext.Panel({
-//          width    : ".$pmDisplayview->fields['width'].",
-//          height   : 1200,
-//          layout: 'absolute',
-//          renderTo : 'panel',
-//          items    : [
-//            ".implode(",", $a_items)."
-//          ]
-//        });
-//
-//      </script>";
       
+
+
       echo "<script type='text/javascript'>
         
         Ext.getCmp('viewpanel').items.each(function(c){Ext.getCmp('viewpanel').remove(c);});
+        Ext.getCmp('viewpanel').setWidth('".$pmDisplayview->fields['width']."');
         ";
       if (count($a_items) > 0) {
         echo "Ext.getCmp('viewpanel').add(".implode(",", $a_items).");

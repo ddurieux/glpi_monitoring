@@ -194,6 +194,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       } else {
          $this->getEmpty();
          $this->fields['width'] = 950;
+         $this->fields['is_active'] = 1;
       }
 
       $this->showTabs($options);
@@ -531,13 +532,10 @@ class PluginMonitoringDisplayview extends CommonDBTM {
          background-repeat:no-repeat;background-position:center center;">
          <div class="ch-info-'.$class.'">
          <h1><a href="javascript:;" onclick="document.getElementById(\'updatefil\').value = \''.$id.'!\';'.
-              'document.getElementById(\'updateviewid\').value = \''.$id.'\';reloadfil();reloadview();">'
+              'document.getElementById(\'updateviewid\').value = \''.$id.'\';reloadfil();reloadview();"'
+              .'>'
               .ucfirst($data['name']).'</a></h1>
 			<p>'.$nb_ressources.'<font style="font-size: 14px;"> / '.array_sum($a_counter).'</font></p>
-         <h2><font style="color: #9f3030;">crit '.$a_counter['critical'].'</font>  
-             <font style="color: #d4a15e;">warn'.$a_counter['warning'].'</font><br/>
-             <font style="color: #4cb449;">ok '.$a_counter['ok'].'</font>  
-             <font style="color: #26a6ff;">ack '.$a_counter['acknowledge'].'</font> </h2>
          </div>
 		</div>';
    }
@@ -602,10 +600,6 @@ class PluginMonitoringDisplayview extends CommonDBTM {
          <div class="ch-info-'.$class.'">
 			<h1><a href="'.$item->getFormURL().'?id='.$item->getID().'&forcetab=PluginMonitoringHost$0">'.$item->getName().'</a></h1>
 			<p>'.$nb_ressources.'<font style="font-size: 14px;"> / '.($ok + $warning + $critical + $acknowledge).'</font></p>
-         <h2><font style="color: #9f3030;">crit '.$critical.'</font>  
-             <font style="color: #d4a15e;">warn'.$warning.'</font><br/>
-             <font style="color: #4cb449;">ok '.$ok.'</font>  
-             <font style="color: #26a6ff;">ack '.$acknowledge.'</font> </h2>
          </div>
 		</div>';
 
