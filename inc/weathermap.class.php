@@ -109,7 +109,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
       }
       
       $conf = "\n";
-      
+
       $pmWeathermapnode = new PluginMonitoringWeathermapnode();
       $pmComponent = new PluginMonitoringComponent();
       $pmService = new PluginMonitoringService();
@@ -251,7 +251,7 @@ LINK DEFAULT
             
             $queryevent = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `plugin_monitoring_services_id`='".$datal['plugin_monitoring_services_id']."'
-                  ORDER BY `id` DESC
+                  ORDER BY `date` DESC
                   LIMIT 1";
             $resultevent = $DB->query($queryevent);
             $in = '';
@@ -955,7 +955,6 @@ LINK DEFAULT
       require_once GLPI_ROOT."/plugins/monitoring/lib/weathermap/WeatherMapLink.class.php";
 
       $map=new WeatherMap();
-
       if ($map->ReadConfig($this->generateConfig($weathermaps_id))) {
 
          $imagefile=GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png";
