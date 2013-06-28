@@ -49,33 +49,7 @@ Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
 
 $pmDisplayview = new PluginMonitoringDisplayview();
 
-if (isset($_POST['users_id'])) {
-   if ($_POST['users_id'] == 'public') {
-      $_POST['users_id'] = '0';
-   } else {
-      $_POST['users_id'] = $_SESSION['glpiID'];
-   }
-}
-
-if (isset ($_POST["add"])) {
-   $pmDisplayview->add($_POST);
-   Html::back();
-} else if (isset ($_POST["update"])) {
-   $pmDisplayview->update($_POST);
-   Html::back();
-} else if (isset ($_POST["delete"])) {
-   $pmDisplayview->delete($_POST);
-   $pmDisplayview->redirectToList();
-} else if (isset($_POST["update"])) {
-   $remind->check($_POST["id"],'w');   // Right to update the reminder
-
-   $remind->update($_POST);
-   Event::log($_POST["id"], "reminder", 4, "tools",
-              //TRANS: %s is the user login
-              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
-   Html::back();
-
-}  else if (isset($_POST["addvisibility"])) {
+if (isset($_POST["addvisibility"])) {
    if (isset($_POST["_type"]) 
        && !empty($_POST["_type"])
        && isset($_POST["pluginmonitoringdisplayviews_id"]) 
@@ -112,6 +86,34 @@ if (isset ($_POST["add"])) {
       }
       Html::back();
    }
+}
+
+if (isset($_POST['users_id'])) {
+   if ($_POST['users_id'] == 'public') {
+      $_POST['users_id'] = '0';
+   } else {
+      $_POST['users_id'] = $_SESSION['glpiID'];
+   }
+}
+
+if (isset ($_POST["add"])) {
+   $pmDisplayview->add($_POST);
+   Html::back();
+} else if (isset ($_POST["update"])) {
+   $pmDisplayview->update($_POST);
+   Html::back();
+} else if (isset ($_POST["delete"])) {
+   $pmDisplayview->delete($_POST);
+   $pmDisplayview->redirectToList();
+} else if (isset($_POST["update"])) {
+   $remind->check($_POST["id"],'w');   // Right to update the reminder
+
+   $remind->update($_POST);
+   Event::log($_POST["id"], "reminder", 4, "tools",
+              //TRANS: %s is the user login
+              sprintf(__('%s updates an item'), $_SESSION["glpiname"]));
+   Html::back();
+
 }
 
 if (isset($_GET["id"])) {

@@ -71,7 +71,6 @@ class PluginMonitoringDisplayview extends CommonDBTM {
 
    
    static function canView() {
-      return true;
       return PluginMonitoringProfile::haveRight("view", 'r');
    }
 
@@ -101,9 +100,9 @@ class PluginMonitoringDisplayview extends CommonDBTM {
    function haveVisibilityAccess() {
 
       // No public reminder right : no visibility check
-      if (!PluginMonitoringProfile::haveRight("view", 'r')) {
-         return false;
-      }
+//      if (!PluginMonitoringProfile::haveRight("view", 'r')) {
+//         return false;
+//      }
 
       // Author
       if ($this->fields['users_id'] == Session::getLoginUserID()) {
@@ -454,7 +453,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[Reminder_User][".$data["id"]."]'
+                  echo "<input type='checkbox' name='item[PluginMonitoringDisplayview_User][".$data["id"]."]'
                           value='1' >";
                   echo "</td>";
                }
@@ -472,7 +471,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[Group_Reminder][".$data["id"]."]'
+                  echo "<input type='checkbox' name='item[PluginMonitoringDisplayview_Group][".$data["id"]."]'
                          value='1'>";
                   echo "</td>";
                }
@@ -496,62 +495,62 @@ class PluginMonitoringDisplayview extends CommonDBTM {
             }
          }
       }
-
-      // Entity
-      if (count($this->entities)) {
-         foreach ($this->entities as $key => $val) {
-            foreach ($val as $data) {
-               echo "<tr class='tab_bg_2'>";
-               if ($canedit) {
-                  echo "<td>";
-                  echo "<input type='checkbox' name='item[Entity_Reminder][".$data["id"]."]'
-                          value='1'>";
-                  echo "</td>";
-               }
-               echo "<td>".__('Entity')."</td>";
-               $names   = Dropdown::getDropdownName('glpi_entities', $data['entities_id'],1);
-               $tooltip = Html::showToolTip($names["comment"], array('display' => false));
-               $entname = sprintf(__('%1$s %2$s'), $names["name"], $tooltip);
-               if ($data['is_recursive']) {
-                  $entname = sprintf(__('%1$s %2$s'), $entname,
-                                     "<span class='b'>(".__('R').")</span>");
-               }
-               echo "<td>".$entname."</td>";
-               echo "</tr>";
-            }
-         }
-      }
-
-      // Profiles
-      if (count($this->profiles)) {
-         foreach ($this->profiles as $key => $val) {
-            foreach ($val as $data) {
-               echo "<tr class='tab_bg_2'>";
-               if ($canedit) {
-                  echo "<td>";
-                  echo "<input type='checkbox' name='item[Profile_Reminder][".$data["id"]."]'
-                         value='1'>";
-                  echo "</td>";
-               }
-               echo "<td>"._n('Profile', 'Profiles', 1)."</td>";
-
-               $names   = Dropdown::getDropdownName('glpi_profiles',$data['profiles_id'],1);
-               $tooltip = Html::showToolTip($names["comment"], array('display' => false));
-               $entname = sprintf(__('%1$s %2$s'), $names["name"], $entname);
-               if ($data['entities_id'] >= 0) {
-                  $entname = sprintf(__('%1$s / %2$s'), $entname,
-                                     Dropdown::getDropdownName('glpi_entities',
-                                                               $data['entities_id']));
-                  if ($data['is_recursive']) {
-                     $entname = sprintf(__('%1$s %2$s'), $entname,
-                                        "<span class='b'>(".__('R').")</span>");
-                  }
-               }
-               echo "<td>".$entname."</td>";
-               echo "</tr>";
-            }
-         }
-      }
+//
+//      // Entity
+//      if (count($this->entities)) {
+//         foreach ($this->entities as $key => $val) {
+//            foreach ($val as $data) {
+//               echo "<tr class='tab_bg_2'>";
+//               if ($canedit) {
+//                  echo "<td>";
+//                  echo "<input type='checkbox' name='item[Entity_Reminder][".$data["id"]."]'
+//                          value='1'>";
+//                  echo "</td>";
+//               }
+//               echo "<td>".__('Entity')."</td>";
+//               $names   = Dropdown::getDropdownName('glpi_entities', $data['entities_id'],1);
+//               $tooltip = Html::showToolTip($names["comment"], array('display' => false));
+//               $entname = sprintf(__('%1$s %2$s'), $names["name"], $tooltip);
+//               if ($data['is_recursive']) {
+//                  $entname = sprintf(__('%1$s %2$s'), $entname,
+//                                     "<span class='b'>(".__('R').")</span>");
+//               }
+//               echo "<td>".$entname."</td>";
+//               echo "</tr>";
+//            }
+//         }
+//      }
+//
+//      // Profiles
+//      if (count($this->profiles)) {
+//         foreach ($this->profiles as $key => $val) {
+//            foreach ($val as $data) {
+//               echo "<tr class='tab_bg_2'>";
+//               if ($canedit) {
+//                  echo "<td>";
+//                  echo "<input type='checkbox' name='item[Profile_Reminder][".$data["id"]."]'
+//                         value='1'>";
+//                  echo "</td>";
+//               }
+//               echo "<td>"._n('Profile', 'Profiles', 1)."</td>";
+//
+//               $names   = Dropdown::getDropdownName('glpi_profiles',$data['profiles_id'],1);
+//               $tooltip = Html::showToolTip($names["comment"], array('display' => false));
+//               $entname = sprintf(__('%1$s %2$s'), $names["name"], $entname);
+//               if ($data['entities_id'] >= 0) {
+//                  $entname = sprintf(__('%1$s / %2$s'), $entname,
+//                                     Dropdown::getDropdownName('glpi_entities',
+//                                                               $data['entities_id']));
+//                  if ($data['is_recursive']) {
+//                     $entname = sprintf(__('%1$s %2$s'), $entname,
+//                                        "<span class='b'>(".__('R').")</span>");
+//                  }
+//               }
+//               echo "<td>".$entname."</td>";
+//               echo "</tr>";
+//            }
+//         }
+//      }
 
       echo "</table>";
       if ($canedit && $nb) {
@@ -564,6 +563,42 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       // Add items
 
       return true;
+   }
+   
+   
+   
+   function doSpecificMassiveActions($input=array()) {
+
+      $res = array('ok'      => 0,
+                   'ko'      => 0,
+                   'noright' => 0);
+
+      switch ($input['action']) {
+         case "deletevisibility":
+            foreach ($input['item'] as $type => $items) {
+               if (in_array($type, array('PluginMonitoringDisplayview_Group',
+                                         'PluginMonitoringDisplayview_User'))) {
+                  $item = new $type();
+                  foreach ($items as $key => $val) {
+                     if ($item->can($key,'w')) {
+                        if ($item->delete(array('id' => $key))) {
+                           $res['ok']++;
+                        } else {
+                           $res['ko']++;
+                        }
+                     } else {
+                        $res['noright']++;
+                     }
+                  }
+               }
+            }
+
+            break;
+
+         default :
+            return parent::doSpecificMassiveActions($input);
+      }
+      return $res;
    }
    
    

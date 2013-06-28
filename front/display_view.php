@@ -56,9 +56,16 @@ $pmMessage->getMessages();
 
 $pmDisplay->menu();
 
-PluginMonitoringProfile::checkRight("view", 'r');
-
+$pass = 0;
 $a_views = $pmDisplayview->getViews();
+if (isset($a_views[$_GET['id']])) {
+   $pmDisplayview->getFromDB($_GET['id']);
+   $pass = $pmDisplayview->haveVisibilityAccess();
+}
+if ($pass == 0) {
+   PluginMonitoringProfile::checkRight("view", 'r');
+}
+
 if (isset($a_views[$_GET['id']])) {
    $pmDisplayview_item->view($_GET['id']);
 } else {
