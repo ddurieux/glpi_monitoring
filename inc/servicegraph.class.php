@@ -58,28 +58,29 @@ class PluginMonitoringServicegraph extends CommonDBTM {
 //         $items_id = $_GET['items_id'];
 //      }
       $item = new $itemtype();
-      $item->getFromDB($items_id); 
-      $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
-      if ($part == ''
-              OR $part == 'div') {
-         echo '<div id="chart'.$items_id.$time.'">'.
-             '<svg style="height: 300px; width: '.$width.'px;"></svg>'.
-           '</div>';
+      if ($item->getFromDB($items_id)) {
+         $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
+         if ($part == ''
+                 OR $part == 'div') {
+            echo '<div id="chart'.$items_id.$time.'">'.
+                '<svg style="height: 300px; width: '.$width.'px;"></svg>'.
+              '</div>';
 
-         echo "<div id=\"updategraph".$items_id.$time."\"></div>";
-      }
-      if ($part == ''
-              OR $part == 'js') {
-         echo "<script type=\"text/javascript\">
+            echo "<div id=\"updategraph".$items_id.$time."\"></div>";
+         }
+         if ($part == ''
+                 OR $part == 'js') {
+            echo "<script type=\"text/javascript\">
 
-         var el".$items_id.$time." = Ext.get(\"updategraph".$items_id.$time."\");
-         var mgr".$items_id.$time." = el".$items_id.$time.".getUpdateManager();
-         mgr".$items_id.$time.".loadScripts=true;
-         mgr".$items_id.$time.".showLoadIndicator=false;
-            ";
-         $this->startAutoRefresh($rrdtool_template, $itemtype, $items_id, $timezone, $time,$pmComponent->fields['id']);
-         echo "
-         </script>";
+            var el".$items_id.$time." = Ext.get(\"updategraph".$items_id.$time."\");
+            var mgr".$items_id.$time." = el".$items_id.$time.".getUpdateManager();
+            mgr".$items_id.$time.".loadScripts=true;
+            mgr".$items_id.$time.".showLoadIndicator=false;
+               ";
+            $this->startAutoRefresh($rrdtool_template, $itemtype, $items_id, $timezone, $time,$pmComponent->fields['id']);
+            echo "
+            </script>";
+         }
       }
       return;
    }

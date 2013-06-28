@@ -250,6 +250,7 @@ CREATE TABLE `glpi_plugin_monitoring_displayviews` (
    `in_central` tinyint(1) NOT NULL DEFAULT '0',
    `width` int(5) NOT NULL DEFAULT '950',
    `is_frontview` tinyint(1) NOT NULL DEFAULT '0',
+   `comment` text DEFAULT NULL COLLATE utf8_unicode_ci,
    PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -268,6 +269,19 @@ CREATE TABLE `glpi_plugin_monitoring_displayviews_groups` (
   KEY `groups_id` (`groups_id`),
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_displayviews_users`;
+
+CREATE TABLE `glpi_plugin_monitoring_displayviews_users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `pluginmonitoringdisplayviews_id` int(11) NOT NULL DEFAULT '0',
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `pluginmonitoringdisplayviews_id` (`pluginmonitoringdisplayviews_id`),
+  KEY `groups_id` (`users_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

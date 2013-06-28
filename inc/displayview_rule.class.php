@@ -77,7 +77,7 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
               . " AND `type`='host'");
       
       foreach ($a_hosts as $data) {
-         $tab[$i] = __('Host rule').': '.__($data['itemtype']);
+         $tab[$i] = __('Host rule', 'monitoring').': '.__($data['itemtype']);
          $i++;
       }
       
@@ -85,7 +85,7 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
               . " AND `type`='service'");
       
       foreach ($a_resources as $data) {
-         $tab[$i] = __('Resource rule').': '.__($data['itemtype']);
+         $tab[$i] = __('Resource rule', 'monitoring').': '.__($data['itemtype']);
          $i++;
       }
       
@@ -121,10 +121,27 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
       
       echo "<table class='tab_cadre_fixe' width='600'>";
       echo "<tr class='tab_bg_1'>";
-      echo "<th>";
+      echo "<th align='center'>";
+      echo __('Host rule', 'monitoring');
+      echo "</th>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_2'>";
+      echo "<td class='center'>";
       echo "<br/><a href='".$CFG_GLPI['root_doc'].
-              "/plugins/monitoring/front/displayview_rule.form.php?id=".$id."'>".
+              "/plugins/monitoring/front/displayview_rule.form.php?id=".$id."' class='vsubmit' >".
               __('Edit rule', 'monitoring')."</a><br/><br/>";
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td class='right'>";
+      echo "<form method='post' action='".Toolbox::getItemTypeFormURL('PluginMonitoringDisplayview_rule')."'>";
+      echo "<input type='hidden' name='id' value='".$id."' />";
+      echo "<input type='submit' name='deleterule' value=\""._sx('button', 'Delete permanently')."\"
+                         class='submit' ".
+                         Html::addConfirmationOnAction(__('Confirm the final deletion?')).">";
+      Html::closeForm();
       echo "</th>";
       echo "</tr>";
       echo "</table>";
@@ -291,7 +308,30 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
       foreach ($devices_present as $id) {
          $pmDisplayview_item->delete(array('id'=>$id));
       }
+      return true;
    }   
+   
+   
+   function showReplayRulesForm($displayviews_id, $options=array()) {
+      
+      echo "<form method='post' action='".Toolbox::getItemTypeFormURL('PluginMonitoringDisplayview_rule')."'>";
+      echo "<table class='tab_cadre_fixe'>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<th>";
+      echo __('Replay all rules', 'monitoring');
+      echo "</th>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td class='center'>"; 
+      echo "<input type='hidden' name='displayviews_id' value='".$displayviews_id."' />";
+      echo "<input type='submit' name='replayrules' value=\""._sx('button', 'Replay all rules', 'monitoring')."\"
+                         class='submit'>";
+      
+      echo "</table>";
+      Html::closeForm();
+   }
 }
 
 ?>

@@ -35,37 +35,47 @@
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
-   @since     2011
+   @since     2013
  
    ------------------------------------------------------------------------
  */
 
-include ("../../../inc/includes.php");
-
-Html::popHeader("weathermap");
-
-PluginMonitoringProfile::checkRight("weathermap","r");
-
-if (!isset($_GET['id'])) {
-   exit;
+if (!defined('GLPI_ROOT')) {
+   die("Sorry. You can't access directly to this file");
 }
-$id = $_GET['id'];
-$pmWeathermap = new PluginMonitoringWeathermap();
-$pmWeathermap->generateWeathermap($id);
 
-echo '<div id="custom_date" style="display:none"></div>';
-echo '<div id="custom_time" style="display:none"></div>';
+class PluginMonitoringDisplayview_User extends CommonDBRelation {
 
-//$pmWeathermap->generateAllGraphs($id);
-$html = file_get_contents(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$id.".html");
+   // From CommonDBRelation
+   static public $itemtype_1          = 'PluginMonitoringDisplayview';
+   static public $items_id_1          = 'pluginmonitoringdisplayviews_id';
+   static public $itemtype_2          = 'User';
+   static public $items_id_2          = 'users_id';
 
-$html = str_replace(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$id.".png", 
-         $CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=weathermap-".$id.".png", $html);
+   static public $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
+   static public $logs_for_item_2     = false;
 
 
-PluginMonitoringServicegraph::loadLib();
-echo $html;
+   /**
+    * Get users for a reminder
+    *
+    * @param $reminders_id ID of the reminder
+    *
+    * @return array of users linked to a reminder
+   **/
+   static function getUsers($reminders_id) {
+      global $DB;
 
-echo '<meta http-equiv ="refresh" content="150">';
+      $users = array();
+      $query = "SELECT `glpi_plugin_monitoring_displayviews_users`.*
+                FROM `glpi_plugin_monitoring_displayviews_users`
+                WHERE `pluginmonitoringdisplayviews_id` = '$reminders_id'";
 
+      foreach ($DB->request($query) as $data) {
+         $users[$data['users_id']][] = $data;
+      }
+      return $users;
+   }
+
+}
 ?>

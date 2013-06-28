@@ -144,7 +144,8 @@
 
 .ch-item div>h1>a {
 	color: #fff;
-	font-size: 22px;
+
+   
 }
 
 .ch-item div>p {
@@ -152,9 +153,9 @@
 	padding: 5px 5px;
 	position: relative;
 	top: -45px;
-	font-style: italic;
+	font-style: bold;
 	margin: 0 15px;
-	font-size: 40px;
+	font-size: 50px;
 	border-top: 1px solid rgba(255,255,255,0.5);
 	text-align:center;
 	opacity: 1;
@@ -174,13 +175,4 @@
 	font-size: 40px;
 	text-align:center;
 	opacity: 1;
-}
-
-.ch-item div>h2 {
-	color: #fff;
-	position: relative;
-	top: -55px;
-	font-style: italic;
-	font-size: 11px;
-	text-align:center;
 }

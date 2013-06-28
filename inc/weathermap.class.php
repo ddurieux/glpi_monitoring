@@ -243,7 +243,7 @@ LINK DEFAULT
             WHERE `plugin_monitoring_weathermapnodes_id_1`='".$data['id']."'";
          $resultl = $DB->query($queryl);
          while ($datal=$DB->fetch_array($resultl)) {
-            $bandwidth = $datal['bandwidth_in']." ".$datal['bandwidth_out'];
+             $bandwidth = $datal['bandwidth_in']." ".$datal['bandwidth_out'];
             if ($datal['bandwidth_in'] == $datal['bandwidth_out']) {
                $bandwidth = $datal['bandwidth_in'];
             }
@@ -290,8 +290,16 @@ LINK DEFAULT
                   "   OVERLIBGRAPH ".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$datal['plugin_monitoring_services_id']."-2h".$timezone_file.".png\n";
 //            }
             $conf .= "   ".$bwlabelpos[$i]."\n";
-            
-            $conf .= "   TARGET static:".$in.":".$out."\n";
+            // Manage for port down
+               $retflag = PluginMonitoringDisplay::getState($pmService->fields['state'], 
+                                                            $pmService->fields['state_type'], 
+                                                            '', 
+                                                            $pmService->fields['is_acknowledged']);
+               if ($retflag == 'red') {
+                  $conf .= "   TARGET static:".$datal['bandwidth_in'].":".$datal['bandwidth_out']."\n";
+               } else {
+                  $conf .= "   TARGET static:".$in.":".$out."\n";
+               }
             
             $conf .= "   NODES ".preg_replace("/[^A-Za-z0-9_]/","",$data['name'])."_".$data['id'].$nodesuffix." ".preg_replace("/[^A-Za-z0-9_]/","",$pmWeathermapnode->fields['name'])."_".$pmWeathermapnode->fields['id'].$nodesuffix."\n";
             $conf .= "   BANDWIDTH ".$bandwidth."\n\n";

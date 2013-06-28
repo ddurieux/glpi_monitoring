@@ -84,7 +84,17 @@ if (isset($_GET['updaterule'])) {
 } else if (isset($_GET['deleterule'])) {
    $_POST = $_GET;
    $pmDisplayview_rule->delete($_POST);
-   Html::redirect($CFG_GLPI['root_doc']."/plugins/monitoring/front/displayview.form.php?id=".$_POST['plugin_monitoring_displayviews_id']);
+   Html::back();
+} else if (isset($_POST['deleterule'])) {
+   $pmDisplayview_rule->delete($_POST);
+   Html::back();
+} else if (isset($_POST['replayrules'])) {
+   $a_rules = $pmDisplayview_rule->find("`plugin_monitoring_displayviews_id`='".$_POST['displayviews_id']."'");
+   foreach ($a_rules as $data) {
+      $pmDisplayview_rule->getFromDB($data['id']);
+      $pmDisplayview_rule->getItemsDynamicly($pmDisplayview_rule);
+   }
+   Html::back();
 } else if (isset($_GET['contains'])
         OR isset($_GET['reset'])) {
 //   if (isset($_SESSION['plugin_monitoring_rules'])) {
@@ -112,7 +122,7 @@ if (isset($_GET['updaterule'])) {
    $_POST = $val;
    $_POST["glpisearchcount"] = $nbfields;
    $_POST['id'] = $_GET['id'];
-   $_POST['name'] = $pmDisplayview_rule->fields['name'];
+   $_POST['name'] = 'rule';
    $_POST['itemtype'] = $pmDisplayview_rule->fields['itemtype'];
    $_POST['plugin_monitoring_displayviews_id'] = $pmDisplayview_rule->fields['plugin_monitoring_displayviews_id'];
    $_SERVER['REQUEST_URI'] = str_replace("?id=".$_GET['id'], "", $_SERVER['REQUEST_URI']);

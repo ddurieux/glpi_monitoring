@@ -71,6 +71,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
 
    
    static function canView() {
+      return true;
       return PluginMonitoringProfile::haveRight("view", 'r');
    }
 
@@ -78,7 +79,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
    function post_getFromDB() {
 
       // Users
-//      $this->users    = Reminder_User::getUsers($this->fields['id']);
+      $this->users    = PluginMonitoringDisplayview_User::getUsers($this->fields['id']);
 
       // Entities
 //      $this->entities = Entity_Reminder::getEntities($this->fields['id']);
@@ -90,6 +91,94 @@ class PluginMonitoringDisplayview extends CommonDBTM {
 //      $this->profiles = Profile_Reminder::getProfiles($this->fields['id']);
    }
 
+   
+   
+   /**
+    * Is the login user have access to reminder based on visibility configuration
+    *
+    * @return boolean
+   **/
+   function haveVisibilityAccess() {
+
+      // No public reminder right : no visibility check
+      if (!PluginMonitoringProfile::haveRight("view", 'r')) {
+         return false;
+      }
+
+      // Author
+      if ($this->fields['users_id'] == Session::getLoginUserID()) {
+         return true;
+      }
+
+      // Users
+      if (isset($this->users[Session::getLoginUserID()])) {
+         return true;
+      }
+
+      // Groups
+      if (count($this->groups)
+          && isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])) {
+         foreach ($this->groups as $key => $data) {
+            foreach ($data as $group) {
+               if (in_array($group['groups_id'], $_SESSION["glpigroups"])) {
+                  // All the group
+                  if ($group['entities_id'] < 0) {
+                     return true;
+                  }
+                  // Restrict to entities
+                  $entities = array($group['entities_id']);
+                  if ($group['is_recursive']) {
+                     $entities = getSonsOf('glpi_entities', $group['entities_id']);
+                  }
+                  if (Session::haveAccessToOneOfEntities($entities, true)) {
+                     return true;
+                  }
+               }
+            }
+         }
+      }
+
+      // Entities
+      if (count($this->entities)
+          && isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
+         foreach ($this->entities as $key => $data) {
+            foreach ($data as $entity) {
+               $entities = array($entity['entities_id']);
+               if ($entity['is_recursive']) {
+                  $entities = getSonsOf('glpi_entities', $entity['entities_id']);
+               }
+               if (Session::haveAccessToOneOfEntities($entities, true)) {
+                  return true;
+               }
+            }
+         }
+      }
+
+      // Profiles
+      if (count($this->profiles)
+          && isset($_SESSION["glpiactiveprofile"])
+          && isset($_SESSION["glpiactiveprofile"]['id'])) {
+         if (isset($this->profiles[$_SESSION["glpiactiveprofile"]['id']])) {
+            foreach ($this->profiles[$_SESSION["glpiactiveprofile"]['id']] as $profile) {
+               // All the profile
+               if ($profile['entities_id'] < 0) {
+                  return true;
+               }
+               // Restrict to entities
+               $entities = array($profile['entities_id']);
+               if ($profile['is_recursive']) {
+                  $entities = getSonsOf('glpi_entities',$profile['entities_id']);
+               }
+               if (Session::haveAccessToOneOfEntities($entities, true)) {
+                  return true;
+               }
+            }
+         }
+      }
+
+      return false;
+   }
+   
    
 
    function getSearchOptions() {
@@ -108,6 +197,11 @@ class PluginMonitoringDisplayview extends CommonDBTM {
 		$tab[2]['linkfield'] = 'is_frontview';
 		$tab[2]['name'] = __('Front view', 'monitoring');
 		$tab[2]['datatype'] = 'bool';
+
+      $tab[3]['table']          = $this->getTable();
+      $tab[3]['field']          = 'comment';
+      $tab[3]['name']           = __('Comments');
+      $tab[3]['datatype']       = 'text';
 
       return $tab;
    }
@@ -246,6 +340,14 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
       
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Comments')."</td>";
+      echo "<td colspan='3' class='middle'>";
+      echo "<textarea cols='95' rows='3' name='comment' >".$this->fields["comment"];
+      echo "</textarea>";
+      echo "</td>";
+      echo "</tr>";
+      
       $this->showFormButtons($options);
       $this->addDivForTabs();
 
@@ -305,11 +407,12 @@ class PluginMonitoringDisplayview extends CommonDBTM {
          echo "<tr class='tab_bg_1'><th colspan='4'>".__('Add a target')."</tr>";
          echo "<tr class='tab_bg_2'><td width='100px'>";
 
-         $types = array('Entity', 'Group', 'Profile', 'User');
+         //$types = array('Entity', 'Group', 'Profile', 'User');
+         $types = array('Group', 'User');
 
          $addrand = Dropdown::showItemTypes('_type', $types);
          $params  = array('type'  => '__VALUE__',
-                          'right' => 'reminder_public');
+                          'right' => 'all');
 
          Ajax::updateItemOnSelectEvent("dropdown__type".$addrand,"visibility$rand",
                                        $CFG_GLPI["root_doc"]."/ajax/visibility.php", $params);
@@ -507,6 +610,11 @@ class PluginMonitoringDisplayview extends CommonDBTM {
    
    
    
+   /**
+    * Display info of a views
+    * 
+    * @param type $id
+    */
    function showWidgetFrame($id) {
       
       $this->getFromDB($id);
@@ -533,15 +641,25 @@ class PluginMonitoringDisplayview extends CommonDBTM {
          <div class="ch-info-'.$class.'">
          <h1><a href="javascript:;" onclick="document.getElementById(\'updatefil\').value = \''.$id.'!\';'.
               'document.getElementById(\'updateviewid\').value = \''.$id.'\';reloadfil();reloadview();"'
-              .'>'
-              .ucfirst($data['name']).'</a></h1>
+              .'><span id="viewa-'.$id.'">'
+              .$data['name'].'</span></a></h1>
 			<p>'.$nb_ressources.'<font style="font-size: 14px;"> / '.array_sum($a_counter).'</font></p>
          </div>
 		</div>';
+
+      echo "<script>
+         fittext('viewa-".$id."');
+      </script>";
    }
    
    
    
+   /**
+    * Display info of device
+    * 
+    * @global type $DB
+    * @param type $id
+    */
    function showWidget2Frame($id) {
       global $DB;
       
@@ -570,7 +688,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
          $ret = PluginMonitoringDisplay::getState($data['state'], 
                                                   $data['state_type'], 
                                                   '', 
-                                                  1);
+                                                  $data['is_acknowledged']);
          if (strstr($ret, '_soft')) {
             $ok++;
          } else if ($ret == 'red') {
@@ -598,10 +716,15 @@ class PluginMonitoringDisplayview extends CommonDBTM {
 
       echo '<div class="ch-item">
          <div class="ch-info-'.$class.'">
-			<h1><a href="'.$item->getFormURL().'?id='.$item->getID().'&forcetab=PluginMonitoringHost$0">'.$item->getName().'</a></h1>
+			<h1><a href="'.$item->getFormURL().'?id='.$item->getID().'&forcetab=PluginMonitoringHost$0">'
+              . '<span id="devicea-'.$id.'">'.$item->getName().'</span></a></h1>
 			<p>'.$nb_ressources.'<font style="font-size: 14px;"> / '.($ok + $warning + $critical + $acknowledge).'</font></p>
          </div>
 		</div>';
+
+      echo "<script>
+         fittext('devicea-".$id."');
+      </script>";
 
    }
 

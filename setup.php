@@ -80,7 +80,7 @@ function plugin_init_monitoring() {
          
          $PLUGIN_HOOKS['use_massive_action']['monitoring']=1;
          $PLUGIN_HOOKS['add_css']['monitoring']="css/views.css";
-         
+
          $plugin = new Plugin();
          if ($plugin->isActivated('monitoring')
                  AND isset($_SESSION['glpi_plugin_monitoring_profile'])) {
@@ -209,6 +209,7 @@ function plugin_init_monitoring() {
 
          if (!isset($_SESSION['glpi_plugin_monitoring']['_refresh'])) {
             $_SESSION['glpi_plugin_monitoring']['_refresh'] = '60';
+            
          }
 //      }
 

@@ -28,7 +28,7 @@ switch ($_POST['itemtype']) {
 
       $params = array('itemtype'        => '__VALUE__',
                       'entity_restrict' => $_POST['a_entities'],
-                      'selectgraph' => '1',
+                      'selectgraph'     => '1',
                       'rand'            => $rand);
 
       Ajax::updateItemOnSelectEvent("itemtype$rand", "show_itemtype$rand",
@@ -46,20 +46,29 @@ switch ($_POST['itemtype']) {
    
    case 'PluginMonitoringDisplayview':
       Dropdown::show('PluginMonitoringDisplayview', 
-                     array('name'=>'items_id',
-                           'condition' => "`is_frontview`='0'"));
+                     array('name'      =>'items_id',
+                           'condition' => "`is_frontview`='0'",
+                           'used'      => array($_POST['displayviews_id'])));
       break;
    
    case 'service':
    case 'host':
       
       $elements = array(
-          'Computer' => __('Computer'),
-          'NetworkEquipment' => __('NetworkEquipment'),
-          'Peripheral' => __('Peripheral'),
-          'Phone' => __('Phone'),
-          'Printer' => __('Printer')
+          'Computer'          => __('Computer'),
+          'NetworkEquipment'  => __('NetworkEquipment'),
+          'Peripheral'        => __('Peripheral'),
+          'Phone'             => __('Phone'),
+          'Printer'           => __('Printer')
       );
+      $pmDisplayview_rule = new PluginMonitoringDisplayview_rule();
+      $a_items = $pmDisplayview_rule->find("`plugin_monitoring_displayviews_id`='".$_POST['displayviews_id']."'"
+              . " AND `type`='host'");
+      foreach ($a_items as $data) {
+         if (isset($elements[$data['itemtype']])) {
+            unset($elements[$data['itemtype']]);
+         }
+      }
       Dropdown::showFromArray('type', $elements);
       break;
 

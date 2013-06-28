@@ -159,9 +159,6 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'is_recursive', 
                                  "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
-                                 'comment', 
-                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->addField($newTable, 
                                  'last_check', 
                                  "datetime DEFAULT NULL");
          $migration->addField($newTable, 
@@ -1163,6 +1160,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                               'is_frontview', 
                               "tinyint(1) NOT NULL DEFAULT '0'"); 
+         $migration->addField($newTable, 
+                              'comment', 
+                              "text DEFAULT NULL COLLATE utf8_unicode_ci");
       $migration->migrationOneTable($newTable);
       
       
@@ -1198,6 +1198,31 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                             "entities_id");  
          $migration->addKey($newTable, 
                             "is_recursive");
+      $migration->migrationOneTable($newTable);
+      
+      
+      
+    /*
+    * Table glpi_plugin_monitoring_displayviews_users
+    */
+      $newTable = "glpi_plugin_monitoring_displayviews_users";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+         $DB->query($query);
+      }             
+         $migration->addField($newTable, 
+                              'pluginmonitoringdisplayviews_id', 
+                              "int(11) NOT NULL DEFAULT '0'");      
+         $migration->addField($newTable, 
+                              'users_id', 
+                              "int(11) NOT NULL DEFAULT '0'");   
+         $migration->addKey($newTable, 
+                            "plugin_monitoring_displayviews_id");  
+         $migration->addKey($newTable, 
+                            "users_id");
       $migration->migrationOneTable($newTable);
       
       

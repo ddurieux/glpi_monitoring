@@ -56,7 +56,7 @@ if (isset($_POST['users_id'])) {
       $_POST['users_id'] = $_SESSION['glpiID'];
    }
 }
-   
+
 if (isset ($_POST["add"])) {
    $pmDisplayview->add($_POST);
    Html::back();
@@ -84,7 +84,7 @@ if (isset ($_POST["add"])) {
       switch ($_POST["_type"]) {
          case 'User' :
             if (isset($_POST['users_id']) && $_POST['users_id']) {
-               $item = new Reminder_User();
+               $item = new PluginMonitoringDisplayview_User();
             }
             break;
 
@@ -110,6 +110,7 @@ if (isset ($_POST["add"])) {
                     //TRANS: %s is the user login
                     sprintf(__('%s adds a target'), $_SESSION["glpiname"]));
       }
+      Html::back();
    }
 }
 

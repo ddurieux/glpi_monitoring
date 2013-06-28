@@ -92,13 +92,40 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
    function view($id, $config=0) {
       global $DB, $CFG_GLPI;
 
-      $pmDisplayview = new PluginMonitoringDisplayview();
+      $pmDisplayview       = new PluginMonitoringDisplayview();
+      $pmDisplayview_rule  = new PluginMonitoringDisplayview_rule();
+      
       $pmDisplayview->getFromDB($id);
+      
+         echo "<script type='text/javascript'>
+            function fittext(itemid) {
+               document.getElementById(itemid).style.fontSize = '50px';
+               var fontsize = 50;
+               while(document.getElementById(itemid).offsetWidth > 120) {
+                  fontsize--;
+                  if (fontsize > 20) {
+                     fontsize--;
+                  }
+                  document.getElementById(itemid).style.fontSize = fontsize + 'px';
+               }
+               while(document.getElementById(itemid).offsetHeight > 67) {
+                  fontsize--;
+                  document.getElementById(itemid).style.fontSize = fontsize + 'px';
+               }
+               if (fontsize > 30) {
+                  document.getElementById(itemid).style.fontSize = '30px';
+               }
+               if (fontsize < 7) {
+                  document.getElementById(itemid).style.fontSize = '7px';
+               }
+            }
+         </script>";
       
       PluginMonitoringServicegraph::loadLib();
       
       if ($config == '1') {
          $this->addItem($id);
+         $pmDisplayview_rule->showReplayRulesForm($id);
          echo "<div id='updatecoordonates'></div>";
       } else {
          if (!is_null($pmDisplayview->fields['counter'])) {
@@ -588,7 +615,7 @@ Ext.onReady(function(){
       $elements['NULL'] = Dropdown::EMPTY_VALUE;
       $elements['PluginMonitoringDisplayview']         = __('Views', 'monitoring');
       $elements['PluginMonitoringServicescatalog']     = __('Business rules', 'monitoring');
-      $elements['service']                             = __('Resources (info)', 'monitoring');
+//      $elements['service']                             = __('Resources (info)', 'monitoring');
       $elements['host']                                = __('Host (info)', 'monitoring');
       $elements['PluginMonitoringService_graph']       = __('Resources (graph)', 'monitoring');
       $elements['PluginMonitoringComponentscatalog']   = __('Components catalog', 'monitoring');
@@ -652,7 +679,7 @@ Ext.onReady(function(){
             $ret = PluginMonitoringDisplay::getState($data2['state'], 
                                                      $data2['state_type'], 
                                                      '', 
-                                                     1);
+                                                     $data2['is_acknowledged']);
             if (strstr($ret, '_soft')) {
                $a_counter['ok']++;
             } else if ($ret == 'red') {
