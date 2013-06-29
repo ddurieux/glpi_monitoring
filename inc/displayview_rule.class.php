@@ -68,6 +68,20 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
    static function canView() {
       return PluginMonitoringProfile::haveRight("view", 'r');
    }
+   
+   
+   
+ static function cronReplayallviewrules() {
+      ini_set("max_execution_time", "0");
+      
+      $pmDisplayview_rule = new PluginMonitoringDisplayview_rule();
+      $a_rules = $pmDisplayview_rule->find();
+      foreach ($a_rules as $data) {
+         $pmDisplayview_rule->getFromDB($data['id']);
+         $pmDisplayview_rule->getItemsDynamicly($pmDisplayview_rule);
+      }
+      return true;
+   }
 
 
    
@@ -210,100 +224,103 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
       
       $devices_present = array();
       if ($pmDisplayview_rule->getFromDB($parm->fields['id'])) {
-      
-         // Load right entity
-            $pmDisplayview->getFromDB($pmDisplayview_rule->fields['plugin_monitoring_displayviews_id']);
-            $default_entity = 0;
-            if (isset($_SESSION['glpiactive_entity'])) {
-               $default_entity = $_SESSION['glpiactive_entity'];
-            }
-            $entities_isrecursive = 0;
-            if (isset($_SESSION['glpiactiveentities'])
-                    AND count($_SESSION['glpiactiveentities']) > 1) {
-               $entities_isrecursive = 1;
-            }
-            Session::changeActiveEntities($pmDisplayview->fields['entities_id'], 
-                                          $pmDisplayview->fields['is_recursive']);
-         
-         
-         $get_tmp = '';
-         $itemtype = $pmDisplayview_rule->fields['itemtype'];
-         if (isset($_GET)) {
-             $get_tmp = $_GET;  
-         }
-         if (isset($_SESSION["glpisearchcount"][$pmDisplayview_rule->fields['itemtype']])) {
-            unset($_SESSION["glpisearchcount"][$pmDisplayview_rule->fields['itemtype']]);
-         }
-         if (isset($_SESSION["glpisearchcount2"][$pmDisplayview_rule->fields['itemtype']])) {
-            unset($_SESSION["glpisearchcount2"][$pmDisplayview_rule->fields['itemtype']]);
-         }
+         if ($pmDisplayview->getFromDB($pmDisplayview_rule->fields['plugin_monitoring_displayviews_id'])) {
+            // Load right entity
 
-         $_GET = importArrayFromDB($pmDisplayview_rule->fields['condition']);
-
-         $_GET["glpisearchcount"] = count($_GET['field']);
-         if (isset($_GET['field2'])) {
-            $_GET["glpisearchcount2"] = count($_GET['field2']);
-         }
-
-         Search::manageGetValues($pmDisplayview_rule->fields['itemtype']);
-
-         $queryd = "SELECT * FROM `glpi_plugin_monitoring_displayviews_items`
-            WHERE `plugin_monitoring_displayviews_id`='".$pmDisplayview_rule->fields["plugin_monitoring_displayviews_id"]."'
-               AND `itemtype`='".$pmDisplayview_rule->fields['type']."'
-               AND `extra_infos`='".$pmDisplayview_rule->fields['itemtype']."'";
-         $result = $DB->query($queryd);
-         while ($data=$DB->fetch_array($result)) {
-            $devices_present[$data['items_id']] = $data['id'];
-         }
-         
-         $glpilist_limit = $_SESSION['glpilist_limit'];
-         $_SESSION['glpilist_limit'] = 500000;
-         $result = $pmSearch->constructSQL($itemtype, 
-                                        $_GET);
-         $_SESSION['glpilist_limit'] = $glpilist_limit;
-
-         while ($data=$DB->fetch_array($result)) {
-            if (!isset($devices_present[$data['id']])) {
-               // Verify this device has one or more resources
-               $query_h = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`"
-                       . " LEFT JOIN `glpi_plugin_monitoring_services`"
-                       . "    ON `plugin_monitoring_componentscatalogs_hosts_id`="
-                       . " `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`"
-                       . " WHERE `items_id`='".$data['id']."'"
-                       . "    AND `itemtype`='".$pmDisplayview_rule->fields['itemtype']."'"
-                       . "    AND `glpi_plugin_monitoring_services`.`id` IS NOT NULL";
-               $result_h = $DB->query($query_h);
-               if ($DB->numrows($result_h) > 0) {
-
-                  $input = array();
-                  $input['plugin_monitoring_displayviews_id'] = $pmDisplayview_rule->fields["plugin_monitoring_displayviews_id"];
-                  $input['x'] = '1';
-                  $input['y'] = '1';
-                  $input['items_id'] = $data['id'];
-                  $input['itemtype'] = $pmDisplayview_rule->fields['type'];
-                  $input['extra_infos'] = $pmDisplayview_rule->fields['itemtype'];
-
-                  $pmDisplayview_item->add($input);
+               $default_entity = 0;
+               if (isset($_SESSION['glpiactive_entity'])) {
+                  $default_entity = $_SESSION['glpiactive_entity'];
                }
-            } else {
-               // Verify this device has one or more resources
-               $query_h = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`"
-                       . " LEFT JOIN `glpi_plugin_monitoring_services`"
-                       . "    ON `plugin_monitoring_componentscatalogs_hosts_id`="
-                       . " `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`"
-                       . " WHERE `items_id`='".$data['id']."'"
-                       . "    AND `itemtype`='".$pmDisplayview_rule->fields['itemtype']."'"
-                       . "    AND `glpi_plugin_monitoring_services`.`id` IS NOT NULL";
-               $result_h = $DB->query($query_h);
-               if ($DB->numrows($result_h) > 0) {
-                  unset($devices_present[$data['id']]);
+               $entities_isrecursive = 0;
+               if (isset($_SESSION['glpiactiveentities'])
+                       AND count($_SESSION['glpiactiveentities']) > 1) {
+                  $entities_isrecursive = 1;
+               }
+               Session::changeActiveEntities($pmDisplayview->fields['entities_id'], 
+                                             $pmDisplayview->fields['is_recursive']);
+
+
+            $get_tmp = '';
+            $itemtype = $pmDisplayview_rule->fields['itemtype'];
+            if (isset($_GET)) {
+                $get_tmp = $_GET;  
+            }
+            if (isset($_SESSION["glpisearchcount"][$pmDisplayview_rule->fields['itemtype']])) {
+               unset($_SESSION["glpisearchcount"][$pmDisplayview_rule->fields['itemtype']]);
+            }
+            if (isset($_SESSION["glpisearchcount2"][$pmDisplayview_rule->fields['itemtype']])) {
+               unset($_SESSION["glpisearchcount2"][$pmDisplayview_rule->fields['itemtype']]);
+            }
+
+            $_GET = importArrayFromDB($pmDisplayview_rule->fields['condition']);
+
+            $_GET["glpisearchcount"] = count($_GET['field']);
+            if (isset($_GET['field2'])) {
+               $_GET["glpisearchcount2"] = count($_GET['field2']);
+            }
+
+            Search::manageGetValues($pmDisplayview_rule->fields['itemtype']);
+
+            $queryd = "SELECT * FROM `glpi_plugin_monitoring_displayviews_items`
+               WHERE `plugin_monitoring_displayviews_id`='".$pmDisplayview_rule->fields["plugin_monitoring_displayviews_id"]."'
+                  AND `itemtype`='".$pmDisplayview_rule->fields['type']."'
+                  AND `extra_infos`='".$pmDisplayview_rule->fields['itemtype']."'";
+            $result = $DB->query($queryd);
+            while ($data=$DB->fetch_array($result)) {
+               $devices_present[$data['items_id']] = $data['id'];
+            }
+
+            $glpilist_limit = $_SESSION['glpilist_limit'];
+            $_SESSION['glpilist_limit'] = 500000;
+            $result = $pmSearch->constructSQL($itemtype, 
+                                           $_GET);
+            $_SESSION['glpilist_limit'] = $glpilist_limit;
+
+            while ($data=$DB->fetch_array($result)) {
+               if (!isset($devices_present[$data['id']])) {
+                  // Verify this device has one or more resources
+                  $query_h = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`"
+                          . " LEFT JOIN `glpi_plugin_monitoring_services`"
+                          . "    ON `plugin_monitoring_componentscatalogs_hosts_id`="
+                          . " `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`"
+                          . " WHERE `items_id`='".$data['id']."'"
+                          . "    AND `itemtype`='".$pmDisplayview_rule->fields['itemtype']."'"
+                          . "    AND `glpi_plugin_monitoring_services`.`id` IS NOT NULL";
+                  $result_h = $DB->query($query_h);
+                  if ($DB->numrows($result_h) > 0) {
+
+                     $input = array();
+                     $input['plugin_monitoring_displayviews_id'] = $pmDisplayview_rule->fields["plugin_monitoring_displayviews_id"];
+                     $input['x'] = '1';
+                     $input['y'] = '1';
+                     $input['items_id'] = $data['id'];
+                     $input['itemtype'] = $pmDisplayview_rule->fields['type'];
+                     $input['extra_infos'] = $pmDisplayview_rule->fields['itemtype'];
+
+                     $pmDisplayview_item->add($input);
+                  }
+               } else {
+                  // Verify this device has one or more resources
+                  $query_h = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`"
+                          . " LEFT JOIN `glpi_plugin_monitoring_services`"
+                          . "    ON `plugin_monitoring_componentscatalogs_hosts_id`="
+                          . " `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`"
+                          . " WHERE `items_id`='".$data['id']."'"
+                          . "    AND `itemtype`='".$pmDisplayview_rule->fields['itemtype']."'"
+                          . "    AND `glpi_plugin_monitoring_services`.`id` IS NOT NULL";
+                  $result_h = $DB->query($query_h);
+                  if ($DB->numrows($result_h) > 0) {
+                     unset($devices_present[$data['id']]);
+                  }
                }
             }
+
+            // Reload current entity
+               Session::changeActiveEntities($default_entity,
+                                    $entities_isrecursive);
+         } else {
+            $pmDisplayview->delete(array('id' => $pmDisplayview_rule->fields['plugin_monitoring_displayviews_id']));
          }
-         
-         // Reload current entity
-            Session::changeActiveEntities($default_entity,
-                                 $entities_isrecursive);
       }
       foreach ($devices_present as $id) {
          $pmDisplayview_item->delete(array('id'=>$id));

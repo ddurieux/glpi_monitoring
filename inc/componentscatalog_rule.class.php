@@ -150,7 +150,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       echo __('Item type')."&nbsp;:";
       echo "</td>";
       echo "<td>";
-      
+
       Dropdown::showItemType($networkport_types);
       echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$componentscatalogs_id."' >";
       echo "</td>";
@@ -293,54 +293,74 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
             $itemtype_device = $pmCc_Rule->fields['itemtype'];
             $items_id_device = $data['id'];
             if ($itemtype_device == 'PluginMonitoringNetworkport') {
+//               $queryh = "SELECT `itemtype`, `items_id`,
+//                     `glpi_plugin_monitoring_services`.`id`,                
+//                     `glpi_plugin_monitoring_componentscatalogs_hosts`.`id` as hid
+//                     FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+//                  LEFT JOIN `glpi_plugin_monitoring_services`
+//                     ON `plugin_monitoring_componentscatalogs_hosts_id` = 
+//                        `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
+//                  WHERE `plugin_monitoring_componentscalalog_id`='".$pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"]."'
+//                     AND `itemtype`='".$itemtype_device."'
+//                     AND `items_id`='".$items_id_device."'
+//                     AND `glpi_plugin_monitoring_services`.`id` IS NULL";
+//               $resulth = $DB->query($queryh);
+//               while ($datah=$DB->fetch_array($resulth)) {
+//                  $pmComponentscatalog_Host->delete(array('id'=>$datah['hid']));
+//               }
+               
                $pmNetworkport = new PluginMonitoringNetworkport();
                $pmNetworkport->getFromDB($data['id']);
                $itemtype_device = $pmNetworkport->fields['itemtype'];
                $items_id_device = $pmNetworkport->fields['items_id'];
                $networkports_id = $pmNetworkport->fields['networkports_id'];
+               $networkPort = new NetworkPort();
                
-               $queryh = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
-                  LEFT JOIN `glpi_plugin_monitoring_services`
-                     ON `plugin_monitoring_componentscatalogs_hosts_id` = 
-                        `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
-                  WHERE `plugin_monitoring_componentscalalog_id`='".$pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"]."'
-                     AND `itemtype`='".$itemtype_device."'
-                     AND `items_id`='".$items_id_device."'
-                     AND `networkports_id`='".$networkports_id."'
-                        LIMIT 1";
-               $resulth = $DB->query($queryh);
-               if ($DB->numrows($resulth) == '0') {
-                  $input = array();
-                  $input['plugin_monitoring_componentscalalog_id'] = $pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"];
-                  $input['is_static'] = '0';
-                  $input['items_id'] = $items_id_device;
-                  $input['itemtype'] = $itemtype_device;
-                  $componentscatalogs_hosts_id = $pmComponentscatalog_Host->add($input);
-                  $pmComponentscatalog_Host->linkComponentsToItem($pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"], 
-                                                                  $componentscatalogs_hosts_id,
-                                                                  $networkports_id);
+               if ($networkPort->getFromDB($networkports_id)) {   
+                  
+                  $querynet = "SELECT `itemtype`, `items_id`,
+                        `glpi_plugin_monitoring_services`.`id`               
+                        FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+                     LEFT JOIN `glpi_plugin_monitoring_services`
+                        ON `plugin_monitoring_componentscatalogs_hosts_id` = 
+                           `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
+                     WHERE `plugin_monitoring_componentscalalog_id`='".$pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"]."'
+                        AND `itemtype`='".$itemtype_device."'
+                        AND `items_id`='".$items_id_device."'
+                        AND `networkports_id`='".$networkports_id."'
+                           LIMIT 1";
+                   $resultnet = $DB->query($querynet);
+                   if ($DB->numrows($resultnet) == 0) {
+                     $input = array();
+                     $input['plugin_monitoring_componentscalalog_id'] = $pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"];
+                     $input['is_static'] = '0';
+                     $input['items_id'] = $items_id_device;
+                     $input['itemtype'] = $itemtype_device;
+                     $componentscatalogs_hosts_id = $pmComponentscatalog_Host->add($input);
+                     $pmComponentscatalog_Host->linkComponentsToItem($pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"], 
+                                                                     $componentscatalogs_hosts_id,
+                                                                     $networkports_id);
+                  } else {
+                     $data2 = $DB->fetch_assoc($resultnet);
+                     // modify entity of services (if entity of device is changed)
+                        $itemtype = $data2['itemtype'];
+                        $item = new $itemtype();
+                        $item->getFromDB($data2['items_id']);
+                        $queryu = "UPDATE `glpi_plugin_monitoring_services`
+                           SET `entities_id`='".$item->fields['entities_id']."'
+                              WHERE `id`='".$data2['id']."'";
+                        $DB->query($queryu);                  
+
+
+                     unset($devicesnetworkport_present[$data2['id']]);
+                  }
                } else {
-                  $data2 = $DB->fetch_assoc($resulth);
-                  // modify entity of services (if entity of device is changed)
-                     $itemtype = $data2['itemtype'];
-                     $item = new $itemtype();
-                     $item->getFromDB($data2['items_id']);
-                     $queryu = "UPDATE `glpi_plugin_monitoring_services`
-                        SET `entities_id`='".$item->fields['entities_id']."'
-                           WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$data2['id']."'";
-                     $DB->query($queryu);                  
-
-
-                  unset($devicesnetworkport_present[$data2['id']]);
-               }
+                  $pmNetworkport->delete($pmNetworkport->fields);
+               }    
                // Reload current entity
                Session::changeActiveEntities($default_entity,
                              $entities_isrecursive);
-               foreach ($devicesnetworkport_present as $id => $num) {
-                  $_SESSION['plugin_monitoring_hosts']['itemtype'] = $itemtype_device;
-                  $_SESSION['plugin_monitoring_hosts']['items_id'] = $items_id_device;
-                  $pmService->delete(array('id'=>$id));
-               }
+               
             } else {
                $queryh = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
                   WHERE `plugin_monitoring_componentscalalog_id`='".$pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"]."'
@@ -378,6 +398,12 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
          // Reload current entity
             Session::changeActiveEntities($default_entity,
                                  $entities_isrecursive);
+            
+         foreach ($devicesnetworkport_present as $id => $num) {
+            $_SESSION['plugin_monitoring_hosts']['itemtype'] = $itemtype_device;
+            $_SESSION['plugin_monitoring_hosts']['items_id'] = $items_id_device;
+            $pmService->delete(array('id'=>$id));
+         }
       } else { // Purge
          $queryd = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
             WHERE `plugin_monitoring_componentscalalog_id`='".$parm->fields["plugin_monitoring_componentscalalog_id"]."'
@@ -391,6 +417,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       foreach ($devices_present as $id => $num) {
          $pmComponentscatalog_Host->delete(array('id'=>$id));
       }
+      return true;
    }
    
    

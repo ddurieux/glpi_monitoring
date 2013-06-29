@@ -1162,7 +1162,6 @@ $p = array();
                   $ORDER.
                   $LIMIT;
       }
-
       $DBread->query("SET SESSION group_concat_max_len = 4096;");
       $result = $DBread->query($QUERY);
       /// Check group concat limit : if warning : increase limit

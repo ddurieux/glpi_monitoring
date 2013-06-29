@@ -56,8 +56,10 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "<table class='tab_cadre_fixe' width='950'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th width='19%' colspan='2'>";
-      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/restartshinken.form.php'>".
-              __('Restart Shinken', 'monitoring')."</a>";
+      if (PluginMonitoringProfile::haveRight("restartshinken", 'w')) {
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/restartshinken.form.php'>".
+                 __('Restart Shinken', 'monitoring')."</a>";
+      }
       echo "</th>";
       echo "<th width='27%' colspan='2'>";
       if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
@@ -76,10 +78,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       echo "</th>";
       echo "<th colspan='2'>";
-      $this->displayPuce('service');
-      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/service.php'>";
-      echo __('All resources', 'monitoring');
-      echo "</a>";
+      if (PluginMonitoringProfile::haveRight("allressources", 'r')) {
+         $this->displayPuce('service');
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/service.php'>";
+         echo __('All resources', 'monitoring');
+         echo "</a>";
+      }
       echo "</th>";
       echo "</tr>";
       echo "</table>";

@@ -488,4 +488,12 @@ function plugin_monitoring_searchOptionsValues($item) {
    
 }
 
+function plugin_monitoring_ReplayRulesForItem($args) {
+   
+   $itemtype = $args[0];
+   $items_id = $args[1];
+   $item = new $itemtype();
+   $item->getFromDB($items_id);
+   PluginMonitoringComponentscatalog_rule::isThisItemCheckRule($item);
+}
 ?>

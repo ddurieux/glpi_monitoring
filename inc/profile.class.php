@@ -85,6 +85,8 @@ class PluginMonitoringProfile extends CommonDBTM {
          $input['command'] = 'w';
          $input['config'] = 'w';
          $input['check'] = 'w';
+         $input['allressources'] = 'w';
+         $input['restartshinken'] = 'w';
          $pmProfile = new self();
          $pmProfile->add($input);
       }
@@ -237,6 +239,21 @@ class PluginMonitoringProfile extends CommonDBTM {
       echo "</td>";
       echo "<td>";
       Profile::dropdownNoneReadWrite("check", $this->fields["check"], 1, 1, 1);
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo __('See all resources in dashboard', 'monitoring')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      Profile::dropdownNoneReadWrite("allressources", $this->fields["allressources"], 1, 1, 0);
+      echo "</td>";
+      echo "<td>";
+      echo __('Restart shinken', 'monitoring')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      Profile::dropdownNoneReadWrite("restartshinken", $this->fields["restartshinken"], 1, 0, 1);
       echo "</td>";
       echo "</tr>";
       

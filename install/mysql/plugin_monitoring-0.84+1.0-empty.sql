@@ -568,7 +568,9 @@ CREATE TABLE `glpi_plugin_monitoring_profiles` (
   `component` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `command` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `config` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `check` char(1) COLLATE utf8_unicode_ci DEFAULT NULL
+  `check` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `allressources` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `restartshinken` char(1) COLLATE utf8_unicode_ci DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

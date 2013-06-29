@@ -617,7 +617,7 @@ Ext.onReady(function(){
       $elements['PluginMonitoringServicescatalog']     = __('Business rules', 'monitoring');
 //      $elements['service']                             = __('Resources (info)', 'monitoring');
       $elements['host']                                = __('Host (info)', 'monitoring');
-      $elements['PluginMonitoringService_graph']       = __('Resources (graph)', 'monitoring');
+      $elements['PluginMonitoringService']       = __('Resources (graph)', 'monitoring');
       $elements['PluginMonitoringComponentscatalog']   = __('Components catalog', 'monitoring');
       $elements['PluginMonitoringWeathermap']          = __('Weathermap', 'monitoring');
       

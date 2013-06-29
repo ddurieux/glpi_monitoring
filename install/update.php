@@ -2302,6 +2302,12 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                               'check', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'allressources', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'restartshinken', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
       $migration->migrationOneTable($newTable);
       
       
@@ -2746,6 +2752,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    }
    if (!$crontask->getFromDBbyName('PluginMonitoringUnavaibility', 'unavaibility')) {
       CronTask::Register('PluginMonitoringUnavaibility', 'unavaibility', '300', 
+                      array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
+   }
+   if (!$crontask->getFromDBbyName('PluginMonitoringDisplayview_rule', 'replayallviewrules')) {
+      CronTask::Register('PluginMonitoringDisplayview_rule', 'replayallviewrules', '1200', 
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
    }
    
