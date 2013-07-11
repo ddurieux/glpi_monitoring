@@ -1220,7 +1220,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               'users_id', 
                               "int(11) NOT NULL DEFAULT '0'");   
          $migration->addKey($newTable, 
-                            "plugin_monitoring_displayviews_id");  
+                            "pluginmonitoringdisplayviews_id");  
          $migration->addKey($newTable, 
                             "users_id");
       $migration->migrationOneTable($newTable);
