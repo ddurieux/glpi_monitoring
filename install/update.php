@@ -1191,7 +1191,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               'is_recursive', 
                               "tinyint(1) NOT NULL DEFAULT '0'");   
          $migration->addKey($newTable, 
-                            "plugin_monitoring_displayviews_id");  
+                            "pluginmonitoringdisplayviews_id");  
          $migration->addKey($newTable, 
                             "groups_id");  
          $migration->addKey($newTable, 
