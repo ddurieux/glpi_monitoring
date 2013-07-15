@@ -69,6 +69,12 @@ class PluginMonitoringTag extends CommonDBTM {
       return PluginMonitoringProfile::haveRight("config", 'r');
    }
    
+   
+   
+   static function canDelete() {
+      return FALSE;
+   }
+   
 
    
    function getSearchOptions() {
@@ -121,7 +127,7 @@ class PluginMonitoringTag extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Tag', 'monitoring')." :</td>";
       echo "<td>";
-      echo "<input type='text' name='tag' value='".$this->fields["tag"]."' size='30'/>";
+      echo $this->fields["tag"];
       echo "</td>";
       echo "<td>".__('Username (Shinken webservice)', 'monitoring')."&nbsp;:</td>";
       echo "<td>";
