@@ -437,7 +437,7 @@ Ext.onReady(function(){
             $itemtype2 = $pmComponentscatalog_Host->fields['itemtype'];
             $item2 = new $itemtype2();
             $item2->getFromDB($pmComponentscatalog_Host->fields['items_id']);
-            $title .= str_replace("'", "\"", $item2->getLink()." (".$item2->getTypeName().")");            
+            $title .= str_replace("'", "\"", $item2->getLink()." (".$item2->getTypeName()." / ".$data['extra_infos'].")");            
          }
          $width = "width: 475,";
       } else if ($itemtype == "PluginMonitoringWeathermap") {
