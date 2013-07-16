@@ -72,6 +72,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       $a_list["check_snmp_storage"] = "check_snmp_storage";
       $a_list["check_tcp"] = "check_tcp";
       $a_list["check_iostat_bsd"] = "check_iostat_bsd";
+      $a_list["cucumber_nagios"] = "cucumber_nagios";
             
       ksort($a_list);
       return $a_list;
@@ -677,6 +678,41 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       $data['parseperfdata'][] = array('name' => 'svc_t',
                                        'DS'   => $ds);
       
+      return json_encode($data);
+   }
+   
+   
+   
+   static function perfdata_cucumber_nagios() {
+
+      $data = array();
+      $data['command'] = 'cucumber_nagios';
+      $data['parseperfdata'] = array();
+
+      $ds = array();
+      $ds[] = array('dsname' => 'passed');
+      $data['parseperfdata'][] = array('name' => 'passed',
+                                       'DS'   => $ds);
+
+      $ds = array();
+      $ds[] = array('dsname' => 'failed');
+      $data['parseperfdata'][] = array('name' => 'failed',
+                                       'DS'   => $ds);
+
+      $ds = array();
+      $ds[] = array('dsname' => 'nosteps');
+      $data['parseperfdata'][] = array('name' => 'nosteps',
+                                       'DS'   => $ds);
+
+      $ds = array();
+      $ds[] = array('dsname' => 'total');
+      $data['parseperfdata'][] = array('name' => 'total',
+                                       'DS'   => $ds);
+
+      $ds = array();
+      $ds[] = array('dsname' => 'time');
+      $data['parseperfdata'][] = array('name' => 'time',
+                                       'DS'   => $ds);
       return json_encode($data);
    }
 

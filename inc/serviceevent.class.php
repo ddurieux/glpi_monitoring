@@ -156,7 +156,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       $a_json = json_decode(PluginMonitoringPerfdata::$func());
       
       while ($edata=$DB->fetch_array($result)) {
-         $a_perfdata = explode(" ", $edata['perf_data']);
+         $a_perfdata = explode(" ", trim($edata['perf_data']));
          $a_time = explode(" ", $edata['date']);
          $a_time2 = explode(":", $a_time[1]);
          $day = explode("-", $a_time[0]);
