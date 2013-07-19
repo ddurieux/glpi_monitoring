@@ -73,6 +73,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       $a_list["check_tcp"] = "check_tcp";
       $a_list["check_iostat_bsd"] = "check_iostat_bsd";
       $a_list["cucumber_nagios"] = "cucumber_nagios";
+      $a_list["check_nginx_status"] = "check_nginx_status";
             
       ksort($a_list);
       return $a_list;
@@ -715,6 +716,50 @@ class PluginMonitoringPerfdata extends CommonDBTM {
                                        'DS'   => $ds);
       return json_encode($data);
    }
+   
+   
+   
+   static function perfdata_check_nginx_status() {
 
+      $data = array();
+      $data['command'] = 'check_nginx_status';
+      $data['parseperfdata'] = array();
+
+      $ds = array();
+      $ds[] = array('dsname' => 'Writing');
+      $data['parseperfdata'][] = array('name' => 'Writing',
+                                       'DS'   => $ds);
+
+      $ds = array();
+      $ds[] = array('dsname' => 'Reading');
+      $data['parseperfdata'][] = array('name' => 'Reading',
+                                       'DS'   => $ds);
+
+      $ds = array();
+      $ds[] = array('dsname' => 'Waiting');
+      $data['parseperfdata'][] = array('name' => 'Waiting',
+                                       'DS'   => $ds);
+
+      $ds = array();
+      $ds[] = array('dsname' => 'Active');
+      $data['parseperfdata'][] = array('name' => 'Active',
+                                       'DS'   => $ds);
+
+      $ds = array();
+      $ds[] = array('dsname' => 'ReqPerSec');
+      $data['parseperfdata'][] = array('name' => 'ReqPerSec',
+                                       'DS'   => $ds);
+
+      $ds = array();
+      $ds[] = array('dsname' => 'ConnPerSec');
+      $data['parseperfdata'][] = array('name' => 'ConnPerSec',
+                                       'DS'   => $ds);
+
+      $ds = array();
+      $ds[] = array('dsname' => 'ReqPerConn');
+      $data['parseperfdata'][] = array('name' => 'ReqPerConn',
+                                       'DS'   => $ds);
+      return json_encode($data);
+   }
 }
 ?>
