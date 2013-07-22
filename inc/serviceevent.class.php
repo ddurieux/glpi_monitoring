@@ -186,9 +186,17 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                               $val = round(str_replace("ms", "", $val),0);
                            } else if (strstr($val, "bps")) {
                               $val = round(str_replace("bps", "", $val),0);
+                           } else if (strstr($val, "KB")) {
+                              $val = round(str_replace("KB", "", $val),0);
+                              $val = $val * 1000; // Have in B
+                              $is_mb = 1;
                            } else if (strstr($val, "MB")) {
                               $val = round(str_replace("MB", "", $val),0);
                               $val = $val * 1000000; // Have in B
+                              $is_mb = 1;
+                           } else if (strstr($val, "TB")) {
+                              $val = round(str_replace("TB", "", $val),0);
+                              $val = $val * 1000000000; // Have in B
                               $is_mb = 1;
                            } else if (strstr($val, "B")) {
                               $val = round(str_replace("B", "", $val),0);
