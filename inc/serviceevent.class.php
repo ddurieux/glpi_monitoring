@@ -178,52 +178,59 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                        AND isset($a_a_perfdata[1])) {
                      
                   $a_perfdata_final = explode(";", $a_a_perfdata[1]);
-                  $is_mb = 0;
-                  foreach ($a_perfdata_final as $nb_val=>$val) {                     
+                  //New perfdata row, no unity knew.
+                  unset($unity);
+                  foreach ($a_perfdata_final as $nb_val=>$val) {
+
+                        //No value, no graph
+                        if (empty($val))
+                           continue;
 //                     if (isset($a_ref[$data->DS[$nb_val]->dsname])) {
-                        if ($val != '') {
-                           if (strstr($val, "ms")) {
-                              $val = round(str_replace("ms", "", $val),0);
-                           } else if (strstr($val, "bps")) {
-                              $val = round(str_replace("bps", "", $val),0);
-                           } else if (strstr($val, "KB")) {
-                              $val = round(str_replace("KB", "", $val),0);
+                        $matches = array();
+                        preg_match("/^([\d-\.]*)(.*)/",$val,$matches);
+                        //Numeric part is data value
+                        $val = (float)$matches[1];
+                        //Maintain for a same perfdata row, unity data. If set it's normally a new perfdata row.
+                        if ($matches[2])
+                           $unity = $matches[2];
+
+                        switch ($unity) {                           
+                           case 'ms':
+                           case 'bps':
+                           case 'B' :
+                           case "Bits/s" :
+                           case '%' :
+                              $val = round($val,0);
+                              break;
+                           case 'KB' :
                               $val = $val * 1000; // Have in B
-                              $is_mb = 1;
-                           } else if (strstr($val, "MB")) {
-                              $val = round(str_replace("MB", "", $val),0);
+                              break;                              
+                           case 'MB' :
                               $val = $val * 1000000; // Have in B
-                              $is_mb = 1;
-                           } else if (strstr($val, "TB")) {
-                              $val = round(str_replace("TB", "", $val),0);
+                              break;                              
+                           case 'TB':
                               $val = $val * 1000000000; // Have in B
-                              $is_mb = 1;
-                           } else if (strstr($val, "B")) {
-                              $val = round(str_replace("B", "", $val),0);
-                           } else if (strstr($val, "Bits/s")) {
-                              $val = round(str_replace("Bits/s", "", $val),0);
-                           } else if (strstr($val, "s")) {
-                              $val = round((str_replace("s", "", $val) * 1000),0);
-                           } else if (strstr($val, "%")) {
-                              $val = round(str_replace("%", "", $val),0);
-                           } else if (!strstr($val, "timeout")){
-                              if ($is_mb == 1) {
-                                 $val = $val * 1000000;
-                              } else {                              
-                                 if ($val > 2) {
-                                    $val = round($val);
-                                 } else {
-                                    $val = round($val, 2);
-                                 }
+                              break;                              
+                           case 's' :
+                              $val = round($val * 1000,0);
+                              break;                             
+                           case 'timeout' :  
+                              if ($val > 2) {
+                                 $val = round($val);
+                              } else {
+                                 $val = round($val, 2);
                               }
-                           } else {
-                              $val = 0;
-                           }                           
-                           if (!isset($mydatat[$data->DS[$nb_val]->dsname])) {
-                              $mydatat[$data->DS[$nb_val]->dsname] = array();
-                           }
-                           array_push($mydatat[$data->DS[$nb_val]->dsname], $val);
+                              break;                              
+                           default :
+                              if (!is_numeric($val))
+                                 $val = 0;
+                              break;                                                   
+                        }                                                
+
+                        if (!isset($mydatat[$data->DS[$nb_val]->dsname])) {
+                           $mydatat[$data->DS[$nb_val]->dsname] = array();
                         }
+                        array_push($mydatat[$data->DS[$nb_val]->dsname], $val);
 //                     }
                   }
                } else {
