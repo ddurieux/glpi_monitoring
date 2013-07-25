@@ -166,18 +166,27 @@ class PluginMonitoringCheck extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Max check attempts (number of retries)', 'monitoring')."&nbsp;:</td>";
       echo "<td align='center'>";
-      Dropdown::showInteger("max_check_attempts", $this->fields["max_check_attempts"], 1, 100);
+      Dropdown::showNumber("max_check_attempts", array(
+                'value' => $this->fields['max_check_attempts'], 
+                'min'   => 1)
+      );
       echo "</td>";
       echo "</tr>";
       
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Time in minutes between 2 checks', 'monitoring')."&nbsp;:</td>";
       echo "<td align='center'>";
-      Dropdown::showInteger("check_interval", $this->fields["check_interval"], 1, 100);
+      Dropdown::showNumber("check_interval", array(
+                'value' => $this->fields['check_interval'], 
+                'min'   => 1)
+      );
       echo "</td>";
       echo "<td>".__('Time in minutes between 2 retries', 'monitoring')."&nbsp;:</td>";
       echo "<td align='center'>";
-      Dropdown::showInteger("retry_interval", $this->fields["retry_interval"], 1, 100);
+      Dropdown::showNumber("retry_interval", array(
+                'value' => $this->fields['retry_interval'], 
+                'min'   => 1)
+      );
       echo "</td>";
       echo "</tr>";
       

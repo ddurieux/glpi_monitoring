@@ -117,7 +117,11 @@ class PluginMonitoringConfig extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Logs retention (in days)', 'monitoring')."&nbsp;:</td>";
       echo "<td align='center'>";
-      Dropdown::showInteger("logretention", $this->fields['logretention'], 0, 1000);
+      Dropdown::showNumber("logretention", array(
+                'value' => $this->fields['logretention'], 
+                'min'   => 0, 
+                'max'   => 1000)
+      );
       echo "</td>";
       echo "<td>";
       echo __('Timezones (for graph)', 'monitoring')."&nbsp:";

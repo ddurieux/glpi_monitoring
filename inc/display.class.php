@@ -1533,7 +1533,12 @@ Ext.onReady(function(){
          echo "<td align='right'>";
          echo __('Page refresh (in seconds)', 'monitoring')." : ";
          echo "&nbsp;";
-         Dropdown::showInteger("_refresh", $_SESSION['glpi_plugin_monitoring']['_refresh'], 30, 1000, 10);
+         Dropdown::showNumber("_refresh", array(
+                'value' => $_SESSION['glpi_plugin_monitoring']['_refresh'], 
+                'min'   => 30, 
+                'max'   => 1000,
+                'step'  => 10)
+         );
          echo "&nbsp;";
          echo "<input type='submit' name='sessionupdate' class='submit' value=\"".__('Post')."\">";
          echo "</td>";

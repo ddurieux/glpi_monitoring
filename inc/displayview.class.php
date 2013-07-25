@@ -329,7 +329,11 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       echo __('Width', 'monitoring')." (px) :";
       echo "</td>";
       echo "<td>";
-      Dropdown::showInteger("width", $this->fields['width'], 950, 3000);
+      Dropdown::showNumber("width", array(
+                'value' => $this->fields['width'], 
+                'min'   => 950, 
+                'max'   => 3000)
+      );
       echo "</td>";
       echo "<td>";
       echo __('Active');

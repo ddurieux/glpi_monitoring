@@ -338,7 +338,12 @@ LINK DEFAULT
       echo "</td>";
       echo "<td>".__('Width', 'monitoring')."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::showInteger("width", $this->fields['width'], 100, 3000,20);
+      Dropdown::showNumber("width", array(
+                'value' => $this->fields['width'], 
+                'min'   => 100, 
+                'max'   => 3000,
+                'step'  => 20)
+      );
       echo "</td>";
       echo "</tr>";
       
@@ -358,7 +363,12 @@ LINK DEFAULT
       echo "</td>";
       echo "<td>".__('Height', 'monitoring')."&nbsp;:</td>";
       echo "<td>";
-      Dropdown::showInteger("height", $this->fields['height'], 100, 3000, 20);
+      Dropdown::showNumber("height", array(
+                'value' => $this->fields['height'], 
+                'min'   => 100, 
+                'max'   => 3000,
+                'step'  => 20)
+      );
       echo "</td>";
       echo "</tr>";
       

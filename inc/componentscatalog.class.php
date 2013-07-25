@@ -183,7 +183,11 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             } else {
                $this->fields['notification_interval'] = 30;
             }
-            Dropdown::showInteger('notification_interval', $this->fields['notification_interval'], 1, 1000);
+            Dropdown::showNumber('notification_interval', array(
+                'value' => $this->fields['notification_interval'], 
+                'min'   => 1, 
+                'max'   => 1000)
+            );
             break;
       }
    }
@@ -542,7 +546,11 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       echo '<td>';
       echo '</td>';
       echo '<td colspan="2">';
-      Dropdown::showInteger("synthesenumber", "12", "2", "30");
+      Dropdown::showNumber("synthesenumber", array(
+                'value' => 12, 
+                'min'   => 2, 
+                'max'   => 30)
+      );
       echo "&nbsp;";
       $a_time = array('week' => __('Week'),
                       'month' => __('Month'),
@@ -569,7 +577,11 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       echo '<td>';
       echo '</td>';
       echo '<td colspan="2">';
-      Dropdown::showInteger("syntheseplusnumber", "12", "2", "30");
+      Dropdown::showNumber("syntheseplusnumber", array(
+                'value' => 12, 
+                'min'   => 2, 
+                'max'   => 30)
+      );
       echo "&nbsp;";
       $a_time = array('week' => __('Week'),
                       'month' => __('Month'),
