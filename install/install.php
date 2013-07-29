@@ -138,6 +138,7 @@ function pluginMonitoringUninstall() {
    global $DB;
 
    if (file_exists(GLPI_PLUGIN_DOC_DIR.'/monitoring')) {
+      require_once GLPI_ROOT . "/plugins/monitoring/inc/config.class.php";
       $pmConfig = new PluginMonitoringConfig();
       $pmConfig->rrmdir(GLPI_PLUGIN_DOC_DIR.'/monitoring');
    }

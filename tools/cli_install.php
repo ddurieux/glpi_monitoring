@@ -52,7 +52,7 @@ include ("../../../inc/includes.php");
 $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
 $_SESSION['glpilanguage']  = "en_GB";
 
-Session::loadLanguage();
+Session::LoadLanguage();
 
 // Only show errors
 $CFG_GLPI["debug_sql"]        = $CFG_GLPI["debug_vars"] = 0;
@@ -73,6 +73,7 @@ if (!$DB->connected) {
 class CliMigration extends Migration {
 
    function __construct($ver) {
+
       $this->deb     = time();
       $this->version = $ver;
    }
@@ -90,7 +91,7 @@ class CliMigration extends Migration {
    }
 
 
-   function displayWarning($msg, $red=false) {
+   function displayWarning($msg, $red=FALSE) {
 
       if ($red) {
          $msg = "** $msg";
@@ -106,14 +107,12 @@ if (!TableExists("glpi_configs")) {
 }
 
 $plugin = new Plugin();
-   
-if (!isset($_SERVER['argv'][1])) {
 
-   include (GLPI_ROOT . "/plugins/monitoring/install/update.php");
-   include (GLPI_ROOT . "/plugins/monitoring/locales/en_GB.php");
-   $current_version = pluginMonitoringGetCurrentVersion(PLUGIN_MONITORING_VERSION);
 
-   $migration = new CliMigration($current_version);
+include (GLPI_ROOT . "/plugins/monitoring/install/update.php");
+$current_version = pluginMonitoringGetCurrentVersion(PLUGIN_MONITORING_VERSION);
+
+$migration = new CliMigration($current_version);
 
    if (!isset($current_version)) {
       $current_version = 0;
@@ -129,29 +128,36 @@ if (!isset($_SERVER['argv'][1])) {
 
    // To prevent problem of execution time
    ini_set("max_execution_time", "0");
+   ini_set("memory_limit", "-1");
 
+   $mess = '';
    if (($current_version != PLUGIN_MONITORING_VERSION)
         AND $current_version!='0') {
-      pluginMonitoringUpdate($current_version, $migration);
-      $migration->displayWarning("Update done.");
+      $mess = "Update needed.";
    } else if ($current_version == PLUGIN_MONITORING_VERSION) {
-      $migration->displayWarning("No migration needed.");
+      $mess = "No migration needed.";
    } else {
-      include (GLPI_ROOT . "/plugins/monitoring/install/install.php");
-      pluginMonitoringInstall(PLUGIN_MONITORING_VERSION, $migration);
-      $migration->displayWarning("installation done.");
+      $mess = "installation done.";
    }
 
+   $migration->displayWarning($mess);
+
    $plugin->getFromDBbyDir("monitoring");
-   $plugin->load("monitoring");
+   print("Installing Plugin...\n");
+   $plugin->install($plugin->fields['id']);
+   print("Install Done\n");
+   print("Activating Plugin...\n");
    $plugin->activate($plugin->fields['id']);
+   print("Activation Done\n");
+   print("Loading Plugin...\n");
    $plugin->load("monitoring");
-}
+   print("Load Done...\n");
 
 
 if (in_array('--optimize', $_SERVER['argv'])) {
 
    $migration->displayTitle(__('Optimizing tables'));
+
    DBmysql::optimize_tables($migration);
 
    $migration->displayWarning("Optimize done.");

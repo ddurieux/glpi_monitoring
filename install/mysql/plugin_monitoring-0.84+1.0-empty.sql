@@ -146,7 +146,6 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_monitoring_servicegraphs` (
 
 
 
-
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_contacttemplates`;
 
 CREATE TABLE `glpi_plugin_monitoring_contacttemplates` (
@@ -297,7 +296,7 @@ CREATE TABLE `glpi_plugin_monitoring_displayviews_items` (
    `itemtype` varchar(100) DEFAULT NULL,
    `extra_infos` varchar(255) DEFAULT NULL,
    PRIMARY KEY (`id`),
-   KEY `plugin_monitoring_displayviews_id` (`plugin_monitoring_displayviews_id`) 
+   KEY `plugin_monitoring_displayviews_id` (`plugin_monitoring_displayviews_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -678,4 +677,3 @@ CREATE TABLE `glpi_plugin_monitoring_tags` (
   `password` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
