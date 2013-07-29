@@ -35,7 +35,7 @@
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
-   @since     2011
+   @since     2013
  
    ------------------------------------------------------------------------
  */
@@ -44,25 +44,13 @@ include ("../../../inc/includes.php");
 
 Session::checkCentralAccess();
 
-Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "services");
+Html::header(__('Monitoring', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
+             "monitoring", "display");
 
+PluginMonitoringServicegraph::loadLib();
 $pmService = new PluginMonitoringService();
+$pmService->manageServices($_GET['itemtype'], $_GET['items_id']);
 
-if (isset($_POST['update'])) {
-   foreach ($_POST['arg'] as $key=>$value) {
-      if ($value == '') {
-         unset($_POST['arg'][$key]);
-      }
-   }
-   $_POST['arguments'] = exportArrayToDB($_POST['arg']);
-   $pmService->update($_POST);
-   Html::back();
-}
-
-if (PluginMonitoringProfile::haveRight("componentscatalog", 'w')) {
-   $pmService->showCustomArguments($_GET['id']);
-}
 
 Html::footer();
 

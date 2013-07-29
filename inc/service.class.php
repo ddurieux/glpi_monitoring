@@ -145,7 +145,10 @@ class PluginMonitoringService extends CommonDBTM {
       
       if ($itemtype == 'Computer') {
          $pmHostaddress = new PluginMonitoringHostaddress();
-         $pmHostaddress->showForm($items_id, $itemtype);
+         $item = new $itemtype();
+         if ($item->can($items_id, 'w')) {
+            $pmHostaddress->showForm($items_id, $itemtype);
+         }
       }
       $pmServices = new PluginMonitoringService();
       $pmServices->listByHost($itemtype, $items_id);
@@ -178,6 +181,10 @@ class PluginMonitoringService extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='5'>";
       echo __('Resources', 'monitoring');
+      $item = new $itemtype();
+      $item->getFromDB($items_id);
+      echo " - ".$item->getTypeName();
+      echo " - ".$item->getName();
 //      echo "&nbsp;<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/service.form.php?services_id=".$a_hosts['id']."'>
 //         <img src='".$CFG_GLPI['root_doc']."/pics/menu_add.png' /></a>";
 //      

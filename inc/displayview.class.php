@@ -700,7 +700,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
     * @param type $id
     */
    function showWidget2Frame($id) {
-      global $DB;
+      global $DB, $CFG_GLPI;
       
       $pmDisplayview_item = new PluginMonitoringDisplayview_item();
       $pmDisplayview_item->getFromDB($id);
@@ -755,7 +755,14 @@ class PluginMonitoringDisplayview extends CommonDBTM {
 
       echo '<div class="ch-item">
          <div class="ch-info-'.$class.'">
-			<h1><a href="'.$item->getFormURL().'?id='.$item->getID().'&forcetab=PluginMonitoringHost$0">'
+			<h1><a href="';
+      if ($item->can($item->getID(), 'r')) {
+         echo $item->getFormURL().'?id='.$item->getID().'&forcetab=PluginMonitoringHost$0';
+      } else {
+         echo $CFG_GLPI['root_doc']."/plugins/monitoring/front/displayhost.php?itemtype=".$itemtype
+                 ."&items_id=".$item->getID();
+      }
+         echo '">'
               . '<span id="devicea-'.$id.'">'.$item->getName().'</span></a></h1>
 			<p>'.$nb_ressources.'<font style="font-size: 14px;"> / '.($ok + $warning + $critical + $acknowledge).'</font></p>
          </div>

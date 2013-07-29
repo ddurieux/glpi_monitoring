@@ -738,13 +738,16 @@ class PluginMonitoringDisplay extends CommonDBTM {
       
       if ($displayhost == '0') { 
          echo "<td>";
-         $a_arg = importArrayFromDB($pMonitoringService->fields['arguments']);
-         $cnt = '';
-         if (count($a_arg) > 0) {
-            $cnt = " (".count($a_arg).")";
+         if (PluginMonitoringProfile::haveRight("componentscatalog", 'w')) {
+
+            $a_arg = importArrayFromDB($pMonitoringService->fields['arguments']);
+            $cnt = '';
+            if (count($a_arg) > 0) {
+               $cnt = " (".count($a_arg).")";
+            }
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicearg.form.php?id=".$data['id']."'>".
+                    __('Configure', 'monitoring').$cnt."</a>";
          }
-         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicearg.form.php?id=".$data['id']."'>".
-                 __('Configure', 'monitoring').$cnt."</a>";
          echo "</td>";
       }
    }
