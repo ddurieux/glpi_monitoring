@@ -261,6 +261,75 @@ class PluginMonitoringService extends CommonDBTM {
 
       Html::closeForm();
    }
+
+   
+   
+   /**
+    * Display graphs of services associated with host
+    *
+    * @param $itemtype value type of item
+    * @param $items_id integer id of the object
+    *
+    **/
+   function showGraphsByHost($itemtype, $items_id) {
+      global $CFG_GLPI,$DB;
+
+      PluginMonitoringServicegraph::loadLib();
+      $pmComponentscatalog = new PluginMonitoringComponentscatalog();
+      $pmComponent = new PluginMonitoringComponent();
+      $pmServicegraph = new PluginMonitoringServicegraph();
+
+      $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+         WHERE `items_id`='".$items_id."'
+            AND `itemtype`='".$itemtype."'";
+      $result = $DB->query($query);
+
+      echo '<div id="custom_date" style="display:none"></div>';
+      echo '<div id="custom_time" style="display:none"></div>';
+      
+      echo "<table class='tab_cadre_fixe'>";
+      $td = 0;
+      while ($data=$DB->fetch_array($result)) {
+         $pmComponentscatalog->getFromDB($data['plugin_monitoring_componentscalalog_id']);
+         
+         $querys = "SELECT `glpi_plugin_monitoring_services`.* FROM `glpi_plugin_monitoring_services`
+            LEFT JOIN `glpi_plugin_monitoring_components`
+               on `plugin_monitoring_components_id` = `glpi_plugin_monitoring_components`.`id`
+            WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$data['id']."'
+               ORDER BY `name`";
+         $results = $DB->query($querys);
+         while ($datas=$DB->fetch_array($results)) {
+            $pmComponent->getFromDB($datas['plugin_monitoring_components_id']);
+            if ($pmComponent->fields['graph_template'] != '') {
+               if ($td == 0) {
+                  echo "<tr class='tab_bg_3'>";
+               }
+               echo "<td width='425'>";
+               echo "<strong>".$pmComponent->fields['name']."</strong><br/>";
+               $pmServicegraph->displayGraph($pmComponent->fields['graph_template'], 
+                                             "PluginMonitoringService", 
+                                             $datas['id'], 
+                                             "0", 
+                                             "2h", 
+                                             "",
+                                             400);
+               $td++;
+               echo "</td>";
+               if ($td == 2) {
+                  echo "</tr>";
+                  $td = 0;
+               }
+            }
+         }
+      }
+
+      if ($td == 1) {
+         echo "<td></td>";
+      }
+      echo "</tr>";
+      echo "</table>";
+      
+   }
    
    
    

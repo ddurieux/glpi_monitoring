@@ -55,6 +55,8 @@ class PluginMonitoringHost extends CommonDBTM {
          $array_ret[0] = self::createTabEntry(
                  __('Monitoring', 'monitoring')."-".__('Resources', 'monitoring'),
                  self::countForItem($item));
+         $array_ret[1] = self::createTabEntry(
+                 __('Monitoring', 'monitoring')."-".__('Resources (graph)', 'monitoring'));
       }
       return $array_ret;
    }
@@ -85,11 +87,16 @@ class PluginMonitoringHost extends CommonDBTM {
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       if ($item->getID() > 0) {
-         PluginMonitoringServicegraph::loadLib();
-         $pmService = new PluginMonitoringService();
-         $pmService->manageServices(get_class($item), $item->fields['id']);
-         $pmHostconfig = new PluginMonitoringHostconfig();
-         $pmHostconfig->showForm($item->getID(), get_class($item));
+         if ($tabnum == 0) {
+            PluginMonitoringServicegraph::loadLib();
+            $pmService = new PluginMonitoringService();
+            $pmService->manageServices(get_class($item), $item->fields['id']);
+            $pmHostconfig = new PluginMonitoringHostconfig();
+            $pmHostconfig->showForm($item->getID(), get_class($item));
+         } else if ($tabnum == 1) {
+            $pmService = new PluginMonitoringService();
+            $pmService->showGraphsByHost(get_class($item), $item->fields['id']);
+         }
       }
       return true;
    }
