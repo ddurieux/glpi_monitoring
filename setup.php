@@ -131,43 +131,45 @@ function plugin_init_monitoring() {
          
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['service'] = 'front/display.php';
          
-         // Fil ariane
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['check']['title'] = __('Check definition', 'monitoring');
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['check']['page']  = '/plugins/monitoring/front/check.php';
-
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['command']['title'] = __('Commands', 'monitoring');
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['command']['page']  = '/plugins/monitoring/front/command.php';
-
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['components']['title'] = __('Components', 'monitoring');
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['components']['page']  = '/plugins/monitoring/front/component.php';
-
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['componentscatalog']['title'] = __('Components catalog', 'monitoring');
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['componentscatalog']['page']  = '/plugins/monitoring/front/componentscatalog.php';
+         if (isset($_SESSION["glpiname"])) {
          
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['contacttemplates']['title'] = __('Contact templates', 'monitoring');
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['contacttemplates']['page']  = '/plugins/monitoring/front/contacttemplate.php';
+            // Fil ariane
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['check']['title'] = __('Check definition', 'monitoring');
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['check']['page']  = '/plugins/monitoring/front/check.php';
 
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['display']['title'] = __('Dashboard', 'monitoring');
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['display']['page']  = '/plugins/monitoring/front/display_servicescatalog.php';
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['command']['title'] = __('Commands', 'monitoring');
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['command']['page']  = '/plugins/monitoring/front/command.php';
 
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['displayview']['title'] = __('Views', 'monitoring');
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['displayview']['page']  = '/plugins/monitoring/front/displayview.php';
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['components']['title'] = __('Components', 'monitoring');
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['components']['page']  = '/plugins/monitoring/front/component.php';
 
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['PluginMonitoringRealm']['title'] = __('Reamls', 'monitoring');
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['PluginMonitoringRealm']['page']  = '/plugins/monitoring/front/realm.php';
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['componentscatalog']['title'] = __('Components catalog', 'monitoring');
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['componentscatalog']['page']  = '/plugins/monitoring/front/componentscatalog.php';
 
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['servicescatalog']['title'] = __('Services catalog', 'monitoring');
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['servicescatalog']['page']  = '/plugins/monitoring/front/servicescatalog.php';
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['contacttemplates']['title'] = __('Contact templates', 'monitoring');
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['contacttemplates']['page']  = '/plugins/monitoring/front/contacttemplate.php';
 
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['weathermap']['title'] = __('Weathermap', 'monitoring');
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['weathermap']['page']  = '/plugins/monitoring/front/weathermap.php';
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['display']['title'] = __('Dashboard', 'monitoring');
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['display']['page']  = '/plugins/monitoring/front/display_servicescatalog.php';
 
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['eventhandler']['title'] = __('Event handler', 'monitoring');
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['eventhandler']['page']  = '/plugins/monitoring/front/eventhandler.php';
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['displayview']['title'] = __('Views', 'monitoring');
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['displayview']['page']  = '/plugins/monitoring/front/displayview.php';
 
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['notificationcommand']['title'] = __('Notification commands', 'monitoring');
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['notificationcommand']['page']  = '/plugins/monitoring/front/notificationcommand.php';
-       
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['PluginMonitoringRealm']['title'] = __('Reamls', 'monitoring');
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['PluginMonitoringRealm']['page']  = '/plugins/monitoring/front/realm.php';
+
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['servicescatalog']['title'] = __('Services catalog', 'monitoring');
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['servicescatalog']['page']  = '/plugins/monitoring/front/servicescatalog.php';
+
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['weathermap']['title'] = __('Weathermap', 'monitoring');
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['weathermap']['page']  = '/plugins/monitoring/front/weathermap.php';
+
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['eventhandler']['title'] = __('Event handler', 'monitoring');
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['eventhandler']['page']  = '/plugins/monitoring/front/eventhandler.php';
+
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['notificationcommand']['title'] = __('Notification commands', 'monitoring');
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['notificationcommand']['page']  = '/plugins/monitoring/front/notificationcommand.php';
+         }
          $rule_check = array('PluginMonitoringComponentscatalog_rule','isThisItemCheckRule');
          $rule_check_networkport = array('PluginMonitoringComponentscatalog_rule', 'isThisItemCheckRuleNetworkport');
          $PLUGIN_HOOKS['item_add']['monitoring'] = 
