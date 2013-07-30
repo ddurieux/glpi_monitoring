@@ -302,17 +302,27 @@ class PluginMonitoringService extends CommonDBTM {
             $pmComponent->getFromDB($datas['plugin_monitoring_components_id']);
             if ($pmComponent->fields['graph_template'] != '') {
                if ($td == 0) {
-                  echo "<tr class='tab_bg_3'>";
+                  echo "<tr>";
                }
                echo "<td width='425'>";
-               echo "<strong>".$pmComponent->fields['name']."</strong><br/>";
+               echo "<table class='tab_cadre'>";
+               echo "<tr class='tab_bg_3'>";
+               echo "<th width='475'>";
+               echo $pmComponent->fields['name'];
+               echo "</th>";
+               echo "</tr>";
+               echo "<tr class='tab_bg_1'>";
+               echo "<td>";
                $pmServicegraph->displayGraph($pmComponent->fields['graph_template'], 
                                              "PluginMonitoringService", 
                                              $datas['id'], 
                                              "0", 
                                              "2h", 
                                              "",
-                                             400);
+                                             450);
+               echo "</td>";
+               echo "</tr>";
+               echo "</table>";
                $td++;
                echo "</td>";
                if ($td == 2) {
