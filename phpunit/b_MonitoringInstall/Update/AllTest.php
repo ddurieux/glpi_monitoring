@@ -67,8 +67,7 @@ class Update extends PHPUnit_Framework_TestCase {
       $query = "SHOW TABLES";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
-         if (strstr($data[0], "tracker")
-                 OR strstr($data[0], "fusi")) {
+         if (strstr($data[0], "monitoring")) {
             $DB->query("DROP TABLE ".$data[0]);
          }
       }
