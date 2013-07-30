@@ -27,7 +27,7 @@ echo "check_tcp ".($finish - $start)." s\n";
       $a_reference = array(
           'response_time'  => array('19.0'),
           'other'          => array('0'),
-          'timeout'        => array('3.0') // doit etre 3000
+          'timeout'        => array('3000')
       );
       
       $this->assertEquals($a_reference, $ret[0], "Data of check_tcp");
@@ -105,7 +105,7 @@ echo "check_pf ".($finish - $start)." s\n";
           'states_current'    => array('444'),
           'states_warning'    => array('8000'),
           'states_critical'   => array('9000'),
-          'percent'           => array('4.0'), // doit etre 4.4
+          'percent'           => array('4.4'),
           'limit'             => array('10000')
       );
       
@@ -174,10 +174,10 @@ $finish = microtime(true);
 echo "check_mysql_health ".($finish - $start)." s\n";      
 
       $a_reference = array(
-          'tmp_table_on_disk_current'        => array('38.0'), // doit etre 38.24
+          'tmp_table_on_disk_current'        => array('38.24'),
           'tmp_table_on_disk_warning'        => array('25'),
           'tmp_table_on_disk_critical'       => array('50'),
-          'tmp_table_on_disk_now_current'    => array('4.0') // doit etre 4.25
+          'tmp_table_on_disk_now_current'    => array('4.25')
       );
       
       $this->assertEquals($a_reference, $ret[0], "data of check_mysql_health__tmp_disk_tables");
@@ -246,8 +246,8 @@ echo "check_http ".($finish - $start)." s\n";
 
       $a_reference = array(
           'time_current'  => array('221'),
-          'time_warning'  => array('1'),
-          'time_critical' => array('2'),
+          'time_warning'  => array('1000'),
+          'time_critical' => array('2000'),
           'time_other'    => array('0'),
           'size_current'  => array('7386'),
           'size_other'    => array('0')
@@ -282,11 +282,11 @@ $finish = microtime(true);
 echo "check_iostat_bsd ".($finish - $start)." s\n";      
 
       $a_reference = array(
-          'IOTPS_read_write'  => array('7.0'), // doit etre 7.33
-          'IOTPS_read'        => array('3.0'), // doit etre 3.18
-          'IOTPS_write'       => array('4.0'), // doit etre 4.15
-          'Kbps_read'         => array('56000.0'), // doit etre 55950 
-          'Kbps_write'        => array('79000.0'), // doit etre 78700
+          'IOTPS_read_write'  => array('7.33'),
+          'IOTPS_read'        => array('3.18'),
+          'IOTPS_write'       => array('4.15'),
+          'Kbps_read'         => array('55950.0'),
+          'Kbps_write'        => array('78700.0'),
           'transactiontime'   => array('0.85')
       );
       
@@ -325,7 +325,7 @@ echo "check_nginxstatus ".($finish - $start)." s\n";
           'Active'      => array('10'),
           'ReqPerSec'   => array('1.96'),
           'ConnPerSec'  => array('0.19'),
-          'ReqPerConn'  => array('8.0') // doit etre 8.17
+          'ReqPerConn'  => array('8.17')
       );
       
       $this->assertEquals($a_reference, $ret[0], "data of check_nginx_status");
@@ -355,10 +355,10 @@ $start = microtime(true);
 $finish = microtime(true);
 echo "check_iftraffic41 ".($finish - $start)." s\n";      
       $a_reference = array(
-          'inpercentcurr'     => array('0.0'), // doit etre 0.06
+          'inpercentcurr'     => array('0.06'),
           'inpercentwarn'     => array('85'),
           'inpercentcrit'     => array('98'),
-          'outpercent_curr'   => array('1.0'), // doit etre 0.5
+          'outpercent_curr'   => array('0.5'),
           'outpercentwarn'    => array('85'),
           'outpercentcrit'    => array('98'),
           'inbps'             => array('580585'),

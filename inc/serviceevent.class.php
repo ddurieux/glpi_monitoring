@@ -179,11 +179,11 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                      
                   $a_perfdata_final = explode(";", $a_a_perfdata[1]);
                   //New perfdata row, no unity knew.
-                  unset($unity);
+                  $unity = '';
                   foreach ($a_perfdata_final as $nb_val=>$val) {
 
                         //No value, no graph
-                        if (empty($val))
+                        if ($val == '')
                            continue;
 //                     if (isset($a_ref[$data->DS[$nb_val]->dsname])) {
                         $matches = array();
@@ -191,16 +191,18 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                         //Numeric part is data value
                         $val = (float)$matches[1];
                         //Maintain for a same perfdata row, unity data. If set it's normally a new perfdata row.
-                        if ($matches[2])
+                        if ($matches[2]) {
                            $unity = $matches[2];
-
+                        }
                         switch ($unity) {                           
                            case 'ms':
                            case 'bps':
                            case 'B' :
                            case "Bits/s" :
+                              $val = round($val, 0);
+                              break;
                            case '%' :
-                              $val = round($val,0);
+                              $val = round($val, 2);
                               break;
                            case 'KB' :
                               $val = $val * 1000; // Have in B
@@ -212,7 +214,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                               $val = $val * 1000000000; // Have in B
                               break;                              
                            case 's' :
-                              $val = round($val * 1000,0);
+                              $val = round($val * 1000, 0);
                               break;                             
                            case 'timeout' :  
                               if ($val > 2) {
@@ -222,8 +224,11 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                               }
                               break;                              
                            default :
-                              if (!is_numeric($val))
+                              if (!is_numeric($val)) {
                                  $val = 0;
+                              } else {
+                                 $val = round($val, 2);
+                              }
                               break;                                                   
                         }                                                
 
