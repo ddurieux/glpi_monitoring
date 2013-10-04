@@ -435,6 +435,9 @@ class PluginMonitoringShinken extends CommonDBTM {
             foreach ($a_argumentscustom as $key=>$value) {
                $a_arguments[$key] = $value;
             }
+            foreach ($a_arguments as $key=>$value) {
+               $a_arguments[$key] = html_entity_decode($value);
+            }
             $args = '';
             foreach ($array[0] as $arg) {
                if ($arg != '$PLUGINSDIR$'
