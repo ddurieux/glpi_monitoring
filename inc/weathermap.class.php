@@ -960,7 +960,7 @@ LINK DEFAULT
       
       if ($force == '0'
               AND file_exists(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png")) {
-         $time_generate = filectime(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png");
+         $time_generate = filemtime(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png");
          if (($time_generate + 150) > date('U')) {
             return;
          }
