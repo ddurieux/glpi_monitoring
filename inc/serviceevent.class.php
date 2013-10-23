@@ -165,6 +165,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
             if (isset($a_perfdata[$num])) {
                $a_perfdata[$num] = trim($a_perfdata[$num], ", ");
                $a_a_perfdata = explode("=", $a_perfdata[$num]);
+               $a_a_perfdata[0] = trim($a_a_perfdata[0], "'");
                $regex = 0;
                if (strstr($data->name, "*")) {
                   $datanameregex = str_replace("*", "(.*)", $data->name);
