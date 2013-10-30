@@ -942,9 +942,11 @@ class PluginMonitoringShinken extends CommonDBTM {
 
    function generateTimeperiodsCfg($file=0) {
 
-      $calendar = new Calendar();
-      $calendarSegment = new CalendarSegment();
-
+      $calendar         = new Calendar();
+      $calendarSegment  = new CalendarSegment();
+      $calendar_Holiday = new Calendar_Holiday();
+      $holiday          = new Holiday();
+      
       $a_timeperiods = array();
       $i=0;
       
@@ -993,6 +995,16 @@ class PluginMonitoringShinken extends CommonDBTM {
          }
          foreach ($a_cal as $day=>$a_times) {
             $a_timeperiods[$i][$day] = implode(',', $a_times);
+         }
+         $a_cholidays = $calendar_Holiday->find("`calendars_id`='".$datacalendar['id']."'");
+         foreach ($a_cholidays as $a_choliday) {
+            $holiday->getFromDB($a_choliday['holidays_id']);
+            if ($holiday->fields['is_perpetual'] == 1
+                    && $holiday->fields['begin_date'] == $holiday->fields['end_date']) {
+               $datetime = strtotime($holiday->fields['begin_date']);
+               $a_timeperiods[$i][strtolower(date('F', $datetime)).
+                   ' '.date('j', $datetime)] = '00:00-00:00';
+            }
          }
          $i++;
       }
