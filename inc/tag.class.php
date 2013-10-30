@@ -136,7 +136,7 @@ class PluginMonitoringTag extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('IP address')." :</td>";
+      echo "<td>".__('Shinken IP address', 'monitoring')." :</td>";
       echo "<td>";
       echo "<input type='text' name='ip' value='".$this->fields["ip"]."' size='30'/>";
       echo "</td>";
@@ -145,6 +145,16 @@ class PluginMonitoringTag extends CommonDBTM {
       echo "<input type='text' name='password' value='".$this->fields["password"]."' size='30'/>";
       echo "</td>";
       echo "</tr>";      
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Lock shinken IP', 'monitoring')." :</td>";
+      echo "<td>";
+      Dropdown::showYesNo('iplock', $this->fields["iplock"]);
+      echo "</td>";
+      echo "<td colspan='2'>";
+      echo "</td>";
+      echo "</tr>";
+
       
       $this->showFormButtons($options);
       
@@ -154,12 +164,13 @@ class PluginMonitoringTag extends CommonDBTM {
    
    
    function setIP($tag, $ip) {
-      
-      $id = $this->getTagID($tag);
-      $input= array();
-      $input['id'] = $id;
-      $input['ip'] = $ip;
-      $this->update($input);      
+      if (!$this->isIPLocked($tag)) {
+         $id = $this->getTagID($tag);
+         $input= array();
+         $input['id'] = $id;
+         $input['ip'] = $ip;
+         $this->update($input);      
+      }
    }
    
    
@@ -198,7 +209,17 @@ class PluginMonitoringTag extends CommonDBTM {
       
       return $this->add(array('tag' => $tag));
    }
+
    
+   
+   function isIPLocked($tag) {
+      $a_tags = $this->find("`tag`='".$tag."'", '', 1);
+      if (count($a_tags) == 1) {
+         $a_tag = current($a_tags);
+         return $a_tag['iplock'];
+      }
+      return FALSE;
+   }
 }
 
 ?>

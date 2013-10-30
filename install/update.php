@@ -2679,6 +2679,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               'ip', 
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
+                              'iplock', 
+                              "bool");
+         $migration->addField($newTable, 
                               'username', 
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 

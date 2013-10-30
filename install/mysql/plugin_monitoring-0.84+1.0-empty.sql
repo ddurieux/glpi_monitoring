@@ -673,6 +673,7 @@ CREATE TABLE `glpi_plugin_monitoring_tags` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tag` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `ip` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `iplock` tinyint(1) NOT NULL DEFAULT '0',
   `username` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `password` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
