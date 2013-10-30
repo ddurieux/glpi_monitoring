@@ -161,7 +161,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
 
       // * commande
       echo "<td>";
-      echo "Commande&nbsp;:";
+      echo __('Command', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td align='center'>";
       if ($this->fields['is_template'] == '1') {
@@ -193,7 +193,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
       echo "</td>";
       // * active check
       echo "<td>";
-      echo "Active checks enable&nbsp;:";
+      echo __('Active checks enable', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td align='center'>";
       if ($this->fields['is_template'] == '1') {
@@ -207,7 +207,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
       echo "<tr>";
       // * passive check
       echo "<td>";
-      echo "Passive checks enable&nbsp;:";
+      echo __('Passive checks enable', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td align='center'>";
       if ($this->fields['is_template'] == '1') {
@@ -231,18 +231,18 @@ class PluginMonitoringServicedef extends CommonDBTM {
       echo "</tr>";
       
       echo "<tr>";
-      echo "<th colspan='4'>Remote check</th>";
+      echo "<th colspan='4'>".__('Remote check', 'monitoring')."</th>";
       echo "</tr>";
       
       echo "<tr>";
       // * remotesystem
       echo "<td>";
-      echo "Utility used for remote check&nbsp;:";
+      echo __('Utility used for remote check', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       $input = array();
       $input[''] = '------';
-      $input['byssh'] = 'byssh';
+      $input['byssh'] = __('By ssh', 'monitoring');
       $input['nrpe'] = 'nrpe';
       $input['nsca'] = 'nsca';
       if ($this->fields['is_template'] == '1') {
@@ -255,7 +255,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
       echo "</td>";      
       // * is_argument
       echo "<td>";
-      echo "Use arguments (Only for NRPE)&nbsp;:";
+      echo __('Use arguments (Only for NRPE)', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       if ($this->fields['is_template'] == '1') {
@@ -269,7 +269,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
       echo "<tr>";
       // alias command
       echo "<td>";
-      echo "Alias command if required (Only for NRPE)&nbsp;:";
+      echo __('Alias command if required (Only for NRPE)', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       if ($this->fields['is_template'] == '1') {
@@ -279,7 +279,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
       }
       echo "</td>"; 
       echo "<td>";
-      echo "Command link (used for graphs generation)&nbsp;:";
+      echo __('Command link (used for graphs generation)', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       if ($this->fields['is_template'] == '1') {
@@ -316,7 +316,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
       if (count($a_displayarg) > 0) {
          $a_argtext = importArrayFromDB($pMonitoringCommand->fields['arguments']);
          echo "<tr>";
-         echo "<th colspan='4'>Arguments&nbsp;</th>";
+         echo "<th colspan='4'>".__('Arguments', 'monitoring')."&nbsp;</th>";
          echo "</tr>";
           
          foreach ($a_displayarg as $key=>$value) {
@@ -326,7 +326,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
             if (isset($a_argtext[$key])) {
                echo nl2br($a_argtext[$key])."&nbsp;:";
             } else {
-               echo "Argument&nbsp;:";
+               echo __('Argument', 'monitoring')."&nbsp;:";
             }
             echo "</td>";
             echo "<td>";

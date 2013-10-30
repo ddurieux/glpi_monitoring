@@ -928,7 +928,7 @@ LINK DEFAULT
          
          echo "<tr>";
          echo "<td>";
-         echo "Link :";
+         echo __('Link', 'monitoring')." :";
          echo "</td>";
          echo "<td>";
          Dropdown::showFromArray('id', $elements);
@@ -985,7 +985,7 @@ LINK DEFAULT
          }
 
       } else { 
-         echo "Problem to generate weathermap"; 
+         echo __('Problem to generate weathermap', 'monitoring'); 
       }
 
       if ($makehtml == '1') {

@@ -873,7 +873,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";      
       echo "<tr class='tab_bg_1'>";
       echo "<td rowspan='".ceil(count($a_perfnames) / 7)."' width='90'>";
-      echo "Display&nbsp;:";
+      echo __('Display', 'monitoring')."&nbsp;:";
       
       echo "</td>";
       $i = 0;
@@ -922,7 +922,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";      
       echo "<tr class='tab_bg_1'>";
       echo "<td rowspan='".ceil(count($a_perfnames) / 7)."' width='90'>";
-      echo "Invert values&nbsp;:";
+      echo __('Invert values', 'monitoring')."&nbsp;:";
       
       echo "</td>";
       $i = 0;
@@ -967,7 +967,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";      
       echo "<tr class='tab_bg_1'>";
       echo "<td rowspan='".ceil(count($a_perfnames) / 4)."' width='90'>";
-      echo "Colors&nbsp;:";
+      echo __('Colors', 'monitoring')."&nbsp;:";
       
       echo "</td>";
       $i = 0;

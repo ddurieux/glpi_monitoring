@@ -426,7 +426,7 @@ class PluginMonitoringService extends CommonDBTM {
          echo "</td>";
       } else {
          echo "<td colspan='2' align='center'>";
-         echo "No type associated";
+         echo __('No type associated', 'monitoring');
          echo "</td>";
       }      
       // * command
