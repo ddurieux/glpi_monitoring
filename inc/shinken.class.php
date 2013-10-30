@@ -953,6 +953,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_timeperiods[$i]['timeperiod_name'] = $datacalendar['name'];
          $a_timeperiods[$i]['alias'] = $datacalendar['name'];
          $a_listsegment = $calendarSegment->find("`calendars_id`='".$datacalendar['id']."'");
+         $a_cal = array();
          foreach ($a_listsegment as $datasegment) {
             $begin = preg_replace("/:00$/", "", $datasegment['begin']);
             $end = preg_replace("/:00$/", "", $datasegment['end']);
@@ -988,29 +989,11 @@ class PluginMonitoringShinken extends CommonDBTM {
                   break;
 
             }
-            $a_timeperiods[$i][$day] = $begin."-".$end;
+            $a_cal[$day][] = $begin."-".$end;
          }
-//         if (!isset($a_timeperiods[$i]["sunday"])) {
-//            $a_timeperiods[$i]["sunday"]= '';
-//         }
-//         if (!isset($a_timeperiods[$i]["monday"])) {
-//            $a_timeperiods[$i]["monday"]= '';
-//         }
-//         if (!isset($a_timeperiods[$i]["tuesday"])) {
-//            $a_timeperiods[$i]["tuesday"]= '';
-//         }
-//         if (!isset($a_timeperiods[$i]["wednesday"])) {
-//            $a_timeperiods[$i]["wednesday"]= '';
-//         }
-//         if (!isset($a_timeperiods[$i]["thursday"])) {
-//            $a_timeperiods[$i]["thursday"]= '';
-//         }
-//         if (!isset($a_timeperiods[$i]["friday"])) {
-//            $a_timeperiods[$i]["friday"]= '';
-//         }
-//         if (!isset($a_timeperiods[$i]["saturday"])) {
-//            $a_timeperiods[$i]["saturday"]= '';
-//         }
+         foreach ($a_cal as $day=>$a_times) {
+            $a_timeperiods[$i][$day] = implode(',', $a_times);
+         }
          $i++;
       }
 
