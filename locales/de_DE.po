@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project - plugin monitoring \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-25 23:04+0200\n"
+"POT-Creation-Date: 2013-10-31 19:40+0100\n"
 "PO-Revision-Date: 2013-06-25 07:55+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,40 +29,40 @@ msgstr ""
 msgid "Force play rules"
 msgstr ""
 
-#: hook.php:419 setup.php:159 front/menu.php:68 inc/display.class.php:66
-#: inc/display.class.php:137 inc/profile.class.php:175
+#: hook.php:419 setup.php:161 front/menu.php:71 inc/display.class.php:75
+#: inc/display.class.php:177 inc/profile.class.php:177
 #: inc/servicescatalog.class.php:56 inc/servicescatalog.class.php:89
 msgid "Services catalog"
 msgstr ""
 
-#: hook.php:420 setup.php:135 front/menu.php:142 inc/check.class.php:83
+#: hook.php:420 setup.php:137 front/menu.php:154 inc/check.class.php:83
 #: inc/check.class.php:104 inc/component.class.php:219
 #: inc/componentscatalog_component.class.php:98 inc/hostconfig.class.php:205
-#: inc/profile.class.php:236 inc/service.class.php:368
+#: inc/profile.class.php:238 inc/service.class.php:454
 #: inc/servicedef.class.php:182 inc/servicescatalog.class.php:127
 msgid "Check definition"
 msgstr ""
 
-#: hook.php:421 setup.php:138 front/menu.php:136 inc/command.class.php:270
+#: hook.php:421 setup.php:140 front/menu.php:148 inc/command.class.php:270
 #: inc/command.class.php:291 inc/eventhandler.class.php:78
-#: inc/profile.class.php:220 inc/tag.class.php:77
+#: inc/profile.class.php:222 inc/tag.class.php:83
 msgid "Commands"
 msgstr ""
 
-#: hook.php:422 setup.php:144 front/menu.php:91 inc/component.class.php:105
+#: hook.php:422 setup.php:146 front/menu.php:96 inc/component.class.php:105
 #: inc/component.class.php:111 inc/componentscatalog.class.php:56
-#: inc/componentscatalog_component.class.php:279 inc/display.class.php:74
-#: inc/display.class.php:140 inc/displayview.class.php:220
-#: inc/displayview_item.class.php:606 inc/profile.class.php:190
+#: inc/componentscatalog_component.class.php:279 inc/display.class.php:88
+#: inc/display.class.php:180 inc/displayview.class.php:314
+#: inc/displayview_item.class.php:621 inc/profile.class.php:192
 #: inc/service.class.php:106
 msgid "Components catalog"
 msgstr ""
 
-#: hook.php:423 setup.php:141 front/menu.php:103 inc/component.class.php:56
+#: hook.php:423 setup.php:143 front/menu.php:115 inc/component.class.php:56
 #: inc/component.class.php:148 inc/componentscatalog.class.php:94
-#: inc/componentscatalog_component.class.php:51 inc/display.class.php:481
-#: inc/profile.class.php:214 inc/service.class.php:206
-#: inc/service.class.php:209
+#: inc/componentscatalog_component.class.php:51 inc/display.class.php:521
+#: inc/profile.class.php:216 inc/service.class.php:213
+#: inc/service.class.php:216
 msgid "Components"
 msgstr ""
 
@@ -75,57 +75,57 @@ msgstr ""
 #: front/contact.form.php:47 front/contacttemplate.form.php:47
 #: front/contacttemplate.php:47 front/display.form.php:50
 #: front/display_componentscatalog.php:47 front/display_servicescatalog.php:47
-#: front/display_view.php:47 front/displayview.form.php:47
-#: front/displayview.php:47 front/displayview_item.form.php:47
-#: front/displayview_rule.form.php:47 front/entity.form.php:47
-#: front/eventhandler.form.php:47 front/eventhandler.php:47
-#: front/host.form.php:47 front/host_contact.form.php:47
-#: front/host_host.form.php:47 front/hostaddress.form.php:48
-#: front/hostconfig.form.php:48 front/hostgroup.form.php:47 front/menu.php:47
-#: front/networkport.form.php:47 front/notificationcommand.form.php:47
-#: front/notificationcommand.php:47 front/service.form.php:47
-#: front/service.php:47 front/servicearg.form.php:47
+#: front/display_view.php:47 front/displayhost.php:47
+#: front/displayview.form.php:47 front/displayview.php:47
+#: front/displayview_item.form.php:47 front/displayview_rule.form.php:47
+#: front/entity.form.php:47 front/eventhandler.form.php:47
+#: front/eventhandler.php:47 front/host.form.php:47
+#: front/host_contact.form.php:47 front/host_host.form.php:47
+#: front/hostaddress.form.php:48 front/hostconfig.form.php:48
+#: front/hostgroup.form.php:47 front/menu.php:47 front/networkport.form.php:47
+#: front/notificationcommand.form.php:47 front/notificationcommand.php:47
+#: front/service.form.php:47 front/service.php:47 front/servicearg.form.php:47
 #: front/servicedef.form.php:47 front/servicescatalog.form.php:49
 #: front/servicescatalog.form.php:54 front/servicescatalog.php:47
 #: front/tag.form.php:47 front/tag.php:47 front/unavaibility.php:47
 #: front/weathermap.form.php:47 front/weathermap.php:47
 #: front/weathermaplink.form.php:47 front/weathermapnode.form.php:47
 #: inc/contact.class.php:78 inc/entity.class.php:80 inc/host.class.php:56
-#: inc/profile.class.php:112 inc/profile.class.php:164
+#: inc/host.class.php:59 inc/profile.class.php:114 inc/profile.class.php:166
 #: inc/servicescatalog.class.php:89
 msgid "Monitoring"
 msgstr ""
 
-#: setup.php:147 front/menu.php:109 inc/contacttemplate.class.php:57
+#: setup.php:149 front/menu.php:121 inc/contacttemplate.class.php:57
 msgid "Contact templates"
 msgstr ""
 
-#: setup.php:150 front/menu.php:57 inc/profile.class.php:169
+#: setup.php:152 front/menu.php:57 inc/profile.class.php:171
 msgid "Dashboard"
 msgstr ""
 
-#: setup.php:153 front/menu.php:80 inc/displayview.class.php:62
-#: inc/displayview.class.php:98 inc/displayview_item.class.php:57
-#: inc/displayview_item.class.php:601 inc/profile.class.php:184
+#: setup.php:155 front/menu.php:83 inc/displayview.class.php:62
+#: inc/displayview.class.php:186 inc/displayview_item.class.php:57
+#: inc/displayview_item.class.php:616 inc/profile.class.php:186
 msgid "Views"
 msgstr ""
 
-#: setup.php:156 front/menu.php:121 inc/realm.class.php:53
+#: setup.php:158 front/menu.php:133 inc/realm.class.php:53
 msgid "Reamls"
 msgstr ""
 
-#: setup.php:162 front/menu.php:74 inc/component.class.php:405
-#: inc/displayview_item.class.php:607 inc/profile.class.php:205
+#: setup.php:164 front/menu.php:77 inc/component.class.php:421
+#: inc/displayview_item.class.php:622 inc/profile.class.php:207
 #: inc/weathermap.class.php:51 inc/weathermap.class.php:86
 msgid "Weathermap"
 msgstr ""
 
-#: setup.php:165 front/menu.php:154 inc/component.class.php:288
+#: setup.php:167 front/menu.php:166 inc/component.class.php:300
 #: inc/eventhandler.class.php:57
 msgid "Event handler"
 msgstr ""
 
-#: setup.php:168 front/menu.php:115 inc/notificationcommand.class.php:81
+#: setup.php:170 front/menu.php:127 inc/notificationcommand.class.php:81
 msgid "Notification commands"
 msgstr ""
 
@@ -134,11 +134,11 @@ msgstr ""
 msgid "% of the width of the frame"
 msgstr ""
 
-#: ajax/dropdownWlink.php:52 inc/weathermap.class.php:830
+#: ajax/dropdownWlink.php:52 inc/weathermap.class.php:848
 msgid "Max bandwidth input"
 msgstr ""
 
-#: ajax/dropdownWlink.php:55 inc/weathermap.class.php:839
+#: ajax/dropdownWlink.php:55 inc/weathermap.class.php:857
 msgid "Max bandwidth output"
 msgstr ""
 
@@ -150,8 +150,8 @@ msgstr ""
 msgid "Fields with asterisk are required"
 msgstr ""
 
-#: front/menu.php:127 inc/entity.class.php:137 inc/tag.class.php:57
-#: inc/tag.class.php:82 inc/tag.class.php:122
+#: front/menu.php:139 inc/entity.class.php:137 inc/tag.class.php:57
+#: inc/tag.class.php:88 inc/tag.class.php:128
 msgid "Tag"
 msgstr ""
 
@@ -206,13 +206,13 @@ msgid "Resource"
 msgstr ""
 
 #: inc/businessrule.class.php:284 inc/businessrulegroup.class.php:186
-#: inc/display.class.php:783 inc/displayview_item.class.php:416
+#: inc/display.class.php:826 inc/displayview_item.class.php:431
 msgid "on"
 msgstr ""
 
-#: inc/businessrulegroup.class.php:118 inc/componentscatalog.class.php:337
-#: inc/display.class.php:608 inc/displayview.class.php:221
-#: inc/host.class.php:56 inc/service.class.php:51 inc/service.class.php:180
+#: inc/businessrulegroup.class.php:118 inc/componentscatalog.class.php:341
+#: inc/display.class.php:648 inc/displayview.class.php:315
+#: inc/host.class.php:56 inc/service.class.php:51 inc/service.class.php:183
 #: inc/servicedef.class.php:88
 msgid "Resources"
 msgstr ""
@@ -221,7 +221,7 @@ msgstr ""
 msgid "Resource deleted"
 msgstr ""
 
-#: inc/canvas.class.php:372 inc/display.class.php:143
+#: inc/canvas.class.php:372 inc/display.class.php:183
 msgid "Dependencies;"
 msgstr ""
 
@@ -229,11 +229,11 @@ msgstr ""
 msgid "Max check attempts (number of retries)"
 msgstr ""
 
-#: inc/check.class.php:129 inc/check.class.php:174
+#: inc/check.class.php:129 inc/check.class.php:177
 msgid "Time in minutes between 2 checks"
 msgstr ""
 
-#: inc/check.class.php:130 inc/check.class.php:178
+#: inc/check.class.php:130 inc/check.class.php:184
 msgid "Time in minutes between 2 retries"
 msgstr ""
 
@@ -251,7 +251,7 @@ msgstr ""
 msgid "Arguments description"
 msgstr ""
 
-#: inc/command.class.php:402 inc/component.class.php:469
+#: inc/command.class.php:402 inc/component.class.php:485
 msgid "copy"
 msgstr ""
 
@@ -264,92 +264,115 @@ msgid "Active checks"
 msgstr ""
 
 #: inc/component.class.php:251 inc/hostconfig.class.php:186
-#: inc/service.class.php:348
+#: inc/service.class.php:434 inc/servicedef.class.php:164
 msgid "Command"
 msgstr ""
 
-#: inc/component.class.php:262 inc/service.class.php:396
+#: inc/component.class.php:262 inc/service.class.php:482
 msgid "Passive check"
 msgstr ""
 
-#: inc/component.class.php:271 inc/service.class.php:472
+#: inc/component.class.php:271 inc/service.class.php:558
 msgid "Template (for graphs generation)"
 msgstr ""
 
-#: inc/component.class.php:279 inc/componentscatalog_component.class.php:99
-#: inc/display.class.php:487 inc/hostconfig.class.php:271
-#: inc/service.class.php:221 inc/service.class.php:406
+#: inc/component.class.php:279
+msgid "Freshness (for passive mode)"
+msgstr ""
+
+#: inc/component.class.php:287
+msgid "Second(s)"
+msgstr ""
+
+#: inc/component.class.php:288
+msgid "Minute(s)"
+msgstr ""
+
+#: inc/component.class.php:289
+msgid "Hour(s)"
+msgstr ""
+
+#: inc/component.class.php:290
+msgid "Day(s)"
+msgstr ""
+
+#: inc/component.class.php:308 inc/componentscatalog_component.class.php:99
+#: inc/display.class.php:527 inc/hostconfig.class.php:271
+#: inc/service.class.php:228 inc/service.class.php:492
 #: inc/servicedef.class.php:220 inc/servicescatalog.class.php:140
 msgid "Check period"
 msgstr ""
 
-#: inc/component.class.php:300 inc/componentscatalog_component.class.php:100
-#: inc/service.class.php:423
+#: inc/component.class.php:316 inc/componentscatalog_component.class.php:100
+#: inc/service.class.php:509 inc/servicedef.class.php:234
 msgid "Remote check"
 msgstr ""
 
-#: inc/component.class.php:306 inc/service.class.php:429
+#: inc/component.class.php:322 inc/service.class.php:515
+#: inc/servicedef.class.php:240
 msgid "Utility used for remote check"
 msgstr ""
 
-#: inc/component.class.php:320 inc/service.class.php:447
+#: inc/component.class.php:336 inc/service.class.php:533
 msgid "Use arguments (NRPE only)"
 msgstr ""
 
-#: inc/component.class.php:330 inc/service.class.php:461
+#: inc/component.class.php:346 inc/service.class.php:547
 msgid "Alias command if required (NRPE only)"
 msgstr ""
 
-#: inc/component.class.php:359 inc/service.class.php:229
+#: inc/component.class.php:375 inc/service.class.php:236
+#: inc/servicedef.class.php:319
 msgid "Arguments"
 msgstr ""
 
-#: inc/component.class.php:369 inc/service.class.php:520
-#: inc/service.class.php:711 inc/service.class.php:773
+#: inc/component.class.php:385 inc/service.class.php:606
+#: inc/service.class.php:797 inc/service.class.php:859
+#: inc/servicedef.class.php:329
 msgid "Argument"
 msgstr ""
 
-#: inc/component.class.php:410
+#: inc/component.class.php:426
 msgid "Use this component for Weathermap"
 msgstr ""
 
-#: inc/component.class.php:416 inc/component.class.php:433
+#: inc/component.class.php:432 inc/component.class.php:449
 msgid "Example"
 msgstr ""
 
-#: inc/component.class.php:418 inc/component.class.php:420
+#: inc/component.class.php:434 inc/component.class.php:436
 msgid "Regex bandwidth input"
 msgstr ""
 
-#: inc/component.class.php:435 inc/component.class.php:437
+#: inc/component.class.php:451 inc/component.class.php:453
 msgid "Regex bandwidth output"
 msgstr ""
 
-#: inc/component.class.php:482 inc/service.class.php:701
+#: inc/component.class.php:498 inc/service.class.php:787
 msgid "List of tags available"
 msgstr ""
 
-#: inc/component.class.php:483
+#: inc/component.class.php:499
 msgid "Hostname of the device"
 msgstr ""
 
-#: inc/component.class.php:484
+#: inc/component.class.php:500
 msgid "Network port number"
 msgstr ""
 
-#: inc/component.class.php:485
+#: inc/component.class.php:501
 msgid "Network port name"
 msgstr ""
 
-#: inc/component.class.php:487
+#: inc/component.class.php:503
 msgid "Network port ifDescr of networking devices"
 msgstr ""
 
-#: inc/component.class.php:488
+#: inc/component.class.php:504
 msgid "SNMP version of network equipment or printer"
 msgstr ""
 
-#: inc/component.class.php:489
+#: inc/component.class.php:505
 msgid "SNMP community of network equipment or printer"
 msgstr ""
 
@@ -366,8 +389,8 @@ msgstr ""
 msgid "Contacts"
 msgstr ""
 
-#: inc/componentscatalog.class.php:99 inc/service.class.php:223
-#: inc/service.class.php:224 inc/service.class.php:225
+#: inc/componentscatalog.class.php:99 inc/service.class.php:230
+#: inc/service.class.php:231 inc/service.class.php:232
 msgid "Availability"
 msgstr ""
 
@@ -375,47 +398,47 @@ msgstr ""
 msgid "Interval between 2 notifications (in minutes)"
 msgstr ""
 
-#: inc/componentscatalog.class.php:514
+#: inc/componentscatalog.class.php:518
 msgid "Simple report"
 msgstr ""
 
-#: inc/componentscatalog.class.php:537
+#: inc/componentscatalog.class.php:541
 msgid "Synthese"
 msgstr ""
 
-#: inc/componentscatalog.class.php:564
+#: inc/componentscatalog.class.php:572
 msgid "Synthese detail"
 msgstr ""
 
-#: inc/componentscatalog.class.php:613
+#: inc/componentscatalog.class.php:625
 msgid "Generate the report"
 msgstr ""
 
-#: inc/componentscatalog.class.php:665
+#: inc/componentscatalog.class.php:677
 msgid "Trend"
 msgstr ""
 
-#: inc/componentscatalog.class.php:668 inc/componentscatalog.class.php:814
+#: inc/componentscatalog.class.php:680 inc/componentscatalog.class.php:826
 msgid "Avaibility"
 msgstr ""
 
-#: inc/componentscatalog.class.php:679
+#: inc/componentscatalog.class.php:691
 msgid "%"
 msgstr ""
 
-#: inc/componentscatalog.class.php:682
+#: inc/componentscatalog.class.php:694
 msgid "Time"
 msgstr ""
 
-#: inc/componentscatalog.class.php:686
+#: inc/componentscatalog.class.php:698
 msgid "Min"
 msgstr ""
 
-#: inc/componentscatalog.class.php:689
+#: inc/componentscatalog.class.php:701
 msgid "Avg"
 msgstr ""
 
-#: inc/componentscatalog.class.php:692
+#: inc/componentscatalog.class.php:704
 msgid "Max"
 msgstr ""
 
@@ -432,7 +455,7 @@ msgstr ""
 msgid "Hosts"
 msgstr ""
 
-#: inc/componentscatalog_rule.class.php:176 inc/displayview_rule.class.php:146
+#: inc/componentscatalog_rule.class.php:176 inc/displayview_rule.class.php:177
 msgid "Preview"
 msgstr ""
 
@@ -444,7 +467,7 @@ msgstr ""
 msgid "Logs retention (in days)"
 msgstr ""
 
-#: inc/config.class.php:123
+#: inc/config.class.php:127
 msgid "Timezones (for graph)"
 msgstr ""
 
@@ -525,159 +548,172 @@ msgstr ""
 msgid "The contact will not receive any type of service notifications"
 msgstr ""
 
-#: inc/display.class.php:60
+#: inc/display.class.php:68
 msgid "Restart Shinken"
 msgstr ""
 
-#: inc/display.class.php:81 inc/display.class.php:142
+#: inc/display.class.php:101 inc/display.class.php:182
 msgid "All resources"
 msgstr ""
 
-#: inc/display.class.php:484 inc/service.class.php:85
-#: inc/service.class.php:215
+#: inc/display.class.php:524 inc/service.class.php:85
+#: inc/service.class.php:222
 msgid "Last check"
 msgstr ""
 
-#: inc/display.class.php:488 inc/display.class.php:1454
-#: inc/display.class.php:1456 inc/service.class.php:136
-#: inc/service.class.php:227
+#: inc/display.class.php:528 inc/display.class.php:1497
+#: inc/display.class.php:1499 inc/service.class.php:136
+#: inc/service.class.php:234
 msgid "Acknowledge"
 msgstr ""
 
-#: inc/display.class.php:539
+#: inc/display.class.php:579
 msgid "Ok"
 msgstr ""
 
-#: inc/display.class.php:541
+#: inc/display.class.php:581
 msgid "Warning (data)"
 msgstr ""
 
-#: inc/display.class.php:543 inc/display.class.php:1385
-#: inc/display.class.php:1387
+#: inc/display.class.php:583 inc/display.class.php:1428
+#: inc/display.class.php:1430
 msgid "Warning (connection)"
 msgstr ""
 
-#: inc/display.class.php:545 inc/display.class.php:1304
-#: inc/display.class.php:1306
+#: inc/display.class.php:585 inc/display.class.php:1347
+#: inc/display.class.php:1349
 msgid "Critical"
 msgstr ""
 
-#: inc/display.class.php:547
+#: inc/display.class.php:587
 msgid "Critical / Acknowledge"
 msgstr ""
 
-#: inc/display.class.php:644 inc/display.class.php:645
+#: inc/display.class.php:684 inc/display.class.php:685
 msgid "Define an acknowledge"
 msgstr ""
 
-#: inc/display.class.php:707
+#: inc/display.class.php:749
 msgid "Configure"
 msgstr ""
 
-#: inc/display.class.php:845
+#: inc/display.class.php:888
 msgid "Select date (only last 2, 12 and 24 hours)"
 msgstr ""
 
-#: inc/display.class.php:911
+#: inc/display.class.php:954
 msgid "Select time (only last 2, 12 and 24 hours)"
 msgstr ""
 
-#: inc/display.class.php:970
+#: inc/display.class.php:1013
 msgid "Last 2 hours"
 msgstr ""
 
-#: inc/display.class.php:971
+#: inc/display.class.php:1014
 msgid "Last 12 hours"
 msgstr ""
 
-#: inc/display.class.php:972
+#: inc/display.class.php:1015
 msgid "Last 24 hours"
 msgstr ""
 
-#: inc/display.class.php:974
+#: inc/display.class.php:1017
 msgid "Last 7 days (average)"
 msgstr ""
 
-#: inc/display.class.php:975
+#: inc/display.class.php:1018
 msgid "Last month (average)"
 msgstr ""
 
-#: inc/display.class.php:976
+#: inc/display.class.php:1019
 msgid "Last 6 months (average)"
 msgstr ""
 
-#: inc/display.class.php:977
+#: inc/display.class.php:1020
 msgid "Last year (average)"
 msgstr ""
 
-#: inc/display.class.php:1342 inc/display.class.php:1346
-#: inc/display.class.php:1348
+#: inc/display.class.php:1385 inc/display.class.php:1389
+#: inc/display.class.php:1391
 msgid "Warning"
 msgstr ""
 
-#: inc/display.class.php:1420 inc/display.class.php:1422
+#: inc/display.class.php:1463 inc/display.class.php:1465
 msgid "OK"
 msgstr ""
 
-#: inc/display.class.php:1527
+#: inc/display.class.php:1570
 msgid "Page refresh (in seconds)"
 msgstr ""
 
-#: inc/displayview.class.php:109 inc/displayview.class.php:208
-msgid "Front view"
+#: inc/displayview.class.php:197 inc/displayview.class.php:302
+msgid "Display view in dashboard"
 msgstr ""
 
-#: inc/displayview.class.php:215
+#: inc/displayview.class.php:309
 msgid "Header counter (critical/warning/ok)"
 msgstr ""
 
-#: inc/displayview.class.php:219 inc/displayview_item.class.php:602
+#: inc/displayview.class.php:313 inc/displayview_item.class.php:617
 #: inc/servicedef.class.php:109
 msgid "Business rules"
 msgstr ""
 
-#: inc/displayview.class.php:226
+#: inc/displayview.class.php:320
 msgid "Display in GLPI home page"
 msgstr ""
 
-#: inc/displayview.class.php:235 inc/weathermap.class.php:331
+#: inc/displayview.class.php:329 inc/weathermap.class.php:339
 msgid "Width"
 msgstr ""
 
-#: inc/displayview_item.class.php:124
+#: inc/displayview_item.class.php:151
 msgid "Date and time select"
 msgstr ""
 
-#: inc/displayview_item.class.php:131
+#: inc/displayview_item.class.php:158
 msgid "Select date"
 msgstr ""
 
-#: inc/displayview_item.class.php:220
+#: inc/displayview_item.class.php:247
 msgid "Select time"
 msgstr ""
 
-#: inc/displayview_item.class.php:278
+#: inc/displayview_item.class.php:305
 msgid "View"
 msgstr ""
 
-#: inc/displayview_item.class.php:597
+#: inc/displayview_item.class.php:612
 msgid "Element to display"
 msgstr ""
 
-#: inc/displayview_item.class.php:603
-msgid "Resources (info)"
-msgstr ""
-
-#: inc/displayview_item.class.php:604
+#: inc/displayview_item.class.php:619
 msgid "Host (info)"
 msgstr ""
 
-#: inc/displayview_item.class.php:605
+#: inc/displayview_item.class.php:620 inc/host.class.php:59
 msgid "Resources (graph)"
 msgstr ""
 
-#: inc/displayview_rule.class.php:127
+#: inc/displayview_rule.class.php:94 inc/displayview_rule.class.php:139
+msgid "Host rule"
+msgstr ""
+
+#: inc/displayview_rule.class.php:102
+msgid "Resource rule"
+msgstr ""
+
+#: inc/displayview_rule.class.php:147
 msgid "Edit rule"
+msgstr ""
+
+#: inc/displayview_rule.class.php:339
+msgid "Replay all rules"
+msgstr ""
+
+#: inc/displayview_rule.class.php:346
+msgctxt "button"
+msgid "Replay all rules"
 msgstr ""
 
 #: inc/entity.class.php:132
@@ -736,8 +772,16 @@ msgstr ""
 msgid "Network ports of networking devices"
 msgstr ""
 
-#: inc/profile.class.php:199
+#: inc/profile.class.php:201
 msgid "Views in GLPI home page"
+msgstr ""
+
+#: inc/profile.class.php:247
+msgid "See all resources in dashboard"
+msgstr ""
+
+#: inc/profile.class.php:253
+msgid "Restart shinken"
 msgstr ""
 
 #: inc/rrdtool.class.php:256 inc/rrdtool.class.php:306
@@ -760,40 +804,80 @@ msgstr ""
 msgid "Component"
 msgstr ""
 
-#: inc/service.class.php:223 inc/unavaibility.class.php:211
+#: inc/service.class.php:230 inc/unavaibility.class.php:211
 msgid "Current month"
 msgstr ""
 
-#: inc/service.class.php:224 inc/unavaibility.class.php:212
+#: inc/service.class.php:231 inc/unavaibility.class.php:212
 msgid "Last month"
 msgstr ""
 
-#: inc/service.class.php:225 inc/unavaibility.class.php:213
+#: inc/service.class.php:232 inc/unavaibility.class.php:213
 msgid "Current year"
 msgstr ""
 
-#: inc/service.class.php:226 inc/unavaibility.class.php:214
+#: inc/service.class.php:233 inc/unavaibility.class.php:214
 msgid "Detail"
 msgstr ""
 
-#: inc/service.class.php:382
+#: inc/service.class.php:429
+msgid "No type associated"
+msgstr ""
+
+#: inc/service.class.php:468
 msgid "Active check"
 msgstr ""
 
-#: inc/service.class.php:510
+#: inc/service.class.php:596
 msgid "Argument ([text:text] is used to get values dynamically)"
 msgstr ""
 
-#: inc/service.class.php:700
+#: inc/service.class.php:786
 msgid "Component arguments"
 msgstr ""
 
-#: inc/service.class.php:748
+#: inc/service.class.php:834
 msgid "Custom arguments for this resource (empty : inherit)"
 msgstr ""
 
-#: inc/service.class.php:871
+#: inc/service.class.php:957
 msgid "Add an acknowledge for service"
+msgstr ""
+
+#: inc/servicedef.class.php:196
+msgid "Active checks enable"
+msgstr ""
+
+#: inc/servicedef.class.php:210
+msgid "Passive checks enable"
+msgstr ""
+
+#: inc/servicedef.class.php:245
+msgid "By ssh"
+msgstr ""
+
+#: inc/servicedef.class.php:258
+msgid "Use arguments (Only for NRPE)"
+msgstr ""
+
+#: inc/servicedef.class.php:272
+msgid "Alias command if required (Only for NRPE)"
+msgstr ""
+
+#: inc/servicedef.class.php:282
+msgid "Command link (used for graphs generation)"
+msgstr ""
+
+#: inc/servicegraph.class.php:876
+msgid "Display"
+msgstr ""
+
+#: inc/servicegraph.class.php:925
+msgid "Invert values"
+msgstr ""
+
+#: inc/servicegraph.class.php:970
+msgid "Colors"
 msgstr ""
 
 #: inc/servicescatalog.class.php:343
@@ -804,12 +888,20 @@ msgstr ""
 msgid "Shinken restart failed:"
 msgstr ""
 
-#: inc/tag.class.php:93 inc/tag.class.php:126
+#: inc/tag.class.php:99 inc/tag.class.php:132
 msgid "Username (Shinken webservice)"
 msgstr ""
 
-#: inc/tag.class.php:137
+#: inc/tag.class.php:139
+msgid "Shinken IP address"
+msgstr ""
+
+#: inc/tag.class.php:143
 msgid "Password (Shinken webservice)"
+msgstr ""
+
+#: inc/tag.class.php:150
+msgid "Lock shinken IP"
 msgstr ""
 
 #: inc/unavaibility.class.php:54
@@ -832,54 +924,62 @@ msgstr ""
 msgid "Duration"
 msgstr ""
 
-#: inc/weathermap.class.php:87 inc/weathermap.class.php:378
+#: inc/weathermap.class.php:87 inc/weathermap.class.php:396
 msgid "Nodes and links"
 msgstr ""
 
-#: inc/weathermap.class.php:339
+#: inc/weathermap.class.php:352
 msgid "Background image"
 msgstr ""
 
-#: inc/weathermap.class.php:351
+#: inc/weathermap.class.php:364
 msgid "Height"
 msgstr ""
 
-#: inc/weathermap.class.php:480
+#: inc/weathermap.class.php:498
 msgid "Display weathermap form"
 msgstr ""
 
-#: inc/weathermap.class.php:508
+#: inc/weathermap.class.php:526
 msgid "Add a node"
 msgstr ""
 
-#: inc/weathermap.class.php:514
+#: inc/weathermap.class.php:532
 msgid "Node"
 msgstr ""
 
-#: inc/weathermap.class.php:540
+#: inc/weathermap.class.php:558
 msgid "Edit a node"
 msgstr ""
 
-#: inc/weathermap.class.php:592
+#: inc/weathermap.class.php:610
 msgid "Delete a node"
 msgstr ""
 
-#: inc/weathermap.class.php:640
+#: inc/weathermap.class.php:658
 msgid "Add a link"
 msgstr ""
 
-#: inc/weathermap.class.php:646
+#: inc/weathermap.class.php:664
 msgid "Source"
 msgstr ""
 
-#: inc/weathermap.class.php:800
+#: inc/weathermap.class.php:818
 msgid "Destination"
 msgstr ""
 
-#: inc/weathermap.class.php:855
+#: inc/weathermap.class.php:873
 msgid "Edit a link"
 msgstr ""
 
-#: inc/weathermap.class.php:907
+#: inc/weathermap.class.php:925
 msgid "Delete a link"
+msgstr ""
+
+#: inc/weathermap.class.php:931
+msgid "Link"
+msgstr ""
+
+#: inc/weathermap.class.php:988
+msgid "Problem to generate weathermap"
 msgstr ""
