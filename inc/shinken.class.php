@@ -170,7 +170,10 @@ class PluginMonitoringShinken extends CommonDBTM {
             if (isset($a_entities_allowed['-1'])
                     OR isset($a_entities_allowed[$class->fields['entities_id']])) {
 
-               $a_hosts[$i]['host_name'] = $classname."-".$data['items_id']."-".preg_replace("/[^A-Za-z0-9]/","",$class->fields['name']);
+               $a_hosts[$i]['host_name'] = preg_replace("/[^A-Za-z0-9]/","",$class->fields['name']);
+               $a_hosts[$i]['_ITEMSID'] = $data['items_id'];
+               $a_hosts[$i]['_ITEMTYPE'] = $classname;
+               
                $a_hosts_found[$a_hosts[$i]['host_name']] = 1;
                $a_hosts[$i]['alias'] = preg_replace("/[^A-Za-z0-9]/","",$class->fields['name'])." / ".$classname."-".$data['items_id'];
                if (isset($class->fields['networkequipmenttypes_id'])) {                  
@@ -410,7 +413,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                if (isset($a_entities_allowed['-1'])
                        OR isset($a_entities_allowed[$item->fields['entities_id']])) {
                
-                  $a_hostname[] = $itemtype."-".$datah['items_id']."-".preg_replace("/[^A-Za-z0-9]/","",$item->fields['name']);
+                  $a_hostname[] = preg_replace("/[^A-Za-z0-9]/","",$item->fields['name']);
                   $hostname = $item->fields['name'];
                   $plugin_monitoring_componentscatalogs_id = $datah['plugin_monitoring_componentscalalog_id'];
                }
@@ -423,8 +426,10 @@ class PluginMonitoringShinken extends CommonDBTM {
             $a_services[$i]['host_name'] = implode(",", array_unique($a_hostname));
             $hostnamebp = $a_services[$i]['host_name']; // For business rules
 
-            $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9]/","",$a_component['name'])."-".$data['id'];
-
+            $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9]/","",$a_component['name']);
+            $a_services[$i]['_ITEMSID'] = $data['id'];
+            $a_services[$i]['_ITEMTYPE'] = 'service';
+            
             $pMonitoringCommand->getFromDB($a_component['plugin_monitoring_commands_id']);
             // Manage arguments
             $array = array();
@@ -654,7 +659,9 @@ class PluginMonitoringShinken extends CommonDBTM {
                   $a_services[$i]['check_period'] = $calendar->fields['name'];            
                }
                $a_services[$i]['host_name'] = $hostnamebp;
-               $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9]/","",$dataBA['name'])."-".$dataBA['id']."-businessrules";
+               $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9]/","",$dataBA['name']);
+               $a_services[$i]['_ITEMSID'] = $dataBA['id'];
+               $a_services[$i]['_ITEMTYPE'] = 'servicecatalog';
                $command = "bp_rule!";
 
                foreach ($a_group as $key=>$value) {
