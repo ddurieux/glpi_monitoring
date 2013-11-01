@@ -429,6 +429,24 @@ class PluginMonitoringShinken extends CommonDBTM {
             $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9]/","",$a_component['name']);
             $a_services[$i]['_ITEMSID'] = $data['id'];
             $a_services[$i]['_ITEMTYPE'] = 'service';
+         
+            // Manage freshness
+            if ($a_component['freshness_count'] == 0) {
+               $a_services[$i]['check_freshness'] = 0;
+            } else {
+               $multiple = 1;
+               if ($a_component['freshness_type'] == 'seconds') {
+                  $multiple = 1;
+               } else if ($a_component['freshness_type'] == 'minutes') {
+                  $multiple = 60;
+               } else if ($a_component['freshness_type'] == 'hours') {
+                  $multiple = 3600;
+               } else if ($a_component['freshness_type'] == 'days') {
+                  $multiple = 86400;
+               }
+               $a_services[$i]['check_freshness'] = 1;
+               $a_services[$i]['freshness_threshold'] = ($a_component['freshness_count'] * $multiple);
+            }
             
             $pMonitoringCommand->getFromDB($a_component['plugin_monitoring_commands_id']);
             // Manage arguments
@@ -565,7 +583,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_services[$i]['parallelize_check'] = '1';
                $a_services[$i]['obsess_over_service'] = '1';
                $a_services[$i]['check_freshness'] = '1';
-               $a_services[$i]['freshness_threshold'] = '1';
+               $a_services[$i]['freshness_threshold'] = '3600';
                $a_services[$i]['notifications_enabled'] = '1';
                
                if (isset($a_services[$i]['event_handler'])) {
@@ -757,7 +775,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_servicetemplates[$i]['parallelize_check'] = '1';
          $a_servicetemplates[$i]['obsess_over_service'] = '1';
          $a_servicetemplates[$i]['check_freshness'] = '1';
-         $a_servicetemplates[$i]['freshness_threshold'] = '1';
+         $a_servicetemplates[$i]['freshness_threshold'] = '3600';
          $a_servicetemplates[$i]['notifications_enabled'] = '1';
          $a_servicetemplates[$i]['event_handler_enabled'] = '0';
          //$a_servicetemplates[$i]['event_handler'] = 'super_event_kill_everyone!DIE';

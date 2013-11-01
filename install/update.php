@@ -392,6 +392,13 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                               'plugin_monitoring_eventhandlers_id', 
                               "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'freshness_count', 
+                              "int(6) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'freshness_type', 
+                              "varchar(255) DEFAULT 'seconds'");
+         
          $migration->addKey($newTable, 
                             "plugin_monitoring_commands_id");
       $migration->migrationOneTable($newTable);

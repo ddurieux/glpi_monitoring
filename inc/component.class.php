@@ -275,14 +275,26 @@ class PluginMonitoringComponent extends CommonDBTM {
                               PluginMonitoringPerfdata::listPerfdata(), 
                               array('value'=>$this->fields['graph_template']));
       echo "</td>";
-      // * calendar
-      echo "<td>".__('Check period', 'monitoring')."<font class='red'>*</font>&nbsp;:</td>";
+      // * freshness
+      echo "<td>".__('Freshness (for passive mode)', 'monitoring')."&nbsp;:</td>";
       echo "<td>";
-      dropdown::show("Calendar", array('name'=>'calendars_id',
-                                 'value'=>$this->fields['calendars_id']));
+      Dropdown::showNumber("freshness_count", array(
+             'value' => $this->fields['freshness_count'], 
+             'min'   => 0, 
+             'max'   => 300)
+      );
+      $a_time = array();
+      $a_time['seconds'] = __('Second(s)', 'monitoring');
+      $a_time['minutes'] = __('Minute(s)', 'monitoring');
+      $a_time['hours']   = __('Hour(s)', 'monitoring');
+      $a_time['days']    = __('Day(s)', 'monitoring');
+
+      Dropdown::showFromArray("freshness_type",
+                              $a_time,
+                              array('value'=>$this->fields['freshness_type']));
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr>";
       echo "<td>";
       echo __('Event handler', 'monitoring')."&nbsp;:";
@@ -292,7 +304,11 @@ class PluginMonitoringComponent extends CommonDBTM {
                      array('name'  => 'plugin_monitoring_eventhandlers_id',
                            'value' => $this->fields['plugin_monitoring_eventhandlers_id']));
       echo "</td>";
-      echo "<td colspan='2'>";
+      // * calendar
+      echo "<td>".__('Check period', 'monitoring')."<font class='red'>*</font>&nbsp;:</td>";
+      echo "<td>";
+      dropdown::show("Calendar", array('name'=>'calendars_id',
+                                 'value'=>$this->fields['calendars_id']));
       echo "</td>";
       echo "</tr>";
       
