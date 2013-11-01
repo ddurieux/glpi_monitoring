@@ -1805,6 +1805,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                   'state_type',
                                   'plugin_monitoring_services_id'),
                             "unavailability");
+         $migration->addKey($newTable,
+                            array('plugin_monitoring_services_id',
+                                  'id'),
+                            "plugin_monitoring_services_id_3");
       $migration->migrationOneTable($newTable);
 
       

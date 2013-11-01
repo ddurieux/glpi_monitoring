@@ -433,7 +433,8 @@ CREATE TABLE `glpi_plugin_monitoring_serviceevents` (
   PRIMARY KEY (`id`),
   KEY `plugin_monitoring_services_id` (`plugin_monitoring_services_id`),
   KEY `plugin_monitoring_services_id_2` (`plugin_monitoring_services_id`,`date`),
-  KEY `unavailability` (`unavailability`,`state_type`,`plugin_monitoring_services_id`)
+  KEY `unavailability` (`unavailability`,`state_type`,`plugin_monitoring_services_id`),
+  KEY `plugin_monitoring_services_id_3` (`plugin_monitoring_services_id`,`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
