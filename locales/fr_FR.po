@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project - plugin monitoring \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-10-31 19:40+0100\n"
-"PO-Revision-Date: 2013-10-31 18:42+0000\n"
+"PO-Revision-Date: 2013-11-01 09:28+0000\n"
 "Last-Translator: David Durieux <d.durieux@siprossii.com>\n"
 "Language-Team: French (France) (http://www.transifex.com/projects/p/GLPI_monitoring/language/fr_FR/)\n"
 "MIME-Version: 1.0\n"
@@ -279,7 +279,7 @@ msgstr "Gabarit (pour a génération des graphiques)"
 
 #: inc/component.class.php:279
 msgid "Freshness (for passive mode)"
-msgstr ""
+msgstr "Freshness/fraîcheur (pour le mode passif)"
 
 #: inc/component.class.php:287
 msgid "Second(s)"
@@ -649,7 +649,7 @@ msgstr "Rechargement de la page (en secondes)"
 
 #: inc/displayview.class.php:197 inc/displayview.class.php:302
 msgid "Display view in dashboard"
-msgstr ""
+msgstr "Afficher la vue dans le dashboard"
 
 #: inc/displayview.class.php:309
 msgid "Header counter (critical/warning/ok)"
@@ -698,11 +698,11 @@ msgstr "Ressources (graph)"
 
 #: inc/displayview_rule.class.php:94 inc/displayview_rule.class.php:139
 msgid "Host rule"
-msgstr ""
+msgstr "Règle hôte"
 
 #: inc/displayview_rule.class.php:102
 msgid "Resource rule"
-msgstr ""
+msgstr "Règle ressource"
 
 #: inc/displayview_rule.class.php:147
 msgid "Edit rule"
@@ -710,12 +710,12 @@ msgstr "Modifier la règle"
 
 #: inc/displayview_rule.class.php:339
 msgid "Replay all rules"
-msgstr ""
+msgstr "Rejouer toutes les règles"
 
 #: inc/displayview_rule.class.php:346
 msgctxt "button"
 msgid "Replay all rules"
-msgstr ""
+msgstr "Rejouer toutes les règles"
 
 #: inc/entity.class.php:132
 msgid "Set tag to link entity with a specific Shinken server"
@@ -779,7 +779,7 @@ msgstr "Vues sur la page d'accueil de GLPI"
 
 #: inc/profile.class.php:247
 msgid "See all resources in dashboard"
-msgstr ""
+msgstr "Voir toutes les ressources dans le dashboard"
 
 #: inc/profile.class.php:253
 msgid "Restart shinken"
@@ -823,7 +823,7 @@ msgstr "Détail"
 
 #: inc/service.class.php:429
 msgid "No type associated"
-msgstr ""
+msgstr "Pas de type associé"
 
 #: inc/service.class.php:468
 msgid "Active check"
@@ -847,11 +847,11 @@ msgstr "Ajouter une maintenance pour ce service"
 
 #: inc/servicedef.class.php:196
 msgid "Active checks enable"
-msgstr ""
+msgstr "Activer les contrôles actifs"
 
 #: inc/servicedef.class.php:210
 msgid "Passive checks enable"
-msgstr ""
+msgstr "Activer les contrôles passifs"
 
 #: inc/servicedef.class.php:245
 msgid "By ssh"
@@ -859,15 +859,15 @@ msgstr "Par SSH"
 
 #: inc/servicedef.class.php:258
 msgid "Use arguments (Only for NRPE)"
-msgstr ""
+msgstr "Utiliser des arguments (uniquement pour NRPE)"
 
 #: inc/servicedef.class.php:272
 msgid "Alias command if required (Only for NRPE)"
-msgstr ""
+msgstr "Commande alias si requise (uniquement pour NRPE)"
 
 #: inc/servicedef.class.php:282
 msgid "Command link (used for graphs generation)"
-msgstr ""
+msgstr "Liaison de la commande (utilisé pour la génération des graphiques)"
 
 #: inc/servicegraph.class.php:876
 msgid "Display"
@@ -875,7 +875,7 @@ msgstr "Affichage"
 
 #: inc/servicegraph.class.php:925
 msgid "Invert values"
-msgstr ""
+msgstr "Ajouter des valeurs"
 
 #: inc/servicegraph.class.php:970
 msgid "Colors"
@@ -983,4 +983,4 @@ msgstr "Liaison"
 
 #: inc/weathermap.class.php:988
 msgid "Problem to generate weathermap"
-msgstr ""
+msgstr "Problème pour générer la weathermap"

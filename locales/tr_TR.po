@@ -1,40 +1,40 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
+# 
+# Translators:
+# Kaya Zeren <kayazeren@gmail.com>, 2013
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: GLPI Project - plugin monitoring \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-10-31 19:40+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2013-10-31 22:10+0000\n"
+"Last-Translator: Kaya Zeren <kayazeren@gmail.com>\n"
+"Language-Team: Turkish (Turkey) (http://www.transifex.com/projects/p/GLPI_monitoring/language/tr_TR/)\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Language: tr_TR\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #: hook.php:69
 msgid "Processor number"
-msgstr ""
+msgstr "İşlemci sayısı"
 
 #: hook.php:162
 msgid "Add these hosts to monitoring"
-msgstr ""
+msgstr "Bu sunucuları izlenmek üzere ekleyin"
 
 #: hook.php:168 hook.php:174
 msgid "Force play rules"
-msgstr ""
+msgstr "Oyun kuralları dayatılsın"
 
 #: hook.php:419 setup.php:161 front/menu.php:71 inc/display.class.php:75
 #: inc/display.class.php:177 inc/profile.class.php:177
 #: inc/servicescatalog.class.php:56 inc/servicescatalog.class.php:89
 msgid "Services catalog"
-msgstr ""
+msgstr "Hizmet kataloğu"
 
 #: hook.php:420 setup.php:137 front/menu.php:154 inc/check.class.php:83
 #: inc/check.class.php:104 inc/component.class.php:219
@@ -42,13 +42,13 @@ msgstr ""
 #: inc/profile.class.php:238 inc/service.class.php:454
 #: inc/servicedef.class.php:182 inc/servicescatalog.class.php:127
 msgid "Check definition"
-msgstr ""
+msgstr "Denetim açıklaması"
 
 #: hook.php:421 setup.php:140 front/menu.php:148 inc/command.class.php:270
 #: inc/command.class.php:291 inc/eventhandler.class.php:78
 #: inc/profile.class.php:222 inc/tag.class.php:83
 msgid "Commands"
-msgstr ""
+msgstr "Komutlar"
 
 #: hook.php:422 setup.php:146 front/menu.php:96 inc/component.class.php:105
 #: inc/component.class.php:111 inc/componentscatalog.class.php:56
@@ -57,7 +57,7 @@ msgstr ""
 #: inc/displayview_item.class.php:621 inc/profile.class.php:192
 #: inc/service.class.php:106
 msgid "Components catalog"
-msgstr ""
+msgstr "Bileşen kataloğu"
 
 #: hook.php:423 setup.php:143 front/menu.php:115 inc/component.class.php:56
 #: inc/component.class.php:148 inc/componentscatalog.class.php:94
@@ -65,7 +65,7 @@ msgstr ""
 #: inc/profile.class.php:216 inc/service.class.php:213
 #: inc/service.class.php:216
 msgid "Components"
-msgstr ""
+msgstr "Bileşenler"
 
 #: index.php:45 front/acknowledge.form.php:47 front/businessrule.form.php:47
 #: front/businessrulegroup.form.php:47 front/check.form.php:47
@@ -95,892 +95,891 @@ msgstr ""
 #: inc/host.class.php:59 inc/profile.class.php:114 inc/profile.class.php:166
 #: inc/servicescatalog.class.php:89
 msgid "Monitoring"
-msgstr ""
+msgstr "İzleniyor"
 
 #: setup.php:149 front/menu.php:121 inc/contacttemplate.class.php:57
 msgid "Contact templates"
-msgstr ""
+msgstr "İlgili kalıpları"
 
 #: setup.php:152 front/menu.php:57 inc/profile.class.php:171
 msgid "Dashboard"
-msgstr ""
+msgstr "Yönetim"
 
 #: setup.php:155 front/menu.php:83 inc/displayview.class.php:62
 #: inc/displayview.class.php:186 inc/displayview_item.class.php:57
 #: inc/displayview_item.class.php:616 inc/profile.class.php:186
 msgid "Views"
-msgstr ""
+msgstr "Görünümler"
 
 #: setup.php:158 front/menu.php:133 inc/realm.class.php:53
 msgid "Reamls"
-msgstr ""
+msgstr "Reaml"
 
 #: setup.php:164 front/menu.php:77 inc/component.class.php:421
 #: inc/displayview_item.class.php:622 inc/profile.class.php:207
 #: inc/weathermap.class.php:51 inc/weathermap.class.php:86
 msgid "Weathermap"
-msgstr ""
+msgstr "Hava durumu haritası"
 
 #: setup.php:167 front/menu.php:166 inc/component.class.php:300
 #: inc/eventhandler.class.php:57
 msgid "Event handler"
-msgstr ""
+msgstr "Olay işleyici"
 
 #: setup.php:170 front/menu.php:127 inc/notificationcommand.class.php:81
 msgid "Notification commands"
-msgstr ""
+msgstr "Bildirim komutları"
 
 #: ajax/dropdownDisplayviewItemtype.php:43
 #, php-format
 msgid "% of the width of the frame"
-msgstr ""
+msgstr "% olarak çerçeve genişliği"
 
 #: ajax/dropdownWlink.php:52 inc/weathermap.class.php:848
 msgid "Max bandwidth input"
-msgstr ""
+msgstr "En büyük giriş bant genişliği"
 
 #: ajax/dropdownWlink.php:55 inc/weathermap.class.php:857
 msgid "Max bandwidth output"
-msgstr ""
+msgstr "En büyük çıkış bant genişliği"
 
 #: ajax/dropdownWnode.php:52
 msgid "Host"
-msgstr ""
+msgstr "Sunucu"
 
 #: front/component.form.php:68 front/component.form.php:93
 msgid "Fields with asterisk are required"
-msgstr ""
+msgstr "Yıldız ile işaretli alanlar zorunludur"
 
 #: front/menu.php:139 inc/entity.class.php:137 inc/tag.class.php:57
 #: inc/tag.class.php:88 inc/tag.class.php:128
 msgid "Tag"
-msgstr ""
+msgstr "Etiket"
 
 #: front/service.php:78
 msgid "Display search form"
-msgstr ""
+msgstr "Arama formu görüntülensin"
 
 #: inc/businessrule.class.php:80 inc/businessrulegroup.class.php:135
 msgid "2 of"
-msgstr ""
+msgstr "2 / "
 
 #: inc/businessrule.class.php:81 inc/businessrulegroup.class.php:136
 msgid "3 of"
-msgstr ""
+msgstr "3 / "
 
 #: inc/businessrule.class.php:82 inc/businessrulegroup.class.php:137
 msgid "4 of"
-msgstr ""
+msgstr "4 / "
 
 #: inc/businessrule.class.php:83 inc/businessrulegroup.class.php:138
 msgid "5 of"
-msgstr ""
+msgstr "5 / "
 
 #: inc/businessrule.class.php:84 inc/businessrulegroup.class.php:139
 msgid "6 of"
-msgstr ""
+msgstr "6 / "
 
 #: inc/businessrule.class.php:85 inc/businessrulegroup.class.php:140
 msgid "7 of"
-msgstr ""
+msgstr "7 / "
 
 #: inc/businessrule.class.php:86 inc/businessrulegroup.class.php:141
 msgid "8 of"
-msgstr ""
+msgstr "8 / "
 
 #: inc/businessrule.class.php:87 inc/businessrulegroup.class.php:142
 msgid "9 of"
-msgstr ""
+msgstr "9 / "
 
 #: inc/businessrule.class.php:88 inc/businessrulegroup.class.php:143
 msgid "10 of"
-msgstr ""
+msgstr "10 / "
 
 #: inc/businessrule.class.php:237 inc/businessrulegroup.class.php:51
 msgid "Group"
 msgid_plural "Groups"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Grup"
 
 #: inc/businessrule.class.php:243 inc/unavaibility.class.php:210
 msgid "Resource"
-msgstr ""
+msgstr "Kaynak"
 
 #: inc/businessrule.class.php:284 inc/businessrulegroup.class.php:186
 #: inc/display.class.php:826 inc/displayview_item.class.php:431
 msgid "on"
-msgstr ""
+msgstr "zaman"
 
 #: inc/businessrulegroup.class.php:118 inc/componentscatalog.class.php:341
 #: inc/display.class.php:648 inc/displayview.class.php:315
 #: inc/host.class.php:56 inc/service.class.php:51 inc/service.class.php:183
 #: inc/servicedef.class.php:88
 msgid "Resources"
-msgstr ""
+msgstr "Kaynaklar"
 
 #: inc/businessrulegroup.class.php:199
 msgid "Resource deleted"
-msgstr ""
+msgstr "Kaynak silindi"
 
 #: inc/canvas.class.php:372 inc/display.class.php:183
 msgid "Dependencies;"
-msgstr ""
+msgstr "Bağlılıklar:"
 
 #: inc/check.class.php:128 inc/check.class.php:167
 msgid "Max check attempts (number of retries)"
-msgstr ""
+msgstr "En fazla denetleme denemesi (yineleme sayısı)"
 
 #: inc/check.class.php:129 inc/check.class.php:177
 msgid "Time in minutes between 2 checks"
-msgstr ""
+msgstr "Dakika cinsinden 2 denetim arasındaki süre"
 
 #: inc/check.class.php:130 inc/check.class.php:184
 msgid "Time in minutes between 2 retries"
-msgstr ""
+msgstr "Dakika cinsinden 2 deneme arasındaki süre"
 
 #: inc/command.class.php:349 inc/componentscatalog_component.class.php:97
 #: inc/eventhandler.class.php:138 inc/notificationcommand.class.php:153
 msgid "Command name"
-msgstr ""
+msgstr "Komut adı"
 
 #: inc/command.class.php:356 inc/eventhandler.class.php:145
 #: inc/notificationcommand.class.php:160
 msgid "Command line"
-msgstr ""
+msgstr "Komut satırı"
 
 #: inc/command.class.php:363
 msgid "Arguments description"
-msgstr ""
+msgstr "Arguman açıklaması"
 
 #: inc/command.class.php:402 inc/component.class.php:485
 msgid "copy"
-msgstr ""
+msgstr "kopya"
 
 #: inc/component.class.php:106
 msgid "Graph configuration"
-msgstr ""
+msgstr "Çizelge ayarları"
 
 #: inc/component.class.php:241
 msgid "Active checks"
-msgstr ""
+msgstr "Etkin denetimler"
 
 #: inc/component.class.php:251 inc/hostconfig.class.php:186
 #: inc/service.class.php:434 inc/servicedef.class.php:164
 msgid "Command"
-msgstr ""
+msgstr "Komut"
 
 #: inc/component.class.php:262 inc/service.class.php:482
 msgid "Passive check"
-msgstr ""
+msgstr "Pasif denetim"
 
 #: inc/component.class.php:271 inc/service.class.php:558
 msgid "Template (for graphs generation)"
-msgstr ""
+msgstr "Tema (çizelge oluşturmak için)"
 
 #: inc/component.class.php:279
 msgid "Freshness (for passive mode)"
-msgstr ""
+msgstr "Tazelik (pasif kip için)"
 
 #: inc/component.class.php:287
 msgid "Second(s)"
-msgstr ""
+msgstr "Saniye"
 
 #: inc/component.class.php:288
 msgid "Minute(s)"
-msgstr ""
+msgstr "Dakika"
 
 #: inc/component.class.php:289
 msgid "Hour(s)"
-msgstr ""
+msgstr "Saat"
 
 #: inc/component.class.php:290
 msgid "Day(s)"
-msgstr ""
+msgstr "Gün"
 
 #: inc/component.class.php:308 inc/componentscatalog_component.class.php:99
 #: inc/display.class.php:527 inc/hostconfig.class.php:271
 #: inc/service.class.php:228 inc/service.class.php:492
 #: inc/servicedef.class.php:220 inc/servicescatalog.class.php:140
 msgid "Check period"
-msgstr ""
+msgstr "Denetleme aralığı"
 
 #: inc/component.class.php:316 inc/componentscatalog_component.class.php:100
 #: inc/service.class.php:509 inc/servicedef.class.php:234
 msgid "Remote check"
-msgstr ""
+msgstr "Uzak denetim"
 
 #: inc/component.class.php:322 inc/service.class.php:515
 #: inc/servicedef.class.php:240
 msgid "Utility used for remote check"
-msgstr ""
+msgstr "Uzak denetim için kullanılacak araç"
 
 #: inc/component.class.php:336 inc/service.class.php:533
 msgid "Use arguments (NRPE only)"
-msgstr ""
+msgstr "Argümanlar kullanılsın (yalnız NRPE)"
 
 #: inc/component.class.php:346 inc/service.class.php:547
 msgid "Alias command if required (NRPE only)"
-msgstr ""
+msgstr "Gerekirse kısa komut (yalnız NRPE)"
 
 #: inc/component.class.php:375 inc/service.class.php:236
 #: inc/servicedef.class.php:319
 msgid "Arguments"
-msgstr ""
+msgstr "Argümanlar"
 
 #: inc/component.class.php:385 inc/service.class.php:606
 #: inc/service.class.php:797 inc/service.class.php:859
 #: inc/servicedef.class.php:329
 msgid "Argument"
-msgstr ""
+msgstr "Argüman"
 
 #: inc/component.class.php:426
 msgid "Use this component for Weathermap"
-msgstr ""
+msgstr "Hava durumu haritası için bu bileşeni kullanın"
 
 #: inc/component.class.php:432 inc/component.class.php:449
 msgid "Example"
-msgstr ""
+msgstr "Örnek"
 
 #: inc/component.class.php:434 inc/component.class.php:436
 msgid "Regex bandwidth input"
-msgstr ""
+msgstr "Kurallı ifade giriş band genişliği "
 
 #: inc/component.class.php:451 inc/component.class.php:453
 msgid "Regex bandwidth output"
-msgstr ""
+msgstr "Kurallı ifade çıkış band genişliği "
 
 #: inc/component.class.php:498 inc/service.class.php:787
 msgid "List of tags available"
-msgstr ""
+msgstr "Kullanılabilecek etiket listesi"
 
 #: inc/component.class.php:499
 msgid "Hostname of the device"
-msgstr ""
+msgstr "Aygıtın sunucu adı"
 
 #: inc/component.class.php:500
 msgid "Network port number"
-msgstr ""
+msgstr "Ağ kapısının numarası"
 
 #: inc/component.class.php:501
 msgid "Network port name"
-msgstr ""
+msgstr "Ağ kapısının adı"
 
 #: inc/component.class.php:503
 msgid "Network port ifDescr of networking devices"
-msgstr ""
+msgstr "Ağ aygıtlarının ağ kapısı"
 
 #: inc/component.class.php:504
 msgid "SNMP version of network equipment or printer"
-msgstr ""
+msgstr "Ağ aygıtı ya da yazıcının SNMP sürümü"
 
 #: inc/component.class.php:505
 msgid "SNMP community of network equipment or printer"
-msgstr ""
+msgstr "Ağ aygıtı ya da yazıcının SNMP topluluğu"
 
 #: inc/componentscatalog.class.php:95
 msgid "Static hosts"
-msgstr ""
+msgstr "Durağan sunucular"
 
 #: inc/componentscatalog.class.php:97
 msgid "Dynamic hosts"
-msgstr ""
+msgstr "Devingen sunucular"
 
 #: inc/componentscatalog.class.php:98 inc/contact_item.class.php:51
 #: inc/contact_item.class.php:84 inc/host_contact.class.php:73
 msgid "Contacts"
-msgstr ""
+msgstr "İlgililer"
 
 #: inc/componentscatalog.class.php:99 inc/service.class.php:230
 #: inc/service.class.php:231 inc/service.class.php:232
 msgid "Availability"
-msgstr ""
+msgstr "Kullanılabilirlik"
 
 #: inc/componentscatalog.class.php:170
 msgid "Interval between 2 notifications (in minutes)"
-msgstr ""
+msgstr "2 bildirim arasındaki süre (dakika olarak)"
 
 #: inc/componentscatalog.class.php:518
 msgid "Simple report"
-msgstr ""
+msgstr "Basit rapor"
 
 #: inc/componentscatalog.class.php:541
 msgid "Synthese"
-msgstr ""
+msgstr "Birleştirin"
 
 #: inc/componentscatalog.class.php:572
 msgid "Synthese detail"
-msgstr ""
+msgstr "Birleştirme ayrıntısı"
 
 #: inc/componentscatalog.class.php:625
 msgid "Generate the report"
-msgstr ""
+msgstr "Rapor oluşturun"
 
 #: inc/componentscatalog.class.php:677
 msgid "Trend"
-msgstr ""
+msgstr "Eğilim"
 
 #: inc/componentscatalog.class.php:680 inc/componentscatalog.class.php:826
 msgid "Avaibility"
-msgstr ""
+msgstr "Kullanılabilirlik"
 
 #: inc/componentscatalog.class.php:691
 msgid "%"
-msgstr ""
+msgstr "%"
 
 #: inc/componentscatalog.class.php:694
 msgid "Time"
-msgstr ""
+msgstr "Zaman"
 
 #: inc/componentscatalog.class.php:698
 msgid "Min"
-msgstr ""
+msgstr "Dakika"
 
 #: inc/componentscatalog.class.php:701
 msgid "Avg"
-msgstr ""
+msgstr "Ortalama"
 
 #: inc/componentscatalog.class.php:704
 msgid "Max"
-msgstr ""
+msgstr "En fazla"
 
 #: inc/componentscatalog_component.class.php:86
 msgid "Associated components"
-msgstr ""
+msgstr "İlişkilendirilmiş bileşenler"
 
 #: inc/componentscatalog_component.class.php:165
 #: inc/componentscatalog_host.class.php:194
 msgid "Add a new component"
-msgstr ""
+msgstr "Yeni bileşen ekleyin"
 
 #: inc/componentscatalog_host.class.php:51 inc/contacttemplate.class.php:121
 msgid "Hosts"
-msgstr ""
+msgstr "Sunucular"
 
 #: inc/componentscatalog_rule.class.php:176 inc/displayview_rule.class.php:177
 msgid "Preview"
-msgstr ""
+msgstr "Önizleme"
 
 #: inc/config.class.php:57
 msgid "Configuration"
-msgstr ""
+msgstr "Ayarlar"
 
 #: inc/config.class.php:118
 msgid "Logs retention (in days)"
-msgstr ""
+msgstr "Günlük dönüşümü (gün olarak)"
 
 #: inc/config.class.php:127
 msgid "Timezones (for graph)"
-msgstr ""
+msgstr "Saat dilimleri (çizelge için)"
 
 #: inc/contact.class.php:57 inc/contact.class.php:78
 msgid "Contact"
-msgstr ""
+msgstr "İlgili"
 
 #: inc/contact.class.php:144
 msgid "Manage this user for monitoring system"
-msgstr ""
+msgstr "İzleme sistemi için bu kullanıcıyı düzenleyin"
 
 #: inc/contacttemplate.class.php:114
 msgid "Default template"
-msgstr ""
+msgstr "Varsayılan kalıp"
 
 #: inc/contacttemplate.class.php:122
 msgid "Services"
-msgstr ""
+msgstr "Hizmetler"
 
 #: inc/contacttemplate.class.php:126 inc/contacttemplate.class.php:130
 msgid "Notifications"
-msgstr ""
+msgstr "Bildirimler"
 
 #: inc/contacttemplate.class.php:137 inc/contacttemplate.class.php:142
 msgid "Notification command"
-msgstr ""
+msgstr "Bildirim komutu"
 
 #: inc/contacttemplate.class.php:150 inc/contacttemplate.class.php:155
 msgid "Period"
-msgstr ""
+msgstr "Aralık"
 
 #: inc/contacttemplate.class.php:163
 msgid "Notify on DOWN host states"
-msgstr ""
+msgstr "Sunucu KAPANMALARI bildirilsin"
 
 #: inc/contacttemplate.class.php:167
 msgid "Notify on WARNING service states"
-msgstr ""
+msgstr "Hizmet UYARI durumları bildirilsin"
 
 #: inc/contacttemplate.class.php:174
 msgid "Notify on UNREACHABLE host states"
-msgstr ""
+msgstr "Sunuculara ERİŞİLEMEDİĞİNDE bildirilsin"
 
 #: inc/contacttemplate.class.php:178
 msgid "Notify on UNKNOWN service states"
-msgstr ""
+msgstr "BİLİNMEYEN hizmet durumları bildirilsin"
 
 #: inc/contacttemplate.class.php:185
 msgid "Notify on host recoveries (UP states)"
-msgstr ""
+msgstr "Sunucu geri gelmeleri bildirilsin (AÇILMA durumu)"
 
 #: inc/contacttemplate.class.php:189
 msgid "Notify on CRITICAL service states"
-msgstr ""
+msgstr "KRİTİK hizmet durumları bildirilsin"
 
 #: inc/contacttemplate.class.php:196
 msgid "Notify when the host starts and stops flapping"
-msgstr ""
+msgstr "Sunucu başladığında ve durduğunda bildirilsin"
 
 #: inc/contacttemplate.class.php:200
 msgid "Notify on service recoveries (OK states)"
-msgstr ""
+msgstr "Hizmetlerin geri gelmesi bildirilsin (Tamam durumları)"
 
 #: inc/contacttemplate.class.php:207
 msgid ""
 "Send notifications when host or service scheduled downtime starts and ends"
-msgstr ""
+msgstr "Sunucu ya da hizmetlerin zamanlanmış kapanma zamanları başlayıp bittiğinde bildirim gönderilsin"
 
 #: inc/contacttemplate.class.php:211
 msgid "Notify when the service starts and stops flapping"
-msgstr ""
+msgstr "Hizmet başladığında ve durduğunda bildirilsin"
 
 #: inc/contacttemplate.class.php:218
 msgid "The contact will not receive any type of host notifications"
-msgstr ""
+msgstr "İlgili herhangi bir sunucu bildirimi almayacak"
 
 #: inc/contacttemplate.class.php:222
 msgid "The contact will not receive any type of service notifications"
-msgstr ""
+msgstr "İlgili herhangi bir hizmet bildirimi almayacak"
 
 #: inc/display.class.php:68
 msgid "Restart Shinken"
-msgstr ""
+msgstr "Shinken Sunucuyu Yeniden Başlatın"
 
 #: inc/display.class.php:101 inc/display.class.php:182
 msgid "All resources"
-msgstr ""
+msgstr "Tüm kaynaklar"
 
 #: inc/display.class.php:524 inc/service.class.php:85
 #: inc/service.class.php:222
 msgid "Last check"
-msgstr ""
+msgstr "Son denetleme"
 
 #: inc/display.class.php:528 inc/display.class.php:1497
 #: inc/display.class.php:1499 inc/service.class.php:136
 #: inc/service.class.php:234
 msgid "Acknowledge"
-msgstr ""
+msgstr "Onaylayın"
 
 #: inc/display.class.php:579
 msgid "Ok"
-msgstr ""
+msgstr "Tamam"
 
 #: inc/display.class.php:581
 msgid "Warning (data)"
-msgstr ""
+msgstr "Uyarı (veri)"
 
 #: inc/display.class.php:583 inc/display.class.php:1428
 #: inc/display.class.php:1430
 msgid "Warning (connection)"
-msgstr ""
+msgstr "Uyarı (bağlantı)"
 
 #: inc/display.class.php:585 inc/display.class.php:1347
 #: inc/display.class.php:1349
 msgid "Critical"
-msgstr ""
+msgstr "Kritik"
 
 #: inc/display.class.php:587
 msgid "Critical / Acknowledge"
-msgstr ""
+msgstr "Kritik / Onaylayın"
 
 #: inc/display.class.php:684 inc/display.class.php:685
 msgid "Define an acknowledge"
-msgstr ""
+msgstr "Bir onay tanımlayın"
 
 #: inc/display.class.php:749
 msgid "Configure"
-msgstr ""
+msgstr "Ayarlayın"
 
 #: inc/display.class.php:888
 msgid "Select date (only last 2, 12 and 24 hours)"
-msgstr ""
+msgstr "Tarihi seçin (yalnız son 2, 12 ve 24 saat)"
 
 #: inc/display.class.php:954
 msgid "Select time (only last 2, 12 and 24 hours)"
-msgstr ""
+msgstr "Saati seçin (yalnız son 2, 12 ve 24 saat)"
 
 #: inc/display.class.php:1013
 msgid "Last 2 hours"
-msgstr ""
+msgstr "Son 2 saat"
 
 #: inc/display.class.php:1014
 msgid "Last 12 hours"
-msgstr ""
+msgstr "Son 12 saat"
 
 #: inc/display.class.php:1015
 msgid "Last 24 hours"
-msgstr ""
+msgstr "Son 24 saat"
 
 #: inc/display.class.php:1017
 msgid "Last 7 days (average)"
-msgstr ""
+msgstr "Son 7 gün (ortalama)"
 
 #: inc/display.class.php:1018
 msgid "Last month (average)"
-msgstr ""
+msgstr "Son ay (ortalama)"
 
 #: inc/display.class.php:1019
 msgid "Last 6 months (average)"
-msgstr ""
+msgstr "Son 6 ay (ortalama)"
 
 #: inc/display.class.php:1020
 msgid "Last year (average)"
-msgstr ""
+msgstr "Son yıl (ortalama)"
 
 #: inc/display.class.php:1385 inc/display.class.php:1389
 #: inc/display.class.php:1391
 msgid "Warning"
-msgstr ""
+msgstr "Uyarı"
 
 #: inc/display.class.php:1463 inc/display.class.php:1465
 msgid "OK"
-msgstr ""
+msgstr "Tamam"
 
 #: inc/display.class.php:1570
 msgid "Page refresh (in seconds)"
-msgstr ""
+msgstr "Sayfa yenilenmesi (saniye)"
 
 #: inc/displayview.class.php:197 inc/displayview.class.php:302
 msgid "Display view in dashboard"
-msgstr ""
+msgstr "Görünüm panelde görüntülensin"
 
 #: inc/displayview.class.php:309
 msgid "Header counter (critical/warning/ok)"
-msgstr ""
+msgstr "Başlık sayacı (kritik/uyarı/tamam)"
 
 #: inc/displayview.class.php:313 inc/displayview_item.class.php:617
 #: inc/servicedef.class.php:109
 msgid "Business rules"
-msgstr ""
+msgstr "İş kuralları"
 
 #: inc/displayview.class.php:320
 msgid "Display in GLPI home page"
-msgstr ""
+msgstr "GLPI açılış sayfasında görüntülensin"
 
 #: inc/displayview.class.php:329 inc/weathermap.class.php:339
 msgid "Width"
-msgstr ""
+msgstr "Genişlik"
 
 #: inc/displayview_item.class.php:151
 msgid "Date and time select"
-msgstr ""
+msgstr "Tarih ve saat seçimi"
 
 #: inc/displayview_item.class.php:158
 msgid "Select date"
-msgstr ""
+msgstr "Tarihi seçin"
 
 #: inc/displayview_item.class.php:247
 msgid "Select time"
-msgstr ""
+msgstr "Saati seçin"
 
 #: inc/displayview_item.class.php:305
 msgid "View"
-msgstr ""
+msgstr "Görünüm"
 
 #: inc/displayview_item.class.php:612
 msgid "Element to display"
-msgstr ""
+msgstr "Görüntülenecek bileşen"
 
 #: inc/displayview_item.class.php:619
 msgid "Host (info)"
-msgstr ""
+msgstr "Sunucular (bilgi)"
 
 #: inc/displayview_item.class.php:620 inc/host.class.php:59
 msgid "Resources (graph)"
-msgstr ""
+msgstr "Kaynaklar (çizelge)"
 
 #: inc/displayview_rule.class.php:94 inc/displayview_rule.class.php:139
 msgid "Host rule"
-msgstr ""
+msgstr "Sunucu kuralı"
 
 #: inc/displayview_rule.class.php:102
 msgid "Resource rule"
-msgstr ""
+msgstr "Kaynak kuralı"
 
 #: inc/displayview_rule.class.php:147
 msgid "Edit rule"
-msgstr ""
+msgstr "Kuralı düzenleyin"
 
 #: inc/displayview_rule.class.php:339
 msgid "Replay all rules"
-msgstr ""
+msgstr "Tüm kurallar yeniden işletilsin"
 
 #: inc/displayview_rule.class.php:346
 msgctxt "button"
 msgid "Replay all rules"
-msgstr ""
+msgstr "Tüm kurallar yeniden işletilsin"
 
 #: inc/entity.class.php:132
 msgid "Set tag to link entity with a specific Shinken server"
-msgstr ""
+msgstr "Kurumu belirli bir Shinken sunucusu ile bağlamak için etiketi ayarlayın"
 
 #: inc/hostaddress.class.php:103
 msgid "Interface and IP to use for checks (only if have many IPs)"
-msgstr ""
+msgstr "Denetleme için kullanılacak arayüz ve IP adresi (yalnız birden çok IP adresi varsa)"
 
 #: inc/hostaddress.class.php:158
 msgid "First IP"
-msgstr ""
+msgstr "İlk IP adresi"
 
 #: inc/hostconfig.class.php:180
 msgid "Hosts configuration"
-msgstr ""
+msgstr "Sunucu yapılandırması"
 
 #: inc/hostconfig.class.php:254
 msgid "Reaml"
-msgstr ""
+msgstr "Reaml"
 
 #: inc/hostconfig.class.php:332
 msgid "Shinken Server"
-msgstr ""
+msgstr "Shinken Sunucusu"
 
 #: inc/log.class.php:57
 msgid "Logs"
-msgstr ""
+msgstr "Günlükler"
 
 #: inc/message.class.php:127
 msgid "Services catalog with resources not available"
-msgstr ""
+msgstr "Kaynakların bulunduğu hizmet kataloğu kullanılamıyor"
 
 #: inc/message.class.php:158
 msgid "The configuration has changed"
-msgstr ""
+msgstr "Ayarlar değiştirildi"
 
 #: inc/message.class.php:160
 msgid "resources added"
-msgstr ""
+msgstr "kaynak eklendi"
 
 #: inc/message.class.php:177
 msgid "resources deleted"
-msgstr ""
+msgstr "kaynak silindi"
 
 #: inc/message.class.php:195
 msgid "Shinken is restarted automatically"
-msgstr ""
+msgstr "Shinken kendiliğinden yeniden başlatıldı"
 
 #: inc/message.class.php:230
 msgid "No events found in last minutes, so Shinken seems stopped"
-msgstr ""
+msgstr "Son dakikalarda bir etkinlik olmadı, Shinken durmuş görünüyor"
 
 #: inc/networkport.class.php:56 inc/networkport.class.php:75
 msgid "Network ports of networking devices"
-msgstr ""
+msgstr "Ağ aygıtlarının ağ kapıları"
 
 #: inc/profile.class.php:201
 msgid "Views in GLPI home page"
-msgstr ""
+msgstr "GLPI açılış sayfasındaki görünümler"
 
 #: inc/profile.class.php:247
 msgid "See all resources in dashboard"
-msgstr ""
+msgstr "Tüm kaynaklar panelde görüntülensin"
 
 #: inc/profile.class.php:253
 msgid "Restart shinken"
-msgstr ""
+msgstr "Shinken yeniden başlatılsın"
 
 #: inc/rrdtool.class.php:256 inc/rrdtool.class.php:306
 msgid "RRDtool templates"
-msgstr ""
+msgstr "RRDtool kalıpları"
 
 #: inc/rrdtool.class.php:306
 msgid "Find files on"
-msgstr ""
+msgstr "Şuradaki dosyaları arayın"
 
 #: inc/rrdtool.class.php:313
 msgid "Upload perfdata and graph files"
-msgstr ""
+msgstr "Başarım verisi ve çizelge dosyalarını yükleyin"
 
 #: inc/service.class.php:90
 msgid "State type"
-msgstr ""
+msgstr "Durum tipi"
 
 #: inc/service.class.php:100
 msgid "Component"
-msgstr ""
+msgstr "Bileşen"
 
 #: inc/service.class.php:230 inc/unavaibility.class.php:211
 msgid "Current month"
-msgstr ""
+msgstr "Geçerli ay"
 
 #: inc/service.class.php:231 inc/unavaibility.class.php:212
 msgid "Last month"
-msgstr ""
+msgstr "Geçen ay"
 
 #: inc/service.class.php:232 inc/unavaibility.class.php:213
 msgid "Current year"
-msgstr ""
+msgstr "Geçerli yıl"
 
 #: inc/service.class.php:233 inc/unavaibility.class.php:214
 msgid "Detail"
-msgstr ""
+msgstr "Ayrıntı"
 
 #: inc/service.class.php:429
 msgid "No type associated"
-msgstr ""
+msgstr "Tip atanmamış"
 
 #: inc/service.class.php:468
 msgid "Active check"
-msgstr ""
+msgstr "Etkin denetim"
 
 #: inc/service.class.php:596
 msgid "Argument ([text:text] is used to get values dynamically)"
-msgstr ""
+msgstr "Argüman (değerleri devingen olarak almak için [text:text] kullanılır)"
 
 #: inc/service.class.php:786
 msgid "Component arguments"
-msgstr ""
+msgstr "Bileşen argümanları"
 
 #: inc/service.class.php:834
 msgid "Custom arguments for this resource (empty : inherit)"
-msgstr ""
+msgstr "Bu kaynak için özel argümanlar (boş ise : üstten alınır)"
 
 #: inc/service.class.php:957
 msgid "Add an acknowledge for service"
-msgstr ""
+msgstr "Hizmet için bir onay ekleyin"
 
 #: inc/servicedef.class.php:196
 msgid "Active checks enable"
-msgstr ""
+msgstr "Etkin denetimler kullanımda"
 
 #: inc/servicedef.class.php:210
 msgid "Passive checks enable"
-msgstr ""
+msgstr "Pasif denetimler kullanımda"
 
 #: inc/servicedef.class.php:245
 msgid "By ssh"
-msgstr ""
+msgstr "SSH ile"
 
 #: inc/servicedef.class.php:258
 msgid "Use arguments (Only for NRPE)"
-msgstr ""
+msgstr "Argümanlar kullanılsın (Yalnız NRPE için)"
 
 #: inc/servicedef.class.php:272
 msgid "Alias command if required (Only for NRPE)"
-msgstr ""
+msgstr "Gerekiyorsa kısa komut (Yalnız NRPE için)"
 
 #: inc/servicedef.class.php:282
 msgid "Command link (used for graphs generation)"
-msgstr ""
+msgstr "Komut bağlantısı (çizelge eklentisi için kullanılır)"
 
 #: inc/servicegraph.class.php:876
 msgid "Display"
-msgstr ""
+msgstr "Görüntülensin"
 
 #: inc/servicegraph.class.php:925
 msgid "Invert values"
-msgstr ""
+msgstr "Değerler tersine çevrilsin"
 
 #: inc/servicegraph.class.php:970
 msgid "Colors"
-msgstr ""
+msgstr "Renkler"
 
 #: inc/servicescatalog.class.php:343
 msgid "Degraded mode"
-msgstr ""
+msgstr "Düşürülmüş kip"
 
 #: inc/shinkenwebservice.class.php:144 inc/shinkenwebservice.class.php:150
 msgid "Shinken restart failed:"
-msgstr ""
+msgstr "Shinken yeniden başlatılamadı:"
 
 #: inc/tag.class.php:99 inc/tag.class.php:132
 msgid "Username (Shinken webservice)"
-msgstr ""
+msgstr "Kullanıcı adı (Shinken web hizmeti)"
 
 #: inc/tag.class.php:139
 msgid "Shinken IP address"
-msgstr ""
+msgstr "Shinken IP adresi"
 
 #: inc/tag.class.php:143
 msgid "Password (Shinken webservice)"
-msgstr ""
+msgstr "Parola (Shinken web hizmeti)"
 
 #: inc/tag.class.php:150
 msgid "Lock shinken IP"
-msgstr ""
+msgstr "Shinken IP adresini kilitleyin"
 
 #: inc/unavaibility.class.php:54
 msgid "Unavaibility"
-msgstr ""
+msgstr "Kullanılamazlık"
 
 #: inc/unavaibility.class.php:83
 msgid "Ressource"
-msgstr ""
+msgstr "Kaynak"
 
 #: inc/unavaibility.class.php:89
 msgid "Start"
-msgstr ""
+msgstr "Başlangıç"
 
 #: inc/unavaibility.class.php:95
 msgid "End"
-msgstr ""
+msgstr "Bitiş"
 
 #: inc/unavaibility.class.php:101
 msgid "Duration"
-msgstr ""
+msgstr "Süre"
 
 #: inc/weathermap.class.php:87 inc/weathermap.class.php:396
 msgid "Nodes and links"
-msgstr ""
+msgstr "Düğüm ve bağlantılar"
 
 #: inc/weathermap.class.php:352
 msgid "Background image"
-msgstr ""
+msgstr "Artalan görseli"
 
 #: inc/weathermap.class.php:364
 msgid "Height"
-msgstr ""
+msgstr "Yükseklik"
 
 #: inc/weathermap.class.php:498
 msgid "Display weathermap form"
-msgstr ""
+msgstr "Hava durumu haritası formu görüntülensin"
 
 #: inc/weathermap.class.php:526
 msgid "Add a node"
-msgstr ""
+msgstr "Düğüm ekleyin"
 
 #: inc/weathermap.class.php:532
 msgid "Node"
-msgstr ""
+msgstr "Düğüm"
 
 #: inc/weathermap.class.php:558
 msgid "Edit a node"
-msgstr ""
+msgstr "Düğümü düzenleyin"
 
 #: inc/weathermap.class.php:610
 msgid "Delete a node"
-msgstr ""
+msgstr "Düğümü silin"
 
 #: inc/weathermap.class.php:658
 msgid "Add a link"
-msgstr ""
+msgstr "Bağlantı ekleyin"
 
 #: inc/weathermap.class.php:664
 msgid "Source"
-msgstr ""
+msgstr "Kaynak"
 
 #: inc/weathermap.class.php:818
 msgid "Destination"
-msgstr ""
+msgstr "Hedef"
 
 #: inc/weathermap.class.php:873
 msgid "Edit a link"
-msgstr ""
+msgstr "Bağlantıyı düzenleyin"
 
 #: inc/weathermap.class.php:925
 msgid "Delete a link"
-msgstr ""
+msgstr "Bağlantıyı silin"
 
 #: inc/weathermap.class.php:931
 msgid "Link"
-msgstr ""
+msgstr "Bağlantı"
 
 #: inc/weathermap.class.php:988
 msgid "Problem to generate weathermap"
-msgstr ""
+msgstr "Havadurumu haritası oluşturulurken bir sorun çıktı"

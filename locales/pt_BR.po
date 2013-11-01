@@ -4,13 +4,14 @@
 # 
 # Translators:
 # Rafael Ferreira <rafael.f.f1@gmail.com>, 2012
+# Thiago Passamani <thiagopassamani@gmail.com>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project - plugin monitoring \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-10-31 19:40+0100\n"
-"PO-Revision-Date: 2013-10-31 18:41+0000\n"
-"Last-Translator: David Durieux <d.durieux@siprossii.com>\n"
+"PO-Revision-Date: 2013-10-31 19:27+0000\n"
+"Last-Translator: Thiago Passamani <thiagopassamani@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/GLPI_monitoring/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -279,23 +280,23 @@ msgstr "Modelo (para gerar gráficos)"
 
 #: inc/component.class.php:279
 msgid "Freshness (for passive mode)"
-msgstr ""
+msgstr "Freshness (para modo passivo)"
 
 #: inc/component.class.php:287
 msgid "Second(s)"
-msgstr ""
+msgstr "Segundo(s)"
 
 #: inc/component.class.php:288
 msgid "Minute(s)"
-msgstr ""
+msgstr "Minuto(s)"
 
 #: inc/component.class.php:289
 msgid "Hour(s)"
-msgstr ""
+msgstr "Hora(s)"
 
 #: inc/component.class.php:290
 msgid "Day(s)"
-msgstr ""
+msgstr "Dia(s)"
 
 #: inc/component.class.php:308 inc/componentscatalog_component.class.php:99
 #: inc/display.class.php:527 inc/hostconfig.class.php:271
@@ -649,7 +650,7 @@ msgstr "Atualização de página (em segundos)"
 
 #: inc/displayview.class.php:197 inc/displayview.class.php:302
 msgid "Display view in dashboard"
-msgstr ""
+msgstr "Exibir na Dashboard"
 
 #: inc/displayview.class.php:309
 msgid "Header counter (critical/warning/ok)"
@@ -698,11 +699,11 @@ msgstr "Recurso (gráfico)"
 
 #: inc/displayview_rule.class.php:94 inc/displayview_rule.class.php:139
 msgid "Host rule"
-msgstr ""
+msgstr "Regra para Host"
 
 #: inc/displayview_rule.class.php:102
 msgid "Resource rule"
-msgstr ""
+msgstr "Regra de recurso"
 
 #: inc/displayview_rule.class.php:147
 msgid "Edit rule"
@@ -710,12 +711,12 @@ msgstr "Editar regra"
 
 #: inc/displayview_rule.class.php:339
 msgid "Replay all rules"
-msgstr ""
+msgstr "Repetir todas as regras"
 
 #: inc/displayview_rule.class.php:346
 msgctxt "button"
 msgid "Replay all rules"
-msgstr ""
+msgstr "Repetir todas as regras"
 
 #: inc/entity.class.php:132
 msgid "Set tag to link entity with a specific Shinken server"
@@ -779,11 +780,11 @@ msgstr "Visões na página inicial de GLPI"
 
 #: inc/profile.class.php:247
 msgid "See all resources in dashboard"
-msgstr ""
+msgstr "Veja todos os recursos no painel"
 
 #: inc/profile.class.php:253
 msgid "Restart shinken"
-msgstr ""
+msgstr "Reiniciar Shinken"
 
 #: inc/rrdtool.class.php:256 inc/rrdtool.class.php:306
 msgid "RRDtool templates"
@@ -823,7 +824,7 @@ msgstr "Detalhe"
 
 #: inc/service.class.php:429
 msgid "No type associated"
-msgstr ""
+msgstr "Nenhum tipo associado"
 
 #: inc/service.class.php:468
 msgid "Active check"
@@ -847,39 +848,39 @@ msgstr "Adiciona uma confirmação para um serviço"
 
 #: inc/servicedef.class.php:196
 msgid "Active checks enable"
-msgstr ""
+msgstr "Permitir verificação de ativos"
 
 #: inc/servicedef.class.php:210
 msgid "Passive checks enable"
-msgstr ""
+msgstr "Permitir verificação passiva"
 
 #: inc/servicedef.class.php:245
 msgid "By ssh"
-msgstr ""
+msgstr "Por SSH"
 
 #: inc/servicedef.class.php:258
 msgid "Use arguments (Only for NRPE)"
-msgstr ""
+msgstr "Usar argumentos (somente para NRPE)"
 
 #: inc/servicedef.class.php:272
 msgid "Alias command if required (Only for NRPE)"
-msgstr ""
+msgstr "Use comando ALIAS, se necessário (somente para NRPE)"
 
 #: inc/servicedef.class.php:282
 msgid "Command link (used for graphs generation)"
-msgstr ""
+msgstr "Comando Link (usado para gerar gráfico)"
 
 #: inc/servicegraph.class.php:876
 msgid "Display"
-msgstr ""
+msgstr "Exibir"
 
 #: inc/servicegraph.class.php:925
 msgid "Invert values"
-msgstr ""
+msgstr "Inverter valores"
 
 #: inc/servicegraph.class.php:970
 msgid "Colors"
-msgstr ""
+msgstr "Cores"
 
 #: inc/servicescatalog.class.php:343
 msgid "Degraded mode"
@@ -895,7 +896,7 @@ msgstr "Nome de usuário (serviço web Shinken)"
 
 #: inc/tag.class.php:139
 msgid "Shinken IP address"
-msgstr ""
+msgstr "Endereço IP do Shinken"
 
 #: inc/tag.class.php:143
 msgid "Password (Shinken webservice)"
@@ -903,7 +904,7 @@ msgstr "Senha (serviço web Shinken)"
 
 #: inc/tag.class.php:150
 msgid "Lock shinken IP"
-msgstr ""
+msgstr "Bloquear IP Shinken"
 
 #: inc/unavaibility.class.php:54
 msgid "Unavaibility"
@@ -979,8 +980,8 @@ msgstr "Deletar um vínculo"
 
 #: inc/weathermap.class.php:931
 msgid "Link"
-msgstr ""
+msgstr "Link"
 
 #: inc/weathermap.class.php:988
 msgid "Problem to generate weathermap"
-msgstr ""
+msgstr "Problema para gerar mapa de tempo"
