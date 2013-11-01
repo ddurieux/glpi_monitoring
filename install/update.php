@@ -185,6 +185,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                               'acknowledge_users_id', 
                               "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'notification_interval', 
+                              "int(4) NOT NULL DEFAULT '30'");
          $migration->addKey($newTable, 
                             "name");
       $migration->migrationOneTable($newTable);

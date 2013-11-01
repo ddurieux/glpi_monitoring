@@ -624,6 +624,39 @@ class PluginMonitoringShinken extends CommonDBTM {
       $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
       $pmBusinessrule = new PluginMonitoringBusinessrule();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+
+      // * Prepare contacts
+      $a_contacts_entities = array();
+      $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringServicescatalog'
+         AND `users_id`>0");
+      foreach ($a_list_contact as $data) {
+         $contactentities = getSonsOf('glpi_entities', $data['entities_id']);
+         if (isset($a_contacts_entities[$data['items_id']][$data['users_id']])) {
+            $contactentities = array_merge($contactentities, $a_contacts_entities[$data['items_id']][$data['users_id']]);
+         }
+         $a_contacts_entities[$data['items_id']][$data['users_id']] = $contactentities;
+      }
+      // Groups
+      $group = new Group();
+      $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringServicescatalog'
+         AND `groups_id`>0");
+      foreach ($a_list_contact as $data) {
+         $group->getFromDB($data['groups_id']);
+         if ($group->fields['is_recursive'] == 1) {
+            $contactentities = getSonsOf('glpi_entities', $group->fields['entities_id']);
+         } else {
+            $contactentities = array($group->fields['entities_id'] => $group->fields['entities_id']);
+         }      
+         $queryg = "SELECT * FROM `glpi_groups_users`
+            WHERE `groups_id`='".$data['groups_id']."'";
+         $resultg = $DB->query($queryg);
+         while ($datag=$DB->fetch_array($resultg)) {
+            if (isset($a_contacts_entities[$data['items_id']][$datag['users_id']])) {
+               $contactentities = array_merge($contactentities, $a_contacts_entities[$data['items_id']][$datag['users_id']]);
+            }
+            $a_contacts_entities[$data['items_id']][$datag['users_id']] = $contactentities;
+         }
+      }
       
       $a_listBA = $pmServicescatalog->find();
       foreach ($a_listBA as $dataBA) {
@@ -691,7 +724,11 @@ class PluginMonitoringShinken extends CommonDBTM {
                   }
                }
                $a_services[$i]['check_command'] = $command.implode("&", $a_group);
-               $a_services[$i]['notification_interval'] = '30';
+               if ($dataBA['notification_interval'] != '30') {
+                  $a_services[$i]['notification_interval'] = $dataBA['notification_interval'];
+               } else {
+                  $a_services[$i]['notification_interval'] = '30';
+               }
                if ($calendar->getFromDB($dataBA['calendars_id'])) {
                   $a_services[$i]['notification_period'] = $calendar->fields['name'];
                } else {
@@ -715,7 +752,34 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_services[$i]['retain_nonstatus_information'] = '1';
                $a_services[$i]['is_volatile'] = '0';
                $a_services[$i]['_httpstink'] = 'NO';
-               $a_services[$i]['contacts'] = '';
+       
+               // * Contacts
+                  $a_contacts = array();
+                  $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringServicescatalog'
+                     AND `items_id`='".$dataBA['id']."'");
+                  foreach ($a_list_contact as $data_contact) {
+                     if ($data_contact['users_id'] > 0) {
+                        if (isset($a_contacts_entities[$dataBA['id']][$data_contact['users_id']])) {
+                           if (in_array($data['entities_id'], $a_contacts_entities[$dataBA['id']][$data_contact['users_id']])) {
+                              $user->getFromDB($data_contact['users_id']);
+                              $a_contacts[] = $user->fields['name'];
+                           }
+                        }
+                     } else if ($data_contact['groups_id'] > 0) {
+                        $queryg = "SELECT * FROM `glpi_groups_users`
+                           WHERE `groups_id`='".$data_contact['groups_id']."'";
+                        $resultg = $DB->query($queryg);
+                        while ($datag=$DB->fetch_array($resultg)) {
+                           if (in_array($data['entities_id'], $a_contacts_entities[$dataBA['id']][$datag['users_id']])) {
+                              $user->getFromDB($datag['users_id']);
+                              $a_contacts[] = $user->fields['name'];
+                           }
+                        }
+                     }
+                  }
+
+               $a_contacts_unique = array_unique($a_contacts);
+               $a_services[$i]['contacts'] = implode(',', $a_contacts_unique);
                $i++;
             }
          }

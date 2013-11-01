@@ -74,7 +74,8 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       
       $ong = array();
       $this->addStandardTab('PluginMonitoringBusinessrulegroup', $ong, $options);
-     
+      $this->addStandardTab("PluginMonitoringServicescatalog", $ong, $options);
+
       return $ong;
    }
 
@@ -83,26 +84,33 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       $array_ret = array();
-
-      if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
-         $array_ret[49] = self::createTabEntry(
-                 __('Monitoring', 'monitoring')."-".__('Services catalog', 'monitoring'));
+      if (get_class($item) == __CLASS__) {
+         $array_ret[50] = __('Contacts', 'monitoring');
+      } else {
+         if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
+            $array_ret[49] = self::createTabEntry(
+                    __('Monitoring', 'monitoring')."-".__('Services catalog', 'monitoring'));
+         }
       }
+      
       return $array_ret;
    }
 
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-
+      
       if ($tabnum == 49) {
          $pmServicescatalog   = new PluginMonitoringServicescatalog();
          $pmDisplay           = new PluginMonitoringDisplay();
 
          $pmDisplay->showCounters("Businessrules");
          $pmServicescatalog->showChecks();  
+      } else if ($tabnum == 50) {
+         $pmContact_Item = new PluginMonitoringContact_Item();
+         $pmContact_Item->showContacts("PluginMonitoringServicescatalog", $item->getID());
       }
-      
+
       return true;
    }
 
@@ -141,6 +149,18 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       echo "<td>";
       dropdown::show("Calendar", array('name'=>'calendars_id',
                                  'value'=>$this->fields['calendars_id']));
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='2'></td>";
+      echo "<td>".__('Interval between 2 notifications (in minutes)', 'monitoring')."&nbsp;:</td>";
+      echo "<td>";
+      Dropdown::showNumber('notification_interval', array(
+          'value' => $this->fields['notification_interval'], 
+          'min'   => 1, 
+          'max'   => 1000)
+      );
       echo "</td>";
       echo "</tr>";
       
