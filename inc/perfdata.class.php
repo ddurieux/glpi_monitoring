@@ -1140,6 +1140,16 @@ class PluginMonitoringPerfdata extends CommonDBTM {
    
    
    
+   function post_purgeItem() {
+      $pmPerfdataDetail = new PluginMonitoringPerfdataDetail();
+      $a_perfdatas = $pmPerfdataDetail->find("`plugin_monitoring_perfdatas_id`='".$this->fields['id']."'");
+      foreach ($a_perfdatas as $data) {
+         $pmPerfdataDetail->delete($data);
+      }
+   }
+   
+   
+   
    static function getArrayPerfdata($perfdatas_id) {
       
       $pmPerfdata       = new PluginMonitoringPerfdata();
