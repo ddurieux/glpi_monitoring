@@ -276,6 +276,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                      `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
             WHERE `plugin_monitoring_componentscalalog_id`='".$pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"]."'
                AND `itemtype`='NetworkEquipment'
+               AND `networkports_id`!='0'
                AND `is_static`='0'";
          $result = $DB->query($queryd);
          while ($data=$DB->fetch_array($result)) {

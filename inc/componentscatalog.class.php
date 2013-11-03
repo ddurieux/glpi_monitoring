@@ -92,17 +92,43 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       if ($item->getID() > 0) {
          $ong = array();
          $ong[1] = __('Components', 'monitoring');
-         $ong[2] = __('Static hosts', 'monitoring');
+         $ong[2] = self::createTabEntry(__('Static hosts', 'monitoring'), self::countForStaticHosts($item));
          $ong[3] = _n('Rule', 'Rules', 2);
-         $ong[4] = __('Dynamic hosts', 'monitoring');
+         $ong[4] = self::createTabEntry(__('Dynamic hosts', 'monitoring'), self::countForDynamicHosts($item));
          $ong[5] = __('Contacts', 'monitoring');
          $ong[6] = __('Availability', 'monitoring');
          $ong[7] = __('Report');
+
          return $ong;
       }
       return '';
    }
    
+   
+   
+   /**
+    * @param $item PluginMonitoringComponentscatalog object
+   **/
+   static function countForStaticHosts(PluginMonitoringComponentscatalog $item) {
+
+      $restrict = "`plugin_monitoring_componentscalalog_id` = '".$item->getField('id') ."'
+         AND `is_static`='1'";
+
+      return countElementsInTable('glpi_plugin_monitoring_componentscatalogs_hosts', $restrict);
+   }
+
+   
+   
+   /**
+    * @param $item PluginMonitoringComponentscatalog object
+   **/
+   static function countForDynamicHosts(PluginMonitoringComponentscatalog $item) {
+
+      $restrict = "`plugin_monitoring_componentscalalog_id` = '".$item->getField('id') ."'
+         AND `is_static`='0'";
+
+      return countElementsInTable('glpi_plugin_monitoring_componentscatalogs_hosts', $restrict);
+   }
    
    
    
