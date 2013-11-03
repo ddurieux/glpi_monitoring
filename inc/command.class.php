@@ -422,6 +422,17 @@ class PluginMonitoringCommand extends CommonDBTM {
          }
       }
       $data['arguments'] = exportArrayToDB($a_arguments);      
+      
+      
+      $where = "`command_name`='".$data['command_name']."'";
+      if (isset($data['id'])) {
+         $where .= " AND `id` != '".$data['id']."'";
+      }
+      $num_com = countElementsInTable("glpi_plugin_monitoring_commands", $where);
+      if ($num_com > 0) {
+         $data['command_name'] = $data['command_name'].mt_rand();
+      }
+
       return $data;
    }
    
