@@ -525,7 +525,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                             $globallinkto);
       $this->showHeaderItem(__('Result details'), 9, $num, $start, $globallinkto);
       echo Search::showHeaderItem(0, __('Check period', 'monitoring'), $num);
-      echo '<th>'.PluginMonitoringConfig::getAcknowledgeName().'</th>';
+      echo '<th>'.__('Acknowledge', 'monitoring').'</th>';
       echo "</tr>";
       
       PluginMonitoringServicegraph::loadLib();
@@ -584,8 +584,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       } else if ($shortstate == 'red') {
          $alt = __('Critical', 'monitoring');
       } else if ($shortstate == 'redblue') {
-         $acknowledname = PluginMonitoringConfig::getAcknowledgeName();
-         $alt = str_ireplace(__('Acknowledge', 'monitoring'), $acknowledname, __('Critical / Acknowledge', 'monitoring'));
+         $alt = __('Critical / Acknowledge', 'monitoring');
       }
       echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'
          title='".$alt."' alt='".$alt."' />";
@@ -680,13 +679,10 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo $data['state'];
          echo "</td>";
          echo "<td>";
-         $acknowledname = PluginMonitoringConfig::getAcknowledgeName();
-         $alt = str_ireplace(__('Acknowledge', 'monitoring'), $acknowledname, __('Critical / Acknowledge', 'monitoring'));
-
          echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?id=".$data['id']."'>"
                   ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_checked.png'"
-                 ." alt='".str_ireplace(__('Acknowledge', 'monitoring'), $acknowledname, __('Define an acknowledge', 'monitoring'))."'"
-                 ." title='".str_ireplace(__('Acknowledge', 'monitoring'), $acknowledname, __('Define an acknowledge', 'monitoring'))."'/>"
+                 ." alt='".__('Define an acknowledge', 'monitoring')."'"
+                 ." title='".__('Define an acknowledge', 'monitoring')."'/>"
               ."</a>";
          echo "</td>";
          echo "</tr>";
@@ -1498,9 +1494,9 @@ Ext.onReady(function(){
          echo "<th style='background-color:transparent;'>";
          if ($type == 'Ressources' OR $type == 'Componentscatalog') {
             echo "<a href='".$acknowledge_link."'>".
-                    "<font color='black' style='font-size: 12px;font-weight: bold;'>".PluginMonitoringConfig::getAcknowledgeName()."</font></a>";
+                    "<font color='black' style='font-size: 12px;font-weight: bold;'>".__('Acknowledge', 'monitoring')."</font></a>";
          } else {
-            echo PluginMonitoringConfig::getAcknowledgeName();
+            echo __('Acknowledge', 'monitoring');
          }
          echo "</td>";
          echo "</tr>";

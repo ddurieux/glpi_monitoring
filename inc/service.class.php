@@ -133,7 +133,7 @@ class PluginMonitoringService extends CommonDBTM {
       
       $tab[23]['table'] = $this->getTable();
       $tab[23]['field'] = 'is_acknowledged';
-      $tab[23]['name']  = PluginMonitoringConfig::getAcknowledgeName();
+      $tab[23]['name']  = __('Acknowledge', 'monitoring');
       $tab[23]['datatype'] = 'bool';
      
       return $tab;
@@ -231,7 +231,7 @@ class PluginMonitoringService extends CommonDBTM {
          echo "<th>".__('Last month', 'monitoring')." ".Html::showToolTip(__('Availability', 'monitoring'), array('display'=>false))."</th>";
          echo "<th>".__('Current year', 'monitoring')." ".Html::showToolTip(__('Availability', 'monitoring'), array('display'=>false))."</th>";
          echo "<th>".__('Detail', 'monitoring')."</th>";
-         echo '<th>'.PluginMonitoringConfig::getAcknowledgeName().'</th>';
+         echo '<th>'.__('Acknowledge', 'monitoring').'</th>';
          echo "<th>";
          echo __('Arguments', 'monitoring');
          echo "</th>"; 
@@ -954,8 +954,7 @@ class PluginMonitoringService extends CommonDBTM {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'>";
          echo "<th colspan='2'>";
-         $acknowledname = PluginMonitoringConfig::getAcknowledgeName();
-         echo str_ireplace(__('Acknowledge', 'monitoring'), $acknowledname, __('Add an acknowledge for service', 'monitoring'))." : ".$this->fields['name'];
+         echo __('Add an acknowledge for service', 'monitoring')." : ".$this->fields['name'];
          echo "</td>";
          echo "</tr>";
          

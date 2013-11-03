@@ -123,10 +123,10 @@ class PluginMonitoringConfig extends CommonDBTM {
                 'max'   => 1000)
       );
       echo "</td>";
-      echo "<td rowspan='2'>";
+      echo "<td>";
       echo __('Timezones (for graph)', 'monitoring')."&nbsp:";
       echo "</td>";
-      echo "<td rowspan='2'>";
+      echo "<td>";
          $a_timezones = $this->getTimezones();
       
          $a_timezones_selected = importArrayFromDB($this->fields['timezones']);
@@ -180,13 +180,6 @@ class PluginMonitoringConfig extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('You can change default acknowledge word (empty = default)', 'monitoring')."&nbsp;:</td>";
-      echo "<td align='center'>";
-      echo "<input type='text' name='acknowledge_name' value='".$this->fields['acknowledge_name']."'>";
-      echo "</td>";
-      echo "</tr>";
-      
       $this->showFormButtons($options);
 
       return true;
@@ -252,18 +245,6 @@ class PluginMonitoringConfig extends CommonDBTM {
         reset($objects);
         rmdir($dir);
       }
-   }
-
-   
-   
-   static function getAcknowledgeName() {
-      
-      $pmConfig = new PluginMonitoringConfig();
-      $pmConfig->getFromDB("1");
-      if ($pmConfig->fields['acknowledge_name'] == '') {
-         return __('Acknowledge', 'monitoring');
-      }
-      return $pmConfig->fields['acknowledge_name'];
    }
 
 }
