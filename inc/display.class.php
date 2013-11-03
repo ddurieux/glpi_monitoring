@@ -732,7 +732,13 @@ class PluginMonitoringDisplay extends CommonDBTM {
          $user->getFromDB($data['acknowledge_users_id']);
          echo $user->getName(1);
          echo "<br/>";
-         echo"<i>". __('Comments')." : </i>".$data['acknowledge_comment'];
+         echo"<i>". __('Comments')." : </i>";
+         if ($data['acknowledge_users_id'] == $_SESSION['glpiID']) {
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?form=".$data['id']."'>";
+            echo $data['acknowledge_comment']."</a>";
+         } else {
+            echo $data['acknowledge_comment'];
+         }
       }
       echo "</td>";
       

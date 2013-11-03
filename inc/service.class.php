@@ -984,6 +984,53 @@ class PluginMonitoringService extends CommonDBTM {
          Html::closeForm();
       }
    }
+   
+   
+   
+   /**
+    * Form to modify acknowledge on a service
+    */
+   function formAcknowledge($id) {
+      global $CFG_GLPI;
+      if ($this->getFromDB($id)) {
+         echo "<form name='form' method='post' 
+            action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php'>";
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<th colspan='2'>";
+         echo __('Add an acknowledge for service', 'monitoring')." : ".$this->fields['name'];
+         echo "</td>";
+         echo "</tr>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>";
+         echo _n('User', 'Users', 1)." :";
+         echo "</td>";
+         echo "<td>";
+         $user = new User();
+         $user->getFromDB($this->fields['acknowledge_users_id']);    
+         echo $user->getName(1);
+         echo "</td>";
+         echo "</tr>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>";
+         echo __('Comments');
+         echo "</td>";
+         echo "<td>";
+         echo "<textarea cols='80' rows='4' name='acknowledge_comment' >".$this->fields['acknowledge_comment']."</textarea>";
+         echo "</td>";
+         echo "</tr>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='2' align='center'>";
+         echo "<input type='hidden' name='id' value='".$id."' />";
+         echo "<input type='hidden' name='is_acknowledged' value='1' />";
+         echo "<input type='hidden' name='referer' value='".$_SERVER['HTTP_REFERER']."' />";
+         echo "<input type='submit' name='update' value=\"".__('Update')."\" class='submit'>";            
+         echo "</td>";
+         echo "</tr>";
+         echo "</table>";
+         Html::closeForm();
+        }
+    }
 }
 
 ?>

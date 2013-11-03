@@ -49,7 +49,7 @@ Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
 
 $pmService = new PluginMonitoringService();
 
-if (isset($_POST['add'])) {
+if (isset($_POST['add']) ||isset($_POST['update']) ) {
    $pmService->update($_POST);
    // Send acknowledge command to shinken via webservice   
    $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
@@ -61,6 +61,9 @@ if (isset($_POST['add'])) {
 
 if (isset($_GET['id'])) {
    $pmService->addAcknowledge($_GET['id']);
+}
+if (isset($_GET['form'])) {
+   $pmService->formAcknowledge($_GET['form']);
 }
 
 Html::footer();
