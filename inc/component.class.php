@@ -271,9 +271,9 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo __('Template (for graphs generation)', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
-      Dropdown::showFromArray("graph_template", 
-                              PluginMonitoringPerfdata::listPerfdata(), 
-                              array('value'=>$this->fields['graph_template']));
+      Dropdown::show('PluginMonitoringPerfdata',
+                     array('name' => 'graph_template',
+                           'value' => $this->fields['graph_template']));
       echo "</td>";
       // * freshness
       echo "<td>".__('Freshness (for passive mode)', 'monitoring')."&nbsp;:</td>";
@@ -524,6 +524,20 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
       echo "</table>";
+   }
+   
+   
+   
+   static function getTimeBetween2Checks($components_id) {
+      $pmComponent = new PluginMonitoringComponent();
+      $pmCheck = new PluginMonitoringCheck();
+      
+      $pmComponent->getFromDB($components_id);
+      $pmCheck->getFromDB($pmComponent->fields['plugin_monitoring_checks_id']);
+      
+      $timeMinutes = $pmCheck->fields['check_interval'];
+      $timeSeconds = $timeMinutes * 60;
+      return $timeSeconds;
    }
 }
 

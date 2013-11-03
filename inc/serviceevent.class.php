@@ -148,33 +148,55 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       
       $mydatat = array();
       $a_labels = array();
-      $func = "perfdata_".$rrdtool_template;
-      if (!method_exists('PluginMonitoringPerfdata', $func)) {
-         return array($mydatat, $a_labels, $a_ref, $a_convert);
-      }
 
-      $a_json = json_decode(PluginMonitoringPerfdata::$func());
-      
+      $a_perf = PluginMonitoringPerfdata::getArrayPerfdata($rrdtool_template);
+      $previous_timestamp = '';
+      $query_data = array();
       while ($edata=$DB->fetch_array($result)) {
+         $current_timestamp = strtotime($edata['date']);
+         if ($previous_timestamp == '') {
+            $previous_timestamp = $current_timestamp;
+         }
+                              
+         // Timeup = time between 2 checks + 20%
+         $timeup = $_SESSION['plugin_monitoring_checkinterval'] * 1.2;
+         while (($previous_timestamp + $timeup) < $current_timestamp) {
+            $previous_timestamp += $_SESSION['plugin_monitoring_checkinterval'];
+            if ($previous_timestamp < $current_timestamp) {
+               $query_data[] = array(
+                   'date'      => date('Y-m-d H:i:s', $previous_timestamp),
+                   'perf_data' => ''
+               );
+            }
+         }
+         $previous_timestamp = $current_timestamp;
+         $query_data[] = $edata;
+      }      
+      
+      foreach ($query_data as $edata) {
+         $current_timestamp = strtotime($edata['date']);
+         if ($previous_timestamp == '') {
+            $previous_timestamp = $current_timestamp;
+         }
          $a_perfdata = explode(" ", trim($edata['perf_data']));
          $a_time = explode(" ", $edata['date']);
          $a_time2 = explode(":", $a_time[1]);
          $day = explode("-", $a_time[0]);
          array_push($a_labels, "(".$day[2].")".$a_time2[0].":".$a_time2[1]);
-         foreach ($a_json->parseperfdata as $num=>$data) {
+         foreach ($a_perf['parseperfdata'] as $num=>$data) {
             if (isset($a_perfdata[$num])) {
                $a_perfdata[$num] = trim($a_perfdata[$num], ", ");
                $a_a_perfdata = explode("=", $a_perfdata[$num]);
                $a_a_perfdata[0] = trim($a_a_perfdata[0], "'");
                $regex = 0;
-               if (strstr($data->name, "*")) {
-                  $datanameregex = str_replace("*", "(.*)", $data->name);
+               if (strstr($data['name'], "*")) {
+                  $datanameregex = str_replace("*", "(.*)", $data['name']);
                   $regex = 1;
                }
-               if (($a_a_perfdata[0] == $data->name
-                       OR $data->name == ''
+               if (($a_a_perfdata[0] == $data['name']
+                       OR $data['name'] == ''
                        OR ($regex == 1
-                               AND preg_match("/".$datanameregex."/", $data->name))
+                               AND preg_match("/".$datanameregex."/", $data['name']))
                     )
                        AND isset($a_a_perfdata[1])) {
                      
@@ -186,7 +208,6 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                         //No value, no graph
                         if ($val == '')
                            continue;
-//                     if (isset($a_ref[$data->DS[$nb_val]->dsname])) {
                         $matches = array();
                         preg_match("/^([\d-\.]*)(.*)/",$val,$matches);
                         //Numeric part is data value
@@ -233,26 +254,26 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                               break;                                                   
                         }                                                
 
-                        if (!isset($mydatat[$data->DS[$nb_val]->dsname])) {
-                           $mydatat[$data->DS[$nb_val]->dsname] = array();
+                        if (!isset($mydatat[$data['DS'][$nb_val]['dsname']])) {
+                           $mydatat[$data['DS'][$nb_val]['dsname']] = array();
                         }
-                        array_push($mydatat[$data->DS[$nb_val]->dsname], $val);
+                        array_push($mydatat[$data['DS'][$nb_val]['dsname']], $val);
 //                     }
                   }
                } else {
-                  for ($nb_val=0; $nb_val < count($data->DS); $nb_val++) {
-                     if (!isset($mydatat[$data->DS[$nb_val]->dsname])) {
-                        $mydatat[$data->DS[$nb_val]->dsname] = array();
+                  for ($nb_val=0; $nb_val < count($data['DS']); $nb_val++) {
+                     if (!isset($mydatat[$data['DS'][$nb_val]['dsname']])) {
+                        $mydatat[$data['DS'][$nb_val]['dsname']] = array();
                      }
-                     array_push($mydatat[$data->DS[$nb_val]->dsname], 0);                     
+                     array_push($mydatat[$data['DS'][$nb_val]['dsname']], 0);                     
                   }                  
                }
             } else {
-               for ($nb_val=0; $nb_val < count($data->DS); $nb_val++) {
-                  if (!isset($mydatat[$data->DS[$nb_val]->dsname])) {
-                     $mydatat[$data->DS[$nb_val]->dsname] = array();
+               for ($nb_val=0; $nb_val < count($data['DS']); $nb_val++) {
+                  if (!isset($mydatat[$data['DS'][$nb_val]['dsname']])) {
+                     $mydatat[$data['DS'][$nb_val]['dsname']] = array();
                   }
-                  array_push($mydatat[$data->DS[$nb_val]->dsname], 0);                     
+                  array_push($mydatat[$data['DS'][$nb_val]['dsname']], 0);                     
                } 
             }        
          }
@@ -268,14 +289,11 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       $a_ref = array();
       return array($a_ref, $a_convert);
       
-      
-      
-      $func = "perfdata_".$rrdtool_template;
-      $a_jsong = json_decode(PluginMonitoringPerfdata::$func());
+      $a_perfg = PluginMonitoringPerfdata::getArrayPerfdata($rrdtool_template);
       // Get data 
       $a_convert = array();
       $a_ref = array();
-      foreach ($a_jsong->data[0]->data as $data) {
+      foreach ($a_perfg['data'][0]['data'] as $data) {
          $data = str_replace("'", "", $data);
          if (strstr($data, "DEF")
                  AND !strstr($data, "CDEF")) {

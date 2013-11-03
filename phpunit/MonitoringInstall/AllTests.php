@@ -10,7 +10,7 @@ class MonitoringInstall extends PHPUnit_Framework_TestCase {
          return;
       }
 
-      $comparaisonSQLFile = "plugin_monitoring-0.84+1.0-empty.sql";
+      $comparaisonSQLFile = "plugin_monitoring-empty.sql";
       // See http://joefreeman.co.uk/blog/2009/07/php-script-to-compare-mysql-database-schemas/
 
       $file_content = file_get_contents("../../".$pluginname."/install/mysql/".$comparaisonSQLFile);

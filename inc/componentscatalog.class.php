@@ -720,6 +720,8 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             $item = new $itemtype();
             $item->getFromDB($data['items_id']);
             
+            $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks($pmComponent->fields['id']);
+
             $ret = array();
             if (count($a_name) > 0) {
                $queryevents = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
@@ -895,6 +897,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                            AND `date` <= '".$enddatet."'
                         ORDER BY `date`";
                      $resultevents = $DB->query($queryevents);
+                     $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks($pmComponent->fields['id']);
                      $ret = $pmServiceevent->getData($resultevents, $pmComponent->fields['graph_template']);
                      
                      $value = round(array_sum($ret[0][$groupname]) / count($ret[0][$groupname]), 3);

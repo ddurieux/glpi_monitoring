@@ -8,7 +8,15 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
 
       $DB->connect();
 
+         Plugin::loadLang('monitoring');
+         $pmComponent = new PluginMonitoringComponent();
+         $pmComponent->add(array(
+             'name' => 'check',
+             'plugin_monitoring_checks_id' => '2'
+         ));
+      
       $pmServiceevent = new PluginMonitoringServiceevent();
+      
 
       $input = array(
           'perf_data' => 'time=0.019037s;;;0.000000;3.000000',
@@ -19,8 +27,13 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
+      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas", 
+                                          "`name`='check_tcp'");
+      $a_perfdata = current($a_perfdatas);
+      $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
+
 $start = microtime(true);
-      $ret = $pmServiceevent->getData($result, "check_tcp");
+      $ret = $pmServiceevent->getData($result, $a_perfdata['id']);
 $finish = microtime(true);
 echo "check_tcp ".($finish - $start)." s\n";      
 
@@ -53,8 +66,13 @@ echo "check_tcp ".($finish - $start)." s\n";
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
+      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas", 
+                                          "`name`='check_load'");
+      $a_perfdata = current($a_perfdatas);
+      $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
+
 $start = microtime(true);
-      $ret = $pmServiceevent->getData($result, "check_load");
+      $ret = $pmServiceevent->getData($result, $a_perfdata['id']);
 $finish = microtime(true);
 echo "check_load ".($finish - $start)." s\n";      
 
@@ -96,8 +114,13 @@ echo "check_load ".($finish - $start)." s\n";
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
+      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas", 
+                                          "`name`='check_pf'");
+      $a_perfdata = current($a_perfdatas);
+      $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
+
 $start = microtime(true);
-      $ret = $pmServiceevent->getData($result, "check_pf");
+      $ret = $pmServiceevent->getData($result, $a_perfdata['id']);
 $finish = microtime(true);
 echo "check_pf ".($finish - $start)." s\n";      
 
@@ -132,8 +155,13 @@ echo "check_pf ".($finish - $start)." s\n";
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
+      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas", 
+                                          "`name`='check_disk'");
+      $a_perfdata = current($a_perfdatas);
+      $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
+
 $start = microtime(true);
-      $ret = $pmServiceevent->getData($result, "check_disk");
+      $ret = $pmServiceevent->getData($result, $a_perfdata['id']);
 $finish = microtime(true);
 echo "check_disk ".($finish - $start)." s\n";      
 
@@ -168,8 +196,13 @@ echo "check_disk ".($finish - $start)." s\n";
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
+      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas", 
+                                          "`name`='check_mysql_health tmp_disk_tables'");
+      $a_perfdata = current($a_perfdatas);
+      $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
+
 $start = microtime(true);
-      $ret = $pmServiceevent->getData($result, "check_mysql_health__tmp_disk_tables");
+      $ret = $pmServiceevent->getData($result, $a_perfdata['id']);
 $finish = microtime(true);
 echo "check_mysql_health ".($finish - $start)." s\n";      
 
@@ -203,8 +236,13 @@ echo "check_mysql_health ".($finish - $start)." s\n";
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
+      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas", 
+                                          "`name`='check_cpu_usage'");
+      $a_perfdata = current($a_perfdatas);
+      $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
+
 $start = microtime(true);
-      $ret = $pmServiceevent->getData($result, "check_cpu_usage");
+      $ret = $pmServiceevent->getData($result, $a_perfdata['id']);
 $finish = microtime(true);
 echo "check_cpu_usage ".($finish - $start)." s\n";      
 
@@ -213,7 +251,7 @@ echo "check_cpu_usage ".($finish - $start)." s\n";
           'usage_warning'  => array('80'),
           'usage_critical' => array('95'),
           'user'           => array('0'),
-          'cpu_system'     => array('4')
+          'system'     => array('4')
       );
       
       $this->assertEquals($a_reference, $ret[0], "data of check_cpu_usage");
@@ -239,8 +277,13 @@ echo "check_cpu_usage ".($finish - $start)." s\n";
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
+      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas", 
+                                          "`name`='check_http'");
+      $a_perfdata = current($a_perfdatas);
+      $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
+
 $start = microtime(true);
-      $ret = $pmServiceevent->getData($result, "check_http");
+      $ret = $pmServiceevent->getData($result, $a_perfdata['id']);
 $finish = microtime(true);
 echo "check_http ".($finish - $start)." s\n";      
 
@@ -276,8 +319,13 @@ echo "check_http ".($finish - $start)." s\n";
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
+      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas", 
+                                          "`name`='check_iostat_bsd'");
+      $a_perfdata = current($a_perfdatas);
+      $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
+
 $start = microtime(true);
-      $ret = $pmServiceevent->getData($result, "check_iostat_bsd");
+      $ret = $pmServiceevent->getData($result, $a_perfdata['id']);
 $finish = microtime(true);
 echo "check_iostat_bsd ".($finish - $start)." s\n";      
 
@@ -313,8 +361,13 @@ echo "check_iostat_bsd ".($finish - $start)." s\n";
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
+      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas", 
+                                          "`name`='check_nginx_status'");
+      $a_perfdata = current($a_perfdatas);
+      $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
+
 $start = microtime(true);
-      $ret = $pmServiceevent->getData($result, "check_nginx_status");
+      $ret = $pmServiceevent->getData($result, $a_perfdata['id']);
 $finish = microtime(true);
 echo "check_nginxstatus ".($finish - $start)." s\n";      
 
@@ -350,15 +403,21 @@ echo "check_nginxstatus ".($finish - $start)." s\n";
 
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
+      
+      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas", 
+                                          "`name`='check_iftraffic41'");
+      $a_perfdata = current($a_perfdatas);
+      $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
+
 $start = microtime(true);
-      $ret = $pmServiceevent->getData($result, "check_iftraffic41");
+      $ret = $pmServiceevent->getData($result, $a_perfdata['id']);
 $finish = microtime(true);
 echo "check_iftraffic41 ".($finish - $start)." s\n";      
       $a_reference = array(
           'inpercentcurr'     => array('0.06'),
           'inpercentwarn'     => array('85'),
           'inpercentcrit'     => array('98'),
-          'outpercent_curr'   => array('0.5'),
+          'outpercentcurr'   => array('0.5'),
           'outpercentwarn'    => array('85'),
           'outpercentcrit'    => array('98'),
           'inbps'             => array('580585'),

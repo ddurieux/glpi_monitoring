@@ -250,10 +250,93 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $migration->migrationOneTable($newTable);
 
       
+    /*
+     * glpi_plugin_monitoring_perfdatas
+     */
+      $a_table = array();
+      $a_table['name'] = 'glpi_plugin_monitoring_perfdatas';
+      $a_table['oldname'] = array();
+
+      $a_table['fields']  = array(
+         'id'         => array('type'    => 'autoincrement',    'value'   => ''),
+         'name'       => array('type'    => 'string',           'value'   => NULL),
+         'perfdata'   => array('type'    => 'text',             'value'   => NULL)
+      );
+
+      $a_table['oldfields']  = array();
+
+      $a_table['renamefields'] = array();
+
+      $a_table['keys']   = array();
+
+      $a_table['oldkeys'] = array();
+
+      migrateTablesMonitoring($migration, $a_table);
+
+    /*
+     * glpi_plugin_monitoring_perfdatas
+     */
+      $a_table = array();
+      $a_table['name'] = 'glpi_plugin_monitoring_perfdatadetails';
+      $a_table['oldname'] = array();
+
+      $a_table['fields']  = array(
+         'id'           => array('type'    => 'autoincrement',  'value'   => ''),
+         'name'         => array('type'    => 'string',         'value'   => NULL),
+         'dynamic_name' => array('type'    => 'bool',           'value'   => NULL),
+         'plugin_monitoring_perfdatas_id' => array('type'    => 'integer',    'value'   => NULL),
+         'position'     => array('type'    => "int(2) NOT NULL DEFAULT '0'",  'value'   => '0'),
+         'dsname_num'   => array('type'    => 'bool',           'value'   => NULL),
+         'dsname1'      => array('type'    => 'string',         'value'   => NULL),
+         'dsname2'      => array('type'    => 'string',         'value'   => NULL),
+         'dsname3'      => array('type'    => 'string',         'value'   => NULL),
+         'dsname4'      => array('type'    => 'string',         'value'   => NULL),
+         'dsname5'      => array('type'    => 'string',         'value'   => NULL),
+         'dsname6'      => array('type'    => 'string',         'value'   => NULL),
+         'dsname7'      => array('type'    => 'string',         'value'   => NULL),
+         'dsname8'      => array('type'    => 'string',         'value'   => NULL),
+      );
+
+      $a_table['oldfields']  = array();
+
+      $a_table['renamefields'] = array();
+
+      $a_table['keys']   = array('plugin_monitoring_perfdatas_id');
+
+      $a_table['oldkeys'] = array();
+
+      migrateTablesMonitoring($migration, $a_table);
+
+      if (countElementsInTable('glpi_plugin_monitoring_perfdatas') == 0) {
+         include (GLPI_ROOT . "/plugins/monitoring/inc/perfdata.class.php");
+         include (GLPI_ROOT . "/plugins/monitoring/inc/perfdatadetail.class.php");
+         PluginMonitoringPerfdata::initDB();
+      }
+      
       
     /*
     * Table glpi_plugin_monitoring_components
     */
+      if (TableExists('glpi_plugin_monitoring_components')) {
+         $a_data = getAllDatasFromTable('glpi_plugin_monitoring_components');
+         foreach ($a_data as $data) {
+            if (!is_numeric($data['graph_template'])) {
+               $a_perfs = getAllDatasFromTable('glpi_plugin_monitoring_perfdatas', 
+                       '`name`="'.$data['graph_template'].'"');
+               if (count($a_perfs) == 0) {
+                  $DB->query("UPDATE `glpi_plugin_monitoring_components`
+                     SET `graph_template`='0' 
+                     WHERE `id`='".$data['id']."'");
+               } else {
+                  $a_perf = current($a_perfs);
+                  $DB->query("UPDATE `glpi_plugin_monitoring_components`
+                     SET `graph_template`='".$a_perf['id']."' 
+                     WHERE `id`='".$data['id']."'");
+               }
+            }
+         }
+      }
+      
       $newTable = "glpi_plugin_monitoring_components";
       if (!TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
@@ -309,7 +392,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->changeField($newTable, 
                                  'graph_template', 
                                  'graph_template', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+                                 "int(11) NOT NULL DEFAULT '0'");
          $migration->changeField($newTable, 
                                  'link', 
                                  'link', 
@@ -370,7 +453,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
          $migration->addField($newTable, 
                                  'graph_template', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+                                 "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                                  'link', 
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
@@ -2832,6 +2915,72 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       SET `version`='".PLUGIN_MONITORING_VERSION."'
          WHERE `id`='1'";
    $DB->query($query);
+}
+
+
+
+function migrateTablesMonitoring($migration, $a_table) {
+   global $DB;
+
+   foreach ($a_table['oldname'] as $oldtable) {
+      $migration->renameTable($oldtable, $a_table['name']);
+   }
+
+   if (!TableExists($a_table['name'])) {
+      $query = "CREATE TABLE `".$a_table['name']."` (
+                     `id` int(11) NOT NULL AUTO_INCREMENT,
+                     PRIMARY KEY (`id`)
+                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1";
+      $DB->query($query);
+   }
+
+   foreach ($a_table['renamefields'] as $old=>$new) {
+      $migration->changeField($a_table['name'],
+                              $old,
+                              $new,
+                              $a_table['fields'][$new]['type'],
+                              array('value' => $a_table['fields'][$new]['value'],
+                                    'update'=> TRUE));
+   }
+
+   foreach ($a_table['oldfields'] as $field) {
+      $migration->dropField($a_table['name'],
+                            $field);
+   }
+   $migration->migrationOneTable($a_table['name']);
+
+   foreach ($a_table['fields'] as $field=>$data) {
+      $migration->changeField($a_table['name'],
+                              $field,
+                              $field,
+                              $data['type'],
+                              array('value' => $data['value']));
+   }
+   $migration->migrationOneTable($a_table['name']);
+
+   foreach ($a_table['fields'] as $field=>$data) {
+      $migration->addField($a_table['name'],
+                           $field,
+                           $data['type'],
+                           array('value' => $data['value']));
+   }
+   $migration->migrationOneTable($a_table['name']);
+
+   foreach ($a_table['oldkeys'] as $field) {
+      $migration->dropKey($a_table['name'],
+                          $field);
+   }
+   $migration->migrationOneTable($a_table['name']);
+
+   foreach ($a_table['keys'] as $data) {
+      $migration->addKey($a_table['name'],
+                         $data['field'],
+                         $data['name'],
+                         $data['type']);
+   }
+   $migration->migrationOneTable($a_table['name']);
+
+   $DB->list_fields($a_table['name'], FALSE);
 }
 
 ?>

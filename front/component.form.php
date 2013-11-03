@@ -93,7 +93,7 @@ if (isset($_POST["copy"])) {
       Session::addMessageAfterRedirect("<font class='red'>".__('Fields with asterisk are required', 'monitoring')."</font>");
       Html::back();
    }
-   if ($_POST['graph_template'] != '') {
+   if ($_POST['graph_template'] != 0) {
       if (!isset($_POST['perfname'])
               AND !isset($_POST['perfnameinvert'])
               AND !isset($_POST['perfnamecolor'])) {

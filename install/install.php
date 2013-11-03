@@ -44,8 +44,7 @@ function pluginMonitoringInstall($version) {
    global $DB,$CFG_GLPI;
 
    // ** Insert in DB
-   $DB_file = GLPI_ROOT ."/plugins/monitoring/install/mysql/plugin_monitoring-"
-              .$version."-empty.sql";
+   $DB_file = GLPI_ROOT ."/plugins/monitoring/install/mysql/plugin_monitoring-empty.sql";
    $DBf_handle = fopen($DB_file, "rt");
    $sql_query = fread($DBf_handle, filesize($DB_file));
    fclose($DBf_handle);
@@ -66,6 +65,10 @@ function pluginMonitoringInstall($version) {
    include (GLPI_ROOT . "/plugins/monitoring/inc/check.class.php");
    $pmCheck = new PluginMonitoringCheck();
    $pmCheck->initChecks();
+
+   include (GLPI_ROOT . "/plugins/monitoring/inc/perfdata.class.php");
+   include (GLPI_ROOT . "/plugins/monitoring/inc/perfdatadetail.class.php");
+   PluginMonitoringPerfdata::initDB();
    
    include (GLPI_ROOT . "/plugins/monitoring/inc/hostconfig.class.php");
    $pmHostconfig = new PluginMonitoringHostconfig();

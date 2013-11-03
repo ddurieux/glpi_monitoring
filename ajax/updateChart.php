@@ -136,8 +136,9 @@ $pmComponent->getFromDB($_POST['components_id']);
 $pmCommand->getFromDB($pmComponent->fields['plugin_monitoring_commands_id']);
 
 echo '<script type="text/javascript">
+';
 
-function updategraph'.$_POST['items_id'].$_POST['time'].$suffix.'() {
+echo 'function updategraph'.$_POST['items_id'].$_POST['time'].$suffix.'() {
 
    var chart = nv.models.lineChart();
 
@@ -163,7 +164,13 @@ function getdata'.$_POST['items_id'].$_POST['time'].'() {
    var format = d3.time.format("'.$format.'");
 ';
 $lab = '';
+$num = 1;
+$a_names = array();
 foreach ($mydatat as $name=>$data) {
+   if (!isset($a_names[$name])) {
+      $a_names[$name] = $num;
+      $num++;
+   }
    $display = "checked";
    if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']])) {
       $display = "";
@@ -172,7 +179,7 @@ foreach ($mydatat as $name=>$data) {
       $display = $_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']][$name];
    }
    if ($display == "checked") {
-      echo "var ".$name." = new Array();\n";
+      echo "var val".$a_names[$name]." = new Array();\n";
       $i = 0;
       foreach ($a_labels as $label) {
          if (!isset($data[$i])
@@ -182,7 +189,7 @@ foreach ($mydatat as $name=>$data) {
          if (isset($_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$_POST['components_id']][$name])) {
             $data[$i] = "-".$data[$i];
          }
-         echo $name.".push({x: format.parse('".$label."'), y: ".$data[$i]."});\n";
+         echo "val".$a_names[$name].".push({x: format.parse('".$label."'), y: ".$data[$i]."});\n";
          $i++;
          $lab = $label;
       }
@@ -216,6 +223,7 @@ if (isset($_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$_POST['component
    }
 }
 
+$nSerie=0;
 foreach ($mydatat as $name=>$data) {
    $display = "checked";
    if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']])) {
@@ -230,35 +238,38 @@ foreach ($mydatat as $name=>$data) {
       if (isset($_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$_POST['components_id']][$name])) {
          $colordisplay = $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$_POST['components_id']][$name];
       } else {
-         if (strstr($name, "warn")) {
+         if (strstr(strtolower($name), "warn")) {
             $colordisplay = array_shift($colorwarn);
-         } else if (strstr($name, "crit")) {
+         } else if (strstr(strtolower($name), "crit")) {
             $colordisplay = array_shift($colorcrit);
          } else {
             $colordisplay = array_shift($color);     
          }
       }
       
-      if (strstr($name, "warning")) {
+      if (strstr(strtolower($name), "warn")) {
          $area = 'false';
-      } else if (strstr($name, "critical")) {
+      } else if (strstr(strtolower($name), "crit")) {
          $area = 'false';
       }
-      
+      if ($nSerie != 0) {
+         echo ',';
+      }
       echo '     {
          area: '.$area.',
-         values: '.$name.',
+         values: val'.$a_names[$name].',
          key: "'.$name.'",
          color: "#'.$colordisplay.'"
-       },
+       }
 ';
+      $nSerie++;
    }
 }
 echo '  ];
 }
 
 updategraph'.$_POST['items_id'].$_POST['time'].$suffix.'();
-
-</script>';
+';
+echo '</script>';
 
 ?>

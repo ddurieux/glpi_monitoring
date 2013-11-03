@@ -128,6 +128,9 @@ function plugin_init_monitoring() {
 
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['notificationcommand'] = 'front/notificationcommand.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['notificationcommand'] = 'front/notificationcommand.php';
+
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['perfdata'] = 'front/perfdata.form.php?add=1';
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['perfdata'] = 'front/perfdata.php';
          
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['service'] = 'front/display.php';
          

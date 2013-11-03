@@ -432,7 +432,8 @@ class PluginMonitoringShinken extends CommonDBTM {
          
             // Manage freshness
             if ($a_component['freshness_count'] == 0) {
-               $a_services[$i]['check_freshness'] = 0;
+               $a_services[$i]['check_freshness'] = '0';
+               $a_services[$i]['freshness_threshold'] = '3600';
             } else {
                $multiple = 1;
                if ($a_component['freshness_type'] == 'seconds') {
@@ -444,8 +445,8 @@ class PluginMonitoringShinken extends CommonDBTM {
                } else if ($a_component['freshness_type'] == 'days') {
                   $multiple = 86400;
                }
-               $a_services[$i]['check_freshness'] = 1;
-               $a_services[$i]['freshness_threshold'] = ($a_component['freshness_count'] * $multiple);
+               $a_services[$i]['check_freshness'] = '1';
+               $a_services[$i]['freshness_threshold'] = (string)($a_component['freshness_count'] * $multiple);
             }
             
             $pMonitoringCommand->getFromDB($a_component['plugin_monitoring_commands_id']);
@@ -742,7 +743,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_services[$i]['parallelize_check'] = '1';
                $a_services[$i]['obsess_over_service'] = '1';
                $a_services[$i]['check_freshness'] = '1';
-               $a_services[$i]['freshness_threshold'] = '1';
+               $a_services[$i]['freshness_threshold'] = '3600';
                $a_services[$i]['notifications_enabled'] = '1';
                $a_services[$i]['event_handler_enabled'] = '0';
                //$a_services[$i]['event_handler'] = 'super_event_kill_everyone!DIE';

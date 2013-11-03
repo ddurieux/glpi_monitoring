@@ -111,7 +111,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       if ($enddate == '') {
          $enddate = date('U');
       }
-      
+   
       // Manage timezones
       $converttimezone = '0';
       if (strstr($timezone, '-')) {
@@ -131,6 +131,8 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       $pmServiceevent = new PluginMonitoringServiceevent();
       $pmService = new PluginMonitoringService();
       $pmService->getFromDB($items_id);
+      
+      $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks($pmService->fields['plugin_monitoring_components_id']);
       
       $dateformat = "%Y-%m-%d %Hh";
       
@@ -446,6 +448,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                $mydatat = array();
                $pmServiceevent = new PluginMonitoringServiceevent();
                $pmService = new PluginMonitoringService();
+               $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks($pmComponent->fields['id']);
                $ret = $pmServiceevent->getData($result, $pmComponent->fields['graph_template']);
                if (is_array($ret)) {
                   $mydatat = $ret[0];
@@ -777,18 +780,17 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       
       $a_name = array();
 
-      $func = "perfdata_".$rrdtool_template;
-      $a_json = json_decode(PluginMonitoringPerfdata::$func());
+      $a_perf = PluginMonitoringPerfdata::getArrayPerfdata($rrdtool_template);
 
-      foreach ($a_json->parseperfdata as $data) {
-         foreach ($data->DS as $data2) {
+      foreach ($a_perf['parseperfdata'] as $data) {
+         foreach ($data['DS'] as $data2) {
             if ($keepwarcrit == 0) {
-               if (!strstr($data2->dsname, "warning")
-                       && !strstr($data2->dsname, "critical")) {
-                  $a_name[] = $data2->dsname;
+               if (!strstr($data2['dsname'], "warning")
+                       && !strstr($data2['dsname'], "critical")) {
+                  $a_name[] = $data2['dsname'];
                }
             } else {
-               $a_name[] = $data2->dsname;
+               $a_name[] = $data2['dsname'];
             }
          }
       }

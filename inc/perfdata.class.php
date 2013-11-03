@@ -47,719 +47,1124 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringPerfdata extends CommonDBTM {
 
    
-   static function listPerfdata() {
-      $a_list = array();
-      $a_list[""]                   = Dropdown::EMPTY_VALUE;
-      $a_list["check_ping"]         = "check_ping";
-      $a_list["check_cpu_usage"]    = "check_cpu_usage";
-      $a_list["check_load"]         = "check_load";
-      $a_list["check_mem"]          = "check_mem";
-      $a_list["check_users"]        = "check_users";
-      $a_list["check_iftraffic41"]  = "check_iftraffic41";
-      $a_list["check_iftraffic5"]   = "check_iftraffic5";
-      $a_list["check_pf"]           = "check_pf";
-      $a_list["check_dig"]          = "check_dig";
-      $a_list["check_disk"]         = "check_disk";
-      $a_list["check_dns"]          = "check_dns";
-      $a_list["check_http"]         = "check_http";
-      $a_list["check_pop"]          = "check_pop";
-      $a_list["check_smtp"]         = "check_smtp";
-      $a_list["check_mysql_health__connection-time"] = "check_mysql_health__connection_time";
-      $a_list["check_mysql_health__tmp_disk_tables"] = "check_mysql_health__tmp_disk_tables";
-      $a_list["check_mysql_health__threads_connected"] = "check_mysql_health__threads_connected";
-      $a_list["check_snmp_memory"] = "check_snmp_memory";
-      $a_list["check_snmp_load__stand"] = "check_snmp_load__stand";
-      $a_list["check_snmp_storage"] = "check_snmp_storage";
-      $a_list["check_tcp"] = "check_tcp";
-      $a_list["check_iostat_bsd"] = "check_iostat_bsd";
-      $a_list["cucumber_nagios"] = "cucumber_nagios";
-      $a_list["check_nginx_status"] = "check_nginx_status";
-            
-      ksort($a_list);
-      return $a_list;
+   /**
+   * Get name of this type
+   *
+   *@return text name of this type by language of the user connected
+   *
+   **/
+   static function getTypeName($nb=0) {
+      return __('Graph template', 'monitoring');
+   }
+
+   
+
+   static function canCreate() {      
+      return PluginMonitoringProfile::haveRight("component", 'w');
+   }
+
+
+   
+   static function canView() {
+      return PluginMonitoringProfile::haveRight("component", 'r');
+   }
+
+   
+
+   static function initDB() {
+      $pmPerfdata       = new PluginMonitoringPerfdata();
+      $pmPerfdataDetail = new PluginMonitoringPerfdataDetail();
+
+      // * check_ping
+      $input = array(
+          'name'     => 'check_ping',
+          'perfdata' => 'rta=7.306000ms;1.000000;2.000000;0.000000 pl=0%;1;30;0'
+      );
+      $id = $pmPerfdata->add($input);
+      
+      $inputd = array(
+          'name'                           => 'rta',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 1,
+          'dsname_num'                     => 4,
+          'dsname1'                        => 'response_time',
+          'dsname2'                        => 'warning_limit_rta',
+          'dsname3'                        => 'critical_limit_rta',
+          'dsname4'                        => 'other_rta'
+      );
+      $pmPerfdataDetail->add($inputd);
+      
+      $inputd = array(
+          'name'                           => 'pl',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 2,
+          'dsname_num'                     => 4,
+          'dsname1'                        => 'packet_loss',
+          'dsname2'                        => 'warning_limit_pl',
+          'dsname3'                        => 'critical_limit_pl',
+          'dsname4'                        => 'other_pl'
+      );
+      $pmPerfdataDetail->add($inputd);
+      
+      // * check_cpu_usage
+      $input = array(
+          'name'     => 'check_cpu_usage',
+          'perfdata' => 'cpu_usage=6%;80;100; cpu_user=3%; cpu_system=3%;'
+      );
+      $id = $pmPerfdata->add($input);
+      
+      $inputd = array(
+          'name'                           => 'cpu_usage',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 1,
+          'dsname_num'                     => 3,
+          'dsname1'                        => 'usage',
+          'dsname2'                        => 'usage_warning',
+          'dsname3'                        => 'usage_critical'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      $inputd = array(
+          'name'                           => 'cpu_user',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 2,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'user'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      $inputd = array(
+          'name'                           => 'cpu_system',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 2,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'system'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      // * check_load
+      $input = array(
+          'name'     => 'check_load',
+          'perfdata' => 'load1=0.090;1.000;2.000;0; load5=0.090;1.000;2.000;0; load15=0.074;1.000;2.000;0;'
+      );
+      $id = $pmPerfdata->add($input);
+      
+      $inputd = array(
+          'name'                           => 'load1',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 1,
+          'dsname_num'                     => 4,
+          'dsname1'                        => 'load1min_current',
+          'dsname2'                        => 'load1min_warning',
+          'dsname3'                        => 'load1min_critical',
+          'dsname4'                        => 'load1min_other'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      $inputd = array(
+          'name'                           => 'load5',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 2,
+          'dsname_num'                     => 4,
+          'dsname1'                        => 'load5min_current',
+          'dsname2'                        => 'load5min_warning',
+          'dsname3'                        => 'load5min_critical',
+          'dsname4'                        => 'load5min_other'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      $inputd = array(
+          'name'                           => 'load15',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 3,
+          'dsname_num'                     => 4,
+          'dsname1'                        => 'load15min_current',
+          'dsname2'                        => 'load15min_warning',
+          'dsname3'                        => 'load15min_critical',
+          'dsname4'                        => 'load15min_other'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      // * check_mem
+      $input = array(
+          'name'     => 'check_mem',
+          'perfdata' => ''
+      );
+      $id = $pmPerfdata->add($input);
+      
+      $inputd = array(
+          'name'                           => 'pct',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 1,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'memory_used'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      // * check_users
+      $input = array(
+          'name'     => 'check_users',
+          'perfdata' => 'users=1;2;5;0'
+      );
+      $id = $pmPerfdata->add($input);
+      
+      $inputd = array(
+          'name'                           => 'users',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 1,
+          'dsname_num'                     => 4,
+          'dsname1'                        => 'users_current',
+          'dsname2'                        => 'users_warning',
+          'dsname3'                        => 'users_critical',
+          'dsname4'                        => 'users_other'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      // * check_iftraffic41
+      $input = array(
+          'name'     => 'check_iftraffic41',
+          'perfdata' => ''
+      );
+      $id = $pmPerfdata->add($input);
+      
+      $inputd = array(
+          'name'                           => 'inUsage',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 1,
+          'dsname_num'                     => 3,
+          'dsname1'                        => 'inpercentcurr',
+          'dsname2'                        => 'inpercentwarn',
+          'dsname3'                        => 'inpercentcrit'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      $inputd = array(
+          'name'                           => 'outUsage',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 2,
+          'dsname_num'                     => 3,
+          'dsname1'                        => 'outpercentcurr',
+          'dsname2'                        => 'outpercentwarn',
+          'dsname3'                        => 'outpercentcrit'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      $inputd = array(
+          'name'                           => 'inBandwidth',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 3,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'inbps'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      $inputd = array(
+          'name'                           => 'outBandwidth',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 4,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'outbps'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      $inputd = array(
+          'name'                           => 'inAbsolut',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 5,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'inbound'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      $inputd = array(
+          'name'                           => 'outAbsolut',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 6,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'outbound'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      // * check_iftraffic5
+      $input = array(
+          'name'     => 'check_iftraffic5',
+          'perfdata' => ''
+      );
+      $id = $pmPerfdata->add($input);
+      
+      $inputd = array(
+          'name'                           => 'inUse',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 1,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'inUse'
+      );
+      $pmPerfdataDetail->add($inputd);
+      
+      $inputd = array(
+          'name'                           => 'outUse',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 2,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'outUse'
+      );
+      $pmPerfdataDetail->add($inputd);
+      
+      $inputd = array(
+          'name'                           => 'Warn',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 3,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'Warn'
+      );
+      $pmPerfdataDetail->add($inputd);
+      
+      $inputd = array(
+          'name'                           => 'Crit',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 4,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'Crit'
+      );
+      $pmPerfdataDetail->add($inputd);
+      
+      $inputd = array(
+          'name'                           => 'inBW',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 5,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'inBW'
+      );
+      $pmPerfdataDetail->add($inputd);
+      
+      $inputd = array(
+          'name'                           => 'outBW',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 6,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'outBW'
+      );
+      $pmPerfdataDetail->add($inputd);
+      
+      $inputd = array(
+          'name'                           => 'inUcast',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 7,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'inUcast'
+      );
+      $pmPerfdataDetail->add($inputd);
+      
+      $inputd = array(
+          'name'                           => 'inMcast',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 8,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'inMcast'
+      );
+      $pmPerfdataDetail->add($inputd);
+      
+      $inputd = array(
+          'name'                           => 'inBcast',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 9,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'inBcast'
+      );
+      $pmPerfdataDetail->add($inputd);
+      
+      $inputd = array(
+          'name'                           => 'outUcast',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 10,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'outUcast'
+      );
+      $pmPerfdataDetail->add($inputd);
+      
+      $inputd = array(
+          'name'                           => 'outMcast',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 11,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'outMcast'
+      );
+      $pmPerfdataDetail->add($inputd);
+      
+      $inputd = array(
+          'name'                           => 'outBcast',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 12,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'outBcast'
+      );
+      $pmPerfdataDetail->add($inputd);
+      
+      $inputd = array(
+          'name'                           => 'inDis',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 13,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'inDis'
+      );
+      $pmPerfdataDetail->add($inputd);
+      
+      $inputd = array(
+          'name'                           => 'inErr',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 14,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'inErr'
+      );
+      $pmPerfdataDetail->add($inputd);
+      
+      $inputd = array(
+          'name'                           => 'outDis',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 15,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'outDis'
+      );
+      $pmPerfdataDetail->add($inputd);
+      
+      $inputd = array(
+          'name'                           => 'outErr',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 16,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'outErr'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      // * check_pf
+      $input = array(
+          'name'     => 'check_pf',
+          'perfdata' => ''
+      );
+      $id = $pmPerfdata->add($input);
+      
+      $inputd = array(
+          'name'                           => 'current',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 1,
+          'dsname_num'                     => 3,
+          'dsname1'                        => 'states_current',
+          'dsname2'                        => 'states_warning',
+          'dsname3'                        => 'states_critical'
+      );
+      $pmPerfdataDetail->add($inputd);
+      
+      $inputd = array(
+          'name'                           => 'percent',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 2,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'percent'
+      );
+      $pmPerfdataDetail->add($inputd);
+      
+      $inputd = array(
+          'name'                           => 'limit',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 3,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'limit'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      // * check_dig
+      $input = array(
+          'name'     => 'check_dig',
+          'perfdata' => ''
+      );
+      $id = $pmPerfdata->add($input);
+      
+      $inputd = array(
+          'name'                           => 'time',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 1,
+          'dsname_num'                     => 4,
+          'dsname1'                        => 'time_current',
+          'dsname2'                        => 'time_warning',
+          'dsname3'                        => 'time_critical',
+          'dsname4'                        => 'time_other'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      // * check_disk
+      $input = array(
+          'name'     => 'check_disk',
+          'perfdata' => ''
+      );
+      $id = $pmPerfdata->add($input);
+      
+      $inputd = array(
+          'name'                           => '',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 1,
+          'dsname_num'                     => 5,
+          'dsname1'                        => 'used',
+          'dsname2'                        => 'used_warning',
+          'dsname3'                        => 'used_critical',
+          'dsname4'                        => 'used_other',
+          'dsname5'                        => 'totalcapacity'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      // * check_dns
+      $input = array(
+          'name'     => 'check_dns',
+          'perfdata' => ''
+      );
+      $id = $pmPerfdata->add($input);
+      
+      $inputd = array(
+          'name'                           => 'time',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 1,
+          'dsname_num'                     => 4,
+          'dsname1'                        => 'time_current',
+          'dsname2'                        => 'time_warning',
+          'dsname3'                        => 'time_critical',
+          'dsname4'                        => 'time_other'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      // * check_http
+      $input = array(
+          'name'     => 'check_http',
+          'perfdata' => ''
+      );
+      $id = $pmPerfdata->add($input);
+      
+      $inputd = array(
+          'name'                           => 'time',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 1,
+          'dsname_num'                     => 4,
+          'dsname1'                        => 'time_current',
+          'dsname2'                        => 'time_warning',
+          'dsname3'                        => 'time_critical',
+          'dsname4'                        => 'time_other'
+      );
+      $pmPerfdataDetail->add($inputd);
+      
+      $inputd = array(
+          'name'                           => 'size',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 2,
+          'dsname_num'                     => 4,
+          'dsname1'                        => 'size_current',
+          'dsname2'                        => 'size_warning',
+          'dsname3'                        => 'size_critical',
+          'dsname4'                        => 'size_other'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      // * check_pop
+      $input = array(
+          'name'     => 'check_pop',
+          'perfdata' => ''
+      );
+      $id = $pmPerfdata->add($input);
+      
+      $inputd = array(
+          'name'                           => 'time',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 1,
+          'dsname_num'                     => 5,
+          'dsname1'                        => 'time_current',
+          'dsname2'                        => 'time_warning',
+          'dsname3'                        => 'time_critical',
+          'dsname4'                        => 'time_other',
+          'dsname5'                        => 'time_timeout'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      // * check_smtp
+      $input = array(
+          'name'     => 'check_smtp',
+          'perfdata' => ''
+      );
+      $id = $pmPerfdata->add($input);
+      
+      $inputd = array(
+          'name'                           => 'time',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 1,
+          'dsname_num'                     => 4,
+          'dsname1'                        => 'time_current',
+          'dsname2'                        => 'time_warning',
+          'dsname3'                        => 'time_critical',
+          'dsname4'                        => 'time_other'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      // * check_mysql_health connection_time
+      $input = array(
+          'name'     => 'check_mysql_health connection_time',
+          'perfdata' => ''
+      );
+      $id = $pmPerfdata->add($input);
+      
+      $inputd = array(
+          'name'                           => 'connection-time',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 1,
+          'dsname_num'                     => 3,
+          'dsname1'                        => 'connection-time_current',
+          'dsname2'                        => 'connection-time_warning',
+          'dsname3'                        => 'connection-time_critical'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      // * check_mysql_health tmp_disk_tables
+      $input = array(
+          'name'     => 'check_mysql_health tmp_disk_tables',
+          'perfdata' => ''
+      );
+      $id = $pmPerfdata->add($input);
+      
+      $inputd = array(
+          'name'                           => 'pct_tmp_table_on_disk',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 1,
+          'dsname_num'                     => 3,
+          'dsname1'                        => 'tmp_table_on_disk_current',
+          'dsname2'                        => 'tmp_table_on_disk_warning',
+          'dsname3'                        => 'tmp_table_on_disk_critical'
+      );
+      $pmPerfdataDetail->add($inputd);
+      
+      $inputd = array(
+          'name'                           => 'pct_tmp_table_on_disk_now',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 2,
+          'dsname_num'                     => 3,
+          'dsname1'                        => 'tmp_table_on_disk_now_current',
+          'dsname2'                        => 'tmp_table_on_disk_now_warning',
+          'dsname3'                        => 'tmp_table_on_disk_now_critical'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      // * check_mysql_health threads_connected
+      $input = array(
+          'name'     => 'check_mysql_health threads_connected',
+          'perfdata' => ''
+      );
+      $id = $pmPerfdata->add($input);
+      
+      $inputd = array(
+          'name'                           => 'threads_connected',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 1,
+          'dsname_num'                     => 3,
+          'dsname1'                        => 'threads_connected_current',
+          'dsname2'                        => 'threads_connected_warning',
+          'dsname3'                        => 'threads_connected_critical'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      // * check_snmp_memory
+      $input = array(
+          'name'     => 'check_snmp_memory',
+          'perfdata' => ''
+      );
+      $id = $pmPerfdata->add($input);
+      
+      $inputd = array(
+          'name'                           => 'total',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 1,
+          'dsname_num'                     => 4,
+          'dsname1'                        => 'memory_total',
+          'dsname2'                        => 'memory_warning',
+          'dsname3'                        => 'memory_critical',
+          'dsname4'                        => 'memory_other'
+      );
+      $pmPerfdataDetail->add($inputd);
+      
+      $inputd = array(
+          'name'                           => 'used',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 2,
+          'dsname_num'                     => 4,
+          'dsname1'                        => 'memory_used',
+          'dsname2'                        => 'memory_other1',
+          'dsname3'                        => 'memory_other2',
+          'dsname4'                        => 'memory_other3'
+      );
+      $pmPerfdataDetail->add($inputd);
+      
+      $inputd = array(
+          'name'                           => 'swap',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 3,
+          'dsname_num'                     => 4,
+          'dsname1'                        => 'swap_used',
+          'dsname2'                        => 'swap_other1',
+          'dsname3'                        => 'swap_other2',
+          'dsname4'                        => 'swap_other3'
+      );
+      $pmPerfdataDetail->add($inputd);
+      
+      $inputd = array(
+          'name'                           => 'buffer',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 4,
+          'dsname_num'                     => 4,
+          'dsname1'                        => 'buffer_used',
+          'dsname2'                        => 'buffer_other1',
+          'dsname3'                        => 'buffer_other2',
+          'dsname4'                        => 'buffer_other3'
+      );
+      $pmPerfdataDetail->add($inputd);
+      
+      $inputd = array(
+          'name'                           => 'cache',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 5,
+          'dsname_num'                     => 4,
+          'dsname1'                        => 'cache_used',
+          'dsname2'                        => 'cache_other1',
+          'dsname3'                        => 'cache_other2',
+          'dsname4'                        => 'cache_other3'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      // * check_snmp_load stand
+      $input = array(
+          'name'     => 'check_snmp_load stand',
+          'perfdata' => ''
+      );
+      $id = $pmPerfdata->add($input);
+      
+      $inputd = array(
+          'name'                           => 'cpu_used',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 1,
+          'dsname_num'                     => 3,
+          'dsname1'                        => 'cpu_load',
+          'dsname2'                        => 'cpu_warning',
+          'dsname3'                        => 'cpu_critical'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      // * check_snmp_storage
+      $input = array(
+          'name'     => 'check_snmp_storage',
+          'perfdata' => ''
+      );
+      $id = $pmPerfdata->add($input);
+      
+      $inputd = array(
+          'name'                           => '',
+          'dynamic_name'                   => 1,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 1,
+          'dsname_num'                     => 5,
+          'dsname1'                        => 'used',
+          'dsname2'                        => 'warning',
+          'dsname3'                        => 'critical',
+          'dsname4'                        => 'other',
+          'dsname5'                        => 'total'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      // * check_tcp
+      $input = array(
+          'name'     => 'check_tcp',
+          'perfdata' => 'time=0.064284s;;;0.000000;10.000000'
+      );
+      $id = $pmPerfdata->add($input);
+      
+      $inputd = array(
+          'name'                           => 'time',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 1,
+          'dsname_num'                     => 5,
+          'dsname1'                        => 'response_time',
+          'dsname2'                        => 'warning',
+          'dsname3'                        => 'critical',
+          'dsname4'                        => 'other',
+          'dsname5'                        => 'timeout'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      // * check_iostat_bsd
+      $input = array(
+          'name'     => 'check_iostat_bsd',
+          'perfdata' => ''
+      );
+      $id = $pmPerfdata->add($input);
+      
+      $inputd = array(
+          'name'                           => 'tps',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 1,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'IOTPS_read_write'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      $inputd = array(
+          'name'                           => 'tpsr',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 2,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'IOTPS_read'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      $inputd = array(
+          'name'                           => 'tpsw',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 3,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'IOTPS_write'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      $inputd = array(
+          'name'                           => 'reads',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 4,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'Kbps_read'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      $inputd = array(
+          'name'                           => 'writes',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 5,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'Kbps_write'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      $inputd = array(
+          'name'                           => 'svc_t',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 6,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'transactiontime'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      // * cucumber_nagios
+      $input = array(
+          'name'     => 'cucumber_nagios',
+          'perfdata' => ''
+      );
+      $id = $pmPerfdata->add($input);
+      
+      $inputd = array(
+          'name'                           => 'passed',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 1,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'passed'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      $inputd = array(
+          'name'                           => 'failed',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 2,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'failed'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      $inputd = array(
+          'name'                           => 'nosteps',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 3,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'nosteps'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      $inputd = array(
+          'name'                           => 'total',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 4,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'total'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      $inputd = array(
+          'name'                           => 'time',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 5,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'time'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      // * check_snmp_tcp
+      $input = array(
+          'name'     => 'check_snmp_tcp',
+          'perfdata' => ''
+      );
+      $id = $pmPerfdata->add($input);
+      
+      $inputd = array(
+          'name'                           => 'time',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 1,
+          'dsname_num'                     => 5,
+          'dsname1'                        => 'response_time',
+          'dsname2'                        => 'warning',
+          'dsname3'                        => 'critical',
+          'dsname4'                        => 'other',
+          'dsname5'                        => 'timeout'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      // * check_nginx_status
+      $input = array(
+          'name'     => 'check_nginx_status',
+          'perfdata' => ''
+      );
+      $id = $pmPerfdata->add($input);
+      
+      $inputd = array(
+          'name'                           => 'Writing',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 1,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'Writing'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      $inputd = array(
+          'name'                           => 'Reading',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 2,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'Reading'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      $inputd = array(
+          'name'                           => 'Waiting',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 3,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'Waiting'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      $inputd = array(
+          'name'                           => 'Active',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 4,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'Active'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      $inputd = array(
+          'name'                           => 'ReqPerSec',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 5,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'ReqPerSec'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      $inputd = array(
+          'name'                           => 'ConnPerSec',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 6,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'ConnPerSec'
+      );
+      $pmPerfdataDetail->add($inputd);
+
+      $inputd = array(
+          'name'                           => 'ReqPerConn',
+          'dynamic_name'                   => 0,
+          'plugin_monitoring_perfdatas_id' => $id,
+          'position'                       => 7,
+          'dsname_num'                     => 1,
+          'dsname1'                        => 'ReqPerConn'
+      );
+      $pmPerfdataDetail->add($inputd);
+    
    }
    
    
    
-   static function perfdata_check_ping() {
+   /**
+   * Display form for perfdata
+   *
+   * @param $items_id integer ID 
+   * @param $options array
+   *
+   *@return bool true if form is ok
+   *
+   **/
+   function showForm($items_id, $options=array()) {
+
+      if ($items_id == '0') {
+         $this->getEmpty();
+      } else {
+         $this->getFromDB($items_id);
+      }
+     
+      $this->showTabs();
+      $this->showFormHeader($options);
+
+      echo "<tr>";
+      echo "<td>";
+      echo __('Name')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      $objectName = autoName($this->fields["name"], "name", 1,
+                             $this->getType());
+      Html::autocompletionTextField($this, 'name', array('value' => $objectName));      
+      echo "</td>";
+      // * perfdata
+      echo "<td>".__('A perfdata for this check', 'monitoring')."&nbsp;:</td>";
+      echo "<td>";
+      echo "<input type='name' name='perfdata' value='".$this->fields['perfdata']."' size='80'/>";
+      echo "</td>";
+      echo "</tr>";
       
-      $data = array();
-      $data['command'] = 'check_ping';
-      $data['parseperfdata'] = array();
+      $this->showFormButtons($options);
+
+      if ($this->fields['id'] > 0) {
+         $pmPerfdataDetail = new PluginMonitoringPerfdataDetail();
+         $pmPerfdataDetail->showDetails($this->fields['id']);
+         
+         $pmPerfdataDetail->updateDetailForPerfdata($this->fields['perfdata'], $this->fields['id']);
+      }
       
-      $ds = array();
-      $ds[] = array('dsname' => 'response_time');
-      $ds[] = array('dsname' => 'warning_limit_rta');
-      $ds[] = array('dsname' => 'critical_limit_rta');
-      $ds[] = array('dsname' => 'other_rta');
-      $data['parseperfdata'][] = array('name' => 'rta',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'packet_loss');
-      $ds[] = array('dsname' => 'warning_limit_pl');
-      $ds[] = array('dsname' => 'critical_limit_pl');
-      $ds[] = array('dsname' => 'other_pl');
-      $data['parseperfdata'][] = array('name' => 'pl',
-                                       'DS'   => $ds);
-      return json_encode($data);      
-   }
-   
-   
-   
-   static function perfdata_check_cpu_usage() {
-      
-      $data = array();
-      $data['command'] = 'check_cpu_usage';
-      $data['parseperfdata'] = array();
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'usage');
-      $ds[] = array('dsname' => 'usage_warning');
-      $ds[] = array('dsname' => 'usage_critical');
-      $data['parseperfdata'][] = array('name' => 'cpu_usage',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'user');
-      $data['parseperfdata'][] = array('name' => 'cpu_user',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'cpu_system');
-      $data['parseperfdata'][] = array('name' => 'cpu_system',
-                                       'DS'   => $ds);
-      return json_encode($data);      
-   }
-   
-   
-   
-   static function perfdata_check_load() {
-      
-      $data = array();
-      $data['command'] = 'check_load';
-      $data['parseperfdata'] = array();
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'load1min_current');
-      $ds[] = array('dsname' => 'load1min_warning');
-      $ds[] = array('dsname' => 'load1min_critical');
-      $ds[] = array('dsname' => 'load1min_other');
-      $data['parseperfdata'][] = array('name' => 'load1',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'load5min_current');
-      $ds[] = array('dsname' => 'load5min_warning');
-      $ds[] = array('dsname' => 'load5min_critical');
-      $ds[] = array('dsname' => 'load5min_other');
-      $data['parseperfdata'][] = array('name' => 'load5',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'load15min_current');
-      $ds[] = array('dsname' => 'load15min_warning');
-      $ds[] = array('dsname' => 'load15min_critical');
-      $ds[] = array('dsname' => 'load15min_other');
-      $data['parseperfdata'][] = array('name' => 'load15',
-                                       'DS'   => $ds);
-      return json_encode($data);      
-   }
-   
-   
-   
-   static function perfdata_check_mem() {
-      
-      $data = array();
-      $data['command'] = 'check_mem';
-      $data['parseperfdata'] = array();
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'memory_used');
-      $data['parseperfdata'][] = array('name' => 'pct',
-                                       'DS'   => $ds);
-      return json_encode($data);      
-   }
-   
-   
-   
-   static function perfdata_check_users() {
-      
-      $data = array();
-      $data['command'] = 'check_users';
-      $data['parseperfdata'] = array();
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'users_current');
-      $ds[] = array('dsname' => 'users_warning');
-      $ds[] = array('dsname' => 'users_critical');
-      $ds[] = array('dsname' => 'users_other');
-      $data['parseperfdata'][] = array('name' => 'users',
-                                       'DS'   => $ds);
-      return json_encode($data);      
-   }
-   
-   
-   
-   static function perfdata_check_iftraffic41() {
-      
-      $data = array();
-      $data['command'] = 'check_iftraffic41';
-      $data['parseperfdata'] = array();
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'inpercentcurr');
-      $ds[] = array('dsname' => 'inpercentwarn');
-      $ds[] = array('dsname' => 'inpercentcrit');
-      $data['parseperfdata'][] = array('name' => 'inUsage',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'outpercent_curr');
-      $ds[] = array('dsname' => 'outpercentwarn');
-      $ds[] = array('dsname' => 'outpercentcrit');
-      $data['parseperfdata'][] = array('name' => 'outUsage',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'inbps');
-      $data['parseperfdata'][] = array('name' => 'inBandwidth',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'outbps');
-      $data['parseperfdata'][] = array('name' => 'outBandwidth',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'inbound');
-      $data['parseperfdata'][] = array('name' => 'inAbsolut',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'outbound');
-      $data['parseperfdata'][] = array('name' => 'outAbsolut',
-                                       'DS'   => $ds);
-      return json_encode($data);      
-   }
-   
-   
-   
-   static function perfdata_check_iftraffic5() {
-      
-      $data = array();
-      $data['command'] = 'check_iftraffic5';
-      $data['parseperfdata'] = array();
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'inUse');
-      $data['parseperfdata'][] = array('name' => 'inUse',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'outUse');
-      $data['parseperfdata'][] = array('name' => 'outUse',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'Warn');
-      $data['parseperfdata'][] = array('name' => 'Warn',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'Crit');
-      $data['parseperfdata'][] = array('name' => 'Crit',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'inBW');
-      $data['parseperfdata'][] = array('name' => 'inBW',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'outBW');
-      $data['parseperfdata'][] = array('name' => 'outBW',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'inUcast');
-      $data['parseperfdata'][] = array('name' => 'inUcast',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'inMcast');
-      $data['parseperfdata'][] = array('name' => 'inMcast',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'inBcast');
-      $data['parseperfdata'][] = array('name' => 'inBcast',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'outUcast');
-      $data['parseperfdata'][] = array('name' => 'outUcast',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'outMcast');
-      $data['parseperfdata'][] = array('name' => 'outMcast',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'outBcast');
-      $data['parseperfdata'][] = array('name' => 'outBcast',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'inDis');
-      $data['parseperfdata'][] = array('name' => 'inDis',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'inErr');
-      $data['parseperfdata'][] = array('name' => 'inErr',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'outDis');
-      $data['parseperfdata'][] = array('name' => 'outDis',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'outErr');
-      $data['parseperfdata'][] = array('name' => 'outErr',
-                                       'DS'   => $ds);
-      
-      return json_encode($data);      
-   }
-   
-   
-   
-   static function perfdata_check_pf() {
-      
-      $data = array();
-      $data['command'] = 'check_pf';
-      $data['parseperfdata'] = array();
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'states_current');
-      $ds[] = array('dsname' => 'states_warning');
-      $ds[] = array('dsname' => 'states_critical');
-      $data['parseperfdata'][] = array('name' => 'current',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'percent');
-      $data['parseperfdata'][] = array('name' => 'percent',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'limit');
-      $data['parseperfdata'][] = array('name' => 'limit',
-                                       'DS'   => $ds);
-      return json_encode($data);      
-   }
-   
-   
-   
-   static function perfdata_check_dig() {
-      
-      $data = array();
-      $data['command'] = 'check_dig';
-      $data['parseperfdata'] = array();
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'time_current');
-      $ds[] = array('dsname' => 'time_warning');
-      $ds[] = array('dsname' => 'time_critical');
-      $ds[] = array('dsname' => 'time_other');
-      $data['parseperfdata'][] = array('name' => 'time',
-                                       'DS'   => $ds);
-      return json_encode($data);      
-   }
-   
-   
-   
-   static function perfdata_check_disk() {
-      
-      $data = array();
-      $data['command'] = 'check_disk';
-      $data['parseperfdata'] = array();
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'used');
-      $ds[] = array('dsname' => 'used_warning');
-      $ds[] = array('dsname' => 'used_critical');
-      $ds[] = array('dsname' => 'used_other');
-      $ds[] = array('dsname' => 'totalcapacity');
-      $data['parseperfdata'][] = array('name' => '',
-                                       'DS'   => $ds);
-      return json_encode($data);      
-   }
-   
-   
-   
-   static function perfdata_check_dns() {
-      
-      $data = array();
-      $data['command'] = 'check_dns';
-      $data['parseperfdata'] = array();
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'time_current');
-      $ds[] = array('dsname' => 'time_warning');
-      $ds[] = array('dsname' => 'time_critical');
-      $ds[] = array('dsname' => 'time_other');
-      $data['parseperfdata'][] = array('name' => 'time',
-                                       'DS'   => $ds);
-      return json_encode($data);      
-   }
-   
-   
-   
-   static function perfdata_check_http() {
-      
-      $data = array();
-      $data['command'] = 'check_http';
-      $data['parseperfdata'] = array();
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'time_current');
-      $ds[] = array('dsname' => 'time_warning');
-      $ds[] = array('dsname' => 'time_critical');
-      $ds[] = array('dsname' => 'time_other');
-      $data['parseperfdata'][] = array('name' => 'time',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'size_current');
-      $ds[] = array('dsname' => 'size_warning');
-      $ds[] = array('dsname' => 'size_critical');
-      $ds[] = array('dsname' => 'size_other');
-      $data['parseperfdata'][] = array('name' => 'size',
-                                       'DS'   => $ds);
-      return json_encode($data);      
-   }
-   
-   
-   
-   static function perfdata_check_pop() {
-      
-      $data = array();
-      $data['command'] = 'check_pop';
-      $data['parseperfdata'] = array();
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'time_current');
-      $ds[] = array('dsname' => 'time_warning');
-      $ds[] = array('dsname' => 'time_critical');
-      $ds[] = array('dsname' => 'time_other');
-      $ds[] = array('dsname' => 'time_timeout');
-      $data['parseperfdata'][] = array('name' => 'time',
-                                       'DS'   => $ds);
-      return json_encode($data);      
-   }
-   
-   
-   
-   static function perfdata_check_smtp() {
-      
-      $data = array();
-      $data['command'] = 'check_smtp';
-      $data['parseperfdata'] = array();
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'time_current');
-      $ds[] = array('dsname' => 'time_warning');
-      $ds[] = array('dsname' => 'time_critical');
-      $ds[] = array('dsname' => 'time_other');
-      $data['parseperfdata'][] = array('name' => 'time',
-                                       'DS'   => $ds);
-      return json_encode($data);      
-   }
-   
-   
-   
-   static function perfdata_check_mysql_health__connection_time() {
-      
-      $data = array();
-      $data['command'] = 'check_mysql_health__connection-time';
-      $data['parseperfdata'] = array();
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'connection-time_current');
-      $ds[] = array('dsname' => 'tconnection-time_warning');
-      $ds[] = array('dsname' => 'connection-time_critical');
-      $data['parseperfdata'][] = array('name' => 'connection-time',
-                                       'DS'   => $ds);
-      return json_encode($data);      
-   }
-   
-   
-   
-   static function perfdata_check_mysql_health__tmp_disk_tables() {
-      
-      $data = array();
-      $data['command'] = 'check_mysql_health__tmp_disk_tables';
-      $data['parseperfdata'] = array();
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'tmp_table_on_disk_current');
-      $ds[] = array('dsname' => 'tmp_table_on_disk_warning');
-      $ds[] = array('dsname' => 'tmp_table_on_disk_critical');
-      $data['parseperfdata'][] = array('name' => 'pct_tmp_table_on_disk',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'tmp_table_on_disk_now_current');
-      $ds[] = array('dsname' => 'tmp_table_on_disk_now_warning');
-      $ds[] = array('dsname' => 'tmp_table_on_disk_now_critical');
-      $data['parseperfdata'][] = array('name' => 'pct_tmp_table_on_disk_now',
-                                       'DS'   => $ds);
-      return json_encode($data);      
+      return true;
    }
 
    
    
-   static function perfdata_check_mysql_health__threads_connected() {
-      
-      $data = array();
-      $data['command'] = 'check_mysql_health__threads_connected';
-      $data['parseperfdata'] = array();
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'threads_connected_current');
-      $ds[] = array('dsname' => 'threads_connected_warning');
-      $ds[] = array('dsname' => 'threads_connected_critical');
-      $data['parseperfdata'][] = array('name' => 'threads_connected',
-                                       'DS'   => $ds);
-      return json_encode($data);      
-   }   
-   
-   
-   static function perfdata_check_snmp_memory() {
-      
-      $data = array();
-      $data['command'] = 'check_snmp_memory';
-      $data['parseperfdata'] = array();
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'memory_total');
-      $ds[] = array('dsname' => 'memory_warning');
-      $ds[] = array('dsname' => 'memory_critical');
-      $ds[] = array('dsname' => 'memory_other');
-      $data['parseperfdata'][] = array('name' => 'total',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'memory_used');
-      $ds[] = array('dsname' => 'memory_other1');
-      $ds[] = array('dsname' => 'memory_other2');
-      $ds[] = array('dsname' => 'memory_other3');
-      $data['parseperfdata'][] = array('name' => 'used',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'swap_used');
-      $ds[] = array('dsname' => 'swap_other1');
-      $ds[] = array('dsname' => 'swap_other2');
-      $ds[] = array('dsname' => 'swap_other3');
-      $data['parseperfdata'][] = array('name' => 'swap',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'buffer_used');
-      $ds[] = array('dsname' => 'buffer_other1');
-      $ds[] = array('dsname' => 'buffer_other2');
-      $ds[] = array('dsname' => 'buffer_other3');
-      $data['parseperfdata'][] = array('name' => 'buffer',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'cache_used');
-      $ds[] = array('dsname' => 'cache_other1');
-      $ds[] = array('dsname' => 'cache_other2');
-      $ds[] = array('dsname' => 'cache_other3');
-      $data['parseperfdata'][] = array('name' => 'cache',
-                                       'DS'   => $ds);
-      return json_encode($data);      
+   function post_addItem() {
+      if ($this->fields['perfdata'] != ''
+              && !isset($_SESSION['plugin_monitoring_installation'])) {
+       PluginMonitoringPerfdataDetail::updateDetailForPerfdata(
+               $this->fields['perfdata'], $this->fields['id']);
+      }
    }
 
    
    
-   static function perfdata_check_snmp_load__stand() {
-      
-      $data = array();
-      $data['command'] = 'check_snmp_load__stand';
-      $data['parseperfdata'] = array();
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'cpu_load');
-      $ds[] = array('dsname' => 'cpu_warning');
-      $ds[] = array('dsname' => 'cpu_critical');
-      $data['parseperfdata'][] = array('name' => 'cpu_used',
-                                       'DS'   => $ds);
-      return json_encode($data);      
-   }   
-
-   
-   
-   static function perfdata_check_snmp_storage() {
-
-      $data = array();
-      $data['command'] = 'check_snmp_storage';
-      $data['parseperfdata'] = array();
-
-      $ds = array();
-      $ds[] = array('dsname' => 'used');
-      $ds[] = array('dsname' => 'warning');
-      $ds[] = array('dsname' => 'critical');
-      $ds[] = array('dsname' => 'other');
-      $ds[] = array('dsname' => 'total');
-      $data['parseperfdata'][] = array('name' => '*',
-                                       'DS'   => $ds);
-      return json_encode($data);
-   }   
-
-   
-   
-   static function perfdata_check_tcp() {
-
-      $data = array();
-      $data['command'] = 'check_tcp';
-      $data['parseperfdata'] = array();
-
-      $ds = array();
-      $ds[] = array('dsname' => 'response_time');
-      $ds[] = array('dsname' => 'warning');
-      $ds[] = array('dsname' => 'critical');
-      $ds[] = array('dsname' => 'other');
-      $ds[] = array('dsname' => 'timeout');
-      $data['parseperfdata'][] = array('name' => 'time',
-                                       'DS'   => $ds);
-      return json_encode($data);
-   }
-   
-
-   
-   static function perfdata_check_iostat_bsd() {
-
-      $data = array();
-      $data['command'] = 'check_iostat_bsd';
-      $data['parseperfdata'] = array();
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'IOTPS_read_write');
-      $data['parseperfdata'][] = array('name' => 'tps',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'IOTPS_read');
-      $data['parseperfdata'][] = array('name' => 'tpsr',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'IOTPS_write');
-      $data['parseperfdata'][] = array('name' => 'tpsw',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'Kbps_read');
-      $data['parseperfdata'][] = array('name' => 'reads',
-                                       'DS'   => $ds);
-      
-      $ds = array();
-      $ds[] = array('dsname' => 'Kbps_write');
-      $data['parseperfdata'][] = array('name' => 'writes',
-                                       'DS'   => $ds);
-
-      $ds = array();
-      $ds[] = array('dsname' => 'transactiontime');
-      $data['parseperfdata'][] = array('name' => 'svc_t',
-                                       'DS'   => $ds);
-      
-      return json_encode($data);
+   function post_updateItem($history=1) {
+      if ($this->fields['perfdata'] != ''
+              && !isset($_SESSION['plugin_monitoring_installation'])) {
+         PluginMonitoringPerfdataDetail::updateDetailForPerfdata(
+                 $this->fields['perfdata'], $this->fields['id']);
+      }
    }
    
    
    
-   static function perfdata_cucumber_nagios() {
-
+   static function getArrayPerfdata($perfdatas_id) {
+      
+      $pmPerfdata       = new PluginMonitoringPerfdata();
+      $pmPerfdataDetail = new PluginMonitoringPerfdataDetail();
+ 
+      $pmPerfdata->getFromDB($perfdatas_id);
+      
       $data = array();
-      $data['command'] = 'cucumber_nagios';
+      $data['command'] = $pmPerfdata->fields['name'];
       $data['parseperfdata'] = array();
 
-      $ds = array();
-      $ds[] = array('dsname' => 'passed');
-      $data['parseperfdata'][] = array('name' => 'passed',
-                                       'DS'   => $ds);
-
-      $ds = array();
-      $ds[] = array('dsname' => 'failed');
-      $data['parseperfdata'][] = array('name' => 'failed',
-                                       'DS'   => $ds);
-
-      $ds = array();
-      $ds[] = array('dsname' => 'nosteps');
-      $data['parseperfdata'][] = array('name' => 'nosteps',
-                                       'DS'   => $ds);
-
-      $ds = array();
-      $ds[] = array('dsname' => 'total');
-      $data['parseperfdata'][] = array('name' => 'total',
-                                       'DS'   => $ds);
-
-      $ds = array();
-      $ds[] = array('dsname' => 'time');
-      $data['parseperfdata'][] = array('name' => 'time',
-                                       'DS'   => $ds);
-      return json_encode($data);
-   }
-   
-   
-   
-   static function perfdata_check_nginx_status() {
-
-      $data = array();
-      $data['command'] = 'check_nginx_status';
-      $data['parseperfdata'] = array();
-
-      $ds = array();
-      $ds[] = array('dsname' => 'Writing');
-      $data['parseperfdata'][] = array('name' => 'Writing',
-                                       'DS'   => $ds);
-
-      $ds = array();
-      $ds[] = array('dsname' => 'Reading');
-      $data['parseperfdata'][] = array('name' => 'Reading',
-                                       'DS'   => $ds);
-
-      $ds = array();
-      $ds[] = array('dsname' => 'Waiting');
-      $data['parseperfdata'][] = array('name' => 'Waiting',
-                                       'DS'   => $ds);
-
-      $ds = array();
-      $ds[] = array('dsname' => 'Active');
-      $data['parseperfdata'][] = array('name' => 'Active',
-                                       'DS'   => $ds);
-
-      $ds = array();
-      $ds[] = array('dsname' => 'ReqPerSec');
-      $data['parseperfdata'][] = array('name' => 'ReqPerSec',
-                                       'DS'   => $ds);
-
-      $ds = array();
-      $ds[] = array('dsname' => 'ConnPerSec');
-      $data['parseperfdata'][] = array('name' => 'ConnPerSec',
-                                       'DS'   => $ds);
-
-      $ds = array();
-      $ds[] = array('dsname' => 'ReqPerConn');
-      $data['parseperfdata'][] = array('name' => 'ReqPerConn',
-                                       'DS'   => $ds);
-      return json_encode($data);
+      $a_perfdatadetails = $pmPerfdataDetail->find("`plugin_monitoring_perfdatas_id`='".$perfdatas_id."'", "position");
+      foreach ($a_perfdatadetails as $a_perfdatadetail) {
+         $ds = array();
+         for ($i=1; $i<=$a_perfdatadetail['dsname_num']; $i++) {
+            $ds[] = array('dsname' => $a_perfdatadetail['dsname'.$i]);
+         }
+         $name = $a_perfdatadetail['name'];
+         if ($a_perfdatadetail['dynamic_name']) {
+            $name = "*";
+         }
+         $data['parseperfdata'][] = array('name' => $name,
+                                          'DS'   => $ds);
+      }
+      return $data;  
    }
 }
 ?>

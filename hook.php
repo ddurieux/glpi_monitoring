@@ -87,6 +87,7 @@ function plugin_monitoring_install() {
    require_once GLPI_ROOT . "/plugins/monitoring/install/update.php";
    $version_detected = pluginMonitoringGetCurrentVersion(PLUGIN_MONITORING_VERSION);
 
+   $_SESSION['plugin_monitoring_installation'] = 1;
    if ((isset($version_detected)) 
            AND ($version_detected != PLUGIN_MONITORING_VERSION)
            AND $version_detected != '0') {
@@ -98,7 +99,7 @@ function plugin_monitoring_install() {
       include (GLPI_ROOT . "/plugins/monitoring/install/install.php");
       pluginMonitoringInstall(PLUGIN_MONITORING_VERSION);
    }
-      
+   unset($_SESSION['plugin_monitoring_installation']);
    return true;
 }
 
