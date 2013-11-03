@@ -676,7 +676,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                      $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
                      $item = new $itemtype();
                      if ($item->getFromDB($pmComponentscatalog_Host->fields['items_id'])) {           
-                        $hostname = $itemtype."-".$pmComponentscatalog_Host->fields['items_id']."-".preg_replace("/[^A-Za-z0-9]/","",$item->fields['name']);
+                        $hostname = preg_replace("/[^A-Za-z0-9]/","",$item->fields['name']);
 
                         if ($gdata['operator'] == 'and'
                                 OR $gdata['operator'] == 'or'
@@ -691,12 +691,12 @@ class PluginMonitoringShinken extends CommonDBTM {
                               if (strstr($gdata['operator'], ' of:')) {
                                  $a_group[$gdata['id']] = $gdata['operator'];
                               }
-                              $a_group[$gdata['id']] .= $hostname.",".preg_replace("/[^A-Za-z0-9]/","",$pmService->fields['name'])."-".$pmService->fields['id'];
+                              $a_group[$gdata['id']] .= $hostname.",".preg_replace("/[^A-Za-z0-9]/","",$pmService->fields['name']);
                            } else {
-                              $a_group[$gdata['id']] .= $operator.$hostname.",".preg_replace("/[^A-Za-z0-9]/","",$pmService->fields['name'])."-".$pmService->fields['id'];
+                              $a_group[$gdata['id']] .= $operator.$hostname.",".preg_replace("/[^A-Za-z0-9]/","",$pmService->fields['name']);
                            }
                         } else {
-                           $a_group[$gdata['id']] = $gdata['operator']." ".$hostname.",".preg_replace("/[^A-Za-z0-9]/","",$item->getName())."-".$item->fields['id'];
+                           $a_group[$gdata['id']] = $gdata['operator']." ".$hostname.",".preg_replace("/[^A-Za-z0-9]/","",$item->getName());
                         }
                      }
                   }
