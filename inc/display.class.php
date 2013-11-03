@@ -583,7 +583,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
          $alt = __('Warning (connection)', 'monitoring');
       } else if ($shortstate == 'red') {
          $alt = __('Critical', 'monitoring');
-      } else if ($shortstate == 'redblue') {
+      } else if ($shortstate == 'redblue'
+              || $shortstate == 'orangeblue'
+              || $shortstate == 'yellowblue') {
          $alt = __('Critical / Acknowledge', 'monitoring');
       }
       echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'
@@ -672,7 +674,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
 //      unset($itemmat);
       echo "<td class='center'>";
       
-      if ($shortstate == 'red') {
+      if ($shortstate == 'red'
+              || $shortstate == 'yellow'
+              || $shortstate == 'orange') {
          echo "<table>";
          echo "<tr>";
          echo "<td>";
@@ -726,7 +730,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
 
       echo "<td>";
-      if ($shortstate == 'redblue') {
+      if ($shortstate == 'redblue'
+              || $shortstate == 'orangeblue'
+              || $shortstate == 'yellowblue') {
          echo "<i>"._n('User', 'Users', 1)." : </i>";
          $user = new User();
          $user->getFromDB($data['acknowledge_users_id']);
@@ -783,19 +789,31 @@ class PluginMonitoringDisplay extends CommonDBTM {
          case 'WARNING':
          case 'RECOVERY':
          case 'FLAPPING':
-            $shortstate = 'orange';
+            if ($acknowledge) {
+               $shortstate = 'orangeblue';
+            } else {
+               $shortstate = 'orange';
+            }
             break;
          
          
          case 'UNKNOWN':
          case '':
-            $shortstate = 'yellow';
+            if ($acknowledge) {
+               $shortstate = 'yellowblue';
+            } else {
+               $shortstate = 'yellow';
+            }
             break;
          
       }
       if ($state == 'WARNING'
               && $event == '') {
-         $shortstate = 'yellow';
+         if ($acknowledge) {
+            $shortstate = 'yellowblue';
+         } else {
+            $shortstate = 'yellow';
+         }
       }
       if ($state_type == 'SOFT') {
          $shortstate.= '_soft';
@@ -1309,24 +1327,33 @@ Ext.onReady(function(){
                   "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
       $warning_link = $CFG_GLPI['root_doc'].
                "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-                  "&field[0]=3&searchtype[0]=contains&contains[0]=FLAPPING&link[1]=OR".
-                  "&field[1]=3&searchtype[1]=contains&contains[1]=RECOVERY&link[2]=OR".
-                  "&field[2]=3&searchtype[2]=contains&contains[2]=WARNING&link[3]=OR".
-                  "&field[3]=3&searchtype[3]=contains&contains[3]=UNKNOWN".
+                  "&field[0]=3&searchtype[0]=contains&contains[0]=FLAPPING&link[1]=AND".
+                  "&field[1]=23&searchtype[1]=equals&contains[1]=0&link[2]=OR".
+                  "&field[2]=3&searchtype[2]=contains&contains[2]=RECOVERY&link[3]=AND".
+                  "&field[3]=23&searchtype[3]=equals&contains[3]=0&link[4]=OR".
+                  "&field[4]=3&searchtype[4]=contains&contains[4]=WARNING&link[5]=AND".
+                  "&field[5]=23&searchtype[5]=equals&contains[5]=0&link[6]=OR".
+                  "&field[6]=3&searchtype[6]=contains&contains[6]=UNKNOWN".
                   "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
       $warningdata_link = $CFG_GLPI['root_doc'].
                "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-                  "&field[0]=3&searchtype[0]=contains&contains[0]=FLAPPING&link[1]=OR".
-                  "&field[1]=3&searchtype[1]=contains&contains[1]=RECOVERY&link[2]=OR".
-                  "&field[2]=3&searchtype[2]=contains&contains[2]=WARNING&link[3]=AND".
-                  "&field[3]=9&searchtype[3]=contains&contains[3]=^".
+                  "&field[0]=3&searchtype[0]=contains&contains[0]=FLAPPING&link[1]=AND".
+                  "&field[1]=23&searchtype[1]=equals&contains[1]=0&link[2]=OR".
+                  "&field[2]=3&searchtype[2]=contains&contains[2]=RECOVERY&link[3]=AND".
+                  "&field[3]=23&searchtype[3]=equals&contains[3]=0&link[4]=OR".
+                  "&field[4]=3&searchtype[4]=contains&contains[4]=WARNING&link[5]=AND".
+                  "&field[5]=23&searchtype[5]=equals&contains[5]=0&link[6]=AND".
+                  "&field[6]=9&searchtype[6]=contains&contains[6]=^".
                   "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
       $warningconnection_link = $CFG_GLPI['root_doc'].
                "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-                  "&field[0]=3&searchtype[0]=contains&contains[0]=UNKNOWN&link[1]=OR".
-                  "&field[1]=3&searchtype[1]=contains&contains[1]=NULL&link[2]=OR".
-                  "&field[2]=3&searchtype[2]=contains&contains[2]=WARNING&link[3]=AND".
-                  "&field[3]=9&searchtype[3]=contains&contains[3]=^$".
+                  "&field[0]=3&searchtype[0]=contains&contains[0]=UNKNOWN&link[1]=AND".
+                  "&field[1]=23&searchtype[1]=equals&contains[1]=0&link[2]=OR".
+                  "&field[2]=3&searchtype[2]=contains&contains[2]=NULL&link[3]=AND".
+                  "&field[3]=23&searchtype[3]=equals&contains[3]=0&link[4]=OR".
+                  "&field[4]=3&searchtype[4]=contains&contains[4]=WARNING&link[5]=AND".
+                  "&field[5]=23&searchtype[5]=equals&contains[5]=0&link[6]=AND".
+                  "&field[6]=9&searchtype[6]=contains&contains[6]=^$".
                   "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
       $ok_link = $CFG_GLPI['root_doc'].
                "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&".
