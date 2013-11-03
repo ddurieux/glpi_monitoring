@@ -289,7 +289,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          'name'         => array('type'    => 'string',         'value'   => NULL),
          'dynamic_name' => array('type'    => 'bool',           'value'   => NULL),
          'plugin_monitoring_perfdatas_id' => array('type'    => 'integer',    'value'   => NULL),
-         'position'     => array('type'    => "int(2) NOT NULL DEFAULT '0'",  'value'   => '0'),
+         'position'     => array('type'    => "int(2) NOT NULL DEFAULT '0'",  'value'   => NULL),
          'dsname_num'   => array('type'    => 'bool',           'value'   => NULL),
          'dsname1'      => array('type'    => 'string',         'value'   => NULL),
          'dsname2'      => array('type'    => 'string',         'value'   => NULL),
@@ -305,7 +305,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       $a_table['renamefields'] = array();
 
-      $a_table['keys']   = array('plugin_monitoring_perfdatas_id');
+      $a_table['keys'] = array(array('field' => 'plugin_monitoring_perfdatas_id', 'name' => '', 'type' => 'INDEX'));
 
       $a_table['oldkeys'] = array();
 
