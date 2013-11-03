@@ -7,6 +7,7 @@ CREATE TABLE `glpi_plugin_monitoring_servicescatalogs` (
    `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
    `comment` text DEFAULT NULL COLLATE utf8_unicode_ci,
    `last_check` datetime DEFAULT NULL,
+   `event` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
    `state` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
    `state_type` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
    `plugin_monitoring_checks_id` int(11) NOT NULL DEFAULT '0',
