@@ -1173,6 +1173,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                               'logretention', 
                               "int(5) NOT NULL DEFAULT '30'");
+         $migration->addField($newTable, 
+                              'acknowledge_name', 
+                              "varchar(255) DEFAULT NULL");
       $migration->migrationOneTable($newTable);
 
       
