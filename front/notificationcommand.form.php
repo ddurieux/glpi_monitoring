@@ -54,11 +54,9 @@ if (isset($_POST["copy"])) {
    Html::footer();
    exit;
 } else if (isset ($_POST["add"])) {
-   $_POST = $pmNotificationcommand->convertPostdata($_POST);
    $pmNotificationcommand->add($_POST);
    Html::back();
 } else if (isset ($_POST["update"])) {
-   $_POST = $pmNotificationcommand->convertPostdata($_POST);
    $pmNotificationcommand->update($_POST);
    Html::back();
 } else if (isset ($_POST["delete"])) {

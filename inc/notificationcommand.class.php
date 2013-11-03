@@ -159,7 +159,7 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Command line', 'monitoring')."&nbsp;:</td>";
       echo "<td colspan='3'>";
-      echo "<input type='text' name='command_line' value='".$this->fields["command_line"]."' size='97'/>";
+      echo "<input type='text' name='command_line' value='".$this->fields["command_line"]."' size='130'/>";
       echo "</td>";
       echo "</tr>";
       
