@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project - plugin monitoring \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-10-31 19:40+0100\n"
-"PO-Revision-Date: 2013-11-01 09:28+0000\n"
+"PO-Revision-Date: 2013-11-03 14:43+0000\n"
 "Last-Translator: David Durieux <d.durieux@siprossii.com>\n"
 "Language-Team: French (France) (http://www.transifex.com/projects/p/GLPI_monitoring/language/fr_FR/)\n"
 "MIME-Version: 1.0\n"
@@ -220,7 +220,7 @@ msgstr "Ressources"
 
 #: inc/businessrulegroup.class.php:199
 msgid "Resource deleted"
-msgstr "Ressource ajoutée"
+msgstr "Ressource supprimée"
 
 #: inc/canvas.class.php:372 inc/display.class.php:183
 msgid "Dependencies;"
