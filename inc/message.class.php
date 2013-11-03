@@ -113,15 +113,17 @@ class PluginMonitoringMessage extends CommonDBTM {
       $input = '';
       $a_catalogs = array();
       
-      $query = "SELECT `glpi_plugin_monitoring_businessrules`.`id` FROM `glpi_plugin_monitoring_businessrules`
+      $query = "SELECT `plugin_monitoring_servicescatalogs_id` FROM `glpi_plugin_monitoring_businessrulegroups`
+         
+         LEFT JOIN `glpi_plugin_monitoring_businessrules` ON `glpi_plugin_monitoring_businessrulegroups`.`id` = `plugin_monitoring_businessrulegroups_id`
          
          LEFT JOIN `glpi_plugin_monitoring_services` ON `plugin_monitoring_services_id` = `glpi_plugin_monitoring_services`.`id`
 
          WHERE `glpi_plugin_monitoring_services`.`id` IS NULL";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
-         $pmServicescatalog->getFromDB($data['id']);
-         $a_catalogs[$data['id']] = $pmServicescatalog->getLink();
+         $pmServicescatalog->getFromDB($data['plugin_monitoring_servicescatalogs_id']);
+         $a_catalogs[$data['plugin_monitoring_servicescatalogs_id']] = $pmServicescatalog->getLink();
       }
       if (count($a_catalogs) > 0) {
          $input = __('Services catalog with resources not available', 'monitoring')." : <br/>";
