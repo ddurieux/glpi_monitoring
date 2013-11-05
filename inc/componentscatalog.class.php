@@ -97,7 +97,9 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          $ong[4] = self::createTabEntry(__('Dynamic hosts', 'monitoring'), self::countForDynamicHosts($item));
          $ong[5] = __('Contacts', 'monitoring');
          $ong[6] = __('Availability', 'monitoring');
-         $ong[7] = __('Report');
+         $ong[7] = __('Simple report', "monitoring");
+         $ong[8] = __('Synthese', "monitoring");
+         //$ong[7] = __('Report');
 
          return $ong;
       }
@@ -178,9 +180,15 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             
             case 7:
                $pmPluginMonitoringComponentscatalog = new PluginMonitoringComponentscatalog();
-               $pmPluginMonitoringComponentscatalog->showReport($item->getID());
+               $pmPluginMonitoringComponentscatalog->showSimpleReport($item->getID());
                break;
 
+            case 8:
+               $pmPluginMonitoringComponentscatalog = new PluginMonitoringComponentscatalog();
+               $pmPluginMonitoringComponentscatalog->showSyntheseReport($item->getID());
+               break;
+
+            
             default :
 
          }
@@ -514,12 +522,13 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    }
    
    
-   
-   function showReport($componentscatalogs_id) {
+
+   function showSimpleReport($componentscatalogs_id) {
       global $CFG_GLPI;
 
       $pmComponentscatalog_Component = new PluginMonitoringComponentscatalog_Component();
       $pmComponent = new PluginMonitoringComponent();
+      $a_options = array();
       
       $this->getFromDB($componentscatalogs_id);
       
@@ -531,6 +540,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       echo '<th colspan="5">';
       echo __('Report');
       echo "<input type='hidden' name='componentscatalogs_id' value='".$componentscatalogs_id."' />";
+      $a_options['componentscatalogs_id'] = $componentscatalogs_id;
       echo '</th>';
       echo '</tr>';
 
@@ -551,77 +561,16 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       echo "<td>".__('Start date')." :</td>";
       echo "<td>";
       Html::showDateFormItem("date_start", date('Y-m-d H:i:s', date('U') - (24 * 3600 * 7)));
+      $a_options['date_start'] = date('Y-m-d H:i:s', date('U') - (24 * 3600 * 7));
+$a_options['date_start'] = '2013-01-01 01:01:01';
       echo "</td>";
       echo "<td>".__('End date')." :</td>";
       echo "<td>";
       Html::showDateFormItem("date_end", date('Y-m-d'));
+      $a_options['date_end'] = date('Y-m-d');
       echo "</td>";
       echo "</tr>";
-      
-      // ** synthese
-      echo '<tr class="tab_bg_1">';
-      echo '<td>';
-      echo '<input type="radio" name="reporttype" value="synthese" />'; 
-      echo '</td>';
-      echo '<td colspan="4">';
-      echo '<strong>'.__('Synthese', "monitoring").'</strong>';
-      echo '</td>';
-      echo '</tr>';
-      
-      echo '<tr class="tab_bg_1">';
-      echo '<td>';
-      echo '</td>';
-      echo '<td colspan="2">';
-      Dropdown::showNumber("synthesenumber", array(
-                'value' => 12, 
-                'min'   => 2, 
-                'max'   => 30)
-      );
-      echo "&nbsp;";
-      $a_time = array('week' => __('Week'),
-                      'month' => __('Month'),
-                      'year' => __('Year'));
-      Dropdown::showFromArray("syntheseperiod", $a_time);
-      echo '</td>';
-      echo "<td>".__('End date')." :</td>";
-      echo "<td>";
-      Html::showDateFormItem("synthesedate_end", date('Y-m-d'));
-      echo "</td>";
-      echo '</tr>';
-      
-      // ** synthese ++
-      echo '<tr class="tab_bg_1">';      
-      echo '<td>';
-      echo '<input type="radio" name="reporttype" value="syntheseplus" />'; 
-      echo '</td>';
-      echo '<td colspan="4">';
-      echo '<strong>'.__('Synthese detail', "monitoring").'</strong>';
-      echo '</td>';
-      echo '</tr>';   
-      
-      echo '<tr class="tab_bg_1">';
-      echo '<td>';
-      echo '</td>';
-      echo '<td colspan="2">';
-      Dropdown::showNumber("syntheseplusnumber", array(
-                'value' => 12, 
-                'min'   => 2, 
-                'max'   => 30)
-      );
-      echo "&nbsp;";
-      $a_time = array('week' => __('Week'),
-                      'month' => __('Month'),
-                      'year' => __('Year'));
-      Dropdown::showFromArray("syntheseplusperiod", $a_time);
-      echo '</td>';
-      echo "<td>".__('End date')." :</td>";
-      echo "<td>";
-      Html::showDateFormItem("syntheseplusdate_end", date('Y-m-d'));
-      echo "</td>";
-      echo '</tr>';
-      
       echo "</table>";
-      
       
       echo "<table class='tab_cadre_fixe'>";      
       $a_composants = $pmComponentscatalog_Component->find("`plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'");
@@ -631,6 +580,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          echo "<tr class='tab_bg_1'>";
          echo "<td width='10'>";
          echo "<input type='checkbox' name='components_id[]' value='".$pmComponent->getID()."' checked />";
+         $a_options['components_id'][] = $pmComponent->getID();
          echo "</td>";
          echo "<td>";
          echo $pmComponent->getLink();
@@ -651,13 +601,198 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       echo "<input type='submit' class='submit' name='generate' value='".__('Generate the report', 'monitoring')."'/>";
       echo "</td>";
       echo "</tr>";
+      echo "</table>";
       
       Html::closeForm();
+      
+      $this->generateReport($a_options, FALSE);
+   }
+
+   
+   
+   function showSyntheseReport($componentscatalogs_id) {
+      global $CFG_GLPI;
+      
+      if (!isset($_SESSION['glpi_plugin_monitoring']['synthese'])) {
+         $_SESSION['glpi_plugin_monitoring']['synthese'] = array();
+      }
+      if (!isset($_SESSION['glpi_plugin_monitoring']['synthese'][$componentscatalogs_id])) {
+         $_SESSION['glpi_plugin_monitoring']['synthese'][$componentscatalogs_id] = array();
+      }
+      $sess = $_SESSION['glpi_plugin_monitoring']['synthese'][$componentscatalogs_id];
+      $pmComponentscatalog_Component = new PluginMonitoringComponentscatalog_Component();
+      $pmComponent = new PluginMonitoringComponent();
+      $a_options = array();
+      
+      $this->getFromDB($componentscatalogs_id);
+      
+      echo "<form name='form' method='post' 
+         action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/report_componentscatalog.form.php'>";
+      
+      echo "<table class='tab_cadre_fixe'>";
+      echo '<tr class="tab_bg_1">';
+      echo '<th colspan="5">';
+      echo __('Report');
+      echo "<input type='hidden' name='componentscatalogs_id' value='".$componentscatalogs_id."' />";
+      echo "<input type='hidden' name='reporttype' value='synthese' />";
+      $a_options['componentscatalogs_id'] = $componentscatalogs_id;
+      echo '</th>';
+      echo '</tr>';
+      
+      echo '<tr class="tab_bg_1">';
+      echo '<td>';
+      echo '</td>';
+      echo '<td colspan="2">';
+      $default_value = 12;
+      if (isset($sess['synthesenumber'])) {
+         $default_value = $sess['synthesenumber'];
+      }
+      Dropdown::showNumber("synthesenumber", array(
+                'value' => $default_value, 
+                'min'   => 2, 
+                'max'   => 30)
+      );
+      $a_options['synthesenumber'] = $default_value;
+      echo "&nbsp;";
+      $a_time = array('week' => __('Week'),
+                      'month' => __('Month'),
+                      'year' => __('Year'));
+      $default_value = 'week';
+      if (isset($sess['synthesenumber'])) {
+         $default_value = $sess['synthesenumber'];
+      }
+      Dropdown::showFromArray("syntheseperiod", $a_time, array('value' => $default_value));
+      $a_options['syntheseperiod'] = $default_value;
+      echo '</td>';
+      echo "<td>".__('End date')." :</td>";
+      echo "<td>";
+      $default_value = date('Y-m-d');
+      if (isset($sess['synthesedate_end'])) {
+         $default_value = $sess['synthesedate_end'];
+      }
+      Html::showDateFormItem("synthesedate_end", $default_value);
+      $a_options['synthesedate_end'] = $default_value;
+      echo "</td>";
+      echo '</tr>';
+      
+      echo "</table>";
+            
+      echo "<table class='tab_cadre_fixe'>";      
+      $a_composants = $pmComponentscatalog_Component->find("`plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'");
+      foreach ($a_composants as $comp_data) {
+         $pmComponent->getFromDB($comp_data['plugin_monitoring_components_id']);
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td width='10'>";
+         //echo "<input type='checkbox' name='components_id[]' value='".$pmComponent->getID()."' checked />";
+         echo "<input type='hidden' name='components_id[]' value='".$pmComponent->getID()."' />";
+         $a_options['components_id'][] = $pmComponent->getID();
+         echo "</td>";
+         echo "<td>";
+         echo $pmComponent->getLink();
+         echo "</td>";      
+         echo "</tr>";
+         
+         echo "<tr class='tab_bg_1'>";
+         echo "<td width='10'>";
+         echo "</td>";
+         echo "<td>";
+         
+         PluginMonitoringServicegraph::loadPreferences($pmComponent->getID());
+         
+         $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($pmComponent->fields['graph_template']);
+         echo "<table class='tab_cadre_fixe'>";      
+         echo "<tr class='tab_bg_3'>";
+         echo "<td rowspan='".count($a_perfnames)."' width='90'>";
+         echo __('Use for report', 'monitoring')."&nbsp;:";
+
+         echo "</td>";
+         $i = 0;
+         $j = 0;
+         if (!isset($_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->getID()])) {
+            foreach ($a_perfnames as $name) {
+               $_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->getID()][$name] = 'checked';
+            }
+         }
+         
+         foreach ($a_perfnames as $name) {
+            if ($i > 0) {
+               echo "<tr class='tab_bg_3'>";
+            }
+            echo "<td>";
+            $checked = "checked";
+            if (isset($sess['perfname'])
+                 && isset($sess['perfname'][$pmComponent->getID()])) {
+               
+               if (isset($sess['perfname'][$pmComponent->getID()])) {
+                  $checked = "";
+               }
+               if (isset($sess['perfname'][$pmComponent->getID()][$name])) {
+                  $checked = "checked";
+               }
+            } else {
+               if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->getID()])) {
+                  $checked = "";
+               }
+               if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->getID()][$name])) {
+                  $checked = $_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->getID()][$name];
+               }
+            }
+            echo "<input type='checkbox' name='perfname[".$pmComponent->getID()."][".$name."]' value='".$name."' ".$checked."/> ".$name;
+            if ($checked == 'checked') {
+               $a_options['perfname'][$pmComponent->getID()][] = $name;
+            }
+            echo "</td>";
+            echo "<td>";
+            echo __('Best is high value', 'monitoring').' :';
+            echo "</td>";
+            echo "<td>";
+            $default_value = 1;
+            if (isset($sess['perfname_val'])
+                 && isset($sess['perfname_val'][$pmComponent->getID()])) {
+               
+               if (isset($sess['perfname_val'][$pmComponent->getID()][$name])) {
+                  $default_value = $sess['perfname_val'][$pmComponent->getID()][$name];
+               }
+            }            
+            Dropdown::showYesNo('perfname_val['.$pmComponent->getID().']['.$name.']', $default_value);
+            if ($checked == 'checked') {
+               $a_options['perfname_val'][$pmComponent->getID()][$name] = $default_value;
+            }
+            echo "</td>";
+            echo "</tr>";
+            $i++;
+         }
+
+         echo "</table>";
+         
+         echo "</td>";
+      
+         echo "</tr>";
+      }
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='2' align='center'>";
+      echo "<input type='submit' class='submit' name='update' value='".__('Save')."'/>";
+      echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+         <input type='submit' class='submit' name='generatepdf' value='".__('Generate PDF', 'monitoring')."'/>";
+      echo "</td>";
+      echo "</tr>";
+      echo "</table>";
+            
+      Html::closeForm();
+      
+      if (isset($_SESSION['plugin_monitoring_report'])) {
+//         $a_options = $_SESSION['plugin_monitoring_report'];
+      }      
+      $this->generateSyntheseReport(
+              $_SESSION['glpi_plugin_monitoring']['synthese'][$componentscatalogs_id], 
+              FALSE);
    }
    
    
    
-   function generateReport($array) {
+   function generateReport($array, $pdf=TRUE) {
       global $DB,$CFG_GLPI;
       
       $componentscatalogs_id = $array['componentscatalogs_id'];
@@ -669,7 +804,9 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $pmComponent = new PluginMonitoringComponent();
       $pmServiceevent = new PluginMonitoringServiceevent();
       
-      PluginMonitoringReport::beginCapture();
+      if ($pdf) {
+         PluginMonitoringReport::beginCapture();
+      }
       
       $this->getFromDB($componentscatalogs_id);
       echo '<h1>'.$this->getTypeName().' : '.$this->getName().'<br/>
@@ -679,7 +816,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       
       foreach ($array['components_id'] as $components_id) {
          $pmComponent->getFromDB($components_id);
-         
+
          $a_name = $array['perfname'];         
          
          echo "<table class='tab_cadre_fixe'>";
@@ -812,44 +949,45 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          }
          echo '</table>';
       }
-      
-      $content = PluginMonitoringReport::endCapture();
-      PluginMonitoringReport::generatePDF($content);
-
+      if ($pdf) {
+         $content = PluginMonitoringReport::endCapture();
+         PluginMonitoringReport::generatePDF($content);
+      }
    }
    
    
    
-   function generateSyntheseReport($array) {
+   function generateSyntheseReport($array, $pdf=TRUE) {
       global $DB;
 
-      $end_date = $array[$array['reporttype'].'date_end'];
+      $end_date = $array['synthesedate_end'];
       $end_date_timestamp = strtotime($end_date);
-      $number   = $array[$array['reporttype'].'number'];
-      $period   = $array[$array['reporttype'].'period'];
+      $number   = $array['synthesenumber'];
+      $period   = $array['syntheseperiod'];
       
       $componentscatalogs_id = $array['componentscatalogs_id'];
       
       $pmComponent    = new PluginMonitoringComponent();
       $pmUnavaibility = new PluginMonitoringUnavaibility();
       $pmServiceevent = new PluginMonitoringServiceevent();
-      
-      PluginMonitoringReport::beginCapture();
-      
-      $a_groups = array("avaibility");
-      foreach ($array['perfname'] as $perfname) {
-         $a_groups[] = $perfname; 
-      }
-      $a_groups = array_unique($a_groups);
-      
-      foreach ($a_groups as $groupname) {
-         foreach ($array['components_id'] as $components_id) {
-            $pmComponent->getFromDB($components_id);
 
-            echo "<table class='tab_cadre_fixe'>";
+      if ($pdf) {
+         PluginMonitoringReport::beginCapture();
+      }
+      echo "<table class='tab_cadrehov'>";
+      foreach ($array['components_id'] as $components_id) {
+         $pmComponent->getFromDB($components_id);
+         array_unshift($array['perfname'][$components_id], 'avaibility');
+         array_unshift($array['perfname_val'][$components_id], 1);
+         echo '<tr class="tab_bg_1" height="90">';
+         echo '<th colspan="'.(3 + ($number * 2)).'">';
+         echo $pmComponent->getName();
+         echo '</th>';
+         echo '</tr>';
+
+         foreach ($array['perfname'][$components_id] as $num=>$groupname) {
             echo '<tr class="tab_bg_1">';
             echo '<th colspan="'.(3 + ($number * 2)).'">';
-            echo $pmComponent->getName()." / ";
             if ($groupname == 'avaibility') {
                echo __('Avaibility', 'monitoring');
             } else {
@@ -859,20 +997,37 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             echo '</tr>';
 
             echo '<tr class="tab_bg_1">';
-            echo '<th>';
+            echo '<th rowspan="2">';
             echo __('Name');
             echo '</th>';
-            echo '<th>';
+            echo '<th rowspan="2">';
             echo __('Entity');
             echo '</th>';
-            echo '<th>';
+            echo '<th rowspan="2">';
             echo __('Itemtype');
             echo '</th>';
+            $a_year = array();
+            for ($i = $number; $i >= 1;$i--) {
+               $year = date('Y', strtotime("-".$i." ".$period, $end_date_timestamp));
+               if (!isset($a_year[$year])) {
+                  $a_year[$year] = 2;
+               } else {
+                  $a_year[$year] += 2;
+               }
+            }
+            foreach ($a_year as $year=>$colspan) {
+               echo '<th colspan="'.$colspan.'">';
+               echo $year;
+               echo '</th>';           
+            }
+            echo '</tr>';
+            
+            echo '<tr class="tab_bg_1">';
             for ($i = $number; $i >= 1;$i--) {
                echo '<th colspan="2">';
-               echo Html::convDate(date('Y-m-d', strtotime("-".$i." ".$period, $end_date_timestamp)));
+               echo Html::convDate(date('m-d', strtotime("-".$i." ".$period, $end_date_timestamp)));
                echo "<br/>";
-               echo Html::convDate(date('Y-m-d', strtotime("-".($i-1)." ".$period, $end_date_timestamp)));
+               echo Html::convDate(date('m-d', strtotime("-".($i-1)." ".$period, $end_date_timestamp)));
                echo '</th>';           
             }
             echo '</tr>';
@@ -898,9 +1053,9 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                } else {
                   $previous_value = 0;
                }
-               echo '<tr class="tab_bg_1'.(($rownb = !$rownb)?'_2':'').'">';
+               echo '<tr class="tab_bg'.(($rownb = !$rownb)?'_4':'_1').'">';
                echo '<td>';
-               echo $item->getName();
+               echo $item->getLink();
                echo '</td>';
                echo '<td>';
                echo Dropdown::getDropdownName("glpi_entities", $item->fields['entities_id']);
@@ -909,13 +1064,11 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                echo $item->getTypeName();
                echo '</td>';
                for ($i = $number; $i >= 1;$i--) {
-                  echo '<td>';
                   $startdatet = date('Y-m-d', strtotime("-".$i." ".$period, $end_date_timestamp));
                   $enddatet   = date('Y-m-d', strtotime("-".($i-1)." ".$period, $end_date_timestamp));
                   if ($groupname == 'avaibility') {
                      $a_times = $pmUnavaibility->parseEvents($data['id'], '', $startdatet, $enddatet);
-                     $value = round(((($a_times[1] - $a_times[0]) / $a_times[1]) * 100), 3);
-                     echo $value."%";
+                     $value = round(((($a_times[1] - $a_times[0]) / $a_times[1]) * 100), 2);
                   } else {
                      $queryevents = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                         WHERE `plugin_monitoring_services_id`='".$data['sid']."'
@@ -925,18 +1078,52 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                      $resultevents = $DB->query($queryevents);
                      $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks($pmComponent->fields['id']);
                      $ret = $pmServiceevent->getData($resultevents, $pmComponent->fields['graph_template']);
-                     
-                     $value = round(array_sum($ret[0][$groupname]) / count($ret[0][$groupname]), 3);
+                     if (!isset($ret[0][$groupname])) {
+                        $value = 0;
+                     } else {
+                        $value = round(array_sum($ret[0][$groupname]) / count($ret[0][$groupname]), 2);
+                     }
+                  }
+
+                  $bgcolor = '';
+                  if ($array['perfname_val'][$components_id][$num] == 1) {
+                     if ($previous_value < $value) {
+                        $bgcolor = 'style="background-color:#d1ffc3"';
+                     } else if ($previous_value > $value) {
+                        $bgcolor = 'style="background-color:#ffd1d3"';
+                     }
+                  } else {
+                     if ($previous_value < $value) {
+                        $bgcolor = 'style="background-color:#ffd1d3"';
+                     } else if ($previous_value > $value) {
+                        $bgcolor = 'style="background-color:#d1ffc3"';
+                     }
+                  }
+                  
+                  echo '<td '.$bgcolor.'>';
+                  if ($groupname == 'avaibility') {
+                     echo $value."%";
+                  } else {
                      echo $value;
                   }
                   echo '</td>';
-                  echo '<td>';
-                  if ($previous_value < $value) {
-                     echo '<img src="../pics/arrow-up-right.png" width="16" />';
-                  } else if ($previous_value == $value) {
-                     echo '<img src="../pics/arrow-right.png" width="16" />';
-                  } else if ($previous_value > $value) {
-                     echo '<img src="../pics/arrow-down-right.png" width="16" />';
+                  echo '<td '.$bgcolor.'>';
+                  if ($array['perfname_val'][$components_id][$num] == 1) {
+                     if ($previous_value < $value) {
+                        echo '<img src="../pics/arrow-up-right.png" width="16" />';
+                     } else if ($previous_value == $value) {
+                        echo '<img src="../pics/arrow-right.png" width="16" />';
+                     } else if ($previous_value > $value) {
+                        echo '<img src="../pics/arrow-down-right.png" width="16" />';
+                     }
+                  } else {
+                     if ($previous_value < $value) {
+                        echo '<img src="../pics/arrow-up-right_inv.png" width="16" />';
+                     } else if ($previous_value == $value) {
+                        echo '<img src="../pics/arrow-right.png" width="16" />';
+                     } else if ($previous_value > $value) {
+                        echo '<img src="../pics/arrow-down-right_inv.png" width="16" />';
+                     }
                   }
                   $previous_value = $value;
                   echo '</td>';
@@ -944,12 +1131,17 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                echo "</tr>";
                
             }
-            echo "</table>";
          }
-         echo "<br/><br/>";
+         echo '<tr class="tab_bg_1" height="50">';
+         echo '<td colspan="'.(3 + ($number * 2)).'">';
+         echo '</td>';
+         echo '</tr>';
       }
-      $content = PluginMonitoringReport::endCapture();
-      PluginMonitoringReport::generatePDF($content, 'L');
+      echo "</table>";
+      if ($pdf) {
+         $content = PluginMonitoringReport::endCapture();
+         PluginMonitoringReport::generatePDF($content, 'L');
+      }
    }
 }
 

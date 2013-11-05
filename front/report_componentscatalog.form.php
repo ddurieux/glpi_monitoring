@@ -43,16 +43,13 @@
 include ("../../../inc/includes.php");
 
 PluginMonitoringProfile::checkRight("componentscatalog","w");
-//
-//Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-//       "monitoring", "reports");
 
-$pmComponentscatalog = new PluginMonitoringComponentscatalog();
-if ($_POST['reporttype'] == 'simplereport') {
-   $pmComponentscatalog->generateReport($_POST);
+$_SESSION['glpi_plugin_monitoring'][$_POST['reporttype']][$_POST['componentscatalogs_id']] = $_POST;
+if (isset($_POST['generatepdf'])) {
+   $pmComponentscatalog = new PluginMonitoringComponentscatalog();
+   $pmComponentscatalog->generateSyntheseReport(
+              $_SESSION['glpi_plugin_monitoring'][$_POST['reporttype']][$_POST['componentscatalogs_id']]);
 } else {
-   $pmComponentscatalog->generateSyntheseReport($_POST);
+   Html::back();
 }
-
-
 ?>

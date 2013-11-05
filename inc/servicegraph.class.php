@@ -779,6 +779,9 @@ class PluginMonitoringServicegraph extends CommonDBTM {
    static function getperfdataNames($rrdtool_template,$keepwarcrit=1) {
       
       $a_name = array();
+      if ($rrdtool_template == 0) {
+         return $a_name;
+      }
 
       $a_perf = PluginMonitoringPerfdata::getArrayPerfdata($rrdtool_template);
 
