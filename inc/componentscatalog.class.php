@@ -1107,7 +1107,15 @@ $a_options['date_start'] = '2013-01-01 01:01:01';
                   if ($groupname == 'avaibility') {
                      echo $value."%";
                   } else {
-                     echo $value;
+                     if ($value > 3000000000) {
+                        echo round($value/1000000000, 2).'T';
+                     } else if ($value > 3000000) {
+                        echo round($value/1000000, 2).'M';
+                     } else if ($value > 3000) {
+                        echo round($value/1000, 2).'K';
+                     } else {
+                        echo $value;
+                     }
                   }
                   echo '</td>';
                   echo '<td '.$bgcolor.'>';
