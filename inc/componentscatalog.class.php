@@ -97,7 +97,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          $ong[4] = self::createTabEntry(__('Dynamic hosts', 'monitoring'), self::countForDynamicHosts($item));
          $ong[5] = __('Contacts', 'monitoring');
          $ong[6] = __('Availability', 'monitoring');
-         $ong[7] = __('Simple report', "monitoring");
+//         $ong[7] = __('Simple report', "monitoring");
          $ong[8] = __('Synthese', "monitoring");
          //$ong[7] = __('Report');
 
