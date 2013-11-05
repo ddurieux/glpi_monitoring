@@ -960,6 +960,9 @@ $a_options['date_start'] = '2013-01-01 01:01:01';
    function generateSyntheseReport($array, $pdf=TRUE) {
       global $DB;
 
+      if (count($array) == 0) {
+         return;
+      }
       $end_date = $array['synthesedate_end'];
       $end_date_timestamp = strtotime($end_date);
       $number   = $array['synthesenumber'];
