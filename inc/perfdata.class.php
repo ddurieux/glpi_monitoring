@@ -1102,7 +1102,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       // * perfdata
       echo "<td>".__('A perfdata for this check', 'monitoring')."&nbsp;:</td>";
       echo "<td>";
-      echo "<input type='name' name='perfdata' value='".$this->fields['perfdata']."' size='80'/>";
+      echo "<input type='name' name='perfdata' value=\"".$this->fields['perfdata']."\" size='80'/>";
       echo "</td>";
       echo "</tr>";
       
