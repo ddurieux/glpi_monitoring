@@ -865,6 +865,8 @@ class PluginMonitoringServicegraph extends CommonDBTM {
    
    
    static function preferences($components_id, $loadpreferences=1, $displayonly=0) {
+      global $CFG_GLPI;
+      
       if ($loadpreferences == 1) {
          PluginMonitoringServicegraph::loadPreferences($components_id);
       }
@@ -977,6 +979,11 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       echo "</td>";
       $i = 0;
       $j = 0;
+      
+      $a_colors_warn = PluginMonitoringServicegraph::colors("warn");
+      $a_colors_crit = PluginMonitoringServicegraph::colors("crit");
+      $a_colors = PluginMonitoringServicegraph::colors();
+      
       foreach ($a_perfnames as $name) {
          if ($i == 'O'
                  AND $j == '1') {
@@ -986,25 +993,39 @@ class PluginMonitoringServicegraph extends CommonDBTM {
          echo $name."&nbsp;:";
          echo "</td>";
          echo "<td>";
-         $a_colors = array();
-         if (strstr($name, "warn")) {
-            $a_colors = PluginMonitoringServicegraph::colors("warn");
-         } else if (strstr($name, "crit")) {
-            $a_colors = PluginMonitoringServicegraph::colors("crit");
+         
+         $color = 'ffffff';
+         if (isset($_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$components_id][$name])) {
+            $color = $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$components_id][$name];
          } else {
-            $a_colors = PluginMonitoringServicegraph::colors();
-         }
-         echo " <select name='perfnamecolor[".$name."]' id='color".$name."'>";
-         echo "<option value=''>".Dropdown::EMPTY_VALUE."</option>";
-         foreach ($a_colors as $color) {
-            $checked = '';
-            if (isset($_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$components_id][$name])
-                    AND $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$components_id][$name] == $color) {
-               $checked = 'selected';
+            if (strstr($name, "warn")) {
+               $color = array_shift($a_colors_warn);
+            } else if (strstr($name, "crit")) {
+               $color = array_shift($a_colors_crit);
+            } else {
+               $color = array_shift($a_colors);
             }
-            echo "<option value='".$color."' style='background-color: #".$color.";' ".$checked.">".$color."</option>";
          }
-         echo "</select>";
+         
+         echo ' <input class="color" id="color'.$name.'" name="perfnamecolor['.$name.']" value="'.$color.'" size="6" />';
+
+         echo '<script type="text/javascript">
+var myPicker = new jscolor.color(document.getElementById(\'color'.$name.'\'), {})
+myPicker.fromString(\''.$color.'\')
+</script>
+';
+         
+//         echo " <select name='perfnamecolor[".$name."]' id='color".$name."'>";
+//         echo "<option value=''>".Dropdown::EMPTY_VALUE."</option>";
+//         foreach ($a_colors as $color) {
+//            $checked = '';
+//            if (isset($_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$components_id][$name])
+//                    AND $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$components_id][$name] == $color) {
+//               $checked = 'selected';
+//            }
+//            echo "<option value='".$color."' style='background-color: #".$color.";' ".$checked.">".$color."</option>";
+//         }
+//         echo "</select>";
          echo "</td>";
          $i++;
          if ($i == 4) {

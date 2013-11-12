@@ -80,6 +80,7 @@ function plugin_init_monitoring() {
          
          $PLUGIN_HOOKS['use_massive_action']['monitoring']=1;
          $PLUGIN_HOOKS['add_css']['monitoring']="css/views.css";
+         $PLUGIN_HOOKS['add_javascript']['monitoring']="lib/jscolor/jscolor.js";
 
          $plugin = new Plugin();
          if ($plugin->isActivated('monitoring')
