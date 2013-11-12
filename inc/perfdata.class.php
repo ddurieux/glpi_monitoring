@@ -1176,5 +1176,21 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       }
       return $data;  
    }
+   
+   
+   
+   static function splitPerfdata($perfdata) {
+      
+      $a_perfdata = array();
+      if (strstr($perfdata, "'")
+              || (strstr($perfdata, '"'))) {
+         
+         preg_match_all("/[^ ?]([^\=]*\=[^ ]*)/", trim($perfdata), $a_perfdata);
+         return $a_perfdata[0];
+      } else {
+         $a_perfdata = explode(" ", trim($perfdata));
+         return $a_perfdata;
+      }
+   }
 }
 ?>

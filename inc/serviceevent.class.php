@@ -178,7 +178,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
          if ($previous_timestamp == '') {
             $previous_timestamp = $current_timestamp;
          }
-         $a_perfdata = explode("; ", trim($edata['perf_data']));
+         $a_perfdata = PluginMonitoringPerfdata::splitPerfdata($edata['perf_data']);
          $a_time = explode(" ", $edata['date']);
          $a_time2 = explode(":", $a_time[1]);
          $day = explode("-", $a_time[0]);

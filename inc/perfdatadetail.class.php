@@ -113,7 +113,8 @@ class PluginMonitoringPerfdataDetail extends CommonDBTM {
 
       $a_lines = array();
       
-      $a_perfdata = explode("; ", trim($perfdata));
+      $a_perfdata = PluginMonitoringPerfdata::splitPerfdata($perfdata);
+      
       $i = 1;
       foreach ($a_perfdata as $data) {
          $data = trim($data, ", ");

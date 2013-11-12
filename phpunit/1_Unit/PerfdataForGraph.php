@@ -32,10 +32,7 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
 
-$start = microtime(true);
       $ret = $pmServiceevent->getData($result, $a_perfdata['id']);
-$finish = microtime(true);
-echo "check_tcp ".($finish - $start)." s\n";      
 
       $a_reference = array(
           'response_time'  => array('19.0'),
@@ -71,10 +68,7 @@ echo "check_tcp ".($finish - $start)." s\n";
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
 
-$start = microtime(true);
       $ret = $pmServiceevent->getData($result, $a_perfdata['id']);
-$finish = microtime(true);
-echo "check_load ".($finish - $start)." s\n";      
 
       $a_reference = array(
           'load1min_current'     => array('0.1'),
@@ -119,10 +113,7 @@ echo "check_load ".($finish - $start)." s\n";
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
 
-$start = microtime(true);
       $ret = $pmServiceevent->getData($result, $a_perfdata['id']);
-$finish = microtime(true);
-echo "check_pf ".($finish - $start)." s\n";      
 
       $a_reference = array(
           'states_current'    => array('444'),
@@ -160,10 +151,7 @@ echo "check_pf ".($finish - $start)." s\n";
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
 
-$start = microtime(true);
       $ret = $pmServiceevent->getData($result, $a_perfdata['id']);
-$finish = microtime(true);
-echo "check_disk ".($finish - $start)." s\n";      
 
       $a_reference = array(
           'used'           => array('5000000'),
@@ -201,10 +189,7 @@ echo "check_disk ".($finish - $start)." s\n";
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
 
-$start = microtime(true);
       $ret = $pmServiceevent->getData($result, $a_perfdata['id']);
-$finish = microtime(true);
-echo "check_mysql_health ".($finish - $start)." s\n";      
 
       $a_reference = array(
           'tmp_table_on_disk_current'        => array('38.24'),
@@ -241,10 +226,7 @@ echo "check_mysql_health ".($finish - $start)." s\n";
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
 
-$start = microtime(true);
       $ret = $pmServiceevent->getData($result, $a_perfdata['id']);
-$finish = microtime(true);
-echo "check_cpu_usage ".($finish - $start)." s\n";      
 
       $a_reference = array(
           'usage'          => array('4'),
@@ -282,10 +264,7 @@ echo "check_cpu_usage ".($finish - $start)." s\n";
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
 
-$start = microtime(true);
       $ret = $pmServiceevent->getData($result, $a_perfdata['id']);
-$finish = microtime(true);
-echo "check_http ".($finish - $start)." s\n";      
 
       $a_reference = array(
           'time_current'  => array('221'),
@@ -324,10 +303,7 @@ echo "check_http ".($finish - $start)." s\n";
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
 
-$start = microtime(true);
       $ret = $pmServiceevent->getData($result, $a_perfdata['id']);
-$finish = microtime(true);
-echo "check_iostat_bsd ".($finish - $start)." s\n";      
 
       $a_reference = array(
           'IOTPS_read_write'  => array('7.33'),
@@ -366,10 +342,7 @@ echo "check_iostat_bsd ".($finish - $start)." s\n";
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
 
-$start = microtime(true);
       $ret = $pmServiceevent->getData($result, $a_perfdata['id']);
-$finish = microtime(true);
-echo "check_nginxstatus ".($finish - $start)." s\n";      
 
       $a_reference = array(
           'Writing'     => array('1'),
@@ -409,10 +382,7 @@ echo "check_nginxstatus ".($finish - $start)." s\n";
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
 
-$start = microtime(true);
       $ret = $pmServiceevent->getData($result, $a_perfdata['id']);
-$finish = microtime(true);
-echo "check_iftraffic41 ".($finish - $start)." s\n";      
       $a_reference = array(
           'inpercentcurr'     => array('0.06'),
           'inpercentwarn'     => array('85'),
@@ -431,7 +401,62 @@ echo "check_iftraffic41 ".($finish - $start)." s\n";
 
    
 // inUsage=0.06%;85;98 outUsage=0.50%;85;98 inBandwidth=580585.00bps outBandwidth=5010017.19bps inAbsolut=58697810111 outAbsolut=125801495656
+
    
+   public function testSplitPerfdataNbSessions() {
+      global $DB;
+
+      $DB->connect();
+      
+      $perfdata = "'Nb de sessions actives'=2;15;20;";
+
+      $a_perfdata = PluginMonitoringPerfdata::splitPerfdata($perfdata);
+
+      $a_reference = array(
+          "'Nb de sessions actives'=2;15;20;"
+      );
+      
+      $this->assertEquals($a_reference, $a_perfdata);
+   }
+   
+   
+   
+   public function testSplitPerfdataDisk() {
+      global $DB;
+
+      $DB->connect();
+      
+      $perfdata = "'C: %'=3%;25;75 'C:'=14.32G;116.416;349.247;0;465.662";
+
+      $a_perfdata = PluginMonitoringPerfdata::splitPerfdata($perfdata);
+
+      $a_reference = array(
+          "'C: %'=3%;25;75",
+          "'C:'=14.32G;116.416;349.247;0;465.662"
+      );
+      
+      $this->assertEquals($a_reference, $a_perfdata);
+   }
+   
+   
+   
+   public function testSplitPerfdataPrinter() {
+      global $DB;
+
+      $DB->connect();
+      
+      $perfdata = "'Cut pages'=15c 'Retracted pages'=3c";
+
+      $a_perfdata = PluginMonitoringPerfdata::splitPerfdata($perfdata);
+
+      $a_reference = array(
+          "'Cut pages'=15c",
+          "'Retracted pages'=3c"
+      );
+      
+      $this->assertEquals($a_reference, $a_perfdata);
+   }
+
 }
 
 
