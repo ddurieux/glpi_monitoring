@@ -170,12 +170,12 @@ class PluginMonitoringShinken extends CommonDBTM {
             if (isset($a_entities_allowed['-1'])
                     OR isset($a_entities_allowed[$class->fields['entities_id']])) {
 
-               $a_hosts[$i]['host_name'] = preg_replace("/[^A-Za-z0-9\-]/","",$class->fields['name']);
+               $a_hosts[$i]['host_name'] = preg_replace("/[^A-Za-z0-9\-_]/","",$class->fields['name']);
                $a_hosts[$i]['_ITEMSID'] = $data['items_id'];
                $a_hosts[$i]['_ITEMTYPE'] = $classname;
                
                $a_hosts_found[$a_hosts[$i]['host_name']] = 1;
-               $a_hosts[$i]['alias'] = preg_replace("/[^A-Za-z0-9\-]/","",$class->fields['name'])." / ".$classname."-".$data['items_id'];
+               $a_hosts[$i]['alias'] = preg_replace("/[^A-Za-z0-9\-_]/","",$class->fields['name'])." / ".$classname."-".$data['items_id'];
                if (isset($class->fields['networkequipmenttypes_id'])) {                  
                   if ($class->fields['networkequipmenttypes_id'] > 0) {
                      $a_hosts[$i]['alias'] .= " (".Dropdown::getDropdownName("glpi_networkequipmenttypes", $class->fields['networkequipmenttypes_id']).")";
@@ -204,7 +204,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                            $networkPort->getFromDB($networkports_id);
                            if ($networkPort->fields['itemtype'] == 'NetworkEquipment') {
                               $networkEquipment->getFromDB($networkPort->fields['items_id']);
-                              $parent = preg_replace("/[^A-Za-z0-9\-]/","",$networkEquipment->fields['name']);
+                              $parent = preg_replace("/[^A-Za-z0-9\-_]/","",$networkEquipment->fields['name']);
                               $a_parents_found[$parent] = 1;
                               $pmHost->updateDependencies($classname, $data['items_id'], 'NetworkEquipment-'.$networkPort->fields['items_id']);
                            }
@@ -413,7 +413,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                if (isset($a_entities_allowed['-1'])
                        OR isset($a_entities_allowed[$item->fields['entities_id']])) {
                
-                  $a_hostname[] = preg_replace("/[^A-Za-z0-9\-]/","",$item->fields['name']);
+                  $a_hostname[] = preg_replace("/[^A-Za-z0-9\-_]/","",$item->fields['name']);
                   $hostname = $item->fields['name'];
                   $plugin_monitoring_componentscatalogs_id = $datah['plugin_monitoring_componentscalalog_id'];
                }
@@ -426,7 +426,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             $a_services[$i]['host_name'] = implode(",", array_unique($a_hostname));
             $hostnamebp = $a_services[$i]['host_name']; // For business rules
 
-            $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9\-]/","",$a_component['name']);
+            $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9\-_]/","",$a_component['name']);
             $a_services[$i]['_ITEMSID'] = $data['id'];
             $a_services[$i]['_ITEMTYPE'] = 'service';
          
@@ -676,7 +676,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                      $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
                      $item = new $itemtype();
                      if ($item->getFromDB($pmComponentscatalog_Host->fields['items_id'])) {           
-                        $hostname = preg_replace("/[^A-Za-z0-9\-]/","",$item->fields['name']);
+                        $hostname = preg_replace("/[^A-Za-z0-9\-_]/","",$item->fields['name']);
 
                         if ($gdata['operator'] == 'and'
                                 OR $gdata['operator'] == 'or'
@@ -691,12 +691,12 @@ class PluginMonitoringShinken extends CommonDBTM {
                               if (strstr($gdata['operator'], ' of:')) {
                                  $a_group[$gdata['id']] = $gdata['operator'];
                               }
-                              $a_group[$gdata['id']] .= $hostname.",".preg_replace("/[^A-Za-z0-9\-]/","",$pmService->fields['name']);
+                              $a_group[$gdata['id']] .= $hostname.",".preg_replace("/[^A-Za-z0-9\-_]/","",$pmService->fields['name']);
                            } else {
-                              $a_group[$gdata['id']] .= $operator.$hostname.",".preg_replace("/[^A-Za-z0-9\-]/","",$pmService->fields['name']);
+                              $a_group[$gdata['id']] .= $operator.$hostname.",".preg_replace("/[^A-Za-z0-9\-_]/","",$pmService->fields['name']);
                            }
                         } else {
-                           $a_group[$gdata['id']] = $gdata['operator']." ".$hostname.",".preg_replace("/[^A-Za-z0-9\-]/","",$item->getName());
+                           $a_group[$gdata['id']] = $gdata['operator']." ".$hostname.",".preg_replace("/[^A-Za-z0-9\-_]/","",$item->getName());
                         }
                      }
                   }
@@ -711,7 +711,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                   $a_services[$i]['check_period'] = $calendar->fields['name'];            
                }
                $a_services[$i]['host_name'] = $hostnamebp;
-               $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9\-]/","",$dataBA['name']);
+               $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9\-_]/","",$dataBA['name']);
                $a_services[$i]['_ITEMSID'] = $dataBA['id'];
                $a_services[$i]['_ITEMTYPE'] = 'servicecatalog';
                $command = "bp_rule!";
