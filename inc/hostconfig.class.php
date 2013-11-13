@@ -61,32 +61,6 @@ class PluginMonitoringHostconfig extends CommonDBTM {
          $input['itemtype'] = 'Entity';
          $input['items_id'] = 0;
          
-         $query2 = "SELECT * FROM `glpi_plugin_monitoring_commands`
-            WHERE `command_name`='check_host_alive'
-            LIMIT 1";
-         $result2 = $DB->query($query2);
-         if ($DB->numrows($result2) == '1') {
-            $data = $DB->fetch_assoc($result2);
-            $input['plugin_monitoring_commands_id'] = $data['id'];
-         }
-         
-         $query2 = "SELECT * FROM `glpi_plugin_monitoring_checks`
-            LIMIT 1";
-         $result2 = $DB->query($query2);
-         if ($DB->numrows($result2) == '1') {
-            $data = $DB->fetch_assoc($result2);
-            $input['plugin_monitoring_checks_id'] = $data['id'];
-         }
-         
-         $query2 = "SELECT * FROM `glpi_calendars`
-            WHERE `entities_id`='0'
-            LIMIT 1";
-         $result2 = $DB->query($query2);
-         if ($DB->numrows($result2) == '1') {
-            $data = $DB->fetch_assoc($result2);
-            $input['calendars_id'] = $data['id'];
-         }
-         
          $query2 = "SELECT * FROM `glpi_plugin_monitoring_realms`
             LIMIT 1";
          $result2 = $DB->query($query2);
@@ -136,10 +110,8 @@ class PluginMonitoringHostconfig extends CommonDBTM {
    function showForm($items_id, $itemtype, $options=array()) {
       global $DB,$CFG_GLPI;
       
-      $pmCommand = new PluginMonitoringCommand();
-      $pmCheck = new PluginMonitoringCheck();
-      $calendar = new Calendar();
-      $pmRealm  = new PluginMonitoringRealm();
+      $pmComponent = new PluginMonitoringComponent();
+      $pmRealm     = new PluginMonitoringRealm();
       
       $entities_id = 0;
       if ($itemtype == "Entity") {
@@ -160,9 +132,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
          $this->getEmpty();
          if ($entities_id != '0'
               OR $itemtype != 'Entity') {
-            $this->fields['plugin_monitoring_commands_id'] = -1;
-            $this->fields['plugin_monitoring_checks_id'] = -1;
-            $this->fields['calendars_id'] = -1;
+            $this->fields['plugin_monitoring_components_id'] = -1;
             $this->fields['plugin_monitoring_realms_id'] = -1;
          }
       } else {
@@ -183,140 +153,62 @@ class PluginMonitoringHostconfig extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
-      echo __('Command', 'monitoring')."&nbsp;:";
+      echo __('Component', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
-      $input = array();
+      $toadd = array();
 
       if ($entities_id != '0'
               OR $itemtype != 'Entity') {
-         $input["-1"] = __('Inheritance of the parent entity');
+         $toadd["-1"] = __('Inheritance of the parent entity');
       }
-      $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringCommand")."`
-         ORDER BY `name`";
-      $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
-         $input[$data['id']] = $data['name'];
-      }
-      Dropdown::showFromArray('plugin_monitoring_commands_id', $input, array(
-          'value'=>$this->fields['plugin_monitoring_commands_id']));
 
+      Dropdown::show('PluginMonitoringComponent', 
+                     array(
+                         'name'  => 'plugin_monitoring_components_id',
+                         'value' => $this->fields['plugin_monitoring_components_id'],
+                         'toadd' => $toadd,
+                         'display_emptychoice' => FALSE
+                     ));
       echo "</td>";
-      echo "<td>".__('Check definition', 'monitoring')."&nbsp;:</td>";
-      echo "<td>";
-      $input = array();
-      if ($entities_id != '0'
-              OR $itemtype != 'Entity') {
-         $input["-1"] = __('Inheritance of the parent entity');
-      }
-      $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringCheck")."`
-         ORDER BY `name`";
-      $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
-         $input[$data['id']] = $data['name'];
-      }
-      Dropdown::showFromArray('plugin_monitoring_checks_id', $input, array(
-          'value'=>$this->fields['plugin_monitoring_checks_id']));
-      
-      echo "</td>";
-      echo "</tr>";
-      
-      // Inheritance
-      if ($this->fields['plugin_monitoring_commands_id'] == '-1'
-              OR $this->fields['plugin_monitoring_checks_id'] == '-1') {
-         
-         echo "<tr class='tab_bg_1'>";
-         if ($this->fields['plugin_monitoring_commands_id'] == '-1') {
-            echo "<td colspan='2' class='green center'>";
-            echo __('Inheritance of the parent entity')."&nbsp;:&nbsp;";
-            $pmCommand->getFromDB($this->getValueAncestor("plugin_monitoring_commands_id", $entities_id));
-            echo $pmCommand->fields['name'];
-            echo "</td>";
-         } else {
-            echo "<td colspan='2'>";
-            echo "</td>";
-         }
-         if ($this->fields['plugin_monitoring_checks_id'] == '-1') {
-            echo "<td colspan='2' class='green center'>";
-            echo __('Inheritance of the parent entity')."&nbsp;:&nbsp;";
-            $pmCheck->getFromDB($this->getValueAncestor("plugin_monitoring_checks_id", $entities_id));
-            echo $pmCheck->fields['name'];
-            echo "</td>";
-         } else {
-            echo "<td colspan='2'>";
-            echo "</td>";
-         }
-         echo "</tr>";
-      }
-      
-      
-      echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Reaml', 'monitoring')."&nbsp;:</td>";
       echo "<td>";
-      $input = array();
+      $toadd = array();
       if ($entities_id != '0'
               OR $itemtype != 'Entity') {
-         $input["-1"] = __('Inheritance of the parent entity');
+         $toadd["-1"] = __('Inheritance of the parent entity');
       }
-      $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringRealm")."`
-         ORDER BY `name`";
-      $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
-         $input[$data['id']] = $data['name'];
-      }
-      Dropdown::showFromArray('plugin_monitoring_realms_id', $input, array(
-          'value'=>$this->fields['plugin_monitoring_realms_id']));
-      echo "</td>";
+      Dropdown::show('PluginMonitoringRealm', 
+                     array(
+                         'name'  => 'plugin_monitoring_realms_id',
+                         'value' => $this->fields['plugin_monitoring_realms_id'],
+                         'toadd' => $toadd,
+                         'display_emptychoice' => FALSE
+                     ));
 
-      echo "<td>".__('Check period', 'monitoring')."&nbsp;:</td>";
-      echo "<td>";
-      if (Session::isMultiEntitiesMode()) {
-         $input = array();
-         if ($entities_id != '0'
-                 OR $itemtype != 'Entity') {
-            $input["-1"] = __('Inheritance of the parent entity');
-         }
-         $entities_ancestors = getAncestorsOf("glpi_entities", $entities_id);
-         if (!isset($entities_ancestors[$entities_id])) {
-            $entities_ancestors[$entities_id] = $entities_id;
-         }
-
-         $query = "SELECT * FROM `".getTableForItemType("Calendar")."`
-            WHERE `entities_id` IN ('".implode(",", $entities_ancestors)."') AND `is_recursive`='1'
-            ORDER BY `name`";
-         $result = $DB->query($query);
-         while ($data=$DB->fetch_array($result)) {
-            $input[$data['id']] = $data['name'];
-         }
-         Dropdown::showFromArray('calendars_id', $input, array(
-             'value'=>$this->fields['calendars_id']));
-      } else {
-         Dropdown::show("Calendar", array('value' => $this->fields['calendars_id']));
-      }
-
+      
       echo "</td>";
       echo "</tr>";
       
       // Inheritance
-      if ($this->fields['calendars_id'] == '-1'
-              OR $this->fields['plugin_monitoring_realms_id'] == '-1') {
-
+      if ($this->fields['plugin_monitoring_components_id'] == '-1') {
+         
          echo "<tr class='tab_bg_1'>";
+         if ($this->fields['plugin_monitoring_components_id'] == '-1') {
+            echo "<td colspan='2' class='green center'>";
+            echo __('Inheritance of the parent entity')."&nbsp;:&nbsp;";
+            $pmComponent->getFromDB($this->getValueAncestor("plugin_monitoring_components_id", $entities_id));
+            echo $pmComponent->fields['name'];
+            echo "</td>";
+         } else {
+            echo "<td colspan='2'>";
+            echo "</td>";
+         }
          if ($this->fields['plugin_monitoring_realms_id'] == '-1') {
             echo "<td colspan='2' class='green center'>";
             echo __('Inheritance of the parent entity')."&nbsp;:&nbsp;";
             $pmRealm->getFromDB($this->getValueAncestor("plugin_monitoring_realms_id", $entities_id));
             echo $pmRealm->fields['name'];
-            echo "</td>";
-         } else {
-            echo "<td colspan='2'>";
-            echo "</td>";
-         }
-         if ($this->fields['calendars_id'] == '-1') {     
-            echo "<td colspan='2' class='green center'>";
-            echo __('Inheritance of the parent entity')."&nbsp;:&nbsp;";
-            $calendar->getFromDB($this->getValueAncestor("calendars_id", $entities_id));
-            echo $calendar->fields['name'];
             echo "</td>";
          } else {
             echo "<td colspan='2'>";

@@ -1508,69 +1508,57 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     /*
     * Table glpi_plugin_monitoring_hostconfigs
     */
-      $newTable = "glpi_plugin_monitoring_hostconfigs";
-      if (!TableExists($newTable)) {
-         $query = "CREATE TABLE `".$newTable."` (
-                        `id` int(11) NOT NULL AUTO_INCREMENT,
-                        PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-         $DB->query($query);
+      $a_hostsconfig = array();
+      if (TableExists('glpi_plugin_monitoring_hostconfigs')
+              && (FieldExists('glpi_plugin_monitoring_hostconfigs', 'plugin_monitoring_commands_id'))) {
+         $a_hostsconfig = getAllDatasFromTable('glpi_plugin_monitoring_hostconfigs');
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
-                                 "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'items_id', 
-                                 'items_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'itemtype', 
-                                 'itemtype', 
-                                 "varchar(100) DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_commands_id', 
-                                 'plugin_monitoring_commands_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_checks_id', 
-                                 'plugin_monitoring_checks_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'calendars_id', 
-                                 'calendars_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_realms_id', 
-                                 'plugin_monitoring_realms_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'computers_id', 
-                                 'computers_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");
-      $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                              'items_id', 
-                              "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'itemtype', 
-                              "varchar(100) DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'plugin_monitoring_commands_id', 
-                              "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'plugin_monitoring_checks_id', 
-                              "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'calendars_id', 
-                              "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'plugin_monitoring_realms_id', 
-                              "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'computers_id', 
-                              "int(11) NOT NULL DEFAULT '0'");
-      $migration->migrationOneTable($newTable);
+      
+      $a_table = array();
+      $a_table['name'] = 'glpi_plugin_monitoring_hostconfigs';
+      $a_table['oldname'] = array();
+
+      $a_table['fields']  = array(
+         'id'           => array('type' => 'autoincrement', 'value'   => ''),
+         'items_id'     => array('type' => 'integer',       'value'   => NULL),
+         'itemtype'     => array('type' => 'varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL',
+                                 'value'   => NULL),
+         'plugin_monitoring_components_id' => 
+                           array('type' => 'integer',       'value'   => NULL),
+         'plugin_monitoring_realms_id' => 
+                           array('type' => 'integer',       'value'   => NULL),
+         'computers_id' => array('type' => 'integer',       'value'   => NULL)
+      );
+
+      $a_table['oldfields']  = array(
+          'plugin_monitoring_commands_id',
+          'plugin_monitoring_checks_id',
+          'calendars_id'
+      );
+
+      $a_table['renamefields'] = array();
+
+      $a_table['keys'] = array();
+
+      $a_table['oldkeys'] = array();
+
+      migrateTablesMonitoring($migration, $a_table);
+      
+      if (count($a_hostsconfig) > 0) {
+         // Convert commands by components
+         foreach ($a_hostsconfig as $data) {
+            $a_components = getAllDatasFromTable(
+                    'glpi_plugin_monitoring_components', 
+                    "`plugin_monitoring_commands_id`='".$data['plugin_monitoring_commands_id']."'"
+                    );
+            if (count($a_components) > 0) {
+               $a_component = current($a_components);
+               $DB->query("UPDATE `".$a_table['name']."`
+                  SET `plugin_monitoring_components_id`='".$a_component['id']."'
+                  WHERE `id`='".$data['id']."'");
+            }
+         }
+      }
       
       
       

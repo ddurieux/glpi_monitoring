@@ -137,6 +137,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       $networkEquipment = new NetworkEquipment();
       $pmContact_Item   = new PluginMonitoringContact_Item();
       $profile_User     = new Profile_User();
+      $pmEventhandler = new PluginMonitoringEventhandler();
       $user = new User();
 
       $a_hosts = array();
@@ -216,15 +217,14 @@ class PluginMonitoringShinken extends CommonDBTM {
 
                $a_fields = array();
 
-               $pmCommand->getFromDB($pmHostconfig->getValueAncestor('plugin_monitoring_commands_id', 
+               $pmComponent->getFromDB($pmHostconfig->getValueAncestor('plugin_monitoring_components_id', 
                                                                                     $class->fields['entities_id'],
                                                                                     $classname,
                                                                                     $class->getID()));
-
-               $a_component = current($pmComponent->find("`plugin_monitoring_commands_id`='".$pmCommand->fields['id']."'", "", 1));
                
-               $a_fields = $a_component;
-
+               $pmCommand->getFromDB($pmComponent->fields['plugin_monitoring_commands_id']);
+               
+               $a_fields = $pmComponent->fields;
                
                $a_hosts[$i]['check_command'] = $pmCommand->fields['command_name'];
                   $pmCheck->getFromDB($pmHostconfig->getValueAncestor('plugin_monitoring_checks_id', 
@@ -243,6 +243,32 @@ class PluginMonitoringShinken extends CommonDBTM {
                   $a_hosts[$i]['check_period'] = "24x7";
                }
 
+               // Manage freshness
+               if ($a_fields['freshness_count'] == 0) {
+                  $a_hosts[$i]['check_freshness'] = '0';
+                  $a_hosts[$i]['freshness_threshold'] = '3600';
+               } else {
+                  $multiple = 1;
+                  if ($a_fields['freshness_type'] == 'seconds') {
+                     $multiple = 1;
+                  } else if ($a_fields['freshness_type'] == 'minutes') {
+                     $multiple = 60;
+                  } else if ($a_fields['freshness_type'] == 'hours') {
+                     $multiple = 3600;
+                  } else if ($a_fields['freshness_type'] == 'days') {
+                     $multiple = 86400;
+                  }
+                  $a_hosts[$i]['check_freshness'] = '1';
+                  $a_hosts[$i]['freshness_threshold'] = (string)($a_fields['freshness_count'] * $multiple);
+               }
+
+               // * Manage event handler
+               if ($a_fields['plugin_monitoring_eventhandlers_id'] > 0) {
+                  if ($a_fields->getFromDB($a_fields['plugin_monitoring_eventhandlers_id'])) {
+                     $a_hosts[$i]['event_handler'] = $pmEventhandler->fields['command_name'];
+                  }
+               }
+               
                $pmRealm->getFromDB($pmHostconfig->getValueAncestor('plugin_monitoring_realms_id', 
                                                                                     $class->fields['entities_id'],
                                                                                     $classname,
