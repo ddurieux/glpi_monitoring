@@ -227,17 +227,11 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_fields = $pmComponent->fields;
                
                $a_hosts[$i]['check_command'] = $pmCommand->fields['command_name'];
-                  $pmCheck->getFromDB($pmHostconfig->getValueAncestor('plugin_monitoring_checks_id', 
-                                                                                     $class->fields['entities_id'],
-                                                                                     $classname,
-                                                                                     $class->getID()));
+               $pmCheck->getFromDB($pmComponent->fields['plugin_monitoring_checks_id']);
                $a_hosts[$i]['check_interval'] = $pmCheck->fields['check_interval'];
                $a_hosts[$i]['retry_interval'] = $pmCheck->fields['retry_interval'];
                $a_hosts[$i]['max_check_attempts'] = $pmCheck->fields['max_check_attempts'];
-               if ($calendar->getFromDB($pmHostconfig->getValueAncestor('calendars_id', 
-                                                                        $class->fields['entities_id'],
-                                                                        $classname,
-                                                                        $class->getID()))) {
+               if ($calendar->getFromDB($pmComponent->fields['calendars_id'])) {
                   $a_hosts[$i]['check_period'] = $calendar->fields['name'];
                } else {
                   $a_hosts[$i]['check_period'] = "24x7";
@@ -284,7 +278,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                      LEFT JOIN `glpi_plugin_monitoring_services`
                         ON `plugin_monitoring_componentscatalogs_hosts_id`
                            = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
-                     WHERE `plugin_monitoring_components_id`='".$a_component['id']."'
+                     WHERE `plugin_monitoring_components_id`='".$pmComponent->fields['id']."'
                         AND `items_id`='".$data['items_id']."'
                         AND `itemtype`='".$data['itemtype']."'
                         LIMIT 1";
