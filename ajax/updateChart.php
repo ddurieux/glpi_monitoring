@@ -33,6 +33,8 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+$USEDBREPLICATE = 1;
+
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'],"updateChart.php")) {
    include ("../../../inc/includes.php");
