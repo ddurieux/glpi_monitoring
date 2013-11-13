@@ -51,8 +51,6 @@ class PluginMonitoringPerfdataDetail extends CommonDBTM {
       global $CFG_GLPI;
       
       $a_details = $this->find("`plugin_monitoring_perfdatas_id`='".$perfdatas_id."'", "position");
-      echo "<form name='form' method='post' 
-         action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/perfdatadetail.form.php'>";
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th>";
@@ -73,10 +71,13 @@ class PluginMonitoringPerfdataDetail extends CommonDBTM {
       echo "</th>";
       echo "</tr>";
       foreach ($a_details as $a_detail) {
+      echo "<form name='form' method='post' 
+         action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/perfdatadetail.form.php'>";
+
          $this->showDetail($a_detail['id']);
+      Html::closeForm();
       }
       echo "</table>";
-      Html::closeForm();
    }  
    
    
