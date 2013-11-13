@@ -346,7 +346,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo __('Alias command if required (NRPE only)', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
-      echo "<input type='text' name='alias_command' value='".$this->fields['alias_command']."' />";
+      echo "<input type='text' name='alias_command' value='".$this->fields['alias_command']."' size='35' />";
       echo "</td>"; 
       echo "<td colspan='2'></td>";
       echo "</tr>";
@@ -386,7 +386,7 @@ class PluginMonitoringComponent extends CommonDBTM {
             }
             echo "</td>";
             echo "<td>";
-            echo "<input type='text' name='arg[".$key."]' value='".$value."'/><br/>";
+            echo "<input type='text' name='arg[".$key."]' value='".$value."' size='35' /><br/>";
             echo "</td>";
             if (count($a_tags) > 0) {
                foreach ($a_tags as $key=>$value) {
