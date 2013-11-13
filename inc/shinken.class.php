@@ -242,7 +242,9 @@ class PluginMonitoringShinken extends CommonDBTM {
                } else {
                   $a_hosts[$i]['check_period'] = "24x7";
                }
-
+               $a_hosts[$i]['active_checks_enabled'] = $a_fields['active_checks_enabled'];
+               $a_hosts[$i]['passive_checks_enabled'] = $a_fields['passive_checks_enabled'];
+               
                // Manage freshness
                if ($a_fields['freshness_count'] == 0) {
                   $a_hosts[$i]['check_freshness'] = '0';
