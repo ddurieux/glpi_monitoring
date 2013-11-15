@@ -151,11 +151,19 @@ class PluginMonitoringServicegraph extends CommonDBTM {
             $result = $DB->query($query);
             $ret = array();
             if (isset($this->jsongraph_a_ref[$rrdtool_template])) {
-               $ret = $pmServiceevent->getData($result, $rrdtool_template,
+               $ret = $pmServiceevent->getData(
+                       $result, 
+                       $rrdtool_template,
+                       $begin,
+                       date('Y-m-d H:i:s', $enddate),
                        array($this->jsongraph_a_ref[$rrdtool_template], 
                              $this->jsongraph_a_convert[$rrdtool_template]));
             } else {
-               $ret = $pmServiceevent->getData($result, $rrdtool_template);
+               $ret = $pmServiceevent->getData(
+                       $result, 
+                       $rrdtool_template,
+                       $begin,
+                       date('Y-m-d H:i:s', $enddate));
             }
             if (is_array($ret)) {
                $mydatat  = $ret[0];
@@ -178,7 +186,11 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                   AND `date` <= '".date('Y-m-d H:i:s', $enddate)."'
                ORDER BY `date`";
             $result = $DB->query($query);
-            $ret = $pmServiceevent->getData($result, $rrdtool_template);
+            $ret = $pmServiceevent->getData(
+                    $result, 
+                    $rrdtool_template,
+                    $begin,
+                    date('Y-m-d H:i:s', $enddate));
             if (is_array($ret)) {
                $mydatat  = $ret[0];
                $a_labels = $ret[1];
@@ -196,7 +208,11 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                   AND `date` <= '".date('Y-m-d H:i:s', $enddate)."'
                ORDER BY `date`";
             $result = $DB->query($query);
-            $ret = $pmServiceevent->getData($result, $rrdtool_template);
+            $ret = $pmServiceevent->getData(
+                    $result, 
+                    $rrdtool_template,
+                    $begin,
+                    date('Y-m-d H:i:s', $enddate));
             if (is_array($ret)) {
                $mydatat  = $ret[0];
                $a_labels = $ret[1];
@@ -449,7 +465,11 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                $pmServiceevent = new PluginMonitoringServiceevent();
                $pmService = new PluginMonitoringService();
                $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks($pmComponent->fields['id']);
-               $ret = $pmServiceevent->getData($result, $pmComponent->fields['graph_template']);
+               $ret = $pmServiceevent->getData(
+                       $result, 
+                       $pmComponent->fields['graph_template'],
+                       (date('Y-m-d H:i:m', $new_date - (15*60))),
+                       (date('Y-m-d H:i:m', $new_date + (15*60))));
                if (is_array($ret)) {
                   $mydatat = $ret[0];
                }
@@ -527,7 +547,11 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                $mydatat = array();
                $pmServiceevent = new PluginMonitoringServiceevent();
                $pmService = new PluginMonitoringService();
-               $ret = $pmServiceevent->getData($result, $pmComponent->fields['graph_template']);
+               $ret = $pmServiceevent->getData(
+                       $result, 
+                       $pmComponent->fields['graph_template'],
+                       (date('Y-m-d H:i:m', $new_date - (3 * 3600))),
+                       (date('Y-m-d H:i:m', $new_date + (3 * 3600))));
                if (is_array($ret)) {
                   $mydatat = $ret[0];
                }
@@ -597,7 +621,11 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                $mydatat = array();
                $pmServiceevent = new PluginMonitoringServiceevent();
                $pmService = new PluginMonitoringService();
-               $ret = $pmServiceevent->getData($result, $pmComponent->fields['graph_template']);
+               $ret = $pmServiceevent->getData(
+                       $result, 
+                       $pmComponent->fields['graph_template'],
+                       (date('Y-m-d H:i:m', $new_date - (12 * 3600))),
+                       (date('Y-m-d H:i:m', $new_date + (12 * 3600))));
                if (is_array($ret)) {
                   $mydatat = $ret[0];
                }
@@ -666,7 +694,11 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                $mydatat = array();
                $pmServiceevent = new PluginMonitoringServiceevent();
                $pmService = new PluginMonitoringService();
-               $ret = $pmServiceevent->getData($result, $pmComponent->fields['graph_template']);
+               $ret = $pmServiceevent->getData(
+                       $result, 
+                       $pmComponent->fields['graph_template'],
+                       (date('Y-m-d H:i:m', $new_date - ((5 * 24 * 3600) / 2))),
+                       (date('Y-m-d H:i:m', $new_date + ((5 * 24 * 3600) / 2))));
                if (is_array($ret)) {
                   $mydatat = $ret[0];
                }
@@ -735,7 +767,11 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                $mydatat = array();
                $pmServiceevent = new PluginMonitoringServiceevent();
                $pmService = new PluginMonitoringService();
-               $ret = $pmServiceevent->getData($result, $pmComponent->fields['graph_template']);
+               $ret = $pmServiceevent->getData(
+                       $result, 
+                       $pmComponent->fields['graph_template'],
+                       (date('Y-m-d H:i:m', $new_date - (5 * 24 * 3600))),
+                       (date('Y-m-d H:i:m', $new_date + (5 * 24 * 3600))));
                if (is_array($ret)) {
                   $mydatat = $ret[0];
                }

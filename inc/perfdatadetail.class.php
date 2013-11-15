@@ -124,12 +124,18 @@ class PluginMonitoringPerfdataDetail extends CommonDBTM {
          if (!isset($a_a_perfdata[1])) {
             return;
          }
-         $a_a_perfdata[1] = trim($a_a_perfdata[1], ";");
+         //$a_a_perfdata[1] = trim($a_a_perfdata[1], ";");
          $a_lines[$i] = array('name' => $a_a_perfdata[0]);
          $a_perfdata_final = explode(";", $a_a_perfdata[1]);
          $num = 1;
-         foreach ($a_perfdata_final as $val) {
-            $a_lines[$i]['values'][$num] = '';
+         foreach ($a_perfdata_final as $nb_val=>$val) {
+            if ($val == '') {
+               if ($nb_val <(count($a_perfdata_final) - 1)) {
+                  $a_lines[$i]['values'][$num] = '';
+               }
+            } else {
+               $a_lines[$i]['values'][$num] = '';
+            }
             $num++;
          }
          $i++;
@@ -148,6 +154,12 @@ class PluginMonitoringPerfdataDetail extends CommonDBTM {
                $find = 1;
                $countfind = count($a_line['values']);
                $data['dsname_num'] = $countfind;
+               for ($i=1; $i<=$countfind; $i++) { 
+                  if ($data['dsname'.$i] == '') {
+                     $data['dsname'.$i] = 'value'.$data['position'].'.'.$i;
+                  }
+               }
+               
                for ($i=($countfind+1); $i<9; $i++) { 
                   $data['dsname'.$i] = '';
                }

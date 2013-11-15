@@ -847,7 +847,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       // * check_iostat_bsd
       $input = array(
           'name'     => 'check_iostat_bsd',
-          'perfdata' => ''
+          'perfdata' => 'tps=7.325;;; tpsr=3.175;;; tpsw=4.15;;; reads=55.95KB;;; writes=78.7KB;;; svc_t=0.85;;;'
       );
       $id = $pmPerfdata->add($input);
       
@@ -856,8 +856,10 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dynamic_name'                   => 0,
           'plugin_monitoring_perfdatas_id' => $id,
           'position'                       => 1,
-          'dsname_num'                     => 1,
-          'dsname1'                        => 'IOTPS_read_write'
+          'dsname_num'                     => 3,
+          'dsname1'                        => 'IOTPS_read_write',
+          'dsname2'                        => 'value1.2',
+          'dsname3'                        => 'value1.3'
       );
       $pmPerfdataDetail->add($inputd);
 
@@ -866,8 +868,10 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dynamic_name'                   => 0,
           'plugin_monitoring_perfdatas_id' => $id,
           'position'                       => 2,
-          'dsname_num'                     => 1,
-          'dsname1'                        => 'IOTPS_read'
+          'dsname_num'                     => 3,
+          'dsname1'                        => 'IOTPS_read',
+          'dsname2'                        => 'value2.2',
+          'dsname3'                        => 'value2.3'
       );
       $pmPerfdataDetail->add($inputd);
 
@@ -876,8 +880,10 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dynamic_name'                   => 0,
           'plugin_monitoring_perfdatas_id' => $id,
           'position'                       => 3,
-          'dsname_num'                     => 1,
-          'dsname1'                        => 'IOTPS_write'
+          'dsname_num'                     => 3,
+          'dsname1'                        => 'IOTPS_write',
+          'dsname2'                        => 'value3.2',
+          'dsname3'                        => 'value3.3'
       );
       $pmPerfdataDetail->add($inputd);
 
@@ -886,8 +892,10 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dynamic_name'                   => 0,
           'plugin_monitoring_perfdatas_id' => $id,
           'position'                       => 4,
-          'dsname_num'                     => 1,
-          'dsname1'                        => 'Kbps_read'
+          'dsname_num'                     => 3,
+          'dsname1'                        => 'Kbps_read',
+          'dsname2'                        => 'value4.2',
+          'dsname3'                        => 'value4.3'
       );
       $pmPerfdataDetail->add($inputd);
 
@@ -896,8 +904,10 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dynamic_name'                   => 0,
           'plugin_monitoring_perfdatas_id' => $id,
           'position'                       => 5,
-          'dsname_num'                     => 1,
-          'dsname1'                        => 'Kbps_write'
+          'dsname_num'                     => 3,
+          'dsname1'                        => 'Kbps_write',
+          'dsname2'                        => 'value5.2',
+          'dsname3'                        => 'value5.3'
       );
       $pmPerfdataDetail->add($inputd);
 
@@ -906,8 +916,10 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dynamic_name'                   => 0,
           'plugin_monitoring_perfdatas_id' => $id,
           'position'                       => 6,
-          'dsname_num'                     => 1,
-          'dsname1'                        => 'transactiontime'
+          'dsname_num'                     => 3,
+          'dsname1'                        => 'transactiontime',
+          'dsname2'                        => 'value6.2',
+          'dsname3'                        => 'value6.3'
       );
       $pmPerfdataDetail->add($inputd);
 
@@ -992,7 +1004,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       // * check_nginx_status
       $input = array(
           'name'     => 'check_nginx_status',
-          'perfdata' => ''
+          'perfdata' => 'Writing=1;;;; Reading=0;;;; Waiting=9;;;; Active=10;;;; ReqPerSec=1.964401;;;; ConnPerSec=0.190939;;;; ReqPerConn=8.167504;;;;'
       );
       $id = $pmPerfdata->add($input);
       
@@ -1001,8 +1013,11 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dynamic_name'                   => 0,
           'plugin_monitoring_perfdatas_id' => $id,
           'position'                       => 1,
-          'dsname_num'                     => 1,
-          'dsname1'                        => 'Writing'
+          'dsname_num'                     => 4,
+          'dsname1'                        => 'Writing',
+          'dsname2'                        => 'value1.2',
+          'dsname3'                        => 'value1.3',
+          'dsname4'                        => 'value1.4'
       );
       $pmPerfdataDetail->add($inputd);
 
@@ -1011,8 +1026,11 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dynamic_name'                   => 0,
           'plugin_monitoring_perfdatas_id' => $id,
           'position'                       => 2,
-          'dsname_num'                     => 1,
-          'dsname1'                        => 'Reading'
+          'dsname_num'                     => 4,
+          'dsname1'                        => 'Reading',
+          'dsname2'                        => 'value2.2',
+          'dsname3'                        => 'value2.3',
+          'dsname4'                        => 'value2.4'
       );
       $pmPerfdataDetail->add($inputd);
 
@@ -1021,8 +1039,11 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dynamic_name'                   => 0,
           'plugin_monitoring_perfdatas_id' => $id,
           'position'                       => 3,
-          'dsname_num'                     => 1,
-          'dsname1'                        => 'Waiting'
+          'dsname_num'                     => 4,
+          'dsname1'                        => 'Waiting',
+          'dsname2'                        => 'value3.2',
+          'dsname3'                        => 'value3.3',
+          'dsname4'                        => 'value3.4'
       );
       $pmPerfdataDetail->add($inputd);
 
@@ -1031,8 +1052,11 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dynamic_name'                   => 0,
           'plugin_monitoring_perfdatas_id' => $id,
           'position'                       => 4,
-          'dsname_num'                     => 1,
-          'dsname1'                        => 'Active'
+          'dsname_num'                     => 4,
+          'dsname1'                        => 'Active',
+          'dsname2'                        => 'value4.2',
+          'dsname3'                        => 'value4.3',
+          'dsname4'                        => 'value4.4'
       );
       $pmPerfdataDetail->add($inputd);
 
@@ -1041,8 +1065,11 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dynamic_name'                   => 0,
           'plugin_monitoring_perfdatas_id' => $id,
           'position'                       => 5,
-          'dsname_num'                     => 1,
-          'dsname1'                        => 'ReqPerSec'
+          'dsname_num'                     => 4,
+          'dsname1'                        => 'ReqPerSec',
+          'dsname2'                        => 'value5.2',
+          'dsname3'                        => 'value5.3',
+          'dsname4'                        => 'value5.4'
       );
       $pmPerfdataDetail->add($inputd);
 
@@ -1051,8 +1078,11 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dynamic_name'                   => 0,
           'plugin_monitoring_perfdatas_id' => $id,
           'position'                       => 6,
-          'dsname_num'                     => 1,
-          'dsname1'                        => 'ConnPerSec'
+          'dsname_num'                     => 4,
+          'dsname1'                        => 'ConnPerSec',
+          'dsname2'                        => 'value6.2',
+          'dsname3'                        => 'value6.3',
+          'dsname4'                        => 'value6.4'
       );
       $pmPerfdataDetail->add($inputd);
 
@@ -1061,8 +1091,11 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dynamic_name'                   => 0,
           'plugin_monitoring_perfdatas_id' => $id,
           'position'                       => 7,
-          'dsname_num'                     => 1,
-          'dsname1'                        => 'ReqPerConn'
+          'dsname_num'                     => 4,
+          'dsname1'                        => 'ReqPerConn',
+          'dsname2'                        => 'value7.2',
+          'dsname3'                        => 'value7.3',
+          'dsname4'                        => 'value7.4'
       );
       $pmPerfdataDetail->add($inputd);
     

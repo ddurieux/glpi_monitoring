@@ -137,7 +137,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
    
    
    
-   function getData($result, $rrdtool_template, $ret=array()) {
+   function getData($result, $rrdtool_template, $start_date, $end_date, $ret=array()) {
       global $DB;
       
       if (empty($ret)) {
@@ -150,13 +150,12 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       $a_labels = array();
 
       $a_perf = PluginMonitoringPerfdata::getArrayPerfdata($rrdtool_template);
-      $previous_timestamp = '';
+      $previous_timestamp = strtotime($start_date);
       $query_data = array();
+      $cnt = 0;
       while ($edata=$DB->fetch_array($result)) {
          $current_timestamp = strtotime($edata['date']);
-         if ($previous_timestamp == '') {
-            $previous_timestamp = $current_timestamp;
-         }
+         $cnt++;
                               
          // Timeup = time between 2 checks + 20%
          $timeup = $_SESSION['plugin_monitoring_checkinterval'] * 1.2;
@@ -172,6 +171,18 @@ class PluginMonitoringServiceevent extends CommonDBTM {
          $previous_timestamp = $current_timestamp;
          $query_data[] = $edata;
       }      
+
+      $timeup = $_SESSION['plugin_monitoring_checkinterval'] * 1.2;
+      $current_timestamp = strtotime($end_date);
+      while (($previous_timestamp + $timeup) < $current_timestamp) {
+         $previous_timestamp += $_SESSION['plugin_monitoring_checkinterval'];
+         if ($previous_timestamp < $current_timestamp) {
+            $query_data[] = array(
+                'date'      => date('Y-m-d H:i:s', $previous_timestamp),
+                'perf_data' => ''
+            );
+         }
+      }
       
       foreach ($query_data as $edata) {
          $current_timestamp = strtotime($edata['date']);
@@ -206,8 +217,13 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                   foreach ($a_perfdata_final as $nb_val=>$val) {
 
                         //No value, no graph
-                        if ($val == '')
-                           continue;
+                        if ($val == '') {
+                           if ($nb_val >=(count($a_perfdata_final) - 1)) {
+                              continue;
+                           } else {
+                              $val = 0;
+                           }
+                        }
                         $matches = array();
                         preg_match("/^([\d-\.]*)(.*)/",$val,$matches);
                         //Numeric part is data value

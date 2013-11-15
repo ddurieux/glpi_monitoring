@@ -893,7 +893,7 @@ $a_options['date_start'] = '2013-01-01 01:01:01';
                      AND `date` <= '".$array['date_end']."'
                   ORDER BY `date`";
                $resultevents = $DB->query($queryevents);
-               $ret = $pmServiceevent->getData($resultevents, $pmComponent->fields['graph_template']);
+               $ret = $pmServiceevent->getData($resultevents, $pmComponent->fields['graph_template'], $array['date_start'], $array['date_end']);
             }
 
             echo '<tr class="tab_bg_1'.(($rownb = !$rownb)?'_2':'').'">';
@@ -1080,7 +1080,7 @@ $a_options['date_start'] = '2013-01-01 01:01:01';
                         ORDER BY `date`";
                      $resultevents = $DB->query($queryevents);
                      $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks($pmComponent->fields['id']);
-                     $ret = $pmServiceevent->getData($resultevents, $pmComponent->fields['graph_template']);
+                     $ret = $pmServiceevent->getData($resultevents, $pmComponent->fields['graph_template'], $startdatet, $enddatet);
                      if (!isset($ret[0][$groupname])) {
                         $value = 0;
                      } else {
