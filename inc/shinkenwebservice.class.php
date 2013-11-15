@@ -63,12 +63,12 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
          $itemtype = $datah['itemtype'];
          $item = new $itemtype();
          if ($item->getFromDB($datah['items_id'])) {
-            $hostname = $itemtype."-".$datah['items_id']."-".preg_replace("/[^A-Za-z0-9]/","",$item->fields['name']);
+            $hostname = preg_replace("/[^A-Za-z0-9\-_]/","",$item->fields['name']);
          }         
       }
       
       $a_component = current($pmComponent->find("`id`='".$pmService->fields['plugin_monitoring_components_id']."'", "", 1));
-      $service_description = preg_replace("/[^A-Za-z0-9]/","",$a_component['name'])."-".$pmService->fields['id'];
+      $service_description = preg_replace("/[^A-Za-z0-9\-_]/","",$a_component['name']);
       
       $tag = PluginMonitoringEntity::getTagByEntities($pmService->fields['entities_id']);
       $ip = $pmTag->getIP($tag);

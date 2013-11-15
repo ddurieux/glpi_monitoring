@@ -248,11 +248,11 @@ class PluginMonitoringMessage extends CommonDBTM {
          $a_restart = current($a_restart_planned);
          if ($a_restart['action'] == 'restart_planned') {
             echo "<div class='msgboxmonit msgboxmonit-red'>";
-            echo __('Shiken restart order has been made at '.Html::convDateTime($a_restart['date_mod']));
+            echo __('Shinken restart order has been made at '.Html::convDateTime($a_restart['date_mod']));
             echo "</div>";
          } else {
             echo "<div class='msgboxmonit msgboxmonit-orange'>";
-            echo __('Shiken has restarted at '.Html::convDateTime($a_restart['date_mod']));
+            echo __('Shinken has restarted at '.Html::convDateTime($a_restart['date_mod']));
             echo "</div>";
          }
       }
