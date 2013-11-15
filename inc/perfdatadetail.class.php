@@ -178,8 +178,8 @@ class PluginMonitoringPerfdataDetail extends CommonDBTM {
          $input['plugin_monitoring_perfdatas_id'] = $perfdatas_id;
          $input['position'] = $position;
          $input['dsname_num'] = count($data['values']);
-         for ($i=($input['dsname_num']+1); $i<9; $i++) { 
-            $data['dsname'.$i] = 'val'.$i;
+         for ($i=1; $i<=$input['dsname_num']; $i++) { 
+            $input['dsname'.$i] = 'value'.$position.'.'.$i;
          }
          $pmPerfdataDetail->add($input);
       }

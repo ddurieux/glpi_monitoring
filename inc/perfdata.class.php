@@ -1154,10 +1154,11 @@ class PluginMonitoringPerfdata extends CommonDBTM {
    
    
    function post_addItem() {
+      
       if ($this->fields['perfdata'] != ''
               && !isset($_SESSION['plugin_monitoring_installation'])) {
        PluginMonitoringPerfdataDetail::updateDetailForPerfdata(
-               $this->fields['perfdata'], $this->fields['id']);
+               Toolbox::stripslashes_deep($this->fields['perfdata']), $this->fields['id']);
       }
    }
 
