@@ -626,7 +626,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          ".$leftjoin."
          ".$where."
          ".$ORDERQUERY;
-      Toolbox::logInFile("pm", "query hosts - $query\n");
+      // Toolbox::logInFile("pm", "query hosts - $query\n");
       $result = $DB->query($query);
       
       $start = 0;
