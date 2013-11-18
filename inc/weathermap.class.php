@@ -1274,7 +1274,7 @@ LINK DEFAULT
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
 
-         $graph_template = '';
+         $graph_template = 0;
          if (isset($cache[$data['plugin_monitoring_components_id']])) {
             $graph_template = $cache[$data['plugin_monitoring_components_id']];
          } else {

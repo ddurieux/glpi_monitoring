@@ -68,7 +68,7 @@ if (isset($_POST["copy"])) {
       Session::addMessageAfterRedirect("<font class='red'>".__('Fields with asterisk are required', 'monitoring')."</font>");
       Html::back();
    }  
-   if ($_POST['graph_template'] != '') {
+   if ($_POST['graph_template'] != 0) {
       $a_perfnames = array();
       $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($_POST['graph_template']);
       foreach ($a_perfnames as $name) {

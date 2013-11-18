@@ -300,7 +300,7 @@ class PluginMonitoringService extends CommonDBTM {
          $results = $DB->query($querys);
          while ($datas=$DB->fetch_array($results)) {
             $pmComponent->getFromDB($datas['plugin_monitoring_components_id']);
-            if ($pmComponent->fields['graph_template'] != '') {
+            if ($pmComponent->fields['graph_template'] != 0) {
                if ($td == 0) {
                   echo "<tr>";
                }

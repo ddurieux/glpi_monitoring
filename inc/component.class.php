@@ -99,7 +99,7 @@ class PluginMonitoringComponent extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if ($item->getID() > 0
-              AND $item->fields['graph_template'] != '') {
+              AND $item->fields['graph_template'] != 0) {
          return array(
                __('Copy'),
                __('Components catalog', 'monitoring'),

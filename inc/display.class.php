@@ -604,7 +604,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          $timezone = $_SESSION['plugin_monitoring_timezone'];
       }
          
-      if ($pMonitoringComponent->fields['graph_template'] != '') {
+      if ($pMonitoringComponent->fields['graph_template'] != 0) {
          echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$data['id']."'>";
          $pmServicegraph = new PluginMonitoringServicegraph();
          ob_start();
