@@ -271,7 +271,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                                                                                     $class->getID()));
                $a_hosts[$i]['realm'] = $pmRealm->fields['name'];
                $a_hosts[$i]['process_perf_data'] = '1';
-               $a_hosts[$i]['notification_interval'] = '30';
+               $a_hosts[$i]['notification_interval'] = '86400';
                // For contact check if a service with this component
                   $a_hosts[$i]['contacts'] = '';
                   $querycont = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
