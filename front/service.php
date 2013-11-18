@@ -73,14 +73,14 @@ if (isset($_GET['hidesearch'])) {
    echo "<table class='tab_cadre_fixe'>";
    echo "<tr class='tab_bg_1'>";
    echo "<th>";
-   echo "<a onClick='Ext.get(\"searchform\").toggle();'>
+   echo "<a onClick='Ext.get(\"searchformservices\").toggle();'>
       <img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' />&nbsp;
          ".__('Display search form', 'monitoring')."
       &nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' /></a>";
    echo "</th>";
    echo "</tr>";
    echo "</table>";
-   echo "<div style='display: none;' id='searchform'>";
+   echo "<div style='display: none;' id='searchformservices'>";
 }
 Search::showGenericSearch("PluginMonitoringService", $_GET);
 if (isset($_GET['hidesearch'])) {

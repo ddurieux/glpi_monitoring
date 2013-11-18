@@ -187,16 +187,19 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $pmDisplayview = new PluginMonitoringDisplayview();
       
       $ong = array();
+      if (PluginMonitoringProfile::haveRight("hosts_status", 'r')) {
+         $ong[1] = __('Hosts status', 'monitoring');
+      }
       if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
-         $ong[1] = __('Services catalog', 'monitoring');
+         $ong[2] = __('Services catalog', 'monitoring');
       }
       if (PluginMonitoringProfile::haveRight("componentscatalog", 'r')) {
-         $ong[2] = __('Components catalog', 'monitoring');
+         $ong[3] = __('Components catalog', 'monitoring');
       }
-      $ong[3] = __('All resources', 'monitoring');
-      $ong[4] = __('Dependencies;', 'monitoring');
+      $ong[4] = __('All resources', 'monitoring');
+      $ong[5] = __('Dependencies;', 'monitoring');
       if (PluginMonitoringProfile::haveRight("view", 'r')) {
-         $i = 5;
+         $i = 6;
          $a_views = $pmDisplayview->getViews();
          foreach ($a_views as $name) {
             $ong[$i] = htmlentities($name);
@@ -562,32 +565,32 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       
       $where = "";
-      if (isset($_GET['field'])) {
-         foreach ($_GET['field'] as $key=>$value) {
-            $wheretmp = '';
-            if (isset($_GET['link'][$key])) {
-               $wheretmp.= " ".$_GET['link'][$key]." ";
-            }
-            $wheretmp .= Search::addWhere(
-                                   "",
-                                   0,
-                                   "PluginMonitoringService",
-                                   $_GET['field'][$key],
-                                   $_GET['searchtype'][$key],
-                                   $_GET['contains'][$key]);
-            if (!strstr($wheretmp, "``.``")) {
-               if ($where != ''
-                       AND !isset($_GET['link'][$key])) {
-                  $where .= " AND ";
-               }
-               $where .= $wheretmp;
-            }
-         }
-      }
-      if ($where != '') {
-         $where = "(".$where;
-         $where .= ") AND ";
-      }
+      // if (isset($_GET['field'])) {
+         // foreach ($_GET['field'] as $key=>$value) {
+            // $wheretmp = '';
+            // if (isset($_GET['link'][$key])) {
+               // $wheretmp.= " ".$_GET['link'][$key]." ";
+            // }
+            // $wheretmp .= Search::addWhere(
+                                   // "",
+                                   // 0,
+                                   // "PluginMonitoringHost",
+                                   // $_GET['field'][$key],
+                                   // $_GET['searchtype'][$key],
+                                   // $_GET['contains'][$key]);
+            // if (!strstr($wheretmp, "``.``")) {
+               // if ($where != ''
+                       // AND !isset($_GET['link'][$key])) {
+                  // $where .= " AND ";
+               // }
+               // $where .= $wheretmp;
+            // }
+         // }
+      // }
+      // if ($where != '') {
+         // $where = "(".$where;
+         // $where .= ") AND ";
+      // }
       $where .= " `glpi_plugin_monitoring_hosts`.`itemtype` = 'Computer' ";
 
       if ($where != '') {
@@ -1860,40 +1863,40 @@ Ext.onReady(function(){
          return $a_return;
       }
 
-      $down_link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/display_hosts_status.php?hidesearch=1&reset=reset".
-                  "&field[0]=3&searchtype[0]=contains&contains[0]=CRITICAL&link[1]=AND".
-                  "&field[1]=23&searchtype[1]=equals&contains[1]=0&link[2]=OR".
-                  "&field[2]=3&searchtype[2]=contains&contains[2]=DOWN&link[3]=AND".
-                  "&field[3]=23&searchtype[3]=equals&contains[3]=0&link[4]=OR".
-                  "&field[4]=3&searchtype[4]=contains&contains[4]=UNREACHABLE&link[5]=AND".
-                  "&field[5]=23&searchtype[5]=equals&contains[5]=0".
-                  "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
-      $unknown_link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/display_hosts_status.php?hidesearch=1&reset=reset".
-                  "&field[0]=3&searchtype[0]=contains&contains[0]=FLAPPING&link[1]=AND".
-                  "&field[1]=23&searchtype[1]=equals&contains[1]=0&link[2]=OR".
-                  "&field[2]=3&searchtype[2]=contains&contains[2]=RECOVERY&link[3]=AND".
-                  "&field[3]=23&searchtype[3]=equals&contains[3]=0&link[4]=OR".
-                  "&field[4]=3&searchtype[4]=contains&contains[4]=WARNING&link[5]=AND".
-                  "&field[5]=23&searchtype[5]=equals&contains[5]=0&link[6]=OR".
-                  "&field[6]=3&searchtype[6]=contains&contains[6]=UNKNOWN".
-                  "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
-      $unreachable_link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/display_hosts_status.php?hidesearch=1&reset=reset".
-                  "&field[0]=3&searchtype[0]=contains&contains[0]=FLAPPING&link[1]=AND".
-                  "&field[1]=23&searchtype[1]=equals&contains[1]=0&link[2]=OR".
-                  "&field[2]=3&searchtype[2]=contains&contains[2]=RECOVERY&link[3]=AND".
-                  "&field[3]=23&searchtype[3]=equals&contains[3]=0&link[4]=OR".
-                  "&field[4]=3&searchtype[4]=contains&contains[4]=WARNING&link[5]=AND".
-                  "&field[5]=23&searchtype[5]=equals&contains[5]=0&link[6]=AND".
-                  "&field[6]=9&searchtype[6]=contains&contains[6]=^".
-                  "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
-      $up_link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/display_hosts_status.php?hidesearch=1&reset=reset&".
-                  "field[0]=3&searchtype[0]=contains&contains[0]=OK&link[1]=OR".
-                  "&field[1]=3&searchtype[1]=contains&contains[1]=UP".
-                  "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
+      // $down_link = $CFG_GLPI['root_doc'].
+               // "/plugins/monitoring/front/display_hosts_status.php?hidesearch=1&reset=reset".
+                  // "&field[0]=3&searchtype[0]=contains&contains[0]=CRITICAL&link[1]=AND".
+                  // "&field[1]=23&searchtype[1]=equals&contains[1]=0&link[2]=OR".
+                  // "&field[2]=3&searchtype[2]=contains&contains[2]=DOWN&link[3]=AND".
+                  // "&field[3]=23&searchtype[3]=equals&contains[3]=0&link[4]=OR".
+                  // "&field[4]=3&searchtype[4]=contains&contains[4]=UNREACHABLE&link[5]=AND".
+                  // "&field[5]=23&searchtype[5]=equals&contains[5]=0".
+                  // "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
+      // $unknown_link = $CFG_GLPI['root_doc'].
+               // "/plugins/monitoring/front/display_hosts_status.php?hidesearch=1&reset=reset".
+                  // "&field[0]=3&searchtype[0]=contains&contains[0]=FLAPPING&link[1]=AND".
+                  // "&field[1]=23&searchtype[1]=equals&contains[1]=0&link[2]=OR".
+                  // "&field[2]=3&searchtype[2]=contains&contains[2]=RECOVERY&link[3]=AND".
+                  // "&field[3]=23&searchtype[3]=equals&contains[3]=0&link[4]=OR".
+                  // "&field[4]=3&searchtype[4]=contains&contains[4]=WARNING&link[5]=AND".
+                  // "&field[5]=23&searchtype[5]=equals&contains[5]=0&link[6]=OR".
+                  // "&field[6]=3&searchtype[6]=contains&contains[6]=UNKNOWN".
+                  // "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
+      // $unreachable_link = $CFG_GLPI['root_doc'].
+               // "/plugins/monitoring/front/display_hosts_status.php?hidesearch=1&reset=reset".
+                  // "&field[0]=3&searchtype[0]=contains&contains[0]=FLAPPING&link[1]=AND".
+                  // "&field[1]=23&searchtype[1]=equals&contains[1]=0&link[2]=OR".
+                  // "&field[2]=3&searchtype[2]=contains&contains[2]=RECOVERY&link[3]=AND".
+                  // "&field[3]=23&searchtype[3]=equals&contains[3]=0&link[4]=OR".
+                  // "&field[4]=3&searchtype[4]=contains&contains[4]=WARNING&link[5]=AND".
+                  // "&field[5]=23&searchtype[5]=equals&contains[5]=0&link[6]=AND".
+                  // "&field[6]=9&searchtype[6]=contains&contains[6]=^".
+                  // "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
+      // $up_link = $CFG_GLPI['root_doc'].
+               // "/plugins/monitoring/front/display_hosts_status.php?hidesearch=1&reset=reset&".
+                  // "field[0]=3&searchtype[0]=contains&contains[0]=OK&link[1]=OR".
+                  // "&field[1]=3&searchtype[1]=contains&contains[1]=UP".
+                  // "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
       
       echo "<table align='center'>";
       echo "<tr>";
