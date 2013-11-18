@@ -528,16 +528,16 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $num = 0;
  
       echo "<tr class='tab_bg_1'>";
-      $this->showHeaderItem(__('Status'), 3, $num, $start, $globallinkto, 'service.php');
-      $this->showHeaderItem(__('Entity'), 6, $num, $start, $globallinkto, 'service.php');
+      $this->showHeaderItem(__('Status'), 3, $num, $start, $globallinkto, 'service.php', 'PluginMonitoringService');
+      $this->showHeaderItem(__('Entity'), 6, $num, $start, $globallinkto, 'service.php', 'PluginMonitoringService');
       echo Search::showHeaderItem(0, __('Show graphics'), $num);
       echo Search::showHeaderItem(0, __('Item type')." - ".__('Name'), $num);
       $this->showHeaderItem(__('Components', 'monitoring'), 7, $num, $start, 
-                            $globallinkto, 'service.php');
-      $this->showHeaderItem(__('Status'), 10, $num, $start, $globallinkto, 'service.php');
+                            $globallinkto, 'service.php', 'PluginMonitoringService');
+      $this->showHeaderItem(__('Status'), 10, $num, $start, $globallinkto, 'service.php', 'PluginMonitoringService');
       $this->showHeaderItem(__('Last check', 'monitoring'), 4, $num, $start, 
-                            $globallinkto, 'service.php');
-      $this->showHeaderItem(__('Result details'), 9, $num, $start, $globallinkto, 'service.php');
+                            $globallinkto, 'service.php', 'PluginMonitoringService');
+      $this->showHeaderItem(__('Result details'), 9, $num, $start, $globallinkto, 'service.php', 'PluginMonitoringService');
       echo Search::showHeaderItem(0, __('Check period', 'monitoring'), $num);
       echo '<th>'.__('Acknowledge', 'monitoring').'</th>';
       echo "</tr>";
@@ -601,14 +601,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
       // * ORDER
       $ORDERQUERY = " ORDER BY `name` ";
-      $toview = array(3, 6, 7, 10, 4, 9);
+      $toview = array(1, 2, 3, 4);
       $toviewComplete = array(
           'ITEM_0' => 'state', 
-          'ITEM_1' => 'completename',
-          'ITEM_2' => 'component_name',
-          'ITEM_3' => 'state',
-          'ITEM_4' => 'last_check',
-          'ITEM_5' => 'event'
+          'ITEM_1' => 'name',
+          'ITEM_2' => 'state',
+          'ITEM_3' => 'last_check'
       );
       foreach ($toview as $key => $val) {
          if ($_GET['sort']==$val) {
@@ -668,14 +666,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $num = 0;
  
       echo "<tr class='tab_bg_1'>";
-      $this->showHeaderItem(__('Status'), 3, $num, $start, $globallinkto, 'display_hosts_status.php');
-      // $this->showHeaderItem(__('Entity'), 6, $num, $start, $globallinkto, 'display_hosts_status.php');
-      // echo Search::showHeaderItem(0, __('Show graphics'), $num);
-      // echo Search::showHeaderItem(0, __('Item type')." - ".__('Name'), $num);
-      // $this->showHeaderItem(__('Components', 'monitoring'), 7, $num, $start, $globallinkto, 'display_hosts_status.php');
-      $this->showHeaderItem(__('Status'), 10, $num, $start, $globallinkto, 'display_hosts_status.php');
-      $this->showHeaderItem(__('Last check', 'monitoring'), 4, $num, $start, $globallinkto, 'display_hosts_status.php');
-      $this->showHeaderItem(__('Result details'), 9, $num, $start, $globallinkto, 'display_hosts_status.php');
+      $this->showHeaderItem(__('Status'), 1, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
+      $this->showHeaderItem(__('Hostname'), 2, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
+      $this->showHeaderItem(__('Status'), 3, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
+      $this->showHeaderItem(__('Last check', 'monitoring'), 4, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
+      // $this->showHeaderItem(__('Result details'), 5, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
+      echo Search::showHeaderItem(0, __('Result details', 'monitoring'), $num);
       echo Search::showHeaderItem(0, __('Check period', 'monitoring'), $num);
       echo '<th>'.__('Acknowledge', 'monitoring').'</th>';
       echo "</tr>";
@@ -683,7 +679,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       // PluginMonitoringServicegraph::loadLib();
       while ($data=$DB->fetch_array($result)) {
          echo "<tr class='tab_bg_3'>";
-         Toolbox::logInFile("pm", "Host line - ".serialize($data)."\n");
+         // Toolbox::logInFile("pm", "Host line - ".serialize($data)."\n");
          $this->displayHostLine($data);
          echo "</tr>";         
       }
@@ -697,11 +693,11 @@ class PluginMonitoringDisplay extends CommonDBTM {
    /**
     * Manage header of list
     */
-   function showHeaderItem($title, $numoption, &$num, $start, $globallinkto, $page) {
+   function showHeaderItem($title, $numoption, &$num, $start, $globallinkto, $page, $itemtype) {
       global $CFG_GLPI;
       
       $linkto = $CFG_GLPI['root_doc']."/plugins/monitoring/front/$page?".
-              "itemtype=PluginMonitoringService&amp;sort=".$numoption."&amp;order=".
+              "itemtype=$itemtype&amp;sort=".$numoption."&amp;order=".
                 ($_GET['order']=="ASC"?"DESC":"ASC")."&amp;start=".$start.
                 $globallinkto;
       $issort = false;
@@ -949,6 +945,10 @@ class PluginMonitoringDisplay extends CommonDBTM {
          title='".$alt."' alt='".$alt."' />";
       echo "</td>";
  
+
+      echo "<td>";
+      echo $data['name'];
+      echo "</td>";
  
       echo "<td class='center'>";
       
