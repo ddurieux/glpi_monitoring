@@ -599,7 +599,6 @@ class PluginMonitoringShinken extends CommonDBTM {
                   $a_services[$i]['notification_period'] = "24x7";
                }
                $a_services[$i]['notification_options'] = 'w,c,r';
-               $a_services[$i]['active_checks_enabled'] = '1';
                $a_services[$i]['process_perf_data'] = '1';
                $a_services[$i]['active_checks_enabled'] = '1';
                $a_services[$i]['passive_checks_enabled'] = '1';
@@ -855,10 +854,9 @@ class PluginMonitoringShinken extends CommonDBTM {
             $a_servicetemplates[$i]['notification_period'] = "24x7";
          }
          $a_servicetemplates[$i]['notification_options'] = 'w,c,r';
-         $a_servicetemplates[$i]['active_checks_enabled'] = '1';
          $a_servicetemplates[$i]['process_perf_data'] = '1';
-         $a_servicetemplates[$i]['active_checks_enabled'] = '1';
-         $a_servicetemplates[$i]['passive_checks_enabled'] = '1';
+         $a_servicetemplates[$i]['active_checks_enabled'] = $data['active_checks_enabled'];
+         $a_servicetemplates[$i]['passive_checks_enabled'] = $data['passive_checks_enabled'];
          $a_servicetemplates[$i]['parallelize_check'] = '1';
          $a_servicetemplates[$i]['obsess_over_service'] = '1';
          $a_servicetemplates[$i]['check_freshness'] = '1';
