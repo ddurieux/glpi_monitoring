@@ -87,7 +87,7 @@ $pmDisplay->showHostsCounters("Hosts", 1, 1);
    // echo "</div>";
 // }
 
-$pmDisplay->showHostsBoard(950);
+$pmDisplay->showHostsBoard();
 if (isset($_SESSION['glpisearch']['PluginMonitoringHost']['reset'])) {
    unset($_SESSION['glpisearch']['PluginMonitoringHost']['reset']);
 }

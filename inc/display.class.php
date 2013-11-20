@@ -526,7 +526,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       if ($width == '') {
          echo "<table class='tab_cadrehov' style='width:100%;'>";
       } else {
-         echo "<table class='tab_cadrehov' style='width:100%;'>";
+         echo "<table class='tab_cadrehov' style='width:".$width."px;'>";
       }
       $num = 0;
  
@@ -591,7 +591,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          // $where = "(".$where;
          // $where .= ") AND ";
       // }
-      $where .= " `glpi_plugin_monitoring_hosts`.`itemtype` = 'Computer' ";
+      $where .= " `glpi_plugin_monitoring_hosts`.`itemtype` = 'Computer' AND `glpi_computers`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
 
       if ($where != '') {
          $where = " WHERE ".$where;
@@ -664,7 +664,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       if ($width == '') {
          echo "<table class='tab_cadrehov' style='width:100%;'>";
       } else {
-         echo "<table class='tab_cadrehov' style='width:100%;'>";
+         echo "<table class='tab_cadrehov' style='width:".$width."px;'>";
       }
       $num = 0;
  
@@ -1845,13 +1845,21 @@ Ext.onReady(function(){
          $down = countElementsInTable("glpi_plugin_monitoring_hosts", 
                  "`state`='DOWN'");
 
-         // ** Manage play sound if critical increase since last refresh
+         // ** Manage play sound if down increased since last refresh
             if (isset($_SESSION['plugin_monitoring_dashboard_hosts_down'])) {
                if ($down > $_SESSION['plugin_monitoring_dashboard_hosts_down']) {
                   $play_sound = 1;
                }            
             }
             $_SESSION['plugin_monitoring_dashboard_hosts_down'] = $down;
+         
+         // ** Manage play sound if unreachable increased since last refresh
+            if (isset($_SESSION['plugin_monitoring_dashboard_hosts_unreachable'])) {
+               if ($unreachable > $_SESSION['plugin_monitoring_dashboard_hosts_unreachable']) {
+                  $play_sound = 1;
+               }            
+            }
+            $_SESSION['plugin_monitoring_dashboard_hosts_unreachable'] = $unreachable;
          
       }
       if ($display == '0') {
