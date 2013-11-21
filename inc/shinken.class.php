@@ -172,6 +172,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                     OR isset($a_entities_allowed[$class->fields['entities_id']])) {
 
                $a_hosts[$i]['host_name'] = preg_replace("/[^A-Za-z0-9\-_]/","",$class->fields['name']);
+               // $a_hosts[$i]['_ENTITIESID'] = $class->fields['entities_id'];
                $a_hosts[$i]['_ITEMSID'] = $data['items_id'];
                $a_hosts[$i]['_ITEMTYPE'] = $classname;
                
@@ -226,7 +227,74 @@ class PluginMonitoringShinken extends CommonDBTM {
                
                $a_fields = $pmComponent->fields;
                
-               $a_hosts[$i]['check_command'] = $pmCommand->fields['command_name'];
+               // Manage host check_command arguments
+               // Toolbox::logInFile("pm", "Command line : ".$pmCommand->fields['command_line']."\n");
+               // Toolbox::logInFile("pm", "Arguments : ".$a_fields['arguments']."\n");
+               // Toolbox::logInFile("pm", "Arguments : ".$pmCommand->fields['arguments']."\n");
+               
+               $array = array();
+               preg_match_all("/\\$(ARG\d+)\\$/", $pmCommand->fields['command_line'], $array);
+               sort($array[0]);
+               $a_arguments = importArrayFromDB($pmCommand->fields['arguments']);
+               $a_argumentscustom = importArrayFromDB($pmComponent->fields['arguments']);
+               foreach ($a_argumentscustom as $key=>$value) {
+                  $a_arguments[$key] = $value;
+               }
+               foreach ($a_arguments as $key=>$value) {
+                  $a_arguments[$key] = html_entity_decode($value);
+               }
+               $args = '';
+               foreach ($array[0] as $arg) {
+                  if ($arg != '$PLUGINSDIR$'
+                          AND $arg != '$HOSTADDRESS$'
+                          AND $arg != '$MYSQLUSER$'
+                          AND $arg != '$MYSQLPASSWORD$') {
+                     $arg = str_replace('$', '', $arg);
+                     if (!isset($a_arguments[$arg])) {
+                        $args .= '!';
+                     } else {
+                        if (strstr($a_arguments[$arg], "[[HOSTNAME]]")) {
+                           $a_arguments[$arg] = str_replace("[[HOSTNAME]]", $hostname, $a_arguments[$arg]);
+                        } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTDESCR]]")){
+                           if (class_exists("PluginFusioninventoryNetworkPort")) {
+                              $pfNetworkPort = new PluginFusioninventoryNetworkPort();
+                              $pfNetworkPort->loadNetworkport($data['networkports_id']);
+                              $descr = $pfNetworkPort->getValue("ifdescr");
+                              $a_arguments[$arg] = str_replace("[[NETWORKPORTDESCR]]", $descr, $a_arguments[$arg]);
+                           }
+                        } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTNUM]]")){
+                           $networkPort = new NetworkPort();
+                           $networkPort->getFromDB($data['networkports_id']);
+                           $logicalnum = $pfNetworkPort->fields['logical_number'];
+                           $a_arguments[$arg] = str_replace("[[NETWORKPORTNUM]]", $logicalnum, $a_arguments[$arg]);
+                        } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTNAME]]")){
+                           $networkPort = new NetworkPort();
+                           $networkPort->getFromDB($data['networkports_id']);
+                           $portname = $pfNetworkPort->fields['name'];
+                           $a_arguments[$arg] = str_replace("[[NETWORKPORTNAME]]", $portname, $a_arguments[$arg]);
+                        } else if (strstr($a_arguments[$arg], "[")) {
+                           $a_arguments[$arg] = PluginMonitoringService::convertArgument($data['id'], $a_arguments[$arg]);
+                        }
+                        if ($a_arguments == '') {
+                           $notadd = 1;
+                           if ($notadddescription != '') {
+                              $notadddescription .= ", ";
+                           }
+                           $notadddescription .= "Argument ".$a_arguments[$arg]." Not have value";
+                        }
+                        $args .= '!'.$a_arguments[$arg];
+                        if ($a_arguments[$arg] == ''
+                                AND $a_component['alias_command'] != '') {
+                           $args .= $a_component['alias_command'];
+                        }
+                     }
+                  }
+               }
+                  
+               $a_hosts[$i]['check_command'] = $pmCommand->fields['command_name'].$args;
+               // Toolbox::logInFile("pm", "check_command : ".$a_hosts[$i]['check_command']."\n");
+
+
                $pmCheck->getFromDB($pmComponent->fields['plugin_monitoring_checks_id']);
                $a_hosts[$i]['check_interval'] = $pmCheck->fields['check_interval'];
                $a_hosts[$i]['retry_interval'] = $pmCheck->fields['retry_interval'];
@@ -449,6 +517,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             $hostnamebp = $a_services[$i]['host_name']; // For business rules
 
             $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9\-_]/","",$a_component['name']);
+            // $a_services[$i]['_ENTITIESID'] = $item->fields['entities_id'];
             $a_services[$i]['_ITEMSID'] = $data['id'];
             $a_services[$i]['_ITEMTYPE'] = 'service';
          
@@ -733,6 +802,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                }
                $a_services[$i]['host_name'] = $hostnamebp;
                $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9\-_]/","",$dataBA['name']);
+               // $a_services[$i]['_ENTITIESID'] = $dataBA['id'];
                $a_services[$i]['_ITEMSID'] = $dataBA['id'];
                $a_services[$i]['_ITEMTYPE'] = 'servicecatalog';
                $command = "bp_rule!";
