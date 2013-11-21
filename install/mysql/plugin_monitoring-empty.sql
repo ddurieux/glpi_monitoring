@@ -365,6 +365,7 @@ DROP TABLE IF EXISTS `glpi_plugin_monitoring_hosts`;
 CREATE TABLE `glpi_plugin_monitoring_hosts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `items_id` int(11) NOT NULL DEFAULT '0',
+  `entities_id` int(11) NOT NULL DEFAULT '0',
   `itemtype` varchar(100) DEFAULT NULL,
   `event` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `state` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
