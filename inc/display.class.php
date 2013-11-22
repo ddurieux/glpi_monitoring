@@ -593,7 +593,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
          // $where = "(".$where;
          // $where .= ") AND ";
       // }
-      $where .= " `glpi_plugin_monitoring_hosts`.`itemtype` = 'Computer' AND `glpi_computers`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
+      $where .= " `glpi_plugin_monitoring_hosts`.`itemtype` = 'Computer' AND `glpi_plugin_monitoring_hosts`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
+      // $where .= " `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype` = 'Computer' AND `glpi_computers`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
 
       if ($where != '') {
          $where = " WHERE ".$where;
@@ -604,6 +605,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
       
       $leftjoin = " LEFT JOIN `glpi_computers` ON `glpi_computers`.`id` = `glpi_plugin_monitoring_hosts`.`items_id`";
       $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_hostconfigs` ON `glpi_plugin_monitoring_hostconfigs`.`items_id` = `glpi_plugin_monitoring_hosts`.`items_id`";
+      // $leftjoin = " LEFT JOIN `glpi_computers` ON `glpi_computers`.`id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` ";
+      // $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_hostconfigs` ON `glpi_plugin_monitoring_hostconfigs`.`items_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`";
+      // $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_hosts` ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`";
 
       // * ORDER
       $ORDERQUERY = " ORDER BY `name` ";
@@ -625,17 +629,25 @@ class PluginMonitoringDisplay extends CommonDBTM {
          }
       }
       
+      // $query = "SELECT `glpi_plugin_monitoring_componentscatalogs_hosts`.is_static, `glpi_plugin_monitoring_hosts`.*, `glpi_computers`.`name`, `glpi_plugin_monitoring_hostconfigs`.`plugin_monitoring_components_id` 
+         // FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+         // ".$leftjoin."
+         // ".$where."
+         // ".$ORDERQUERY;
       $query = "SELECT `glpi_plugin_monitoring_hosts`.*, `glpi_computers`.`name`, `glpi_plugin_monitoring_hostconfigs`.`plugin_monitoring_components_id` 
          FROM `glpi_plugin_monitoring_hosts`
          ".$leftjoin."
          ".$where."
          ".$ORDERQUERY;
-      // Toolbox::logInFile("pm", "query hosts - $query\n");
+      Toolbox::logInFile("pm", "query hosts - $query\n");
       $result = $DB->query($query);
       
-      $start = 0;
-      if (isset($_GET["start"])) {
-         $start = $_GET["start"];
+      if (! isset($_GET["start"])) {
+         $_GET["start"]=0;
+      }
+      $start=$_GET['start'];
+      if (! isset($_GET["order"])) {
+         $_GET["order"]="ASC";
       }
       
       $numrows = $DB->numrows($result);
@@ -1796,7 +1808,7 @@ Ext.onReady(function(){
    
    
    
-   function displayHostsCounters($type, $display=1) {
+   function displayHostsCounters($display=1) {
       global $DB,$CFG_GLPI;
       
       $ok = 0;
@@ -1811,37 +1823,46 @@ Ext.onReady(function(){
       
       $play_sound = 0;
       
-      if ($type == 'Hosts') {
-         
-         $up = countElementsInTable("glpi_plugin_monitoring_hosts", 
-                 "`state`='UP' AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+      $up = countElementsInTable("glpi_plugin_monitoring_hosts", 
+              "`state`='UP' AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
-         $unreachable = countElementsInTable("glpi_plugin_monitoring_hosts", 
-                 "`state`='UNREACHABLE'");
-         
-         $unknown = countElementsInTable("glpi_plugin_monitoring_hosts", 
-                 "`state`='UNKNOWN' OR `state` IS NULL");
+      $up_soft = countElementsInTable("glpi_plugin_monitoring_hosts", 
+              "`state`='UP' AND `state_type`='SOFT' AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+      
+      $unreachable = countElementsInTable("glpi_plugin_monitoring_hosts", 
+              "`state`='UNREACHABLE' AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+      
+      $unreachable_soft = countElementsInTable("glpi_plugin_monitoring_hosts", 
+              "`state`='UNREACHABLE' AND `state_type`='SOFT' AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+      
+      $unknown = countElementsInTable("glpi_plugin_monitoring_hosts", 
+              "(`state`='UNKNOWN' OR `state` IS NULL) AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
-         $down = countElementsInTable("glpi_plugin_monitoring_hosts", 
-                 "`state`='DOWN'");
+      $unknown_soft = countElementsInTable("glpi_plugin_monitoring_hosts", 
+              "(`state`='UNKNOWN' OR `state` IS NULL) AND `state_type`='SOFT' AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
-         // ** Manage play sound if down increased since last refresh
-            if (isset($_SESSION['plugin_monitoring_dashboard_hosts_down'])) {
-               if ($down > $_SESSION['plugin_monitoring_dashboard_hosts_down']) {
-                  $play_sound = 1;
-               }            
-            }
-            $_SESSION['plugin_monitoring_dashboard_hosts_down'] = $down;
-         
-         // ** Manage play sound if unreachable increased since last refresh
-            if (isset($_SESSION['plugin_monitoring_dashboard_hosts_unreachable'])) {
-               if ($unreachable > $_SESSION['plugin_monitoring_dashboard_hosts_unreachable']) {
-                  $play_sound = 1;
-               }            
-            }
-            $_SESSION['plugin_monitoring_dashboard_hosts_unreachable'] = $unreachable;
-         
-      }
+      $down = countElementsInTable("glpi_plugin_monitoring_hosts", 
+              "`state`='DOWN' AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+
+      $down_soft = countElementsInTable("glpi_plugin_monitoring_hosts", 
+              "`state`='DOWN' AND `state_type`='SOFT' AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+
+      // ** Manage play sound if down increased since last refresh
+         if (isset($_SESSION['plugin_monitoring_dashboard_hosts_down'])) {
+            if ($down > $_SESSION['plugin_monitoring_dashboard_hosts_down']) {
+               $play_sound = 1;
+            }            
+         }
+         $_SESSION['plugin_monitoring_dashboard_hosts_down'] = $down;
+      
+      // ** Manage play sound if unreachable increased since last refresh
+         if (isset($_SESSION['plugin_monitoring_dashboard_hosts_unreachable'])) {
+            if ($unreachable > $_SESSION['plugin_monitoring_dashboard_hosts_unreachable']) {
+               $play_sound = 1;
+            }            
+         }
+         $_SESSION['plugin_monitoring_dashboard_hosts_unreachable'] = $unreachable;
+      
       if ($display == '0') {
          $a_return = array();
          $a_return['up'] = strval($up);
@@ -1859,17 +1880,16 @@ Ext.onReady(function(){
             $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_critical.png"';
          }
          echo "<table class='tab_cadre' width='100%' height='130' ".$background." >";
-         echo "<tr>";
          echo "<th style='background-color:transparent;'>";
          echo __('Down', 'monitoring');
-         echo "</td>";
-         echo "</tr>";
-         echo "<tr>";
-         echo "<th style='background-color:transparent;'>";
-         echo "<font style='font-size: 52px;'>".$down."</font>";
          echo "</th>";
-         echo "</tr>";
-         echo "</table>";         
+         echo "<tr><td>";
+         echo "<p style='font-size: 52px; text-align: center;'>".$down."</p>";
+         echo "</td></tr>";
+         echo "<tr><td>";
+         echo "<p style='font-size: 11px; text-align: center;'> Soft : ".$down_soft."</p>";
+         echo "</td></tr>";
+         echo "</table>";
       echo "</td>";
       
       echo "<td width='20%'>";
@@ -1878,17 +1898,16 @@ Ext.onReady(function(){
             $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_warning.png"';
          }
          echo "<table class='tab_cadre' width='100%' height='130' ".$background." >";
-         echo "<tr>";
          echo "<th style='background-color:transparent;'>";
          echo __('Unreachable', 'monitoring');
-         echo "</td>";
-         echo "</tr>";
-         echo "<tr>";
-         echo "<th style='background-color:transparent;'>";
-         echo "<font style='font-size: 52px;'>".$unreachable."</font>";
          echo "</th>";
-         echo "</tr>";
-         echo "</table>";         
+         echo "<tr><td>";
+         echo "<p style='font-size: 52px; text-align: center;'>".$unreachable."</p>";
+         echo "</td></tr>";
+         echo "<tr><td>";
+         echo "<p style='font-size: 11px; text-align: center;'> Soft : ".$unreachable_soft."</p>";
+         echo "</td></tr>";
+         echo "</table>";
       echo "</td>";
       
       echo "<td width='20%'>";
@@ -1897,17 +1916,16 @@ Ext.onReady(function(){
             $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_warning.png"';
          }
          echo "<table class='tab_cadre' width='100%' height='130' ".$background." >";
-         echo "<tr>";
          echo "<th style='background-color:transparent;'>";
          echo __('Unknown', 'monitoring');
-         echo "</td>";
-         echo "</tr>";
-         echo "<tr>";
-         echo "<th style='background-color:transparent;'>";
-         echo "<font style='font-size: 52px;'>".$unknown."</font>";
          echo "</th>";
-         echo "</tr>";
-         echo "</table>";         
+         echo "<tr><td>";
+         echo "<p style='font-size: 52px; text-align: center;'>".$unknown."</p>";
+         echo "</td></tr>";
+         echo "<tr><td>";
+         echo "<p style='font-size: 11px; text-align: center;'> Soft : ".$unknown_soft."</p>";
+         echo "</td></tr>";
+         echo "</table>";
       echo "</td>";
       
       echo "<td width='20%'>";
@@ -1916,17 +1934,16 @@ Ext.onReady(function(){
             $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_ok.png"';
          }
          echo "<table class='tab_cadre' width='100%' height='130' ".$background." >";
-         echo "<tr>";
          echo "<th style='background-color:transparent;'>";
-         echo __('UP', 'monitoring');
-         echo "</td>";
-         echo "</tr>";
-         echo "<tr>";
-         echo "<th style='background-color:transparent;'>";
-         echo "<font style='font-size: 52px;'>".$up."</font>";
+         echo __('Up', 'monitoring');
          echo "</th>";
-         echo "</tr>";
-         echo "</table>";         
+         echo "<tr><td>";
+         echo "<p style='font-size: 52px; text-align: center;'>".$up."</p>";
+         echo "</td></tr>";
+         echo "<tr><td>";
+         echo "<p style='font-size: 11px; text-align: center;'> Soft : ".$up_soft."</p>";
+         echo "</td></tr>";
+         echo "</table>";
       echo "</td>";
 
       echo "</tr>";
@@ -1967,11 +1984,11 @@ Ext.onReady(function(){
 
    
    
-   function showHostsCounters($type, $display=1, $ajax=1) { 
+   function showHostsCounters($display=1, $ajax=1) { 
       global $CFG_GLPI;
 
       if ($display == 0) {
-         return $this->displayHostsCounters($type, $display);
+         return $this->displayHostsCounters($display);
       }
             
       if ($ajax == 1) {
@@ -1985,7 +2002,7 @@ Ext.onReady(function(){
          mgrcc".$type.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateHostsCounter.php\", \"type=".$type."\", \"\", true);
          </script>";
       } else {
-         $this->displayHostsCounters($type);
+         $this->displayHostsCounters();
       }
    }
 

@@ -58,6 +58,7 @@ $pmDisplay->menu();
 $pmDisplay->refreshPage();
 
 $pmDisplay->showHostsCounters("Hosts", 1, 1);
+
 // Manage search
 // if (isset($_SESSION['plugin_monitoring']['hosts'])) {
    // $_GET = $_SESSION['plugin_monitoring']['hosts'];
