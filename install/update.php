@@ -1597,7 +1597,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->changeField($newTable, 
                                  'event', 
                                  'event', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+                                 "varchar(512) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->changeField($newTable, 
                                  'state', 
                                  'state', 
@@ -1627,7 +1627,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               "varchar(100) DEFAULT NULL");
          $migration->addField($newTable, 
                                  'event', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+                                 "varchar(512) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
                                  'state', 
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");                 
@@ -1840,7 +1840,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->changeField($newTable, 
                                  'event', 
                                  'event', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+                                 "varchar(512) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->changeField($newTable, 
                                  'perf_data', 
                                  'perf_data', 
@@ -1878,7 +1878,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  "datetime DEFAULT NULL");
          $migration->addField($newTable, 
                                  'event', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+                                 "varchar(512) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
                                  'perf_data', 
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
