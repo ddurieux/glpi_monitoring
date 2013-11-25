@@ -159,7 +159,16 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_contacts_entities[$data['items_id']][$data['users_id']] = $contactentities;
       }
 
-      $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+      // $query = "SELECT * 
+         // FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+         // GROUP BY `itemtype`, `items_id`";
+      $query = "SELECT 
+         `glpi_plugin_monitoring_componentscatalogs_hosts`.*, 
+         `glpi_computers`.`id`, `glpi_computers`.`locations_id`,
+         `glpi_locations`.`id`, `glpi_locations`.`completename`, `glpi_locations`.`comment`, `glpi_locations`.`building`
+         FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+         LEFT JOIN `glpi_computers` ON `glpi_computers`.`id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`
+         LEFT JOIN `glpi_locations` ON `glpi_locations`.`id` = `glpi_computers`.`locations_id`
          GROUP BY `itemtype`, `items_id`";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
@@ -175,6 +184,23 @@ class PluginMonitoringShinken extends CommonDBTM {
                // $a_hosts[$i]['_ENTITIESID'] = $class->fields['entities_id'];
                $a_hosts[$i]['_ITEMSID'] = $data['items_id'];
                $a_hosts[$i]['_ITEMTYPE'] = $classname;
+
+               if (! empty($data['completename'])) {
+                  $a_hosts[$i]['_LOC_NAME'] = preg_replace("/[\r\n]/"," / ",$data['completename']);
+               }
+               if (! empty($data['comment'])) {
+                  $a_hosts[$i]['_LOC_COMMENT'] = preg_replace("/[\r\n]/"," / ",$data['comment']);
+               }
+               if (! empty($data['building'])) {
+                  $split = explode(',', $data['building']);
+                  if (count($split) > 1) {
+                     // At least 2 elements, let us consider as GPS coordinates ...
+                        $a_hosts[$i]['_LOC_LAT'] = $split[0];
+                        $a_hosts[$i]['_LOC_LNG'] = $split[1];
+                  } else {
+                     $a_hosts[$i]['_LOC_BUILDING'] = preg_replace("/[\r\n]/","",$data['building']);
+                  }
+               }
                
                $a_hosts_found[$a_hosts[$i]['host_name']] = 1;
                $a_hosts[$i]['alias'] = preg_replace("/[^A-Za-z0-9\-_]/","",$class->fields['name'])." / ".$classname."-".$data['items_id'];
