@@ -678,7 +678,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       $query .= " LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
       
-      Toolbox::logInFile("pm", "query hosts - $query\n");
+      // Toolbox::logInFile("pm", "query hosts - $query\n");
       $result = $DB->query($query); 
       
       echo '<div id="custom_date" style="display:none"></div>';
