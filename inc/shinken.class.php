@@ -735,14 +735,14 @@ class PluginMonitoringShinken extends CommonDBTM {
          }
       }
 
-//      // Business rules....
+      // Business rules....
       $pmService = new PluginMonitoringService();
       $pmServicescatalog = new PluginMonitoringServicescatalog();
       $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
       $pmBusinessrule = new PluginMonitoringBusinessrule();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
 
-      // * Prepare contacts
+      // Prepare contacts
       $a_contacts_entities = array();
       $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringServicescatalog'
          AND `users_id`>0");
@@ -793,6 +793,8 @@ class PluginMonitoringShinken extends CommonDBTM {
                      $item = new $itemtype();
                      if ($item->getFromDB($pmComponentscatalog_Host->fields['items_id'])) {           
                         $hostname = preg_replace("/[^A-Za-z0-9\-_]/","",$item->fields['name']);
+                         // Fred: hostname for BR should be an host used in the service catalogue ...
+                        $hostnamebp = $hostname;
 
                         if ($gdata['operator'] == 'and'
                                 OR $gdata['operator'] == 'or'
