@@ -236,7 +236,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $a_componentscatalogs = $this->find();
       $i = 0;
       foreach ($a_componentscatalogs as $data) {
-         echo "<td>";
+         echo "<td style='vertical-align: top;'>";
 
          echo $this->showWidget($data['id']);
          $this->ajaxLoad($data['id']);
@@ -295,7 +295,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    
    
    function showWidget($id) {
-      return "<div style='text-align: center;' id=\"updatecomponentscatalog".$id."\"></div>";
+      return "<div id=\"updatecomponentscatalog".$id."\"></div>";
    }
    
    
@@ -309,7 +309,8 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $ret = $this->getInfoOfCatalog($id);
       $nb_ressources = $ret[0];
       $stateg = $ret[1];
-      $hosts_ressources = $ret[2];
+      $hosts_ids = $ret[2];
+      $hosts_ressources = $ret[3];
       
       $colorclass = 'ok';
       $count = 0;
@@ -348,7 +349,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
       }
       
-      echo '<div class="ch-item">
+      echo '<br/><div class="ch-item">
          <div class="ch-info-'.$colorclass.'">
 			<h1>'.ucfirst($data['name']);
          if ($data['comment'] != '') {
@@ -429,7 +430,10 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
 
 
       echo '<br/>';
+      // print_r($hosts_ids);
+      // print_r($hosts_ressources);
       echo '<table class="minemap ch-info-'.$colorclass.'"><tbody>';
+      
       foreach ($hosts_ressources as $host=>$resources) {
          echo  '<tr>';
          echo  '<td class="vertical" style="width: 100px">&nbsp;</td>';
@@ -445,19 +449,14 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       foreach ($hosts_ressources as $host=>$resources) {
          $link = $CFG_GLPI['root_doc'].
             "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-               "&field[0]=3&searchtype[0]=contains&contains[0]=CRITICAL&link[1]=AND".
-               "&field[1]=23&searchtype[1]=equals&contains[1]=0&link[2]=OR".
-               "&field[2]=3&searchtype[2]=contains&contains[2]=DOWN&link[3]=AND".
-               "&field[3]=23&searchtype[3]=equals&contains[3]=0&link[4]=OR".
-               "&field[4]=3&searchtype[4]=contains&contains[4]=UNREACHABLE&link[5]=AND".
-               "&field[5]=23&searchtype[5]=equals&contains[5]=0".
-               "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
+               "&field[0]=20&searchtype[0]=equals&contains[0]=".$hosts_ids[$host].
+               "&itemtype=PluginMonitoringService&start=0'";
             
          echo  "<tr>";
-         echo  "<td style='width: 100px'>$host</td>";
+         echo  "<td style='width: 100px'><a href='".$link."'>".$host."</a></td>";
          foreach ($resources as $resource) {
             echo '<td>';
-            echo '<div class="service'.$resource.'"><a href="'.$link.'">&nbsp;</a></div>';
+            echo '<div class="service'.$resource.'"><a href="'.$link.'">&nbsp;&nbsp;&nbsp;</a></div>';
             echo '</td>';
          }
          echo  '</tr>';
@@ -501,11 +500,12 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $stateg['UNKNOWN'] = 0;
       $a_gstate = array();
       $nb_ressources = 0;
+      $hosts_ids = array();
       $hosts_ressources = array();
       $query = "SELECT `glpi_computers`.`name`, ".$pmComponentscatalog_Host->getTable().".* FROM `".$pmComponentscatalog_Host->getTable()."`
          LEFT JOIN `glpi_computers` ON `glpi_computers`.`id` = `".$pmComponentscatalog_Host->getTable()."`.`items_id`
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
-      Toolbox::logInFile("pm", "query hosts - $query\n");
+      // Toolbox::logInFile("pm", "query hosts - $query\n");
       $result = $DB->query($query);
       while ($dataComponentscatalog_Host=$DB->fetch_array($result)) {
          $ressources = array();
@@ -538,6 +538,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             $ressources[$dataService['name']] = $a_gstate[$dataService['id']];
          }
          
+         $hosts_ids[$dataComponentscatalog_Host['name']] = $dataComponentscatalog_Host['items_id'];
          $hosts_ressources[$dataComponentscatalog_Host['name']] = $ressources;
       }
       foreach ($a_gstate as $value) {
@@ -545,6 +546,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       }
       return array($nb_ressources,
                    $stateg, 
+                   $hosts_ids,
                    $hosts_ressources);
    }
 
