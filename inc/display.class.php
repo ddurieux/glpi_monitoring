@@ -212,7 +212,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
    }
    
    
-   
    function showTabs($options=array()) {
       global $CFG_GLPI;
       
@@ -381,7 +380,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
    }
 
-   
 
    function showBoard($width='', $limit='') {
       global $DB,$CFG_GLPI;
@@ -564,6 +562,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "<br/>";
       Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/service.php", $parameters);
    }
+
    
    function showHostsBoard($width='', $limit='') {
       global $DB,$CFG_GLPI;
@@ -646,7 +645,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
          ".$leftjoin."
          ".$where."
          ".$ORDERQUERY;
-      // Toolbox::logInFile("pm", "query hosts - $query\n");
       $result = $DB->query($query);
       
       if (! isset($_GET["start"])) {
@@ -680,6 +678,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       $query .= " LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
       
+      Toolbox::logInFile("pm", "query hosts - $query\n");
       $result = $DB->query($query); 
       
       echo '<div id="custom_date" style="display:none"></div>';
@@ -982,7 +981,11 @@ class PluginMonitoringDisplay extends CommonDBTM {
  
 
       echo "<td>";
-      echo $data['name'];
+      $link = $CFG_GLPI['root_doc'].
+         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
+            "&field[0]=20&searchtype[0]=equals&contains[0]=".$data['items_id'].
+            "&itemtype=PluginMonitoringService&start=0'";
+      echo "<a href='".$link."'>".$data['name']."</a>";
       echo "</td>";
  
       echo "<td class='center'>";
