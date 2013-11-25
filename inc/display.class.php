@@ -446,7 +446,11 @@ class PluginMonitoringDisplay extends CommonDBTM {
                     OR $value == '22') {
                $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
                   ON `plugin_monitoring_componentscatalogs_hosts_id` = 
-                  `glpi_plugin_monitoring_componentscatalogs_hosts`.`id` ";
+                  `glpi_plugin_monitoring_componentscatalogs_hosts`.`id` 
+                  ";
+               $leftjoin .= " LEFT JOIN `glpi_computers`
+                  ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = 
+                        `glpi_computers`.`id`";
             } else if ($value == '7') {
             } else if ($value == '8') {
                if (!strstr($leftjoin, 'LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`')) {
@@ -491,6 +495,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          ".$leftjoin."
          ".$where."
          ".$ORDERQUERY;
+      // Toolbox::logInFile("pm", "query services - $query\n");
       $result = $DB->query($query);
       
       $start = 0;
@@ -520,6 +525,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       $query .= " LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
       
+      // Fred : on repose la requête sur la base une 2ème fois ... ?
+      // Toolbox::logInFile("pm", "query services - $query\n");
       $result = $DB->query($query); 
       
       echo '<div id="custom_date" style="display:none"></div>';
@@ -639,7 +646,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          ".$leftjoin."
          ".$where."
          ".$ORDERQUERY;
-      Toolbox::logInFile("pm", "query hosts - $query\n");
+      // Toolbox::logInFile("pm", "query hosts - $query\n");
       $result = $DB->query($query);
       
       if (! isset($_GET["start"])) {
@@ -800,8 +807,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
                                        "0", 
                                        '2h', 
                                        "js");
+         echo "</a>";
       }
-      echo "</a>";
       echo "</td>";
       
       if ($displayhost == '1') {
@@ -812,6 +819,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
             $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
             $item = new $itemtype();
             $item->getFromDB($pmComponentscatalog_Host->fields['items_id']);
+            
             echo "<td>";
             echo $item->getTypeName()." : ".$item->getLink();
             if (!is_null($pMonitoringService->fields['networkports_id'])
@@ -848,7 +856,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
 //      }
 //      unset($itemmat);
       echo "<td class='center'>";
-      
+
       if ($shortstate == 'red'
               || $shortstate == 'yellow'
               || $shortstate == 'orange') {
@@ -939,6 +947,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
    }
 
+   
+   
    static function displayHostLine($data, $displayhost=1) {
       global $DB,$CFG_GLPI;
 
@@ -1609,14 +1619,14 @@ Ext.onReady(function(){
                   "field[0]=23&searchtype[0]=equals&contains[0]=1".
                   "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
       
-      echo "<table align='center'>";
+      echo "<table align='center' width='80%'>";
       echo "<tr>";
-      echo "<td>";
+      echo "<td width='20%'>";
          $background = '';
          if ($critical > 0) {
             $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_critical.png"';
          }
-         echo "<table class='tab_cadre' width='414' height='130' ".$background." >";
+         echo "<table class='tab_cadre' width='100%' height='130' ".$background." >";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
          if ($type == 'Ressources' OR $type == 'Componentscatalog') {
@@ -1637,23 +1647,21 @@ Ext.onReady(function(){
         }
          echo "</th>";
          echo "</tr>";
-         echo "<tr>";
-         echo "<th style='background-color:transparent;'>";
-         echo "<font style='font-size: 11px;'>Soft : ".$critical_soft."</font>";         
-         echo "</th>";
-         echo "</tr>";
+         echo "<tr><td>";
+         echo "<p style='font-size: 11px; text-align: center;'> Soft : ".$critical_soft."</p>";
+         echo "</td></tr>";
          echo "</table>";         
       echo "</td>";
       
-      echo "<td>";
+      echo "<td width='20%'>";
          $background = '';
          if ($warningdata > 0) {
             $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_warning.png"';
          }
          if ($type == 'Ressources') {
-            echo "<table class='tab_cadre' width='188' height='130' ".$background." >";
+            echo "<table class='tab_cadre' width='100%' height='130' ".$background." >";
          } else {
-            echo "<table class='tab_cadre' width='316' height='130' ".$background." >";
+            echo "<table class='tab_cadre' width='100%' height='130' ".$background." >";
          }
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
@@ -1683,21 +1691,19 @@ Ext.onReady(function(){
          }
          echo "</th>";
          echo "</tr>";
-         echo "<tr>";
-         echo "<th style='background-color:transparent;'>";
-         echo "<font style='font-size: 11px;'>Soft : ".$warningdata_soft."</font>";         
-         echo "</th>";
-         echo "</tr>";
+         echo "<tr><td>";
+         echo "<p style='font-size: 11px; text-align: center;'> Soft : ".$warningdata_soft."</p>";
+         echo "</td></tr>";
          echo "</table>";         
       echo "</td>";
       
       if ($type == 'Ressources') {
-         echo "<td>";
+         echo "<td width='20%'>";
             $background = '';
             if ($warningconnection > 0) {
                $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_warning_yellow.png"';
             }
-            echo "<table class='tab_cadre' width='188' height='130' ".$background." >";
+            echo "<table class='tab_cadre' width='100%' height='130' ".$background." >";
             echo "<tr>";
             echo "<th style='background-color:transparent;'>";
             if ($type == 'Ressources' OR $type == 'Componentscatalog') {
@@ -1718,21 +1724,19 @@ Ext.onReady(function(){
             }
             echo "</th>";
             echo "</tr>";
-            echo "<tr>";
-            echo "<th style='background-color:transparent;'>";
-            echo "<font style='font-size: 11px;'>Soft : ".$warningconnection_soft."</font>";         
-            echo "</th>";
-            echo "</tr>";
+            echo "<tr><td>";
+            echo "<p style='font-size: 11px; text-align: center;'> Soft : ".$warningconnection_soft."</p>";
+            echo "</td></tr>";
             echo "</table>";
          echo "</td>";
       }
       
-      echo "<td>";
+      echo "<td width='20%'>";
          $background = '';
          if ($ok > 0) {
             $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_ok.png"';
          }
-         echo "<table class='tab_cadre' width='158' height='130' ".$background." >";
+         echo "<table class='tab_cadre' width='100%' height='130' ".$background." >";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
          if ($type == 'Ressources' OR $type == 'Componentscatalog') {
@@ -1753,20 +1757,18 @@ Ext.onReady(function(){
          }
          echo "</th>";
          echo "</tr>";
-         echo "<tr>";
-         echo "<th style='background-color:transparent;'>";
-         echo "<font style='font-size: 11px;'>Soft : ".$ok_soft."</font>";         
-         echo "</th>";
-         echo "</tr>";
+         echo "<tr><td>";
+         echo "<p style='font-size: 11px; text-align: center;'> Soft : ".$ok_soft."</p>";
+         echo "</td></tr>";
          echo "</table>";         
       echo "</td>";
 
-      echo "<td>";
+      echo "<td width='20%'>";
          $background = '';
          if ($acknowledge > 0) {
             $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_acknowledge.png"';
          }
-         echo "<table class='tab_cadre' width='120' height='130' ".$background." >";
+         echo "<table class='tab_cadre' width='100%' height='130' ".$background." >";
          echo "<tr>";
          echo "<th style='background-color:transparent;'>";
          if ($type == 'Ressources' OR $type == 'Componentscatalog') {
@@ -1787,10 +1789,9 @@ Ext.onReady(function(){
          }
          echo "</th>";
          echo "</tr>";
-         echo "<tr>";
-         echo "<th style='background-color:transparent;'>&nbsp;";
-         echo "</th>";
-         echo "</tr>";
+         echo "<tr><td>";
+         echo "<p style='font-size: 11px; text-align: center;'>&nbsp;</p>";
+         echo "</td></tr>";
          echo "</table>";   
       echo "</td>";
       
@@ -1872,7 +1873,7 @@ Ext.onReady(function(){
          return $a_return;
       }
 
-      echo "<table align='center' width='50%'>";
+      echo "<table align='center' width='80%'>";
       echo "<tr>";
       echo "<td width='20%'>";
          $background = '';

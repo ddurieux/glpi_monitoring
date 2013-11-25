@@ -244,7 +244,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          echo "</td>";
          
          $i++;
-         if ($i == '6') {
+         if ($i == '4') {
             echo "</tr>";
             echo "<tr class='tab_bg_4' style='background: #cececc;'>";
             $i = 0;
@@ -295,7 +295,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    
    
    function showWidget($id) {
-      return "<div id=\"updatecomponentscatalog".$id."\"></div>";
+      return "<div style='text-align: center;' id=\"updatecomponentscatalog".$id."\"></div>";
    }
    
    
@@ -309,6 +309,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $ret = $this->getInfoOfCatalog($id);
       $nb_ressources = $ret[0];
       $stateg = $ret[1];
+      $hosts_ressources = $ret[2];
       
       $colorclass = 'ok';
       $count = 0;
@@ -357,17 +358,16 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
 			<p><a href="'.$link.'">'.$count.'</a></p>
          </div>
 		</div>';
-      return;
+      // return;
       /////////////////////// This is the end !! ///////////////////////
       
+/*
       echo '<table  class="tab_cadre_fixe" style="width:158px;">';
       echo '<tr class="tab_bg_1">';
       echo '<th colspan="2" style="font-size:18px;" height="60">';
       echo $data['name']."&nbsp;";
       echo '</th>';
       echo '</tr>';
-         
-
       
       
       echo '<tr class="tab_bg_1">';
@@ -425,6 +425,49 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       echo  '</th>';
       echo  '</tr>';
       
+*/
+
+
+      echo '<br/>';
+      echo '<table class="minemap ch-info-'.$colorclass.'"><tbody>';
+      foreach ($hosts_ressources as $host=>$resources) {
+         echo  '<tr>';
+         echo  '<td class="vertical" style="width: 100px">&nbsp;</td>';
+         foreach ($resources as $resource=>$status) {
+            echo  '<td class="vertical">';
+            echo  '<div class="vertical-text">'.$resource.'</div>';
+            echo  '</td>';
+         }
+         echo  '</tr>';
+         break;
+      }
+      
+      foreach ($hosts_ressources as $host=>$resources) {
+         $link = $CFG_GLPI['root_doc'].
+            "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
+               "&field[0]=3&searchtype[0]=contains&contains[0]=CRITICAL&link[1]=AND".
+               "&field[1]=23&searchtype[1]=equals&contains[1]=0&link[2]=OR".
+               "&field[2]=3&searchtype[2]=contains&contains[2]=DOWN&link[3]=AND".
+               "&field[3]=23&searchtype[3]=equals&contains[3]=0&link[4]=OR".
+               "&field[4]=3&searchtype[4]=contains&contains[4]=UNREACHABLE&link[5]=AND".
+               "&field[5]=23&searchtype[5]=equals&contains[5]=0".
+               "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
+            
+         echo  "<tr>";
+         echo  "<td style='width: 100px'>$host</td>";
+         foreach ($resources as $resource) {
+            echo '<td>';
+            echo '<div class="service'.$resource.'"><a href="'.$link.'">&nbsp;</a></div>';
+            echo '</td>';
+         }
+         echo  '</tr>';
+      }
+
+      echo  '</tbody></table>';
+      echo  '</tr>';
+
+
+
       echo  '</table>';
    }
    
@@ -455,20 +498,28 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $stateg['OK'] = 0;
       $stateg['WARNING'] = 0;
       $stateg['CRITICAL'] = 0;
+      $stateg['UNKNOWN'] = 0;
       $a_gstate = array();
       $nb_ressources = 0;
-      $query = "SELECT * FROM `".$pmComponentscatalog_Host->getTable()."`
+      $hosts_ressources = array();
+      $query = "SELECT `glpi_computers`.`name`, ".$pmComponentscatalog_Host->getTable().".* FROM `".$pmComponentscatalog_Host->getTable()."`
+         LEFT JOIN `glpi_computers` ON `glpi_computers`.`id` = `".$pmComponentscatalog_Host->getTable()."`.`items_id`
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
+      Toolbox::logInFile("pm", "query hosts - $query\n");
       $result = $DB->query($query);
       while ($dataComponentscatalog_Host=$DB->fetch_array($result)) {
+         $ressources = array();
+         
          $queryService = "SELECT * FROM `".$pmService->getTable()."`
             WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'
                AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
          $resultService = $DB->query($queryService);
          while ($dataService=$DB->fetch_array($resultService)) {
             $nb_ressources++;
+            // Fred: pourquoi ce test ... HARD ou SOFT, quand c'est CRITICAL, c'est CRITICAL !
             if ($dataService['state_type'] != "HARD") {
-               $a_gstate[$dataService['id']] = "OK";
+               $a_gstate[$dataService['id']] = "UNKNOWN";
+               // $a_gstate[$dataService['id']] = "OK";
             } else {
                $statecurrent = PluginMonitoringDisplay::getState($dataService['state'], 
                                                                  $dataService['state_type'],
@@ -484,13 +535,17 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                   $a_gstate[$dataService['id']] = "CRITICAL";
                }
             }
+            $ressources[$dataService['name']] = $a_gstate[$dataService['id']];
          }
+         
+         $hosts_ressources[$dataComponentscatalog_Host['name']] = $ressources;
       }
       foreach ($a_gstate as $value) {
          $stateg[$value]++;
       }
       return array($nb_ressources,
-                   $stateg);
+                   $stateg, 
+                   $hosts_ressources);
    }
 
    

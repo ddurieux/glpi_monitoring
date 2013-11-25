@@ -62,79 +62,86 @@ class PluginMonitoringService extends CommonDBTM {
       $tab = array();
       $tab['common'] = _n('Characteristic', 'Characteristics', 2);
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'name';
-      $tab[1]['name']          = __('Name');
-      $tab[1]['datatype']      = 'itemlink';
-      $tab[1]['itemlink_type'] = $this->getType();
-      $tab[1]['massiveaction'] = false; // implicit key==1
+      $tab[1]['table']           = $this->getTable();
+      $tab[1]['field']           = 'name';
+      $tab[1]['name']            = __('Name');
+      $tab[1]['datatype']        = 'itemlink';
+      $tab[1]['itemlink_type']   = $this->getType();
+      $tab[1]['massiveaction']   = false; // implicit key==1
       
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = __('ID');
-      $tab[2]['massiveaction'] = false;
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'id';
+      $tab[2]['name']            = __('ID');
+      $tab[2]['massiveaction']   = false;
       
-      $tab[3]['table'] = $this->getTable();
-      $tab[3]['field'] = 'state';
-      $tab[3]['name']  = "Status";
-      $tab[3]['datatype'] = 'string';
+      $tab[3]['table']           = $this->getTable();
+      $tab[3]['field']           = 'state';
+      $tab[3]['name']            = __('Status', 'monitoring');
+      $tab[3]['datatype']        = 'string';
       //$tab[3]['searchtype'] = 'equals';
       
-      $tab[4]['table']         = $this->getTable();
-      $tab[4]['field']         = 'last_check';
-      $tab[4]['name']          = __('Last check', 'monitoring');
-      $tab[4]['datatype']      = 'datetime';
+      $tab[4]['table']           = $this->getTable();
+      $tab[4]['field']           = 'last_check';
+      $tab[4]['name']            = __('Last check', 'monitoring');
+      $tab[4]['datatype']        = 'datetime';
 
-      $tab[5]['table'] = $this->getTable();
-      $tab[5]['field'] = 'state_type';
-      $tab[5]['name']  = __('State type', 'monitoring');
-      $tab[5]['searchtype'] = 'equals';
+      $tab[5]['table']           = $this->getTable();
+      $tab[5]['field']           = 'state_type';
+      $tab[5]['name']            = __('State type', 'monitoring');
+      $tab[5]['searchtype']      = 'equals';
       
-      $tab[6]['table'] = 'glpi_entities';
-      $tab[6]['field'] = 'completename';
-      $tab[6]['name']  = __('Entity');
+      $tab[6]['table']           = 'glpi_entities';
+      $tab[6]['field']           = 'completename';
+      $tab[6]['name']            = __('Entity');
       
-      $tab[7]['table'] = "glpi_plugin_monitoring_components";
-      $tab[7]['field'] = 'name';
-      $tab[7]['linkfield'] = 'plugin_monitoring_components_id';
-      $tab[7]['name'] = __('Component', 'monitoring');
-      $tab[7]['datatype'] = 'itemlink';
-      $tab[7]['itemlink_type']  = 'PluginMonitoringComponent';
+      $tab[7]['table']           = "glpi_plugin_monitoring_components";
+      $tab[7]['field']           = 'name';
+      $tab[7]['linkfield']       = 'plugin_monitoring_components_id';
+      $tab[7]['name']            = __('Component', 'monitoring');
+      $tab[7]['datatype']        = 'itemlink';
+      $tab[7]['itemlink_type']   = 'PluginMonitoringComponent';
       
-      $tab[8]['table'] = "glpi_plugin_monitoring_componentscatalogs";
-      $tab[8]['field'] = 'name';
-      $tab[8]['name'] = __('Components catalog', 'monitoring');
-      $tab[8]['datatype'] = 'itemlink';
+      $tab[8]['table']           = "glpi_plugin_monitoring_componentscatalogs";
+      $tab[8]['field']           = 'name';
+      $tab[8]['name']            = __('Components catalog', 'monitoring');
+      $tab[8]['datatype']        = 'itemlink';
       
-      $tab[9]['table']         = $this->getTable();
-      $tab[9]['field']         = 'event';
-      $tab[9]['name']          = "Event";
-      $tab[9]['massiveaction'] = false;
+      $tab[9]['table']           = $this->getTable();
+      $tab[9]['field']           = 'event';
+      $tab[9]['name']            = "Event";
+      $tab[9]['massiveaction']   = false;
 
-      $tab[10]['table'] = $this->getTable();
-      $tab[10]['field'] = 'state';
-      $tab[10]['name']  = "Status";
-      $tab[10]['datatype'] = 'string';
+      $tab[10]['table']          = $this->getTable();
+      $tab[10]['field']          = 'state';
+      $tab[10]['name']           = "Status";
+      $tab[10]['datatype']       = 'string';
 
-      $tab[20]['table'] = $this->getTable();
-      $tab[20]['field'] = 'Computer';
-      $tab[20]['name']  = __('Item')." > ".__('Computer');
-      $tab[20]['searchtype'] = 'equals';
+      $tab[20]['table']          = 'glpi_computers';
+      $tab[20]['field']          = 'name';
+      $tab[20]['name']           = __('Item')." > ".__('Computer');
+      $tab[20]['searchtype']     = 'equals';
+      $tab[20]['datatype']       = 'itemlink';
+/*
+      $tab[20]['table']          = $this->getTable();
+      $tab[20]['field']          = 'Computer';
+      $tab[20]['name']           = __('Item')." > ".__('Computer');
+      $tab[20]['searchtype']     = 'equals';
+*/
       
-      $tab[21]['table'] = $this->getTable();
-      $tab[21]['field'] = 'Printer';
-      $tab[21]['name']  = __('Item')." > ".__('Printer');
-      $tab[21]['searchtype'] = 'equals';
+      $tab[21]['table']          = $this->getTable();
+      $tab[21]['field']          = 'Printer';
+      $tab[21]['name']           = __('Item')." > ".__('Printer');
+      $tab[21]['searchtype']     = 'equals';
       
-      $tab[22]['table'] = $this->getTable();
-      $tab[22]['field'] = 'NetworkEquipment';
-      $tab[22]['name']  = __('Item')." > ".__('Network device');
-      $tab[22]['searchtype'] = 'equals';
+      $tab[22]['table']          = $this->getTable();
+      $tab[22]['field']          = 'NetworkEquipment';
+      $tab[22]['name']           = __('Item')." > ".__('Network device');
+      $tab[22]['searchtype']     = 'equals';
       
-      $tab[23]['table'] = $this->getTable();
-      $tab[23]['field'] = 'is_acknowledged';
-      $tab[23]['name']  = __('Acknowledge', 'monitoring');
-      $tab[23]['datatype'] = 'bool';
+      $tab[23]['table']          = $this->getTable();
+      $tab[23]['field']          = 'is_acknowledged';
+      $tab[23]['name']           = __('Acknowledge', 'monitoring');
+      $tab[23]['datatype']       = 'bool';
      
       return $tab;
    }
