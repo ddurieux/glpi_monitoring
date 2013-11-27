@@ -1094,19 +1094,22 @@ myPicker.fromString(\''.$color.'\')
       $pmComponent->getFromDB($components_id);
       
       $_SESSION['glpi_plugin_monitoring']['perfname'][$components_id] = array();
-      $a_perfname = importArrayFromDB($pmComponent->fields['perfname']);
+      // $a_perfname = importArrayFromDB($pmComponent->fields['perfname']);
+      $a_perfname = unserialize($pmComponent->fields['perfname']);
       foreach ($a_perfname as $perfname=>$active) {
          $_SESSION['glpi_plugin_monitoring']['perfname'][$components_id][$perfname] = 'checked';
       }
       
       $_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$components_id] = array();
-      $a_perfnameinvert = importArrayFromDB($pmComponent->fields['perfnameinvert']);
+      // $a_perfnameinvert = importArrayFromDB($pmComponent->fields['perfnameinvert']);
+      $a_perfnameinvert = unserialize($pmComponent->fields['perfnameinvert']);
       foreach ($a_perfnameinvert as $perfname=>$active) {
          $_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$components_id][$perfname] = 'checked';
       }
       
       $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$components_id] = array();
-      $a_perfnamecolor = importArrayFromDB($pmComponent->fields['perfnamecolor']);
+      // $a_perfnamecolor = importArrayFromDB($pmComponent->fields['perfnamecolor']);
+      $a_perfnamecolor = unserialize($pmComponent->fields['perfnamecolor']);
       foreach ($a_perfnamecolor as $perfname=>$color) {
          $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$components_id][$perfname] = $color;
       }
