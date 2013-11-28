@@ -450,11 +450,13 @@ class PluginMonitoringShinken extends CommonDBTM {
       $pmContact_Item          = new PluginMonitoringContact_Item();
       $pmService               = new PluginMonitoringService();
       $pmComponentscatalog     = new PluginMonitoringComponentscatalog();
+      $pmHostconfig            = new PluginMonitoringHostconfig();
       $calendar                = new Calendar();
       $user                    = new User();
       $pmLog                   = new PluginMonitoringLog();
       $profile_User = new Profile_User();
       
+      // Log Shinken restart event ...
       if (isset($_SERVER['HTTP_USER_AGENT'])
               AND strstr($_SERVER['HTTP_USER_AGENT'], 'xmlrpclib.py')) {
          if (!isset($_SESSION['glpi_currenttime'])) {
@@ -467,7 +469,12 @@ class PluginMonitoringShinken extends CommonDBTM {
          $pmLog->add($input);
       }
       
-      $hostnamebp = '';
+      $shinkenServer = '';
+      $a_hostconfig = $pmHostconfig->find("`itemtype`='Entity'");
+      foreach ($a_hostconfig as $data) {
+         $shinkenServer = Dropdown::getDropdownName("glpi_computers", $data['computers_id']);
+      }
+      $hostnamebp = $shinkenServer;
       
       $a_services = array();
       $i=0;
@@ -509,6 +516,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       
       $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
       
+      // "Normal" services ....
       $query = "SELECT * FROM `glpi_plugin_monitoring_services`";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
@@ -735,14 +743,14 @@ class PluginMonitoringShinken extends CommonDBTM {
          }
       }
 
-      // Business rules....
+      // Business rules services ...
       $pmService = new PluginMonitoringService();
       $pmServicescatalog = new PluginMonitoringServicescatalog();
       $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
       $pmBusinessrule = new PluginMonitoringBusinessrule();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
 
-      // Prepare contacts
+      // Prepare contacts for BR ...
       $a_contacts_entities = array();
       $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringServicescatalog'
          AND `users_id`>0");
@@ -753,7 +761,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          }
          $a_contacts_entities[$data['items_id']][$data['users_id']] = $contactentities;
       }
-      // Groups
+      // Groups for BR ...
       $group = new Group();
       $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringServicescatalog'
          AND `groups_id`>0");
@@ -793,8 +801,8 @@ class PluginMonitoringShinken extends CommonDBTM {
                      $item = new $itemtype();
                      if ($item->getFromDB($pmComponentscatalog_Host->fields['items_id'])) {           
                         $hostname = preg_replace("/[^A-Za-z0-9\-_]/","",$item->fields['name']);
-                         // Fred: hostname for BR should be an host used in the service catalogue ...
-                        $hostnamebp = $hostname;
+                         // Fred: hostname for BR is the Shinken server ...
+                        $hostnamebp = $shinkenServer;
 
                         if ($gdata['operator'] == 'and'
                                 OR $gdata['operator'] == 'or'
@@ -829,6 +837,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                   $a_services[$i]['check_period'] = $calendar->fields['name'];            
                }
                $a_services[$i]['host_name'] = $hostnamebp;
+               $a_services[$i]['business_impact'] = $dataBA['business_priority'];
                $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9\-_]/","",$dataBA['name']);
                // $a_services[$i]['_ENTITIESID'] = $dataBA['id'];
                $a_services[$i]['_ITEMSID'] = $dataBA['id'];
