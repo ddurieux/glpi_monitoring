@@ -380,12 +380,12 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       sort($services);
       
       echo '<br/>';
-      echo '<table class="minemap ch-info-'.$colorclass.'"><tbody>';
+      echo '<table class="minemap" ><tbody>';
       
       // Header with services name and link to services list ...
       foreach ($hosts_ressources as $host=>$resources) {
          echo  '<tr>';
-         echo  '<td class="vertical" style="width: 100px">&nbsp;</td>';
+         echo  '<td class="vertical">&nbsp;</td>';
          for ($i = 0; $i < count($services); $i++) {
             $link = $CFG_GLPI['root_doc'].
                "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
@@ -408,7 +408,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                "&itemtype=PluginMonitoringService&start=0'";
             
          echo  "<tr>";
-         echo  "<td style='width: 100px'><a href='".$link."'>".$host."</a></td>";
+         echo  "<td class='left'><a href='".$link."'>".$host."</a></td>";
          for ($i = 0; $i < count($services); $i++) {
             echo '<td>';
             echo '<a href="'.$link.'" title="'.$resources[$services[$i]]['state']." - ".$resources[$services[$i]]['last_check']." - ".$resources[$services[$i]]['event'].'"><div class="service'.$resources[$services[$i]]['state'].'"></div></a>';

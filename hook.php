@@ -83,30 +83,11 @@ function cron_plugin_monitoring() {
 
 
 function plugin_monitoring_install() {
-
-   require_once GLPI_ROOT . "/plugins/monitoring/install/update.php";
-   $version_detected = pluginMonitoringGetCurrentVersion(PLUGIN_MONITORING_VERSION);
-
-   $_SESSION['plugin_monitoring_installation'] = 1;
-   if ((isset($version_detected)) 
-           AND ($version_detected != PLUGIN_MONITORING_VERSION)
-           AND $version_detected != '0') {
-      pluginMonitoringUpdate($version_detected);
-   } else if ((isset($version_detected)) 
-           AND ($version_detected == PLUGIN_MONITORING_VERSION)) {
-      // Yet at right version
-   } else {
-      include (GLPI_ROOT . "/plugins/monitoring/install/install.php");
-      pluginMonitoringInstall(PLUGIN_MONITORING_VERSION);
-   }
-   unset($_SESSION['plugin_monitoring_installation']);
    return true;
 }
 
 // Uninstall process for plugin : need to return true if succeeded
 function plugin_monitoring_uninstall() {
-   include (GLPI_ROOT . "/plugins/monitoring/install/install.php");
-   pluginMonitoringUninstall();
    return true;
 }
 
