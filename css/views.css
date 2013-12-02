@@ -229,19 +229,46 @@ td .vertical {
 	transform: rotate(-90.0deg);
 }
 
+
+
 .serviceOK {
-	width:10px; height:10px; line-height:10px; border: 1px outset black;
-	background-color: green;
+	background-color: rgb(76,180,738);
+	width: 20px;
+	height: 20px;
+	margin: auto;
+	border-radius: 50%;
 }
 .serviceWARNING {
-	width:10px; height:10px; line-height:10px; border: 1px outset black;
-	background-color: orange;
+	background-color: rgb(212,161,94);
+	width: 20px;
+	height: 20px;
+	margin: auto;
+	border-radius: 50%;
 }
 .serviceCRITICAL {
-	width:10px; height:10px; line-height:10px; border: 1px outset black;
-	background-color: red;
+	background-color: rgb(159,48,48);
+	width: 20px;
+	height: 20px;
+	margin: auto;
+	border-radius: 50%;
 }
 .serviceUNKNOWN {
-	width:10px; height:10px; line-height:10px; border: 1px outset black;
+	background-color: yellow;
+	width: 20px;
+	height: 20px;
+	margin: auto;
+	border-radius: 50%;
+}
+
+.bgOK {
+	background-color: rgb(76,180,73);
+}
+.bgWARNING {
+	background-color: rgb(212,161,94);
+}
+.bgCRITICAL {
+	background-color: rgb(159,48,48);
+}
+.bgUNKNOWN {
 	background-color: yellow;
 }
