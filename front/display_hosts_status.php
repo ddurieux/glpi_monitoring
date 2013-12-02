@@ -57,39 +57,40 @@ $pmDisplay->menu();
 
 $pmDisplay->refreshPage();
 
-$pmDisplay->showCounters("Ressources", 1, 0);
-// Manage search
-if (isset($_SESSION['plugin_monitoring']['service'])) {
-   $_GET = $_SESSION['plugin_monitoring']['service'];
-}
-if (isset($_GET['reset'])) {
-   unset($_SESSION['glpisearch']['PluginMonitoringService']);
-}
-if (isset($_GET['glpi_tab'])) {
-   unset($_GET['glpi_tab']);
-}
-Search::manageGetValues("PluginMonitoringService");
-if (isset($_GET['hidesearch'])) {
-   echo "<table class='tab_cadre_fixe'>";
-   echo "<tr class='tab_bg_1'>";
-   echo "<th>";
-   echo "<a onClick='Ext.get(\"searchformservices\").toggle();'>
-      <img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' />&nbsp;
-         ".__('Display search form', 'monitoring')."
-      &nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' /></a>";
-   echo "</th>";
-   echo "</tr>";
-   echo "</table>";
-   echo "<div style='display: none;' id='searchformservices'>";
-}
-Search::showGenericSearch("PluginMonitoringService", $_GET);
-if (isset($_GET['hidesearch'])) {
-   echo "</div>";
-}
+$pmDisplay->showHostsCounters("Hosts", 1, 1);
 
-$pmDisplay->showBoard();
-if (isset($_SESSION['glpisearch']['PluginMonitoringService']['reset'])) {
-   unset($_SESSION['glpisearch']['PluginMonitoringService']['reset']);
+// Manage search
+// if (isset($_SESSION['plugin_monitoring']['hosts'])) {
+   // $_GET = $_SESSION['plugin_monitoring']['hosts'];
+// }
+// if (isset($_GET['reset'])) {
+   // unset($_SESSION['glpisearch']['PluginMonitoringHost']);
+// }
+// if (isset($_GET['glpi_tab'])) {
+   // unset($_GET['glpi_tab']);
+// }
+// Search::manageGetValues("PluginMonitoringHost");
+// if (isset($_GET['hidesearch'])) {
+   // echo "<table class='tab_cadre_fixe'>";
+   // echo "<tr class='tab_bg_1'>";
+   // echo "<th>";
+   // echo "<a onClick='Ext.get(\"searchformhosts\").toggle();'>
+      // <img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' />&nbsp;
+         // ".__('Display search form', 'monitoring')."
+      // &nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' /></a>";
+   // echo "</th>";
+   // echo "</tr>";
+   // echo "</table>";
+   // echo "<div style='display: none;' id='searchformhosts'>";
+// }
+// Search::showGenericSearch("PluginMonitoringHost", $_GET);
+// if (isset($_GET['hidesearch'])) {
+   // echo "</div>";
+// }
+
+$pmDisplay->showHostsBoard();
+if (isset($_SESSION['glpisearch']['PluginMonitoringHost']['reset'])) {
+   unset($_SESSION['glpisearch']['PluginMonitoringHost']['reset']);
 }
 
 Html::footer();

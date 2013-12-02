@@ -236,7 +236,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $a_componentscatalogs = $this->find();
       $i = 0;
       foreach ($a_componentscatalogs as $data) {
-         echo "<td>";
+         echo "<td style='vertical-align: top;'>";
 
          echo $this->showWidget($data['id']);
          $this->ajaxLoad($data['id']);
@@ -244,7 +244,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          echo "</td>";
          
          $i++;
-         if ($i == '6') {
+         if ($i == '4') {
             echo "</tr>";
             echo "<tr class='tab_bg_4' style='background: #cececc;'>";
             $i = 0;
@@ -309,6 +309,9 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $ret = $this->getInfoOfCatalog($id);
       $nb_ressources = $ret[0];
       $stateg = $ret[1];
+      $hosts_ids = $ret[2];
+      $services_ids = $ret[3];
+      $hosts_ressources = $ret[4];
       
       $colorclass = 'ok';
       $count = 0;
@@ -347,7 +350,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
       }
       
-      echo '<div class="ch-item">
+      echo '<br/><div class="ch-item">
          <div class="ch-info-'.$colorclass.'">
 			<h1>'.ucfirst($data['name']);
          if ($data['comment'] != '') {
@@ -357,75 +360,64 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
 			<p><a href="'.$link.'">'.$count.'</a></p>
          </div>
 		</div>';
-      return;
-      /////////////////////// This is the end !! ///////////////////////
-      
-      echo '<table  class="tab_cadre_fixe" style="width:158px;">';
-      echo '<tr class="tab_bg_1">';
-      echo '<th colspan="2" style="font-size:18px;" height="60">';
-      echo $data['name']."&nbsp;";
-      echo '</th>';
-      echo '</tr>';
-         
 
-      
-      
-      echo '<tr class="tab_bg_1">';
-      echo '<td>';
-      echo __('Resources', 'monitoring')."&nbsp;:";
-      echo '</td>';
-      echo '<th align="center" height="40" width="50%">';
-      $link = $CFG_GLPI['root_doc'].
-         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&field[0]=8&searchtype[0]=equals&contains[0]=".$id.
-            "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
-      echo '<a href="'.$link.'">'.$nb_ressources.'</a>';
-      echo '</th>';
-      echo '</tr>';
-
-      $background = '';
-      $count = 0;
-            
-      $link = '';
-      if ($stateg['CRITICAL'] > 0) {
-         $count = $stateg['CRITICAL'];
-         $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_critical.png"';
-         $link = $CFG_GLPI['root_doc'].
-         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=CRITICAL".
-            "&link[1]=AND&field[1]=8&searchtype[1]=equals&contains[1]=".$id.
-            "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=DOWN".
-            "&link[3]=AND&field[3]=8&searchtype[3]=equals&contains[3]=".$id.
-            "&link[4]=OR&field[4]=3&searchtype[4]=equals&contains[4]=UNREACHABLE".
-            "&link[5]=AND&field[5]=8&searchtype[5]=equals&contains[5]=".$id.
-            "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
-      } else if ($stateg['WARNING'] > 0) {
-         $count = $stateg['WARNING'];
-         $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_warning.png"';
-         $link = $CFG_GLPI['root_doc'].
-         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=WARNING".
-            "&link[1]=AND&field[1]=8&searchtype[1]=equals&contains[1]=".$id.
-            "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=UNKNOWN".
-            "&link[3]=AND&field[3]=8&searchtype[3]=equals&contains[3]=".$id.
-            "&link[4]=OR&field[4]=3&searchtype[4]=equals&contains[4]=RECOVERY".
-            "&link[5]=AND&field[5]=8&searchtype[5]=equals&contains[5]=".$id.
-            "&link[6]=OR&field[6]=3&searchtype[6]=equals&contains[6]=FLAPPING".
-            "&link[7]=AND&field[7]=8&searchtype[7]=equals&contains[7]=".$id.
-            "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
-      } else if ($stateg['OK'] > 0) {
-         $count = $stateg['OK'];
-         $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_ok.png"';
-         $link = $CFG_GLPI['root_doc'].
-         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=OK".
-            "&link[1]=AND&field[1]=8&searchtype[1]=equals&contains[1]=".$id.
-            "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=UP".
-            "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
+/* For debugging purposes ...
+      echo '<pre>';
+      print_r($hosts_ids);
+      print_r($services_ids);
+      print_r($hosts_ressources);
+      echo '</pre>';
+*/
+      // Get services list ...
+      $services = array();
+      $i = 0;
+      foreach ($hosts_ressources as $host=>$resources) {
+         foreach ($resources as $resource=>$status) {
+            $services[$i++] = $resource;
+         }
+         break;
       }
-      echo  "<tr ".$background.">";
-      echo  '<th style="background-color:transparent;" '.$background.'" colspan="2" height="100">';
-      echo  '<a href="'.$link.'"><font style="font-size: 52px; color:black">'.$count.'</font></a>';         
-      echo  '</th>';
-      echo  '</tr>';
+      sort($services);
       
-      echo  '</table>';
+      echo '<br/>';
+      echo '<table class="minemap ch-info-'.$colorclass.'"><tbody>';
+      
+      // Header with services name and link to services list ...
+      foreach ($hosts_ressources as $host=>$resources) {
+         echo  '<tr>';
+         echo  '<td class="vertical" style="width: 100px">&nbsp;</td>';
+         for ($i = 0; $i < count($services); $i++) {
+            $link = $CFG_GLPI['root_doc'].
+               "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
+                  "&field[0]=7&searchtype[0]=equals&contains[0]=".$services_ids[$services[$i]].
+                  "&itemtype=PluginMonitoringService&start=0'";
+               
+            echo  '<td class="vertical">';
+            echo  '<a href="'.$link.'"><div class="vertical-text">'.$services[$i].'</div></a>';
+            echo  '</td>';
+         }
+         echo  '</tr>';
+         break;
+      }
+      
+      // Content with host/service status and link to services list ...
+      foreach ($hosts_ressources as $host=>$resources) {
+         $link = $CFG_GLPI['root_doc'].
+            "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
+               "&field[0]=20&searchtype[0]=equals&contains[0]=".$hosts_ids[$host].
+               "&itemtype=PluginMonitoringService&start=0'";
+            
+         echo  "<tr>";
+         echo  "<td style='width: 100px'><a href='".$link."'>".$host."</a></td>";
+         for ($i = 0; $i < count($services); $i++) {
+            echo '<td>';
+            echo '<a href="'.$link.'" title="'.$resources[$services[$i]]['state']." - ".$resources[$services[$i]]['last_check']." - ".$resources[$services[$i]]['event'].'"><div class="service'.$resources[$services[$i]]['state'].'"></div></a>';
+            echo '</td>';
+         }
+         echo  '</tr>';
+      }
+
+      echo  '</tbody></table>';
    }
    
    
@@ -455,20 +447,30 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $stateg['OK'] = 0;
       $stateg['WARNING'] = 0;
       $stateg['CRITICAL'] = 0;
+      $stateg['UNKNOWN'] = 0;
       $a_gstate = array();
       $nb_ressources = 0;
-      $query = "SELECT * FROM `".$pmComponentscatalog_Host->getTable()."`
+      $hosts_ids = array();
+      $services_ids = array();
+      $hosts_ressources = array();
+      $query = "SELECT `glpi_computers`.`name`, ".$pmComponentscatalog_Host->getTable().".* FROM `".$pmComponentscatalog_Host->getTable()."`
+         LEFT JOIN `glpi_computers` ON `glpi_computers`.`id` = `".$pmComponentscatalog_Host->getTable()."`.`items_id`
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
+      // Toolbox::logInFile("pm", "query hosts - $query\n");
       $result = $DB->query($query);
       while ($dataComponentscatalog_Host=$DB->fetch_array($result)) {
+         $ressources = array();
+         
          $queryService = "SELECT * FROM `".$pmService->getTable()."`
             WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'
                AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
          $resultService = $DB->query($queryService);
          while ($dataService=$DB->fetch_array($resultService)) {
             $nb_ressources++;
+            // Fred: pourquoi ce test ... HARD ou SOFT, quand c'est CRITICAL, c'est CRITICAL !
             if ($dataService['state_type'] != "HARD") {
-               $a_gstate[$dataService['id']] = "OK";
+               $a_gstate[$dataService['id']] = "UNKNOWN";
+               // $a_gstate[$dataService['id']] = "OK";
             } else {
                $statecurrent = PluginMonitoringDisplay::getState($dataService['state'], 
                                                                  $dataService['state_type'],
@@ -484,13 +486,21 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                   $a_gstate[$dataService['id']] = "CRITICAL";
                }
             }
+            $ressources[$dataService['name']] = $dataService;
+            $services_ids[$dataService['name']] = $dataService['plugin_monitoring_components_id'];
          }
+         
+         $hosts_ids[$dataComponentscatalog_Host['name']] = $dataComponentscatalog_Host['items_id'];
+         $hosts_ressources[$dataComponentscatalog_Host['name']] = $ressources;
       }
       foreach ($a_gstate as $value) {
          $stateg[$value]++;
       }
       return array($nb_ressources,
-                   $stateg);
+                   $stateg, 
+                   $hosts_ids,
+                   $services_ids,
+                   $hosts_ressources);
    }
 
    

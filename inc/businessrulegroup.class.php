@@ -132,6 +132,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
       echo "<td valign='top'>";
       $first_operator = array();
       $first_operator['or'] = "or";
+      $first_operator['and'] = "and";
       $first_operator['2 of:'] = __('2 of', 'monitoring');
       $first_operator['3 of:'] = __('3 of', 'monitoring');
       $first_operator['4 of:'] = __('4 of', 'monitoring');

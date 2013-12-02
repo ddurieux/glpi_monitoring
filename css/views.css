@@ -72,8 +72,9 @@
 
 
 .ch-item {
-	width: 100%;
-	height: 100%;
+	width: 180px;
+	height: 180px;
+	margin: auto;
 	border-radius: 50%;
 	position: relative;
 	cursor: default;
@@ -86,7 +87,7 @@
 	-o-transition: all 0.4s ease-in-out;
 	-ms-transition: all 0.4s ease-in-out;
 	transition: all 0.4s ease-in-out;
-   width: 180px;
+	width: 180px;
 	height: 180px;
 	display: block;
 }
@@ -175,4 +176,73 @@
 	font-size: 40px;
 	text-align:center;
 	opacity: 1;
+}
+
+
+table .minemap {
+	width: 300px;
+	margin: auto;
+	
+	display: table;
+	border-collapse: separate;
+	text-align: center;
+	border-spacing: 0;
+	
+	border: 1px #444 outset;
+}
+
+table .minemap tbody{
+	display: table-row-group;
+}
+
+table .minemap td {
+	width: 10px;
+	
+	display: table-cell;
+	padding: 3px;
+	border: 1px #ccc outset;
+}
+
+td .vertical {
+	height: 100px;
+	width: 18px;
+	vertical-align: bottom;
+	text-align: center;
+	overflow: visible!important;
+	white-space: nowrap;
+	border-top: 0;
+	font-weight: normal;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
+.vertical-text {
+	width: 18px;
+	margin: 0;
+	margin-bottom: 4px;
+	-ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=-0.00000000,M12=1.00000000,M21=-1.00000000,M22=-0.00000000,sizingMethod='auto expand')";
+	filter: flipv() fliph();
+	writing-mode: tb-rl;
+	-webkit-transform: rotate(-90.0deg);
+	-moz-transform: rotate(-90.0deg);
+	-ms-transform: rotate(-90.0deg);
+	-o-transform: rotate(-90.0deg);
+	transform: rotate(-90.0deg);
+}
+
+.serviceOK {
+	width:10px; height:10px; line-height:10px; border: 1px outset black;
+	background-color: green;
+}
+.serviceWARNING {
+	width:10px; height:10px; line-height:10px; border: 1px outset black;
+	background-color: orange;
+}
+.serviceCRITICAL {
+	width:10px; height:10px; line-height:10px; border: 1px outset black;
+	background-color: red;
+}
+.serviceUNKNOWN {
+	width:10px; height:10px; line-height:10px; border: 1px outset black;
+	background-color: yellow;
 }

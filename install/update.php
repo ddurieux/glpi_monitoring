@@ -191,6 +191,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                               'notification_interval', 
                               "int(4) NOT NULL DEFAULT '30'");
+         $migration->addField($newTable, 
+                              'business_priority', 
+                              "int(1) NOT NULL DEFAULT '1'");
          $migration->addKey($newTable, 
                             "name");
       $migration->migrationOneTable($newTable);
@@ -1573,10 +1576,19 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
+      if (TableExists($newTable)) {
+         $a_hosts = getAllDatasFromTable($newTable,
+                    "`itemtype`='Computer'");
+      }
          $migration->changeField($newTable, 
                                  'id', 
                                  'id', 
                                  "int(11) NOT NULL AUTO_INCREMENT");
+         // Fred
+         $migration->changeField($newTable, 
+                                 'entities_id', 
+                                 'entities_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
          $migration->changeField($newTable, 
                                  'items_id', 
                                  'items_id', 
@@ -1588,7 +1600,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->changeField($newTable, 
                                  'event', 
                                  'event', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+                                 "varchar(512) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->changeField($newTable, 
                                  'state', 
                                  'state', 
@@ -1606,6 +1618,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'dependencies', 
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL"); 
       $migration->migrationOneTable($newTable);
+         // Fred
+         $migration->addField($newTable, 
+                                 'entities_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                               'items_id', 
                               "int(11) NOT NULL DEFAULT '0'");
@@ -1614,7 +1630,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               "varchar(100) DEFAULT NULL");
          $migration->addField($newTable, 
                                  'event', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+                                 "varchar(512) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
                                  'state', 
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");                 
@@ -1628,6 +1644,25 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               'dependencies', 
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
       $migration->migrationOneTable($newTable);
+      
+      Toolbox::logInFile("pm", "Count hosts : ".count($a_hosts)."\n");
+      if (count($a_hosts) > 0) {
+         // Convert commands by components
+         foreach ($a_hosts as $data) {
+            Toolbox::logInFile("pm", "Host : ".$data['itemtype']." / ".$data['items_id']."\n");
+            $a_computers = getAllDatasFromTable(
+                    'glpi_computers', 
+                    "`id`='".$data['items_id']."'"
+                    );
+            if (count($a_computers) > 0) {
+               $a_computer = current($a_computers);
+               Toolbox::logInFile("pm", "Computer : ".$a_computer['name']." / ".$a_computer['entities_id']."\n");
+               $DB->query("UPDATE `".$newTable."`
+                  SET `entities_id`='".$a_computer['entities_id']."'
+                  WHERE `id`='".$data['id']."'");
+            }
+         }
+      }
 
       
       
@@ -1808,7 +1843,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->changeField($newTable, 
                                  'event', 
                                  'event', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+                                 "varchar(512) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->changeField($newTable, 
                                  'perf_data', 
                                  'perf_data', 
@@ -1846,7 +1881,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  "datetime DEFAULT NULL");
          $migration->addField($newTable, 
                                  'event', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+                                 "varchar(512) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
                                  'perf_data', 
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
@@ -2395,6 +2430,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
                               'restartshinken', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'hosts_status', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
       $migration->migrationOneTable($newTable);
       

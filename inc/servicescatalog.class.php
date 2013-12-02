@@ -164,6 +164,18 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       echo "</td>";
       echo "</tr>";
       
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='2'></td>";
+      echo "<td>".__('Business priority level', 'monitoring')."&nbsp;:</td>";
+      echo "<td>";
+      Dropdown::showNumber('business_priority', array(
+          'value' => $this->fields['business_priority'], 
+          'min'   => 1, 
+          'max'   => 5)
+      );
+      echo "</td>";
+      echo "</tr>";
+      
       $this->showFormButtons($options);
       $this->addDivForTabs();
 

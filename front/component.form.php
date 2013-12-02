@@ -141,9 +141,12 @@ if (isset($_POST["copy"])) {
    }
    $input = array();
    $input['id'] = $_POST['id'];
-   $input['perfname'] = exportArrayToDB($a_perfname);
-   $input['perfnameinvert'] = exportArrayToDB($a_perfnameinvert);
-   $input['perfnamecolor'] = exportArrayToDB($a_perfnamecolor);
+   // $input['perfname'] = exportArrayToDB($a_perfname);
+   $input['perfname'] = serialize($a_perfname);
+   // $input['perfnameinvert'] = exportArrayToDB($a_perfnameinvert);
+   $input['perfnameinvert'] = serialize($a_perfnameinvert);
+   // $input['perfnamecolor'] = exportArrayToDB($a_perfnamecolor);
+   $input['perfnamecolor'] = serialize($a_perfnamecolor);
    
    $pMonitoringComponent->update($input);
    Html::back(); 

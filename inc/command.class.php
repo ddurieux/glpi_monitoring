@@ -49,10 +49,29 @@ class PluginMonitoringCommand extends CommonDBTM {
 
    function initCommands() {
 
+      // Fred : Should be tested ...
+      // $input = array();
+      // $input['name'] = 'Dummy check';
+      // $input['command_name'] = 'check_dummy';
+      // $input['command_line'] = "\$PLUGINSDIR\$/check_dummy \$ARG1\$ \"\$ARG2$\"";
+      // $arg = array();
+      // $arg['ARG1'] = 'Check return code';
+      // $arg['ARG2'] = 'Check return output';
+      // $input['arguments'] = exportArrayToDB($arg);
+      // $this->add($input);
+
+      // Fred : Should be tested ...
+      // $input = array();
+      // $input['name'] = 'Restart Shinken';
+      // $input['command_name'] = 'restart_shinken';
+      // $input['command_line'] = "nohup sh -c '/usr/local/shinken/bin/stop_arbiter.sh && sleep 3 && /usr/local/shinken/bin/launch_arbiter.sh'  &gt; /dev/null 2&gt;&1 &";
+      // $this->add($input);
+      // Fred : If uncommented, should comment in shinken.class.php, lines 107-109 to avoid duplicates in configuration !
+
       $input = array();
       $input['name'] = 'Simple tcp port check';
       $input['command_name'] = 'check_tcp';
-      $input['command_line'] = "\$PLUGINSDIR\$/check_tcp  -H \$HOSTADDRESS\$ -p \$ARG1$";
+      $input['command_line'] = "\$PLUGINSDIR\$/check_tcp  -H \$HOSTADDRESS\$ -p \$ARG1\$";
       $this->add($input);
 
       $input = array();
@@ -86,6 +105,9 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['name'] = 'Ask a nrpe agent';
       $input['command_name'] = 'check_nrpe';
       $input['command_line'] = "\$PLUGINSDIR\$/check_nrpe -H \$HOSTADDRESS\$ -t 9 -u -c \$ARG1\$";
+      $arg = array();
+      $arg['ARG1'] = 'NRPE check command';
+      $input['arguments'] = exportArrayToDB($arg);
       $this->add($input);
 
       $input = array();
@@ -247,7 +269,6 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['arguments'] = exportArrayToDB($arg);
       $this->add($input);
       
-      
       $input = array();
       $input['name'] = 'Check users connected';
       $input['command_name'] = 'check_users';
@@ -355,7 +376,7 @@ class PluginMonitoringCommand extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Command line', 'monitoring')."&nbsp;:</td>";
       echo "<td colspan='3'>";
-      echo "<input type='text' name='command_line' value='".$this->fields["command_line"]."' size='97'/>";
+      echo '<input type="text" name="command_line" value="'.htmlspecialchars($this->fields["command_line"]).'" size="97"/>';
       echo "</td>";
       echo "</tr>";
 

@@ -235,7 +235,8 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                ORDER BY `date`";
             $result = $DB->query($query);
             while ($edata=$DB->fetch_array($result)) {
-               $dat = importArrayFromDB($edata['data']);
+               // $dat = importArrayFromDB($edata['data']);
+               $dat = unserialize($edata['data']);
                $datemod = $edata['date'];
                $daynum = Calendar::getDayNumberInWeek(PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
                $split = explode(' ', $datemod);
@@ -282,7 +283,8 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                ORDER BY `date`";
             $result = $DB->query($query);
             while ($edata=$DB->fetch_array($result)) {
-               $dat = importArrayFromDB($edata['data']);
+               // $dat = importArrayFromDB($edata['data']);
+               $dat = unserialize($edata['data']);
                $datemod = $edata['date'];
 //               $daynum = Calendar::getDayNumberInWeek(PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
                $split = explode(' ', $datemod);
@@ -323,7 +325,8 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                ORDER BY `date`";
             $result = $DB->query($query);
             while ($edata=$DB->fetch_array($result)) {
-               $dat = importArrayFromDB($edata['data']);
+               // $dat = importArrayFromDB($edata['data']);
+               $dat = unserialize($edata['data']);
                $datemod = $edata['date'];
                $daynum = date('m', PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
                $daynum = $daynum - 1;
@@ -362,7 +365,8 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                ORDER BY `date`";
             $result = $DB->query($query);
             while ($edata=$DB->fetch_array($result)) {
-               $dat = importArrayFromDB($edata['data']);
+               // $dat = importArrayFromDB($edata['data']);
+               $dat = unserialize($edata['data']);
                $datemod = $edata['date'];
                $daynum = date('m', PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
                $daynum = $daynum - 1;
@@ -475,7 +479,14 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                }
                $array_data = array();
                foreach ($mydatat as $name=>$a_values) {
-                  $valfloat = array_sum($a_values) / count($a_values);
+                  // Special for warning and critical ...
+                  if (strstr(strtolower($name), "warn")) {
+                     $valfloat = max ($a_values);
+                  } else if (strstr(strtolower($name), "crit")) {
+                     $valfloat = max ($a_values);
+                  } else {
+                     $valfloat = array_sum($a_values) / count($a_values);
+                  }
                   if ($valfloat > 2) {
                      $array_data[$name] = round($valfloat);
                   } else {
@@ -485,7 +496,8 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                $input = array();
                $input['plugin_monitoring_services_id'] = $plugin_monitoring_services_id;
                $input['date'] = date('Y-m-d H:i:s', $new_date);
-               $input['data'] = exportArrayToDB($array_data);
+               // $input['data'] = exportArrayToDB($array_data);
+               $input['data'] = serialize($array_data);
                $input['type'] = '30m';
                $this->add($input);
                $new_date = $new_date + (30 * 60);
@@ -557,7 +569,14 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                }
                $array_data = array();
                foreach ($mydatat as $name=>$a_values) {
-                  $valfloat = array_sum($a_values) / count($a_values);
+                  // Special for warning and critical ...
+                  if (strstr(strtolower($name), "warn")) {
+                     $valfloat = max ($a_values);
+                  } else if (strstr(strtolower($name), "crit")) {
+                     $valfloat = max ($a_values);
+                  } else {
+                     $valfloat = array_sum($a_values) / count($a_values);
+                  }
                   if ($valfloat > 2) {
                      $array_data[$name] = round($valfloat);
                   } else {
@@ -567,7 +586,8 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                $input = array();
                $input['plugin_monitoring_services_id'] = $plugin_monitoring_services_id;
                $input['date'] = date('Y-m-d H:i:s', $new_date);
-               $input['data'] = exportArrayToDB($array_data);
+               // $input['data'] = exportArrayToDB($array_data);
+               $input['data'] = serialize($array_data);
                $input['type'] = '6h';
                $this->add($input);
                $new_date = $new_date + (6 * 3600);
@@ -631,7 +651,14 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                }
                $array_data = array();
                foreach ($mydatat as $name=>$a_values) {
-                  $valfloat = array_sum($a_values) / count($a_values);
+                  // Special for warning and critical ...
+                  if (strstr(strtolower($name), "warn")) {
+                     $valfloat = max ($a_values);
+                  } else if (strstr(strtolower($name), "crit")) {
+                     $valfloat = max ($a_values);
+                  } else {
+                     $valfloat = array_sum($a_values) / count($a_values);
+                  }
                   if ($valfloat > 2) {
                      $array_data[$name] = round($valfloat);
                   } else {
@@ -641,7 +668,8 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                $input = array();
                $input['plugin_monitoring_services_id'] = $plugin_monitoring_services_id;
                $input['date'] = date('Y-m-d H:i:s', $new_date);
-               $input['data'] = exportArrayToDB($array_data);
+               // $input['data'] = exportArrayToDB($array_data);
+               $input['data'] = serialize($array_data);
                $input['type'] = '1d';
                $this->add($input);
                $new_date = $new_date + (24 * 3600);
@@ -704,7 +732,14 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                }
                $array_data = array();
                foreach ($mydatat as $name=>$a_values) {
-                  $valfloat = array_sum($a_values) / count($a_values);
+                  // Special for warning and critical ...
+                  if (strstr(strtolower($name), "warn")) {
+                     $valfloat = max ($a_values);
+                  } else if (strstr(strtolower($name), "crit")) {
+                     $valfloat = max ($a_values);
+                  } else {
+                     $valfloat = array_sum($a_values) / count($a_values);
+                  }
                   if ($valfloat > 2) {
                      $array_data[$name] = round($valfloat);
                   } else {
@@ -714,7 +749,8 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                $input = array();
                $input['plugin_monitoring_services_id'] = $plugin_monitoring_services_id;
                $input['date'] = date('Y-m-d H:i:s', $new_date);
-               $input['data'] = exportArrayToDB($array_data);
+               // $input['data'] = exportArrayToDB($array_data);
+               $input['data'] = serialize($array_data);
                $input['type'] = '5d';
                $this->add($input);
                $new_date = $new_date + (5 * 24 * 3600);
@@ -777,7 +813,14 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                }
                $array_data = array();
                foreach ($mydatat as $name=>$a_values) {
-                  $valfloat = array_sum($a_values) / count($a_values);
+                  // Special for warning and critical ...
+                  if (strstr(strtolower($name), "warn")) {
+                     $valfloat = max ($a_values);
+                  } else if (strstr(strtolower($name), "crit")) {
+                     $valfloat = max ($a_values);
+                  } else {
+                     $valfloat = array_sum($a_values) / count($a_values);
+                  }
                   if ($valfloat > 2) {
                      $array_data[$name] = round($valfloat);
                   } else {
@@ -787,7 +830,8 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                $input = array();
                $input['plugin_monitoring_services_id'] = $plugin_monitoring_services_id;
                $input['date'] = date('Y-m-d H:i:s', $new_date);
-               $input['data'] = exportArrayToDB($array_data);
+               // $input['data'] = exportArrayToDB($array_data);
+               $input['data'] = serialize($array_data);
                $input['type'] = '10d';
                $this->add($input);
                $new_date = $new_date + (10 * 24 * 3600);
@@ -1094,19 +1138,22 @@ myPicker.fromString(\''.$color.'\')
       $pmComponent->getFromDB($components_id);
       
       $_SESSION['glpi_plugin_monitoring']['perfname'][$components_id] = array();
-      $a_perfname = importArrayFromDB($pmComponent->fields['perfname']);
+      // $a_perfname = importArrayFromDB($pmComponent->fields['perfname']);
+      $a_perfname = unserialize($pmComponent->fields['perfname']);
       foreach ($a_perfname as $perfname=>$active) {
          $_SESSION['glpi_plugin_monitoring']['perfname'][$components_id][$perfname] = 'checked';
       }
       
       $_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$components_id] = array();
-      $a_perfnameinvert = importArrayFromDB($pmComponent->fields['perfnameinvert']);
+      // $a_perfnameinvert = importArrayFromDB($pmComponent->fields['perfnameinvert']);
+      $a_perfnameinvert = unserialize($pmComponent->fields['perfnameinvert']);
       foreach ($a_perfnameinvert as $perfname=>$active) {
          $_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$components_id][$perfname] = 'checked';
       }
       
       $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$components_id] = array();
-      $a_perfnamecolor = importArrayFromDB($pmComponent->fields['perfnamecolor']);
+      // $a_perfnamecolor = importArrayFromDB($pmComponent->fields['perfnamecolor']);
+      $a_perfnamecolor = unserialize($pmComponent->fields['perfnamecolor']);
       foreach ($a_perfnamecolor as $perfname=>$color) {
          $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$components_id][$perfname] = $color;
       }
