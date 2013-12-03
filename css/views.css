@@ -260,16 +260,10 @@ td .vertical {
 	margin: auto;
 	border-radius: 50%;
 }
-
-.bgOK {
-	background-color: rgb(76,180,73);
-}
-.bgWARNING {
-	background-color: rgb(212,161,94);
-}
-.bgCRITICAL {
-	background-color: rgb(159,48,48);
-}
-.bgUNKNOWN {
-	background-color: yellow;
+.serviceACKNOWLEDGE {
+	background-color: rgb(18,158,255);
+	width: 20px;
+	height: 20px;
+	margin: auto;
+	border-radius: 50%;
 }

@@ -341,8 +341,9 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             "&link[6]=OR&field[6]=3&searchtype[6]=equals&contains[6]=FLAPPING".
             "&link[7]=AND&field[7]=8&searchtype[7]=equals&contains[7]=".$id.
             "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
-      } else if ($stateg['OK'] > 0) {
+      } else {
          $count = $stateg['OK'];
+         $count += $stateg['ACKNOWLEDGE'];
          $link = $CFG_GLPI['root_doc'].
          "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=OK".
             "&link[1]=AND&field[1]=8&searchtype[1]=equals&contains[1]=".$id.
@@ -351,7 +352,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       }
       $link_catalog = $CFG_GLPI['root_doc'].
          "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset"
-            . "&field[0]=8&searchtype[0]=equals&contains[0]=3".
+            . "&field[0]=8&searchtype[0]=equals&contains[0]=".$id.
             "&itemtype=PluginMonitoringService&start=0";
 
       echo '<br/><div class="ch-item">
@@ -362,7 +363,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          }
          echo '</a></h1>
 			<p><a href="'.$link.'">'.$count.'</a><font style="font-size: 14px;">/ '.
-                 ($stateg['CRITICAL'] + $stateg['WARNING'] + $stateg['OK']).'</font></p>
+                 ($stateg['CRITICAL'] + $stateg['WARNING'] + $stateg['OK'] + $stateg['ACKNOWLEDGE']).'</font></p>
          </div>
 		</div>';
 
@@ -458,10 +459,11 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $pmService = new PluginMonitoringService();
       
       $stateg = array();
-      $stateg['OK'] = 0;
-      $stateg['WARNING'] = 0;
-      $stateg['CRITICAL'] = 0;
-      $stateg['UNKNOWN'] = 0;
+      $stateg['OK']          = 0;
+      $stateg['WARNING']     = 0;
+      $stateg['CRITICAL']    = 0;
+      $stateg['UNKNOWN']     = 0;
+      $stateg['ACKNOWLEDGE'] = 0;
       $a_gstate = array();
       $nb_ressources = 0;
       $hosts_ids = array();
@@ -498,7 +500,12 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                   $a_gstate[$dataService['id']] = "WARNING";
                } else if ($statecurrent == 'red') {
                   $a_gstate[$dataService['id']] = "CRITICAL";
+               } else if ($statecurrent == 'redblue') {
+                  $a_gstate[$dataService['id']] = "ACKNOWLEDGE";
                }
+            }
+            if ($dataService['is_acknowledged'] == 1) {
+               $dataService['state'] = 'ACKNOWLEDGE';
             }
             $ressources[$dataService['name']] = $dataService;
             $services_ids[$dataService['name']] = $dataService['plugin_monitoring_components_id'];

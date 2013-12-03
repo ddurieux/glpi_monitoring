@@ -740,7 +740,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
             $resources[$data['id']]['state'] = 'CRITICAL';
          } else if ($ret == 'redblue') {
             $acknowledge++;
-            $resources[$data['id']]['state'] = 'OK';
+            $resources[$data['id']]['state'] = 'ACKNOWLEDGE';
          } else if ($ret == 'orange'
                  || $ret == 'yellow') {
             $warning++;
