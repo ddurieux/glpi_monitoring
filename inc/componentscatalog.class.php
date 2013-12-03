@@ -389,28 +389,24 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       echo '<table class="tab_cadrehov" >';
       
       // Header with services name and link to services list ...
-//      foreach ($hosts_ressources as $host=>$resources) {
-//         echo  '<tr>';
-//         echo  '<td class="vertical">&nbsp;</td>';
-//         for ($i = 0; $i < count($services); $i++) {
-//            $link = $CFG_GLPI['root_doc'].
-//               "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-//                  "&field[0]=7&searchtype[0]=equals&contains[0]=".$services_ids[$services[$i]].
-//                  "&itemtype=PluginMonitoringService&start=0'";
-//               
-//            echo  '<td class="vertical">';
-//            echo  '<a href="'.$link.'"><div class="vertical-text">'.$services[$i].'</div></a>';
-//            echo  '</td>';
-//         }
-//         echo  '</tr>';
-//         break;
-//      }
-
-      echo  "<tr class='tab_bg_2'>";
-      echo "<th colspan='2'>";
-      echo __('Hosts', 'monitoring');
-      echo "</th>";
-      echo "</tr>";
+      foreach ($hosts_ressources as $host=>$resources) {
+         echo  '<tr>';
+         echo "<th>";
+         echo __('Hosts', 'monitoring');
+         echo "</th>";
+         for ($i = 0; $i < count($services); $i++) {
+            $link = $CFG_GLPI['root_doc'].
+               "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
+                  "&field[0]=7&searchtype[0]=equals&contains[0]=".$services_ids[$services[$i]].
+                  "&itemtype=PluginMonitoringService&start=0'";
+               
+            echo  '<th class="vertical">';
+            echo  '<a href="'.$link.'"><div class="vertical-text">'.$services[$i].'</div></a>';
+            echo  '</th>';
+         }
+         echo  '</tr>';
+         break;
+      }
       
       // Content with host/service status and link to services list ...
       foreach ($hosts_ressources as $host=>$resources) {
