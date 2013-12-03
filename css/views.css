@@ -145,8 +145,8 @@
 
 .ch-item div>h1>a {
 	color: #fff;
-
-   
+	font-size: 20px;
+	text-align:center;
 }
 
 .ch-item div>p {
@@ -190,8 +190,9 @@ table .minemap {
 	border: 1px #444 outset;
 }
 
-table .minemap tbody{
-	display: table-row-group;
+.minemapdiv {
+   position: relative;
+   top: -30px;
 }
 
 table .minemap td {
@@ -232,7 +233,7 @@ td .vertical {
 
 
 .serviceOK {
-	background-color: rgb(76,180,738);
+	background-color: rgb(76,180,73);
 	width: 20px;
 	height: 20px;
 	margin: auto;

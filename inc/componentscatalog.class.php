@@ -349,14 +349,18 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=UP".
             "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
       }
+      $link_catalog = $CFG_GLPI['root_doc'].
+         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset"
+            . "&field[0]=8&searchtype[0]=equals&contains[0]=3".
+            "&itemtype=PluginMonitoringService&start=0";
 
       echo '<br/><div class="ch-item">
          <div class="ch-info-'.$colorclass.'">
-			<h1>'.ucfirst($data['name']);
+			<h1><a href="'.$link_catalog.'">'.ucfirst($data['name']);
          if ($data['comment'] != '') {
             echo ' '.$this->getComments();
          }
-         echo '</h1>
+         echo '</a></h1>
 			<p><a href="'.$link.'">'.$count.'</a><font style="font-size: 14px;">/ '.
                  ($stateg['CRITICAL'] + $stateg['WARNING'] + $stateg['OK']).'</font></p>
          </div>
@@ -380,7 +384,8 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       }
       sort($services);
       
-      echo '<table class="tab_cadrehov" ><tbody>';
+      echo '<div class="minemapdiv">';
+      echo '<table class="tab_cadrehov" >';
       
       // Header with services name and link to services list ...
 //      foreach ($hosts_ressources as $host=>$resources) {
@@ -401,10 +406,8 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
 //      }
 
       echo  "<tr class='tab_bg_2'>";
-      echo "<th>";
-      echo __('Host', 'monitoring');
-      echo "</th>";
-      echo "<th>";
+      echo "<th colspan='2'>";
+      echo __('Hosts', 'monitoring');
       echo "</th>";
       echo "</tr>";
       
@@ -427,8 +430,8 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          }
          echo  '</tr>';
       }
-
-      echo  '</tbody></table>';
+      echo  '</table>';
+      echo '</div>';
    }
    
    
