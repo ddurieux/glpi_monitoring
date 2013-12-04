@@ -1658,8 +1658,20 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'last_check', 
                                  "datetime DEFAULT NULL"); 
          $migration->addField($newTable, 
-                              'dependencies', 
-                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+                                 'dependencies', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'perf_data', 
+                                 "text COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'output', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'latency', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'execution_time', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
       $migration->migrationOneTable($newTable);
       
       Toolbox::logInFile("pm", "Count hosts : ".count($a_hosts)."\n");
