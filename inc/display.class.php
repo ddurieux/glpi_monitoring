@@ -699,6 +699,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
       // $this->showHeaderItem(__('Result details'), 5, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
       // echo Search::showHeaderItem(0, __('Result details', 'monitoring'), $num);
       $this->showHeaderItem(__('Result details', 'monitoring'), 5, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
+      // $this->showHeaderItem(__('Output', 'monitoring'), 6, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
+      $this->showHeaderItem(__('Performance data', 'monitoring'), 7, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
       // echo Search::showHeaderItem(0, __('Check period', 'monitoring'), $num);
       // echo '<th>'.__('Acknowledge', 'monitoring').'</th>';
       echo "</tr>";
@@ -1018,6 +1020,14 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
       echo "<td>";
       echo $data['event'];
+      echo "</td>";
+
+      // echo "<td>";
+      // echo $data['output'];
+      // echo "</td>";
+
+      echo "<td>";
+      echo $data['perf_data'];
       echo "</td>";
    }
 

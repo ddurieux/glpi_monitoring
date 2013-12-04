@@ -1617,6 +1617,23 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'dependencies', 
                                  'dependencies', 
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL"); 
+         // Fred
+         $migration->changeField($newTable, 
+                                 'perf_data', 
+                                 'perf_data', 
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->changeField($newTable, 
+                                 'output', 
+                                 'output', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'latency', 
+                                 'latency', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->changeField($newTable, 
+                                 'execution_time', 
+                                 'execution_time', 
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
       $migration->migrationOneTable($newTable);
          // Fred
          $migration->addField($newTable, 
