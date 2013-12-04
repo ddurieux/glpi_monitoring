@@ -715,14 +715,18 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       $acknowledge = 0;
       
       $query = "SELECT * FROM `glpi_plugin_monitoring_services`"
-                       . " LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`"
-                       . "    ON `plugin_monitoring_componentscatalogs_hosts_id`="
-                       . " `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`"
-                       . " WHERE `items_id`='".$item->fields['id']."'"
-                       . "    AND `itemtype`='".$itemtype."'"
-                       . "    AND `glpi_plugin_monitoring_services`.`id` IS NOT NULL";
+              . " LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`"
+              . "    ON `plugin_monitoring_componentscatalogs_hosts_id`="
+              . " `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`"
+              . " WHERE `items_id`='".$item->fields['id']."'"
+              . " AND `itemtype`='".$itemtype."'"
+              . " AND `glpi_plugin_monitoring_services`.`id` IS NOT NULL"
+              . " ORDER BY `glpi_plugin_monitoring_services`.`name`";
 
       $result = $DB->query($query);
+      $services  = array();
+      $resources = array();
+      $i = 0;
       while ($data=$DB->fetch_array($result)) {
          $ret = PluginMonitoringDisplay::getState($data['state'], 
                                                   $data['state_type'], 
@@ -730,16 +734,27 @@ class PluginMonitoringDisplayview extends CommonDBTM {
                                                   $data['is_acknowledged']);
          if (strstr($ret, '_soft')) {
             $ok++;
+            $resources[$data['id']]['state'] = 'OK';
          } else if ($ret == 'red') {
             $critical++;
+            $resources[$data['id']]['state'] = 'CRITICAL';
          } else if ($ret == 'redblue') {
             $acknowledge++;
+            $resources[$data['id']]['state'] = 'ACKNOWLEDGE';
          } else if ($ret == 'orange'
                  || $ret == 'yellow') {
             $warning++;
+            $resources[$data['id']]['state'] = 'WARNING';
          } else {
             $ok++;
+            $resources[$data['id']]['state'] = 'OK';
          }
+         $services[$i++] = $data['id'];
+         $resources[$data['id']]['last_check'] = $data['last_check'];
+         $resources[$data['id']]['event'] = $data['event'];
+         $resources[$data['id']]['name'] = $data['name'];
+         $resources[$data['id']]['plugin_monitoring_components_id'] = $data['plugin_monitoring_components_id'];
+         
       }
       
       $class = 'ok';
@@ -764,14 +779,45 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       }
          echo '">'
               . '<span id="devicea-'.$id.'">'.$item->getName().'</span></a></h1>
-			<p>'.$nb_ressources.'<font style="font-size: 14px;"> / '.($ok + $warning + $critical + $acknowledge).'</font></p>
+			<p><a>'.$nb_ressources.'</a><font style="font-size: 14px;"> / '.($ok + $warning + $critical + $acknowledge).'</font></p>
          </div>
 		</div>';
 
       echo "<script>
          fittext('devicea-".$id."');
       </script>";
+      
+      // Get services list ...
+      echo '<div class="minemapdiv">';
+      echo '<table class="tab_cadrehov">';
+      
+      // Header with services name and link to services list ...
+      echo '<tr class="tab_bg_2">';
+      echo '<th colspan="2">';
+      echo __('Services', 'monitoring');
+      echo '</th>';
+      echo '</tr>';
+      
+      // Content with host/service status and link to services list ...
+      foreach ($services as $services_id) {
+         $link = $CFG_GLPI['root_doc'].
+            "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
+               "&field[0]=20&searchtype[0]=equals&contains[0]=".$item->getID().
+               "&link[1]=AND&field[1]=7&searchtype[1]=equals&contains[1]=".$resources[$services_id]['plugin_monitoring_components_id'].  
+               "&itemtype=PluginMonitoringService&start=0'";
 
+         echo "<tr class='tab_bg_2'>";
+         echo "<td class='left'><a href='".$link."'>".$resources[$services_id]['name']."</a></td>";
+         echo '<td>';
+         echo '<a href="'.$link.'" title="'.$resources[$services_id]['state'].
+                 " - ".$resources[$services_id]['last_check']." - ".
+                 $resources[$services_id]['event'].'">'
+                 . '<div class="service'.$resources[$services_id]['state'].'"></div></a>';
+         echo '</td>';
+         echo '</tr>';
+      }
+      echo '</table>';
+      echo '</div>';
    }
 
 

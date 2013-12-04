@@ -193,7 +193,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               "int(4) NOT NULL DEFAULT '30'");
          $migration->addField($newTable, 
                               'business_priority', 
-                              "int(1) NOT NULL DEFAULT '1'");
+                              "tinyint(1) NOT NULL DEFAULT '1'");
          $migration->addKey($newTable, 
                             "name");
       $migration->migrationOneTable($newTable);
