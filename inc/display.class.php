@@ -572,35 +572,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          $order = $_GET['order'];
       }
       
-      $where = "";
-      // if (isset($_GET['field'])) {
-         // foreach ($_GET['field'] as $key=>$value) {
-            // $wheretmp = '';
-            // if (isset($_GET['link'][$key])) {
-               // $wheretmp.= " ".$_GET['link'][$key]." ";
-            // }
-            // $wheretmp .= Search::addWhere(
-                                   // "",
-                                   // 0,
-                                   // "PluginMonitoringHost",
-                                   // $_GET['field'][$key],
-                                   // $_GET['searchtype'][$key],
-                                   // $_GET['contains'][$key]);
-            // if (!strstr($wheretmp, "``.``")) {
-               // if ($where != ''
-                       // AND !isset($_GET['link'][$key])) {
-                  // $where .= " AND ";
-               // }
-               // $where .= $wheretmp;
-            // }
-         // }
-      // }
-      // if ($where != '') {
-         // $where = "(".$where;
-         // $where .= ") AND ";
-      // }
-      $where .= " `glpi_plugin_monitoring_hosts`.`itemtype` = 'Computer' AND `glpi_plugin_monitoring_hosts`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
-      // $where .= " `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype` = 'Computer' AND `glpi_computers`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
+      $where = " `glpi_plugin_monitoring_hosts`.`itemtype` = 'Computer' AND `glpi_plugin_monitoring_hosts`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
 
       if ($where != '') {
          $where = " WHERE ".$where;
@@ -611,10 +583,15 @@ class PluginMonitoringDisplay extends CommonDBTM {
       
       $leftjoin = " LEFT JOIN `glpi_computers` ON `glpi_computers`.`id` = `glpi_plugin_monitoring_hosts`.`items_id`";
       $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_hostconfigs` ON `glpi_plugin_monitoring_hostconfigs`.`items_id` = `glpi_plugin_monitoring_hosts`.`items_id`";
-      // $leftjoin = " LEFT JOIN `glpi_computers` ON `glpi_computers`.`id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` ";
-      // $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_hostconfigs` ON `glpi_plugin_monitoring_hostconfigs`.`items_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`";
-      // $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_hosts` ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`";
 
+      // Sort/order parameters are not always defined ...
+      if (! isset($_GET["sort"])) {
+         $_GET["sort"]='';
+      }
+      if (! isset($_GET["order"])) {
+         $_GET["order"]='';
+      }
+      
       // * ORDER
       $ORDERQUERY = " ORDER BY `name` ";
       $toview = array(1, 2, 3, 4, 5);

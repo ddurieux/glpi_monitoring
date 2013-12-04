@@ -89,19 +89,26 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      if ($item->getID() > 0) {
-         $ong = array();
-         $ong[1] = __('Components', 'monitoring');
-         $ong[2] = self::createTabEntry(__('Static hosts', 'monitoring'), self::countForStaticHosts($item));
-         $ong[3] = _n('Rule', 'Rules', 2);
-         $ong[4] = self::createTabEntry(__('Dynamic hosts', 'monitoring'), self::countForDynamicHosts($item));
-         $ong[5] = __('Contacts', 'monitoring');
-         $ong[6] = __('Availability', 'monitoring');
-//         $ong[7] = __('Simple report', "monitoring");
-         $ong[8] = __('Synthese', "monitoring");
-         //$ong[7] = __('Report');
+      if (!$withtemplate) {
+         switch ($item->getType()) {
+            case 'Central' :
+               return array(1 => __('Monitoring', 'monitoring')."-".__('Components catalog', 'monitoring'));
 
-         return $ong;
+         }
+         if ($item->getID() > 0) {
+            $ong = array();
+            $ong[1] = __('Components', 'monitoring');
+            $ong[2] = self::createTabEntry(__('Static hosts', 'monitoring'), self::countForStaticHosts($item));
+            $ong[3] = _n('Rule', 'Rules', 2);
+            $ong[4] = self::createTabEntry(__('Dynamic hosts', 'monitoring'), self::countForDynamicHosts($item));
+            $ong[5] = __('Contacts', 'monitoring');
+            $ong[6] = __('Availability', 'monitoring');
+   //         $ong[7] = __('Simple report', "monitoring");
+            $ong[8] = __('Synthese', "monitoring");
+            //$ong[7] = __('Report');
+
+            return $ong;
+         }
       }
       return '';
    }
@@ -145,6 +152,15 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
       
+      switch ($item->getType()) {
+         case 'Central' :
+            $pmDisplay = new PluginMonitoringDisplay();
+            $pmComponentscatalog = new PluginMonitoringComponentscatalog();
+            $pmDisplay->showCounters("Componentscatalog");
+            $pmComponentscatalog->showChecks();
+            return true;
+
+      }
       if ($item->getID() > 0) {
          switch($tabnum) {
 
@@ -308,6 +324,16 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       
       $ret = $this->getInfoOfCatalog($id);
       $nb_ressources = $ret[0];
+      if ($nb_ressources == 0) {
+         echo '<br/><div class="ch-item">
+            <div>
+            <h1>Nothing to display ...</h1>
+            </div>
+         </div>';
+
+         return;
+      }
+      
       $stateg = $ret[1];
       $hosts_ids = $ret[2];
       $services_ids = $ret[3];
@@ -465,10 +491,10 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $hosts_ids = array();
       $services_ids = array();
       $hosts_ressources = array();
-      $query = "SELECT `glpi_computers`.`name`, ".$pmComponentscatalog_Host->getTable().".* FROM `".$pmComponentscatalog_Host->getTable()."`
+      $query = "SELECT `glpi_computers`.`name`, `glpi_computers`.`entities_id`, ".$pmComponentscatalog_Host->getTable().".* FROM `".$pmComponentscatalog_Host->getTable()."`
          LEFT JOIN `glpi_computers` ON `glpi_computers`.`id` = `".$pmComponentscatalog_Host->getTable()."`.`items_id`
-         WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
-      // Toolbox::logInFile("pm", "query hosts - $query\n");
+         WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."' AND `glpi_computers`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
+      Toolbox::logInFile("pm", "query hosts - $query\n");
       $result = $DB->query($query);
       while ($dataComponentscatalog_Host=$DB->fetch_array($result)) {
          $ressources = array();
@@ -476,6 +502,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          $queryService = "SELECT * FROM `".$pmService->getTable()."`
             WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'
                AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
+         Toolbox::logInFile("pm", "query services - $queryService\n");
          $resultService = $DB->query($queryService);
          while ($dataService=$DB->fetch_array($resultService)) {
             $nb_ressources++;

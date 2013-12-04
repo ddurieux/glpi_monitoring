@@ -64,12 +64,14 @@ function plugin_init_monitoring() {
          Plugin::registerClass('PluginMonitoringEventhandler');
          Plugin::registerClass('PluginMonitoringComponent');
          Plugin::registerClass('PluginMonitoringComponentscatalog');
+         Plugin::registerClass('PluginMonitoringComponentscatalog',
+              array('addtabon' => array('Central')));
          Plugin::registerClass('PluginMonitoringContact',
               array('addtabon' => array('User')));
          Plugin::registerClass('PluginMonitoringDisplayview',
               array('addtabon' => array('Central')));
          Plugin::registerClass('PluginMonitoringHost',
-              array('addtabon' => array('Computer', 'Device', 'Printer', 'NetworkEquipment')));
+              array('addtabon' => array('Central', 'Computer', 'Device', 'Printer', 'NetworkEquipment')));
          Plugin::registerClass('PluginMonitoringProfile',
               array('addtabon' => array('Profile')));
          Plugin::registerClass('PluginMonitoringServicescatalog',
