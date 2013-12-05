@@ -150,6 +150,19 @@ class PluginMonitoringWebservice {
    
    
    
+   static function methodShinkenHostgroups($params, $protocol) {
+
+      if (!isset($params['tag'])) {
+         $params['tag'] = '';
+      }
+      
+      $pmShinken = new PluginMonitoringShinken();
+      $array = $pmShinken->generateHostgroupsCfg(0, $params['tag']);
+      return $array;
+   }
+
+
+
    static function methodShinkenServices($params, $protocol) {
 
       if (!isset($params['tag'])) {

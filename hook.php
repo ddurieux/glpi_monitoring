@@ -374,6 +374,8 @@ function plugin_monitoring_registerMethods() {
                                                        'methodShinkenCommands');
    $WEBSERVICES_METHOD['monitoring.shinkenHosts'] = array('PluginMonitoringWebservice',
                                                        'methodShinkenHosts');
+   $WEBSERVICES_METHOD['monitoring.shinkenHostgroups'] = array('PluginMonitoringWebservice',
+                                                       'methodShinkenHostgroups');
    $WEBSERVICES_METHOD['monitoring.shinkenContacts'] = array('PluginMonitoringWebservice',
                                                        'methodShinkenContacts');
    $WEBSERVICES_METHOD['monitoring.shinkenTimeperiods'] = array('PluginMonitoringWebservice',
