@@ -377,39 +377,55 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_hosts[$i]['realm'] = $pmRealm->fields['name'];
                $a_hosts[$i]['process_perf_data'] = '1';
                $a_hosts[$i]['notification_interval'] = '86400';
-               // For contact check if a service with this component
-                  $a_hosts[$i]['contacts'] = 'monitoring';
+               
+               // For contacts, check if a component catalog contains the host associated component ...
+               $a_hosts[$i]['contacts'] = 'monitoring';
+               
+               if (($a_fields['passive_checks_enabled'] == '1') and ($a_fields['active_checks_enabled'] == '0')) {
+                  // Specific query if host is only passively checked ...
+                  // Find the first component catalog in which the host is used ...
                   $querycont = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
                      LEFT JOIN `glpi_plugin_monitoring_services`
                         ON `plugin_monitoring_componentscatalogs_hosts_id`
                            = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
-                     WHERE `plugin_monitoring_components_id`='".$pmComponent->fields['id']."'
-                        AND `items_id`='".$data['items_id']."'
-                        AND `itemtype`='".$data['itemtype']."'
-                        LIMIT 1";
-                  $resultcont = $DB->query($querycont);
-                  if ($DB->numrows($resultcont) != 0) {
-                     $a_componentscatalogs_hosts = $DB->fetch_assoc($resultcont);
-                        // Notification interval
-                        $pmComponentscatalog = new PluginMonitoringComponentscatalog();
-                        $pmComponentscatalog->getFromDB($a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']);
-                        $a_hosts[$i]['notification_interval'] = $pmComponentscatalog->fields['notification_interval'];
-                     $a_contacts = array();
-                     $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
-                        AND `items_id`='".$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']."'");
-                     foreach ($a_list_contact as $data_contact) {
-                        if (isset($a_contacts_entities[$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']][$data_contact['users_id']])) {
-                           if (in_array($class->fields['entities_id'], $a_contacts_entities[$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']][$data_contact['users_id']])) {
-                              $user->getFromDB($data_contact['users_id']);
-                              $a_contacts[] = $user->fields['name'];
-                           }
+                     WHERE `items_id`='".$data['items_id']."' AND `itemtype`='".$data['itemtype']."' 
+                     LIMIT 1";
+               } else {
+                  // Find component catalog which contains the host associated component ...
+                  $querycont = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+                     LEFT JOIN `glpi_plugin_monitoring_services`
+                        ON `plugin_monitoring_componentscatalogs_hosts_id`
+                           = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
+                     WHERE `plugin_monitoring_components_id`='".$pmComponent->fields['id']."' AND 
+                        `items_id`='".$data['items_id']."' AND `itemtype`='".$data['itemtype']."'
+                     LIMIT 1";
+               }
+               Toolbox::logInFile("pm", "Query contacts : $querycont\n");
+               
+               $resultcont = $DB->query($querycont);
+               if ($DB->numrows($resultcont) != 0) {
+                  $a_componentscatalogs_hosts = $DB->fetch_assoc($resultcont);
+                  // Notification interval
+                  $pmComponentscatalog = new PluginMonitoringComponentscatalog();
+                  $pmComponentscatalog->getFromDB($a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']);
+                  $a_hosts[$i]['notification_interval'] = $pmComponentscatalog->fields['notification_interval'];
+                  
+                  $a_contacts = array();
+                  $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
+                     AND `items_id`='".$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']."'");
+                  foreach ($a_list_contact as $data_contact) {
+                     if (isset($a_contacts_entities[$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']][$data_contact['users_id']])) {
+                        if (in_array($class->fields['entities_id'], $a_contacts_entities[$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']][$data_contact['users_id']])) {
+                           $user->getFromDB($data_contact['users_id']);
+                           $a_contacts[] = $user->fields['name'];
                         }
                      }
-                     if (count($a_contacts) > 0) {
-                        $a_contacts_unique = array_unique($a_contacts);
-                        $a_hosts[$i]['contacts'] = implode(',', $a_contacts_unique);
-                     }
                   }
+                  if (count($a_contacts) > 0) {
+                     $a_contacts_unique = array_unique($a_contacts);
+                     $a_hosts[$i]['contacts'] = implode(',', $a_contacts_unique);
+                  }
+               }
                
                if ($calendar->getFromDB($a_fields['calendars_id'])) {
                   $a_hosts[$i]['notification_period'] = $calendar->fields['name'];
@@ -1059,7 +1075,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       
       $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
       
-      Toolbox::logInFile("pm", "Building hostgroups ...\n");
+      // Toolbox::logInFile("pm", "Building hostgroups ...\n");
       
       $query = "SELECT 
          `glpi_plugin_monitoring_componentscatalogs_hosts`.*, 
