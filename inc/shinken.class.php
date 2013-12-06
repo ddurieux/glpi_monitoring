@@ -437,7 +437,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                // Manage user interface ...
                $a_hosts[$i]['icon_set'] = 'host';
                $a_hosts[$i]['action_url'] = 'http://'.$shinkenServer.'/pnp4nagios/index.php/graph?host=$HOSTNAME$';
-               $a_hosts[$i]['custom_views'] = "cv_kiosk";
+               $a_hosts[$i]['custom_views'] = "kiosk";
 
                $i++;
             }
