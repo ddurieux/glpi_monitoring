@@ -147,6 +147,13 @@ class PluginMonitoringShinken extends CommonDBTM {
       
       $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
       
+      // Find Shinken server address ...
+      $shinkenServer = '';
+      $a_hostconfig = $pmHostconfig->find("`itemtype`='Entity'");
+      foreach ($a_hostconfig as $data) {
+         $shinkenServer = Dropdown::getDropdownName("glpi_computers", $data['computers_id']);
+      }
+      
       // * Prepare contacts
       $a_contacts_entities = array();
       $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
@@ -410,6 +417,12 @@ class PluginMonitoringShinken extends CommonDBTM {
                   $a_hosts[$i]['notification_period'] = "24x7";
                }
                $a_hosts[$i]['notification_options'] = 'd,u,r,f,s';
+
+               // Manage user interface ...
+               $a_hosts[$i]['icon_set'] = 'host';
+               $a_hosts[$i]['action_url'] = 'http://'.$shinkenServer.'/pnp4nagios/index.php/graph?host=$HOSTNAME$';
+               $a_hosts[$i]['custom_views'] = "cv_kiosk";
+
                $i++;
             }
          }
@@ -473,6 +486,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $pmLog->add($input);
       }
       
+      // Find Shinken server address ...
       $shinkenServer = '';
       $a_hostconfig = $pmHostconfig->find("`itemtype`='Entity'");
       foreach ($a_hostconfig as $data) {
@@ -736,6 +750,10 @@ class PluginMonitoringShinken extends CommonDBTM {
                   $a_services[$i]['notification_interval'] = $pmComponentscatalog->fields['notification_interval'];
                }
             }
+
+            // Manage user interface ...
+            $a_services[$i]['icon_set'] = 'service';
+            $a_services[$i]['action_url'] = 'http://'.$shinkenServer.'/pnp4nagios/index.php/graph?host=$HOSTNAME$&srv=$SERVICEDESC$';
             
             if ($notadd == '1') {
                unset($a_services[$i]);
@@ -993,7 +1011,11 @@ class PluginMonitoringShinken extends CommonDBTM {
 */
          $a_servicetemplates[$i]['_httpstink'] = 'NO';
          $a_servicetemplates[$i]['register'] = '0';
-                  
+
+         // Manage user interface ...
+         $a_servicetemplates[$i]['icon_set'] = 'service';
+         $a_servicetemplates[$i]['action_url'] = 'http://'.$shinkenServer.'/pnp4nagios/index.php/graph?host=$HOSTNAME$&srv=$SERVICEDESC$';
+
          $queryc = "SELECT * FROM `glpi_plugin_monitoring_components`
             WHERE `plugin_monitoring_checks_id`='".$data['plugin_monitoring_checks_id']."'  
                AND `active_checks_enabled`='".$data['active_checks_enabled']."' 
