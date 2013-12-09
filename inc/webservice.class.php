@@ -74,6 +74,11 @@ class PluginMonitoringWebservice {
             return array($array[0]=>$array[1]);
             break;
 
+         case 'hostgroups.cfg':
+            $array = $pmShinken->generateHostgroupsCfg(1, $params['tag']);
+            return array($array[0]=>$array[1]);
+            break;
+
          case 'contacts.cfg':
             $array = $pmShinken->generateContactsCfg(1);
             return array($array[0]=>$array[1]);
@@ -99,6 +104,8 @@ class PluginMonitoringWebservice {
             $array = $pmShinken->generateCommandsCfg(1);
             $output[$array[0]] = $array[1];
             $array = $pmShinken->generateHostsCfg(1, $params['tag']);
+            $output[$array[0]] = $array[1];
+            $array = $pmShinken->generateHostgroupsCfg(1, $params['tag']);
             $output[$array[0]] = $array[1];
             $array = $pmShinken->generateContactsCfg(1);
             $output[$array[0]] = $array[1];
@@ -143,6 +150,19 @@ class PluginMonitoringWebservice {
    
    
    
+   static function methodShinkenHostgroups($params, $protocol) {
+
+      if (!isset($params['tag'])) {
+         $params['tag'] = '';
+      }
+      
+      $pmShinken = new PluginMonitoringShinken();
+      $array = $pmShinken->generateHostgroupsCfg(0, $params['tag']);
+      return $array;
+   }
+
+
+
    static function methodShinkenServices($params, $protocol) {
 
       if (!isset($params['tag'])) {

@@ -147,6 +147,13 @@ class PluginMonitoringShinken extends CommonDBTM {
       
       $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
       
+      // Find Shinken server address ...
+      $shinkenServer = '';
+      $a_hostconfig = $pmHostconfig->find("`itemtype`='Entity'");
+      foreach ($a_hostconfig as $data) {
+         $shinkenServer = Dropdown::getDropdownName("glpi_computers", $data['computers_id']);
+      }
+      
       // * Prepare contacts
       $a_contacts_entities = array();
       $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
@@ -165,9 +172,11 @@ class PluginMonitoringShinken extends CommonDBTM {
       $query = "SELECT 
          `glpi_plugin_monitoring_componentscatalogs_hosts`.*, 
          `glpi_computers`.`id`, `glpi_computers`.`locations_id`,
+         `glpi_entities`.`id` AS entityId, `glpi_entities`.`name` AS entityName,
          `glpi_locations`.`id`, `glpi_locations`.`completename`, `glpi_locations`.`comment`, `glpi_locations`.`building`
          FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
          LEFT JOIN `glpi_computers` ON `glpi_computers`.`id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`
+         LEFT JOIN `glpi_entities` ON `glpi_computers`.`entities_id` = `glpi_entities`.`id`
          LEFT JOIN `glpi_locations` ON `glpi_locations`.`id` = `glpi_computers`.`locations_id`
          GROUP BY `itemtype`, `items_id`";
       $result = $DB->query($query);
@@ -181,7 +190,9 @@ class PluginMonitoringShinken extends CommonDBTM {
                     OR isset($a_entities_allowed[$class->fields['entities_id']])) {
 
                $a_hosts[$i]['host_name'] = preg_replace("/[^A-Za-z0-9\-_]/","",$class->fields['name']);
-               // $a_hosts[$i]['_ENTITIESID'] = $class->fields['entities_id'];
+               $a_hosts[$i]['_ENTITIESID'] = $data['entityId'];
+               $a_hosts[$i]['_ENTITY'] = $data['entityName'];
+               $a_hosts[$i]['hostgroups'] = "hostgroup-".$data['entityId'];
                $a_hosts[$i]['_ITEMSID'] = $data['items_id'];
                $a_hosts[$i]['_ITEMTYPE'] = $classname;
 
@@ -366,39 +377,55 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_hosts[$i]['realm'] = $pmRealm->fields['name'];
                $a_hosts[$i]['process_perf_data'] = '1';
                $a_hosts[$i]['notification_interval'] = '86400';
-               // For contact check if a service with this component
-                  $a_hosts[$i]['contacts'] = 'monitoring';
+               
+               // For contacts, check if a component catalog contains the host associated component ...
+               $a_hosts[$i]['contacts'] = 'monitoring';
+               
+               if (($a_fields['passive_checks_enabled'] == '1') and ($a_fields['active_checks_enabled'] == '0')) {
+                  // Specific query if host is only passively checked ...
+                  // Find the first component catalog in which the host is used ...
                   $querycont = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
                      LEFT JOIN `glpi_plugin_monitoring_services`
                         ON `plugin_monitoring_componentscatalogs_hosts_id`
                            = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
-                     WHERE `plugin_monitoring_components_id`='".$pmComponent->fields['id']."'
-                        AND `items_id`='".$data['items_id']."'
-                        AND `itemtype`='".$data['itemtype']."'
-                        LIMIT 1";
-                  $resultcont = $DB->query($querycont);
-                  if ($DB->numrows($resultcont) != 0) {
-                     $a_componentscatalogs_hosts = $DB->fetch_assoc($resultcont);
-                        // Notification interval
-                        $pmComponentscatalog = new PluginMonitoringComponentscatalog();
-                        $pmComponentscatalog->getFromDB($a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']);
-                        $a_hosts[$i]['notification_interval'] = $pmComponentscatalog->fields['notification_interval'];
-                     $a_contacts = array();
-                     $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
-                        AND `items_id`='".$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']."'");
-                     foreach ($a_list_contact as $data_contact) {
-                        if (isset($a_contacts_entities[$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']][$data_contact['users_id']])) {
-                           if (in_array($class->fields['entities_id'], $a_contacts_entities[$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']][$data_contact['users_id']])) {
-                              $user->getFromDB($data_contact['users_id']);
-                              $a_contacts[] = $user->fields['name'];
-                           }
+                     WHERE `items_id`='".$data['items_id']."' AND `itemtype`='".$data['itemtype']."' 
+                     LIMIT 1";
+               } else {
+                  // Find component catalog which contains the host associated component ...
+                  $querycont = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+                     LEFT JOIN `glpi_plugin_monitoring_services`
+                        ON `plugin_monitoring_componentscatalogs_hosts_id`
+                           = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
+                     WHERE `plugin_monitoring_components_id`='".$pmComponent->fields['id']."' AND 
+                        `items_id`='".$data['items_id']."' AND `itemtype`='".$data['itemtype']."'
+                     LIMIT 1";
+               }
+               Toolbox::logInFile("pm", "Query contacts : $querycont\n");
+               
+               $resultcont = $DB->query($querycont);
+               if ($DB->numrows($resultcont) != 0) {
+                  $a_componentscatalogs_hosts = $DB->fetch_assoc($resultcont);
+                  // Notification interval
+                  $pmComponentscatalog = new PluginMonitoringComponentscatalog();
+                  $pmComponentscatalog->getFromDB($a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']);
+                  $a_hosts[$i]['notification_interval'] = $pmComponentscatalog->fields['notification_interval'];
+                  
+                  $a_contacts = array();
+                  $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
+                     AND `items_id`='".$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']."'");
+                  foreach ($a_list_contact as $data_contact) {
+                     if (isset($a_contacts_entities[$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']][$data_contact['users_id']])) {
+                        if (in_array($class->fields['entities_id'], $a_contacts_entities[$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']][$data_contact['users_id']])) {
+                           $user->getFromDB($data_contact['users_id']);
+                           $a_contacts[] = $user->fields['name'];
                         }
                      }
-                     if (count($a_contacts) > 0) {
-                        $a_contacts_unique = array_unique($a_contacts);
-                        $a_hosts[$i]['contacts'] = implode(',', $a_contacts_unique);
-                     }
                   }
+                  if (count($a_contacts) > 0) {
+                     $a_contacts_unique = array_unique($a_contacts);
+                     $a_hosts[$i]['contacts'] = implode(',', $a_contacts_unique);
+                  }
+               }
                
                if ($calendar->getFromDB($a_fields['calendars_id'])) {
                   $a_hosts[$i]['notification_period'] = $calendar->fields['name'];
@@ -406,6 +433,12 @@ class PluginMonitoringShinken extends CommonDBTM {
                   $a_hosts[$i]['notification_period'] = "24x7";
                }
                $a_hosts[$i]['notification_options'] = 'd,u,r,f,s';
+
+               // Manage user interface ...
+               $a_hosts[$i]['icon_set'] = 'host';
+               $a_hosts[$i]['action_url'] = 'http://'.$shinkenServer.'/pnp4nagios/index.php/graph?host=$HOSTNAME$';
+               $a_hosts[$i]['custom_views'] = "kiosk";
+
                $i++;
             }
          }
@@ -469,6 +502,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $pmLog->add($input);
       }
       
+      // Find Shinken server address ...
       $shinkenServer = '';
       $a_hostconfig = $pmHostconfig->find("`itemtype`='Entity'");
       foreach ($a_hostconfig as $data) {
@@ -723,11 +757,19 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_services[$i]['retain_nonstatus_information'] = '1';
                $a_services[$i]['is_volatile'] = '0';
                $a_services[$i]['_httpstink'] = 'NO';
+            } else {
+               // Notification options
+               $a_services[$i]['notification_period'] = '24x7';
+               $a_services[$i]['notification_interval'] = '30';
+               $pmComponentscatalog->getFromDB($plugin_monitoring_componentscatalogs_id);
+               if ($pmComponentscatalog->fields['notification_interval'] != '30') {
+                  $a_services[$i]['notification_interval'] = $pmComponentscatalog->fields['notification_interval'];
+               }
             }
-            $pmComponentscatalog->getFromDB($plugin_monitoring_componentscatalogs_id);
-            if ($pmComponentscatalog->fields['notification_interval'] != '30') {
-               $a_services[$i]['notification_interval'] = $pmComponentscatalog->fields['notification_interval'];
-            }
+
+            // Manage user interface ...
+            $a_services[$i]['icon_set'] = 'service';
+            $a_services[$i]['action_url'] = 'http://'.$shinkenServer.'/pnp4nagios/index.php/graph?host=$HOSTNAME$&srv=$SERVICEDESC$';
             
             if ($notadd == '1') {
                unset($a_services[$i]);
@@ -976,9 +1018,20 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_servicetemplates[$i]['retain_status_information'] = '1';
          $a_servicetemplates[$i]['retain_nonstatus_information'] = '1';
          $a_servicetemplates[$i]['is_volatile'] = '0';
+/* Fred: Previous line should be commented and this comment should be removed ... but there is a bug in Shinken notifications with volatile services !
+         if ($data['passive_checks_enabled'] == '1' && $data['active_checks_enabled'] == '0') {
+            $a_servicetemplates[$i]['is_volatile'] = '1';
+         } else {
+            $a_servicetemplates[$i]['is_volatile'] = '0';
+         }
+*/
          $a_servicetemplates[$i]['_httpstink'] = 'NO';
          $a_servicetemplates[$i]['register'] = '0';
-                  
+
+         // Manage user interface ...
+         $a_servicetemplates[$i]['icon_set'] = 'service';
+         $a_servicetemplates[$i]['action_url'] = 'http://'.$shinkenServer.'/pnp4nagios/index.php/graph?host=$HOSTNAME$&srv=$SERVICEDESC$';
+
          $queryc = "SELECT * FROM `glpi_plugin_monitoring_components`
             WHERE `plugin_monitoring_checks_id`='".$data['plugin_monitoring_checks_id']."'  
                AND `active_checks_enabled`='".$data['active_checks_enabled']."' 
@@ -1006,7 +1059,81 @@ class PluginMonitoringShinken extends CommonDBTM {
 
 
    
+   function generateHostgroupsCfg($file=0, $tag='') {
+      global $DB;
 
+      $pmCommand     = new PluginMonitoringCommand();
+      $pmCheck       = new PluginMonitoringCheck();
+      $pmComponent   = new PluginMonitoringComponent();
+      $pmEntity      = new PluginMonitoringEntity();
+      $pmHostconfig  = new PluginMonitoringHostconfig();
+      $pmHost        = new PluginMonitoringHost();
+
+      $a_hostgroups = array();
+      $i=0;
+      $a_hostgroups_found = array();
+      
+      $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
+      
+      // Toolbox::logInFile("pm", "Building hostgroups ...\n");
+      
+      $query = "SELECT 
+         `glpi_plugin_monitoring_componentscatalogs_hosts`.*, 
+         `glpi_computers`.`name` as hostname, `glpi_computers`.`locations_id`,
+         `glpi_entities`.`id` AS entityId, `glpi_entities`.`name` AS entityName
+         FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+         LEFT JOIN `glpi_computers` ON `glpi_computers`.`id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`
+         LEFT JOIN `glpi_entities` ON `glpi_computers`.`entities_id` = `glpi_entities`.`id`
+         GROUP BY `itemtype`, `items_id`";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+/*
+Nagios configuration file :
+   define hostgroup{
+      hostgroup_name	hostgroup_name
+      alias	alias
+      members	hosts
+      hostgroup_members	hostgroups
+      notes	note_string
+      notes_url	url
+      action_url	url
+   }
+*/
+         if (isset($a_entities_allowed['-1'])
+                 OR isset($a_entities_allowed[$class->fields['entities_id']])) {
+
+            $host_name = preg_replace("/[^A-Za-z0-9\-_]/","",$data['hostname']);
+            // Toolbox::logInFile("pm", "Host name : ".$host_name."\n");
+            
+            $hostgroup_name = "hostgroup-".$data['entityId'];
+            if (!isset($a_hostgroups_found[$hostgroup_name])) {
+               // Toolbox::logInFile("pm", "Host group : ".$hostgroup_name."\n");
+               
+               $a_hostgroups[$i]['hostgroup_name'] = $hostgroup_name;
+               $a_hostgroups[$i]['alias'] = $data['entityName'];
+
+               $a_hostgroups_found[$hostgroup_name] = 1;
+
+               $i++;
+            }
+         }
+      }
+      
+      if ($file == "1") {
+         $config = "# Generated by plugin monitoring for GLPI\n# on ".date("Y-m-d H:i:s")."\n\n";
+
+         foreach ($a_hostgroups as $data) {
+            $config .= $this->constructFile("hostgroup", $data);
+         }
+         return array('hostgroups.cfg', $config);
+
+      } else {
+         return $a_hostgroups;
+      }
+   }
+
+   
+   
    function generateContactsCfg($file=0) {
       global $DB;
       

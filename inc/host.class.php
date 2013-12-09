@@ -50,15 +50,23 @@ class PluginMonitoringHost extends CommonDBTM {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
-      $array_ret = array();
-      if ($item->getID() > 0) {
-         $array_ret[0] = self::createTabEntry(
-                 __('Monitoring', 'monitoring')."-".__('Resources', 'monitoring'),
-                 self::countForItem($item));
-         $array_ret[1] = self::createTabEntry(
-                 __('Monitoring', 'monitoring')."-".__('Resources (graph)', 'monitoring'));
+      if (!$withtemplate) {
+         switch ($item->getType()) {
+            case 'Central' :
+               return array(1 => __('Monitoring', 'monitoring')."-".__('Hosts status', 'monitoring'));
+
+         }
+         $array_ret = array();
+         if ($item->getID() > 0) {
+            $array_ret[0] = self::createTabEntry(
+                    __('Monitoring', 'monitoring')."-".__('Resources', 'monitoring'),
+                    self::countForItem($item));
+            $array_ret[1] = self::createTabEntry(
+                    __('Monitoring', 'monitoring')."-".__('Resources (graph)', 'monitoring'));
+         }
+         return $array_ret;
       }
-      return $array_ret;
+      return '';
    }
    
    
@@ -86,6 +94,14 @@ class PluginMonitoringHost extends CommonDBTM {
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
+      switch ($item->getType()) {
+         case 'Central' :
+            $pmDisplay = new PluginMonitoringDisplay();
+            $pmDisplay->showHostsCounters("Hosts", 1, 1);
+            $pmDisplay->showHostsBoard();
+            return true;
+
+      }
       if ($item->getID() > 0) {
          if ($tabnum == 0) {
             PluginMonitoringServicegraph::loadLib();

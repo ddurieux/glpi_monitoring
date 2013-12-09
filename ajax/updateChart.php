@@ -183,6 +183,8 @@ foreach ($mydatat as $name=>$data) {
    if ($display == "checked") {
       echo "var val".$a_names[$name]." = new Array();\n";
       $i = 0;
+      $datawarn=0;
+      $datacrit=0;
       foreach ($a_labels as $label) {
          if (!isset($data[$i])
                  OR $data[$i] == '') {
@@ -190,6 +192,19 @@ foreach ($mydatat as $name=>$data) {
          }
          if (isset($_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$_POST['components_id']][$name])) {
             $data[$i] = "-".$data[$i];
+         }
+         if ($data[$i]=='0') {
+            if (strstr(strtolower($name), "warn")) {
+               $data[$i]=$datawarn;
+            } else if (strstr(strtolower($name), "crit")) {
+               $data[$i]=$datacrit;
+            }
+         } else {
+            if (strstr(strtolower($name), "warn")) {
+               $datawarn=max($datawarn, $data[$i]);
+            } else if (strstr(strtolower($name), "crit")) {
+               $datacrit=max($datacrit, $data[$i]);
+            }
          }
          echo "val".$a_names[$name].".push({x: format.parse('".$label."'), y: ".$data[$i]."});\n";
          $i++;
