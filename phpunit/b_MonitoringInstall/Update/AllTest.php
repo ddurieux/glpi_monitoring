@@ -80,7 +80,7 @@ class Update extends PHPUnit_Framework_TestCase {
       $this->assertTrue($res, "Fail: SQL Error during insert version ".$version);
       
       echo "Install plugin monitoring (cli)\n";
-      passthru("cd ../tools/ && /usr/local/bin/php -f cli_install.php");
+      passthru("cd ../scripts/ && /usr/local/bin/php -f cli_install.php");
       
       Plugin::load("monitoring");
       

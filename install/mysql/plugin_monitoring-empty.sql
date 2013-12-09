@@ -373,6 +373,10 @@ CREATE TABLE `glpi_plugin_monitoring_hosts` (
   `state_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `last_check` datetime DEFAULT NULL,
   `dependencies` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `perf_data` text DEFAULT NULL COLLATE utf8_unicode_ci,
+  `output` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `latency` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `execution_time` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

@@ -53,7 +53,7 @@ class Install extends PHPUnit_Framework_TestCase {
          }
       }
 
-      passthru("cd ../tools && /usr/local/bin/php -f cli_install.php");
+      passthru("cd ../scripts && /usr/local/bin/php -f cli_install.php");
 
       $_SESSION['glpi_use_mode'] = 2;
       $_SESSION["glpiID"] = 2;
