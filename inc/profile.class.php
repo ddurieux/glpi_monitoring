@@ -205,13 +205,13 @@ class PluginMonitoringProfile extends CommonDBTM {
       Profile::dropdownNoneReadWrite("viewshomepage", $this->fields["viewshomepage"], 1, 1, 0);
       echo "</td>";
       echo "<td>";
-      echo __('Weathermap', 'monitoring')."&nbsp;:";
+      echo __('Hosts status catalog', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
-      Profile::dropdownNoneReadWrite("weathermap", $this->fields["weathermap"], 1, 1, 1);
+      Profile::dropdownNoneReadWrite("hosts_status", $this->fields["hosts_status"], 1, 1, 0);
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
       echo __('Components', 'monitoring')."&nbsp;:";
@@ -260,10 +260,10 @@ class PluginMonitoringProfile extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
-      echo __('See hosts status in dashboard', 'monitoring')."&nbsp;:";
+      echo __('Weathermap', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
-      Profile::dropdownNoneReadWrite("hosts_status", $this->fields["hosts_status"], 1, 0, 1);
+      Profile::dropdownNoneReadWrite("weathermap", $this->fields["weathermap"], 1, 1, 1);
       echo "</td>";
       echo "</tr>";
       

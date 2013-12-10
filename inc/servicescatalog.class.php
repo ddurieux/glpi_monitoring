@@ -87,7 +87,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       if (get_class($item) == __CLASS__) {
          $array_ret[50] = __('Contacts', 'monitoring');
       } else {
-         if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
+         if (PluginMonitoringProfile::haveRight("viewshomepage", 'r') && PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
             $array_ret[49] = self::createTabEntry(
                     __('Monitoring', 'monitoring')."-".__('Services catalog', 'monitoring'));
          }

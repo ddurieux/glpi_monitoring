@@ -92,8 +92,11 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Central' :
-               return array(1 => __('Monitoring', 'monitoring')."-".__('Components catalog', 'monitoring'));
-
+               if (PluginMonitoringProfile::haveRight("viewshomepage", 'r') && PluginMonitoringProfile::haveRight("componentscatalog", 'r')) {
+                  return array(1 => __('Monitoring', 'monitoring')."-".__('Components catalog', 'monitoring'));
+               } else {
+                  return '';
+               }
          }
          if ($item->getID() > 0) {
             $ong = array();
