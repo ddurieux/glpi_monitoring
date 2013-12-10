@@ -2463,6 +2463,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                               'hosts_status', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'system_status', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
       $migration->migrationOneTable($newTable);
       
       
