@@ -498,7 +498,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          LEFT JOIN `glpi_computers` ON `glpi_computers`.`id` = `".$pmComponentscatalog_Host->getTable()."`.`items_id`
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."' AND `glpi_computers`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].") 
          ORDER BY name ASC";
-      Toolbox::logInFile("pm", "query hosts - $query\n");
+      // Toolbox::logInFile("pm", "query hosts - $query\n");
       $result = $DB->query($query);
       while ($dataComponentscatalog_Host=$DB->fetch_array($result)) {
          $ressources = array();
@@ -507,7 +507,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'
                AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].") 
             ORDER BY NAME ASC;";
-         Toolbox::logInFile("pm", "query services - $queryService\n");
+         // Toolbox::logInFile("pm", "query services - $queryService\n");
          $resultService = $DB->query($queryService);
          while ($dataService=$DB->fetch_array($resultService)) {
             $nb_ressources++;
