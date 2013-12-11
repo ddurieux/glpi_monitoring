@@ -451,7 +451,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             echo '<a href="'.$link.'" title="'.$resources[$services[$i]]['state'].
                     " - ".$resources[$services[$i]]['last_check']." - ".
                     $resources[$services[$i]]['event'].'">'
-                    . '<div class="service'.$resources[$services[$i]]['state'].'"></div></a>';
+                    . '<div class="service'.$resources[$services[$i]]['state_type'].' service'.$resources[$services[$i]]['state'].'"></div></a>';
             echo '</td>';
          }
          echo  '</tr>';
