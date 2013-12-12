@@ -443,6 +443,11 @@ class PluginMonitoringShinken extends CommonDBTM {
             }
          }
       }
+
+      // Dummy host for bp
+      $a_hosts[$i]['hostname'] = 'host_for_bp'; 
+      $a_hosts[$i]['check_command'] = 'check_dummy!0';
+
       
       // Check if parents all exist in hosts config
       foreach ($a_parents_found as $host => $num) {
@@ -765,6 +770,12 @@ class PluginMonitoringShinken extends CommonDBTM {
                if ($pmComponentscatalog->fields['notification_interval'] != '30') {
                   $a_services[$i]['notification_interval'] = $pmComponentscatalog->fields['notification_interval'];
                }
+               if ($calendar->getFromDB($a_component['calendars_id'])) {
+                  $a_services[$i]['notification_period'] = $calendar->fields['name'];
+               } else {
+                  $a_services[$i]['notification_period'] = "24x7";
+               }
+
             }
 
             // Manage user interface ...
@@ -878,7 +889,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                if ($calendar->getFromDB($dataBA['calendars_id'])) {
                   $a_services[$i]['check_period'] = $calendar->fields['name'];            
                }
-               $a_services[$i]['host_name'] = $hostnamebp;
+               $a_services[$i]['host_name'] = 'host_for_bp';
                $a_services[$i]['business_impact'] = $dataBA['business_priority'];
                $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9\-_]/","",$dataBA['name']);
                // $a_services[$i]['_ENTITIESID'] = $dataBA['id'];
