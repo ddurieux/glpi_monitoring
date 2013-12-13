@@ -301,6 +301,13 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          'dsname6'      => array('type'    => 'string',         'value'   => NULL),
          'dsname7'      => array('type'    => 'string',         'value'   => NULL),
          'dsname8'      => array('type'    => 'string',         'value'   => NULL),
+         'dsname9'      => array('type'    => 'string',         'value'   => NULL),
+         'dsname10'     => array('type'    => 'string',         'value'   => NULL),
+         'dsname11'     => array('type'    => 'string',         'value'   => NULL),
+         'dsname12'     => array('type'    => 'string',         'value'   => NULL),
+         'dsname13'     => array('type'    => 'string',         'value'   => NULL),
+         'dsname14'     => array('type'    => 'string',         'value'   => NULL),
+         'dsname15'     => array('type'    => 'string',         'value'   => NULL),
       );
 
       $a_table['oldfields']  = array();
