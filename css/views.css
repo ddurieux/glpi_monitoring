@@ -267,3 +267,12 @@ td .vertical {
 	margin: auto;
 	border-radius: 50%;
 }
+
+.serviceSOFT{
+	/* Background en dégradé blanc transparent */
+	background-image: -webkit-linear-gradient(right top, rgba(255,255,255,.6) 0%, rgba(255,255,255,0) 100%);
+	background-image:    -moz-linear-gradient(right top, rgba(255,255,255,.6) 0%, rgba(255,255,255,0) 100%);
+	background-image:     -ms-linear-gradient(right top, rgba(255,255,255,.6) 0%, rgba(255,255,255,0) 100%);
+	background-image:      -o-linear-gradient(right top, rgba(255,255,255,.6) 0%, rgba(255,255,255,0) 100%);
+	background-image:         linear-gradient(right top, rgba(255,255,255,.6) 0%, rgba(255,255,255,0) 100%);
+}

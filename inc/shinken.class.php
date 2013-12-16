@@ -756,11 +756,18 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_services[$i]['_httpstink'] = 'NO';
             } else {
                // Notification options
-               $a_services[$i]['notification_period'] = '24x7';
                $a_services[$i]['notification_interval'] = '30';
                $pmComponentscatalog->getFromDB($plugin_monitoring_componentscatalogs_id);
                if ($pmComponentscatalog->fields['notification_interval'] != '30') {
                   $a_services[$i]['notification_interval'] = $pmComponentscatalog->fields['notification_interval'];
+               }
+               $a_services[$i]['notification_period'] = '24x7';
+               if ($calendar->getFromDB($a_component['calendars_id'])) {
+                  $a_services[$i]['notification_period'] = $calendar->fields['name'];
+               }
+               $a_services[$i]['check_period'] = '24x7';
+               if ($calendar->getFromDB($a_component['calendars_id'])) {
+                  $a_services[$i]['check_period'] = $calendar->fields['name'];            
                }
             }
 

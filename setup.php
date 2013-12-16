@@ -63,7 +63,7 @@ function plugin_init_monitoring() {
          Plugin::registerClass('PluginMonitoringCommmand');
          Plugin::registerClass('PluginMonitoringEventhandler');
          Plugin::registerClass('PluginMonitoringComponent');
-         Plugin::registerClass('PluginMonitoringComponentscatalog');
+         //Plugin::registerClass('PluginMonitoringComponentscatalog');
          Plugin::registerClass('PluginMonitoringComponentscatalog',
               array('addtabon' => array('Central')));
          Plugin::registerClass('PluginMonitoringContact',
@@ -77,6 +77,8 @@ function plugin_init_monitoring() {
          Plugin::registerClass('PluginMonitoringServicescatalog',
               array('addtabon' => array('Central')));
          Plugin::registerClass('PluginMonitoringUnavaibility');
+         Plugin::registerClass('PluginMonitoringSystem',
+              array('addtabon' => array('Central')));
          
          
          

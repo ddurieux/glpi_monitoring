@@ -92,8 +92,11 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Central' :
-               return array(1 => __('Monitoring', 'monitoring')."-".__('Components catalog', 'monitoring'));
-
+               if (PluginMonitoringProfile::haveRight("viewshomepage", 'r') && PluginMonitoringProfile::haveRight("componentscatalog", 'r')) {
+                  return array(1 => __('Monitoring', 'monitoring')."-".__('Components catalog', 'monitoring'));
+               } else {
+                  return '';
+               }
          }
          if ($item->getID() > 0) {
             $ong = array();
@@ -448,7 +451,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             echo '<a href="'.$link.'" title="'.$resources[$services[$i]]['state'].
                     " - ".$resources[$services[$i]]['last_check']." - ".
                     $resources[$services[$i]]['event'].'">'
-                    . '<div class="service'.$resources[$services[$i]]['state'].'"></div></a>';
+                    . '<div class="service'.$resources[$services[$i]]['state_type'].' service'.$resources[$services[$i]]['state'].'"></div></a>';
             echo '</td>';
          }
          echo  '</tr>';
@@ -493,7 +496,8 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $hosts_ressources = array();
       $query = "SELECT `glpi_computers`.`name`, `glpi_computers`.`entities_id`, ".$pmComponentscatalog_Host->getTable().".* FROM `".$pmComponentscatalog_Host->getTable()."`
          LEFT JOIN `glpi_computers` ON `glpi_computers`.`id` = `".$pmComponentscatalog_Host->getTable()."`.`items_id`
-         WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."' AND `glpi_computers`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
+         WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."' AND `glpi_computers`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].") 
+         ORDER BY name ASC";
       // Toolbox::logInFile("pm", "query hosts - $query\n");
       $result = $DB->query($query);
       while ($dataComponentscatalog_Host=$DB->fetch_array($result)) {
@@ -501,7 +505,8 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          
          $queryService = "SELECT * FROM `".$pmService->getTable()."`
             WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'
-               AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
+               AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].") 
+            ORDER BY NAME ASC;";
          // Toolbox::logInFile("pm", "query services - $queryService\n");
          $resultService = $DB->query($queryService);
          while ($dataService=$DB->fetch_array($resultService)) {

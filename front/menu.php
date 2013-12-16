@@ -50,20 +50,29 @@ Html::header(__('Monitoring', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
 $pmMessage = new PluginMonitoringMessage();
 $pmMessage->getMessages();
 
-echo "<table class='tab_cadre' width='950'>";
+$toDisplayArea=0;
 
-echo "<tr class='tab_bg_1'>";
-echo "<th height='80'>";
-echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_servicescatalog.php'>".__('Dashboard', 'monitoring')."</a>";
-echo "</th>";
-echo "</tr>";
-echo "</table>";
+if (PluginMonitoringProfile::haveRight("restartshinken", 'w')
+        || PluginMonitoringProfile::haveRight("hosts_status", 'r')
+        || PluginMonitoringProfile::haveRight("servicescatalog", 'r')
+        || PluginMonitoringProfile::haveRight("componentscatalog", 'r')
+        || PluginMonitoringProfile::haveRight("allressources", 'r')) {
+   $toDisplayArea++;
+   echo "<table class='tab_cadre' width='950'>";
+   echo "<tr class='tab_bg_1'>";
+   echo "<th height='80'>";
+   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_servicescatalog.php'>".__('Dashboard', 'monitoring')."</a>";
+   echo "</th>";
+   echo "</tr>";
+   echo "</table>";
+}
 
 echo "<br/>";
 
 if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')
         || PluginMonitoringProfile::haveRight("weathermap", 'r')
         || PluginMonitoringProfile::haveRight("view", 'r')) {
+   $toDisplayArea++;
    echo "<table class='tab_cadre' width='950'>";
    echo "<tr class='tab_bg_1'>";
    echo "<th align='center' height='50' width='33%'>";
@@ -90,6 +99,7 @@ if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')
 }
 
 if (PluginMonitoringProfile::haveRight("componentscatalog", 'r')) {
+   $toDisplayArea++;
    echo "<table class='tab_cadre' width='950'>";
    echo "<th height='40'>";
    if (PluginMonitoringProfile::haveRight("componentscatalog", 'r')) {
@@ -108,6 +118,7 @@ if (PluginMonitoringProfile::haveRight("component", 'r')
         || PluginMonitoringProfile::haveRight("check", 'r')
         || Session::haveRight('calendar', 'r')) {
 
+   $toDisplayArea++;
    echo "<table class='tab_cadre' width='950'>";
    echo "<tr class='tab_bg_1'>";
    echo "<th colspan='5' height='30' width='55%'>";
@@ -174,6 +185,16 @@ if (PluginMonitoringProfile::haveRight("component", 'r')
    echo "</th>";
    echo "</tr>";  
 
+   echo "</table>";
+}
+
+if ($toDisplayArea <= 0) {
+   echo "<table class='tab_cadre' width='950'>";
+   echo "<tr class='tab_bg_1'>";
+   echo "<th height='80'>";
+   echo __('Sorry, your profile does not allow any views in the Monitoring', 'monitoring');
+   echo "</th>";
+   echo "</tr>";
    echo "</table>";
 }
 
