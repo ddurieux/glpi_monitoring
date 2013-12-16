@@ -443,7 +443,19 @@ class PluginMonitoringShinken extends CommonDBTM {
       // Dummy host for bp
       $a_hosts[$i]['hostname'] = 'host_for_bp'; 
       $a_hosts[$i]['check_command'] = 'check_dummy!0';
-
+      $a_hosts[$i]['alias'] = 'host_for_bp';
+      $a_hosts[$i]['address'] = '127.0.0.1';
+      $a_hosts[$i]['parents'] = '';
+      $a_hosts[$i]['check_interval'] = '60';
+      $a_hosts[$i]['retry_interval'] = '1';
+      $a_hosts[$i]['max_check_attempts'] = '1';
+      $a_hosts[$i]['check_period'] = '24x7';
+      $a_hosts[$i]['contacts'] = '';
+      $a_hosts[$i]['process_perf_data'] = '1';
+      $a_hosts[$i]['notification_interval'] = '720';
+      $a_hosts[$i]['notification_period'] = '24x7';
+      $a_hosts[$i]['notification_options'] = 'd,u,r,f,s';
+      
       
       // Check if parents all exist in hosts config
       foreach ($a_parents_found as $host => $num) {
