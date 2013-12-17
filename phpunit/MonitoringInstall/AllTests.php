@@ -130,6 +130,7 @@ class MonitoringInstall extends PHPUnit_Framework_TestCase {
 }
 
 require_once 'Install/AllTests.php';
+require_once 'Update/AllTests.php';
 
 class MonitoringInstall_AllTests  {
 
@@ -137,6 +138,10 @@ class MonitoringInstall_AllTests  {
 
       $suite = new PHPUnit_Framework_TestSuite('MonitoringInstall');
       $suite->addTest(Install_AllTests::suite());
+      if (!(isset($_SERVER['argv']) 
+              && isset($_SERVER['argv'][2]))) {
+         $suite->addTest(Update_AllTests::suite());
+      }
       return $suite;
    }
 }

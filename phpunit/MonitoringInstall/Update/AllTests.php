@@ -40,22 +40,31 @@
    ------------------------------------------------------------------------
  */
 
-class Install extends PHPUnit_Framework_TestCase {
+class Update extends PHPUnit_Framework_TestCase {
 
-   public function testInstall($verify=1) {
+   public function testUpdate08410() {
+      global $PF_CONFIG;
+      
+      $PF_CONFIG = array();
+      
+      $Update = new Update();
+      $Update->update("0.84+1.0");
+   }
+   
+   
+   function update($version = '') {
       global $DB;
-      
       $DB->connect();
-
-      // Delete if Table of Monitoring yet in DB
-      $query = "SHOW FULL TABLES WHERE TABLE_TYPE LIKE 'VIEW'";
-      $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
-         if (strstr($data[0], "monitoring")) {
-            $DB->query("DROP VIEW ".$data[0]);
-         }
-      } 
       
+      if ($version == '') {
+         return;
+      }
+      echo "#####################################################\n
+            ######### Update from version ".$version."###############\n
+            #####################################################\n";
+      $GLPIInstall = new GLPIInstall();
+      $GLPIInstall->testInstall();
+
       $query = "SHOW TABLES";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
@@ -63,36 +72,47 @@ class Install extends PHPUnit_Framework_TestCase {
             $DB->query("DROP TABLE ".$data[0]);
          }
       }
+      $query = "DELETE FROM `glpi_displaypreferences`
+         WHERE `itemtype` LIKE 'PluginMonitoring%'";
+      $DB->query($query);
 
-      passthru("cd ../scripts && /usr/local/bin/php -f cli_install.php");
+      // ** Insert in DB
+      $res = $DB->runFile(GLPI_ROOT ."/plugins/monitoring/phpunit/MonitoringInstall/Update/mysql/i-".$version.".sql");
+      $this->assertTrue($res, "Fail: SQL Error during insert version ".$version);
 
-      $_SESSION['glpi_use_mode'] = 2;
-      $_SESSION["glpiID"] = 2;
-      
-      Plugin::load("monitoring");
-      
-      Session::loadLanguage("en_GB");
-      
-      if ($verify == '1') {
-         $MonitoringInstall = new MonitoringInstall();
-         $MonitoringInstall->testDB("monitoring");
-         
-      }
-      
+      passthru("cd ../scripts/ && php -f cli_install.php");
+
       $GLPIlog = new GLPIlogs();
       $GLPIlog->testSQLlogs();
       $GLPIlog->testPHPlogs();
+      
+      $MonitoringInstall = new MonitoringInstall();
+      $MonitoringInstall->testDB("monitoring", "upgrade from ".$version);
+   }
+   
+   
+   
+   public function testInstallCleanVersion() {
+      global $DB;
+      
+      $DB->connect();
+      
+      $Install = new Install();
+      $Install->testInstall(0);
+      
    }
 }
 
 
 
-class Install_AllTests  {
+class Update_AllTests  {
 
    public static function suite() {
 
-      $suite = new PHPUnit_Framework_TestSuite('Install');
+      $suite = new PHPUnit_Framework_TestSuite('Update');
       return $suite;
+
    }
 }
+
 ?>

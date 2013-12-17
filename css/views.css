@@ -269,10 +269,13 @@ td .vertical {
 }
 
 .serviceSOFT{
-	/* Background en dégradé blanc transparent */
+	/* Background en dï¿½gradï¿½ blanc transparent */
+   /*
 	background-image: -webkit-linear-gradient(right top, rgba(255,255,255,.6) 0%, rgba(255,255,255,0) 100%);
 	background-image:    -moz-linear-gradient(right top, rgba(255,255,255,.6) 0%, rgba(255,255,255,0) 100%);
 	background-image:     -ms-linear-gradient(right top, rgba(255,255,255,.6) 0%, rgba(255,255,255,0) 100%);
 	background-image:      -o-linear-gradient(right top, rgba(255,255,255,.6) 0%, rgba(255,255,255,0) 100%);
 	background-image:         linear-gradient(right top, rgba(255,255,255,.6) 0%, rgba(255,255,255,0) 100%);
+   */
+   background-image:radial-gradient(rgba(255,255,255,.7), rgba(255,255,255,0) 100%);
 }

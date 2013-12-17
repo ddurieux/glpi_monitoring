@@ -49,7 +49,7 @@ class c_ManageRessources extends PHPUnit_Framework_TestCase {
       $_SESSION["glpiID"] = 2;
       $_SESSION["glpiactiveentities_string"] = 0;
       
-      passthru("cd ../tools/ && /usr/local/bin/php -f cli_install.php");
+      passthru("cd ../scripts/ && /usr/local/bin/php -f cli_install.php");
       
       $PLUGIN_HOOKS = plugin_init_monitoring();
       plugin::load("monitoring");

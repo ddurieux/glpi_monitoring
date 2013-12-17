@@ -280,7 +280,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       migrateTablesMonitoring($migration, $a_table);
 
     /*
-     * glpi_plugin_monitoring_perfdatas
+     * glpi_plugin_monitoring_perfdatadetails
      */
       $a_table = array();
       $a_table['name'] = 'glpi_plugin_monitoring_perfdatadetails';
@@ -292,7 +292,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          'dynamic_name' => array('type'    => 'bool',           'value'   => NULL),
          'plugin_monitoring_perfdatas_id' => array('type'    => 'integer',    'value'   => NULL),
          'position'     => array('type'    => "int(2) NOT NULL DEFAULT '0'",  'value'   => NULL),
-         'dsname_num'   => array('type'    => 'bool',           'value'   => NULL),
+         'dsname_num'   => array('type'    => 'tinyint(1) NOT NULL DEFAULT "1"',           'value'   => NULL),
          'dsname1'      => array('type'    => 'string',         'value'   => NULL),
          'dsname2'      => array('type'    => 'string',         'value'   => NULL),
          'dsname3'      => array('type'    => 'string',         'value'   => NULL),
@@ -301,6 +301,13 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          'dsname6'      => array('type'    => 'string',         'value'   => NULL),
          'dsname7'      => array('type'    => 'string',         'value'   => NULL),
          'dsname8'      => array('type'    => 'string',         'value'   => NULL),
+         'dsname9'      => array('type'    => 'string',         'value'   => NULL),
+         'dsname10'     => array('type'    => 'string',         'value'   => NULL),
+         'dsname11'     => array('type'    => 'string',         'value'   => NULL),
+         'dsname12'     => array('type'    => 'string',         'value'   => NULL),
+         'dsname13'     => array('type'    => 'string',         'value'   => NULL),
+         'dsname14'     => array('type'    => 'string',         'value'   => NULL),
+         'dsname15'     => array('type'    => 'string',         'value'   => NULL),
       );
 
       $a_table['oldfields']  = array();
@@ -1646,32 +1653,32 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               'itemtype', 
                               "varchar(100) DEFAULT NULL");
          $migration->addField($newTable, 
-                                 'event', 
-                                 "varchar(512) COLLATE utf8_unicode_ci DEFAULT NULL");
+                              'event', 
+                              "varchar(512) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
-                                 'state', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");                 
+                              'state', 
+                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");                 
          $migration->addField($newTable, 
-                                 'state_type', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+                              'state_type', 
+                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
-                                 'last_check', 
-                                 "datetime DEFAULT NULL"); 
+                              'last_check', 
+                              "datetime DEFAULT NULL"); 
          $migration->addField($newTable, 
-                                 'dependencies', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+                              'dependencies', 
+                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
-                                 'perf_data', 
-                                 "text COLLATE utf8_unicode_ci DEFAULT NULL");
+                              'perf_data', 
+                              "text COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
-                                 'output', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+                              'output', 
+                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
-                                 'latency', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+                              'latency', 
+                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
-                                 'execution_time', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+                              'execution_time', 
+                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
       $migration->migrationOneTable($newTable);
       
       Toolbox::logInFile("pm", "Count hosts : ".count($a_hosts)."\n");

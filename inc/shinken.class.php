@@ -427,11 +427,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                   }
                }
                
-               if ($calendar->getFromDB($a_fields['calendars_id'])) {
-                  $a_hosts[$i]['notification_period'] = $calendar->fields['name'];
-               } else {
-                  $a_hosts[$i]['notification_period'] = "24x7";
-               }
+               $a_hosts[$i]['notification_period'] = "24x7";
                $a_hosts[$i]['notification_options'] = 'd,u,r,f,s';
 
                // Manage user interface ...
@@ -443,6 +439,23 @@ class PluginMonitoringShinken extends CommonDBTM {
             }
          }
       }
+
+      // Dummy host for bp
+      $a_hosts[$i]['hostname'] = 'host_for_bp'; 
+      $a_hosts[$i]['check_command'] = 'check_dummy!0';
+      $a_hosts[$i]['alias'] = 'host_for_bp';
+      $a_hosts[$i]['address'] = '127.0.0.1';
+      $a_hosts[$i]['parents'] = '';
+      $a_hosts[$i]['check_interval'] = '60';
+      $a_hosts[$i]['retry_interval'] = '1';
+      $a_hosts[$i]['max_check_attempts'] = '1';
+      $a_hosts[$i]['check_period'] = '24x7';
+      $a_hosts[$i]['contacts'] = '';
+      $a_hosts[$i]['process_perf_data'] = '1';
+      $a_hosts[$i]['notification_interval'] = '720';
+      $a_hosts[$i]['notification_period'] = '24x7';
+      $a_hosts[$i]['notification_options'] = 'd,u,r,f,s';
+      
       
       // Check if parents all exist in hosts config
       foreach ($a_parents_found as $host => $num) {
@@ -730,11 +743,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                   $a_services[$i]['check_period'] = $calendar->fields['name'];            
                }
                $a_services[$i]['notification_interval'] = '30';
-               if ($calendar->getFromDB($a_component['calendars_id'])) {
-                  $a_services[$i]['notification_period'] = $calendar->fields['name'];
-               } else {
-                  $a_services[$i]['notification_period'] = "24x7";
-               }
+               $a_services[$i]['notification_period'] = "24x7";
                $a_services[$i]['notification_options'] = 'w,u,c,r,f,s';
                $a_services[$i]['process_perf_data'] = '1';
                $a_services[$i]['active_checks_enabled'] = '1';
@@ -765,9 +774,6 @@ class PluginMonitoringShinken extends CommonDBTM {
                   $a_services[$i]['notification_interval'] = $pmComponentscatalog->fields['notification_interval'];
                }
                $a_services[$i]['notification_period'] = '24x7';
-               if ($calendar->getFromDB($a_component['calendars_id'])) {
-                  $a_services[$i]['notification_period'] = $calendar->fields['name'];
-               }
                $a_services[$i]['check_period'] = '24x7';
                if ($calendar->getFromDB($a_component['calendars_id'])) {
                   $a_services[$i]['check_period'] = $calendar->fields['name'];            
@@ -885,7 +891,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                if ($calendar->getFromDB($dataBA['calendars_id'])) {
                   $a_services[$i]['check_period'] = $calendar->fields['name'];            
                }
-               $a_services[$i]['host_name'] = $hostnamebp;
+               $a_services[$i]['host_name'] = 'host_for_bp';
                $a_services[$i]['business_impact'] = $dataBA['business_priority'];
                $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9\-_]/","",$dataBA['name']);
                // $a_services[$i]['_ENTITIESID'] = $dataBA['id'];
@@ -907,11 +913,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                } else {
                   $a_services[$i]['notification_interval'] = '30';
                }
-               if ($calendar->getFromDB($dataBA['calendars_id'])) {
-                  $a_services[$i]['notification_period'] = $calendar->fields['name'];
-               } else {
-                  $a_services[$i]['notification_period'] = "24x7";
-               }
+               $a_services[$i]['notification_period'] = "24x7";
                $a_services[$i]['notification_options'] = 'w,u,c,r,f,s';
                $a_services[$i]['active_checks_enabled'] = '1';
                $a_services[$i]['process_perf_data'] = '1';
@@ -1004,11 +1006,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             $a_servicetemplates[$i]['check_period'] = $calendar->fields['name'];            
          }
          $a_servicetemplates[$i]['notification_interval'] = '30';
-         if ($calendar->getFromDB($data['calendars_id'])) {
-            $a_servicetemplates[$i]['notification_period'] = $calendar->fields['name'];
-         } else {
-            $a_servicetemplates[$i]['notification_period'] = "24x7";
-         }
+         $a_servicetemplates[$i]['notification_period'] = "24x7";
          $a_servicetemplates[$i]['notification_options'] = 'w,u,c,r,f,s';
          $a_servicetemplates[$i]['process_perf_data'] = '1';
          $a_servicetemplates[$i]['active_checks_enabled'] = $data['active_checks_enabled'];

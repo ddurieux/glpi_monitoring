@@ -373,6 +373,10 @@ CREATE TABLE `glpi_plugin_monitoring_hosts` (
   `state_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `last_check` datetime DEFAULT NULL,
   `dependencies` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `perf_data` text DEFAULT NULL COLLATE utf8_unicode_ci,
+  `output` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `latency` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `execution_time` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -717,6 +721,13 @@ CREATE TABLE `glpi_plugin_monitoring_perfdatadetails` (
    `dsname6` varchar(255) DEFAULT NULL,
    `dsname7` varchar(255) DEFAULT NULL,
    `dsname8` varchar(255) DEFAULT NULL,
+   `dsname9` varchar(255) DEFAULT NULL,
+   `dsname10` varchar(255) DEFAULT NULL,
+   `dsname11` varchar(255) DEFAULT NULL,
+   `dsname12` varchar(255) DEFAULT NULL,
+   `dsname13` varchar(255) DEFAULT NULL,
+   `dsname14` varchar(255) DEFAULT NULL,
+   `dsname15` varchar(255) DEFAULT NULL,
    PRIMARY KEY (`id`),
    KEY `plugin_monitoring_perfdatas_id` (`plugin_monitoring_perfdatas_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
