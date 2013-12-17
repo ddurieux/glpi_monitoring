@@ -441,9 +441,11 @@ class PluginMonitoringShinken extends CommonDBTM {
       }
 
       // Dummy host for bp
-      $a_hosts[$i]['hostname'] = 'host_for_bp'; 
+      $a_hosts[$i]['host_name'] = 'host_for_bp'; 
       $a_hosts[$i]['check_command'] = 'check_dummy!0';
       $a_hosts[$i]['alias'] = 'host_for_bp';
+      $a_hosts[$i]['_ITEMSID'] = '0';
+      $a_hosts[$i]['_ITEMTYPE'] = 'Computer';
       $a_hosts[$i]['address'] = '127.0.0.1';
       $a_hosts[$i]['parents'] = '';
       $a_hosts[$i]['check_interval'] = '60';
