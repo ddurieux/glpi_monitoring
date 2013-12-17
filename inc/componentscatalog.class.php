@@ -336,6 +336,10 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             <h1>Nothing to display ...</h1>
             </div>
          </div>';
+         
+         echo "<script type=\"text/javascript\">
+            Ext.get(\"updatecomponentscatalog".$id."\").parent().remove();
+         </script>";
 
          return;
       }
