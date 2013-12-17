@@ -255,20 +255,23 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $a_componentscatalogs = $this->find();
       $i = 0;
       foreach ($a_componentscatalogs as $data) {
-         echo "<td style='vertical-align: top;'>";
+         $ret = $this->getInfoOfCatalog($data['id']);
+         if ($ret[0] > 0) {
+            echo "<td style='vertical-align: top;'>";
 
-         echo $this->showWidget($data['id']);
-         $this->ajaxLoad($data['id']);
-         
-         echo "</td>";
-         
-         $i++;
-         if ($i == '4') {
-            echo "</tr>";
-            echo "<tr class='tab_bg_4' style='background: #cececc;'>";
-            $i = 0;
+            echo $this->showWidget($data['id']);
+            $this->ajaxLoad($data['id']);
+
+            echo "</td>";
+
+            $i++;
+            if ($i == '4') {
+               echo "</tr>";
+               echo "<tr class='tab_bg_4' style='background: #cececc;'>";
+               $i = 0;
+            }
          }
-      }      
+      } 
       
       echo "</tr>";
       echo "</table>";      
@@ -333,10 +336,6 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             <h1>Nothing to display ...</h1>
             </div>
          </div>';
-         
-         echo "<script type=\"text/javascript\">
-            Ext.get(\"updatecomponentscatalog".$id."\").parent().remove();
-         </script>";
 
          return;
       }

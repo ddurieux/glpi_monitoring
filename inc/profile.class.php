@@ -89,6 +89,7 @@ class PluginMonitoringProfile extends CommonDBTM {
          $input['hosts_status'] = 'w';
          $input['restartshinken'] = 'w';
          $input['system_status'] = 'w';
+         $input['host_command'] = 'r';
          $pmProfile = new self();
          $pmProfile->add($input);
       }
@@ -274,6 +275,12 @@ class PluginMonitoringProfile extends CommonDBTM {
       echo "</td>";
       echo "<td>";
       Profile::dropdownNoneReadWrite("system_status", $this->fields["system_status"], 1, 1, 1);
+      echo "</td>";
+      echo "<td>";
+      echo __('Host command', 'monitoring')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      Profile::dropdownNoneReadWrite("host_command", $this->fields["host_command"], 1, 1, 0);
       echo "</td>";
       echo "</tr>";
       
