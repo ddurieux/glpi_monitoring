@@ -255,18 +255,21 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $a_componentscatalogs = $this->find();
       $i = 0;
       foreach ($a_componentscatalogs as $data) {
-         echo "<td style='vertical-align: top;'>";
+         $ret = $this->getInfoOfCatalog($data['id']);
+         if ($ret[0] > 0) {
+            echo "<td style='vertical-align: top;'>";
 
-         echo $this->showWidget($data['id']);
-         $this->ajaxLoad($data['id']);
-         
-         echo "</td>";
-         
-         $i++;
-         if ($i == '4') {
-            echo "</tr>";
-            echo "<tr class='tab_bg_4' style='background: #cececc;'>";
-            $i = 0;
+            echo $this->showWidget($data['id']);
+            $this->ajaxLoad($data['id']);
+
+            echo "</td>";
+
+            $i++;
+            if ($i == '4') {
+               echo "</tr>";
+               echo "<tr class='tab_bg_4' style='background: #cececc;'>";
+               $i = 0;
+            }
          }
       }      
       
