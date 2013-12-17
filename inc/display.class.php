@@ -566,7 +566,14 @@ class PluginMonitoringDisplay extends CommonDBTM {
       Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/service.php", $parameters);
    }
 
+
    
+   /**
+    * Display list of hosts
+    * 
+    * @param type $width
+    * @param type $limit
+    */
    function showHostsBoard($width='', $limit='') {
       global $DB,$CFG_GLPI;
 
@@ -575,7 +582,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
          $order = $_GET['order'];
       }
       
-      $where = " `glpi_plugin_monitoring_hosts`.`itemtype` = 'Computer' AND `glpi_plugin_monitoring_hosts`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
+      $where = " `glpi_plugin_monitoring_hosts`.`itemtype` = 'Computer' "
+              . " AND `glpi_computers`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
 
       if ($where != '') {
          $where = " WHERE ".$where;
@@ -1817,29 +1825,47 @@ Ext.onReady(function(){
       
       $play_sound = 0;
       
-      $up = countElementsInTable("glpi_plugin_monitoring_hosts", 
-              "`state`='UP' AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+      $a_devicetypes = array('Computer', 'Printer', 'NetworkEquipment');
 
-      $up_soft = countElementsInTable("glpi_plugin_monitoring_hosts", 
-              "`state`='UP' AND `state_type`='SOFT' AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+      $up = 0;
+      $up_soft = 0;      
+      $unreachable = 0;
+      $unreachable_soft = 0;      
+      $unknown = 0;
+      $unknown_soft = 0;
+      $down = 0;
+      $down_soft = 0;
       
-      $unreachable = countElementsInTable("glpi_plugin_monitoring_hosts", 
-              "`state`='UNREACHABLE' AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+      foreach ($a_devicetypes as $itemtype) {
+         
+         $up += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='UP'"
+                 . " AND `state_type`='HARD'");
+
+         $up_soft += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='UP'"
+                 . " AND `state_type`='SOFT'");
+
+         $unreachable += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='UNREACHABLE'"
+                 . " AND `state_type`='HARD'");
+
+         $unreachable_soft += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='UNREACHABLE'"
+                 . " AND `state_type`='SOFT'");
+
+         $unknown += $this->countQuery($itemtype, "(`glpi_plugin_monitoring_hosts`.`state`='UNKNOWN'"
+                 . " OR `glpi_plugin_monitoring_hosts`.`state` IS NULL) "
+                 . " AND `state_type`='HARD'");
+
+         $unknown_soft += $this->countQuery($itemtype, "(`glpi_plugin_monitoring_hosts`.`state`='UNKNOWN'"
+                 . " OR `glpi_plugin_monitoring_hosts`.`state` IS NULL) "
+                 . " AND `state_type`='SOFT'");
+
+         $down += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='DOWN'"
+                 . " AND `state_type`='HARD'");
+
+         $down_soft += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='DOWN'"
+                 . " AND `state_type`='SOFT'");
+
+      }
       
-      $unreachable_soft = countElementsInTable("glpi_plugin_monitoring_hosts", 
-              "`state`='UNREACHABLE' AND `state_type`='SOFT' AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
-      
-      $unknown = countElementsInTable("glpi_plugin_monitoring_hosts", 
-              "(`state`='UNKNOWN' OR `state` IS NULL) AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
-
-      $unknown_soft = countElementsInTable("glpi_plugin_monitoring_hosts", 
-              "(`state`='UNKNOWN' OR `state` IS NULL) AND `state_type`='SOFT' AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
-
-      $down = countElementsInTable("glpi_plugin_monitoring_hosts", 
-              "`state`='DOWN' AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
-
-      $down_soft = countElementsInTable("glpi_plugin_monitoring_hosts", 
-              "`state`='DOWN' AND `state_type`='SOFT' AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
 
       // ** Manage play sound if down increased since last refresh
          if (isset($_SESSION['plugin_monitoring_dashboard_hosts_down'])) {
@@ -1951,7 +1977,23 @@ Ext.onReady(function(){
                </audio>';
       }
    }
+
    
+   
+   function countQuery($itemtype, $whereState) {
+      global $DB;
+      
+      $query = "SELECT COUNT(*) AS cpt
+          FROM `glpi_plugin_monitoring_hosts`
+          LEFT JOIN `".getTableForItemType($itemtype)."`
+             ON `itemtype`='".$itemtype."' 
+               AND `items_id`=`".getTableForItemType($itemtype)."`.`id`
+          WHERE ".$whereState." 
+            AND `".getTableForItemType($itemtype)."`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
+      $result = $DB->query($query);
+      $ligne  = $DB->fetch_assoc($result);
+      return $ligne['cpt'];      
+   }
    
 
    function showCounters($type, $display=1, $ajax=1) { 
