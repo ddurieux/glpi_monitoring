@@ -1620,9 +1620,9 @@ Ext.onReady(function(){
                   "field[0]=23&searchtype[0]=equals&contains[0]=1".
                   "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
       
-      echo "<table align='center' width='80%'>";
+      echo "<table align='center'>";
       echo "<tr>";
-      echo "<td width='20%'>";
+      echo "<td width='414'>";
          $background = '';
          if ($critical > 0) {
             $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_critical.png"';
@@ -1654,7 +1654,7 @@ Ext.onReady(function(){
          echo "</table>";         
       echo "</td>";
       
-      echo "<td width='20%'>";
+      echo "<td width='188'>";
          $background = '';
          if ($warningdata > 0) {
             $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_warning.png"';
@@ -1699,7 +1699,7 @@ Ext.onReady(function(){
       echo "</td>";
       
       if ($type == 'Ressources') {
-         echo "<td width='20%'>";
+         echo "<td width='188'>";
             $background = '';
             if ($warningconnection > 0) {
                $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_warning_yellow.png"';
@@ -1732,7 +1732,7 @@ Ext.onReady(function(){
          echo "</td>";
       }
       
-      echo "<td width='20%'>";
+      echo "<td width='148'>";
          $background = '';
          if ($ok > 0) {
             $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_ok.png"';
@@ -1764,7 +1764,7 @@ Ext.onReady(function(){
          echo "</table>";         
       echo "</td>";
 
-      echo "<td width='20%'>";
+      echo "<td width='120'>";
          $background = '';
          if ($acknowledge > 0) {
             $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_acknowledge.png"';
@@ -1894,7 +1894,7 @@ Ext.onReady(function(){
 
       echo "<table align='center' width='80%'>";
       echo "<tr>";
-      echo "<td width='20%'>";
+      echo "<td width='414'>";
          $background = '';
          if ($down > 0) {
             $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_critical.png"';
@@ -1904,7 +1904,7 @@ Ext.onReady(function(){
          echo __('Down', 'monitoring');
          echo "</th>";
          echo "<tr><td>";
-         echo "<p style='font-size: 52px; text-align: center;'>".$down."</p>";
+         echo "<p style='font-size: 52px; text-align: center;font-weight: bold;'>".$down."</p>";
          echo "</td></tr>";
          echo "<tr><td>";
          echo "<p style='font-size: 11px; text-align: center;'> Soft : ".$down_soft."</p>";
@@ -1912,7 +1912,7 @@ Ext.onReady(function(){
          echo "</table>";
       echo "</td>";
       
-      echo "<td width='20%'>";
+      echo "<td width='188'>";
          $background = '';
          if ($unreachable > 0) {
             $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_warning.png"';
@@ -1922,7 +1922,7 @@ Ext.onReady(function(){
          echo __('Unreachable', 'monitoring');
          echo "</th>";
          echo "<tr><td>";
-         echo "<p style='font-size: 52px; text-align: center;'>".$unreachable."</p>";
+         echo "<p style='font-size: 52px; text-align: center;font-weight: bold;'>".$unreachable."</p>";
          echo "</td></tr>";
          echo "<tr><td>";
          echo "<p style='font-size: 11px; text-align: center;'> Soft : ".$unreachable_soft."</p>";
@@ -1930,7 +1930,7 @@ Ext.onReady(function(){
          echo "</table>";
       echo "</td>";
       
-      echo "<td width='20%'>";
+      echo "<td width='188'>";
          $background = '';
          if ($unknown > 0) {
             $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_warning.png"';
@@ -1940,7 +1940,7 @@ Ext.onReady(function(){
          echo __('Unknown', 'monitoring');
          echo "</th>";
          echo "<tr><td>";
-         echo "<p style='font-size: 52px; text-align: center;'>".$unknown."</p>";
+         echo "<p style='font-size: 52px; text-align: center;font-weight: bold;'>".$unknown."</p>";
          echo "</td></tr>";
          echo "<tr><td>";
          echo "<p style='font-size: 11px; text-align: center;'> Soft : ".$unknown_soft."</p>";
@@ -1948,7 +1948,7 @@ Ext.onReady(function(){
          echo "</table>";
       echo "</td>";
       
-      echo "<td width='20%'>";
+      echo "<td width='148'>";
          $background = '';
          if ($up > 0) {
             $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_ok.png"';
@@ -1958,7 +1958,7 @@ Ext.onReady(function(){
          echo __('Up', 'monitoring');
          echo "</th>";
          echo "<tr><td>";
-         echo "<p style='font-size: 52px; text-align: center;'>".$up."</p>";
+         echo "<p style='font-size: 52px; text-align: center;font-weight: bold;'>".$up."</p>";
          echo "</td></tr>";
          echo "<tr><td>";
          echo "<p style='font-size: 11px; text-align: center;'> Soft : ".$up_soft."</p>";
