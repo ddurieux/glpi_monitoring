@@ -93,7 +93,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          switch ($item->getType()) {
             case 'Central' :
                if (PluginMonitoringProfile::haveRight("viewshomepage", 'r') && PluginMonitoringProfile::haveRight("componentscatalog", 'r')) {
-                  return array(1 => __('Monitoring', 'monitoring')."-".__('Components catalog', 'monitoring'));
+                  return array(1 => "[".__('Monitoring', 'monitoring')."] ".__('Components catalog', 'monitoring'));
                } else {
                   return '';
                }
