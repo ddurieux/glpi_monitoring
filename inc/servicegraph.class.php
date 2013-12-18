@@ -412,7 +412,8 @@ class PluginMonitoringServicegraph extends CommonDBTM {
          if (!isset($pmComponent->fields['plugin_monitoring_commands_id'])) {
             return;
          }
-         if (is_null($pmComponent->fields['graph_template'])) {
+         if (is_null($pmComponent->fields['graph_template'])
+                 || empty($pmComponent->fields['graph_template'])) {
             return;
          }
 
