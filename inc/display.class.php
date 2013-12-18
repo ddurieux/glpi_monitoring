@@ -604,7 +604,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       
       // * ORDER
-      $ORDERQUERY = " ORDER BY `name` ";
+      $ORDERQUERY = " ORDER BY `state` ";
       $toview = array(1, 2, 3, 4, 5);
       $toviewComplete = array(
           'ITEM_0' => 'state', 
