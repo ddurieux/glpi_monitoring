@@ -216,7 +216,7 @@ class PluginMonitoringMessage extends CommonDBTM {
       
       $result = $DB->query($query);
       $data = $DB->fetch_assoc($result);
-      $time_s = $data['check_interval'] * 60 * 2;
+      $time_s = $data['check_interval'] * 60;
       
       $query = "SELECT count(id) as cnt FROM `glpi_plugin_monitoring_services`";
       $result = $DB->query($query);
