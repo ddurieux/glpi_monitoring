@@ -244,7 +244,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
          foreach ($a_views as $views_id=>$name) {
             $this->getFromDB($views_id);
             if ($this->haveVisibilityAccess()) {
-               $ong[] = "["._n('View', 'Views', 1, 'monitoring')."] ".$this->fields['name'];
+               $ong[] = "[".__('Monitoring', 'monitoring')." - "._n('View', 'Views', 1, 'monitoring')."] ".$this->fields['name'];
             }
          }
       }
