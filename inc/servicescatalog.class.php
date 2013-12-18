@@ -327,6 +327,123 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
 
       $this->getFromDB($id);
       $data = $this->fields;
+
+      $display_img = '';
+      $colorclass = 'ok';
+      switch($data['state']) {
+
+         case 'UP':
+         case 'OK':
+            $display_img = '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/box_green_40.png"/>';
+            break;
+
+         case 'DOWN':
+         case 'UNREACHABLE':
+         case 'CRITICAL':
+         case 'DOWNTIME':
+            $display_img = '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/box_red_40.png"/>';
+            $colorclass = 'crit';
+            break;
+
+         case 'WARNING':
+         case 'UNKNOWN':
+         case 'RECOVERY':
+         case 'FLAPPING':
+         case '':
+            $display_img = '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/box_orange_40.png"/>';
+            $colorclass = 'warn';
+            break;
+
+      }
+
+      
+      echo '<br/><div class="ch-itemup">
+         <div class="ch-info-'.$colorclass.'">
+			<h1><a href="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/servicescatalog.form.php?id='.$data['id'].'&detail=1">';
+         echo $data['name'];
+         if ($data['comment'] != '') {
+            echo ' '.$this->getComments();
+         }
+         echo '</a></h1>
+         </div>
+		</div>';
+
+      $colorclass = 'ok';
+      $a_group = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_servicescatalogs_id`='".$data['id']."'");
+      $a_gstate = array();
+      foreach ($a_group as $gdata) {
+         $a_brules = $pMonitoringBusinessrule->find("`plugin_monitoring_businessrulegroups_id`='".$gdata['id']."'");
+         $state = array();
+         $state['OK'] = 0;
+         $state['WARNING'] = 0;
+         $state['CRITICAL'] = 0;
+         foreach ($a_brules as $brulesdata) {
+            if ($pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id'])) {
+               switch($pMonitoringService->fields['state']) {
+
+                  case 'UP':
+                  case 'OK':
+                     $state['OK']++;
+                     break;
+
+                  case 'DOWN':
+                  case 'UNREACHABLE':
+                  case 'CRITICAL':
+                  case 'DOWNTIME':
+                     $state['CRITICAL']++;
+                     break;
+
+                  case 'WARNING':
+                  case 'UNKNOWN':
+                  case 'RECOVERY':
+                  case 'FLAPPING':
+                     $state['WARNING']++;
+                     break;
+
+               }
+            }
+         }
+         if ($state['CRITICAL'] >= 1) {
+            $a_gstate[$gdata['id']] = "CRITICAL";
+         } else if ($state['WARNING'] >= 1) {
+            $a_gstate[$gdata['id']] = "WARNING";
+         } else {
+            $a_gstate[$gdata['id']] = "OK";
+         }            
+
+      }
+      $state = array();
+      $state['OK'] = 0;
+      $state['WARNING'] = 0;
+      $state['CRITICAL'] = 0;
+      foreach ($a_gstate as $value) {
+         $state[$value]++;
+      }
+      $color = 'green';
+      if ($state['CRITICAL'] > 0) {
+         $color = 'red';
+         $colorclass = 'crit';
+      } else if ($state['WARNING'] > 0) {
+         $color = 'orange';
+         $colorclass = 'warn';
+      }
+
+      echo '<div class="ch-itemdown">
+         <div class="ch-info-'.$colorclass.'">
+			<p><font style="font-size: 20px;">';
+//      echo "<font style='font-size: 18px;'>".__('Status');
+//      echo $display_img;
+      if ($colorclass != 'ok') {
+         echo __('Degraded mode', 'monitoring').'!';
+      } else {
+         echo __('Services catalog', 'monitoring');
+      }
+
+      echo '</font></p>
+         </div>
+		</div>';
+return;      
+/////////////////
       
       echo '<table  class="tab_cadre_fixe" style="width:200px;height:200px">';
       echo '<tr class="tab_bg_1">';
