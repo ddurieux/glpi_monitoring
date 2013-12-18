@@ -59,7 +59,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
    *
    **/
    static function getTypeName($nb=0) {
-      return __('Views', 'monitoring');
+      return _n('View', 'Views', $nb, 'monitoring');
    }
 
 
@@ -226,7 +226,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       $ong = array();
-
+      
       if ($item->getType() == 'PluginMonitoringDisplayview') {
          if ($item->getID() > 0) {
             $ong[1] = 'items';
@@ -238,6 +238,14 @@ class PluginMonitoringDisplayview extends CommonDBTM {
             }
             $pmDisplayview_rule = new PluginMonitoringDisplayview_rule();
             $ong = $pmDisplayview_rule->addRulesTabs($item->getID(), $ong);
+         }
+      } else if ($item->getType() == 'Central') {
+         $a_views = $this->getViews(1);
+         foreach ($a_views as $views_id=>$name) {
+            $this->getFromDB($views_id);
+            if ($this->haveVisibilityAccess()) {
+               $ong[] = "["._n('View', 'Views', 1, 'monitoring')."] ".$this->fields['name'];
+            }
          }
       }
       return $ong;
@@ -264,7 +272,18 @@ class PluginMonitoringDisplayview extends CommonDBTM {
             $pmDisplayview_rule = new PluginMonitoringDisplayview_rule();
             $pmDisplayview_rule->ShowRulesTabs($item->getID(), $tabnum);
          }
+      } else if ($item->getType() == 'Central') {
+         $pmDisplayview_item = new PluginMonitoringDisplayview_item();
+         $pmDisplayview = new PluginMonitoringDisplayview();
+         $a_views = $pmDisplayview->getViews(1);
+         foreach ($a_views as $views_id=>$name) {
+            $pmDisplayview->getFromDB($views_id);
+            if ($pmDisplayview->haveVisibilityAccess()) {
+               $pmDisplayview_item->view($views_id);
+           }
+         }
       }
+
       return true;
    }
    
