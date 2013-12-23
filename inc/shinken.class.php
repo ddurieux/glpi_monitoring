@@ -432,7 +432,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
                // Manage user interface ...
                $a_hosts[$i]['icon_set'] = 'host';
-               $a_hosts[$i]['action_url'] = 'http://'.$shinkenServer.'/pnp4nagios/index.php/graph?host=$HOSTNAME$';
+               // $a_hosts[$i]['action_url'] = 'http://'.$shinkenServer.'/pnp4nagios/index.php/graph?host=$HOSTNAME$';
                $a_hosts[$i]['custom_views'] = "kiosk";
 
                $i++;
@@ -573,6 +573,8 @@ class PluginMonitoringShinken extends CommonDBTM {
          $notadddescription = '';
          $a_component = current($pmComponent->find("`id`='".$data['plugin_monitoring_components_id']."'", "", 1));
          $a_hostname = array();
+         $a_hostname_type = array();
+         $a_hostname_id = array();
          $queryh = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts` 
             WHERE `id` = '".$data['plugin_monitoring_componentscatalogs_hosts_id']."'
             LIMIT 1";
@@ -587,6 +589,8 @@ class PluginMonitoringShinken extends CommonDBTM {
                        OR isset($a_entities_allowed[$item->fields['entities_id']])) {
                
                   $a_hostname[] = preg_replace("/[^A-Za-z0-9\-_]/","",$item->fields['name']);
+                  $a_hostname_type[] = $datah['itemtype'];
+                  $a_hostname_id[] = $datah['items_id'];
                   $hostname = $item->fields['name'];
                   $plugin_monitoring_componentscatalogs_id = $datah['plugin_monitoring_componentscalalog_id'];
                }
@@ -597,10 +601,13 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_services[$i]['use'] = $_SESSION['plugin_monitoring']['servicetemplates'][$a_component['id']];
             }         
             $a_services[$i]['host_name'] = implode(",", array_unique($a_hostname));
+            $a_services[$i]['_HOSTITEMSID'] = implode(",", array_unique($a_hostname_id));
+            $a_services[$i]['_HOSTITEMTYPE'] = implode(",", array_unique($a_hostname_type));
             $hostnamebp = $a_services[$i]['host_name']; // For business rules
 
             $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9\-_]/","",$a_component['name']);
-            // $a_services[$i]['_ENTITIESID'] = $item->fields['entities_id'];
+            $a_services[$i]['_ENTITIESID'] = $item->fields['entities_id'];
+            // $a_services[$i]['_ENTITY'] = $item->fields['entityName'];
             $a_services[$i]['_ITEMSID'] = $data['id'];
             $a_services[$i]['_ITEMTYPE'] = 'service';
          
@@ -784,7 +791,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
             // Manage user interface ...
             $a_services[$i]['icon_set'] = 'service';
-            $a_services[$i]['action_url'] = 'http://'.$shinkenServer.'/pnp4nagios/index.php/graph?host=$HOSTNAME$&srv=$SERVICEDESC$';
+            // $a_services[$i]['action_url'] = 'http://'.$shinkenServer.'/pnp4nagios/index.php/graph?host=$HOSTNAME$&srv=$SERVICEDESC$';
             
             if ($notadd == '1') {
                unset($a_services[$i]);
@@ -1037,7 +1044,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
          // Manage user interface ...
          $a_servicetemplates[$i]['icon_set'] = 'service';
-         $a_servicetemplates[$i]['action_url'] = 'http://'.$shinkenServer.'/pnp4nagios/index.php/graph?host=$HOSTNAME$&srv=$SERVICEDESC$';
+         // $a_servicetemplates[$i]['action_url'] = 'http://'.$shinkenServer.'/pnp4nagios/index.php/graph?host=$HOSTNAME$&srv=$SERVICEDESC$';
 
          $queryc = "SELECT * FROM `glpi_plugin_monitoring_components`
             WHERE `plugin_monitoring_checks_id`='".$data['plugin_monitoring_checks_id']."'  
