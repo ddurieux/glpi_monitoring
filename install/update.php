@@ -1681,18 +1681,15 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
       $migration->migrationOneTable($newTable);
       
-      Toolbox::logInFile("pm", "Count hosts : ".count($a_hosts)."\n");
       if (count($a_hosts) > 0) {
          // Convert commands by components
          foreach ($a_hosts as $data) {
-            Toolbox::logInFile("pm", "Host : ".$data['itemtype']." / ".$data['items_id']."\n");
             $a_computers = getAllDatasFromTable(
                     'glpi_computers', 
                     "`id`='".$data['items_id']."'"
                     );
             if (count($a_computers) > 0) {
                $a_computer = current($a_computers);
-               Toolbox::logInFile("pm", "Computer : ".$a_computer['name']." / ".$a_computer['entities_id']."\n");
                $DB->query("UPDATE `".$newTable."`
                   SET `entities_id`='".$a_computer['entities_id']."'
                   WHERE `id`='".$data['id']."'");

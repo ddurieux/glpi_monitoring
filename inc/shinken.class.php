@@ -400,7 +400,6 @@ class PluginMonitoringShinken extends CommonDBTM {
                         `items_id`='".$data['items_id']."' AND `itemtype`='".$data['itemtype']."'
                      LIMIT 1";
                }
-               Toolbox::logInFile("pm", "Query contacts : $querycont\n");
                
                $resultcont = $DB->query($querycont);
                if ($DB->numrows($resultcont) != 0) {
