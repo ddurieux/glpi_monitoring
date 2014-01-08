@@ -207,7 +207,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
    
    function linkComponentsToItem($componentscatalogs_id, $componentscatalogs_hosts_id, $networkports_id=0) {
       global $DB;
-      Toolbox::logInFile("NET", $networkports_id."\n");
+
       $pmService                 = new PluginMonitoringService();
       $pmComponentscatalog_Host  = new PluginMonitoringComponentscatalog_Host();
       
