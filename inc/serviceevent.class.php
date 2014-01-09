@@ -274,6 +274,12 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                            $mydatat[$data['DS'][$nb_val]['dsname']] = array();
                         }
                         array_push($mydatat[$data['DS'][$nb_val]['dsname']], $val);
+                        if ($data['incremental'][$nb_val] == 1) {
+                           if (!isset($mydatat[$data['DS'][$nb_val]['dsname']." | diff"])) {
+                              $mydatat[$data['DS'][$nb_val]['dsname']." | diff"] = array();
+                           }
+                           array_push($mydatat[$data['DS'][$nb_val]['dsname']." | diff"], $val);                           
+                        }
 //                     }
                   }
                } else {
@@ -282,6 +288,12 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                         $mydatat[$data['DS'][$nb_val]['dsname']] = array();
                      }
                      array_push($mydatat[$data['DS'][$nb_val]['dsname']], 0);                     
+                     if ($data['incremental'][$nb_val] == 1) {
+                        if (!isset($mydatat[$data['DS'][$nb_val]['dsname']." | diff"])) {
+                           $mydatat[$data['DS'][$nb_val]['dsname']." | diff"] = array();
+                        }
+                        array_push($mydatat[$data['DS'][$nb_val]['dsname']." | diff"], 0);                           
+                     }
                   }                  
                }
             } else {
@@ -290,8 +302,33 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                      $mydatat[$data['DS'][$nb_val]['dsname']] = array();
                   }
                   array_push($mydatat[$data['DS'][$nb_val]['dsname']], 0);                     
+                  if ($data['incremental'][$nb_val] == 1) {
+                     if (!isset($mydatat[$data['DS'][$nb_val]['dsname']." | diff"])) {
+                        $mydatat[$data['DS'][$nb_val]['dsname']." | diff"] = array();
+                     }
+                     array_push($mydatat[$data['DS'][$nb_val]['dsname']." | diff"], 0);                           
+                  }
                } 
             }        
+         }
+      }
+      foreach ($mydatat as $name=>$data) {
+         if (strstr($name, " | diff")) {
+            $old_val = -1;
+            foreach ($data as $num=>$val) {
+               if ($old_val == -1) {
+                  $data[$num] = '###';
+               } else if ($val < $old_val) {
+                  $data[$num] = 0;
+               } else {
+                  $data[$num] = $val - $old_val;
+               }
+               if ($data[0] == '###') {
+                  $data[0] = $data[$num];
+               }
+               $old_val = $val;
+            }
+            $mydatat[$name] = $data;
          }
       }
       return array($mydatat, $a_labels, $a_ref, $a_convert);

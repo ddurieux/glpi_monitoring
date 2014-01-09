@@ -124,22 +124,30 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
          $pmUnavaibility->getCurrentState($data['id']);
-         
-         $query2 = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
-            WHERE `unavailability`='0'
+
+         $nb = countElementsInTable('glpi_plugin_monitoring_serviceevents', 
+                 "`unavailability`='0'
                AND `state_type`='HARD'
-               AND `plugin_monitoring_services_id`='".$data['id']."'
-            ORDER BY `date`";
-         $result2 = $DB->query($query2);
-         while ($data2=$DB->fetch_array($result2)) {
-            $pmUnavaibility->checkState($data2['state'], 
-                                        $data2['date'], 
-                                        $data['id'], 
-                                        $data2['event']);
-            $input = array();
-            $input['id'] = $data2['id'];
-            $input['unavailability'] = 1;
-            $pmServiceevent->update($input);
+               AND `plugin_monitoring_services_id`='".$data['id']."'");
+         
+         for ($i=0; $i < $nb; $i += 10000) {
+            $query2 = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
+               WHERE `unavailability`='0'
+                  AND `state_type`='HARD'
+                  AND `plugin_monitoring_services_id`='".$data['id']."'
+               ORDER BY `date`
+               LIMIT ".$i.", 10000 ";
+            $result2 = $DB->query($query2);
+            while ($data2=$DB->fetch_array($result2)) {
+               $pmUnavaibility->checkState($data2['state'], 
+                                           $data2['date'], 
+                                           $data['id'], 
+                                           $data2['event']);
+               $input = array();
+               $input['id'] = $data2['id'];
+               $input['unavailability'] = 1;
+               $pmServiceevent->update($input);
+            }
          }
       }
       

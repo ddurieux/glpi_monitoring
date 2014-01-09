@@ -1198,15 +1198,18 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       $a_perfdatadetails = $pmPerfdataDetail->find("`plugin_monitoring_perfdatas_id`='".$perfdatas_id."'", "position");
       foreach ($a_perfdatadetails as $a_perfdatadetail) {
          $ds = array();
+         $a_incremental = array();
          for ($i=1; $i<=$a_perfdatadetail['dsname_num']; $i++) {
             $ds[] = array('dsname' => $a_perfdatadetail['dsname'.$i]);
+            $a_incremental[] = $a_perfdatadetail['dsnameincr'.$i];
          }
          $name = $a_perfdatadetail['name'];
          if ($a_perfdatadetail['dynamic_name']) {
             $name = "*";
          }
-         $data['parseperfdata'][] = array('name' => $name,
-                                          'DS'   => $ds);
+         $data['parseperfdata'][] = array('name'        => $name,
+                                          'DS'          => $ds,
+                                          'incremental' => $a_incremental);
       }
       return $data;  
    }

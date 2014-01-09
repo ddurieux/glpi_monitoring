@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# David Durieux <d.durieux@siprossii.com>, 2012-2013
+# David Durieux <d.durieux@siprossii.com>, 2012-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project - plugin monitoring \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-10-31 19:40+0100\n"
-"PO-Revision-Date: 2013-11-03 14:43+0000\n"
+"PO-Revision-Date: 2014-01-09 10:16+0000\n"
 "Last-Translator: David Durieux <d.durieux@siprossii.com>\n"
 "Language-Team: French (France) (http://www.transifex.com/projects/p/GLPI_monitoring/language/fr_FR/)\n"
 "MIME-Version: 1.0\n"
@@ -875,7 +875,7 @@ msgstr "Affichage"
 
 #: inc/servicegraph.class.php:925
 msgid "Invert values"
-msgstr "Ajouter des valeurs"
+msgstr "Inverser les valeurs"
 
 #: inc/servicegraph.class.php:970
 msgid "Colors"

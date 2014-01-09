@@ -98,6 +98,12 @@ class PluginMonitoringPerfdataDetail extends CommonDBTM {
          echo "<td>";
          if ($i <= $this->fields['dsname_num']) {
             echo "<input type='text' name='dsname".$i."' value='".$this->fields['dsname'.$i]."' />";
+            $checked = '';
+            if ($this->fields['dsnameincr'.$i] == 1) {
+               $checked = 'checked';
+            }
+            echo "<br/><input type='checkbox' name='dsnameincr".$i."' title='".__('Incremental', 'monitoring')."' $checked />";
+            echo __('Incremental', 'monitoring');
          }
          echo "</td>";
       }

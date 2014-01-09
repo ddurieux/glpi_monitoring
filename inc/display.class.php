@@ -1129,6 +1129,30 @@ class PluginMonitoringDisplay extends CommonDBTM {
    
    function displayGraphs($itemtype, $items_id) {
       global $CFG_GLPI;
+
+      echo '<script type="text/javascript">
+    jQuery(function() {
+      jQuery("#jquery-tagbox-select").tagBox({ 
+        enableDropdown: true, 
+        separator: "####",
+        tagButtonTitle: "'.__('Add to graph', 'monitoring').'",
+        dropdownSource: function() {
+          return jQuery("#jquery-tagbox-select-options");
+        }
+      });
+    });
+    jQuery(function() {
+      jQuery("#jquery-tagbox-select2").tagBox({ 
+        enableDropdown: true, 
+        separator: "####",
+        tagButtonTitle: "'.__('Invert', 'monitoring').'",
+        dropdownSource: function() {
+          return jQuery("#jquery-tagbox-select2-options");
+        }
+      });
+    });
+  </script>';
+
       
       $pmComponent              = new PluginMonitoringComponent();
       $pmConfig                 = new PluginMonitoringConfig();

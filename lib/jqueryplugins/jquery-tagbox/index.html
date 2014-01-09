@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html lang="en-IN">
+<head>
+  <meta charset="UTF-8">
+  <title>jQuery TagBox Plugin</title>
+  <link rel="stylesheet" href="css/jquery.tagbox.css" />
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.js"></script>
+  <script type="text/javascript" src="js/jquery.tagbox.js"></script>
+  <script type="text/javascript">
+    jQuery(function() {
+      jQuery("#jquery-tagbox-text").tagBox();
+      jQuery("#jquery-tagbox-select").tagBox({ 
+        enableDropdown: true, 
+        dropdownSource: function() {
+          return jQuery("#jquery-tagbox-select-options");
+        }
+      });
+    });
+  </script>
+  <style type="text/css">
+  body {
+    font-size: 14px;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 20px;
+  }
+  div.row {
+    padding: 10px;
+  }
+  
+  div.row label {
+    font-weight: bold;
+    display: block;
+    padding: 0px 0px 10px;
+  }
+  </style>
+</head>
+<body>
+  <h1>jQuery TagBox 1.0.1</h1>
+  <form action=".">
+    <div class="row">
+      <label for="jquery-tagbox-text">Text TagBox (Comma Separated)</label>
+      <input type="text" id="jquery-tagbox-text" />
+    </div><!--div.row-->
+    <div class="row">
+      <label for="jquery-tagbox-select">Dropdown TagBox</label>
+      <select name="" id="jquery-tagbox-select-options">
+        <option value="jQuery">jQuery</option>
+        <option value="MooTools">MooTools</option>
+        <option value="ProtoType">ProtoType</option>
+        <option value="Scriptaculous">Scriptaculous</option>
+        <option value="Dojo">Dojo</option>
+      </select><!--select#-->
+      <input type="text" id="jquery-tagbox-select" />
+    </div><!--div.row-->
+  </form>
+</body>
+</html>

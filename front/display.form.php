@@ -71,6 +71,7 @@ if(isset($_POST['updateperfdata'])) {
       $item->getFromDB($items_id); 
       $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
       $_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->fields['id']] = array();
+      $_POST['perfname'] = explode("####", $_POST['perfname']);      
       foreach ($_POST["perfname"] as $perfname) {
          $_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->fields['id']][$perfname] = "checked";
       }
@@ -83,6 +84,7 @@ if(isset($_POST['updateperfdata'])) {
       $item->getFromDB($items_id); 
       $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
       $_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$pmComponent->fields['id']] = array();
+      $_POST['perfnameinvert'] = explode("####", $_POST['perfnameinvert']);      
       foreach ($_POST["perfnameinvert"] as $perfname) {
          $_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$pmComponent->fields['id']][$perfname] = "checked";
       }
