@@ -481,6 +481,18 @@ CREATE TABLE `glpi_plugin_monitoring_businessrules` (
    `id` int(11) NOT NULL AUTO_INCREMENT,
    `plugin_monitoring_businessrulegroups_id` int(11) NOT NULL DEFAULT '0',
    `plugin_monitoring_services_id` int(11) NOT NULL DEFAULT '0',
+   `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+   PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_businessrules_components`;
+
+CREATE TABLE `glpi_plugin_monitoring_businessrules_components` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `plugin_monitoring_businessrulegroups_id` int(11) NOT NULL DEFAULT '0',
+   `plugin_monitoring_componentscatalogs_components_id` int(11) NOT NULL DEFAULT '0',
    PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

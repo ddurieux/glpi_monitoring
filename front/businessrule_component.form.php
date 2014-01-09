@@ -3,7 +3,7 @@
 /*
    ------------------------------------------------------------------------
    Plugin Monitoring for GLPI
-   Copyright (C) 2011-2013 by the Plugin Monitoring for GLPI Development Team.
+   Copyright (C) 2011-2014 by the Plugin Monitoring for GLPI Development Team.
 
    https://forge.indepnet.net/projects/monitoring/
    ------------------------------------------------------------------------
@@ -31,11 +31,11 @@
    @author    David Durieux
    @co-author 
    @comment   
-   @copyright Copyright (c) 2011-2013 Plugin Monitoring for GLPI team
+   @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
-   @since     2011
+   @since     2014
  
    ------------------------------------------------------------------------
  */
@@ -47,42 +47,25 @@ PluginMonitoringProfile::checkRight("servicescatalog","w");
 Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "businessrules");
 
-$pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
+$pmBusinessrule_component = new PluginMonitoringBusinessrule_component();
+$pmComponentscatalog_Component = new PluginMonitoringComponentscatalog_Component();
 
-foreach ($_POST as $key=>$value) {
-   if (strstr($key, 'deletebusinessrules-')) {
-      $split = explode("-", $key);
-      $pmBusinessrule = new PluginMonitoringBusinessrule();
-      $pmBusinessrule->delete(array('id'=>$split[1]));
-      Html::back();
-   } else if (strstr($key, 'deletebrcomponents-')) {
-      $split = explode("-", $key);
-      $pmBusinessrule_component = new PluginMonitoringBusinessrule_component();
-      $pmBusinessrule_component->delete(array('id'=>$split[1]));
-      $pmBusinessrule_component->replayDynamicServices($_POST['plugin_monitoring_businessrulegroups_id']);
+if (isset($_POST['add'])) {
+   if (!isset($_POST['plugin_monitoring_components_id'])
+           || $_POST['plugin_monitoring_components_id'] < 1) {
       Html::back();
    }
-}
-
-
-if (isset($_POST['update'])) {
-   $pMonitoringBusinessrulegroup->update($_POST);
-} else if (isset($_POST['add'])
-        AND isset($_POST['id'])) {
    
-   if (isset($_POST['plugin_monitoring_services_id'])) {
-      $pmBusinessrule = new PluginMonitoringBusinessrule();
-      $pmBusinessrule->add(array('plugin_monitoring_businessrulegroups_id'=>$_POST['plugin_monitoring_businessrulegroups_id'],
-                                 'plugin_monitoring_services_id'=>$_POST['plugin_monitoring_services_id']));
-      
-   }   
-} else if (isset($_POST['add'])) {
-   $pMonitoringBusinessrulegroup->add($_POST);
-} else if (isset($_POST['delete'])) {
-   $pMonitoringBusinessrulegroup->delete($_POST);   
+   $a_data = current($pmComponentscatalog_Component->find(
+           "`plugin_monitoring_componentscalalog_id`='".$_POST['plugin_monitoring_componentscatalogs_id']."' 
+            AND `plugin_monitoring_components_id`='".$_POST['plugin_monitoring_components_id']."'", 
+           '', 
+           1));
+   $_POST['plugin_monitoring_componentscatalogs_components_id'] = $a_data['id'];
+   $pmBusinessrule_component->add($_POST);
+   $pmBusinessrule_component->replayDynamicServices($_POST['plugin_monitoring_businessrulegroups_id']);
 }
 Html::back();
-
 
 Html::footer();
 ?>

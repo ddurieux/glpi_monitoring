@@ -89,8 +89,6 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
    }
    
    
-
-   
    
    function showForm($items_id, $servicescatalogs_id, $options=array()) {
       global $CFG_GLPI;
@@ -102,6 +100,9 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
       }
 
       $this->showFormHeader($options);
+
+      $pmBusinessrule_component = new PluginMonitoringBusinessrule_component();
+      $pmBusinessrule_component->replayDynamicServices($items_id);
       
       $rand = mt_rand();
       
@@ -160,21 +161,55 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
             echo "</tr>";
             echo "</table>";
             echo "<hr>";
+            // Dynamique (all service of component of component catalog)
+            echo "<table>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<td><strong>";
+            echo __('Components catalog', 'monitoring');
+            echo ' + ';
+            echo __('Component', 'monitoring');
+            echo " (".__('Dynamic', 'monitoring').")";
+            echo " :</strong></td>";
+            echo "</tr>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            echo "<form name='form' method='post' action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/businessrule_component.form.php'>";
+            echo "<input type='hidden' name='plugin_monitoring_businessrulegroups_id' value='".$items_id."' />";
+            $options = array(
+                'toupdate' => array(
+                                 'value_fieldname' => 'plugin_monitoring_componentscalalog_id',
+                                 'to_update'       => "componentdropdown",
+                                 'url'             => $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownComponent.php",
+                                 'moreparams'      => array()
+                              )
+            );
+            Dropdown::show('PluginMonitoringComponentscatalog', $options);
+            echo '<div id="componentdropdown"></div>';
+            //PluginMonitoringBusinessrule::dropdownService(0, array('name' => 'type'));         
+            echo "<input type='submit' name='add' value=\"".__('Add')."\" class='submit'>";
+            Html::closeForm();
+            echo "</td>";
+            echo "</tr>";
+            echo "</table>";
+            echo "<hr>";
+            
+            
             echo "</div>";
 
 
             echo "<table width='100%'>";
          $pmBusinessrule = new PluginMonitoringBusinessrule();
          $pmService = new PluginMonitoringService();
-         $a_services = $pmBusinessrule->find("`plugin_monitoring_businessrulegroups_id`='".$items_id."'");
+         $a_services = $pmBusinessrule->find("`plugin_monitoring_businessrulegroups_id`='".$items_id."'"
+                 . " AND `is_dynamic`='0'");
          foreach ($a_services as $gdata) {
             if ($pmService->getFromDB($gdata['plugin_monitoring_services_id'])) {
 
-               $shortstate = PluginMonitoringDisplay::getState($pmService->fields['state'], 
-                                                               $pmService->fields['state_type'],
-                                                               '',
-                                                               $pmService->fields['is_acknowledged']);
-
+               $shortstate = PluginMonitoringDisplay::getState(
+                                 $pmService->fields['state'], 
+                                 $pmService->fields['state_type'],
+                                 '',
+                                 $pmService->fields['is_acknowledged']);
                echo "<tr class='tab_bg_1'>";
                echo "<td>";
                echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/>";
@@ -203,6 +238,64 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
                echo "<input type='submit' name='deletebusinessrules-".$gdata['id']."' value=\"".__('Clean')."\" class='submit'>";
                echo "</td>";
             }
+         }
+         echo "</table>";
+         echo "<hr/>";
+         echo "<strong>".__('Dynamic', 'monitoring')." :</strong>";
+         
+         $a_br_components = $pmBusinessrule_component->find(
+                 "`plugin_monitoring_businessrulegroups_id`='".$items_id."'"
+                 );
+         echo "<table width='100%'>";
+         $pmComponentscatalog_Component = new PluginMonitoringComponentscatalog_Component();
+         $pmComponentscatalog = new PluginMonitoringComponentscatalog();
+         $pmComponent = new PluginMonitoringComponent();
+         foreach ($a_br_components as $a_br_component) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>";
+            $pmComponentscatalog_Component->getFromDB(
+                    $a_br_component['plugin_monitoring_componentscatalogs_components_id']);
+            $pmComponentscatalog->getFromDB($pmComponentscatalog_Component->fields['plugin_monitoring_componentscalalog_id']);
+            echo $pmComponentscatalog->getLink();
+            echo ' > ';
+            $pmComponent->getFromDB(
+                    $pmComponentscatalog_Component->fields['plugin_monitoring_components_id']);
+            echo $pmComponent->getLink();
+            echo "</td>";
+            echo "<td>";
+            echo "<input type='submit' name='deletebrcomponents-".$a_br_component['id']."' value=\""._sx('button', 'Delete permanently')."\" class='submit'>";
+            echo "</td>";
+         }         
+         echo "</table>";
+         
+         
+         echo "<table width='100%'>";
+         $a_services = $pmBusinessrule->find(
+                 "`plugin_monitoring_businessrulegroups_id`='".$items_id."'"
+                 . " AND `is_dynamic`='1'");
+         foreach ($a_services as $gdata) {
+            $shortstate = PluginMonitoringDisplay::getState(
+                              $pmService->fields['state'], 
+                              $pmService->fields['state_type'],
+                              '',
+                              $pmService->fields['is_acknowledged']);
+            echo "<tr class='tab_bg_1'>";
+            echo "<td width='130'>&nbsp;";
+            echo "</td>";
+            echo "<td>";
+            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/>";
+            echo "</td>";
+            echo "<td>";
+            $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+            $pmService->getFromDB($gdata["plugin_monitoring_services_id"]);
+            $pmComponentscatalog_Host->getFromDB($pmService->fields['plugin_monitoring_componentscatalogs_hosts_id']);
+            echo $pmService->getLink(1);
+            echo " ".__('on', 'monitoring')." ";
+            $itemtype2 = $pmComponentscatalog_Host->fields['itemtype'];
+            $item2 = new $itemtype2();
+            $item2->getFromDB($pmComponentscatalog_Host->fields['items_id']);
+            echo $item2->getLink(1);
+            echo "</td>";
          }
          echo "</tr>";
       }  

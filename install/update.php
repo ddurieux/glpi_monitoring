@@ -2100,35 +2100,56 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     /*
     * Table glpi_plugin_monitoring_businessrules
     */
-      $newTable = "glpi_plugin_monitoring_businessrules";
-      if (!TableExists($newTable)) {
-         $query = "CREATE TABLE `".$newTable."` (
-                        `id` int(11) NOT NULL AUTO_INCREMENT,
-                        PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-         $DB->query($query);
-      }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
-                                 "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_businessrulegroups_id', 
-                                 'plugin_monitoring_businessrulegroups_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_services_id', 
-                                 'plugin_monitoring_services_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");
-      $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                                 'plugin_monitoring_businessrulegroups_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'plugin_monitoring_services_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");
-      $migration->migrationOneTable($newTable);
+      $a_table = array();
+      $a_table['name'] = 'glpi_plugin_monitoring_businessrules';
+      $a_table['oldname'] = array();
 
+      $a_table['fields']  = array(
+         'id'           => array('type'    => 'autoincrement',  'value'   => ''),
+         'plugin_monitoring_businessrulegroups_id' 
+                        => array('type'    => 'integer',        'value'   => 0),
+         'plugin_monitoring_services_id' 
+                        => array('type'    => 'integer',        'value'   => 0),
+         'is_dynamic' 
+                        => array('type'    => 'bool',           'value'   => 0),
+      );
+
+      $a_table['oldfields']  = array();
+
+      $a_table['renamefields'] = array();
+
+      $a_table['keys'] = array();
+
+      $a_table['oldkeys'] = array();
+
+      migrateTablesMonitoring($migration, $a_table);
+
+      
+      
+    /*
+     * glpi_plugin_monitoring_businessrules_components
+     */
+      $a_table = array();
+      $a_table['name'] = 'glpi_plugin_monitoring_businessrules_components';
+      $a_table['oldname'] = array();
+
+      $a_table['fields']  = array(
+         'id'           => array('type'    => 'autoincrement',  'value'   => ''),
+         'plugin_monitoring_businessrulegroups_id' 
+                        => array('type'    => 'integer',        'value'   => 0),
+         'plugin_monitoring_componentscatalogs_components_id' 
+                        => array('type'    => 'integer',        'value'   => 0),
+      );
+
+      $a_table['oldfields']  = array();
+
+      $a_table['renamefields'] = array();
+
+      $a_table['keys'] = array();
+
+      $a_table['oldkeys'] = array();
+
+      migrateTablesMonitoring($migration, $a_table);
 
       
     /*
