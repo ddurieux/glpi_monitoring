@@ -375,3 +375,88 @@ td .vertical {
    */
    background-image:radial-gradient(rgba(255,255,255,.7), rgba(255,255,255,0) 100%);
 }
+
+span.tagBox-container {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+span.tagBox-list {
+  padding: 0em 0;
+  font-size: 12px;
+  line-height: 1em;
+  display: block;
+}
+
+span.tagBox-item {
+  display: inline-block;
+  margin: 0.3em 0.25em 0.15em;
+  vertical-align: middle;
+  cursor: default;
+  white-space:nowrap;
+}
+span.tagBox-item * {
+  vertical-align: middle;
+  white-space: normal;
+}
+span.tagBox-bullet {
+  display: none;
+}
+span.tagBox-item * {
+  vertical-align: middle;
+}
+
+span.tagBox-item-content {
+  display: inline-block;
+  padding: 0.417em 0.417em;
+  font-size: 1em;
+  line-height: 1.4em;
+   color: #8f5a0a;
+   background-color: #ffb94b;
+   background-image: -webkit-gradient(linear, left top, left bottom, from(#fddb6f), to(#ffb94b));
+   background-image: -webkit-linear-gradient(top, #fddb6f, #ffb94b);
+   background-image: -moz-linear-gradient(top, #fddb6f, #ffb94b);
+   background-image: -ms-linear-gradient(top, #fddb6f, #ffb94b);
+   background-image: -o-linear-gradient(top, #fddb6f, #ffb94b);
+   background-image: linear-gradient(top, #fddb6f, #ffb94b);
+   
+   /* For Internet Explorer 5.5 - 7 */
+   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#fddb6f, endColorstr=#ffb94b);
+   /* For Internet Explorer 8 */
+   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#fddb6f, endColorstr=#ffb94b)";
+   border-radius: 3px;
+   -moz-border-radius: 3px;
+   -webkit-border-radius: 3px;
+   text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+   -moz-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
+   -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
+   box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;    
+   border-width: 1px;
+   border-style: solid;
+   border-color: #d69e31 #e3a037 #d5982d #e3a037
+}
+
+span.tagBox-item-content a.tagBox-remove {
+  text-decoration: none;
+  display: inline-block;
+  float: right;
+  color: #FFF;
+  text-align: center;
+  font-family: "Comic Sans MS", Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: bold;
+  line-height: 1em;
+  background: #7c7c7c;
+  margin-left: 0.5em;
+  padding: 0.35em 0.5em;
+  -moz-border-radius: 1em;
+  -webkit-border-radius: 1em;
+  border-radius: 1em;
+  -moz-box-shadow: 0 0 3px #FFF;
+  -webkit-box-shadow: 0 0 3px #FFF;
+  box-shadow: 0 0 3px #FFF;
+}
+
+span.tagBox-item-content a.tagBox-remove:hover {
+  background-color: #ff3333;
+}

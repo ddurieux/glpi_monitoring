@@ -1,0 +1,108 @@
+/**************************************/
+/*               TAGBOX               */
+/**************************************/
+a.tagBox-add-tag {
+  display: inline-block;
+  font-size: 12px;
+  line-height: 1em;
+  padding: 0.45em 0.8em;
+  text-decoration: none;
+  color: #333;
+  border: 1px solid #AAA;
+  outline: none;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 2px #FFF;
+  vertical-align: middle;
+  background: -webkit-gradient(linear, left top, left bottom, from(#F2F2F2), to(#CCCCCC));
+  background: -moz-linear-gradient(top, #F2F2F2, #CCCCCC);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#F2F2F2', endColorstr='#CCCCCC');
+  -moz-border-radius: 0.3em;
+  -wekit-border-radius: 0.3em;
+  border-radius: 0.3em;
+}
+a.tagBox-add-tag:hover {
+  border-color: #888;
+}
+
+a.tagBox-add-tag:active {
+  background: -webkit-gradient(linear, left top, left bottom, from(#CCCCCC), to(#F2F2F2));
+  background: -moz-linear-gradient(top, #CCCCCC, #F2F2F2);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#CCCCCC', endColorstr='#F2F2F2');
+}
+
+input.tagBox-input,
+select.tagBox-input {
+  border: 1px solid #CCCCCC;
+  padding: 3px;
+  margin-right: 5px;
+  vertical-align: middle;
+  background: #FFF;
+}
+span.tagBox-container {
+  display: inline-block;
+  vertical-align: middle;
+}
+span.tagBox-list {
+  padding: 0em 0;
+  font-size: 12px;
+  line-height: 1em;
+  display: block;
+}
+span.tagBox-item {
+  display: inline-block;
+  margin: 0.3em 0.25em 0.15em;
+  vertical-align: middle;
+  cursor: default;
+  white-space:nowrap;
+}
+span.tagBox-item * {
+  vertical-align: middle;
+  white-space: normal;
+}
+span.tagBox-bullet {
+  display: none;
+}
+span.tagBox-item * {
+  vertical-align: middle;
+}
+
+span.tagBox-item-content {
+  display: inline-block;
+  padding: 0.417em 0.417em;
+  font-size: 1em;
+  line-height: 1.4em;
+  text-shadow: 0.083em 0.083em 0.083em #888;
+  border: 0.083em solid #3C7BA8;
+  color: #FFF;
+  background: #234B77;
+  background: -webkit-gradient(linear, left top, left bottom, from(#4998CF), to(#234B77));
+  background: -moz-linear-gradient(top, #4998CF, #234B77);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4998CF', endColorstr='#234B77');
+  -moz-border-radius: 0.5em;
+  -wekit-border-radius: 0.5em;
+  border-radius: 0.5em;
+}
+span.tagBox-item-content a.tagBox-remove {
+  text-decoration: none;
+  display: inline-block;
+  float: right;
+  color: #FFF;
+  text-align: center;
+  font-family: "Comic Sans MS", Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-weight: bold;
+  line-height: 1em;
+  background: #D00;
+  margin-left: 0.5em;
+  padding: 0.35em 0.5em;
+  -moz-border-radius: 1em;
+  -webkit-border-radius: 1em;
+  border-radius: 1em;
+  -moz-box-shadow: 0 0 3px #FFF;
+  -webkit-box-shadow: 0 0 3px #FFF;
+  box-shadow: 0 0 3px #FFF;
+}
+span.tagBox-item-content a.tagBox-remove:hover {
+  background-color: #ff3333;
+}
+/*------------------------------------*/

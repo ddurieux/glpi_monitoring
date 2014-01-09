@@ -84,8 +84,12 @@ function plugin_init_monitoring() {
          
          $PLUGIN_HOOKS['use_massive_action']['monitoring']=1;
          $PLUGIN_HOOKS['add_css']['monitoring']="css/views.css";
-         $PLUGIN_HOOKS['add_javascript']['monitoring']="lib/jscolor/jscolor.js";
-
+         $PLUGIN_HOOKS['add_javascript']['monitoring'] = array(
+             "lib/jscolor/jscolor.js",
+             "lib/jquery/js/jquery-1.8.3.js",
+             "lib/jqueryplugins/jquery-tagbox/js/jquery.tagbox.js"
+             );
+         
          $plugin = new Plugin();
          if ($plugin->isActivated('monitoring')
                  AND isset($_SESSION['glpi_plugin_monitoring_profile'])) {

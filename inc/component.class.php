@@ -97,9 +97,11 @@ class PluginMonitoringComponent extends CommonDBTM {
     * @return varchar name of the tab(s) to display
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-
+      global $CFG_GLPI;
+      
       if ($item->getID() > 0
               AND $item->fields['graph_template'] != 0) {
+
          return array(
                __('Copy'),
                __('Components catalog', 'monitoring'),
@@ -510,6 +512,31 @@ class PluginMonitoringComponent extends CommonDBTM {
    
    
    function preferences($components_id) {
+      
+      echo '<script type="text/javascript">
+    jQuery(function() {
+      jQuery("#jquery-tagbox-select").tagBox({ 
+        enableDropdown: true, 
+        separator: "####",
+        tagButtonTitle: "'.__('Add to graph', 'monitoring').'",
+        dropdownSource: function() {
+          return jQuery("#jquery-tagbox-select-options");
+        }
+      });
+    });
+    jQuery(function() {
+      jQuery("#jquery-tagbox-select2").tagBox({ 
+        enableDropdown: true, 
+        separator: "####",
+        tagButtonTitle: "'.__('Invert', 'monitoring').'",
+        dropdownSource: function() {
+          return jQuery("#jquery-tagbox-select2-options");
+        }
+      });
+    });
+  </script>';
+      
+      
       echo "<table class='tab_cadre_fixe'>"; 
             
       echo "<tr class='tab_bg_1'>";

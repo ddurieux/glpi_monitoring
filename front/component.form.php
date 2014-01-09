@@ -119,6 +119,7 @@ if (isset($_POST["copy"])) {
 } else if(isset($_POST['updateperfdata'])) {
    $a_perfname = array();
    if (isset($_POST['perfname'])) {
+      $_POST['perfname'] = explode("####", $_POST['perfname']);      
       foreach ($_POST['perfname'] as $perfname) {
          $a_perfname[$perfname] = '1';
       }
@@ -126,6 +127,7 @@ if (isset($_POST["copy"])) {
    
    $a_perfnameinvert = array();
    if (isset($_POST['perfnameinvert'])) {
+      $_POST['perfnameinvert'] = explode("####", $_POST['perfnameinvert']);      
       foreach ($_POST['perfnameinvert'] as $perfname) {
          $a_perfnameinvert[$perfname] = '1';
       }

@@ -308,6 +308,21 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          'dsname13'     => array('type'    => 'string',         'value'   => NULL),
          'dsname14'     => array('type'    => 'string',         'value'   => NULL),
          'dsname15'     => array('type'    => 'string',         'value'   => NULL),
+         'dsnameincr1'  => array('type'    => 'bool',           'value'   => 0),
+         'dsnameincr2'  => array('type'    => 'bool',           'value'   => 0),
+         'dsnameincr3'  => array('type'    => 'bool',           'value'   => 0),
+         'dsnameincr4'  => array('type'    => 'bool',           'value'   => 0),
+         'dsnameincr5'  => array('type'    => 'bool',           'value'   => 0),
+         'dsnameincr6'  => array('type'    => 'bool',           'value'   => 0),
+         'dsnameincr7'  => array('type'    => 'bool',           'value'   => 0),
+         'dsnameincr8'  => array('type'    => 'bool',           'value'   => 0),
+         'dsnameincr9'  => array('type'    => 'bool',           'value'   => 0),
+         'dsnameincr10' => array('type'    => 'bool',           'value'   => 0),
+         'dsnameincr11' => array('type'    => 'bool',           'value'   => 0),
+         'dsnameincr12' => array('type'    => 'bool',           'value'   => 0),
+         'dsnameincr13' => array('type'    => 'bool',           'value'   => 0),
+         'dsnameincr14' => array('type'    => 'bool',           'value'   => 0),
+         'dsnameincr15' => array('type'    => 'bool',           'value'   => 0),
       );
 
       $a_table['oldfields']  = array();

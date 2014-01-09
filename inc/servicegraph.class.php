@@ -959,7 +959,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       $a_perfnames = array();
       $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($pmComponent->fields['graph_template']);
       echo "<table class='tab_cadre_fixe'>";      
-      echo "<tr class='tab_bg_1'>";
+      echo "<tr class='tab_bg_3'>";
       echo "<td rowspan='".ceil(count($a_perfnames) / 7)."' width='90'>";
       echo __('Display', 'monitoring')."&nbsp;:";
       
@@ -971,32 +971,76 @@ class PluginMonitoringServicegraph extends CommonDBTM {
             $_SESSION['glpi_plugin_monitoring']['perfname'][$components_id][$name] = 'checked';
          }
       }
+      
+      echo "<td>";
+      echo '<select id="jquery-tagbox-select-options">';
+      
+      $a_incremental = array();
+      $a_perfdatadetails = getAllDatasFromTable('glpi_plugin_monitoring_perfdatadetails', 
+                           "plugin_monitoring_perfdatas_id='".$pmComponent->fields['graph_template']."'");
+      foreach ($a_perfdatadetails as $data) {
+         for ($nb=1; $nb <= 15; $nb++) {
+            if ($data['dsnameincr'.$nb] == '1') {
+               $a_incremental[$data['dsname'.$nb]] = 1;
+            }
+         }
+      }
+      $a_list_val = array();
       foreach ($a_perfnames as $name) {
-         if ($i == 'O'
-                 AND $j == '1') {
-            echo "<tr>";
-         }
-         echo "<td>";
-         $checked = "checked";
-         if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$components_id])) {
-            $checked = "";
-         }
+         $disabled = '';
          if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$components_id][$name])) {
-            $checked = $_SESSION['glpi_plugin_monitoring']['perfname'][$components_id][$name];
+            $a_list_val[] = $name;
+            $disabled = 'disabled="disabled"';
          }
-         echo "<input type='checkbox' name='perfname[]' value='".$name."' ".$checked."/> ".$name;
-         echo "</td>";
-         $i++;
-         if ($i == 6) {
-            $i = 0;
-            echo "</tr>";
+         echo '<option value="'.$name.'" '.$disabled.'>'.$name.'</option>';
+         if (isset($a_incremental[$name])) {
+            $name .= ' | diff'; 
+            $disabled = '';
+            if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$components_id][$name])) {
+               $a_list_val[] = $name;
+               $disabled = 'disabled="disabled"';
+            }
+            echo '<option value="'.$name.'" '.$disabled.'>'.$name.'</option>';
          }
-         $j = 1;
       }
-      if ($i != 6) {
-         echo "<td colspan='".(6-$i)."'></td>";
-         echo "</tr>";
-      }
+      echo '</select>
+      <input name="perfname" id="jquery-tagbox-select" type="text" value="'.implode('####', $a_list_val).'" />';
+      
+      echo "</td>";
+      echo "</tr>";
+      
+//      foreach ($a_perfnames as $name) {
+//         if ($i == 'O'
+//                 AND $j == '1') {
+//            echo "<tr>";
+//         }
+//         echo "<td>";
+//         $checked = "checked";
+//         if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$components_id])) {
+//            $checked = "";
+//         }
+//         if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$components_id][$name])) {
+//            $checked = $_SESSION['glpi_plugin_monitoring']['perfname'][$components_id][$name];
+//         }
+//         echo "<input type='checkbox' name='perfname[]' value='".$name."' ".$checked."/> ".$name;
+//         echo "</td>";
+//         $i++;
+//         if ($i == 6) {
+//            $i = 0;
+//            echo "</tr>";
+//         }
+//         $j = 1;
+//      }
+//      if ($i != 6) {
+//         echo "<td colspan='".(6-$i)."'></td>";
+//         echo "</tr>";
+//      }
+      echo "<tr class='tab_bg_3'>";
+      echo "<td colspan='9' align='center'>";
+      echo "<input type='hidden' name='id' value='".$components_id."'/>";
+      echo "<input type='submit' name='updateperfdata' value=\"".__('Save')."\" class='submit'>";
+      echo "</td>";
+      echo "</tr>";
 
       echo "</table>";
 
@@ -1008,36 +1052,77 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       $a_perfnames = array();
       $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($pmComponent->fields['graph_template']);
       echo "<table class='tab_cadre_fixe'>";      
-      echo "<tr class='tab_bg_1'>";
+      echo "<tr class='tab_bg_3'>";
       echo "<td rowspan='".ceil(count($a_perfnames) / 7)."' width='90'>";
       echo __('Invert values', 'monitoring')."&nbsp;:";
       
       echo "</td>";
       $i = 0;
       $j = 0;
-      foreach ($a_perfnames as $name) {
-         if ($i == 'O'
-                 AND $j == '1') {
-            echo "<tr>";
+      echo "<td>";
+      echo '<select id="jquery-tagbox-select2-options">';
+      
+      $a_incremental = array();
+      $a_perfdatadetails = getAllDatasFromTable('glpi_plugin_monitoring_perfdatadetails', 
+                           "plugin_monitoring_perfdatas_id='".$pmComponent->fields['graph_template']."'");
+      foreach ($a_perfdatadetails as $data) {
+         for ($nb=1; $nb <= 15; $nb++) {
+            if ($data['dsnameincr'.$nb] == '1') {
+               $a_incremental[$data['dsname'.$nb]] = 1;
+            }
          }
-         echo "<td>";
-         $checked = "";
+      }
+      $a_list_val2 = array();
+      foreach ($a_list_val as $name) {
+         $disabled = '';
          if (isset($_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$components_id][$name])) {
-            $checked = $_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$components_id][$name];
+            $a_list_val2[] = $name;
+            $disabled = 'disabled="disabled"';
          }
-         echo "<input type='checkbox' name='perfnameinvert[]' value='".$name."' ".$checked."/> ".$name;
-         echo "</td>";
-         $i++;
-         if ($i == 6) {
-            $i = 0;
-            echo "</tr>";
+         echo '<option value="'.$name.'" '.$disabled.'>'.$name.'</option>';
+         if (isset($a_incremental[$name])) {
+            $name .= ' | diff'; 
+            $disabled = '';
+            if (isset($_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$components_id][$name])) {
+               $a_list_val[] = $name;
+               $disabled = 'disabled="disabled"';
+            }
+            echo '<option value="'.$name.'" '.$disabled.'>'.$name.'</option>';
          }
-         $j = 1;
       }
-      if ($i != 6) {
-         echo "<td colspan='".(6-$i)."'></td>";
-         echo "</tr>";
-      }
+      echo '</select>
+      <input name="perfnameinvert" id="jquery-tagbox-select2" type="text" value="'.implode('####', $a_list_val2).'" />';
+      echo "</td>";
+      
+//      foreach ($a_perfnames as $name) {
+//         if ($i == 'O'
+//                 AND $j == '1') {
+//            echo "<tr>";
+//         }
+//         echo "<td>";
+//         $checked = "";
+//         if (isset($_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$components_id][$name])) {
+//            $checked = $_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$components_id][$name];
+//         }
+//         echo "<input type='checkbox' name='perfnameinvert[]' value='".$name."' ".$checked."/> ".$name;
+//         echo "</td>";
+//         $i++;
+//         if ($i == 6) {
+//            $i = 0;
+//            echo "</tr>";
+//         }
+//         $j = 1;
+//      }
+//      if ($i != 6) {
+//         echo "<td colspan='".(6-$i)."'></td>";
+//         echo "</tr>";
+//      }
+      echo "<tr class='tab_bg_3'>";
+      echo "<td colspan='9' align='center'>";
+      echo "<input type='hidden' name='id' value='".$components_id."'/>";
+      echo "<input type='submit' name='updateperfdata' value=\"".__('Save')."\" class='submit'>";
+      echo "</td>";
+      echo "</tr>";
 
       echo "</table>";
      
@@ -1065,7 +1150,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       $a_colors_crit = PluginMonitoringServicegraph::colors("crit");
       $a_colors = PluginMonitoringServicegraph::colors();
       
-      foreach ($a_perfnames as $name) {
+      foreach ($a_list_val as $name) {
          if ($i == 'O'
                  AND $j == '1') {
             echo "<tr>";

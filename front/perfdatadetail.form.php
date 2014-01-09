@@ -47,6 +47,18 @@ PluginMonitoringProfile::checkRight("component","w");
 $pmPerfdataDetail = new PluginMonitoringPerfdataDetail();
 
 if (isset ($_POST["update"])) {
+   foreach ($_POST as $name=>$value) {
+      if (strstr($name, 'dsnameincr')
+              && $value == 'on') {
+         $_POST[$name] = 1;
+      }
+   }
+   for ($i=1; $i<=15; $i++) {
+      if (!isset($_POST['dsnameincr'.$i])) {
+         $_POST['dsnameincr'.$i] = 0;
+      }
+   }
+   
    $pmPerfdataDetail->update($_POST);
    Html::back();
 }
