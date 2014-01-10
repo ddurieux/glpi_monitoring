@@ -44,22 +44,21 @@ include ("../../../inc/includes.php");
 
 Session::checkCentralAccess();
 
-Html::header(__('Monitoring', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "display");
+Html::header(__('Monitoring', 'monitoring'), $_SERVER["PHP_SELF"], "plugins", 
+             "monitoring", "dashboard");
 
+PluginMonitoringProfile::checkRight("dashboard", 'r');
 
 $pmDisplay = new PluginMonitoringDisplay();
-$pmComponentscatalog = new PluginMonitoringComponentscatalog();
+$pmServicescatalog = new PluginMonitoringServicescatalog();
 $pmMessage = new PluginMonitoringMessage();
 
 $pmMessage->getMessages();
 
 $pmDisplay->menu();
 
-PluginMonitoringProfile::checkRight("dashboard_components_catalogs", 'r');
+$pmDisplay->showCounters("Businessrules");
 
-$pmDisplay->showCounters("Componentscatalog");
-$pmComponentscatalog->showChecks();
 
 Html::footer();
 ?>

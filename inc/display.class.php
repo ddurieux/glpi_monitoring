@@ -56,14 +56,28 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "<tr class='tab_bg_3'>";
       echo "<td>";
 
-      if (PluginMonitoringProfile::haveRight("restartshinken", 'w')
-              || PluginMonitoringProfile::haveRight("hosts_status", 'r')
-              || PluginMonitoringProfile::haveRight("servicescatalog", 'r')
-              || PluginMonitoringProfile::haveRight("componentscatalog", 'r')
-              || PluginMonitoringProfile::haveRight("allressources", 'r')) {
+      if (PluginMonitoringProfile::haveRight("restartshinken", 'r')
+              || PluginMonitoringProfile::haveRight("dashboard_system_status", 'r')
+              || PluginMonitoringProfile::haveRight("dashboard_hosts_status", 'r')
+              || PluginMonitoringProfile::haveRight("dashboard_services_catalogs", 'r')
+              || PluginMonitoringProfile::haveRight("dashboard_components_catalogs", 'r')
+              || PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'>";
-         if (PluginMonitoringProfile::haveRight("hosts_status", 'r')) {
+         if (PluginMonitoringProfile::haveRight("dashboard_system_status", 'r')) {
+            echo "<th colspan='2'>";
+            $this->displayPuce('display_system_status');
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_system_status.php'>";
+            echo __('System status', 'monitoring');
+            echo "</a>";
+            $a_url[] = $CFG_GLPI['root_doc']."/plugins/monitoring/front/display_system_status.php";
+            echo "</th>";
+         } else {
+            if (basename($_SERVER['PHP_SELF']) == 'display_system_status.php') {
+               $redirect = TRUE;
+            }
+         }
+         if (PluginMonitoringProfile::haveRight("dashboard_hosts_status", 'r')) {
             echo "<th colspan='2'>";
             $this->displayPuce('display_hosts_status');
             echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_hosts_status.php'>";
@@ -76,7 +90,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                $redirect = TRUE;
             }
          }
-         if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
+         if (PluginMonitoringProfile::haveRight("dashboard_services_catalogs", 'r')) {
             echo "<th colspan='2'>";
             $this->displayPuce('display_servicescatalog');
             echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_servicescatalog.php'>";
@@ -89,7 +103,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                $redirect = TRUE;
             }
          }
-         if (PluginMonitoringProfile::haveRight("componentscatalog", 'r')) {
+         if (PluginMonitoringProfile::haveRight("dashboard_components_catalogs", 'r')) {
             echo "<th colspan='2'>";
             $this->displayPuce('display_componentscatalog');
             echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_componentscatalog.php'>";
@@ -102,7 +116,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                $redirect = TRUE;
             }
          }
-         if (PluginMonitoringProfile::haveRight("allressources", 'r')) {
+         if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
             echo "<th colspan='2'>";
             $this->displayPuce('service');
             echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/service.php'>";
@@ -117,7 +131,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          }
          echo "</tr>";
          echo "</table>";
-         if (PluginMonitoringProfile::haveRight("restartshinken", 'w')) {
+         if (PluginMonitoringProfile::haveRight("restartshinken", 'r')) {
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='100'>";
@@ -138,38 +152,40 @@ class PluginMonitoringDisplay extends CommonDBTM {
          }
       }
 
-      $i = 1;
-         $pmDisplayview = new PluginMonitoringDisplayview();
-         $a_views = $pmDisplayview->getViews();
-         if (count($a_views) > 0) {
-            echo "<table class='tab_cadre_fixe' width='950'>";
-            echo "<tr class='tab_bg_1'>";
+      if (PluginMonitoringProfile::haveRight("dashboard_views", 'r')) {
+         $i = 1;
+            $pmDisplayview = new PluginMonitoringDisplayview();
+            $a_views = $pmDisplayview->getViews();
+            if (count($a_views) > 0) {
+               echo "<table class='tab_cadre_fixe' width='950'>";
+               echo "<tr class='tab_bg_1'>";
 
-            foreach ($a_views as $views_id=>$name) {
-               $pmDisplayview->getFromDB($views_id);
-               if ($pmDisplayview->haveVisibilityAccess()) {
-                  if ($i == 6) {
-                     echo "</tr>";
-                     echo "<tr class='tab_bg_1'>";
-                     $i = 1;
+               foreach ($a_views as $views_id=>$name) {
+                  $pmDisplayview->getFromDB($views_id);
+                  if ($pmDisplayview->haveVisibilityAccess()) {
+                     if ($i == 6) {
+                        echo "</tr>";
+                        echo "<tr class='tab_bg_1'>";
+                        $i = 1;
+                     }
+                     echo "<th width='20%'>";
+                     $this->displayPuce('display_view', $views_id);
+                     echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_view.php?id=".$views_id."'>";
+                     echo htmlentities($name);
+                     echo "</a>";
+                     echo "</th>";
+                     $i++;
+                     $a_url[] = $CFG_GLPI['root_doc']."/plugins/monitoring/front/display_view.php?id=".$views_id;
                   }
-                  echo "<th width='20%'>";
-                  $this->displayPuce('display_view', $views_id);
-                  echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_view.php?id=".$views_id."'>";
-                  echo htmlentities($name);
-                  echo "</a>";
-                  echo "</th>";
-                  $i++;
-                  $a_url[] = $CFG_GLPI['root_doc']."/plugins/monitoring/front/display_view.php?id=".$views_id;
                }
+               for ($i;$i < 6; $i++) {
+                  echo "<td width='20%'>";
+                  echo "</td>";
+               }
+               echo "</tr>";
+               echo "</table>";
             }
-            for ($i;$i < 6; $i++) {
-               echo "<td width='20%'>";
-               echo "</td>";
-            }
-            echo "</tr>";
-            echo "</table>";
-         }
+      }
             
       echo "</td>";
       echo "</tr>";
@@ -192,19 +208,24 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $pmDisplayview = new PluginMonitoringDisplayview();
       
       $ong = array();
-      if (PluginMonitoringProfile::haveRight("hosts_status", 'r')) {
-         $ong[1] = __('Hosts status', 'monitoring');
+      if (PluginMonitoringProfile::haveRight("dashboard_system_status", 'r')) {
+         $ong[1] = __('System status', 'monitoring');
       }
-      if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
-         $ong[2] = __('Services catalog', 'monitoring');
+      if (PluginMonitoringProfile::haveRight("dashboard_hosts_status", 'r')) {
+         $ong[2] = __('Hosts status', 'monitoring');
       }
-      if (PluginMonitoringProfile::haveRight("componentscatalog", 'r')) {
-         $ong[3] = __('Components catalog', 'monitoring');
+      if (PluginMonitoringProfile::haveRight("dashboard_services_catalogs", 'r')) {
+         $ong[3] = __('Services catalog', 'monitoring');
       }
-      $ong[4] = __('All resources', 'monitoring');
-      $ong[5] = __('Dependencies;', 'monitoring');
-      if (PluginMonitoringProfile::haveRight("view", 'r')) {
-         $i = 6;
+      if (PluginMonitoringProfile::haveRight("dashboard_components_catalogs", 'r')) {
+         $ong[4] = __('Components catalog', 'monitoring');
+      }
+      if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+         $ong[5] = __('All resources', 'monitoring');
+      }
+      $ong[6] = __('Dependencies;', 'monitoring');
+      if (PluginMonitoringProfile::haveRight("dashboard_views", 'r')) {
+         $i = 7;
          $a_views = $pmDisplayview->getViews();
          foreach ($a_views as $name) {
             $ong[$i] = htmlentities($name);

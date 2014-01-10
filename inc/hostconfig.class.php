@@ -86,15 +86,13 @@ class PluginMonitoringHostconfig extends CommonDBTM {
    }
 
 
-
    static function canCreate() {
-      return Session::haveRight('computer', 'w');
+      return PluginMonitoringProfile::haveRight("config", 'w');
    }
 
 
-   
    static function canView() {
-      return Session::haveRight('computer', 'r');
+      return PluginMonitoringProfile::haveRight("config", 'r');
    }
 
 
@@ -233,17 +231,18 @@ class PluginMonitoringHostconfig extends CommonDBTM {
          echo "</tr>";
       }
       
-      
-      echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='4' align='center'>";
-      if (isset($this->fields['id']) AND $this->fields['id'] != '') {
-         echo "<input type='hidden' name='id' value='".$this->fields['id']."'/>";
+      if ($this->canCreate()) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='4' align='center'>";
+         if (isset($this->fields['id']) AND $this->fields['id'] != '') {
+            echo "<input type='hidden' name='id' value='".$this->fields['id']."'/>";
+         }
+         echo "<input type='hidden' name='itemtype' value='".$itemtype."'/>";
+         echo "<input type='hidden' name='items_id' value='".$items_id."'/>";
+         echo "<input type='submit' name='update' value=\"".__('Save')."\" class='submit'>";
+         echo "</td>";
+         echo "</tr>";
       }
-      echo "<input type='hidden' name='itemtype' value='".$itemtype."'/>";
-      echo "<input type='hidden' name='items_id' value='".$items_id."'/>";
-      echo "<input type='submit' name='update' value=\"".__('Save')."\" class='submit'>";
-      echo "</td>";
-      echo "</tr>";
       
       echo "</table>";
       Html::closeForm();

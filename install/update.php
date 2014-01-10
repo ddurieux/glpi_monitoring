@@ -2399,95 +2399,96 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'profiles_id', 
                                  'profiles_id', 
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'dashboard', 
-                                 'dashboard', 
-                                 "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'servicescatalog', 
-                                 'servicescatalog', 
-                                 "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'view', 
-                                 'view', 
-                                 "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'componentscatalog', 
-                                 'componentscatalog', 
-                                 "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'viewshomepage', 
-                                 'viewshomepage', 
-                                 "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'weathermap', 
-                                 'weathermap', 
-                                 "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'component', 
-                                 'component', 
-                                 "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'command', 
-                                 'command', 
-                                 "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'config', 
-                                 'config', 
-                                 "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'check', 
-                                 'check', 
-                                 "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+
+         // Remove old fields ...
+         $migration->dropField($newTable, 'dashboard');
+         $migration->dropField($newTable, 'servicescatalog');
+         $migration->dropField($newTable, 'view');
+         $migration->dropField($newTable, 'componentscatalog');
+         $migration->dropField($newTable, 'viewshomepage');
+         $migration->dropField($newTable, 'weathermap');
+         $migration->dropField($newTable, 'component');
+         $migration->dropField($newTable, 'command');
+         $migration->dropField($newTable, 'config');
+         $migration->dropField($newTable, 'check');
+         $migration->dropField($newTable, 'allressources');
+         $migration->dropField($newTable, 'hosts_status');
+         $migration->dropField($newTable, 'system_status');
+         $migration->dropField($newTable, 'host_command');
+
+                                 
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable, 
                               'profiles_id', 
                               "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'dashboard', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'servicescatalog', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'view', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'componentscatalog', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'viewshomepage', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'weathermap', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'component', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'command', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+                              
          $migration->addField($newTable, 
                               'config', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
-                              'check', 
+                              'config_views', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
-                              'allressources', 
+                              'config_services_catalogs', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'config_components_catalogs', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'config_weathermap', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+
+         $migration->addField($newTable, 
+                              'dashboard', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+         $migration->addField($newTable, 
+                              'dashboard_views', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+         $migration->addField($newTable, 
+                              'dashboard_system_status', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'dashboard_hosts_status', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+         $migration->addField($newTable, 
+                              'dashboard_all_ressources', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+         $migration->addField($newTable, 
+                              'dashboard_services_catalogs', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+         $migration->addField($newTable, 
+                              'dashboard_components_catalogs', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+                              
          $migration->addField($newTable, 
                               'restartshinken', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
-                              'hosts_status', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'system_status', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
                               'host_command', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+                              
+         $migration->addField($newTable, 
+                              'homepage', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'homepage_views', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+         $migration->addField($newTable, 
+                              'homepage_system_status', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'homepage_hosts_status', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+         $migration->addField($newTable, 
+                              'homepage_all_ressources', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+         $migration->addField($newTable, 
+                              'homepage_services_catalogs', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+         $migration->addField($newTable, 
+                              'homepage_components_catalogs', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+                              
       $migration->migrationOneTable($newTable);
       
       

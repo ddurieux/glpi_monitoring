@@ -59,13 +59,13 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
 
 
    static function canCreate() {
-      return PluginMonitoringProfile::haveRight("servicescatalog", 'w');
+      return PluginMonitoringProfile::haveRight("config_services_catalogs", 'w');
    }
 
 
    
    static function canView() {
-      return PluginMonitoringProfile::haveRight("servicescatalog", 'r');
+      return PluginMonitoringProfile::haveRight("config_services_catalogs", 'r');
    }
 
    
@@ -87,7 +87,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       if (get_class($item) == __CLASS__) {
          $array_ret[50] = __('Contacts', 'monitoring');
       } else {
-         if (PluginMonitoringProfile::haveRight("viewshomepage", 'r') && PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
+         if (PluginMonitoringProfile::haveRight("homepage", 'r') && PluginMonitoringProfile::haveRight("homepage_services_catalogs", 'r')) {
             $array_ret[49] = self::createTabEntry(
                     "[".__('Monitoring', 'monitoring')."] ".__('Services catalog', 'monitoring'));
          }
@@ -154,12 +154,13 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='2'></td>";
-      echo "<td>".__('Interval between 2 notifications (in minutes)', 'monitoring')."&nbsp;:</td>";
+      echo "<td>".__('Interval between 2 notifications', 'monitoring')."&nbsp;:</td>";
       echo "<td>";
       Dropdown::showNumber('notification_interval', array(
-          'value' => $this->fields['notification_interval'], 
-          'min'   => 1, 
-          'max'   => 1000)
+         'value'    => $this->fields['notification_interval'], 
+         'min'      => 0, 
+         'max'      => 2880,
+         'unit'     => 'minute(s)')
       );
       echo "</td>";
       echo "</tr>";
@@ -169,9 +170,9 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       echo "<td>".__('Business priority level', 'monitoring')."&nbsp;:</td>";
       echo "<td>";
       Dropdown::showNumber('business_priority', array(
-          'value' => $this->fields['business_priority'], 
-          'min'   => 1, 
-          'max'   => 5)
+         'value'    => $this->fields['business_priority'], 
+         'min'      => 1, 
+         'max'      => 5)
       );
       echo "</td>";
       echo "</tr>";
@@ -315,8 +316,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       echo "</table>";
    }
    
-   
-   
+
 
    function showWidgetFrame($id) {
       global $DB, $CFG_GLPI;

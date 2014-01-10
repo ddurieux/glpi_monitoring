@@ -53,13 +53,13 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
    
 
    static function canCreate() {
-      return PluginMonitoringProfile::haveRight("servicescatalog", 'w');
+      return PluginMonitoringProfile::haveRight("config_services_catalogs", 'w');
    }
 
 
    
    static function canView() {
-      return PluginMonitoringProfile::haveRight("servicescatalog", 'r');
+      return PluginMonitoringProfile::haveRight("config_services_catalogs", 'r');
    }
 
    
@@ -114,25 +114,27 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
       echo "<input type='text' name='name' value='".$this->fields["name"]."' size='30'/>";
       echo "</td>";
       if ($items_id!='') {
-         echo "<th colspan='2' width='60%'>"; 
-         echo __('Resources', 'monitoring');      
-         echo "&nbsp;";
-         echo "<img onClick=\"Ext.get('ressources".$rand."').setDisplayed('block')\"
-                    title=\"".__('add')."\" alt=\"".__('add')."\"
-                    class='pointer'  src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
-      
-         echo "</th>";
-         echo "</tr>";  
-
-         echo "<tr>";
+         if (PluginMonitoringProfile::haveRight("config_services_catalogs", 'w')) {
+            echo "<th colspan='2' width='60%'>"; 
+            echo __('Resources', 'monitoring');      
+            echo "&nbsp;";
+            echo "<img onClick=\"Ext.get('ressources".$rand."').setDisplayed('block')\"
+                       title=\"".__('add')."\" alt=\"".__('add')."\"
+                       class='pointer'  src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
+         
+            echo "</th>";
+         }
       }
+      echo "</tr>";  
+
+      echo "<tr>";
       echo "<td valign='top'>";
       echo __('Logical operator')."&nbsp;:";
       echo "</td>";
       echo "<td valign='top'>";
       $first_operator = array();
-      $first_operator['or'] = "or";
       $first_operator['and'] = "and";
+      $first_operator['or'] = "or";
       $first_operator['2 of:'] = __('2 of', 'monitoring');
       $first_operator['3 of:'] = __('3 of', 'monitoring');
       $first_operator['4 of:'] = __('4 of', 'monitoring');
@@ -146,7 +148,8 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
       echo "</td>";
       if ($items_id!='') {
          echo "<td colspan='2'>";
-         // ** Dropdown to display
+         if (PluginMonitoringProfile::haveRight("config_services_catalogs", 'w')) {
+            // ** Dropdown to display
             echo "<div style='display:none' id='ressources".$rand."' >";
             echo "<table>";
             echo "<tr class='tab_bg_1'>";
@@ -161,9 +164,10 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
             echo "</table>";
             echo "<hr>";
             echo "</div>";
+         }
 
 
-            echo "<table width='100%'>";
+         echo "<table width='100%'>";
          $pmBusinessrule = new PluginMonitoringBusinessrule();
          $pmService = new PluginMonitoringService();
          $a_services = $pmBusinessrule->find("`plugin_monitoring_businessrulegroups_id`='".$items_id."'");
@@ -203,10 +207,10 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
                echo "<input type='submit' name='deletebusinessrules-".$gdata['id']."' value=\"".__('Clean')."\" class='submit'>";
                echo "</td>";
             }
+            echo "</tr>";
          }
-         echo "</tr>";
+         echo "</table>";
       }  
-      echo "</table>";
       
       echo "</td>";      
       echo "</tr>";  

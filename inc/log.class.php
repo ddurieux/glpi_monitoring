@@ -60,13 +60,13 @@ class PluginMonitoringLog extends CommonDBTM {
 
 
    static function canCreate() {
-      return Session::haveRight('computer', 'w');
+      return Session::haveRight('config', 'w');
    }
 
 
    
    static function canView() {
-      return Session::haveRight('computer', 'r');
+      return Session::haveRight('config', 'r');
    }
 
 

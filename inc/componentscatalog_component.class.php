@@ -53,13 +53,13 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
 
 
    static function canCreate() {
-      return PluginMonitoringProfile::haveRight("componentscatalog", 'w');
+      return PluginMonitoringProfile::haveRight("config_components_catalogs", 'w');
    }
 
 
    
    static function canView() {
-      return PluginMonitoringProfile::haveRight("componentscatalog", 'r');
+      return PluginMonitoringProfile::haveRight("config_components_catalogs", 'r');
    }
 
    
@@ -147,6 +147,8 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
    
    function addComponent($componentscatalogs_id) {
       global $DB;
+      
+      if (! PluginMonitoringProfile::haveRight("config_components_catalogs", 'w')) return;
       
       $this->getEmpty();
 

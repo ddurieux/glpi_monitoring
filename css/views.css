@@ -154,9 +154,10 @@
 	padding: 5px 5px;
 	position: relative;
 	top: -45px;
-	font-style: bold;
+	font-weight: bold;
+	font-style: italic;
 	margin: 0 15px;
-	font-size: 50px;
+	font-size: 40px;
 	border-top: 1px solid rgba(255,255,255,0.5);
 	text-align:center;
 	opacity: 1;
@@ -171,7 +172,6 @@
    color: #fff;
 	padding: 5px 5px;
 	position: relative;
-	font-style: italic;
 	margin: 0 15px;
 	font-size: 40px;
 	text-align:center;

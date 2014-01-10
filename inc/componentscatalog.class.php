@@ -59,13 +59,13 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
 
 
    static function canCreate() {
-      return PluginMonitoringProfile::haveRight("componentscatalog", 'w');
+      return PluginMonitoringProfile::haveRight("config_components_catalogs", 'w');
    }
 
 
    
    static function canView() {
-      return PluginMonitoringProfile::haveRight("componentscatalog", 'r');
+      return PluginMonitoringProfile::haveRight("config_components_catalogs", 'r');
    }
 
    
@@ -92,7 +92,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Central' :
-               if (PluginMonitoringProfile::haveRight("viewshomepage", 'r') && PluginMonitoringProfile::haveRight("componentscatalog", 'r')) {
+               if (PluginMonitoringProfile::haveRight("homepage", 'r') && PluginMonitoringProfile::haveRight("homepage_components_catalogs", 'r')) {
                   return array(1 => "[".__('Monitoring', 'monitoring')."] ".__('Components catalog', 'monitoring'));
                } else {
                   return '';
@@ -382,22 +382,36 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=UP".
             "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
       }
-      $link_catalog = $CFG_GLPI['root_doc'].
-         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset"
-            . "&field[0]=8&searchtype[0]=equals&contains[0]=".$id.
-            "&itemtype=PluginMonitoringService&start=0";
+      if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+         $link_catalog = $CFG_GLPI['root_doc'].
+            "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset"
+               . "&field[0]=8&searchtype[0]=equals&contains[0]=".$id.
+               "&itemtype=PluginMonitoringService&start=0";
 
-      echo '<br/><div class="ch-item">
-         <div class="ch-info-'.$colorclass.'">
-			<h1><a href="'.$link_catalog.'">'.ucfirst($data['name']);
-         if ($data['comment'] != '') {
-            echo ' '.$this->getComments();
-         }
-         echo '</a></h1>
-			<p><a href="'.$link.'">'.$count.'</a><font style="font-size: 14px;">/ '.
-                 ($stateg['CRITICAL'] + $stateg['WARNING'] + $stateg['OK'] + $stateg['ACKNOWLEDGE']).'</font></p>
-         </div>
-		</div>';
+         echo '<br/><div class="ch-item">
+            <div class="ch-info-'.$colorclass.'">
+            <h1><a href="'.$link_catalog.'">'.ucfirst($data['name']);
+            if ($data['comment'] != '') {
+               echo ' '.$this->getComments();
+            }
+            echo '</a></h1>
+               <p><a href="'.$link.'">'.$count.'</a><font style="font-size: 14px;">/ '.
+               ($stateg['CRITICAL'] + $stateg['WARNING'] + $stateg['OK'] + $stateg['ACKNOWLEDGE']).'</font></p>
+            </div>
+         </div>';
+      } else {
+         echo '<br/><div class="ch-item">
+            <div class="ch-info-'.$colorclass.'">
+            <h1>'.ucfirst($data['name']);
+            if ($data['comment'] != '') {
+               echo ' '.$this->getComments();
+            }
+            echo '</h1>
+               <p>'.$count.'<font style="font-size: 14px;">/ '.
+               ($stateg['CRITICAL'] + $stateg['WARNING'] + $stateg['OK'] + $stateg['ACKNOWLEDGE']).'</font></p>
+            </div>
+         </div>';
+      }
 
 /* For debugging purposes ...
       echo '<pre>';
@@ -427,14 +441,20 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          echo __('Hosts', 'monitoring');
          echo "</th>";
          for ($i = 0; $i < count($services); $i++) {
-            $link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-                  "&field[0]=7&searchtype[0]=equals&contains[0]=".$services_ids[$services[$i]].
-                  "&itemtype=PluginMonitoringService&start=0'";
-               
-            echo  '<th class="vertical">';
-            echo  '<a href="'.$link.'"><div class="vertical-text">'.$services[$i].'</div></a>';
-            echo  '</th>';
+            if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+               $link = $CFG_GLPI['root_doc'].
+                  "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
+                     "&field[0]=7&searchtype[0]=equals&contains[0]=".$services_ids[$services[$i]].
+                     "&itemtype=PluginMonitoringService&start=0'";
+                  
+               echo  '<th class="vertical">';
+               echo  '<a href="'.$link.'"><div class="vertical-text">'.$services[$i].'</div></a>';
+               echo  '</th>';
+            } else {
+               echo  '<th class="vertical">';
+               echo  '<div class="vertical-text">'.$services[$i].'</div>';
+               echo  '</th>';
+            }
          }
          echo  '</tr>';
          break;
@@ -448,13 +468,26 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                "&itemtype=PluginMonitoringService&start=0'";
             
          echo  "<tr class='tab_bg_2'>";
-         echo  "<td class='left'><a href='".$link."'>".$host."</a></td>";
+         if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+            echo  "<td class='left'><a href='".$link."'>".$host."</a></td>";
+         } else {
+            echo  "<td class='left'>".$host."</td>";
+         }
          for ($i = 0; $i < count($services); $i++) {
             echo '<td>';
-            echo '<a href="'.$link.'" title="'.$resources[$services[$i]]['state'].
-                    " - ".$resources[$services[$i]]['last_check']." - ".
-                    $resources[$services[$i]]['event'].'">'
-                    . '<div class="service'.$resources[$services[$i]]['state_type'].' service'.$resources[$services[$i]]['state'].'"></div></a>';
+            if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+               echo '<a href="'.$link.'">'.
+                        '<div title="'.$resources[$services[$i]]['state'].
+                        " - ".$resources[$services[$i]]['last_check']." - ".
+                        $resources[$services[$i]]['event'].
+                        '" class="service'.$resources[$services[$i]]['state_type'].' service'.$resources[$services[$i]]['state'].'"></div>'.
+                        '</a>';
+            } else {
+               echo '<div title="'.$resources[$services[$i]]['state'].
+                       " - ".$resources[$services[$i]]['last_check']." - ".
+                       $resources[$services[$i]]['event'].
+                       '" class="service'.$resources[$services[$i]]['state_type'].' service'.$resources[$services[$i]]['state'].'"></div>';
+            }
             echo '</td>';
          }
          echo  '</tr>';

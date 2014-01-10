@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("component","w");
+PluginMonitoringProfile::checkRight("config","r");
 
 Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins", 
              "monitoring", "perfdata");
@@ -62,7 +62,7 @@ if (isset ($_POST["add"])) {
 }
 
 if (isset($_GET["id"])) {
-   $pmPerfdata->showForm($_GET["id"]);
+   $pmPerfdata->showForm($_GET["id"], array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
 } else {
    $pmPerfdata->showForm(0);
 }

@@ -75,20 +75,30 @@ class PluginMonitoringProfile extends CommonDBTM {
       if (isset($_SESSION['glpiactiveprofile']['id'])) {
          $input = array();
          $input['profiles_id'] = $_SESSION['glpiactiveprofile']['id'];
-         $input['dashboard'] = 'w';
-         $input['servicescatalog'] = 'w';
-         $input['view'] = 'w';
-         $input['componentscatalog'] = 'w';
-         $input['viewshomepage'] = 'r';
-         $input['weathermap'] = 'w';
-         $input['component'] = 'w';
-         $input['command'] = 'w';
          $input['config'] = 'w';
-         $input['check'] = 'w';
-         $input['allressources'] = 'w';
-         $input['hosts_status'] = 'w';
-         $input['restartshinken'] = 'w';
-         $input['system_status'] = 'w';
+         
+         $input['config_services_catalogs'] = 'w';
+         $input['config_components_catalogs'] = 'w';
+         $input['config_weathermap'] = 'w';
+         $input['config_views'] = 'w';
+
+         $input['homepage'] = 'r';
+         $input['homepage_views'] = 'r';
+         $input['homepage_system_status'] = 'r';
+         $input['homepage_hosts_status'] = 'r';
+         $input['homepage_services_catalogs'] = 'r';
+         $input['homepage_components_catalogs'] = 'r';
+         $input['homepage_all_ressources'] = 'r';
+
+         $input['dashboard'] = 'r';
+         $input['dashboard_views'] = 'r';
+         $input['dashboard_system_status'] = 'r';
+         $input['dashboard_hosts_status'] = 'r';
+         $input['dashboard_services_catalogs'] = 'r';
+         $input['dashboard_components_catalogs'] = 'r';
+         $input['dashboard_all_ressources'] = 'r';
+
+         $input['restartshinken'] = 'r';
          $input['host_command'] = 'r';
          $pmProfile = new self();
          $pmProfile->add($input);
@@ -166,70 +176,9 @@ class PluginMonitoringProfile extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr>";
-      echo "<th colspan='4'>".__('Monitoring', 'monitoring')." :</th>";
+      echo "<th colspan='4'>".__('Monitoring', 'monitoring')." (".__('configuration', 'monitoring').") :</th>";
       echo "</tr>";
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('Dashboard', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("dashboard", $this->fields["dashboard"], 1, 1, 1);
-      echo "</td>";
-      echo "<td>";
-      echo __('Services catalog', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("servicescatalog", $this->fields["servicescatalog"], 1, 1, 1);
-      echo "</td>";
-      echo "</tr>";
-      
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('Views', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("view", $this->fields["view"], 1, 1, 1);
-      echo "</td>";
-      echo "<td>";
-      echo __('Components catalog', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("componentscatalog", $this->fields["componentscatalog"], 1, 1, 1);
-      echo "</td>";
-      echo "</tr>";
-      
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('Views in GLPI home page', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("viewshomepage", $this->fields["viewshomepage"], 1, 1, 0);
-      echo "</td>";
-      echo "<td>";
-      echo __('Hosts status catalog', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("hosts_status", $this->fields["hosts_status"], 1, 1, 0);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('Components', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("component", $this->fields["component"], 1, 1, 1);
-      echo "</td>";
-      echo "<td>";
-      echo __('Commands', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("command", $this->fields["command"], 1, 1, 1);
-      echo "</td>";
-      echo "</tr>";
-
-      
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
       echo __('Setup')."&nbsp;:";
@@ -237,50 +186,172 @@ class PluginMonitoringProfile extends CommonDBTM {
       echo "<td>";
       Profile::dropdownNoneReadWrite("config", $this->fields["config"], 1, 1, 1);
       echo "</td>";
-      echo "<td>";
-      echo __('Check definition', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("check", $this->fields["check"], 1, 1, 1);
-      echo "</td>";
       echo "</tr>";
-      
+
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
-      echo __('See all resources in dashboard', 'monitoring')."&nbsp;:";
+      echo __('Components catalog', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
-      Profile::dropdownNoneReadWrite("allressources", $this->fields["allressources"], 1, 1, 0);
+      Profile::dropdownNoneReadWrite("config_components_catalogs", $this->fields["config_components_catalogs"], 1, 1, 1);
       echo "</td>";
       echo "<td>";
-      echo __('Restart shinken', 'monitoring')."&nbsp;:";
+      echo __('Services catalog', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
-      Profile::dropdownNoneReadWrite("restartshinken", $this->fields["restartshinken"], 1, 0, 1);
+      Profile::dropdownNoneReadWrite("config_services_catalogs", $this->fields["config_services_catalogs"], 1, 1, 1);
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo __('Views', 'monitoring')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      Profile::dropdownNoneReadWrite("config_views", $this->fields["config_views"], 1, 1, 1);
+      echo "</td>";
       echo "<td>";
       echo __('Weathermap', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
-      Profile::dropdownNoneReadWrite("weathermap", $this->fields["weathermap"], 1, 1, 1);
+      Profile::dropdownNoneReadWrite("config_weathermap", $this->fields["config_weathermap"], 1, 1, 1);
       echo "</td>";
       echo "</tr>";
+
+      echo "<tr><td colspan='4'><hr/></td></tr>";
       
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
-      echo __('System status', 'monitoring')."&nbsp;:";
+      echo __('Restart shinken', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
-      Profile::dropdownNoneReadWrite("system_status", $this->fields["system_status"], 1, 1, 1);
+      Profile::dropdownNoneReadWrite("restartshinken", $this->fields["restartshinken"], 1, 1, 0);
       echo "</td>";
       echo "<td>";
       echo __('Host command', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       Profile::dropdownNoneReadWrite("host_command", $this->fields["host_command"], 1, 1, 0);
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr><td colspan='4'><br/></td></tr>";
+
+      echo "<tr>";
+      echo "<th colspan='4'>".__('Monitoring', 'monitoring')." (".__('dashboard', 'monitoring').") :</th>";
+      echo "</tr>";
+
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo __('Dashboard', 'monitoring')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      Profile::dropdownNoneReadWrite("dashboard", $this->fields["dashboard"], 1, 1, 0);
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo __('View system status', 'monitoring')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      Profile::dropdownNoneReadWrite("dashboard_system_status", $this->fields["dashboard_system_status"], 1, 1, 0);
+      echo "</td>";
+      echo "<td>";
+      echo __('View hosts status', 'monitoring')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      Profile::dropdownNoneReadWrite("dashboard_hosts_status", $this->fields["dashboard_hosts_status"], 1, 1, 0);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo __('View services catalogs', 'monitoring')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      Profile::dropdownNoneReadWrite("dashboard_services_catalogs", $this->fields["dashboard_services_catalogs"], 1, 1, 0);
+      echo "</td>";
+      echo "<td>";
+      echo __('View components catalogs', 'monitoring')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      Profile::dropdownNoneReadWrite("dashboard_components_catalogs", $this->fields["dashboard_components_catalogs"], 1, 1, 0);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo __('View views', 'monitoring')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      Profile::dropdownNoneReadWrite("dashboard_views", $this->fields["dashboard_views"], 1, 1, 0);
+      echo "</td>";
+      echo "<td>";
+      echo __('View all resources', 'monitoring')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      Profile::dropdownNoneReadWrite("dashboard_all_ressources", $this->fields["dashboard_all_ressources"], 1, 1, 0);
+      echo "</td>";
+      echo "</tr>";
+      
+
+
+      echo "<tr><td colspan='4'><br/></td></tr>";
+
+      echo "<tr>";
+      echo "<th colspan='4'>".__('Monitoring', 'monitoring')." (".__('home page', 'monitoring').") :</th>";
+      echo "</tr>";
+
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo __('Home page', 'monitoring')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      Profile::dropdownNoneReadWrite("homepage", $this->fields["homepage"], 1, 1, 0);
+      echo "</td>";
+      echo "<td>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo __('View system status', 'monitoring')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      Profile::dropdownNoneReadWrite("homepage_system_status", $this->fields["homepage_system_status"], 1, 1, 0);
+      echo "</td>";
+      echo "<td>";
+      echo __('View hosts status', 'monitoring')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      Profile::dropdownNoneReadWrite("homepage_hosts_status", $this->fields["homepage_hosts_status"], 1, 1, 0);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo __('View services catalogs', 'monitoring')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      Profile::dropdownNoneReadWrite("homepage_services_catalogs", $this->fields["homepage_services_catalogs"], 1, 1, 0);
+      echo "</td>";
+      echo "<td>";
+      echo __('View components catalogs', 'monitoring')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      Profile::dropdownNoneReadWrite("homepage_components_catalogs", $this->fields["homepage_components_catalogs"], 1, 1, 0);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo __('View views', 'monitoring')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      Profile::dropdownNoneReadWrite("homepage_views", $this->fields["homepage_views"], 1, 1, 0);
       echo "</td>";
       echo "</tr>";
       

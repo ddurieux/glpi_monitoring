@@ -58,13 +58,13 @@ class PluginMonitoringNetworkport extends CommonDBTM {
    
    
    static function canCreate() {
-      return PluginMonitoringProfile::haveRight("componentscatalog", 'w');
+      return PluginMonitoringProfile::haveRight("config_components_catalogs", 'w');
    }
 
 
    
    static function canView() {
-      return PluginMonitoringProfile::haveRight("componentscatalog", 'r');
+      return PluginMonitoringProfile::haveRight("config_components_catalogs", 'r');
    }
 
    

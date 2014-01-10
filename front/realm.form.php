@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("config","w");
+PluginMonitoringProfile::checkRight("config","r");
 
 $dropdown = new PluginMonitoringRealm();
 include (GLPI_ROOT . "/front/dropdown.common.form.php");

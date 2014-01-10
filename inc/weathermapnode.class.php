@@ -48,13 +48,13 @@ class PluginMonitoringWeathermapnode extends CommonDBTM {
    
 
    static function canCreate() {
-      return PluginMonitoringProfile::haveRight("weathermap", 'w');
+      return PluginMonitoringProfile::haveRight("config_weathermap", 'w');
    }
 
 
    
    static function canView() {
-      return PluginMonitoringProfile::haveRight("weathermap", 'r');
+      return PluginMonitoringProfile::haveRight("config_weathermap", 'r');
    }
 
    

@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("servicescatalog","w");
+PluginMonitoringProfile::checkRight("config_services_catalogs","r");
 
 $dropdown = new PluginMonitoringServicescatalog();
 if (isset($_GET['detail']) AND isset($_GET['id'])) {

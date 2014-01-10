@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("view","w");
+PluginMonitoringProfile::checkRight("config_views","r");
 
 Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins", 
              "monitoring", "displayview");
@@ -117,9 +117,9 @@ if (isset ($_POST["add"])) {
 }
 
 if (isset($_GET["id"])) {
-   $pmDisplayview->showForm($_GET["id"]);
+   $pmDisplayview->showForm($_GET["id"], array('canedit' => PluginMonitoringProfile::haveRight("config_views","w")));
 } else {
-   $pmDisplayview->showForm(0);
+   $pmDisplayview->showForm(0, array('canedit' => PluginMonitoringProfile::haveRight("config_views","w")));
 }
 
 Html::footer();

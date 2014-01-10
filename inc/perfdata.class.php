@@ -60,13 +60,13 @@ class PluginMonitoringPerfdata extends CommonDBTM {
    
 
    static function canCreate() {      
-      return PluginMonitoringProfile::haveRight("component", 'w');
+      return PluginMonitoringProfile::haveRight("config", 'w');
    }
 
 
    
    static function canView() {
-      return PluginMonitoringProfile::haveRight("component", 'r');
+      return PluginMonitoringProfile::haveRight("config", 'r');
    }
 
    

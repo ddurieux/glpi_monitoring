@@ -67,7 +67,7 @@ class PluginMonitoringMessage extends CommonDBTM {
       $servicecatalog = '';
       $confchanges = '';
       
-      if (PluginMonitoringProfile::haveRight("servicescatalog", 'w')) {
+      if (PluginMonitoringProfile::haveRight("config_services_catalogs", 'r')) {
          $servicecatalog = $pmMessage->servicescatalogMessage();
       }
       $confchanges = $pmMessage->configurationchangesMessage();

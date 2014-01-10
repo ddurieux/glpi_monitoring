@@ -60,13 +60,13 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
 
 
    static function canCreate() {
-      return PluginMonitoringProfile::haveRight("componentscatalog", 'w');
+      return PluginMonitoringProfile::haveRight("config_components_catalogs", 'w');
    }
 
 
    
    static function canView() {
-      return PluginMonitoringProfile::haveRight("componentscatalog", 'r');
+      return PluginMonitoringProfile::haveRight("config_components_catalogs", 'r');
    }
 
 
@@ -116,7 +116,9 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
    
    function preaddRule($componentscatalogs_id) {
       global $CFG_GLPI,$DB;
- 
+      
+      if (! PluginMonitoringProfile::haveRight("config_components_catalogs", 'w')) return;
+
       $networkport_types = $CFG_GLPI['networkport_types'];
       $networkport_types[] = "PluginMonitoringNetworkport";
       

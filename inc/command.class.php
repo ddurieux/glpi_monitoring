@@ -294,13 +294,13 @@ class PluginMonitoringCommand extends CommonDBTM {
 
 
    static function canCreate() {
-      return PluginMonitoringProfile::haveRight("command", 'w');
+      return PluginMonitoringProfile::haveRight("config", 'w');
    }
 
 
    
    static function canView() {
-      return PluginMonitoringProfile::haveRight("command", 'r');
+      return PluginMonitoringProfile::haveRight("config", 'r');
    }
 
    
@@ -409,7 +409,7 @@ class PluginMonitoringCommand extends CommonDBTM {
       $this->showFormButtons($options);
       
       // Add form for copy item
-      if ($items_id!='') {
+      if ($items_id!='' && PluginMonitoringProfile::haveRight("config","w")) {
          $this->fields['id'] = 0;
          $this->showFormHeader($options);
          

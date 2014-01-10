@@ -55,7 +55,7 @@ $pmMessage->getMessages();
 
 $pmDisplay->menu();
 
-PluginMonitoringProfile::checkRight("servicescatalog", 'r');
+PluginMonitoringProfile::checkRight("dashboard_services_catalogs", 'r');
 
 $pmDisplay->showCounters("Businessrules");
 $pmServicescatalog->showChecks();
