@@ -812,7 +812,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
       $pmBusinessrule = new PluginMonitoringBusinessrule();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
-
+      $pmBusinessrule_component = new PluginMonitoringBusinessrule_component();
       // Prepare contacts for BR ...
       $a_contacts_entities = array();
       $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringServicescatalog'
@@ -855,6 +855,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             $a_grouplist = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_servicescatalogs_id`='".$dataBA['id']."'");
             $a_group = array();
             foreach ($a_grouplist as $gdata) {
+               $pmBusinessrule_component->replayDynamicServices($gdata['id']);
                $a_listBR = $pmBusinessrule->find(
                        "`plugin_monitoring_businessrulegroups_id`='".$gdata['id']."'");
                foreach ($a_listBR as $dataBR) {
