@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringShinkenwebservice extends CommonDBTM {
    
-   function sendAcknowledge($services_id) {
+   function sendAcknowledge($services_id, $comment='') {
       global $DB;
       
       $pmService   = new PluginMonitoringService();
@@ -80,7 +80,7 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
           'host_name'            => urlencode($hostname),
           'service_description'  => urlencode($service_description),
           'author'               => urlencode($_SESSION['glpiname']),
-          'comment'              => urlencode('')
+          'comment'              => urlencode($comment)
       );
       
       $this->sendCommand($url, $action, $a_fields,'', $auth);

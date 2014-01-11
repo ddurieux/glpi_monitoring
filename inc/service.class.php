@@ -951,9 +951,80 @@ class PluginMonitoringService extends CommonDBTM {
    /**
     * Form to add acknowledge on a critical service
     */
-   function addAcknowledge($id) {
-      global $CFG_GLPI;
+   function addAcknowledge($id, $hostname='') {
+      global $CFG_GLPI,$DB;
       
+      // Acknowledge an host ... note that $id is Glpi computer Id
+      if (! empty($hostname)) {
+         echo "<form name='form' method='post' 
+            action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php'>";
+      
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<th colspan='3'>";
+         echo __('Add an acknowledge for an host: ', 'monitoring').$hostname;
+         echo "</td>";
+         echo "</tr>";
+         
+         echo "<tr><td colspan='3'><hr/></td></tr>";
+         
+         // Get all host services except if state is ok or is already acknowledged ...
+         $query = "SELECT 
+                  `glpi_plugin_monitoring_services`.*
+                  FROM `glpi_plugin_monitoring_services` 
+                  WHERE `glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` IN (SELECT id FROM `glpi_plugin_monitoring_componentscatalogs_hosts` WHERE `glpi_plugin_monitoring_componentscatalogs_hosts`.items_id ='".$id."') 
+                  AND `glpi_plugin_monitoring_services`.`state` != 'OK'
+                  AND `glpi_plugin_monitoring_services`.`is_acknowledged` = '0'
+                  ORDER BY `name`";
+         // Toolbox::logInFile("monitoring", "Query : ".$query."\n");
+
+         $result = $DB->query($query);
+         $i=0;
+         while ($data=$DB->fetch_array($result)) {
+            // Toolbox::logInFile("monitoring", "Service ".$data['name']." is ".$data['state'].", state : ".$data['event']."\n");
+            echo "<tr class='tab_bg_1'>";
+            echo "<td>".$data['name']."</td>";
+            echo "<td>".$data['state']."</td>";
+            echo "<td>".$data['event']."</td>";
+            echo "</tr>";
+            echo "<input type='hidden' name='serviceId$i' value='".$data['id']."' />";
+            $i++;
+         }
+         if ($i != 0) {
+            echo "<tr><td colspan='3'>".__('All these services will be acknowledged: ')."</td></tr>";
+            echo "<input type='hidden' name='serviceCount' value='$i' />";
+            echo "<tr><td colspan='3'><hr/></td></tr>";
+         }
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>";
+         echo __('Comments');
+         echo "</td>";
+         echo "<td colspan='2'>";
+         echo "<textarea cols='80' rows='4' name='acknowledge_comment' ></textarea>";
+         echo "</td>";
+         echo "</tr>";
+         
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='3' align='center'>";
+         echo "<input type='hidden' name='id' value='".$id."' />";
+         echo "<input type='hidden' name='is_acknowledged' value='1' />";
+         echo "<input type='hidden' name='acknowledge_users_id' value='".$_SESSION['glpiID']."' />";
+
+         echo "<input type='hidden' name='referer' value='".$_SERVER['HTTP_REFERER']."' />";
+         
+         
+         echo "<input type='submit' name='add' value=\"".__('Add')."\" class='submit'>";            
+         echo "</td>";
+         echo "</tr>";
+         echo "</table>";
+         
+         Html::closeForm();
+         
+         return;
+      }
+      
+      // Acknowledge a service ...
       if ($this->getFromDB($id)) {
          echo "<form name='form' method='post' 
             action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php'>";
@@ -961,7 +1032,7 @@ class PluginMonitoringService extends CommonDBTM {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'>";
          echo "<th colspan='2'>";
-         echo __('Add an acknowledge for service', 'monitoring')." : ".$this->fields['name'];
+         echo __('Add an acknowledge for a service: ', 'monitoring').$this->fields['name'];
          echo "</td>";
          echo "</tr>";
          
@@ -1005,7 +1076,7 @@ class PluginMonitoringService extends CommonDBTM {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'>";
          echo "<th colspan='2'>";
-         echo __('Add an acknowledge for service', 'monitoring')." : ".$this->fields['name'];
+         echo __('Add an acknowledge for a service: ', 'monitoring').$this->fields['name'];
          echo "</td>";
          echo "</tr>";
          echo "<tr class='tab_bg_1'>";
@@ -1036,8 +1107,8 @@ class PluginMonitoringService extends CommonDBTM {
          echo "</tr>";
          echo "</table>";
          Html::closeForm();
-        }
-    }
+      }
+   }
 }
 
 ?>

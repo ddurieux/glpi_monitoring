@@ -984,13 +984,13 @@ class PluginMonitoringDisplay extends CommonDBTM {
    static function displayHostLine($data, $displayhost=1) {
       global $DB,$CFG_GLPI;
 
-      $pMonitoringService = new PluginMonitoringService();
+      // $pMonitoringService = new PluginMonitoringService();
       $networkPort = new NetworkPort();
       $pMonitoringComponent = new PluginMonitoringComponent();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
       $entity = new Entity();
       
-      $pMonitoringService->getFromDB($data['id']);
+      // $pMonitoringService->getFromDB($data['id']);
       
       echo "<td width='32' class='center'>";
       $shortstate = self::getState($data['state'], 
@@ -1055,7 +1055,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo $data['state'];
          echo "</td>";
          echo "<td>";
-         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?id=".$data['id']."'>"
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?host=".$data['name']."&id=".$data['idComputer']."'>"
                   ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_checked.png'"
                  ." alt='".__('Define an acknowledge', 'monitoring')."'"
                  ." title='".__('Define an acknowledge', 'monitoring')."'/>"
