@@ -333,7 +333,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       if ($nb_ressources == 0) {
          echo '<br/><div class="ch-item">
             <div>
-            <h1>Nothing to display ...</h1>
+            <h1>'.__('Nothing to display ...', 'monitoring').'</h1>
             </div>
          </div>';
 
@@ -448,11 +448,11 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                      "&itemtype=PluginMonitoringService&start=0'";
                   
                echo  '<th class="vertical">';
-               echo  '<a href="'.$link.'"><div class="vertical-text">'.$services[$i].'</div></a>';
+               echo  '<a href="'.$link.'"><div class="rotated-text"><span class="rotated-text__inner">'.$services[$i].'</span></div></a>';
                echo  '</th>';
             } else {
                echo  '<th class="vertical">';
-               echo  '<div class="vertical-text">'.$services[$i].'</div>';
+               echo  '<div class="rotated-text"><span class="rotated-text__inner">'.$services[$i].'</span></div>';
                echo  '</th>';
             }
          }
