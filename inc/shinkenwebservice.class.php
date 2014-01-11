@@ -46,44 +46,66 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringShinkenwebservice extends CommonDBTM {
    
-   function sendAcknowledge($services_id, $comment='') {
+   function sendAcknowledge($services_id, $author= '', $comment='', $host_id='', $hostname='') {
       global $DB;
       
-      $pmService   = new PluginMonitoringService();
-      $pmComponent = new PluginMonitoringComponent();
-      $pmTag       = new PluginMonitoringTag();
-      $pmService->getFromDB($services_id);
+      $pmTag = new PluginMonitoringTag();
       
-      $hostname = '';
-      $queryh = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts` 
-         WHERE `id` = '".$pmService->fields['plugin_monitoring_componentscatalogs_hosts_id']."'
-         LIMIT 1";
-      $resulth = $DB->query($queryh);
-      while ($datah=$DB->fetch_array($resulth)) {
-         $itemtype = $datah['itemtype'];
-         $item = new $itemtype();
-         if ($item->getFromDB($datah['items_id'])) {
-            $hostname = preg_replace("/[^A-Za-z0-9\-_]/","",$item->fields['name']);
-         }         
+      if (empty($host_id)) {
+         // Acknowledge a service ...
+         $pmService   = new PluginMonitoringService();
+         $pmComponent = new PluginMonitoringComponent();
+         $pmService->getFromDB($services_id);
+         
+         $hostname = '';
+         $queryh = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts` 
+            WHERE `id` = '".$pmService->fields['plugin_monitoring_componentscatalogs_hosts_id']."'
+            LIMIT 1";
+         $resulth = $DB->query($queryh);
+         while ($datah=$DB->fetch_array($resulth)) {
+            $itemtype = $datah['itemtype'];
+            $item = new $itemtype();
+            if ($item->getFromDB($datah['items_id'])) {
+               $hostname = preg_replace("/[^A-Za-z0-9\-_]/","",$item->fields['name']);
+            }         
+         }
+         
+         $a_component = current($pmComponent->find("`id`='".$pmService->fields['plugin_monitoring_components_id']."'", "", 1));
+         $service_description = preg_replace("/[^A-Za-z0-9\-_]/","",$a_component['name']);
+         
+         $tag = PluginMonitoringEntity::getTagByEntities($pmService->fields['entities_id']);
+         $ip = $pmTag->getIP($tag);
+         $auth = $pmTag->getAuth($tag);
+         
+         $url = 'http://'.$ip.':7760/';
+         $action = 'acknowledge';
+         $a_fields = array(
+             'host_name'            => urlencode($hostname),
+             'service_description'  => urlencode($service_description),
+             'author'               => urlencode($_SESSION['glpiname']),
+             'comment'              => urlencode($comment)
+         );
+         
+         $this->sendCommand($url, $action, $a_fields,'', $auth);
+      } else {
+         // Acknowledge an host ...
+         $pmHost = new PluginMonitoringHost();
+         $pmHost->getFromDBByQuery("WHERE `items_id` = '$host_id'");
+         $tag = PluginMonitoringEntity::getTagByEntities($pmHost->fields['entities_id']);
+         
+         $ip = $pmTag->getIP($tag);
+         $auth = $pmTag->getAuth($tag);
+         
+         $url = 'http://'.$ip.':7760/';
+         $action = 'acknowledge';
+         $a_fields = array(
+             'host_name'            => urlencode($hostname),
+             'author'               => urlencode($_SESSION['glpiname']),
+             'comment'              => urlencode($comment)
+         );
+         
+         $this->sendCommand($url, $action, $a_fields,'', $auth);
       }
-      
-      $a_component = current($pmComponent->find("`id`='".$pmService->fields['plugin_monitoring_components_id']."'", "", 1));
-      $service_description = preg_replace("/[^A-Za-z0-9\-_]/","",$a_component['name']);
-      
-      $tag = PluginMonitoringEntity::getTagByEntities($pmService->fields['entities_id']);
-      $ip = $pmTag->getIP($tag);
-      $auth = $pmTag->getAuth($tag);
-      
-      $url = 'http://'.$ip.':7760/';
-      $action = 'acknowledge';
-      $a_fields = array(
-          'host_name'            => urlencode($hostname),
-          'service_description'  => urlencode($service_description),
-          'author'               => urlencode($_SESSION['glpiname']),
-          'comment'              => urlencode($comment)
-      );
-      
-      $this->sendCommand($url, $action, $a_fields,'', $auth);
    }
    
    

@@ -951,7 +951,7 @@ class PluginMonitoringService extends CommonDBTM {
    /**
     * Form to add acknowledge on a critical service
     */
-   function addAcknowledge($id, $hostname='') {
+   function addAcknowledge($id, $hostname='', $allServices=false) {
       global $CFG_GLPI,$DB;
       
       // Acknowledge an host ... note that $id is Glpi computer Id
@@ -962,38 +962,50 @@ class PluginMonitoringService extends CommonDBTM {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'>";
          echo "<th colspan='3'>";
-         echo __('Add an acknowledge for an host: ', 'monitoring').$hostname;
+         if ($allServices) {
+            echo __('Add an acknowledge for all faulty services of the host', 'monitoring').' '.$hostname;
+         } else {
+            echo __('Add an acknowledge for the host', 'monitoring').' '.$hostname;
+         }
          echo "</td>";
          echo "</tr>";
          
          echo "<tr><td colspan='3'><hr/></td></tr>";
          
-         // Get all host services except if state is ok or is already acknowledged ...
-         $query = "SELECT 
-                  `glpi_plugin_monitoring_services`.*
-                  FROM `glpi_plugin_monitoring_services` 
-                  WHERE `glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` IN (SELECT id FROM `glpi_plugin_monitoring_componentscatalogs_hosts` WHERE `glpi_plugin_monitoring_componentscatalogs_hosts`.items_id ='".$id."') 
-                  AND `glpi_plugin_monitoring_services`.`state` != 'OK'
-                  AND `glpi_plugin_monitoring_services`.`is_acknowledged` = '0'
-                  ORDER BY `name`";
-         // Toolbox::logInFile("monitoring", "Query : ".$query."\n");
+         if ($allServices) {
+            // Get all host services except if state is ok or is already acknowledged ...
+            $query = "SELECT 
+                     `glpi_plugin_monitoring_services`.*
+                     FROM `glpi_plugin_monitoring_services` 
+                     WHERE `glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` IN (SELECT id FROM `glpi_plugin_monitoring_componentscatalogs_hosts` WHERE `glpi_plugin_monitoring_componentscatalogs_hosts`.items_id ='".$id."') 
+                     AND `glpi_plugin_monitoring_services`.`state` != 'OK'
+                     AND `glpi_plugin_monitoring_services`.`is_acknowledged` = '0'
+                     ORDER BY `name`";
+            // Toolbox::logInFile("monitoring", "Query : ".$query."\n");
 
-         $result = $DB->query($query);
-         $i=0;
-         while ($data=$DB->fetch_array($result)) {
-            // Toolbox::logInFile("monitoring", "Service ".$data['name']." is ".$data['state'].", state : ".$data['event']."\n");
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>".$data['name']."</td>";
-            echo "<td>".$data['state']."</td>";
-            echo "<td>".$data['event']."</td>";
-            echo "</tr>";
-            echo "<input type='hidden' name='serviceId$i' value='".$data['id']."' />";
-            $i++;
-         }
-         if ($i != 0) {
-            echo "<tr><td colspan='3'>".__('All these services will be acknowledged: ')."</td></tr>";
-            echo "<input type='hidden' name='serviceCount' value='$i' />";
-            echo "<tr><td colspan='3'><hr/></td></tr>";
+            $result = $DB->query($query);
+            $i=0;
+            while ($data=$DB->fetch_array($result)) {
+               // Toolbox::logInFile("monitoring", "Service ".$data['name']." is ".$data['state'].", state : ".$data['event']."\n");
+               echo "<tr class='tab_bg_1'>";
+               echo "<td>".$data['name']."</td>";
+               echo "<td>".$data['state']."</td>";
+               echo "<td>".$data['event']."</td>";
+               echo "</tr>";
+               echo "<input type='hidden' name='serviceId$i' value='".$data['id']."' />";
+               $i++;
+            }
+            if ($i != 0) {
+               echo "<tr><td colspan='3'>".__('All these services will be acknowledged: ')."</td></tr>";
+               echo "<input type='hidden' name='serviceCount' value='$i' />";
+               echo "<tr><td colspan='3'><hr/></td></tr>";
+            }
+            echo "<input type='hidden' name='host_id' value='$id' />";
+            echo "<input type='hidden' name='hostname' value='$hostname' />";
+         } else {
+            echo "<input type='hidden' name='hostAcknowledge' value='$hostname' />";
+            echo "<input type='hidden' name='host_id' value='$id' />";
+            echo "<input type='hidden' name='hostname' value='$hostname' />";
          }
 
          echo "<tr class='tab_bg_1'>";

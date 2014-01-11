@@ -644,11 +644,22 @@ class PluginMonitoringDisplay extends CommonDBTM {
          }
       }
       
-      $query = "SELECT `glpi_plugin_monitoring_hosts`.*, `glpi_computers`.`name`, `glpi_computers`.`id` AS idComputer, `glpi_plugin_monitoring_hostconfigs`.`plugin_monitoring_components_id` 
-         FROM `glpi_plugin_monitoring_hosts`
-         ".$leftjoin."
-         ".$where."
-         ".$ORDERQUERY;
+      // $query = "SELECT `glpi_plugin_monitoring_hosts`.*, `glpi_computers`.`name`, `glpi_computers`.`id` AS idComputer, `glpi_plugin_monitoring_hostconfigs`.`plugin_monitoring_components_id` 
+         // FROM `glpi_plugin_monitoring_hosts`
+         // ".$leftjoin."
+         // ".$where."
+         // ".$ORDERQUERY;
+      $query = "SELECT 
+               `glpi_computers`.*
+               , `glpi_computers`.`id` AS idComputer
+               , `glpi_plugin_monitoring_hosts`.*
+               , filterQuery.`id` AS id_monitoring
+               FROM `glpi_computers` 
+               LEFT JOIN `glpi_plugin_monitoring_hosts` ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`
+               INNER JOIN (SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts` GROUP BY `items_id`) filterQuery ON `glpi_computers`.`id` = filterQuery.`items_id` 
+               WHERE `glpi_computers`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].") 
+               ORDER BY `name`";
+      // Toolbox::logInFile("monitoring", "Query monitored hosts : $query\n");
       $result = $DB->query($query);
       
       if (! isset($_GET["start"])) {
@@ -712,8 +723,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
       if (isset($host_command_name)) {
          $this->showHeaderItem(__('Host action'), 3, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
       }
-      $this->showHeaderItem(__('Status'), 3, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
-      $this->showHeaderItem(__('Address'), 3, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
+      $this->showHeaderItem(__('Host status'), 3, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
+      $this->showHeaderItem(__('Host services status'), 3, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
+      $this->showHeaderItem(__('IP address'), 3, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
       $this->showHeaderItem(__('Last check', 'monitoring'), 4, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
       // $this->showHeaderItem(__('Result details'), 5, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
       // echo Search::showHeaderItem(0, __('Result details', 'monitoring'), $num);
@@ -728,6 +740,21 @@ class PluginMonitoringDisplay extends CommonDBTM {
          if (isset($host_command_name)) {
             $data['host_command_name'] = $host_command_name;
             $data['host_command_command'] = $host_command_command;
+         }
+         
+         $data['host_services_status'] = 'OK / Ack';
+         // Get all host services except if state is ok or is already acknowledged ...
+         $query2 = "SELECT 
+                  `glpi_plugin_monitoring_services`.*
+                  FROM `glpi_plugin_monitoring_services` 
+                  WHERE `glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` IN (SELECT id FROM `glpi_plugin_monitoring_componentscatalogs_hosts` WHERE `glpi_plugin_monitoring_componentscatalogs_hosts`.items_id ='".$data['idComputer']."') 
+                  AND `glpi_plugin_monitoring_services`.`state` != 'OK'
+                  AND `glpi_plugin_monitoring_services`.`is_acknowledged` = '0'";
+         // Toolbox::logInFile("monitoring", "Query services for host : ".$data['idComputer']."\n");
+         $result2 = $DB->query($query2);
+         while ($data2=$DB->fetch_array($result2)) {
+            // Toolbox::logInFile("monitoring", "Service ".$data2['name']." is ".$data2['state'].", state : ".$data2['event']."\n");
+            $data['host_services_status'] = 'KO';
          }
          
           // Get host first IP address
@@ -981,7 +1008,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
    
    
-   static function displayHostLine($data, $displayhost=1) {
+   static function displayHostLine($data) {
       global $DB,$CFG_GLPI;
 
       // $pMonitoringService = new PluginMonitoringService();
@@ -1057,14 +1084,35 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<td>";
          echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?host=".$data['name']."&id=".$data['idComputer']."'>"
                   ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_checked.png'"
-                 ." alt='".__('Define an acknowledge', 'monitoring')."'"
-                 ." title='".__('Define an acknowledge', 'monitoring')."'/>"
+                 ." alt='".__('Add an acknowledge for the host', 'monitoring')."'"
+                 ." title='".__('Add an acknowledge for the host', 'monitoring')."'/>"
               ."</a>";
          echo "</td>";
          echo "</tr>";
          echo "</table>";
       } else {
          echo $data['state'];
+      }
+      echo "</td>";
+
+      echo "<td class='center'>";
+      if ($data['host_services_status'] != 'OK / Ack') {
+         echo "<table>";
+         echo "<tr>";
+         echo "<td>";
+         echo $data['host_services_status'];
+         echo "</td>";
+         echo "<td>";
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?host=".$data['name']."&allServices&id=".$data['idComputer']."'>"
+                  ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_checked.png'"
+                 ." alt='".__('Add an acknowledge for all faulty services of the host', 'monitoring')."'"
+                 ." title='".__('Add an acknowledge for all faulty services of the host', 'monitoring')."'/>"
+              ."</a>";
+         echo "</td>";
+         echo "</tr>";
+         echo "</table>";
+      } else {
+         echo $data['host_services_status'];
       }
       echo "</td>";
 

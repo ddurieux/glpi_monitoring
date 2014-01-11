@@ -1656,11 +1656,24 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'execution_time', 
                                  'execution_time', 
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+                                 
       $migration->migrationOneTable($newTable);
          // Fred
          $migration->addField($newTable, 
                                  'entities_id', 
                                  "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'is_acknowledged', 
+                              "tinyint(1) NOT NULL DEFAULT '0'");         
+         $migration->addField($newTable,
+                              'is_acknowledgeconfirmed', 
+                              "tinyint(1) NOT NULL DEFAULT '0'");   
+         $migration->addField($newTable, 
+                              'acknowledge_comment', 
+                              "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->addField($newTable, 
+                              'acknowledge_users_id', 
+                              "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                               'items_id', 
                               "int(11) NOT NULL DEFAULT '0'");
