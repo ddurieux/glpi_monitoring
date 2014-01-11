@@ -733,7 +733,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       // $this->showHeaderItem(__('Output', 'monitoring'), 6, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
       $this->showHeaderItem(__('Performance data', 'monitoring'), 7, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
       // echo Search::showHeaderItem(0, __('Check period', 'monitoring'), $num);
-      // echo '<th>'.__('Acknowledge', 'monitoring').'</th>';
+      echo '<th>'.__('Acknowledge', 'monitoring').'</th>';
       echo "</tr>";
       
       while ($data=$DB->fetch_array($result)) {
@@ -1013,7 +1013,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
       // $pMonitoringService = new PluginMonitoringService();
       $networkPort = new NetworkPort();
-      $pMonitoringComponent = new PluginMonitoringComponent();
+      // $pMonitoringComponent = new PluginMonitoringComponent();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
       $entity = new Entity();
       
@@ -1022,7 +1022,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "<td width='32' class='center'>";
       $shortstate = self::getState($data['state'], 
                                    $data['state_type'], 
-                                   $data['event']);
+                                   $data['event'], 
+                                   $data['is_acknowledged']);
       $alt = __('Ok', 'monitoring');
       if ($shortstate == 'orange') {
          $alt = __('Warning (data)', 'monitoring');
@@ -1134,6 +1135,25 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
       echo "<td>";
       echo $data['perf_data'];
+      echo "</td>";
+
+      echo "<td>";
+      if ($shortstate == 'redblue'
+              || $shortstate == 'orangeblue'
+              || $shortstate == 'yellowblue') {
+         echo "<i>"._n('User', 'Users', 1)." : </i>";
+         $user = new User();
+         $user->getFromDB($data['acknowledge_users_id']);
+         echo $user->getName(1);
+         echo "<br/>";
+         echo"<i>". __('Comments')." : </i>";
+         if ($data['acknowledge_users_id'] == $_SESSION['glpiID']) {
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?form=".$data['id']."'>";
+            echo $data['acknowledge_comment']."</a>";
+         } else {
+            echo $data['acknowledge_comment'];
+         }
+      }
       echo "</td>";
    }
 
