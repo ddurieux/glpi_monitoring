@@ -2485,6 +2485,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               'restartshinken', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
+                              'acknowledge', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
                               'host_command', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
                               

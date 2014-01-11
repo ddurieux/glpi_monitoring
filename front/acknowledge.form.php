@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("check","w");
+PluginMonitoringProfile::checkRight("acknowledge","r");
 
 Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins", 
              "monitoring", "acknowledge");

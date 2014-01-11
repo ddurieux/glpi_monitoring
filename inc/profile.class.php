@@ -99,6 +99,7 @@ class PluginMonitoringProfile extends CommonDBTM {
          $input['dashboard_all_ressources'] = 'r';
 
          $input['restartshinken'] = 'r';
+         $input['acknowledge'] = 'r';
          $input['host_command'] = 'r';
          $pmProfile = new self();
          $pmProfile->add($input);
@@ -233,6 +234,15 @@ class PluginMonitoringProfile extends CommonDBTM {
       echo "</td>";
       echo "<td>";
       Profile::dropdownNoneReadWrite("host_command", $this->fields["host_command"], 1, 1, 0);
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo __('Acknowledge problems', 'monitoring')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      Profile::dropdownNoneReadWrite("acknowledge", $this->fields["acknowledge"], 1, 1, 0);
       echo "</td>";
       echo "</tr>";
       
