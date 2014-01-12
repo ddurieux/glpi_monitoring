@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("command","w");
+PluginMonitoringProfile::checkRight("restartshinken","r");
 
 $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
 $pmShinkenwebservice->sendRestartArbiter(1);

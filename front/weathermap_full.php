@@ -44,7 +44,7 @@ include ("../../../inc/includes.php");
 
 Html::popHeader("weathermap");
 
-PluginMonitoringProfile::checkRight("weathermap","r");
+PluginMonitoringProfile::checkRight("config_weathermap","r");
 
 if (!isset($_GET['id'])) {
    exit;

@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("componentscatalog", 'w');
+PluginMonitoringProfile::checkRight("config_components_catalogs", 'r');
 
 Html::simpleHeader(__('Monitoring', 'monitoring'));
 
