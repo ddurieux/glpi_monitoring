@@ -742,7 +742,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
             $data['host_command_command'] = $host_command_command;
          }
          
-         $data['host_services_status'] = 'OK / Ack';
+         $data['host_services_status'] = '';
          // Get all host services except if state is ok or is already acknowledged ...
          $query2 = "SELECT 
                   `glpi_plugin_monitoring_services`.*
@@ -754,7 +754,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          $result2 = $DB->query($query2);
          while ($data2=$DB->fetch_array($result2)) {
             // Toolbox::logInFile("monitoring", "Service ".$data2['name']." is ".$data2['state'].", state : ".$data2['event']."\n");
-            $data['host_services_status'] = 'KO';
+            $data['host_services_status'] .= "Service ".$data2['name']." is ".$data2['state'].", event : ".$data2['event'];
          }
          
           // Get host first IP address
@@ -924,13 +924,15 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<td>";
          echo $data['state'];
          echo "</td>";
-         echo "<td>";
-         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?id=".$data['id']."'>"
-                  ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_checked.png'"
-                 ." alt='".__('Define an acknowledge', 'monitoring')."'"
-                 ." title='".__('Define an acknowledge', 'monitoring')."'/>"
-              ."</a>";
-         echo "</td>";
+         if (PluginMonitoringProfile::haveRight("acknowledge", 'r')) {
+            echo "<td>";
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?id=".$data['id']."'>"
+                     ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_checked.png'"
+                    ." alt='".__('Define an acknowledge', 'monitoring')."'"
+                    ." title='".__('Define an acknowledge', 'monitoring')."'/>"
+                 ."</a>";
+            echo "</td>";
+         }
          echo "</tr>";
          echo "</table>";
       } else {
@@ -1011,13 +1013,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
    static function displayHostLine($data) {
       global $DB,$CFG_GLPI;
 
-      // $pMonitoringService = new PluginMonitoringService();
       $networkPort = new NetworkPort();
-      // $pMonitoringComponent = new PluginMonitoringComponent();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
       $entity = new Entity();
-      
-      // $pMonitoringService->getFromDB($data['id']);
       
       echo "<td width='32' class='center'>";
       $shortstate = self::getState($data['state'], 
@@ -1042,11 +1040,17 @@ class PluginMonitoringDisplay extends CommonDBTM {
  
 
       echo "<td>";
-      $link = $CFG_GLPI['root_doc'].
-         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-            "&field[0]=20&searchtype[0]=equals&contains[0]=".$data['items_id'].
-            "&itemtype=PluginMonitoringService&start=0'";
-      echo "<a href='".$link."'>".$data['name']."</a>";
+      if (Session::haveRight("computer","r")) {
+         $link = $CFG_GLPI['root_doc'].
+            "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
+               "&field[0]=20&searchtype[0]=equals&contains[0]=".$data['items_id'].
+               "&itemtype=PluginMonitoringService&start=0'";
+         $link = $CFG_GLPI['root_doc'].
+            "/front/computer.form.php?id=".$data['idComputer'];
+         echo "<a href='".$link."'>".$data['name']."</a>";
+      } else {
+         echo "<span>".$data['name']."</span>";
+      }
       echo "</td>";
 
       if (isset($data['host_command_name'])) {
@@ -1082,13 +1086,15 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<td>";
          echo $data['state'];
          echo "</td>";
-         echo "<td>";
-         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?host=".$data['name']."&id=".$data['idComputer']."'>"
-                  ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_checked.png'"
-                 ." alt='".__('Add an acknowledge for the host', 'monitoring')."'"
-                 ." title='".__('Add an acknowledge for the host', 'monitoring')."'/>"
-              ."</a>";
-         echo "</td>";
+         if (PluginMonitoringProfile::haveRight("acknowledge", 'r')) {
+            echo "<td>";
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?host=".$data['name']."&id=".$data['idComputer']."'>"
+                     ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_checked.png'"
+                    ." alt='".__('Add an acknowledge for the host', 'monitoring')."'"
+                    ." title='".__('Add an acknowledge for the host', 'monitoring')."'/>"
+                 ."</a>";
+            echo "</td>";
+         }
          echo "</tr>";
          echo "</table>";
       } else {
@@ -1097,23 +1103,43 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "</td>";
 
       echo "<td class='center'>";
-      if ($data['host_services_status'] != 'OK / Ack') {
+      if (! empty($data['host_services_status'])) {
          echo "<table>";
          echo "<tr>";
          echo "<td>";
-         echo $data['host_services_status'];
+         if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+            $link = $CFG_GLPI['root_doc'].
+               "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
+                  "&field[0]=20&searchtype[0]=equals&contains[0]=".$data['items_id'].
+                  "&itemtype=PluginMonitoringService&start=0'";
+               
+            echo '<a href="'.$link.'" title="'.$data['host_services_status'].'">'.__('Ko', 'monitoring')."</a>";
+         } else {
+            echo '<span title="'.$data['host_services_status'].'">'.__('Ko', 'monitoring')."</span>";
+         }
          echo "</td>";
-         echo "<td>";
-         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?host=".$data['name']."&allServices&id=".$data['idComputer']."'>"
-                  ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_checked.png'"
-                 ." alt='".__('Add an acknowledge for all faulty services of the host', 'monitoring')."'"
-                 ." title='".__('Add an acknowledge for all faulty services of the host', 'monitoring')."'/>"
-              ."</a>";
-         echo "</td>";
+         if (PluginMonitoringProfile::haveRight("acknowledge", 'r')) {
+            echo "<td>";
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?host=".$data['name']."&allServices&id=".$data['idComputer']."'>"
+                     ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_checked.png'"
+                    ." alt='".__('Add an acknowledge for all faulty services of the host', 'monitoring')."'"
+                    ." title='".__('Add an acknowledge for all faulty services of the host', 'monitoring')."'/>"
+                 ."</a>";
+            echo "</td>";
+         }
          echo "</tr>";
          echo "</table>";
       } else {
-         echo $data['host_services_status'];
+         if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+            $link = $CFG_GLPI['root_doc'].
+               "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
+                  "&field[0]=20&searchtype[0]=equals&contains[0]=".$data['items_id'].
+                  "&itemtype=PluginMonitoringService&start=0'";
+               
+            echo '<a href="'.$link.'" title="'.$data['host_services_status'].'">'.__('Ok or Ack', 'monitoring')."</a>";
+         } else {
+            echo '<span>'.__('Ok or Ack', 'monitoring')."</span>";
+         }
       }
       echo "</td>";
 
@@ -1147,8 +1173,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo $user->getName(1);
          echo "<br/>";
          echo"<i>". __('Comments')." : </i>";
-         if ($data['acknowledge_users_id'] == $_SESSION['glpiID']) {
-            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?form=".$data['id']."'>";
+         if (PluginMonitoringProfile::haveRight("acknowledge", 'r') && $data['acknowledge_users_id'] == $_SESSION['glpiID']) {
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?host=".$data['name']."&form=".$data['idComputer']."' title='".__('Modify acknowledge comment for the host', 'monitoring')."'>";
             echo $data['acknowledge_comment']."</a>";
          } else {
             echo $data['acknowledge_comment'];

@@ -949,7 +949,7 @@ class PluginMonitoringService extends CommonDBTM {
    
    
    /**
-    * Form to add acknowledge on a critical service
+    * Form to add acknowledge on a service/host
     */
    function addAcknowledge($id, $hostname='', $allServices=false) {
       global $CFG_GLPI,$DB;
@@ -959,6 +959,9 @@ class PluginMonitoringService extends CommonDBTM {
          echo "<form name='form' method='post' 
             action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php'>";
       
+         echo "<input type='hidden' name='host_id' value='$id' />";
+         echo "<input type='hidden' name='hostname' value='$hostname' />";
+
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'>";
          echo "<th colspan='3'>";
@@ -1000,12 +1003,8 @@ class PluginMonitoringService extends CommonDBTM {
                echo "<input type='hidden' name='serviceCount' value='$i' />";
                echo "<tr><td colspan='3'><hr/></td></tr>";
             }
-            echo "<input type='hidden' name='host_id' value='$id' />";
-            echo "<input type='hidden' name='hostname' value='$hostname' />";
          } else {
             echo "<input type='hidden' name='hostAcknowledge' value='$hostname' />";
-            echo "<input type='hidden' name='host_id' value='$id' />";
-            echo "<input type='hidden' name='hostname' value='$hostname' />";
          }
 
          echo "<tr class='tab_bg_1'>";
@@ -1022,9 +1021,7 @@ class PluginMonitoringService extends CommonDBTM {
          echo "<input type='hidden' name='id' value='".$id."' />";
          echo "<input type='hidden' name='is_acknowledged' value='1' />";
          echo "<input type='hidden' name='acknowledge_users_id' value='".$_SESSION['glpiID']."' />";
-
          echo "<input type='hidden' name='referer' value='".$_SERVER['HTTP_REFERER']."' />";
-         
          
          echo "<input type='submit' name='add' value=\"".__('Add')."\" class='submit'>";            
          echo "</td>";
@@ -1062,9 +1059,7 @@ class PluginMonitoringService extends CommonDBTM {
          echo "<input type='hidden' name='id' value='".$id."' />";
          echo "<input type='hidden' name='is_acknowledged' value='1' />";
          echo "<input type='hidden' name='acknowledge_users_id' value='".$_SESSION['glpiID']."' />";
-
          echo "<input type='hidden' name='referer' value='".$_SERVER['HTTP_REFERER']."' />";
-         
          
          echo "<input type='submit' name='add' value=\"".__('Add')."\" class='submit'>";            
          echo "</td>";
@@ -1078,10 +1073,65 @@ class PluginMonitoringService extends CommonDBTM {
    
    
    /**
-    * Form to modify acknowledge on a service
+    * Form to modify acknowledge on a service/host
     */
-   function formAcknowledge($id) {
+   function formAcknowledge($id, $hostname='') {
       global $CFG_GLPI;
+      
+      // Modify acknowledge of an host ... note that $id is Glpi computer Id
+      if (! empty($hostname)) {
+         /*
+         Ce serait plus cohérent de faire une méthode dans la classe PluginMonitoringHost ... mais pour l'instant, on dira que ça le fait :-)
+         */
+         $pmHost = new PluginMonitoringHost();
+         $pmHost->getFromDBByQuery("WHERE `items_id` = '$id'");
+
+         echo "<form name='form' method='post' 
+            action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php'>";
+      
+         echo "<input type='hidden' name='host_id' value='$id' />";
+         echo "<input type='hidden' name='hostname' value='$hostname' />";
+         echo "<input type='hidden' name='hostAcknowledge' value='$hostname' />";
+         
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<th colspan='2'>";
+         echo __('Add an acknowledge for the host', 'monitoring').' '.$hostname;
+         echo "</td>";
+         echo "</tr>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>";
+         echo _n('User', 'Users', 1)." :";
+         echo "</td>";
+         echo "<td>";
+         $user = new User();
+         $user->getFromDB($pmHost->fields['acknowledge_users_id']);    
+         echo $user->getName(1);
+         echo "</td>";
+         echo "</tr>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>";
+         echo __('Comments');
+         echo "</td>";
+         echo "<td>";
+         echo "<textarea cols='80' rows='4' name='acknowledge_comment' >".$pmHost->fields['acknowledge_comment']."</textarea>";
+         echo "</td>";
+         echo "</tr>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='2' align='center'>";
+         echo "<input type='hidden' name='id' value='".$id."' />";
+         echo "<input type='hidden' name='is_acknowledged' value='1' />";
+         echo "<input type='hidden' name='acknowledge_users_id' value='".$_SESSION['glpiID']."' />";
+         echo "<input type='hidden' name='referer' value='".$_SERVER['HTTP_REFERER']."' />";
+
+         echo "<input type='submit' name='update' value=\"".__('Update')."\" class='submit'>";            
+         echo "</td>";
+         echo "</tr>";
+         echo "</table>";
+         Html::closeForm();
+      }
+      
+      // Modify acknowledge of a service ...
       if ($this->getFromDB($id)) {
          echo "<form name='form' method='post' 
             action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php'>";
@@ -1113,7 +1163,9 @@ class PluginMonitoringService extends CommonDBTM {
          echo "<td colspan='2' align='center'>";
          echo "<input type='hidden' name='id' value='".$id."' />";
          echo "<input type='hidden' name='is_acknowledged' value='1' />";
+         echo "<input type='hidden' name='acknowledge_users_id' value='".$_SESSION['glpiID']."' />";
          echo "<input type='hidden' name='referer' value='".$_SERVER['HTTP_REFERER']."' />";
+
          echo "<input type='submit' name='update' value=\"".__('Update')."\" class='submit'>";            
          echo "</td>";
          echo "</tr>";

@@ -112,8 +112,16 @@ if (isset($_GET['host']) && isset($_GET['id'])) {
    // Acknowledge a service ...
    $pmService->addAcknowledge($_GET['id']);
 }
+
+// Modify acknowledge comment ...
 if (isset($_GET['form'])) {
-   $pmService->formAcknowledge($_GET['form']);
+   if (isset($_GET['host'])) {
+      // ... for an host
+      $pmService->formAcknowledge($_GET['form'], $_GET['host']);
+   } else {
+      // ... for a service
+      $pmService->formAcknowledge($_GET['form']);
+   }
 }
 
 Html::footer();
