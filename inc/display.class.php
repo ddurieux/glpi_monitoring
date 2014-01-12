@@ -2001,16 +2001,6 @@ Ext.onReady(function(){
    function displayHostsCounters($display=1) {
       global $DB,$CFG_GLPI;
       
-      $ok = 0;
-      $warningdata = 0;
-      $warningconnection = 0;
-      $critical = 0;
-      $ok_soft = 0;
-      $warningdata_soft = 0;
-      $warningconnection_soft = 0;
-      $critical_soft = 0;
-      $acknowledge = 0;
-      
       $play_sound = 0;
       
       $a_devicetypes = array('Computer', 'Printer', 'NetworkEquipment');
@@ -2023,60 +2013,74 @@ Ext.onReady(function(){
       $unknown_soft = 0;
       $down = 0;
       $down_soft = 0;
+      $acknowledge = 0;
       
       foreach ($a_devicetypes as $itemtype) {
          
-         $up += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='UP'"
-                 . " AND `state_type`='HARD'");
+         $up += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='UP'
+                     AND `state_type`='HARD'
+                     AND `is_acknowledged`='0'");
 
-         $up_soft += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='UP'"
-                 . " AND `state_type`='SOFT'");
+         $up_soft += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='UP'
+                     AND `state_type`='SOFT'
+                     AND `is_acknowledged`='0'");
 
-         $unreachable += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='UNREACHABLE'"
-                 . " AND `state_type`='HARD'");
+         $unreachable += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='UNREACHABLE'
+                     AND `state_type`='HARD'
+                     AND `is_acknowledged`='0'");
 
-         $unreachable_soft += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='UNREACHABLE'"
-                 . " AND `state_type`='SOFT'");
+         $unreachable_soft += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='UNREACHABLE'
+                     AND `state_type`='SOFT'
+                     AND `is_acknowledged`='0'");
 
-         $unknown += $this->countQuery($itemtype, "(`glpi_plugin_monitoring_hosts`.`state`='UNKNOWN'"
-                 . " OR `glpi_plugin_monitoring_hosts`.`state` IS NULL) "
-                 . " AND `state_type`='HARD'");
+         $unknown += $this->countQuery($itemtype, "(`glpi_plugin_monitoring_hosts`.`state`='UNKNOWN' AND `state_type`='HARD') 
+                     OR (`glpi_plugin_monitoring_hosts`.`state` IS NULL) 
+                     AND `is_acknowledged`='0'");
 
-         $unknown_soft += $this->countQuery($itemtype, "(`glpi_plugin_monitoring_hosts`.`state`='UNKNOWN'"
-                 . " OR `glpi_plugin_monitoring_hosts`.`state` IS NULL) "
-                 . " AND `state_type`='SOFT'");
+         $unknown_soft += $this->countQuery($itemtype, "(`glpi_plugin_monitoring_hosts`.`state`='UNKNOWN' AND `state_type`='SOFT') 
+                     AND `is_acknowledged`='0'");
 
-         $down += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='DOWN'"
-                 . " AND `state_type`='HARD'");
+         $down += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='DOWN'
+                     AND `state_type`='HARD'
+                     AND `is_acknowledged`='0'");
 
-         $down_soft += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='DOWN'"
-                 . " AND `state_type`='SOFT'");
+         $down_soft += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='DOWN' 
+                     AND `state_type`='SOFT' 
+                     AND `is_acknowledged`='0'");
 
+         $acknowledge += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state_type`='HARD'
+                    AND `is_acknowledged`='1'");
+         
       }
       
 
       // ** Manage play sound if down increased since last refresh
-         if (isset($_SESSION['plugin_monitoring_dashboard_hosts_down'])) {
-            if ($down > $_SESSION['plugin_monitoring_dashboard_hosts_down']) {
-               $play_sound = 1;
-            }            
-         }
-         $_SESSION['plugin_monitoring_dashboard_hosts_down'] = $down;
+      if (isset($_SESSION['plugin_monitoring_dashboard_hosts_down'])) {
+         if ($down > $_SESSION['plugin_monitoring_dashboard_hosts_down']) {
+            $play_sound = 1;
+         }            
+      }
+      $_SESSION['plugin_monitoring_dashboard_hosts_down'] = $down;
       
       // ** Manage play sound if unreachable increased since last refresh
-         if (isset($_SESSION['plugin_monitoring_dashboard_hosts_unreachable'])) {
-            if ($unreachable > $_SESSION['plugin_monitoring_dashboard_hosts_unreachable']) {
-               $play_sound = 1;
-            }            
-         }
-         $_SESSION['plugin_monitoring_dashboard_hosts_unreachable'] = $unreachable;
+      if (isset($_SESSION['plugin_monitoring_dashboard_hosts_unreachable'])) {
+         if ($unreachable > $_SESSION['plugin_monitoring_dashboard_hosts_unreachable']) {
+            $play_sound = 1;
+         }            
+      }
+      $_SESSION['plugin_monitoring_dashboard_hosts_unreachable'] = $unreachable;
       
       if ($display == '0') {
          $a_return = array();
          $a_return['up'] = strval($up);
+         $a_return['up_soft'] = strval($up_soft);
          $a_return['unreachable'] = strval($unreachable);
+         $a_return['unreachable_soft'] = strval($unreachable_soft);
          $a_return['unknown'] = strval($unknown);
+         $a_return['unknown_soft'] = strval($unknown_soft);
          $a_return['down'] = strval($down);
+         $a_return['down_soft'] = strval($down_soft);
+         $a_return['acknowledge'] = strval($acknowledge);
          return $a_return;
       }
 
@@ -2152,6 +2156,28 @@ Ext.onReady(function(){
          echo "<p style='font-size: 11px; text-align: center;'> Soft : ".$up_soft."</p>";
          echo "</td></tr>";
          echo "</table>";
+      echo "</td>";
+
+      echo "<td width='120'>";
+         $background = '';
+         if ($acknowledge > 0) {
+            $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_acknowledge.png"';
+         }
+         echo "<table class='tab_cadre' width='100%' height='130' ".$background." >";
+         echo "<tr>";
+         echo "<th style='background-color:transparent;'>";
+         echo __('Acknowledge', 'monitoring');
+         echo "</th>";
+         echo "</tr>";
+         echo "<tr>";
+         echo "<th style='background-color:transparent;'>";
+         echo "<font style='font-size: 52px;'>".$acknowledge."</font>";
+         echo "</th>";
+         echo "</tr>";
+         echo "<tr><td>";
+         echo "<p style='font-size: 11px; text-align: center;'>&nbsp;</p>";
+         echo "</td></tr>";
+         echo "</table>";   
       echo "</td>";
 
       echo "</tr>";
