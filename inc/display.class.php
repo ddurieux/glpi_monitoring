@@ -515,7 +515,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       
       $query = "SELECT `".getTableForItemType("PluginMonitoringService")."`.*,
             `glpi_computers`.`name` AS hostname, 
-            `glpi_plugin_monitoring_hosts`.`state`,
+            `glpi_plugin_monitoring_hosts`.`state` AS host_state, `glpi_plugin_monitoring_hosts`.`is_acknowledged` AS host_acknowledged, 
             `glpi_plugin_monitoring_components`.`name` as component_name, 
             `glpi_entities`.`completename`
          FROM `".getTableForItemType("PluginMonitoringService")."`
@@ -819,10 +819,17 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $pMonitoringService->getFromDB($data['id']);
       
       echo "<td width='32' class='center'>";
-      $shortstate = self::getState($data['state'], 
-                                   $data['state_type'], 
-                                   $data['event'], 
-                                   $data['is_acknowledged']);
+      
+      // If host is acknowledged, force service to be displayed as unknown acknowledged.
+      if ($data['host_acknowledged']) {
+         $shortstate = 'yellowblue';
+         $data['state'] = 'UNKNOWN';
+      } else {
+         $shortstate = self::getState($data['state'], 
+                                      $data['state_type'], 
+                                      $data['event'], 
+                                      $data['is_acknowledged']);
+      }
       $alt = __('Ok', 'monitoring');
       if ($shortstate == 'orange') {
          $alt = __('Warning (data)', 'monitoring');
@@ -973,10 +980,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
 //      unset($itemmat);
 
       echo "<td class='center'>";
+      echo "<div class='page foldtl resource".$data['state']."'>";
 
       if ($shortstate == 'red'
               || $shortstate == 'yellow'
               || $shortstate == 'orange') {
+/*
          echo "<table>";
          echo "<tr>";
          echo "<td>";
@@ -993,9 +1002,28 @@ class PluginMonitoringDisplay extends CommonDBTM {
          }
          echo "</tr>";
          echo "</table>";
-      } else {
+*/
+         echo "<div style='vertical-align:middle;'>";
+         echo "<span>";
          echo $data['state'];
+         echo "</span>";
+         if (PluginMonitoringProfile::haveRight("acknowledge", 'r')) {
+            echo "<span>&nbsp;";
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?id=".$data['id']."'>"
+                     ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_checked.png'"
+                    ." alt='".__('Define an acknowledge', 'monitoring')."'"
+                    ." title='".__('Define an acknowledge', 'monitoring')."'/>"
+                 ."</a>";
+            echo "</span>";
+         }
+         echo "</div>";
+      } else {
+         echo "<div>";
+         echo $data['state'];
+         echo "</div>";
       }
+      
+      echo "</div>";
       echo "</td>";
 
       echo "<td>";

@@ -409,7 +409,7 @@ td .vertical {
 }
 
 .serviceSOFT{
-	/* Background en d�grad� blanc transparent */
+	/* Background en dégradé blanc transparent */
    /*
 	background-image: -webkit-linear-gradient(right top, rgba(255,255,255,.6) 0%, rgba(255,255,255,0) 100%);
 	background-image:    -moz-linear-gradient(right top, rgba(255,255,255,.6) 0%, rgba(255,255,255,0) 100%);
@@ -419,6 +419,64 @@ td .vertical {
    */
    background-image:radial-gradient(rgba(255,255,255,.7), rgba(255,255,255,0) 100%);
 }
+
+
+.page {
+  background: #fff;
+  width: 150px;
+  height: 40px;
+   
+ /* Optional Gradient */
+  background: -moz-linear-gradient(top,  #ffffff 0%, #e5e5e5 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #ffffff 0%,#e5e5e5 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #ffffff 0%,#e5e5e5 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #ffffff 0%,#e5e5e5 100%); /* IE10+ */
+  background: linear-gradient(top,  #ffffff 0%,#e5e5e5 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
+}
+
+.foldtl {
+  position: relative;
+
+/*
+  -webkit-box-shadow: 5px 5px 5px rgba(0,0,0,0.8);
+  -moz-box-shadow: 5px 5px 5px rgba(0,0,0,0.8);
+  box-shadow: 5px 5px 5px rgba(0,0,0,0.8);
+*/
+}
+ 
+.foldtl:before {
+  content: "";
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 0px;
+  height: 0px;
+
+  border-bottom: 15px solid #eee;
+  border-left: 15px solid #E7E7E2;
+  -webkit-box-shadow: 4px 4px 4px rgba(0,0,0,0.3);
+  -moz-box-shadow: 4px 4px 4px rgba(0,0,0,0.3);
+  box-shadow: 4px 4px 4px rgba(0,0,0,0.3);
+}
+
+.resourceOK:before {
+	border-bottom: 15px solid rgb(76,180,73);
+}
+.resourceWARNING:before {
+	border-bottom: 15px solid rgb(212,161,94);
+}
+.resourceCRITICAL:before {
+	border-bottom: 15px solid rgb(159,48,48);
+}
+.resourceUNKNOWN:before {
+	border-bottom: 15px solid yellow;
+}
+.resourceACKNOWLEDGE:before {
+	border-bottom: 15px solid rgb(18,158,255);
+}
+
 
 span.tagBox-container {
   display: inline-block;
