@@ -461,36 +461,39 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $leftjoin .= " LEFT JOIN `glpi_entities`
          ON `".getTableForItemType("PluginMonitoringService")."`.`entities_id` = 
                `glpi_entities`.`id`";
+      $leftjoin .= " 
+         INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts` 
+            ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
+         INNER JOIN `glpi_computers` 
+            ON (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_computers`.`id`)
+         INNER JOIN `glpidb`.`glpi_plugin_monitoring_hosts` 
+            ON (`glpi_computers`.`id` = `glpi_plugin_monitoring_hosts`.`items_id`)";
+
       if (isset($_GET['field'])) {         
          foreach ($_GET['field'] as $value) {
             if ($value == '20'
                     OR $value == '21'
                     OR $value == '22') {
                $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
-                  ON `plugin_monitoring_componentscatalogs_hosts_id` = 
-                  `glpi_plugin_monitoring_componentscatalogs_hosts`.`id` 
-                  ";
-               $leftjoin .= " LEFT JOIN `glpi_computers`
-                  ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = 
-                        `glpi_computers`.`id`";
+                  ON `plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`";
+               $leftjoin .= " LEFT JOIN `glpi_computers` 
+                  ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_computers`.`id`";
             } else if ($value == '7') {
             } else if ($value == '8') {
                if (!strstr($leftjoin, 'LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`')) {
                   $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
-                  ON `plugin_monitoring_componentscatalogs_hosts_id` = 
-                  `glpi_plugin_monitoring_componentscatalogs_hosts`.`id` ";
+                     ON `plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id` ";
                }
                if (!strstr($leftjoin, 'LEFT JOIN `glpi_plugin_monitoring_componentscatalogs`')) {
                   $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_componentscatalogs`
-                     ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`plugin_monitoring_componentscalalog_id` = 
-                     `glpi_plugin_monitoring_componentscatalogs`.`id` ";
+                     ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`plugin_monitoring_componentscalalog_id` = `glpi_plugin_monitoring_componentscatalogs`.`id` ";
                }
             }
          }
       }
 
       // * ORDER
-      $ORDERQUERY = " ORDER BY `name` ";
+      $ORDERQUERY = " ORDER BY `glpi_plugin_monitoring_services`.`name` ";
       $toview = array(3, 6, 7, 10, 4, 9);
       $toviewComplete = array(
           'ITEM_0' => 'state', 
@@ -511,6 +514,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       
       $query = "SELECT `".getTableForItemType("PluginMonitoringService")."`.*,
+            `glpi_computers`.`name` AS hostname, 
+            `glpi_plugin_monitoring_hosts`.`state`,
             `glpi_plugin_monitoring_components`.`name` as component_name, 
             `glpi_entities`.`completename`
          FROM `".getTableForItemType("PluginMonitoringService")."`
@@ -565,7 +570,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $this->showHeaderItem(__('Status'), 3, $num, $start, $globallinkto, 'service.php', 'PluginMonitoringService');
       $this->showHeaderItem(__('Entity'), 6, $num, $start, $globallinkto, 'service.php', 'PluginMonitoringService');
       echo Search::showHeaderItem(0, __('Show graphics'), $num);
-      echo Search::showHeaderItem(0, __('Item type')." - ".__('Name'), $num);
+      // echo Search::showHeaderItem(0, __('Item type')." : ".__('Name'), $num);
+      echo Search::showHeaderItem(0, __('Name'), $num);
       $this->showHeaderItem(__('Components', 'monitoring'), 7, $num, $start, 
                             $globallinkto, 'service.php', 'PluginMonitoringService');
       $this->showHeaderItem(__('Status'), 10, $num, $start, $globallinkto, 'service.php', 'PluginMonitoringService');
@@ -875,12 +881,62 @@ class PluginMonitoringDisplay extends CommonDBTM {
          if (isset($pmComponentscatalog_Host->fields['itemtype']) 
                  AND $pmComponentscatalog_Host->fields['itemtype'] != '') {
 
+            echo "<td>";
+            
+            $hoverForm = '';
+            
             $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
             $item = new $itemtype();
             $item->getFromDB($pmComponentscatalog_Host->fields['items_id']);
+            $hoverForm .= __('Host type')." : ".$item->getTypeName();
             
-            echo "<td>";
-            echo $item->getTypeName()." : ".$item->getLink();
+            $type = new ComputerType();
+            $type->getFromDB($item->fields["computertypes_id"]);
+            $type = $type->getName();
+            if (! empty($type)) { 
+               if (! empty($hoverForm)) $hoverForm .= "\n";
+               $hoverForm .= __('Type')." : ".$type;
+            }
+
+            $model = new ComputerModel();
+            $model->getFromDB($item->fields["computermodels_id"]);
+            $model = $model->getName();
+            if (! empty($model)) { 
+               if (! empty($hoverForm)) $hoverForm .= "\n";
+               $hoverForm .= __('Model')." : ".$model;
+            }
+
+            $state = new State();
+            $state->getFromDB($item->fields["states_id"]);
+            $state = $state->getName();
+            if (! empty($state)) { 
+               if (! empty($hoverForm)) $hoverForm .= "\n";
+               $hoverForm .= __('State')." : ".$state;
+            }
+
+            if (! empty($item->fields["otherserial"])) { 
+               if (! empty($hoverForm)) $hoverForm .= "\n";
+               $hoverForm .= htmlentities(__('Inventory number'), ENT_QUOTES)." : ".$item->fields["otherserial"];
+            }
+
+            $entity = new Entity();
+            $entity->getFromDB($item->fields["entities_id"]);
+            $entity = $entity->getName();
+            if (! empty($entity)) { 
+               if (! empty($hoverForm)) $hoverForm .= "\n";
+               $hoverForm .= __('Entity')." : ".$entity;
+            }
+
+            $location = new Location();
+            $location->getFromDB($item->fields["entities_id"]);
+            $location = $location->getName();
+            if (! empty($location)) { 
+               if (! empty($hoverForm)) $hoverForm .= "\n";
+               $hoverForm .= __('Location')." : ".$location;
+            }
+
+            echo "<span title='".$hoverForm."'>".$item->getLink()."</span>";
+            // echo $item->getTypeName()." : ".$item->getLink();
             if (!is_null($pMonitoringService->fields['networkports_id'])
                     AND $pMonitoringService->fields['networkports_id'] > 0) {
                $networkPort->getFromDB($pMonitoringService->fields['networkports_id']);
@@ -900,6 +956,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo " [".$networkPort->getLink()."]";
       }
       echo "</td>";
+      
 //      $nameitem = '';
 //      if (isset($itemmat->fields['name'])) {
 //         $nameitem = "[".$itemmat->getLink(1)."]";
@@ -914,6 +971,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
 //         echo "<td>".$pMonitoringService->getLink(1).$nameitem." ".__('on', 'monitoring')." ".$itemmat->getLink(1)."</td>";
 //      }
 //      unset($itemmat);
+
       echo "<td class='center'>";
 
       if ($shortstate == 'red'
