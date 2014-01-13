@@ -530,8 +530,9 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $hosts_ids = array();
       $services_ids = array();
       $hosts_ressources = array();
-      $query = "SELECT `glpi_computers`.`name`, `glpi_computers`.`entities_id`, ".$pmComponentscatalog_Host->getTable().".* FROM `".$pmComponentscatalog_Host->getTable()."`
+      $query = "SELECT `glpi_computers`.`name`, `glpi_computers`.`entities_id`, ".$pmComponentscatalog_Host->getTable().".*, `glpi_plugin_monitoring_hosts`.`is_acknowledged` AS host_acknowledged FROM `".$pmComponentscatalog_Host->getTable()."`
          LEFT JOIN `glpi_computers` ON `glpi_computers`.`id` = `".$pmComponentscatalog_Host->getTable()."`.`items_id`
+         INNER JOIN `glpi_plugin_monitoring_hosts` ON (`glpi_computers`.`id` = `glpi_plugin_monitoring_hosts`.`items_id`)
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."' AND `glpi_computers`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].") 
          ORDER BY name ASC";
       // Toolbox::logInFile("pm", "query hosts - $query\n");
@@ -547,11 +548,21 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          $resultService = $DB->query($queryService);
          while ($dataService=$DB->fetch_array($resultService)) {
             $nb_ressources++;
+            
+            // If host is acknowledged, force service to be displayed as unknown acknowledged.
+            if ($dataComponentscatalog_Host['host_acknowledged'] == '1') {
+               $shortstate = 'yellowblue';
+               $dataService['state'] = 'UNKNOWN';
+               $dataService['state_type'] = 'SOFT';
+            }
+            
+/*
             // Fred: pourquoi ce test ... HARD ou SOFT, quand c'est CRITICAL, c'est CRITICAL !
             if ($dataService['state_type'] != "HARD") {
                $a_gstate[$dataService['id']] = "UNKNOWN";
                // $a_gstate[$dataService['id']] = "OK";
             } else {
+*/
                $statecurrent = PluginMonitoringDisplay::getState($dataService['state'], 
                                                                  $dataService['state_type'],
                                                                  $dataService['event'],
@@ -567,7 +578,9 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                } else if ($statecurrent == 'redblue') {
                   $a_gstate[$dataService['id']] = "ACKNOWLEDGE";
                }
+/*
             }
+*/
             if ($dataService['is_acknowledged'] == 1) {
                $dataService['state'] = 'ACKNOWLEDGE';
             }

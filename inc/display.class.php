@@ -455,29 +455,32 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       
       $leftjoin = '';
-      $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_components`
-         ON `plugin_monitoring_components_id` = 
-         `glpi_plugin_monitoring_components`.`id` ";
-      $leftjoin .= " LEFT JOIN `glpi_entities`
-         ON `".getTableForItemType("PluginMonitoringService")."`.`entities_id` = 
-               `glpi_entities`.`id`";
+      $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_components` ON `plugin_monitoring_components_id` = `glpi_plugin_monitoring_components`.`id` ";
+      $leftjoin .= " LEFT JOIN `glpi_entities` ON `".getTableForItemType("PluginMonitoringService")."`.`entities_id` = `glpi_entities`.`id`";
       $leftjoin .= " 
          INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts` 
             ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
          INNER JOIN `glpi_computers` 
             ON (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_computers`.`id`)
+         INNER JOIN `glpi_plugin_monitoring_componentscatalogs`
+            ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`plugin_monitoring_componentscalalog_id` = `glpi_plugin_monitoring_componentscatalogs`.`id`
          INNER JOIN `glpidb`.`glpi_plugin_monitoring_hosts` 
             ON (`glpi_computers`.`id` = `glpi_plugin_monitoring_hosts`.`items_id`)";
 
-      if (isset($_GET['field'])) {         
+/*
+      if (isset($_GET['field'])) {
          foreach ($_GET['field'] as $value) {
             if ($value == '20'
                     OR $value == '21'
                     OR $value == '22') {
-               $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
-                  ON `plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`";
-               $leftjoin .= " LEFT JOIN `glpi_computers` 
-                  ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_computers`.`id`";
+               if (!strstr($leftjoin, 'LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`')) {
+                  $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
+                     ON `plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`";
+               }
+               if (!strstr($leftjoin, 'LEFT JOIN `glpi_computers`')) {
+                  $leftjoin .= " LEFT JOIN `glpi_computers` 
+                     ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_computers`.`id`";
+               }
             } else if ($value == '7') {
             } else if ($value == '8') {
                if (!strstr($leftjoin, 'LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`')) {
@@ -491,6 +494,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
             }
          }
       }
+*/
 
       // * ORDER
       $ORDERQUERY = " ORDER BY `glpi_plugin_monitoring_services`.`name` ";
@@ -522,7 +526,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          ".$leftjoin."
          ".$where."
          ".$ORDERQUERY;
-      // Toolbox::logInFile("pm", "query services - $query\n");
+      // Toolbox::logInFile("pm", "Query services - $query\n");
       $result = $DB->query($query);
       
       $start = 0;
@@ -665,7 +669,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                INNER JOIN (SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts` GROUP BY `items_id`) filterQuery ON `glpi_computers`.`id` = filterQuery.`items_id` 
                WHERE `glpi_computers`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].") 
                ORDER BY `name`";
-      // Toolbox::logInFile("monitoring", "Query monitored hosts : $query\n");
+      // Toolbox::logInFile("pm", "Query monitored hosts : $query\n");
       $result = $DB->query($query);
       
       if (! isset($_GET["start"])) {
@@ -699,7 +703,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       $query .= " LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
       
-      // Toolbox::logInFile("pm", "query hosts - $query\n");
+      // Toolbox::logInFile("pm", "Query hosts - $query\n");
       $result = $DB->query($query); 
       
       echo '<div id="custom_date" style="display:none"></div>';
@@ -756,10 +760,11 @@ class PluginMonitoringDisplay extends CommonDBTM {
                   WHERE `glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` IN (SELECT id FROM `glpi_plugin_monitoring_componentscatalogs_hosts` WHERE `glpi_plugin_monitoring_componentscatalogs_hosts`.items_id ='".$data['idComputer']."') 
                   AND `glpi_plugin_monitoring_services`.`state` != 'OK'
                   AND `glpi_plugin_monitoring_services`.`is_acknowledged` = '0'";
-         // Toolbox::logInFile("monitoring", "Query services for host : ".$data['idComputer']."\n");
+         // Toolbox::logInFile("pm", "Query services for host : ".$data['idComputer']."\n");
          $result2 = $DB->query($query2);
          while ($data2=$DB->fetch_array($result2)) {
-            // Toolbox::logInFile("monitoring", "Service ".$data2['name']." is ".$data2['state'].", state : ".$data2['event']."\n");
+            // Toolbox::logInFile("pm", "Service ".$data2['name']." is ".$data2['state'].", state : ".$data2['event']."\n");
+            if (! empty($data['host_services_status'])) $data['host_services_status'] .= "\n";
             $data['host_services_status'] .= "Service ".$data2['name']." is ".$data2['state'].", event : ".$data2['event'];
          }
          
@@ -821,7 +826,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "<td width='32' class='center'>";
       
       // If host is acknowledged, force service to be displayed as unknown acknowledged.
-      if ($data['host_acknowledged']) {
+      if (isset($data['host_acknowledged']) && $data['host_acknowledged']) {
          $shortstate = 'yellowblue';
          $data['state'] = 'UNKNOWN';
       } else {
@@ -840,7 +845,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       } else if ($shortstate == 'redblue'
               || $shortstate == 'orangeblue'
               || $shortstate == 'yellowblue') {
-         $alt = __('Critical / Acknowledge', 'monitoring');
+         $alt = __('Acknowledged', 'monitoring');
       }
       echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'
          title='".$alt."' alt='".$alt."' />";
@@ -1701,6 +1706,7 @@ Ext.onReady(function(){
                   AND `state_type`='HARD'
                   AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
                   AND `is_acknowledged`='0'";
+//            Toolbox::logInFile("pm", "Query critical - $query\n");
             $result = $DB->query($query);
             $data2 = $DB->fetch_assoc($result);
             if ($data2['cpt'] > 0) {
