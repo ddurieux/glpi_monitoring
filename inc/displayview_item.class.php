@@ -319,7 +319,7 @@ Ext.onReady(function(){
                Ext.get('filariane').load({
                    url: '".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateFilariane.php',
                    scripts: true,
-                      params:'updatefil=' + Ext.get('updatefil').getValue() + '&id=".$_GET['id'].
+                      params:'updatefil=' + Ext.get('updatefil').getValue() + '&id=".$id.
                  "&currentview=' + Ext.get('updateviewid').getValue()
                });
             }
