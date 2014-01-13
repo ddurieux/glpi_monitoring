@@ -76,9 +76,9 @@ class PluginMonitoringService extends CommonDBTM {
       
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'state';
-      $tab[3]['name']            = __('Status', 'monitoring');
-      $tab[3]['datatype']        = 'string';
-      //$tab[3]['searchtype'] = 'equals';
+      $tab[3]['name']            = __('Service state', 'monitoring');
+      // $tab[3]['datatype']        = 'string';
+      // $tab[3]['searchtype'] = 'equals';
       
       $tab[4]['table']           = $this->getTable();
       $tab[4]['field']           = 'last_check';
@@ -111,10 +111,10 @@ class PluginMonitoringService extends CommonDBTM {
       $tab[9]['name']            = "Event";
       $tab[9]['massiveaction']   = false;
 
-      $tab[10]['table']          = $this->getTable();
-      $tab[10]['field']          = 'state';
-      $tab[10]['name']           = "Status";
-      $tab[10]['datatype']       = 'string';
+      // $tab[10]['table']          = $this->getTable();
+      // $tab[10]['field']          = 'state';
+      // $tab[10]['name']           = "Status";
+      // $tab[10]['datatype']       = 'string';
 
       $tab[20]['table']          = 'glpi_computers';
       $tab[20]['field']          = 'name';
