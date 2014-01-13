@@ -60,13 +60,13 @@ class PluginMonitoringEventhandler extends CommonDBTM {
 
 
    static function canCreate() {
-      return PluginMonitoringProfile::haveRight("command", 'w');
+      return PluginMonitoringProfile::haveRight("config", 'w');
    }
 
 
    
    static function canView() {
-      return PluginMonitoringProfile::haveRight("command", 'r');
+      return PluginMonitoringProfile::haveRight("config", 'r');
    }
 
    

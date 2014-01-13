@@ -53,7 +53,7 @@ class PluginMonitoringHost extends CommonDBTM {
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Central' :
-               if (PluginMonitoringProfile::haveRight("viewshomepage", 'r') && PluginMonitoringProfile::haveRight("hosts_status", 'r')) {
+               if (PluginMonitoringProfile::haveRight("homepage", 'r') && PluginMonitoringProfile::haveRight("homepage_hosts_status", 'r')) {
                   return array(1 => "[".__('Monitoring', 'monitoring')."] ".__('Hosts status', 'monitoring'));
                } else {
                   return '';

@@ -60,13 +60,13 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
 
 
    static function canCreate() {
-      return PluginMonitoringProfile::haveRight("view", 'w');
+      return PluginMonitoringProfile::haveRight("config_views", 'w');
    }
 
 
    
    static function canView() {
-      return PluginMonitoringProfile::haveRight("view", 'r');
+      return PluginMonitoringProfile::haveRight("config_views", 'r');
    }
    
    

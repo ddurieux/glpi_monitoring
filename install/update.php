@@ -90,10 +90,15 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermapbg");
    }
    
-   $unavaibility_recalculate = 0;
-   if (!TableExists("glpi_plugin_monitoring_unavaibilities")
-           || !FieldExists("glpi_plugin_monitoring_unavaibilities", "duration")) {
-      $unavaibility_recalculate = 1;
+   $unavailability_recalculate = 0;
+   if (!TableExists("glpi_plugin_monitoring_unavailabilities")
+           || !FieldExists("glpi_plugin_monitoring_unavailabilities", "duration")) {
+      $unavailability_recalculate = 1;
+   }
+   
+   $unavailability_reset = 0;
+   if (!TableExists("glpi_plugin_monitoring_unavailabilities")) {
+      $unavailability_reset = 1;
    }
    
     /*
@@ -1656,11 +1661,24 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'execution_time', 
                                  'execution_time', 
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+                                 
       $migration->migrationOneTable($newTable);
          // Fred
          $migration->addField($newTable, 
                                  'entities_id', 
                                  "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'is_acknowledged', 
+                              "tinyint(1) NOT NULL DEFAULT '0'");         
+         $migration->addField($newTable,
+                              'is_acknowledgeconfirmed', 
+                              "tinyint(1) NOT NULL DEFAULT '0'");   
+         $migration->addField($newTable, 
+                              'acknowledge_comment', 
+                              "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->addField($newTable, 
+                              'acknowledge_users_id', 
+                              "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                               'items_id', 
                               "int(11) NOT NULL DEFAULT '0'");
@@ -2420,92 +2438,99 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'profiles_id', 
                                  'profiles_id', 
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'dashboard', 
-                                 'dashboard', 
-                                 "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'servicescatalog', 
-                                 'servicescatalog', 
-                                 "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'view', 
-                                 'view', 
-                                 "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'componentscatalog', 
-                                 'componentscatalog', 
-                                 "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'viewshomepage', 
-                                 'viewshomepage', 
-                                 "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'weathermap', 
-                                 'weathermap', 
-                                 "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'component', 
-                                 'component', 
-                                 "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'command', 
-                                 'command', 
-                                 "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'config', 
-                                 'config', 
-                                 "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'check', 
-                                 'check', 
-                                 "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+
+         // Remove old fields ...
+         $migration->dropField($newTable, 'dashboard');
+         $migration->dropField($newTable, 'servicescatalog');
+         $migration->dropField($newTable, 'view');
+         $migration->dropField($newTable, 'componentscatalog');
+         $migration->dropField($newTable, 'viewshomepage');
+         $migration->dropField($newTable, 'weathermap');
+         $migration->dropField($newTable, 'component');
+         $migration->dropField($newTable, 'command');
+         // $migration->dropField($newTable, 'config');
+         $migration->dropField($newTable, 'check');
+         $migration->dropField($newTable, 'allressources');
+         $migration->dropField($newTable, 'hosts_status');
+         $migration->dropField($newTable, 'system_status');
+         $migration->dropField($newTable, 'host_command');
+
+                                 
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable, 
                               'profiles_id', 
                               "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'dashboard', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'servicescatalog', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'view', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'componentscatalog', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'viewshomepage', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'weathermap', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'component', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'command', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+                              
          $migration->addField($newTable, 
                               'config', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+         $migration->addField($newTable, 
+                              'config_views', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
-                              'check', 
+                              'config_services_catalogs', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
-                              'allressources', 
+                              'config_components_catalogs', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'config_weathermap', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+
+         $migration->addField($newTable, 
+                              'dashboard', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+         $migration->addField($newTable, 
+                              'dashboard_views', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+         $migration->addField($newTable, 
+                              'dashboard_system_status', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'dashboard_hosts_status', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+         $migration->addField($newTable, 
+                              'dashboard_all_ressources', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+         $migration->addField($newTable, 
+                              'dashboard_services_catalogs', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+         $migration->addField($newTable, 
+                              'dashboard_components_catalogs', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+                              
          $migration->addField($newTable, 
                               'restartshinken', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
-                              'hosts_status', 
+                              'acknowledge', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
-                              'system_status', 
+                              'host_command', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+                              
+         $migration->addField($newTable, 
+                              'homepage', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'homepage_views', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+         $migration->addField($newTable, 
+                              'homepage_system_status', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'homepage_hosts_status', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+         $migration->addField($newTable, 
+                              'homepage_all_ressources', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+         $migration->addField($newTable, 
+                              'homepage_services_catalogs', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+         $migration->addField($newTable, 
+                              'homepage_components_catalogs', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+                              
       $migration->migrationOneTable($newTable);
       
       
@@ -2617,14 +2642,37 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     /*
     * Table glpi_plugin_monitoring_unavaibilities
     */
-      $newTable = "glpi_plugin_monitoring_unavaibilities";
+      $newTable = "glpi_plugin_monitoring_unavailabilities";
       if (!TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
+         
+         $migration->addField($newTable, 
+                              'plugin_monitoring_services_id', 
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'begin_date', 
+                              "datetime DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'end_date', 
+                              "datetime DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'duration', 
+                              "int(15) NOT NULL DEFAULT '0'");
+         // Scheduled unavailability
+         $migration->addField($newTable, 
+                              'scheduled', 
+                              "tinyint(1) NOT NULL DEFAULT '0'");
+         // Unavailability details
+         $migration->addField($newTable, 
+                              'details', 
+                              "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->migrationOneTable($newTable);
       }
+/*
          $migration->changeField($newTable, 
                                  'id', 
                                  'id', 
@@ -2651,20 +2699,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->dropField($newTable, 
                                  'itemtype');
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                              'plugin_monitoring_services_id', 
-                              "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'begin_date', 
-                              "datetime DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'end_date', 
-                              "datetime DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'duration', 
-                              "int(15) NOT NULL DEFAULT '0'");
-      $migration->migrationOneTable($newTable);
-      
+*/      
       
       
     /*
@@ -2951,8 +2986,8 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       CronTask::Register('PluginMonitoringLog', 'cleanlogs', '96400', 
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
    }
-   if (!$crontask->getFromDBbyName('PluginMonitoringUnavaibility', 'unavaibility')) {
-      CronTask::Register('PluginMonitoringUnavaibility', 'unavaibility', '300', 
+   if (!$crontask->getFromDBbyName('PluginMonitoringUnavailability', 'unavailability')) {
+      CronTask::Register('PluginMonitoringUnavailability', 'Update unavailability periods', '300', 
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
    }
    if (!$crontask->getFromDBbyName('PluginMonitoringDisplayview_rule', 'replayallviewrules')) {
@@ -2997,19 +3032,34 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    $pmConfig->initConfig();
    
    
-   // * Recalculate unavaibility
-      if ($unavaibility_recalculate == 1) {
-         $query = "SELECT * FROM `glpi_plugin_monitoring_unavaibilities`
-            WHERE `end_date` IS NOT NULL";
-         $result = $DB->query($query);
-         while ($data=$DB->fetch_array($result)) {
-            $time = strtotime($data['end_date']) - strtotime($data['begin_date']);
-            $queryd = "UPDATE `glpi_plugin_monitoring_unavaibilities`
-               SET `duration`='".$time."'
-               WHERE `id`='".$data['id']."'";
-            $DB->query($queryd);
-         }
+   // * Calculate unavailability
+   $unavailability_reset = 1;
+   if ($unavailability_reset == 1) {
+      // Delete unavailability periods
+      $query = "DELETE FROM `glpi_plugin_monitoring_unavailabilities`";
+      $DB->query($query) or die('Unable to delete table `glpi_plugin_monitoring_unavailabilities`');
+      
+      // Reset service events unavailability
+      $query = "UPDATE `glpi_plugin_monitoring_serviceevents`
+         SET `unavailability`='0'";
+      $DB->query($query) or die('Unable to update table `glpi_plugin_monitoring_serviceevents`');
+      
+      PluginMonitoringUnavailability::runUnavailability();
+   }
+   
+   // * Recalculate unavailability
+   if ($unavailability_recalculate == 1) {
+      $query = "SELECT * FROM `glpi_plugin_monitoring_unavailabilities`
+         WHERE `end_date` IS NOT NULL";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         $time = strtotime($data['end_date']) - strtotime($data['begin_date']);
+         $queryd = "UPDATE `glpi_plugin_monitoring_unavailabilities`
+            SET `duration`='".$time."'
+            WHERE `id`='".$data['id']."'";
+         $DB->query($queryd);
       }
+   }
 
    
    $query = "UPDATE `glpi_plugin_monitoring_configs`

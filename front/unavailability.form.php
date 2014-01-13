@@ -42,15 +42,18 @@
 
 include ("../../../inc/includes.php");
 
-Session::checkCentralAccess();
+PluginMonitoringProfile::checkRight("acknowledge","r");
 
-Html::header(__('Monitoring', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "unavaibility");
+if (isset($_GET['id'])) {
+   $pmUnavailability = new PluginMonitoringUnavailability();
+   $pmUnavailability->getFromDB($_GET['id']);
 
-if (isset($_GET['contains'])) {
-   $pmUnavaibility = new PluginMonitoringUnavaibility();
-   $pmUnavaibility->showList($_GET);
+   $input = array();
+   $input['id'] = $_GET['id'];
+   $input['scheduled'] = $_GET['scheduled'];
+   $pmUnavailability->update($input);
 }
 
-Html::footer();
+Html::redirect($_SERVER['HTTP_REFERER']);
+
 ?>

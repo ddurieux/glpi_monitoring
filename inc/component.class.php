@@ -69,13 +69,13 @@ class PluginMonitoringComponent extends CommonDBTM {
 
 
    static function canCreate() {      
-      return PluginMonitoringProfile::haveRight("component", 'w');
+      return PluginMonitoringProfile::haveRight("config", 'w');
    }
 
 
    
    static function canView() {
-      return PluginMonitoringProfile::haveRight("component", 'r');
+      return PluginMonitoringProfile::haveRight("config", 'r');
    }
 
 
@@ -419,47 +419,49 @@ class PluginMonitoringComponent extends CommonDBTM {
          }
       }
       
-      echo "<tr>";
-      echo "<th colspan='4'>".__('Weathermap', 'monitoring')."&nbsp;</th>";
-      echo "</tr>";
-      
-      echo "<tr>";
-      echo "<td>";
-      echo __('Use this component for Weathermap', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Dropdown::showYesNo("is_weathermap", $this->fields['is_weathermap']);
-      echo "</td>";
-      echo "<td>";
-      $tooltip = __('Example', 'monitoring')." :<br/><br/>";
-      $tooltip .= "perfdata : <i>inUsage=0.00%;85;98 outUsage=0.00%;85;98 inBandwidth=<strong>789944</strong>.00bps outBandwidth=486006.00bps inAbsolut=0 outAbsolut=12665653</i><br/><br/>";
-      $tooltip .= __('Regex bandwidth input', 'monitoring')." : <i><strong>(?:.*)inBandwidth=(\d+)(?:.*)</strong></i><br/><br/>";
-      $tooltip .= __('Assign the value from regular expression')." : <strong>789944</strong>";
-      echo __('Regex bandwidth input', 'monitoring')."&nbsp;";
-      Html::showToolTip($tooltip, array('autoclose'=>false));
-      echo "&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      echo "<input type='text' name='weathermap_regex_in' value='".$this->fields['weathermap_regex_in']."' size='40' />";
-      echo "</td>"; 
-      echo "</tr>";
-      
-      echo "<tr>";
-      echo "<td colspan='2'>";
-      echo "</td>";
-      echo "<td>";
-      $tooltip = __('Example', 'monitoring')." :<br/><br/>";
-      $tooltip .= "perfdata : <i>inUsage=0.00%;85;98 outUsage=0.00%;85;98 inBandwidth=789944.00bps outBandwidth=<strong>486006</strong>.00bps inAbsolut=0 outAbsolut=12665653</i><br/><br/>";
-      $tooltip .= __('Regex bandwidth output', 'monitoring')." : <i><strong>(?:.*)outBandwidth=(\d+)(?:.*)</strong></i><br/><br/>";
-      $tooltip .= __('Assign the value from regular expression')." : <strong>789944</strong>";
-      echo __('Regex bandwidth output', 'monitoring')."&nbsp;";
-      Html::showToolTip($tooltip, array('autoclose'=>false));
-      echo "&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      echo "<input type='text' name='weathermap_regex_out' value='".$this->fields['weathermap_regex_out']."' size='40' />";
-      echo "</td>"; 
-      echo "</tr>";
+      if (PluginMonitoringProfile::haveRight("config_weathermap","r")) {
+         echo "<tr>";
+         echo "<th colspan='4'>".__('Weathermap', 'monitoring')."&nbsp;</th>";
+         echo "</tr>";
+         
+         echo "<tr>";
+         echo "<td>";
+         echo __('Use this component for Weathermap', 'monitoring')."&nbsp;:";
+         echo "</td>";
+         echo "<td>";
+         Dropdown::showYesNo("is_weathermap", $this->fields['is_weathermap']);
+         echo "</td>";
+         echo "<td>";
+         $tooltip = __('Example', 'monitoring')." :<br/><br/>";
+         $tooltip .= "perfdata : <i>inUsage=0.00%;85;98 outUsage=0.00%;85;98 inBandwidth=<strong>789944</strong>.00bps outBandwidth=486006.00bps inAbsolut=0 outAbsolut=12665653</i><br/><br/>";
+         $tooltip .= __('Regex bandwidth input', 'monitoring')." : <i><strong>(?:.*)inBandwidth=(\d+)(?:.*)</strong></i><br/><br/>";
+         $tooltip .= __('Assign the value from regular expression')." : <strong>789944</strong>";
+         echo __('Regex bandwidth input', 'monitoring')."&nbsp;";
+         Html::showToolTip($tooltip, array('autoclose'=>false));
+         echo "&nbsp;:";
+         echo "</td>";
+         echo "<td>";
+         echo "<input type='text' name='weathermap_regex_in' value='".$this->fields['weathermap_regex_in']."' size='40' />";
+         echo "</td>"; 
+         echo "</tr>";
+         
+         echo "<tr>";
+         echo "<td colspan='2'>";
+         echo "</td>";
+         echo "<td>";
+         $tooltip = __('Example', 'monitoring')." :<br/><br/>";
+         $tooltip .= "perfdata : <i>inUsage=0.00%;85;98 outUsage=0.00%;85;98 inBandwidth=789944.00bps outBandwidth=<strong>486006</strong>.00bps inAbsolut=0 outAbsolut=12665653</i><br/><br/>";
+         $tooltip .= __('Regex bandwidth output', 'monitoring')." : <i><strong>(?:.*)outBandwidth=(\d+)(?:.*)</strong></i><br/><br/>";
+         $tooltip .= __('Assign the value from regular expression')." : <strong>789944</strong>";
+         echo __('Regex bandwidth output', 'monitoring')."&nbsp;";
+         Html::showToolTip($tooltip, array('autoclose'=>false));
+         echo "&nbsp;:";
+         echo "</td>";
+         echo "<td>";
+         echo "<input type='text' name='weathermap_regex_out' value='".$this->fields['weathermap_regex_out']."' size='40' />";
+         echo "</td>"; 
+         echo "</tr>";
+      }
       
       $this->showFormButtons($options);
       $this->addDivForTabs();
@@ -471,6 +473,8 @@ class PluginMonitoringComponent extends CommonDBTM {
    
    function copyItem($items_id) {
 
+      if (! PluginMonitoringProfile::haveRight("config","w")) return;
+      
       // Add form for copy item
 
       $this->getFromDB($items_id);

@@ -579,20 +579,28 @@ DROP TABLE IF EXISTS `glpi_plugin_monitoring_profiles`;
 
 CREATE TABLE `glpi_plugin_monitoring_profiles` (
   `profiles_id` int(11) NOT NULL DEFAULT '0',
-  `dashboard` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `servicescatalog` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `view` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `componentscatalog` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `viewshomepage` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `weathermap` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `component` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `command` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `config` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `check` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `allressources` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `config_views` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `config_services_catalogs` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `config_components_catalogs` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `config_weathermap` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `dashboard` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `dashboard_system_status` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `dashboard_hosts_status` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `dashboard_all_ressources` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `dashboard_views` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `dashboard_services_catalogs` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `dashboard_components_catalogs` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `homepage` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `homepage_views` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `homepage_services_catalogs` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `homepage_components_catalogs` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `homepage_system_status` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `homepage_hosts_status` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `homepage_all_ressources` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `acknowledge` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `restartshinken` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `hosts_status` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `system_status` char(1) COLLATE utf8_unicode_ci DEFAULT NULL
+  `host_command` char(1) COLLATE utf8_unicode_ci DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

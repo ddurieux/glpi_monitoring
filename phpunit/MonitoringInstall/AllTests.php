@@ -118,8 +118,8 @@ class MonitoringInstall extends PHPUnit_Framework_TestCase {
        * Verify cron created
        */
       $crontask = new CronTask();
-      $this->assertTrue($crontask->getFromDBbyName('PluginMonitoringUnavaibility', 'unavaibility'),
-              'Cron unavaibility not created');
+      $this->assertTrue($crontask->getFromDBbyName('PluginMonitoringUnavailability', 'unavailability'),
+              'Cron unavailability not created');
       $this->assertTrue($crontask->getFromDBbyName('PluginMonitoringServiceevent', 'updaterrd'),
               'Cron updaterrd not created');
       $this->assertTrue($crontask->getFromDBbyName('PluginMonitoringLog', 'cleanlogs'),

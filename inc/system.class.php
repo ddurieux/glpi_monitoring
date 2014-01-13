@@ -53,7 +53,7 @@ class PluginMonitoringSystem extends CommonDBTM {
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Central' :
-               if (PluginMonitoringProfile::haveRight("viewshomepage", 'r') && PluginMonitoringProfile::haveRight("system_status", 'r')) {
+               if (PluginMonitoringProfile::haveRight("homepage", 'r') && PluginMonitoringProfile::haveRight("homepage_system_status", 'r')) {
                   return array(1 => "[".__('Monitoring', 'monitoring')."] ".__('System status', 'monitoring'));
                } else {
                   return '';

@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("componentscatalog","w");
+PluginMonitoringProfile::checkRight("config_components_catalogs","r");
 
 $_SESSION['glpi_plugin_monitoring'][$_POST['reporttype']][$_POST['componentscatalogs_id']] = $_POST;
 if (isset($_POST['generatepdf'])) {

@@ -60,25 +60,25 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
 
 
    static function canCreate() {
-      return PluginMonitoringProfile::haveRight("view", 'w');
+      return PluginMonitoringProfile::haveRight("config_views", 'w');
    }
 
 
    
    static function canView() {
-      return PluginMonitoringProfile::haveRight("view", 'r');
+      return PluginMonitoringProfile::haveRight("config_views", 'r');
    }
 
 
    
    function canCancel() {
-      return PluginMonitoringProfile::haveRight("view", 'w');
+      return PluginMonitoringProfile::haveRight("config_views", 'w');
    }
 
 
    
    function canUndo() {
-      return PluginMonitoringProfile::haveRight("view", 'w');
+      return PluginMonitoringProfile::haveRight("config_views", 'w');
    }
 
 
@@ -319,7 +319,7 @@ Ext.onReady(function(){
                Ext.get('filariane').load({
                    url: '".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateFilariane.php',
                    scripts: true,
-                      params:'updatefil=' + Ext.get('updatefil').getValue() + '&id=".$_GET['id'].
+                      params:'updatefil=' + Ext.get('updatefil').getValue() + '&id=".$id.
                  "&currentview=' + Ext.get('updateviewid').getValue()
                });
             }
@@ -613,13 +613,13 @@ Ext.onReady(function(){
       echo "<td>";
       $elements = array();
       $elements['NULL'] = Dropdown::EMPTY_VALUE;
-      $elements['PluginMonitoringDisplayview']         = __('Views', 'monitoring');
-      $elements['PluginMonitoringServicescatalog']     = __('Business rules', 'monitoring');
+      $elements['PluginMonitoringDisplayview']        = __('Views', 'monitoring');
+      $elements['PluginMonitoringServicescatalog']    = __('Business rules', 'monitoring');
 //      $elements['service']                             = __('Resources (info)', 'monitoring');
-      $elements['host']                                = __('Host (info)', 'monitoring');
-      $elements['PluginMonitoringService']       = __('Resources (graph)', 'monitoring');
-      $elements['PluginMonitoringComponentscatalog']   = __('Components catalog', 'monitoring');
-      $elements['PluginMonitoringWeathermap']          = __('Weathermap', 'monitoring');
+      $elements['host']                               = __('Host (info)', 'monitoring');
+      $elements['PluginMonitoringService']            = __('Resources (graph)', 'monitoring');
+      $elements['PluginMonitoringComponentscatalog']  = __('Components catalog', 'monitoring');
+      $elements['PluginMonitoringWeathermap']         = __('Weathermap', 'monitoring');
       
       $rand = Dropdown::showFromArray('itemtype', $elements, array('value'=>$this->fields['itemtype']));
       

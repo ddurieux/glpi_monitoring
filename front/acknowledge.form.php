@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("check","w");
+PluginMonitoringProfile::checkRight("acknowledge","r");
 
 Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins", 
              "monitoring", "acknowledge");
@@ -50,20 +50,78 @@ Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
 $pmService = new PluginMonitoringService();
 
 if (isset($_POST['add']) ||isset($_POST['update']) ) {
-   $pmService->update($_POST);
-   // Send acknowledge command to shinken via webservice   
-   $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
-   $pmShinkenwebservice->sendAcknowledge($_POST['id']);
+   $user = new User();
+   $user->getFromDB($_POST['acknowledge_users_id']);
    
-   // "[date('U')] ACKNOWLEDGE_SVC_PROBLEM;Computer-11-debian;rrrrr-1;1;1;1;glpi;comment ddurieux\n"
+   if (isset($_POST['hostname'])) {
+      // Acknowledge an host ...
+      if (isset($_POST['hostAcknowledge'])) {
+         // Toolbox::logInFile("monitoring", "Acknowledge host ".$_POST['host_id']." / ".$_POST['hostname']."\n");
+   
+         $pmHost = new PluginMonitoringHost();
+         $pmHost->getFromDBByQuery("WHERE `items_id` = '".$_POST['host_id']."'");
+         $hostData = array();
+         $hostData['id'] = $pmHost->fields['id'];
+         $hostData['is_acknowledged'] = '1';
+         $hostData['acknowledge_users_id'] = $_POST['acknowledge_users_id'];
+         $hostData['acknowledge_comment'] = $_POST['acknowledge_comment'];
+         $pmHost->update($hostData);
+
+         // Send acknowledge command for an host to shinken via webservice   
+         $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
+         $pmShinkenwebservice->sendAcknowledge('', $user->getName(1), $_POST['acknowledge_comment'], $_POST['id'], $_POST['hostname']);
+      }
+      
+      // Acknowledge all services of an host ...
+      if (isset($_POST['serviceCount'])) {
+         // Toolbox::logInFile("monitoring", "Acknowledge host (all services) ".$_POST['host_id']." / ".$_POST['hostname']."\n");
+   
+         for ($i = 0; $i < $_POST['serviceCount']; $i++) {
+            Toolbox::logInFile("monitoring", " - acknowledge service ".$_POST['serviceId'.$i]."\n");
+            
+            $serviceData = array();
+            $serviceData['id'] = $_POST['serviceId'.$i];
+            $serviceData['is_acknowledged'] = '1';
+            $serviceData['acknowledge_users_id'] = $_POST['acknowledge_users_id'];
+            $serviceData['acknowledge_comment'] = $_POST['acknowledge_comment'];
+            $pmService->update($serviceData);
+            
+            // Send acknowledge command for a service to shinken via webservice   
+            $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
+            $pmShinkenwebservice->sendAcknowledge($_POST['serviceId'.$i], $user->getName(1), $_POST['acknowledge_comment']);
+         }
+      }
+   } else {
+      // Toolbox::logInFile("monitoring", "Acknowledge service ".$_POST['id']."\n");
+   
+      // Simply acknowledge a service ...
+      $pmService->update($_POST);
+      
+      // Send acknowledge command for a service to shinken via webservice   
+      $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
+      $pmShinkenwebservice->sendAcknowledge($_POST['id'], $user->getName(1), $_POST['acknowledge_comment']);
+   }
+   
    Html::redirect($_POST['referer']);
 }
 
-if (isset($_GET['id'])) {
+if (isset($_GET['host']) && isset($_GET['id'])) {
+   // Acknowledge an host ...
+   $pmService->addAcknowledge($_GET['id'], $_GET['host'], isset($_GET['allServices']));
+} else if (isset($_GET['id'])) {
+   // Acknowledge a service ...
    $pmService->addAcknowledge($_GET['id']);
 }
+
+// Modify acknowledge comment ...
 if (isset($_GET['form'])) {
-   $pmService->formAcknowledge($_GET['form']);
+   if (isset($_GET['host'])) {
+      // ... for an host
+      $pmService->formAcknowledge($_GET['form'], $_GET['host']);
+   } else {
+      // ... for a service
+      $pmService->formAcknowledge($_GET['form']);
+   }
 }
 
 Html::footer();

@@ -78,7 +78,7 @@ if (isset ($_POST["update"])) {
 }
 
 
-$pmConfig->showForm(0);
+$pmConfig->showForm(0, array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
 
 Html::footer();
 

@@ -35,7 +35,7 @@
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
-   @since     2011
+   @since     2013
  
    ------------------------------------------------------------------------
  */
@@ -45,21 +45,17 @@ include ("../../../inc/includes.php");
 Session::checkCentralAccess();
 
 Html::header(__('Monitoring', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "display");
+             "monitoring", "unavailability");
 
+if (isset($_GET['contains'])) {
+   $pmUnavailability = new PluginMonitoringUnavailability();
+   $pmUnavailability->showList($_GET);
+}
 
-$pmDisplay = new PluginMonitoringDisplay();
-$pmComponentscatalog = new PluginMonitoringComponentscatalog();
-$pmMessage = new PluginMonitoringMessage();
-
-$pmMessage->getMessages();
-
-$pmDisplay->menu();
-
-PluginMonitoringProfile::checkRight("dashboard_components_catalogs", 'r');
-
-$pmDisplay->showCounters("Componentscatalog");
-$pmComponentscatalog->showChecks();
+if (isset($_GET['component_catalog_id'])) {
+   $pmUnavailability = new PluginMonitoringUnavailability();
+   $pmUnavailability->displayComponentscatalog($_GET['component_catalog_id']);
+}
 
 Html::footer();
 ?>

@@ -71,11 +71,11 @@ class PluginMonitoringPerfdataDetail extends CommonDBTM {
       echo "</th>";
       echo "</tr>";
       foreach ($a_details as $a_detail) {
-      echo "<form name='form' method='post' 
-         action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/perfdatadetail.form.php'>";
+         echo "<form name='form' method='post' 
+            action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/perfdatadetail.form.php'>";
 
-         $this->showDetail($a_detail['id']);
-      Html::closeForm();
+            $this->showDetail($a_detail['id']);
+         Html::closeForm();
       }
       echo "</table>";
    }  
@@ -107,10 +107,13 @@ class PluginMonitoringPerfdataDetail extends CommonDBTM {
          }
          echo "</td>";
       }
-      echo "<td>";
-      echo "<input type='hidden' name='id' value='".$this->fields['id']."'/>";
-      echo "<input type='submit' class='submit' name='update' value='update'/>";
-      echo "</td>";
+      
+      if (PluginMonitoringProfile::haveRight("config","w")) {
+         echo "<td>";
+         echo "<input type='hidden' name='id' value='".$this->fields['id']."'/>";
+         echo "<input type='submit' class='submit' name='update' value='update'/>";
+         echo "</td>";
+      }
       echo "</tr>";
    }
    

@@ -63,7 +63,7 @@ if (isset($a_views[$_GET['id']])) {
    $pass = $pmDisplayview->haveVisibilityAccess();
 }
 if ($pass == 0) {
-   PluginMonitoringProfile::checkRight("view", 'r');
+   PluginMonitoringProfile::checkRight("config_views", 'r');
 }
 
 if (isset($a_views[$_GET['id']])) {

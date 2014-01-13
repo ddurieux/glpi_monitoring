@@ -60,13 +60,13 @@ class PluginMonitoringLog extends CommonDBTM {
 
 
    static function canCreate() {
-      return Session::haveRight('computer', 'w');
+      return Session::haveRight('config', 'w');
    }
 
 
    
    static function canView() {
-      return Session::haveRight('computer', 'r');
+      return Session::haveRight('config', 'r');
    }
 
 
@@ -95,8 +95,8 @@ class PluginMonitoringLog extends CommonDBTM {
       // Clean too events
       PluginMonitoringServiceevent::cronUpdaterrd();
       
-      $pmUnavaibility = new PluginMonitoringUnavaibility();
-      $pmUnavaibility->runUnavaibility();      
+      $pmUnavailability = new PluginMonitoringUnavailability();
+      $pmUnavailability->runUnavailability();      
       
       $query = "DELETE FROM `glpi_plugin_monitoring_serviceevents`
          WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";

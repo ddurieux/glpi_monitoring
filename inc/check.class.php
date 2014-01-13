@@ -86,13 +86,13 @@ class PluginMonitoringCheck extends CommonDBTM {
 
 
    static function canCreate() {
-      return PluginMonitoringProfile::haveRight("check", 'w');
+      return PluginMonitoringProfile::haveRight("config", 'w');
    }
 
 
    
    static function canView() {
-      return PluginMonitoringProfile::haveRight("check", 'r');
+      return PluginMonitoringProfile::haveRight("config", 'r');
    }
 
    

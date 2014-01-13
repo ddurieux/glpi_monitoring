@@ -56,14 +56,28 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "<tr class='tab_bg_3'>";
       echo "<td>";
 
-      if (PluginMonitoringProfile::haveRight("restartshinken", 'w')
-              || PluginMonitoringProfile::haveRight("hosts_status", 'r')
-              || PluginMonitoringProfile::haveRight("servicescatalog", 'r')
-              || PluginMonitoringProfile::haveRight("componentscatalog", 'r')
-              || PluginMonitoringProfile::haveRight("allressources", 'r')) {
+      if (PluginMonitoringProfile::haveRight("restartshinken", 'r')
+              || PluginMonitoringProfile::haveRight("dashboard_system_status", 'r')
+              || PluginMonitoringProfile::haveRight("dashboard_hosts_status", 'r')
+              || PluginMonitoringProfile::haveRight("dashboard_services_catalogs", 'r')
+              || PluginMonitoringProfile::haveRight("dashboard_components_catalogs", 'r')
+              || PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'>";
-         if (PluginMonitoringProfile::haveRight("hosts_status", 'r')) {
+         if (PluginMonitoringProfile::haveRight("dashboard_system_status", 'r')) {
+            echo "<th colspan='2'>";
+            $this->displayPuce('display_system_status');
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_system_status.php'>";
+            echo __('System status', 'monitoring');
+            echo "</a>";
+            $a_url[] = $CFG_GLPI['root_doc']."/plugins/monitoring/front/display_system_status.php";
+            echo "</th>";
+         } else {
+            if (basename($_SERVER['PHP_SELF']) == 'display_system_status.php') {
+               $redirect = TRUE;
+            }
+         }
+         if (PluginMonitoringProfile::haveRight("dashboard_hosts_status", 'r')) {
             echo "<th colspan='2'>";
             $this->displayPuce('display_hosts_status');
             echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_hosts_status.php'>";
@@ -76,7 +90,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                $redirect = TRUE;
             }
          }
-         if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
+         if (PluginMonitoringProfile::haveRight("dashboard_services_catalogs", 'r')) {
             echo "<th colspan='2'>";
             $this->displayPuce('display_servicescatalog');
             echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_servicescatalog.php'>";
@@ -89,7 +103,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                $redirect = TRUE;
             }
          }
-         if (PluginMonitoringProfile::haveRight("componentscatalog", 'r')) {
+         if (PluginMonitoringProfile::haveRight("dashboard_components_catalogs", 'r')) {
             echo "<th colspan='2'>";
             $this->displayPuce('display_componentscatalog');
             echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_componentscatalog.php'>";
@@ -102,7 +116,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                $redirect = TRUE;
             }
          }
-         if (PluginMonitoringProfile::haveRight("allressources", 'r')) {
+         if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
             echo "<th colspan='2'>";
             $this->displayPuce('service');
             echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/service.php'>";
@@ -117,7 +131,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          }
          echo "</tr>";
          echo "</table>";
-         if (PluginMonitoringProfile::haveRight("restartshinken", 'w')) {
+         if (PluginMonitoringProfile::haveRight("restartshinken", 'r')) {
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'>";
             echo "<td colspan='100'>";
@@ -138,38 +152,40 @@ class PluginMonitoringDisplay extends CommonDBTM {
          }
       }
 
-      $i = 1;
-         $pmDisplayview = new PluginMonitoringDisplayview();
-         $a_views = $pmDisplayview->getViews();
-         if (count($a_views) > 0) {
-            echo "<table class='tab_cadre_fixe' width='950'>";
-            echo "<tr class='tab_bg_1'>";
+      if (PluginMonitoringProfile::haveRight("dashboard_views", 'r')) {
+         $i = 1;
+            $pmDisplayview = new PluginMonitoringDisplayview();
+            $a_views = $pmDisplayview->getViews();
+            if (count($a_views) > 0) {
+               echo "<table class='tab_cadre_fixe' width='950'>";
+               echo "<tr class='tab_bg_1'>";
 
-            foreach ($a_views as $views_id=>$name) {
-               $pmDisplayview->getFromDB($views_id);
-               if ($pmDisplayview->haveVisibilityAccess()) {
-                  if ($i == 6) {
-                     echo "</tr>";
-                     echo "<tr class='tab_bg_1'>";
-                     $i = 1;
+               foreach ($a_views as $views_id=>$name) {
+                  $pmDisplayview->getFromDB($views_id);
+                  if ($pmDisplayview->haveVisibilityAccess()) {
+                     if ($i == 6) {
+                        echo "</tr>";
+                        echo "<tr class='tab_bg_1'>";
+                        $i = 1;
+                     }
+                     echo "<th width='20%'>";
+                     $this->displayPuce('display_view', $views_id);
+                     echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_view.php?id=".$views_id."'>";
+                     echo htmlentities($name);
+                     echo "</a>";
+                     echo "</th>";
+                     $i++;
+                     $a_url[] = $CFG_GLPI['root_doc']."/plugins/monitoring/front/display_view.php?id=".$views_id;
                   }
-                  echo "<th width='20%'>";
-                  $this->displayPuce('display_view', $views_id);
-                  echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_view.php?id=".$views_id."'>";
-                  echo htmlentities($name);
-                  echo "</a>";
-                  echo "</th>";
-                  $i++;
-                  $a_url[] = $CFG_GLPI['root_doc']."/plugins/monitoring/front/display_view.php?id=".$views_id;
                }
+               for ($i;$i < 6; $i++) {
+                  echo "<td width='20%'>";
+                  echo "</td>";
+               }
+               echo "</tr>";
+               echo "</table>";
             }
-            for ($i;$i < 6; $i++) {
-               echo "<td width='20%'>";
-               echo "</td>";
-            }
-            echo "</tr>";
-            echo "</table>";
-         }
+      }
             
       echo "</td>";
       echo "</tr>";
@@ -192,19 +208,24 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $pmDisplayview = new PluginMonitoringDisplayview();
       
       $ong = array();
-      if (PluginMonitoringProfile::haveRight("hosts_status", 'r')) {
-         $ong[1] = __('Hosts status', 'monitoring');
+      if (PluginMonitoringProfile::haveRight("dashboard_system_status", 'r')) {
+         $ong[1] = __('System status', 'monitoring');
       }
-      if (PluginMonitoringProfile::haveRight("servicescatalog", 'r')) {
-         $ong[2] = __('Services catalog', 'monitoring');
+      if (PluginMonitoringProfile::haveRight("dashboard_hosts_status", 'r')) {
+         $ong[2] = __('Hosts status', 'monitoring');
       }
-      if (PluginMonitoringProfile::haveRight("componentscatalog", 'r')) {
-         $ong[3] = __('Components catalog', 'monitoring');
+      if (PluginMonitoringProfile::haveRight("dashboard_services_catalogs", 'r')) {
+         $ong[3] = __('Services catalog', 'monitoring');
       }
-      $ong[4] = __('All resources', 'monitoring');
-      $ong[5] = __('Dependencies;', 'monitoring');
-      if (PluginMonitoringProfile::haveRight("view", 'r')) {
-         $i = 6;
+      if (PluginMonitoringProfile::haveRight("dashboard_components_catalogs", 'r')) {
+         $ong[4] = __('Components catalog', 'monitoring');
+      }
+      if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+         $ong[5] = __('All resources', 'monitoring');
+      }
+      $ong[6] = __('Dependencies;', 'monitoring');
+      if (PluginMonitoringProfile::haveRight("dashboard_views", 'r')) {
+         $i = 7;
          $a_views = $pmDisplayview->getViews();
          foreach ($a_views as $name) {
             $ong[$i] = htmlentities($name);
@@ -434,42 +455,49 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       
       $leftjoin = '';
-      $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_components`
-         ON `plugin_monitoring_components_id` = 
-         `glpi_plugin_monitoring_components`.`id` ";
-      $leftjoin .= " LEFT JOIN `glpi_entities`
-         ON `".getTableForItemType("PluginMonitoringService")."`.`entities_id` = 
-               `glpi_entities`.`id`";
-      if (isset($_GET['field'])) {         
+      $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_components` ON `plugin_monitoring_components_id` = `glpi_plugin_monitoring_components`.`id` ";
+      $leftjoin .= " LEFT JOIN `glpi_entities` ON `".getTableForItemType("PluginMonitoringService")."`.`entities_id` = `glpi_entities`.`id`";
+      $leftjoin .= " 
+         INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts` 
+            ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
+         INNER JOIN `glpi_computers` 
+            ON (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_computers`.`id`)
+         INNER JOIN `glpi_plugin_monitoring_componentscatalogs`
+            ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`plugin_monitoring_componentscalalog_id` = `glpi_plugin_monitoring_componentscatalogs`.`id`
+         INNER JOIN `glpidb`.`glpi_plugin_monitoring_hosts` 
+            ON (`glpi_computers`.`id` = `glpi_plugin_monitoring_hosts`.`items_id`)";
+
+/*
+      if (isset($_GET['field'])) {
          foreach ($_GET['field'] as $value) {
             if ($value == '20'
                     OR $value == '21'
                     OR $value == '22') {
-               $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
-                  ON `plugin_monitoring_componentscatalogs_hosts_id` = 
-                  `glpi_plugin_monitoring_componentscatalogs_hosts`.`id` 
-                  ";
-               $leftjoin .= " LEFT JOIN `glpi_computers`
-                  ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = 
-                        `glpi_computers`.`id`";
+               if (!strstr($leftjoin, 'LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`')) {
+                  $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
+                     ON `plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`";
+               }
+               if (!strstr($leftjoin, 'LEFT JOIN `glpi_computers`')) {
+                  $leftjoin .= " LEFT JOIN `glpi_computers` 
+                     ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_computers`.`id`";
+               }
             } else if ($value == '7') {
             } else if ($value == '8') {
                if (!strstr($leftjoin, 'LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`')) {
                   $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
-                  ON `plugin_monitoring_componentscatalogs_hosts_id` = 
-                  `glpi_plugin_monitoring_componentscatalogs_hosts`.`id` ";
+                     ON `plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id` ";
                }
                if (!strstr($leftjoin, 'LEFT JOIN `glpi_plugin_monitoring_componentscatalogs`')) {
                   $leftjoin .= " LEFT JOIN `glpi_plugin_monitoring_componentscatalogs`
-                     ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`plugin_monitoring_componentscalalog_id` = 
-                     `glpi_plugin_monitoring_componentscatalogs`.`id` ";
+                     ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`plugin_monitoring_componentscalalog_id` = `glpi_plugin_monitoring_componentscatalogs`.`id` ";
                }
             }
          }
       }
+*/
 
       // * ORDER
-      $ORDERQUERY = " ORDER BY `name` ";
+      $ORDERQUERY = " ORDER BY `glpi_plugin_monitoring_services`.`name` ";
       $toview = array(3, 6, 7, 10, 4, 9);
       $toviewComplete = array(
           'ITEM_0' => 'state', 
@@ -490,13 +518,15 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       
       $query = "SELECT `".getTableForItemType("PluginMonitoringService")."`.*,
+            `glpi_computers`.`name` AS hostname, 
+            `glpi_plugin_monitoring_hosts`.`state` AS host_state, `glpi_plugin_monitoring_hosts`.`is_acknowledged` AS host_acknowledged, 
             `glpi_plugin_monitoring_components`.`name` as component_name, 
             `glpi_entities`.`completename`
          FROM `".getTableForItemType("PluginMonitoringService")."`
          ".$leftjoin."
          ".$where."
          ".$ORDERQUERY;
-      // Toolbox::logInFile("pm", "query services - $query\n");
+      // Toolbox::logInFile("pm", "Query services - $query\n");
       $result = $DB->query($query);
       
       $start = 0;
@@ -544,7 +574,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $this->showHeaderItem(__('Status'), 3, $num, $start, $globallinkto, 'service.php', 'PluginMonitoringService');
       $this->showHeaderItem(__('Entity'), 6, $num, $start, $globallinkto, 'service.php', 'PluginMonitoringService');
       echo Search::showHeaderItem(0, __('Show graphics'), $num);
-      echo Search::showHeaderItem(0, __('Item type')." - ".__('Name'), $num);
+      // echo Search::showHeaderItem(0, __('Item type')." : ".__('Name'), $num);
+      echo Search::showHeaderItem(0, __('Name'), $num);
       $this->showHeaderItem(__('Components', 'monitoring'), 7, $num, $start, 
                             $globallinkto, 'service.php', 'PluginMonitoringService');
       $this->showHeaderItem(__('Status'), 10, $num, $start, $globallinkto, 'service.php', 'PluginMonitoringService');
@@ -604,7 +635,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       
       // * ORDER
-      $ORDERQUERY = " ORDER BY `name` ";
+      $ORDERQUERY = " ORDER BY `state` ";
       $toview = array(1, 2, 3, 4, 5);
       $toviewComplete = array(
           'ITEM_0' => 'state', 
@@ -623,16 +654,22 @@ class PluginMonitoringDisplay extends CommonDBTM {
          }
       }
       
-      // $query = "SELECT `glpi_plugin_monitoring_componentscatalogs_hosts`.is_static, `glpi_plugin_monitoring_hosts`.*, `glpi_computers`.`name`, `glpi_plugin_monitoring_hostconfigs`.`plugin_monitoring_components_id` 
-         // FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+      // $query = "SELECT `glpi_plugin_monitoring_hosts`.*, `glpi_computers`.`name`, `glpi_computers`.`id` AS idComputer, `glpi_plugin_monitoring_hostconfigs`.`plugin_monitoring_components_id` 
+         // FROM `glpi_plugin_monitoring_hosts`
          // ".$leftjoin."
          // ".$where."
          // ".$ORDERQUERY;
-      $query = "SELECT `glpi_plugin_monitoring_hosts`.*, `glpi_computers`.`name`, `glpi_plugin_monitoring_hostconfigs`.`plugin_monitoring_components_id` 
-         FROM `glpi_plugin_monitoring_hosts`
-         ".$leftjoin."
-         ".$where."
-         ".$ORDERQUERY;
+      $query = "SELECT 
+               `glpi_computers`.*
+               , `glpi_computers`.`id` AS idComputer
+               , `glpi_plugin_monitoring_hosts`.*
+               , filterQuery.`id` AS id_monitoring
+               FROM `glpi_computers` 
+               LEFT JOIN `glpi_plugin_monitoring_hosts` ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`
+               INNER JOIN (SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts` GROUP BY `items_id`) filterQuery ON `glpi_computers`.`id` = filterQuery.`items_id` 
+               WHERE `glpi_computers`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].") 
+               ORDER BY `name`";
+      // Toolbox::logInFile("pm", "Query monitored hosts : $query\n");
       $result = $DB->query($query);
       
       if (! isset($_GET["start"])) {
@@ -666,7 +703,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       $query .= " LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
       
-      // Toolbox::logInFile("pm", "query hosts - $query\n");
+      // Toolbox::logInFile("pm", "Query hosts - $query\n");
       $result = $DB->query($query); 
       
       echo '<div id="custom_date" style="display:none"></div>';
@@ -679,10 +716,26 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       $num = 0;
  
+      if (PluginMonitoringProfile::haveRight("host_command", 'r')) {
+         // Host test command ...
+         $pmCommand = new PluginMonitoringCommand();
+         $a_commands = array();
+         $a_list = $pmCommand->find("command_name LIKE 'host_action'");
+         foreach ($a_list as $data) {
+            $host_command_name = $data['name'];
+            $host_command_command = $data['command_line'];
+         }
+      }
+      
       echo "<tr class='tab_bg_1'>";
       $this->showHeaderItem(__('Status'), 1, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
       $this->showHeaderItem(__('Hostname'), 2, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
-      $this->showHeaderItem(__('Status'), 3, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
+      if (isset($host_command_name)) {
+         $this->showHeaderItem(__('Host action'), 3, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
+      }
+      $this->showHeaderItem(__('Host status'), 3, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
+      $this->showHeaderItem(__('Host services status'), 3, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
+      $this->showHeaderItem(__('IP address'), 3, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
       $this->showHeaderItem(__('Last check', 'monitoring'), 4, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
       // $this->showHeaderItem(__('Result details'), 5, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
       // echo Search::showHeaderItem(0, __('Result details', 'monitoring'), $num);
@@ -690,13 +743,41 @@ class PluginMonitoringDisplay extends CommonDBTM {
       // $this->showHeaderItem(__('Output', 'monitoring'), 6, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
       $this->showHeaderItem(__('Performance data', 'monitoring'), 7, $num, $start, $globallinkto, 'display_hosts_status.php', 'PluginMonitoringHost');
       // echo Search::showHeaderItem(0, __('Check period', 'monitoring'), $num);
-      // echo '<th>'.__('Acknowledge', 'monitoring').'</th>';
+      echo '<th>'.__('Acknowledge', 'monitoring').'</th>';
       echo "</tr>";
       
-      // PluginMonitoringServicegraph::loadLib();
       while ($data=$DB->fetch_array($result)) {
-         echo "<tr class='tab_bg_3'>";
-         // Toolbox::logInFile("pm", "Host line - ".serialize($data)."\n");
+         if (isset($host_command_name)) {
+            $data['host_command_name'] = $host_command_name;
+            $data['host_command_command'] = $host_command_command;
+         }
+         
+         $data['host_services_status'] = '';
+         // Get all host services except if state is ok or is already acknowledged ...
+         $query2 = "SELECT 
+                  `glpi_plugin_monitoring_services`.*
+                  FROM `glpi_plugin_monitoring_services` 
+                  WHERE `glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` IN (SELECT id FROM `glpi_plugin_monitoring_componentscatalogs_hosts` WHERE `glpi_plugin_monitoring_componentscatalogs_hosts`.items_id ='".$data['idComputer']."') 
+                  AND `glpi_plugin_monitoring_services`.`state` != 'OK'
+                  AND `glpi_plugin_monitoring_services`.`is_acknowledged` = '0'";
+         // Toolbox::logInFile("pm", "Query services for host : ".$data['idComputer']."\n");
+         $result2 = $DB->query($query2);
+         while ($data2=$DB->fetch_array($result2)) {
+            // Toolbox::logInFile("pm", "Service ".$data2['name']." is ".$data2['state'].", state : ".$data2['event']."\n");
+            if (! empty($data['host_services_status'])) $data['host_services_status'] .= "\n";
+            $data['host_services_status'] .= "Service ".$data2['name']." is ".$data2['state'].", event : ".$data2['event'];
+         }
+         
+          // Get host first IP address
+         $data['ip'] = "-";
+         $queryIp = "SELECT `glpi_ipaddresses`.`name` FROM `glpi_ipaddresses` LEFT JOIN `glpi_networknames` ON `glpi_ipaddresses`.`itemtype`='NetworkName' AND `glpi_ipaddresses`.`items_id`=`glpi_networknames`.`id` LEFT JOIN `glpi_networkports` ON `glpi_networknames`.`itemtype`='NetworkPort' AND `glpi_networknames`.`items_id`=`glpi_networkports`.`id` WHERE `glpi_networkports`.`itemtype`='Computer' AND `glpi_networkports`.`items_id`='".$data['idComputer']."' LIMIT 1";
+         $resultIp = $DB->query($queryIp);
+         if ($DB->numrows($resultIp) > 0) {
+            $dataIp=$DB->fetch_array($resultIp);
+            $data['ip'] = $dataIp['name'];
+         }
+
+        echo "<tr class='tab_bg_3'>";
          $this->displayHostLine($data);
          echo "</tr>";         
       }
@@ -743,10 +824,17 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $pMonitoringService->getFromDB($data['id']);
       
       echo "<td width='32' class='center'>";
-      $shortstate = self::getState($data['state'], 
-                                   $data['state_type'], 
-                                   $data['event'], 
-                                   $data['is_acknowledged']);
+      
+      // If host is acknowledged, force service to be displayed as unknown acknowledged.
+      if (isset($data['host_acknowledged']) && $data['host_acknowledged']) {
+         $shortstate = 'yellowblue';
+         $data['state'] = 'UNKNOWN';
+      } else {
+         $shortstate = self::getState($data['state'], 
+                                      $data['state_type'], 
+                                      $data['event'], 
+                                      $data['is_acknowledged']);
+      }
       $alt = __('Ok', 'monitoring');
       if ($shortstate == 'orange') {
          $alt = __('Warning (data)', 'monitoring');
@@ -757,7 +845,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       } else if ($shortstate == 'redblue'
               || $shortstate == 'orangeblue'
               || $shortstate == 'yellowblue') {
-         $alt = __('Critical / Acknowledge', 'monitoring');
+         $alt = __('Acknowledged', 'monitoring');
       }
       echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'
          title='".$alt."' alt='".$alt."' />";
@@ -805,12 +893,62 @@ class PluginMonitoringDisplay extends CommonDBTM {
          if (isset($pmComponentscatalog_Host->fields['itemtype']) 
                  AND $pmComponentscatalog_Host->fields['itemtype'] != '') {
 
+            echo "<td>";
+            
+            $hoverForm = '';
+            
             $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
             $item = new $itemtype();
             $item->getFromDB($pmComponentscatalog_Host->fields['items_id']);
+            $hoverForm .= __('Host type')." : ".$item->getTypeName();
             
-            echo "<td>";
-            echo $item->getTypeName()." : ".$item->getLink();
+            $type = new ComputerType();
+            $type->getFromDB($item->fields["computertypes_id"]);
+            $type = $type->getName();
+            if (! empty($type)) { 
+               if (! empty($hoverForm)) $hoverForm .= "\n";
+               $hoverForm .= __('Type')." : ".$type;
+            }
+
+            $model = new ComputerModel();
+            $model->getFromDB($item->fields["computermodels_id"]);
+            $model = $model->getName();
+            if (! empty($model)) { 
+               if (! empty($hoverForm)) $hoverForm .= "\n";
+               $hoverForm .= __('Model')." : ".$model;
+            }
+
+            $state = new State();
+            $state->getFromDB($item->fields["states_id"]);
+            $state = $state->getName();
+            if (! empty($state)) { 
+               if (! empty($hoverForm)) $hoverForm .= "\n";
+               $hoverForm .= __('State')." : ".$state;
+            }
+
+            if (! empty($item->fields["otherserial"])) { 
+               if (! empty($hoverForm)) $hoverForm .= "\n";
+               $hoverForm .= htmlentities(__('Inventory number'), ENT_QUOTES)." : ".$item->fields["otherserial"];
+            }
+
+            $entity = new Entity();
+            $entity->getFromDB($item->fields["entities_id"]);
+            $entity = $entity->getName();
+            if (! empty($entity)) { 
+               if (! empty($hoverForm)) $hoverForm .= "\n";
+               $hoverForm .= __('Entity')." : ".$entity;
+            }
+
+            $location = new Location();
+            $location->getFromDB($item->fields["entities_id"]);
+            $location = $location->getName();
+            if (! empty($location)) { 
+               if (! empty($hoverForm)) $hoverForm .= "\n";
+               $hoverForm .= __('Location')." : ".$location;
+            }
+
+            echo "<span title='".$hoverForm."'>".$item->getLink()."</span>";
+            // echo $item->getTypeName()." : ".$item->getLink();
             if (!is_null($pMonitoringService->fields['networkports_id'])
                     AND $pMonitoringService->fields['networkports_id'] > 0) {
                $networkPort->getFromDB($pMonitoringService->fields['networkports_id']);
@@ -830,6 +968,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo " [".$networkPort->getLink()."]";
       }
       echo "</td>";
+      
 //      $nameitem = '';
 //      if (isset($itemmat->fields['name'])) {
 //         $nameitem = "[".$itemmat->getLink(1)."]";
@@ -844,28 +983,52 @@ class PluginMonitoringDisplay extends CommonDBTM {
 //         echo "<td>".$pMonitoringService->getLink(1).$nameitem." ".__('on', 'monitoring')." ".$itemmat->getLink(1)."</td>";
 //      }
 //      unset($itemmat);
+
       echo "<td class='center'>";
+      echo "<div class='page foldtl resource".$data['state']."'>";
 
       if ($shortstate == 'red'
               || $shortstate == 'yellow'
               || $shortstate == 'orange') {
+/*
          echo "<table>";
          echo "<tr>";
          echo "<td>";
          echo $data['state'];
          echo "</td>";
-         echo "<td>";
-         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?id=".$data['id']."'>"
-                  ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_checked.png'"
-                 ." alt='".__('Define an acknowledge', 'monitoring')."'"
-                 ." title='".__('Define an acknowledge', 'monitoring')."'/>"
-              ."</a>";
-         echo "</td>";
+         if (PluginMonitoringProfile::haveRight("acknowledge", 'r')) {
+            echo "<td>";
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?id=".$data['id']."'>"
+                     ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_checked.png'"
+                    ." alt='".__('Define an acknowledge', 'monitoring')."'"
+                    ." title='".__('Define an acknowledge', 'monitoring')."'/>"
+                 ."</a>";
+            echo "</td>";
+         }
          echo "</tr>";
          echo "</table>";
-      } else {
+*/
+         echo "<div style='vertical-align:middle;'>";
+         echo "<span>";
          echo $data['state'];
+         echo "</span>";
+         if (PluginMonitoringProfile::haveRight("acknowledge", 'r')) {
+            echo "<span>&nbsp;";
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?id=".$data['id']."'>"
+                     ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_checked.png'"
+                    ." alt='".__('Define an acknowledge', 'monitoring')."'"
+                    ." title='".__('Define an acknowledge', 'monitoring')."'/>"
+                 ."</a>";
+            echo "</span>";
+         }
+         echo "</div>";
+      } else {
+         echo "<div>";
+         echo $data['state'];
+         echo "</div>";
       }
+      
+      echo "</div>";
       echo "</td>";
 
       echo "<td>";
@@ -888,15 +1051,15 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "</td>";
       
       if ($displayhost == '0') {         
-         $pmUnavaibility = new PluginMonitoringUnavaibility();
-         $pmUnavaibility->displayValues($pMonitoringService->fields['id'], 'currentmonth', 1);
-         $pmUnavaibility->displayValues($pMonitoringService->fields['id'], 'lastmonth', 1);
-         $pmUnavaibility->displayValues($pMonitoringService->fields['id'], 'currentyear', 1);
+         $pmUnavailability = new PluginMonitoringUnavailability();
+         $pmUnavailability->displayValues($pMonitoringService->fields['id'], 'currentmonth', 1);
+         $pmUnavailability->displayValues($pMonitoringService->fields['id'], 'lastmonth', 1);
+         $pmUnavailability->displayValues($pMonitoringService->fields['id'], 'currentyear', 1);
          
          echo "<td class='center'>";
-         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/unavaibility.php?".
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/unavailability.php?".
                  "field[0]=2&searchtype[0]=equals&contains[0]=".$pMonitoringService->fields['id'].
-                 "&sort=3&order=DESC&itemtype=PluginMonitoringUnavaibility'>
+                 "&sort=3&order=DESC&itemtype=PluginMonitoringUnavailability'>
             <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/info.png'/></a>";
          echo "</td>";
       }
@@ -938,21 +1101,18 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
    
    
-   static function displayHostLine($data, $displayhost=1) {
+   static function displayHostLine($data) {
       global $DB,$CFG_GLPI;
 
-      $pMonitoringService = new PluginMonitoringService();
       $networkPort = new NetworkPort();
-      $pMonitoringComponent = new PluginMonitoringComponent();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
       $entity = new Entity();
-      
-      $pMonitoringService->getFromDB($data['id']);
       
       echo "<td width='32' class='center'>";
       $shortstate = self::getState($data['state'], 
                                    $data['state_type'], 
-                                   $data['event']);
+                                   $data['event'], 
+                                   $data['is_acknowledged']);
       $alt = __('Ok', 'monitoring');
       if ($shortstate == 'orange') {
          $alt = __('Warning (data)', 'monitoring');
@@ -971,15 +1131,44 @@ class PluginMonitoringDisplay extends CommonDBTM {
  
 
       echo "<td>";
-      $link = $CFG_GLPI['root_doc'].
-         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-            "&field[0]=20&searchtype[0]=equals&contains[0]=".$data['items_id'].
-            "&itemtype=PluginMonitoringService&start=0'";
-      echo "<a href='".$link."'>".$data['name']."</a>";
+      if (Session::haveRight("computer","r")) {
+         $link = $CFG_GLPI['root_doc'].
+            "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
+               "&field[0]=20&searchtype[0]=equals&contains[0]=".$data['items_id'].
+               "&itemtype=PluginMonitoringService&start=0'";
+         $link = $CFG_GLPI['root_doc'].
+            "/front/computer.form.php?id=".$data['idComputer'];
+         echo "<a href='".$link."'>".$data['name']."</a>";
+      } else {
+         echo "<span>".$data['name']."</span>";
+      }
       echo "</td>";
+
+      if (isset($data['host_command_name'])) {
+         $scriptName=$CFG_GLPI['root_doc']."/plugins/monitoring/scripts/".$data['host_command_command'];
+         $scriptArgs=$data['name']." ".$data['ip'];
+
+         echo "<td class='center'>";
+         echo "<form name='form' method='post' 
+            action='".$CFG_GLPI['root_doc']."/plugins/monitoring/scripts/".$data['host_command_command'].".php'>";
+      
+         echo "<input type='hidden' name='host_id' value='".$data['idComputer']."' />";
+         echo "<input type='hidden' name='host_name' value='".$data['name']."' />";
+         echo "<input type='hidden' name='host_ip' value='".$data['ip']."' />";
+         echo "<input type='hidden' name='host_state' value='".$data['state']."' />";
+         echo "<input type='hidden' name='host_statetype' value='".$data['state_type']."' />";
+         echo "<input type='hidden' name='host_event' value='".$data['event']."' />";
+         echo "<input type='hidden' name='host_perfdata' value='".$data['perf_data']."' />";
+         echo "<input type='hidden' name='host_last_check' value='".$data['last_check']."' />";
+         echo "<input type='hidden' name='glpi_users_id' value='".$_SESSION['glpiID']."' />";
+
+         echo "<input type='submit' name='host_command' value=\"".$data['host_command_name']."\" class='submit'>";            
+         Html::closeForm();
+
+         echo "</td>";
+      }
  
       echo "<td class='center'>";
-      
       if ($shortstate == 'red'
               || $shortstate == 'yellow'
               || $shortstate == 'orange') {
@@ -988,18 +1177,65 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "<td>";
          echo $data['state'];
          echo "</td>";
-         echo "<td>";
-         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?id=".$data['id']."'>"
-                  ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_checked.png'"
-                 ." alt='".__('Define an acknowledge', 'monitoring')."'"
-                 ." title='".__('Define an acknowledge', 'monitoring')."'/>"
-              ."</a>";
-         echo "</td>";
+         if (PluginMonitoringProfile::haveRight("acknowledge", 'r')) {
+            echo "<td>";
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?host=".$data['name']."&id=".$data['idComputer']."'>"
+                     ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_checked.png'"
+                    ." alt='".__('Add an acknowledge for the host', 'monitoring')."'"
+                    ." title='".__('Add an acknowledge for the host', 'monitoring')."'/>"
+                 ."</a>";
+            echo "</td>";
+         }
          echo "</tr>";
          echo "</table>";
       } else {
          echo $data['state'];
       }
+      echo "</td>";
+
+      echo "<td class='center'>";
+      if (! empty($data['host_services_status'])) {
+         echo "<table>";
+         echo "<tr>";
+         echo "<td>";
+         if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+            $link = $CFG_GLPI['root_doc'].
+               "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
+                  "&field[0]=20&searchtype[0]=equals&contains[0]=".$data['items_id'].
+                  "&itemtype=PluginMonitoringService&start=0'";
+               
+            echo '<a href="'.$link.'" title="'.$data['host_services_status'].'">'.__('Ko', 'monitoring')."</a>";
+         } else {
+            echo '<span title="'.$data['host_services_status'].'">'.__('Ko', 'monitoring')."</span>";
+         }
+         echo "</td>";
+         if (PluginMonitoringProfile::haveRight("acknowledge", 'r')) {
+            echo "<td>";
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?host=".$data['name']."&allServices&id=".$data['idComputer']."'>"
+                     ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_checked.png'"
+                    ." alt='".__('Add an acknowledge for all faulty services of the host', 'monitoring')."'"
+                    ." title='".__('Add an acknowledge for all faulty services of the host', 'monitoring')."'/>"
+                 ."</a>";
+            echo "</td>";
+         }
+         echo "</tr>";
+         echo "</table>";
+      } else {
+         if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+            $link = $CFG_GLPI['root_doc'].
+               "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
+                  "&field[0]=20&searchtype[0]=equals&contains[0]=".$data['items_id'].
+                  "&itemtype=PluginMonitoringService&start=0'";
+               
+            echo '<a href="'.$link.'" title="'.$data['host_services_status'].'">'.__('Ok or Ack', 'monitoring')."</a>";
+         } else {
+            echo '<span>'.__('Ok or Ack', 'monitoring')."</span>";
+         }
+      }
+      echo "</td>";
+
+      echo "<td>";
+      echo $data['ip'];
       echo "</td>";
 
       echo "<td>";
@@ -1016,6 +1252,25 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
       echo "<td>";
       echo $data['perf_data'];
+      echo "</td>";
+
+      echo "<td>";
+      if ($shortstate == 'redblue'
+              || $shortstate == 'orangeblue'
+              || $shortstate == 'yellowblue') {
+         echo "<i>"._n('User', 'Users', 1)." : </i>";
+         $user = new User();
+         $user->getFromDB($data['acknowledge_users_id']);
+         echo $user->getName(1);
+         echo "<br/>";
+         echo"<i>". __('Comments')." : </i>";
+         if (PluginMonitoringProfile::haveRight("acknowledge", 'r') && $data['acknowledge_users_id'] == $_SESSION['glpiID']) {
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?host=".$data['name']."&form=".$data['idComputer']."' title='".__('Modify acknowledge comment for the host', 'monitoring')."'>";
+            echo $data['acknowledge_comment']."</a>";
+         } else {
+            echo $data['acknowledge_comment'];
+         }
+      }
       echo "</td>";
    }
 
@@ -1451,6 +1706,7 @@ Ext.onReady(function(){
                   AND `state_type`='HARD'
                   AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
                   AND `is_acknowledged`='0'";
+//            Toolbox::logInFile("pm", "Query critical - $query\n");
             $result = $DB->query($query);
             $data2 = $DB->fetch_assoc($result);
             if ($data2['cpt'] > 0) {
@@ -1837,16 +2093,6 @@ Ext.onReady(function(){
    function displayHostsCounters($display=1) {
       global $DB,$CFG_GLPI;
       
-      $ok = 0;
-      $warningdata = 0;
-      $warningconnection = 0;
-      $critical = 0;
-      $ok_soft = 0;
-      $warningdata_soft = 0;
-      $warningconnection_soft = 0;
-      $critical_soft = 0;
-      $acknowledge = 0;
-      
       $play_sound = 0;
       
       $a_devicetypes = array('Computer', 'Printer', 'NetworkEquipment');
@@ -1859,60 +2105,74 @@ Ext.onReady(function(){
       $unknown_soft = 0;
       $down = 0;
       $down_soft = 0;
+      $acknowledge = 0;
       
       foreach ($a_devicetypes as $itemtype) {
          
-         $up += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='UP'"
-                 . " AND `state_type`='HARD'");
+         $up += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='UP'
+                     AND `state_type`='HARD'
+                     AND `is_acknowledged`='0'");
 
-         $up_soft += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='UP'"
-                 . " AND `state_type`='SOFT'");
+         $up_soft += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='UP'
+                     AND `state_type`='SOFT'
+                     AND `is_acknowledged`='0'");
 
-         $unreachable += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='UNREACHABLE'"
-                 . " AND `state_type`='HARD'");
+         $unreachable += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='UNREACHABLE'
+                     AND `state_type`='HARD'
+                     AND `is_acknowledged`='0'");
 
-         $unreachable_soft += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='UNREACHABLE'"
-                 . " AND `state_type`='SOFT'");
+         $unreachable_soft += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='UNREACHABLE'
+                     AND `state_type`='SOFT'
+                     AND `is_acknowledged`='0'");
 
-         $unknown += $this->countQuery($itemtype, "(`glpi_plugin_monitoring_hosts`.`state`='UNKNOWN'"
-                 . " OR `glpi_plugin_monitoring_hosts`.`state` IS NULL) "
-                 . " AND `state_type`='HARD'");
+         $unknown += $this->countQuery($itemtype, "(`glpi_plugin_monitoring_hosts`.`state`='UNKNOWN' AND `state_type`='HARD') 
+                     OR (`glpi_plugin_monitoring_hosts`.`state` IS NULL) 
+                     AND `is_acknowledged`='0'");
 
-         $unknown_soft += $this->countQuery($itemtype, "(`glpi_plugin_monitoring_hosts`.`state`='UNKNOWN'"
-                 . " OR `glpi_plugin_monitoring_hosts`.`state` IS NULL) "
-                 . " AND `state_type`='SOFT'");
+         $unknown_soft += $this->countQuery($itemtype, "(`glpi_plugin_monitoring_hosts`.`state`='UNKNOWN' AND `state_type`='SOFT') 
+                     AND `is_acknowledged`='0'");
 
-         $down += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='DOWN'"
-                 . " AND `state_type`='HARD'");
+         $down += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='DOWN'
+                     AND `state_type`='HARD'
+                     AND `is_acknowledged`='0'");
 
-         $down_soft += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='DOWN'"
-                 . " AND `state_type`='SOFT'");
+         $down_soft += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='DOWN' 
+                     AND `state_type`='SOFT' 
+                     AND `is_acknowledged`='0'");
 
+         $acknowledge += $this->countQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state_type`='HARD'
+                    AND `is_acknowledged`='1'");
+         
       }
       
 
       // ** Manage play sound if down increased since last refresh
-         if (isset($_SESSION['plugin_monitoring_dashboard_hosts_down'])) {
-            if ($down > $_SESSION['plugin_monitoring_dashboard_hosts_down']) {
-               $play_sound = 1;
-            }            
-         }
-         $_SESSION['plugin_monitoring_dashboard_hosts_down'] = $down;
+      if (isset($_SESSION['plugin_monitoring_dashboard_hosts_down'])) {
+         if ($down > $_SESSION['plugin_monitoring_dashboard_hosts_down']) {
+            $play_sound = 1;
+         }            
+      }
+      $_SESSION['plugin_monitoring_dashboard_hosts_down'] = $down;
       
       // ** Manage play sound if unreachable increased since last refresh
-         if (isset($_SESSION['plugin_monitoring_dashboard_hosts_unreachable'])) {
-            if ($unreachable > $_SESSION['plugin_monitoring_dashboard_hosts_unreachable']) {
-               $play_sound = 1;
-            }            
-         }
-         $_SESSION['plugin_monitoring_dashboard_hosts_unreachable'] = $unreachable;
+      if (isset($_SESSION['plugin_monitoring_dashboard_hosts_unreachable'])) {
+         if ($unreachable > $_SESSION['plugin_monitoring_dashboard_hosts_unreachable']) {
+            $play_sound = 1;
+         }            
+      }
+      $_SESSION['plugin_monitoring_dashboard_hosts_unreachable'] = $unreachable;
       
       if ($display == '0') {
          $a_return = array();
          $a_return['up'] = strval($up);
+         $a_return['up_soft'] = strval($up_soft);
          $a_return['unreachable'] = strval($unreachable);
+         $a_return['unreachable_soft'] = strval($unreachable_soft);
          $a_return['unknown'] = strval($unknown);
+         $a_return['unknown_soft'] = strval($unknown_soft);
          $a_return['down'] = strval($down);
+         $a_return['down_soft'] = strval($down_soft);
+         $a_return['acknowledge'] = strval($acknowledge);
          return $a_return;
       }
 
@@ -1988,6 +2248,28 @@ Ext.onReady(function(){
          echo "<p style='font-size: 11px; text-align: center;'> Soft : ".$up_soft."</p>";
          echo "</td></tr>";
          echo "</table>";
+      echo "</td>";
+
+      echo "<td width='120'>";
+         $background = '';
+         if ($acknowledge > 0) {
+            $background = 'background="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/bg_acknowledge.png"';
+         }
+         echo "<table class='tab_cadre' width='100%' height='130' ".$background." >";
+         echo "<tr>";
+         echo "<th style='background-color:transparent;'>";
+         echo __('Acknowledge', 'monitoring');
+         echo "</th>";
+         echo "</tr>";
+         echo "<tr>";
+         echo "<th style='background-color:transparent;'>";
+         echo "<font style='font-size: 52px;'>".$acknowledge."</font>";
+         echo "</th>";
+         echo "</tr>";
+         echo "<tr><td>";
+         echo "<p style='font-size: 11px; text-align: center;'>&nbsp;</p>";
+         echo "</td></tr>";
+         echo "</table>";   
       echo "</td>";
 
       echo "</tr>";
@@ -2120,3 +2402,4 @@ Ext.onReady(function(){
 }
 
 ?>
+

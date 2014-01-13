@@ -40,7 +40,7 @@
    ------------------------------------------------------------------------
  */
 
-define ("PLUGIN_MONITORING_VERSION","0.84+1.2");
+define ("PLUGIN_MONITORING_VERSION","0.84+1.2d");
 
 define('_MPDF_TEMP_PATH', GLPI_PLUGIN_DOC_DIR.'/monitoring/pdf/');
 
@@ -76,7 +76,7 @@ function plugin_init_monitoring() {
               array('addtabon' => array('Profile')));
          Plugin::registerClass('PluginMonitoringServicescatalog',
               array('addtabon' => array('Central')));
-         Plugin::registerClass('PluginMonitoringUnavaibility');
+         Plugin::registerClass('PluginMonitoringUnavailability');
          Plugin::registerClass('PluginMonitoringSystem',
               array('addtabon' => array('Central')));
          

@@ -48,18 +48,13 @@ Html::header(__('Monitoring', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
              "monitoring", "display");
 
 
-$pmDisplay = new PluginMonitoringDisplay();
-$pmComponentscatalog = new PluginMonitoringComponentscatalog();
-$pmMessage = new PluginMonitoringMessage();
-
-$pmMessage->getMessages();
-
-$pmDisplay->menu();
-
-PluginMonitoringProfile::checkRight("dashboard_components_catalogs", 'r');
-
-$pmDisplay->showCounters("Componentscatalog");
-$pmComponentscatalog->showChecks();
+echo "<table class='tab_cadre' width='950'>";
+echo "<tr class='tab_bg_1'>";
+echo "<th height='80'>";
+echo __('Sorry, this content is not yet available in the Monitoring', 'monitoring');
+echo "</th>";
+echo "</tr>";
+echo "</table>";
 
 Html::footer();
 ?>

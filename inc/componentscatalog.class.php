@@ -59,13 +59,13 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
 
 
    static function canCreate() {
-      return PluginMonitoringProfile::haveRight("componentscatalog", 'w');
+      return PluginMonitoringProfile::haveRight("config_components_catalogs", 'w');
    }
 
 
    
    static function canView() {
-      return PluginMonitoringProfile::haveRight("componentscatalog", 'r');
+      return PluginMonitoringProfile::haveRight("config_components_catalogs", 'r');
    }
 
    
@@ -92,7 +92,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Central' :
-               if (PluginMonitoringProfile::haveRight("viewshomepage", 'r') && PluginMonitoringProfile::haveRight("componentscatalog", 'r')) {
+               if (PluginMonitoringProfile::haveRight("homepage", 'r') && PluginMonitoringProfile::haveRight("homepage_components_catalogs", 'r')) {
                   return array(1 => "[".__('Monitoring', 'monitoring')."] ".__('Components catalog', 'monitoring'));
                } else {
                   return '';
@@ -193,8 +193,8 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                break;
 
             case 6:
-               $pmUnavaibility = new PluginMonitoringUnavaibility();
-               $pmUnavaibility->displayComponentscatalog($item->getID());
+               $pmUnavailability = new PluginMonitoringUnavailability();
+               $pmUnavailability->displayComponentscatalog($item->getID());
                break;
             
             case 7:
@@ -271,7 +271,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                $i = 0;
             }
          }
-      }      
+      } 
       
       echo "</tr>";
       echo "</table>";      
@@ -333,7 +333,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       if ($nb_ressources == 0) {
          echo '<br/><div class="ch-item">
             <div>
-            <h1>Nothing to display ...</h1>
+            <h1>'.__('Nothing to display ...', 'monitoring').'</h1>
             </div>
          </div>';
 
@@ -382,22 +382,36 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=UP".
             "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
       }
-      $link_catalog = $CFG_GLPI['root_doc'].
-         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset"
-            . "&field[0]=8&searchtype[0]=equals&contains[0]=".$id.
-            "&itemtype=PluginMonitoringService&start=0";
+      if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+         $link_catalog = $CFG_GLPI['root_doc'].
+            "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset"
+               . "&field[0]=8&searchtype[0]=equals&contains[0]=".$id.
+               "&itemtype=PluginMonitoringService&start=0";
 
-      echo '<br/><div class="ch-item">
-         <div class="ch-info-'.$colorclass.'">
-			<h1><a href="'.$link_catalog.'">'.ucfirst($data['name']);
-         if ($data['comment'] != '') {
-            echo ' '.$this->getComments();
-         }
-         echo '</a></h1>
-			<p><a href="'.$link.'">'.$count.'</a><font style="font-size: 14px;">/ '.
-                 ($stateg['CRITICAL'] + $stateg['WARNING'] + $stateg['OK'] + $stateg['ACKNOWLEDGE']).'</font></p>
-         </div>
-		</div>';
+         echo '<br/><div class="ch-item">
+            <div class="ch-info-'.$colorclass.'">
+            <h1><a href="'.$link_catalog.'">'.ucfirst($data['name']);
+            if ($data['comment'] != '') {
+               echo ' '.$this->getComments();
+            }
+            echo '</a></h1>
+               <p><a href="'.$link.'">'.$count.'</a><font style="font-size: 14px;">/ '.
+               ($stateg['CRITICAL'] + $stateg['WARNING'] + $stateg['OK'] + $stateg['ACKNOWLEDGE']).'</font></p>
+            </div>
+         </div>';
+      } else {
+         echo '<br/><div class="ch-item">
+            <div class="ch-info-'.$colorclass.'">
+            <h1>'.ucfirst($data['name']);
+            if ($data['comment'] != '') {
+               echo ' '.$this->getComments();
+            }
+            echo '</h1>
+               <p>'.$count.'<font style="font-size: 14px;">/ '.
+               ($stateg['CRITICAL'] + $stateg['WARNING'] + $stateg['OK'] + $stateg['ACKNOWLEDGE']).'</font></p>
+            </div>
+         </div>';
+      }
 
 /* For debugging purposes ...
       echo '<pre>';
@@ -427,18 +441,47 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          echo __('Hosts', 'monitoring');
          echo "</th>";
          for ($i = 0; $i < count($services); $i++) {
-            $link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-                  "&field[0]=7&searchtype[0]=equals&contains[0]=".$services_ids[$services[$i]].
-                  "&itemtype=PluginMonitoringService&start=0'";
-               
-            echo  '<th class="vertical">';
-            echo  '<a href="'.$link.'"><div class="vertical-text">'.$services[$i].'</div></a>';
-            echo  '</th>';
+            if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+               $link = $CFG_GLPI['root_doc'].
+                  "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
+                     "&field[0]=7&searchtype[0]=equals&contains[0]=".$services_ids[$services[$i]].
+                     "&itemtype=PluginMonitoringService&start=0'";
+                  
+               echo  '<th class="vertical">';
+               echo  '<a href="'.$link.'"><div class="rotated-text"><span class="rotated-text__inner">'.$services[$i].'</span></div></a>';
+               echo  '</th>';
+            } else {
+               echo  '<th class="vertical">';
+               echo  '<div class="rotated-text"><span class="rotated-text__inner">'.$services[$i].'</span></div>';
+               echo  '</th>';
+            }
          }
          echo  '</tr>';
          break;
       }
+      
+/*
+      if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+         // Header with services name and service availability ...
+         foreach ($hosts_ressources as $host=>$resources) {
+            echo  '<tr>';
+            echo "<th>";
+            echo "</th>";
+            for ($i = 0; $i < count($services); $i++) {
+               $link = $CFG_GLPI['root_doc'].
+                  "/plugins/monitoring/front/unavailability.php?".
+                       "field[0]=2&searchtype[0]=equals&contains[0]=".$data['id'].
+                       "&sort=3&order=DESC&itemtype=PluginMonitoringUnavailability'";
+                  
+               echo  '<th>';
+               echo  '<a href="'.$link.'"><img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/info.png"/></a>';
+               echo  '</th>';
+            }
+            echo  '</tr>';
+            break;
+         }
+      }
+*/      
       
       // Content with host/service status and link to services list ...
       foreach ($hosts_ressources as $host=>$resources) {
@@ -448,13 +491,26 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                "&itemtype=PluginMonitoringService&start=0'";
             
          echo  "<tr class='tab_bg_2'>";
-         echo  "<td class='left'><a href='".$link."'>".$host."</a></td>";
+         if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+            echo  "<td class='left'><a href='".$link."'>".$host."</a></td>";
+         } else {
+            echo  "<td class='left'>".$host."</td>";
+         }
          for ($i = 0; $i < count($services); $i++) {
             echo '<td>';
-            echo '<a href="'.$link.'" title="'.$resources[$services[$i]]['state'].
-                    " - ".$resources[$services[$i]]['last_check']." - ".
-                    $resources[$services[$i]]['event'].'">'
-                    . '<div class="service'.$resources[$services[$i]]['state_type'].' service'.$resources[$services[$i]]['state'].'"></div></a>';
+            if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+               echo '<a href="'.$link.'">'.
+                        '<div title="'.$resources[$services[$i]]['state'].
+                        " - ".$resources[$services[$i]]['last_check']." - ".
+                        $resources[$services[$i]]['event'].
+                        '" class="service'.$resources[$services[$i]]['state_type'].' service'.$resources[$services[$i]]['state'].'"></div>'.
+                        '</a>';
+            } else {
+               echo '<div title="'.$resources[$services[$i]]['state'].
+                       " - ".$resources[$services[$i]]['last_check']." - ".
+                       $resources[$services[$i]]['event'].
+                       '" class="service'.$resources[$services[$i]]['state_type'].' service'.$resources[$services[$i]]['state'].'"></div>';
+            }
             echo '</td>';
          }
          echo  '</tr>';
@@ -497,8 +553,9 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $hosts_ids = array();
       $services_ids = array();
       $hosts_ressources = array();
-      $query = "SELECT `glpi_computers`.`name`, `glpi_computers`.`entities_id`, ".$pmComponentscatalog_Host->getTable().".* FROM `".$pmComponentscatalog_Host->getTable()."`
+      $query = "SELECT `glpi_computers`.`name`, `glpi_computers`.`entities_id`, ".$pmComponentscatalog_Host->getTable().".*, `glpi_plugin_monitoring_hosts`.`is_acknowledged` AS host_acknowledged FROM `".$pmComponentscatalog_Host->getTable()."`
          LEFT JOIN `glpi_computers` ON `glpi_computers`.`id` = `".$pmComponentscatalog_Host->getTable()."`.`items_id`
+         INNER JOIN `glpi_plugin_monitoring_hosts` ON (`glpi_computers`.`id` = `glpi_plugin_monitoring_hosts`.`items_id`)
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."' AND `glpi_computers`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].") 
          ORDER BY name ASC";
       // Toolbox::logInFile("pm", "query hosts - $query\n");
@@ -514,11 +571,21 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          $resultService = $DB->query($queryService);
          while ($dataService=$DB->fetch_array($resultService)) {
             $nb_ressources++;
+            
+            // If host is acknowledged, force service to be displayed as unknown acknowledged.
+            if ($dataComponentscatalog_Host['host_acknowledged'] == '1') {
+               $shortstate = 'yellowblue';
+               $dataService['state'] = 'UNKNOWN';
+               $dataService['state_type'] = 'SOFT';
+            }
+            
+/*
             // Fred: pourquoi ce test ... HARD ou SOFT, quand c'est CRITICAL, c'est CRITICAL !
             if ($dataService['state_type'] != "HARD") {
                $a_gstate[$dataService['id']] = "UNKNOWN";
                // $a_gstate[$dataService['id']] = "OK";
             } else {
+*/
                $statecurrent = PluginMonitoringDisplay::getState($dataService['state'], 
                                                                  $dataService['state_type'],
                                                                  $dataService['event'],
@@ -534,7 +601,9 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                } else if ($statecurrent == 'redblue') {
                   $a_gstate[$dataService['id']] = "ACKNOWLEDGE";
                }
+/*
             }
+*/
             if ($dataService['is_acknowledged'] == 1) {
                $dataService['state'] = 'ACKNOWLEDGE';
             }
@@ -862,7 +931,7 @@ $a_options['date_start'] = '2013-01-01 01:01:01';
       // define time for the report:
       // Week, week -1, week -2, month, month -1, month -2, year, year -1
       
-      $pmUnavaibility = new PluginMonitoringUnavaibility();
+      $pmUnavailability = new PluginMonitoringUnavailability();
       $pmComponent = new PluginMonitoringComponent();
       $pmServiceevent = new PluginMonitoringServiceevent();
       
@@ -969,11 +1038,11 @@ $a_options['date_start'] = '2013-01-01 01:01:01';
             echo $item->getTypeName();
             echo '</td>';
             echo '<td>';
-            $a_times = $pmUnavaibility->parseEvents($data['id'], '', $array['date_start'], $array['date_end']);
-            // previous unavaibility
+            $a_times = $pmUnavailability->parseEvents($data['id'], '', $array['date_start'], $array['date_end']);
+            // previous unavailability
             $str_start = strtotime($array['date_start']);
             $str_end   = strtotime($array['date_end']);
-            $a_times_previous = $pmUnavaibility->parseEvents($data['id'], '', 
+            $a_times_previous = $pmUnavailability->parseEvents($data['id'], '', 
                                  date('Y-m-d', $str_start - ($str_end - $str_start)), 
                                  $array['date_start']);
             $previous_percentage = round(((($a_times_previous[1] - $a_times_previous[0]) / $a_times_previous[1]) * 100), 3);
@@ -1033,7 +1102,7 @@ $a_options['date_start'] = '2013-01-01 01:01:01';
       $componentscatalogs_id = $array['componentscatalogs_id'];
       
       $pmComponent    = new PluginMonitoringComponent();
-      $pmUnavaibility = new PluginMonitoringUnavaibility();
+      $pmUnavailability = new PluginMonitoringUnavailability();
       $pmServiceevent = new PluginMonitoringServiceevent();
 
       if ($pdf) {
@@ -1111,7 +1180,7 @@ $a_options['date_start'] = '2013-01-01 01:01:01';
                $item->getFromDB($data['items_id']);
 
                if ($groupname == 'avaibility') {
-                  $a_times = $pmUnavaibility->parseEvents($data['id'], '', 
+                  $a_times = $pmUnavailability->parseEvents($data['id'], '', 
                                                           date('Y-m-d', strtotime("-".($number + 1)." ".$period, $end_date_timestamp)),
                                                           date('Y-m-d', strtotime("-".$number." ".$period, $end_date_timestamp)));
                   $previous_value = round(((($a_times[1] - $a_times[0]) / $a_times[1]) * 100), 3);
@@ -1132,7 +1201,7 @@ $a_options['date_start'] = '2013-01-01 01:01:01';
                   $startdatet = date('Y-m-d', strtotime("-".$i." ".$period, $end_date_timestamp));
                   $enddatet   = date('Y-m-d', strtotime("-".($i-1)." ".$period, $end_date_timestamp));
                   if ($groupname == 'avaibility') {
-                     $a_times = $pmUnavaibility->parseEvents($data['id'], '', $startdatet, $enddatet);
+                     $a_times = $pmUnavailability->parseEvents($data['id'], '', $startdatet, $enddatet);
                      $value = round(((($a_times[1] - $a_times[0]) / $a_times[1]) * 100), 2);
                   } else {
                      $queryevents = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`

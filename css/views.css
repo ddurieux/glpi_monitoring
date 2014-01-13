@@ -154,9 +154,10 @@
 	padding: 5px 5px;
 	position: relative;
 	top: -45px;
-	font-style: bold;
+	font-weight: bold;
+	font-style: italic;
 	margin: 0 15px;
-	font-size: 50px;
+	font-size: 40px;
 	border-top: 1px solid rgba(255,255,255,0.5);
 	text-align:center;
 	opacity: 1;
@@ -171,7 +172,6 @@
    color: #fff;
 	padding: 5px 5px;
 	position: relative;
-	font-style: italic;
 	margin: 0 15px;
 	font-size: 40px;
 	text-align:center;
@@ -312,6 +312,7 @@ td .vertical {
 	padding-right: 2px;
 }
 
+/*
 .vertical-text {
 	width: 18px;
 	margin: 0;
@@ -325,7 +326,50 @@ td .vertical {
 	-o-transform: rotate(-90.0deg);
 	transform: rotate(-90.0deg);
 }
-
+*/
+/** 
+* Works everywere ( IE7+, FF, Chrome, Safari, Opera )
+* Example: http://jsbin.com/afAQAWA/2/
+*/
+.rotated-text {
+    display: inline-block;
+    overflow: hidden;
+	font-weight: normal;
+	padding-left: 2px;
+	padding-right: 2px;
+	width: 18px;
+	margin: 0;
+	margin-bottom: 4px;
+}
+.rotated-text__inner {
+    display: inline-block;
+    white-space: nowrap;
+    /* this is for shity "non IE" browsers
+       that doesn't support writing-mode */
+    -webkit-transform: translate(1.1em,0) rotate(90deg);
+       -moz-transform: translate(1.1em,0) rotate(90deg);
+         -o-transform: translate(1.1em,0) rotate(90deg);
+            transform: translate(1.1em,0) rotate(90deg);
+    -webkit-transform-origin: 0 0;
+       -moz-transform-origin: 0 0;
+         -o-transform-origin: 0 0;
+            transform-origin: 0 0;
+   /* IE9+ */
+   -ms-transform: none;
+   -ms-transform-origin: none;
+   /* IE8+ */
+   -ms-writing-mode: tb-rl;
+   /* IE7 and below */
+   *writing-mode: tb-rl;
+}
+.rotated-text__inner:before {
+    content: "";
+    float: left;
+    margin-top: 100%;
+}
+/*
+<div class="rotated-text"><span class="rotated-text__inner">Easy</span></div>
+*/
 
 
 .serviceOK {
@@ -365,7 +409,7 @@ td .vertical {
 }
 
 .serviceSOFT{
-	/* Background en d�grad� blanc transparent */
+	/* Background en dégradé blanc transparent */
    /*
 	background-image: -webkit-linear-gradient(right top, rgba(255,255,255,.6) 0%, rgba(255,255,255,0) 100%);
 	background-image:    -moz-linear-gradient(right top, rgba(255,255,255,.6) 0%, rgba(255,255,255,0) 100%);
@@ -375,6 +419,64 @@ td .vertical {
    */
    background-image:radial-gradient(rgba(255,255,255,.7), rgba(255,255,255,0) 100%);
 }
+
+
+.page {
+  background: #fff;
+  width: 150px;
+  height: 40px;
+   
+ /* Optional Gradient */
+  background: -moz-linear-gradient(top,  #ffffff 0%, #e5e5e5 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#e5e5e5)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top,  #ffffff 0%,#e5e5e5 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top,  #ffffff 0%,#e5e5e5 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top,  #ffffff 0%,#e5e5e5 100%); /* IE10+ */
+  background: linear-gradient(top,  #ffffff 0%,#e5e5e5 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
+}
+
+.foldtl {
+  position: relative;
+
+/*
+  -webkit-box-shadow: 5px 5px 5px rgba(0,0,0,0.8);
+  -moz-box-shadow: 5px 5px 5px rgba(0,0,0,0.8);
+  box-shadow: 5px 5px 5px rgba(0,0,0,0.8);
+*/
+}
+ 
+.foldtl:before {
+  content: "";
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 0px;
+  height: 0px;
+
+  border-bottom: 15px solid #eee;
+  border-left: 15px solid #E7E7E2;
+  -webkit-box-shadow: 4px 4px 4px rgba(0,0,0,0.3);
+  -moz-box-shadow: 4px 4px 4px rgba(0,0,0,0.3);
+  box-shadow: 4px 4px 4px rgba(0,0,0,0.3);
+}
+
+.resourceOK:before {
+	border-bottom: 15px solid rgb(76,180,73);
+}
+.resourceWARNING:before {
+	border-bottom: 15px solid rgb(212,161,94);
+}
+.resourceCRITICAL:before {
+	border-bottom: 15px solid rgb(159,48,48);
+}
+.resourceUNKNOWN:before {
+	border-bottom: 15px solid yellow;
+}
+.resourceACKNOWLEDGE:before {
+	border-bottom: 15px solid rgb(18,158,255);
+}
+
 
 span.tagBox-container {
   display: inline-block;

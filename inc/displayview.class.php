@@ -65,13 +65,13 @@ class PluginMonitoringDisplayview extends CommonDBTM {
 
 
    static function canCreate() {
-      return PluginMonitoringProfile::haveRight("view", 'w');
+      return PluginMonitoringProfile::haveRight("config_views", 'w');
    }
 
 
    
    static function canView() {
-      return PluginMonitoringProfile::haveRight("view", 'r');
+      return PluginMonitoringProfile::haveRight("config_views", 'r');
    }
 
 
@@ -100,7 +100,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
    function haveVisibilityAccess() {
 
       // No public reminder right : no visibility check
-//      if (!PluginMonitoringProfile::haveRight("view", 'r')) {
+//      if (!PluginMonitoringProfile::haveRight("config_views", 'r')) {
 //         return false;
 //      }
 
@@ -243,7 +243,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
          $a_views = $this->getViews(1);
          foreach ($a_views as $views_id=>$name) {
             $this->getFromDB($views_id);
-            if ($this->haveVisibilityAccess()) {
+            if (PluginMonitoringProfile::haveRight("homepage_views", 'r') && $this->haveVisibilityAccess()) {
                $ong[] = "[".__('Monitoring', 'monitoring')." - "._n('View', 'Views', 1, 'monitoring')."] ".$this->fields['name'];
             }
          }
@@ -273,14 +273,16 @@ class PluginMonitoringDisplayview extends CommonDBTM {
             $pmDisplayview_rule->ShowRulesTabs($item->getID(), $tabnum);
          }
       } else if ($item->getType() == 'Central') {
-         $pmDisplayview_item = new PluginMonitoringDisplayview_item();
-         $pmDisplayview = new PluginMonitoringDisplayview();
-         $a_views = $pmDisplayview->getViews(1);
-         foreach ($a_views as $views_id=>$name) {
-            $pmDisplayview->getFromDB($views_id);
-            if ($pmDisplayview->haveVisibilityAccess()) {
-               $pmDisplayview_item->view($views_id);
-           }
+         if (PluginMonitoringProfile::haveRight("homepage_views", 'r')) {
+            $pmDisplayview_item = new PluginMonitoringDisplayview_item();
+            $pmDisplayview = new PluginMonitoringDisplayview();
+            $a_views = $pmDisplayview->getViews(1);
+            foreach ($a_views as $views_id=>$name) {
+               $pmDisplayview->getFromDB($views_id);
+               if ($pmDisplayview->haveVisibilityAccess()) {
+                  $pmDisplayview_item->view($views_id);
+              }
+            }
          }
       }
 
