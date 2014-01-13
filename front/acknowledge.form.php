@@ -56,7 +56,7 @@ if (isset($_POST['add']) ||isset($_POST['update']) ) {
    if (isset($_POST['hostname'])) {
       // Acknowledge an host ...
       if (isset($_POST['hostAcknowledge'])) {
-         Toolbox::logInFile("monitoring", "Acknowledge host ".$_POST['host_id']." / ".$_POST['hostname']."\n");
+         // Toolbox::logInFile("monitoring", "Acknowledge host ".$_POST['host_id']." / ".$_POST['hostname']."\n");
    
          $pmHost = new PluginMonitoringHost();
          $pmHost->getFromDBByQuery("WHERE `items_id` = '".$_POST['host_id']."'");
@@ -74,7 +74,7 @@ if (isset($_POST['add']) ||isset($_POST['update']) ) {
       
       // Acknowledge all services of an host ...
       if (isset($_POST['serviceCount'])) {
-         Toolbox::logInFile("monitoring", "Acknowledge host (all services) ".$_POST['host_id']." / ".$_POST['hostname']."\n");
+         // Toolbox::logInFile("monitoring", "Acknowledge host (all services) ".$_POST['host_id']." / ".$_POST['hostname']."\n");
    
          for ($i = 0; $i < $_POST['serviceCount']; $i++) {
             Toolbox::logInFile("monitoring", " - acknowledge service ".$_POST['serviceId'.$i]."\n");
@@ -92,7 +92,7 @@ if (isset($_POST['add']) ||isset($_POST['update']) ) {
          }
       }
    } else {
-      Toolbox::logInFile("monitoring", "Acknowledge service ".$_POST['id']."\n");
+      // Toolbox::logInFile("monitoring", "Acknowledge service ".$_POST['id']."\n");
    
       // Simply acknowledge a service ...
       $pmService->update($_POST);
