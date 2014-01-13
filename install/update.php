@@ -2443,7 +2443,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->dropField($newTable, 'weathermap');
          $migration->dropField($newTable, 'component');
          $migration->dropField($newTable, 'command');
-         $migration->dropField($newTable, 'config');
+         // $migration->dropField($newTable, 'config');
          $migration->dropField($newTable, 'check');
          $migration->dropField($newTable, 'allressources');
          $migration->dropField($newTable, 'hosts_status');
@@ -2458,7 +2458,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               
          $migration->addField($newTable, 
                               'config', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
          $migration->addField($newTable, 
                               'config_views', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
