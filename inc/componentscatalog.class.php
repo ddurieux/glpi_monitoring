@@ -193,8 +193,8 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                break;
 
             case 6:
-               $pmUnavaibility = new PluginMonitoringUnavaibility();
-               $pmUnavaibility->displayComponentscatalog($item->getID());
+               $pmUnavailability = new PluginMonitoringUnavailability();
+               $pmUnavailability->displayComponentscatalog($item->getID());
                break;
             
             case 7:
@@ -459,6 +459,29 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          echo  '</tr>';
          break;
       }
+      
+/*
+      if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+         // Header with services name and service availability ...
+         foreach ($hosts_ressources as $host=>$resources) {
+            echo  '<tr>';
+            echo "<th>";
+            echo "</th>";
+            for ($i = 0; $i < count($services); $i++) {
+               $link = $CFG_GLPI['root_doc'].
+                  "/plugins/monitoring/front/unavailability.php?".
+                       "field[0]=2&searchtype[0]=equals&contains[0]=".$data['id'].
+                       "&sort=3&order=DESC&itemtype=PluginMonitoringUnavailability'";
+                  
+               echo  '<th>';
+               echo  '<a href="'.$link.'"><img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/info.png"/></a>';
+               echo  '</th>';
+            }
+            echo  '</tr>';
+            break;
+         }
+      }
+*/      
       
       // Content with host/service status and link to services list ...
       foreach ($hosts_ressources as $host=>$resources) {
@@ -908,7 +931,7 @@ $a_options['date_start'] = '2013-01-01 01:01:01';
       // define time for the report:
       // Week, week -1, week -2, month, month -1, month -2, year, year -1
       
-      $pmUnavaibility = new PluginMonitoringUnavaibility();
+      $pmUnavailability = new PluginMonitoringUnavailability();
       $pmComponent = new PluginMonitoringComponent();
       $pmServiceevent = new PluginMonitoringServiceevent();
       
@@ -1015,11 +1038,11 @@ $a_options['date_start'] = '2013-01-01 01:01:01';
             echo $item->getTypeName();
             echo '</td>';
             echo '<td>';
-            $a_times = $pmUnavaibility->parseEvents($data['id'], '', $array['date_start'], $array['date_end']);
-            // previous unavaibility
+            $a_times = $pmUnavailability->parseEvents($data['id'], '', $array['date_start'], $array['date_end']);
+            // previous unavailability
             $str_start = strtotime($array['date_start']);
             $str_end   = strtotime($array['date_end']);
-            $a_times_previous = $pmUnavaibility->parseEvents($data['id'], '', 
+            $a_times_previous = $pmUnavailability->parseEvents($data['id'], '', 
                                  date('Y-m-d', $str_start - ($str_end - $str_start)), 
                                  $array['date_start']);
             $previous_percentage = round(((($a_times_previous[1] - $a_times_previous[0]) / $a_times_previous[1]) * 100), 3);
@@ -1079,7 +1102,7 @@ $a_options['date_start'] = '2013-01-01 01:01:01';
       $componentscatalogs_id = $array['componentscatalogs_id'];
       
       $pmComponent    = new PluginMonitoringComponent();
-      $pmUnavaibility = new PluginMonitoringUnavaibility();
+      $pmUnavailability = new PluginMonitoringUnavailability();
       $pmServiceevent = new PluginMonitoringServiceevent();
 
       if ($pdf) {
@@ -1157,7 +1180,7 @@ $a_options['date_start'] = '2013-01-01 01:01:01';
                $item->getFromDB($data['items_id']);
 
                if ($groupname == 'avaibility') {
-                  $a_times = $pmUnavaibility->parseEvents($data['id'], '', 
+                  $a_times = $pmUnavailability->parseEvents($data['id'], '', 
                                                           date('Y-m-d', strtotime("-".($number + 1)." ".$period, $end_date_timestamp)),
                                                           date('Y-m-d', strtotime("-".$number." ".$period, $end_date_timestamp)));
                   $previous_value = round(((($a_times[1] - $a_times[0]) / $a_times[1]) * 100), 3);
@@ -1178,7 +1201,7 @@ $a_options['date_start'] = '2013-01-01 01:01:01';
                   $startdatet = date('Y-m-d', strtotime("-".$i." ".$period, $end_date_timestamp));
                   $enddatet   = date('Y-m-d', strtotime("-".($i-1)." ".$period, $end_date_timestamp));
                   if ($groupname == 'avaibility') {
-                     $a_times = $pmUnavaibility->parseEvents($data['id'], '', $startdatet, $enddatet);
+                     $a_times = $pmUnavailability->parseEvents($data['id'], '', $startdatet, $enddatet);
                      $value = round(((($a_times[1] - $a_times[0]) / $a_times[1]) * 100), 2);
                   } else {
                      $queryevents = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`

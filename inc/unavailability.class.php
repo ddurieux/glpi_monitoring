@@ -44,30 +44,34 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginMonitoringUnavaibility extends CommonDBTM {
+class PluginMonitoringUnavailability extends CommonDBTM {
    private $currentstate = '';
    private $plugin_monitoring_services_id = 0;
-   private $unavaibilities_id = 0;
+   private $unavailabilities_id = 0;
+   private $unavailability_details = '';
+   
+   static $currentItem = NULL;
+   
    
    
    static function getTypeName($nb=0) {
-      return __('Unavaibility', 'monitoring');
+      return __('Unavailability', 'monitoring');
    }
    
    
    
-   static function cronUnavaibility() {      
+   static function cronUnavailability() {      
       
       ini_set("max_execution_time", "0");
       
-      $pmUnavaibility = new PluginMonitoringUnavaibility();
-      $pmUnavaibility->runUnavaibility();
+      $pmUnavailability = new PluginMonitoringUnavailability();
+      $pmUnavailability->runUnavailability();
       
       return true;
    }
    
    
-  
+   
    function getSearchOptions() {
       $tab = array();
       $tab['common'] = _n('Characteristic', 'Characteristics', 2);
@@ -77,13 +81,13 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
       $tab[1]['name']          = __('ID');
       $tab[1]['massiveaction'] = false;
       
-      $tab[2]['table'] = "glpi_plugin_monitoring_services";
-      $tab[2]['field'] = 'name';
-      $tab[2]['linkfield'] = 'plugin_monitoring_services_id';
-      $tab[2]['name'] = __('Ressource', 'monitoring');
-      $tab[2]['datatype'] = 'itemlink';
-      $tab[2]['itemlink_type']  = 'PluginMonitoringService';
-      
+      $tab[2]['table']         = "glpi_plugin_monitoring_services";
+      $tab[2]['field']         = 'name';
+      // $tab[2]['linkfield']     = 'plugin_monitoring_services_id';
+      $tab[2]['name']          = __('Ressource', 'monitoring');
+      // $tab[2]['datatype']      = 'itemlink';
+      // $tab[2]['itemlink_type']  = 'PluginMonitoringService';
+
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'begin_date';
       $tab[3]['name']          = __('Start', 'monitoring');
@@ -103,16 +107,59 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
       $tab[5]['withseconds']   = true;
       $tab[5]['massiveaction'] = false;
       
+      $tab[6]['table']         = $this->getTable();
+      $tab[6]['field']         = 'details';
+      $tab[6]['name']          = __('Unavailability details', 'monitoring');
+      $tab[6]['datatype']      = 'text';
+      $tab[6]['massiveaction'] = false;
+      
+      $tab[7]['table']         = $this->getTable();
+      $tab[7]['field']         = 'scheduled';
+      $tab[7]['name']          = __('Scheduled unavailability', 'monitoring');
+      // $tab[7]['datatype']      = 'bool';
+      // $tab[7]['unit']          = '<a href="www.google.fr">Toggle</a>';
+      $tab[7]['massiveaction'] = false;
+      
       return $tab;
    }
    
    
    
-   static function runUnavaibility($services_id = 0) {
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+      global $CFG_GLPI;
+      
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      
+      switch ($field) {
+         case "id" :
+            self::$currentItem = new PluginMonitoringUnavailability();
+            self::$currentItem->getFromDB($values[$field]);
+            break;
+         case "scheduled" :
+            $out = Dropdown::getValueWithUnit(Dropdown::getYesNo($values[$field]), '');
+            if (PluginMonitoringProfile::haveRight("acknowledge", 'r')) {
+               $newValue = (self::$currentItem->fields['scheduled'] == '0') ? '1' : '0';
+               $out .= "&nbsp;";
+               $out .= "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/unavailability.form.php?id=".self::$currentItem->fields['id']."&scheduled=".$newValue."'>"
+                  ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_checked.png'"
+                  ." alt='".__('Change unavailability period schedule status', 'monitoring')."'"
+                  ." title='".__('Change unavailability period schedule status', 'monitoring')."'/>"
+                  ."</a>";
+            }
+            return $out;
+      }
+      return '';
+   }
+   
+   
+   
+   static function runUnavailability($services_id = 0) {
       global $DB;
       
 
-      $pmUnavaibility = new PluginMonitoringUnavaibility();
+      $pmUnavailability = new PluginMonitoringUnavailability();
       $pmServiceevent = new PluginMonitoringServiceevent();
       
       $where = '';
@@ -123,7 +170,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
       $query = "SELECT * FROM `glpi_plugin_monitoring_services` ".$where;
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
-         $pmUnavaibility->getCurrentState($data['id']);
+         $pmUnavailability->getCurrentState($data['id']);
 
          $nb = countElementsInTable('glpi_plugin_monitoring_serviceevents', 
                  "`unavailability`='0'
@@ -139,7 +186,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
                LIMIT ".$i.", 10000 ";
             $result2 = $DB->query($query2);
             while ($data2=$DB->fetch_array($result2)) {
-               $pmUnavaibility->checkState($data2['state'], 
+               $pmUnavailability->checkState($data2['state'], 
                                            $data2['date'], 
                                            $data['id'], 
                                            $data2['event']);
@@ -150,12 +197,10 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
             }
          }
       }
-      
    }
    
    
    
-
    function getCurrentState($plugin_monitoring_services_id) {
       $this->plugin_monitoring_services_id = $plugin_monitoring_services_id;
       
@@ -165,7 +210,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
          $a_state = current($a_states);
          if (is_null($a_state['end_date'])) {
             $this->currentstate = 'critical';
-            $this->unavaibilities_id = $a_state['id'];
+            $this->unavailabilities_id = $a_state['id'];
          } else {
             $this->currentstate = 'ok';
          }
@@ -178,27 +223,35 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
    
    function checkState($stateevent, $date, $services_id, $event) {
       
+      Toolbox::logInFile("pm", "unavailability_details - ".$this->unavailability_details." : $event\n");
+      Toolbox::logInFile("pm", "checkState - $services_id : $event\n");
       $state = PluginMonitoringDisplay::getState($stateevent, "HARD", $event);
       
-      if ($state == 'red') { // Critial
+      if ($state == 'red') { // Critical
          if ($this->currentstate == 'ok') {
             // Add 
             $input = array();
             $input['plugin_monitoring_services_id'] = $this->plugin_monitoring_services_id;
             $input['begin_date'] = $date;
-            $this->unavaibilities_id = $this->add($input);
+            $this->unavailability_details = $date . " : " . $event;
+            $input['details'] = $this->unavailability_details;
+            $this->unavailabilities_id = $this->add($input);
             $this->currentstate = 'critical';
          }
       } else { // Ok
          if ($this->currentstate == 'critical') {
             // update
             $input = array();
-            $input['id'] = $this->unavaibilities_id;
+            $input['id'] = $this->unavailabilities_id;
+            $input['begin_date'] = isset($this->fields['begin_date']) ? $this->fields['begin_date']:$date;
             $input['end_date'] = $date;
-            $this->getFromDB($this->unavaibilities_id);
-            $input['duration'] =  strtotime($date) - strtotime($this->fields['begin_date']);
+            if (! empty($this->unavailability_details)) $this->unavailability_details .= "\n";
+            $this->unavailability_details .= $date . " : " . $event;
+            $input['details'] = $this->unavailability_details;
+            $input['duration'] =  strtotime($date) - strtotime($input['begin_date']);
+            $this->getFromDB($this->unavailabilities_id);
             $this->update($input);
-            $this->unavaibilities_id = 0;
+            $this->unavailabilities_id = 0;
             $this->currentstate = 'ok';
          }
       }      
@@ -253,9 +306,9 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
             $this->displayValues($data['id'], 'currentyear');
 
             echo "<td class='center'>";
-            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/unavaibility.php?".
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/unavailability.php?".
                     "field[0]=2&searchtype[0]=equals&contains[0]=".$data['id'].
-                    "&sort=3&order=DESC&itemtype=PluginMonitoringUnavaibility'>
+                    "&sort=3&order=DESC&itemtype=PluginMonitoringUnavailability'>
                <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/info.png'/></a>";
             echo "</td>";
             echo "</tr>";
@@ -285,7 +338,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
          $timeend     = strtotime($enddate);
          $totaltime = $timeend - $timestart;
 
-         $query = "SELECT * FROM `glpi_plugin_monitoring_unavaibilities`
+         $query = "SELECT * FROM `glpi_plugin_monitoring_unavailabilities`
             WHERE `plugin_monitoring_services_id`='".$services_id."'
                AND `begin_date` >= '".$begindate."'
                AND `end_date` <= '".$enddate."'";
@@ -296,8 +349,8 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
             $activetime  = $timeend-$timestart;
             $timecriticalSeconds += $activetime;
          }            
-         // unvaibility when more than end
-         $query = "SELECT * FROM `glpi_plugin_monitoring_unavaibilities`
+         // unavailability when more than end
+         $query = "SELECT * FROM `glpi_plugin_monitoring_unavailabilities`
             WHERE `plugin_monitoring_services_id`='".$services_id."'
                AND `begin_date` >= '".$begindate."'
                AND `begin_date` <= '".$enddate."'
@@ -310,7 +363,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
             $timecriticalSeconds += $activetime;
          }
          // unvaibility when before start
-         $query = "SELECT * FROM `glpi_plugin_monitoring_unavaibilities`
+         $query = "SELECT * FROM `glpi_plugin_monitoring_unavailabilities`
             WHERE `plugin_monitoring_services_id`='".$services_id."'
                AND `begin_date` < '".$begindate."'
                AND `end_date` <= '".$enddate."'
@@ -335,7 +388,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
             $totaltime = $timeend - $timestart;
                
             $month = date('Y-m-');
-            $query = "SELECT * FROM `glpi_plugin_monitoring_unavaibilities`
+            $query = "SELECT * FROM `glpi_plugin_monitoring_unavailabilities`
                WHERE `plugin_monitoring_services_id`='".$services_id."'
                   AND `begin_date` LIKE '".$month."%'
                   AND `end_date` LIKE '".$month."%'";
@@ -347,7 +400,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
                $timecriticalSeconds += $activetime;
             }
             // unvaibility on 2 months
-            $query = "SELECT * FROM `glpi_plugin_monitoring_unavaibilities`
+            $query = "SELECT * FROM `glpi_plugin_monitoring_unavailabilities`
                WHERE `plugin_monitoring_services_id`='".$services_id."'
                   AND `begin_date` NOT LIKE '".$month."%'
                   AND `end_date` LIKE '".$month."%'";
@@ -359,7 +412,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
                $timecriticalSeconds += $activetime;
             }
             // current unvaibility (not finished)
-            $query = "SELECT * FROM `glpi_plugin_monitoring_unavaibilities`
+            $query = "SELECT * FROM `glpi_plugin_monitoring_unavailabilities`
                WHERE `plugin_monitoring_services_id`='".$services_id."'
                   AND `end_date` IS NULL";
             $result = $DB->query($query);
@@ -379,7 +432,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
             $totaltime = $timeend - $timestart;
             
             $month = date('Y-m-',mktime(1,1,1,$m-1,1,date('Y')));
-            $query = "SELECT * FROM `glpi_plugin_monitoring_unavaibilities`
+            $query = "SELECT * FROM `glpi_plugin_monitoring_unavailabilities`
                WHERE `plugin_monitoring_services_id`='".$services_id."'
                   AND `begin_date` LIKE '".$month."%'
                   AND `end_date` LIKE '".$month."%'";
@@ -391,7 +444,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
                $timecriticalSeconds += $activetime;
             }            
             // unvaibility on 2 months
-            $query = "SELECT * FROM `glpi_plugin_monitoring_unavaibilities`
+            $query = "SELECT * FROM `glpi_plugin_monitoring_unavailabilities`
                WHERE `plugin_monitoring_services_id`='".$services_id."'
                   AND `begin_date` NOT LIKE '".$month."%'
                   AND `end_date` LIKE '".$month."%'";
@@ -402,7 +455,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
                $activetime = $timeend-$timestart;
                $timecriticalSeconds += $activetime;
             }
-            $query = "SELECT * FROM `glpi_plugin_monitoring_unavaibilities`
+            $query = "SELECT * FROM `glpi_plugin_monitoring_unavailabilities`
                WHERE `plugin_monitoring_services_id`='".$services_id."'
                   AND `begin_date` LIKE '".$month."%'
                   AND `end_date` NOT LIKE '".$month."%'";
@@ -423,7 +476,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
             $totaltime = $timeend - $timestart;
                
             $year = date('Y-');
-            $query = "SELECT * FROM `glpi_plugin_monitoring_unavaibilities`
+            $query = "SELECT * FROM `glpi_plugin_monitoring_unavailabilities`
                WHERE `plugin_monitoring_services_id`='".$services_id."'
                   AND `begin_date` LIKE '".$year."%'
                   AND `end_date` LIKE '".$year."%'";
@@ -435,7 +488,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
                $timecriticalSeconds += $activetime;
             }
             // unvaibility on 2 years
-            $query = "SELECT * FROM `glpi_plugin_monitoring_unavaibilities`
+            $query = "SELECT * FROM `glpi_plugin_monitoring_unavailabilities`
                WHERE `plugin_monitoring_services_id`='".$services_id."'
                   AND `begin_date` NOT LIKE '".$year."%'
                   AND `end_date` LIKE '".$year."%'";
@@ -447,7 +500,7 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
                $timecriticalSeconds += $activetime;
             }
             // current unvaibility (not finished)
-            $query = "SELECT * FROM `glpi_plugin_monitoring_unavaibilities`
+            $query = "SELECT * FROM `glpi_plugin_monitoring_unavailabilities`
                WHERE `plugin_monitoring_services_id`='".$services_id."'
                   AND `end_date` IS NULL";
             $result = $DB->query($query);
@@ -486,9 +539,8 @@ class PluginMonitoringUnavaibility extends CommonDBTM {
    
    
    function showList($get) {
-      Search::manageGetValues("PluginMonitoringUnavaibility");
-      Search::showList("PluginMonitoringUnavaibility", $get);
+      Search::manageGetValues("PluginMonitoringUnavailability");
+      Search::showList("PluginMonitoringUnavailability", $get);
    }
-   
 }
 ?>

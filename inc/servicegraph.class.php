@@ -417,8 +417,8 @@ class PluginMonitoringServicegraph extends CommonDBTM {
             return;
          }
 
-         $pmUnavaibility = new PluginMonitoringUnavaibility();
-         $pmUnavaibility->runUnavaibility($plugin_monitoring_services_id);
+         $pmUnavailability = new PluginMonitoringUnavailability();
+         $pmUnavailability->runUnavailability($plugin_monitoring_services_id);
 
          $a_dateold = array();
          

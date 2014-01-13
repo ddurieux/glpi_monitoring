@@ -90,10 +90,15 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermapbg");
    }
    
-   $unavaibility_recalculate = 0;
-   if (!TableExists("glpi_plugin_monitoring_unavaibilities")
-           || !FieldExists("glpi_plugin_monitoring_unavaibilities", "duration")) {
-      $unavaibility_recalculate = 1;
+   $unavailability_recalculate = 0;
+   if (!TableExists("glpi_plugin_monitoring_unavailabilities")
+           || !FieldExists("glpi_plugin_monitoring_unavailabilities", "duration")) {
+      $unavailability_recalculate = 1;
+   }
+   
+   $unavailability_reset = 0;
+   if (!TableExists("glpi_plugin_monitoring_unavailabilities")) {
+      $unavailability_reset = 1;
    }
    
     /*
@@ -2637,14 +2642,37 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     /*
     * Table glpi_plugin_monitoring_unavaibilities
     */
-      $newTable = "glpi_plugin_monitoring_unavaibilities";
+      $newTable = "glpi_plugin_monitoring_unavailabilities";
       if (!TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
+         
+         $migration->addField($newTable, 
+                              'plugin_monitoring_services_id', 
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'begin_date', 
+                              "datetime DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'end_date', 
+                              "datetime DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'duration', 
+                              "int(15) NOT NULL DEFAULT '0'");
+         // Scheduled unavailability
+         $migration->addField($newTable, 
+                              'scheduled', 
+                              "tinyint(1) NOT NULL DEFAULT '0'");
+         // Unavailability details
+         $migration->addField($newTable, 
+                              'details', 
+                              "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->migrationOneTable($newTable);
       }
+/*
          $migration->changeField($newTable, 
                                  'id', 
                                  'id', 
@@ -2671,20 +2699,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->dropField($newTable, 
                                  'itemtype');
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                              'plugin_monitoring_services_id', 
-                              "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'begin_date', 
-                              "datetime DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'end_date', 
-                              "datetime DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'duration', 
-                              "int(15) NOT NULL DEFAULT '0'");
-      $migration->migrationOneTable($newTable);
-      
+*/      
       
       
     /*
@@ -2971,8 +2986,8 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       CronTask::Register('PluginMonitoringLog', 'cleanlogs', '96400', 
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
    }
-   if (!$crontask->getFromDBbyName('PluginMonitoringUnavaibility', 'unavaibility')) {
-      CronTask::Register('PluginMonitoringUnavaibility', 'unavaibility', '300', 
+   if (!$crontask->getFromDBbyName('PluginMonitoringUnavailability', 'unavailability')) {
+      CronTask::Register('PluginMonitoringUnavailability', 'Update unavailability periods', '300', 
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
    }
    if (!$crontask->getFromDBbyName('PluginMonitoringDisplayview_rule', 'replayallviewrules')) {
@@ -3017,19 +3032,34 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    $pmConfig->initConfig();
    
    
-   // * Recalculate unavaibility
-      if ($unavaibility_recalculate == 1) {
-         $query = "SELECT * FROM `glpi_plugin_monitoring_unavaibilities`
-            WHERE `end_date` IS NOT NULL";
-         $result = $DB->query($query);
-         while ($data=$DB->fetch_array($result)) {
-            $time = strtotime($data['end_date']) - strtotime($data['begin_date']);
-            $queryd = "UPDATE `glpi_plugin_monitoring_unavaibilities`
-               SET `duration`='".$time."'
-               WHERE `id`='".$data['id']."'";
-            $DB->query($queryd);
-         }
+   // * Calculate unavailability
+   $unavailability_reset = 1;
+   if ($unavailability_reset == 1) {
+      // Delete unavailability periods
+      $query = "DELETE FROM `glpi_plugin_monitoring_unavailabilities`";
+      $DB->query($query) or die('Unable to delete table `glpi_plugin_monitoring_unavailabilities`');
+      
+      // Reset service events unavailability
+      $query = "UPDATE `glpi_plugin_monitoring_serviceevents`
+         SET `unavailability`='0'";
+      $DB->query($query) or die('Unable to update table `glpi_plugin_monitoring_serviceevents`');
+      
+      PluginMonitoringUnavailability::runUnavailability();
+   }
+   
+   // * Recalculate unavailability
+   if ($unavailability_recalculate == 1) {
+      $query = "SELECT * FROM `glpi_plugin_monitoring_unavailabilities`
+         WHERE `end_date` IS NOT NULL";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         $time = strtotime($data['end_date']) - strtotime($data['begin_date']);
+         $queryd = "UPDATE `glpi_plugin_monitoring_unavailabilities`
+            SET `duration`='".$time."'
+            WHERE `id`='".$data['id']."'";
+         $DB->query($queryd);
       }
+   }
 
    
    $query = "UPDATE `glpi_plugin_monitoring_configs`
