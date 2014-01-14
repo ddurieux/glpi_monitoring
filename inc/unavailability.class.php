@@ -176,7 +176,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
                  "`unavailability`='0'
                AND `state_type`='HARD'
                AND `plugin_monitoring_services_id`='".$data['id']."'");
-         
+         $last_id = 0;
          for ($i=0; $i < $nb; $i += 10000) {
             $query2 = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `unavailability`='0'
@@ -190,12 +190,16 @@ class PluginMonitoringUnavailability extends CommonDBTM {
                                            $data2['date'], 
                                            $data['id'], 
                                            $data2['event']);
-               $input = array();
-               $input['id'] = $data2['id'];
-               $input['unavailability'] = 1;
-               $pmServiceevent->update($input);
+               $last_id = $data2['id'];
             }
          }
+         $query_u = "UPDATE `glpi_plugin_monitoring_serviceevents`
+            SET `unavailability`='1'
+            WHERE `unavailability`='0'
+            AND `state_type`='HARD'
+            AND `plugin_monitoring_services_id`='".$data['id']."'
+            AND `id` <= '".$last_id."' ";
+         $DB->query($query_u);
       }
    }
    
@@ -223,8 +227,6 @@ class PluginMonitoringUnavailability extends CommonDBTM {
    
    function checkState($stateevent, $date, $services_id, $event) {
       
-      Toolbox::logInFile("pm", "unavailability_details - ".$this->unavailability_details." : $event\n");
-      Toolbox::logInFile("pm", "checkState - $services_id : $event\n");
       $state = PluginMonitoringDisplay::getState($stateevent, "HARD", $event);
       
       if ($state == 'red') { // Critical
@@ -233,7 +235,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
             $input = array();
             $input['plugin_monitoring_services_id'] = $this->plugin_monitoring_services_id;
             $input['begin_date'] = $date;
-            $this->unavailability_details = $date . " : " . $event;
+            $this->unavailability_details = $date . " : " . htmlentities($event, ENT_QUOTES);
             $input['details'] = $this->unavailability_details;
             $this->unavailabilities_id = $this->add($input);
             $this->currentstate = 'critical';
