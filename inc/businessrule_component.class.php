@@ -62,6 +62,24 @@ class PluginMonitoringBusinessrule_component extends CommonDBTM {
    function replayDynamicServices($plugin_monitoring_businessrulegroups_id) {
       global $DB;
 
+      if ($plugin_monitoring_businessrulegroups_id == 0) {
+         return;
+      }
+      // Get entity and if recursif
+      $pmBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
+      $pmServicescatalog = new PluginMonitoringServicescatalog();
+      
+      $pmBusinessrulegroup->getFromDB($plugin_monitoring_businessrulegroups_id);
+      $pmServicescatalog->getFromDB($pmBusinessrulegroup->fields['plugin_monitoring_servicescatalogs_id']);
+
+      if ($pmServicescatalog->fields['is_recursive']) {
+         $a_sons = getSonsOf("glpi_entities", $pmServicescatalog->fields['entities_id']);
+         $restrict_entities = "AND ( `glpi_plugin_monitoring_services`.`entities_id` IN ('".implode("','", $a_sons)."') )";
+      } else {
+         $restrict_entities = "AND ( `glpi_plugin_monitoring_services`.`entities_id` = '".
+                 $pmServicescatalog->fields['entities_id']."' )";
+      }   
+      
       $a_brcomponents = $this->find("`plugin_monitoring_businessrulegroups_id`='".$plugin_monitoring_businessrulegroups_id."'");
       
       $a_services = array();
@@ -77,7 +95,8 @@ class PluginMonitoringBusinessrule_component extends CommonDBTM {
                  . "    ON plugin_monitoring_componentscatalogs_hosts_id="
                  . "       `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`"
                  . " WHERE `glpi_plugin_monitoring_services`.`plugin_monitoring_components_id`"
-                 . "          = '".$pmComponentscatalog_Component->fields['plugin_monitoring_components_id']."' ";
+                 . "          = '".$pmComponentscatalog_Component->fields['plugin_monitoring_components_id']."' ".
+                 $restrict_entities;
          $result = $DB->query($query);
          while ($data=$DB->fetch_array($result)) {
             $a_services[$data['id']] = $data['id'];
@@ -87,7 +106,7 @@ class PluginMonitoringBusinessrule_component extends CommonDBTM {
       // get static services of the group (so not add dynamic if yet in static)
       $pmBusinessrule_component = new PluginMonitoringBusinessrule_component;
       $pmBusinessrule = new PluginMonitoringBusinessrule();
-      $a_static = $pmBusinessrule_component->find(
+      $a_static = $pmBusinessrule->find(
               "`plugin_monitoring_businessrulegroups_id`='".$plugin_monitoring_businessrulegroups_id."'"
               . " AND `is_dynamic`=0");
       foreach ($a_static as $data) {
