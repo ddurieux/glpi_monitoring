@@ -3043,7 +3043,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $query = "UPDATE `glpi_plugin_monitoring_serviceevents`
          SET `unavailability`='0'";
       $DB->query($query) or die('Unable to update table `glpi_plugin_monitoring_serviceevents`');
-      
+      include (GLPI_ROOT . "/plugins/monitoring/inc/display.class.php");
+      include (GLPI_ROOT . "/plugins/monitoring/inc/serviceevent.class.php");
+      include (GLPI_ROOT . "/plugins/monitoring/inc/unavailability.class.php"); 
       PluginMonitoringUnavailability::runUnavailability();
    }
    
