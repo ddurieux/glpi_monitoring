@@ -949,7 +949,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       global $CFG_GLPI;
       
       if ($loadpreferences == 1) {
-         PluginMonitoringServicegraph::loadPreferences($components_id);
+         if (! PluginMonitoringServicegraph::loadPreferences($components_id)) return false;
       }
       
       $pmComponent = new PluginMonitoringComponent();
@@ -1213,7 +1213,9 @@ myPicker.fromString(\''.$color.'\')
       echo "</tr>";
       echo "</table>";
 
-      Html::closeForm();      
+      Html::closeForm();
+      
+      return true;
    }
    
    
@@ -1226,6 +1228,10 @@ myPicker.fromString(\''.$color.'\')
       $_SESSION['glpi_plugin_monitoring']['perfname'][$components_id] = array();
       // $a_perfname = importArrayFromDB($pmComponent->fields['perfname']);
       $a_perfname = unserialize($pmComponent->fields['perfname']);
+      
+      // No perfdata for this service ...
+      if (! is_array($a_perfname)) return false;
+      
       foreach ($a_perfname as $perfname=>$active) {
          $_SESSION['glpi_plugin_monitoring']['perfname'][$components_id][$perfname] = 'checked';
       }
@@ -1243,6 +1249,8 @@ myPicker.fromString(\''.$color.'\')
       foreach ($a_perfnamecolor as $perfname=>$color) {
          $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$components_id][$perfname] = $color;
       }
+      
+      return true;
    }
 }
 

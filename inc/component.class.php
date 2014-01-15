@@ -160,6 +160,11 @@ class PluginMonitoringComponent extends CommonDBTM {
       $tab[2]['name']          = __('ID');
       $tab[2]['massiveaction'] = false; // implicit field is id
      
+		$tab[3]['table'] = $this->getTable();
+		$tab[3]['field'] = 'description';
+		$tab[3]['linkfield'] = 'description';
+		$tab[3]['name'] = __('Alias');
+
       return $tab;
    }
 
@@ -229,6 +234,15 @@ class PluginMonitoringComponent extends CommonDBTM {
       // * Link
       echo "<tr>";
       echo "<td>";
+      echo __('Alias (Shinken service_description)', 'monitoring')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      $objectDescription = autoName($this->fields["description"], "name", 1,
+                             $this->getType());
+      Html::autocompletionTextField($this, 'description', array('value' => $objectDescription));      
+      echo "</td>"; 
+/*
+      echo "<td>";
 //      echo "Type of template&nbsp;:";
       echo "</td>";
       echo "<td>";
@@ -238,6 +252,7 @@ class PluginMonitoringComponent extends CommonDBTM {
 //      $a_types['processor'] = "Processor";
 //      Dropdown::showFromArray("link", $a_types, array('value'=>$this->fields['link']));
       echo "</td>";
+*/
       // * active check
       echo "<td>";
       echo __('Active checks', 'monitoring')."<font class='red'>*</font>&nbsp;:";
