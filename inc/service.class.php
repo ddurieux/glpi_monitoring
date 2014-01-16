@@ -191,19 +191,16 @@ class PluginMonitoringService extends CommonDBTM {
          
          echo "<tr class='tab_bg_1'>";
          echo "<th>";
-         echo __('Status');
+         echo __('Show counters', 'monitoring');
          echo "</th>";
          echo "<th>";
-         echo __('Entity');
+         echo __('Show graphics', 'monitoring');
          echo "</th>";
          echo "<th>";
-         echo __('Components', 'monitoring');
+         echo __('Component', 'monitoring');
          echo "</th>";
          echo "<th>";
-         echo __('Components', 'monitoring');
-         echo "</th>";
-         echo "<th>";
-         echo __('Status');
+         echo __('Resource state', 'monitoring');
          echo "</th>";
          echo "<th>";
          echo __('Last check', 'monitoring');
@@ -219,9 +216,7 @@ class PluginMonitoringService extends CommonDBTM {
          echo "<th>".__('Current year', 'monitoring')." ".Html::showToolTip(__('Availability', 'monitoring'), array('display'=>false))."</th>";
          echo "<th>".__('Detail', 'monitoring')."</th>";
          echo '<th>'.__('Acknowledge', 'monitoring').'</th>';
-         echo "<th>";
-         echo __('Arguments', 'monitoring');
-         echo "</th>"; 
+         echo "<th>".__('Arguments', 'monitoring')."</th>"; 
          echo "</tr>";
          
          $querys = "SELECT `glpi_plugin_monitoring_services`.* FROM `glpi_plugin_monitoring_services`
