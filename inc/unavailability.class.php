@@ -189,7 +189,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
                $pmUnavailability->checkState($data2['state'], 
                                            $data2['date'], 
                                            $data['id'], 
-                                           $data2['event']);
+                                           $DB->escape($data2['event']));
                $input = array();
                $input['id'] = $data2['id'];
                $input['unavailability'] = 1;
