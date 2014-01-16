@@ -63,8 +63,12 @@ class PluginMonitoringServicegraph extends CommonDBTM {
          // window.setInterval(function () {
             Ext.Ajax.request({
                url: '". $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updatePerfdata.php" ."',
-               params: {
-                  'rrdtool_template': '$rrdtool_template',
+               params: {";
+      // define 'debug' parameter to add debug data in server response
+      // $ret .= "   'debug': 'debug',";
+      // define 'json' parameter to get a json server response
+      // $ret .= "   'json': 'json',";
+      $ret .= "   'rrdtool_template': '$rrdtool_template',
                   'items_id': '$items_id',
                   'components_id': '". $item->fields['plugin_monitoring_components_id'] ."'
                },

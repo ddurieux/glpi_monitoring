@@ -585,6 +585,31 @@ class PluginMonitoringComponent extends CommonDBTM {
       $timeSeconds = $timeMinutes * 60;
       return $timeSeconds;
    }
+   
+   
+   
+   function hasPerfdata($incremental=false) {
+      if ($this->fields['graph_template'] == 0) return false;
+      
+      if ($incremental) {
+         $a_perf = PluginMonitoringPerfdata::getArrayPerfdata($this->fields['graph_template']);
+         
+         foreach ($a_perf['parseperfdata'] as $data) {
+            $i=0;
+            $myPerfdata = array();
+            foreach ($data['DS'] as $data2) {
+               $myPerfdata[$data2['dsname']] = $data['incremental'][$i];
+               $i++;
+            }
+         }
+         
+         foreach ($myPerfdata as $name=>$incremental) {
+            if ($incremental != 0) return true;
+         }
+         return false;
+      }
+      return ($this->fields['graph_template'] != 0);
+   }
 }
 
 ?>

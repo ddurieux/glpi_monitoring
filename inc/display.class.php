@@ -850,7 +850,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
          
       echo "<td class='center'>";
-      if ($pMonitoringComponent->fields['graph_template'] != 0) {
+      // Only if exist incremental perfdata ...
+      if ($pMonitoringComponent->hasPerfdata(true)) {
          // ob_start();
          $pmServicegraph = new PluginMonitoringServicegraph();
          $html = $pmServicegraph->displayCounter($pMonitoringComponent->fields['graph_template'], 
@@ -869,7 +870,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "</td>";
       
       echo "<td class='center'>";
-      if ($pMonitoringComponent->fields['graph_template'] != 0) {
+      // Even if not exist incremental perfdata ...
+      if ($pMonitoringComponent->hasPerfdata()) {
          echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$data['id']."'>";
          ob_start();
          $pmServicegraph = new PluginMonitoringServicegraph();

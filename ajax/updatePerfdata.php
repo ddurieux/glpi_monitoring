@@ -66,25 +66,41 @@ echo "</div>";
 
 
 $pmServiceevent = new PluginMonitoringServiceevent();
+$counters = array();
 
-echo "<table class='tab_cadrehov' style='width: 360px;'>";
+$counter_types = array (
+   'first'     => __('First value', 'monitoring'), 
+   'last'      => __('Last value', 'monitoring')
+);
 
-$a_ret = $pmServiceevent->getSpecificData($_POST['rrdtool_template'], $_POST['items_id'], 'first');
-echo "<tr class='tab_bg_1'><th colspan='2'>".__('Counters : first registered value', 'monitoring')."</th></tr>";
-foreach ($a_ret as $name=>$data) {
-   if (! isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']][$name])) continue;
-
-   echo "<tr class='tab_bg_3'><td class='left'>$name</td><td class='center'>$data</td></tr>";
-}
-
-$a_ret = $pmServiceevent->getSpecificData($_POST['rrdtool_template'], $_POST['items_id'], 'last');
-echo "<tr class='tab_bg_1'><th colspan='2'>".__('Counters : current value', 'monitoring')."</th></tr>";
-foreach ($a_ret as $name=>$data) {
-   if (! isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']][$name])) continue;
+foreach ($counter_types as $type => $type_title) {
+   if (isset($_POST['debug'])) echo "<div>$type</div>";
    
-   echo "<tr class='tab_bg_3'><td class='left'>$name</td><td class='center'>$data</td></tr>";
+   $a_ret = $pmServiceevent->getSpecificData($_POST['rrdtool_template'], $_POST['items_id'], $type);
+   foreach ($a_ret as $name=>$data) {
+      if (isset($_POST['debug'])) echo "<div>$name = $data</div>";
+      if (! isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']][$name])) continue;
+
+      // $counters[$counter_types[$type]." - ".$name] = $data;
+      $counters[$type][$name] = $data;
+   }
 }
 
-echo "</table>";
+if (isset($_POST['json'])) {
+   echo json_encode($counters);
+} else {
+   echo "<table class='tab_cadrehov'>";
 
+   echo "<tr class='tab_bg_1'><th colspan='2'>".__('Counters : registered values', 'monitoring')."</th></tr>";
+   foreach ($counters as $type => $cpt) {
+      echo "<tr class='tab_bg_1'><th colspan='2' class='left'>".$counter_types[$type]."</th></tr>";
+      foreach ($cpt as $name=>$data) {
+         if (isset($_POST['json'])) echo "<div>$name = $data</div>";;
+      
+         echo "<tr class='tab_bg_3'><td class='left'>$name</td><td class='center'>$data</td></tr>";
+      }
+   }
+
+   echo "</table>";
+}
 ?>
