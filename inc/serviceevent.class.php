@@ -137,6 +137,62 @@ class PluginMonitoringServiceevent extends CommonDBTM {
    
    
    
+   function getSpecificData($rrdtool_template, $items_id, $which='last') { 
+      global $DB;      
+   
+      // ** Get in table serviceevents
+      $mydatat = array();
+      $a_labels = array();
+      $a_ref = array();
+      $pmService = new PluginMonitoringService();
+      $pmService->getFromDB($items_id);
+      
+      $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks($pmService->fields['plugin_monitoring_components_id']);
+      
+      $enddate = date('U');
+      $begin = date('Y-m-d H:i:s', $enddate);
+      $counters = array();
+      
+      switch ($which) {
+      case 'first': 
+         $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
+            WHERE `plugin_monitoring_services_id`='".$items_id."'
+               AND `state` = 'OK'
+            ORDER BY `date` ASC
+            LIMIT 1";
+         break;
+         
+      case 'last': 
+         $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
+            WHERE `plugin_monitoring_services_id`='".$items_id."'
+               AND `state` = 'OK'
+            ORDER BY `date` DESC
+            LIMIT 1";
+         break;
+
+      default: 
+         return $counters;
+         break;
+      }
+      
+      $result = $DB->query($query);
+      $ret = $this->getData(
+              $result, 
+              $rrdtool_template,
+              date('Y-m-d H:i:s', $enddate),
+              date('Y-m-d H:i:s', $enddate));
+      if (is_array($ret)) {
+         foreach ($ret[0] as $name=>$data) {
+            // Toolbox::logInFile("pm", "$name : ". $data[0]."\n");
+            $counters[$name] = $data[0];
+         }
+      }
+   
+      return $counters;
+   }
+      
+      
+      
    function getData($result, $rrdtool_template, $start_date, $end_date, $ret=array()) {
       global $DB;
       
@@ -170,7 +226,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
          }
          $previous_timestamp = $current_timestamp;
          $query_data[] = $edata;
-      }      
+      }
 
       $timeup = $_SESSION['plugin_monitoring_checkinterval'] * 1.2;
       $current_timestamp = strtotime($end_date);
@@ -212,7 +268,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                        AND isset($a_a_perfdata[1])) {
                      
                   $a_perfdata_final = explode(";", $a_a_perfdata[1]);
-                  //New perfdata row, no unity knew.
+                  // New perfdata row, no unit knew.
                   $unity = '';
                   foreach ($a_perfdata_final as $nb_val=>$val) {
 

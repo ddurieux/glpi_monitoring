@@ -107,7 +107,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             $ong[5] = __('Contacts', 'monitoring');
             $ong[6] = __('Availability', 'monitoring');
    //         $ong[7] = __('Simple report', "monitoring");
-            $ong[8] = __('Synthese', "monitoring");
+            $ong[7] = __('Synthese', "monitoring");
             //$ong[7] = __('Report');
 
             return $ong;
@@ -563,10 +563,11 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       while ($dataComponentscatalog_Host=$DB->fetch_array($result)) {
          $ressources = array();
          
-         $queryService = "SELECT * FROM `".$pmService->getTable()."`
+         $queryService = "SELECT *, `glpi_plugin_monitoring_components`.`name`, `glpi_plugin_monitoring_components`.`description` FROM `".$pmService->getTable()."`
+            INNER JOIN `glpi_plugin_monitoring_components` ON (`plugin_monitoring_components_id` = `glpi_plugin_monitoring_components`.`id`)
             WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'
                AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].") 
-            ORDER BY NAME ASC;";
+            ORDER BY `glpi_plugin_monitoring_services`.`name` ASC;";
          // Toolbox::logInFile("pm", "query services - $queryService\n");
          $resultService = $DB->query($queryService);
          while ($dataService=$DB->fetch_array($resultService)) {
@@ -693,7 +694,8 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       echo "<td>";
       Html::showDateFormItem("date_start", date('Y-m-d H:i:s', date('U') - (24 * 3600 * 7)));
       $a_options['date_start'] = date('Y-m-d H:i:s', date('U') - (24 * 3600 * 7));
-$a_options['date_start'] = '2013-01-01 01:01:01';
+      // Fred ?
+      $a_options['date_start'] = '2013-01-01 01:01:01';
       echo "</td>";
       echo "<td>".__('End date')." :</td>";
       echo "<td>";
@@ -948,7 +950,7 @@ $a_options['date_start'] = '2013-01-01 01:01:01';
       foreach ($array['components_id'] as $components_id) {
          $pmComponent->getFromDB($components_id);
 
-         $a_name = $array['perfname'];         
+         $a_name = $array['perfname'];
          
          echo "<table class='tab_cadre_fixe'>";
          echo '<tr class="tab_bg_1">';

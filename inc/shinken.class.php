@@ -604,7 +604,9 @@ class PluginMonitoringShinken extends CommonDBTM {
             $a_services[$i]['_HOSTITEMTYPE'] = implode(",", array_unique($a_hostname_type));
             $hostnamebp = $a_services[$i]['host_name']; // For business rules
 
-            $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9\-_]/","",$a_component['name']);
+            // Define display_name / service_description
+            $a_services[$i]['service_description'] = (! empty($a_component['description'])) ? $a_component['description'] : preg_replace("/[^A-Za-z0-9\-_]/","",$a_component['name']);
+            $a_services[$i]['display_name'] = $a_component['name'];
             $a_services[$i]['_ENTITIESID'] = $item->fields['entities_id'];
             // $a_services[$i]['_ENTITY'] = $item->fields['entityName'];
             $a_services[$i]['_ITEMSID'] = $data['id'];

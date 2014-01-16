@@ -49,6 +49,41 @@ class PluginMonitoringServicegraph extends CommonDBTM {
    private $jsongraph_a_convert = array();
 
    
+   function displayCounter($rrdtool_template, $itemtype, $items_id, $timezone, $time='1d') {
+      global $CFG_GLPI;
+
+      // Toolbox::logInFile("pm", "displayCounter : $rrdtool_template, $itemtype, $items_id, $timezone, $time\n");
+      $pmComponent = new PluginMonitoringComponent();
+      $item = new $itemtype();
+      if (! $item->getFromDB($items_id)) return '';
+
+      $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
+      $ret = '<div id="counters_'.$items_id.$time.'"></div>';
+      $ret .= "<script>
+         // window.setInterval(function () {
+            Ext.Ajax.request({
+               url: '". $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updatePerfdata.php" ."',
+               params: {";
+      // define 'debug' parameter to add debug data in server response
+      // $ret .= "   'debug': 'debug',";
+      // define 'json' parameter to get a json server response
+      // $ret .= "   'json': 'json',";
+      $ret .= "   'rrdtool_template': '$rrdtool_template',
+                  'items_id': '$items_id',
+                  'components_id': '". $item->fields['plugin_monitoring_components_id'] ."'
+               },
+               success: function(response){
+                  var text = response.responseText;
+                  document.getElementById('counters_".$items_id.$time."').innerHTML = text;
+               }
+            });
+         // } , 5000);
+      </script>";
+      
+      return $ret;
+   }
+
+   
    function displayGraph($rrdtool_template, $itemtype, $items_id, $timezone, $time='1d', $part='', $width='900') {
       global $CFG_GLPI;
 
@@ -394,8 +429,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
             }
             $ret = $pmServiceevent->getRef($rrdtool_template);
             break;
-         
-      }       
+      }
       return array($mydatat, $a_labels, $dateformat);      
    }
    
@@ -761,10 +795,10 @@ class PluginMonitoringServicegraph extends CommonDBTM {
             $dateold = date('Y-m-d H:i:s', mktime(date('H'),
                                                  date('i'),
                                                  date('s'),
-                                                 date('m') - 10,
+                                                 date('m') - 12,
                                                  (date('d')),
                                                  date('Y')));
-            $a_dateold['5d'] = $dateold;
+            $a_dateold['10d'] = $dateold;
             // Gest last value, and see if we must calculate new values
             $query = "SELECT * FROM `".$this->getTable()."`
                WHERE `plugin_monitoring_services_id`='".$plugin_monitoring_services_id."'
@@ -791,7 +825,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
             }
             
             //get data in serviceevents for each 6 hours from this date to now
-            while ($new_date + (5 * 24 * 3600) < date('U')) {
+            while ($new_date + (10 * 24 * 3600) < date('U')) {
 
                $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                   WHERE `plugin_monitoring_services_id`='".$plugin_monitoring_services_id."'
@@ -949,7 +983,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       global $CFG_GLPI;
       
       if ($loadpreferences == 1) {
-         PluginMonitoringServicegraph::loadPreferences($components_id);
+         if (! PluginMonitoringServicegraph::loadPreferences($components_id)) return false;
       }
       
       $pmComponent = new PluginMonitoringComponent();
@@ -1213,7 +1247,9 @@ myPicker.fromString(\''.$color.'\')
       echo "</tr>";
       echo "</table>";
 
-      Html::closeForm();      
+      Html::closeForm();
+      
+      return true;
    }
    
    
@@ -1226,6 +1262,10 @@ myPicker.fromString(\''.$color.'\')
       $_SESSION['glpi_plugin_monitoring']['perfname'][$components_id] = array();
       // $a_perfname = importArrayFromDB($pmComponent->fields['perfname']);
       $a_perfname = unserialize($pmComponent->fields['perfname']);
+      
+      // No perfdata for this service ...
+      if (! is_array($a_perfname)) return false;
+      
       foreach ($a_perfname as $perfname=>$active) {
          $_SESSION['glpi_plugin_monitoring']['perfname'][$components_id][$perfname] = 'checked';
       }
@@ -1243,6 +1283,8 @@ myPicker.fromString(\''.$color.'\')
       foreach ($a_perfnamecolor as $perfname=>$color) {
          $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$components_id][$perfname] = $color;
       }
+      
+      return true;
    }
 }
 

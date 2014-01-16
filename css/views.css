@@ -423,8 +423,10 @@ td .vertical {
 
 .page {
   background: #fff;
-  width: 150px;
-  height: 40px;
+  width: auto;
+  height: auto;
+  padding-left: 25px;
+  padding-right: 5px;
    
  /* Optional Gradient */
   background: -moz-linear-gradient(top,  #ffffff 0%, #e5e5e5 100%); /* FF3.6+ */
@@ -461,16 +463,16 @@ td .vertical {
   box-shadow: 4px 4px 4px rgba(0,0,0,0.3);
 }
 
-.resourceOK:before {
+.resourceOK:before, .resourceUP:before {
 	border-bottom: 15px solid rgb(76,180,73);
 }
 .resourceWARNING:before {
 	border-bottom: 15px solid rgb(212,161,94);
 }
-.resourceCRITICAL:before {
+.resourceCRITICAL:before, .resourceDOWN:before {
 	border-bottom: 15px solid rgb(159,48,48);
 }
-.resourceUNKNOWN:before {
+.resourceUNKNOWN:before, .resourceUNREACHABLE:before {
 	border-bottom: 15px solid yellow;
 }
 .resourceACKNOWLEDGE:before {

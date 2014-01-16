@@ -87,7 +87,7 @@ if (isset($_GET['hidesearch'])) {
    echo "</div>";
 }
 
-$pmDisplay->showBoard();
+$pmDisplay->showResourcesBoard();
 if (isset($_SESSION['glpisearch']['PluginMonitoringService']['reset'])) {
    unset($_SESSION['glpisearch']['PluginMonitoringService']['reset']);
 }
