@@ -2462,7 +2462,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->dropField($newTable, 'allressources');
          $migration->dropField($newTable, 'hosts_status');
          $migration->dropField($newTable, 'system_status');
-         $migration->dropField($newTable, 'host_command');
+         // $migration->dropField($newTable, 'host_command');
 
                                  
       $migration->migrationOneTable($newTable);
