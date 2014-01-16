@@ -329,7 +329,7 @@ function plugin_monitoring_addLeftJoin($itemtype,$ref_table,$new_table,$linkfiel
       
       case 'Computer':
          if ($new_table.".".$linkfield == "glpi_plugin_monitoring_computers_deviceprocessors.plugin_monitoring_computers_deviceprocessors_id") {
-            return " LEFT JOIN `glpi_computers_deviceprocessors` AS `processormonit` ON (`glpi_computers`.`id` = `processormonit`.`computers_id` ) ";           
+            return " LEFT JOIN `glpi_items_deviceprocessors` AS `processormonit` ON (`glpi_computers`.`id` = `processormonit`.`computers_id` ) ";           
          }
    }
    return "";
