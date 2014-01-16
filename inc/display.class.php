@@ -530,7 +530,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
       // Fred : on repose la requête sur la base une 2ème fois ... ?
       // Toolbox::logInFile("pm", "query services - $query\n");
       $result = $DB->query($query); 
-      
+
+      // Pour la génération des graphes ...
       echo '<div id="custom_date" style="display:none"></div>';
       echo '<div id="custom_time" style="display:none"></div>';
       
@@ -542,7 +543,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $num = 0;
  
       echo "<tr class='tab_bg_1'>";
-      echo Search::showHeaderItem(0, __('Show graphics'), $num);
+      echo Search::showHeaderItem(0, __('Show counters', 'monitoring'), $num);
+      echo Search::showHeaderItem(0, __('Show graphics', 'monitoring'), $num);
       $this->showHeaderItem(__('Host name', 'monitoring'), 1, $num, $start, $globallinkto, 'service.php', 'PluginMonitoringService');
       $this->showHeaderItem(__('Component', 'monitoring'), 2, $num, $start, $globallinkto, 'service.php', 'PluginMonitoringService');
       $this->showHeaderItem(__('Resource state'), 3, $num, $start, $globallinkto, 'service.php', 'PluginMonitoringService');
@@ -562,7 +564,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "<br/>";
       Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/service.php", $parameters);
    }
-
 
    
    /**
@@ -843,16 +844,35 @@ class PluginMonitoringDisplay extends CommonDBTM {
 */
       
 
-      echo "<td class='center'>";
       $timezone = '0';
       if (isset($_SESSION['plugin_monitoring_timezone'])) {
          $timezone = $_SESSION['plugin_monitoring_timezone'];
       }
          
+      echo "<td class='center'>";
+      if ($pMonitoringComponent->fields['graph_template'] != 0) {
+         // ob_start();
+         $pmServicegraph = new PluginMonitoringServicegraph();
+         $html = $pmServicegraph->displayCounter($pMonitoringComponent->fields['graph_template'], 
+                                       "PluginMonitoringService", 
+                                       $data['id'], 
+                                       "0", 
+                                       '1d');
+         // $html = ob_get_contents();
+         // ob_end_clean();
+         $counters = "<table width='600' class='tab_cadre'><tr><td>".$html."</td></tr></table>";
+         Html::showToolTip($counters, array(
+            // 'title'  => __('Counters', 'monitoring'), 
+            'img'    => $CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"
+         ));
+      }
+      echo "</td>";
+      
+      echo "<td class='center'>";
       if ($pMonitoringComponent->fields['graph_template'] != 0) {
          echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$data['id']."'>";
-         $pmServicegraph = new PluginMonitoringServicegraph();
          ob_start();
+         $pmServicegraph = new PluginMonitoringServicegraph();
          $pmServicegraph->displayGraph($pMonitoringComponent->fields['graph_template'], 
                                        "PluginMonitoringService", 
                                        $data['id'], 
