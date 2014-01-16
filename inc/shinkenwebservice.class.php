@@ -86,7 +86,7 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
              'comment'              => urlencode($comment)
          );
          
-         $this->sendCommand($url, $action, $a_fields,'', $auth);
+         return $this->sendCommand($url, $action, $a_fields,'', $auth);
       } else {
          // Acknowledge an host ...
          $pmHost = new PluginMonitoringHost();
@@ -104,7 +104,7 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
              'comment'              => urlencode($comment)
          );
          
-         $this->sendCommand($url, $action, $a_fields,'', $auth);
+         return $this->sendCommand($url, $action, $a_fields,'', $auth);
       }
    }
    

@@ -386,6 +386,11 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'name', 
                                  'name', 
                                  "varchar(255) DEFAULT NULL");
+         // 0.84+1.3
+         $migration->changeField($newTable, 
+                                 'description', 
+                                 'description', 
+                                 "varchar(255) DEFAULT NULL");
          $migration->changeField($newTable, 
                                  'plugin_monitoring_commands_id', 
                                  'plugin_monitoring_commands_id', 
@@ -456,6 +461,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  "int(11) NOT NULL AUTO_INCREMENT");
          $migration->addField($newTable, 
                                  'name', 
+                                 "varchar(255) DEFAULT NULL");
+         // 0.84+1.3
+         $migration->addField($newTable, 
+                                 'description', 
                                  "varchar(255) DEFAULT NULL");
          $migration->addField($newTable, 
                                  'plugin_monitoring_commands_id', 
@@ -2453,7 +2462,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->dropField($newTable, 'allressources');
          $migration->dropField($newTable, 'hosts_status');
          $migration->dropField($newTable, 'system_status');
-         $migration->dropField($newTable, 'host_command');
+         // $migration->dropField($newTable, 'host_command');
 
                                  
       $migration->migrationOneTable($newTable);

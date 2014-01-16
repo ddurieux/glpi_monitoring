@@ -276,6 +276,91 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
    
    
    
+   function getComments() {
+      global $CFG_GLPI;
+
+      $comment = "";
+      $toadd   = array();
+      
+      // associated computer ...
+      $item = new $this->fields['itemtype'];
+      $item->getFromDB($this->fields['items_id']);
+      
+      $toadd[] = array('name'  => __('Host type'),
+                       'value' => nl2br($item->getTypeName()));
+      
+      if ($this->fields['itemtype'] == 'Computer') {
+         $type = new ComputerType();
+         $type->getFromDB($item->fields["computertypes_id"]);
+         $type = $type->getName();
+         if (! empty($type)) { 
+            $toadd[] = array('name'  => __('Type'),
+                             'value' => nl2br($type));
+         }
+
+         $model = new ComputerModel();
+         $model->getFromDB($item->fields["computermodels_id"]);
+         $model = $model->getName();
+         if (! empty($model)) { 
+            $toadd[] = array('name'  => __('Model'),
+                             'value' => nl2br($model));
+         }
+
+         $state = new State();
+         $state->getFromDB($item->fields["states_id"]);
+         $state = $state->getName();
+         if (! empty($state)) { 
+            $toadd[] = array('name'  => __('State'),
+                             'value' => nl2br($state));
+         }
+
+         $entity = new Entity();
+         $entity->getFromDB($item->fields["entities_id"]);
+         $entity = $entity->getName();
+         if (! empty($entity)) { 
+            $toadd[] = array('name'  => __('Entity'),
+                             'value' => nl2br($entity));
+         }
+
+         if (! empty($item->fields["serial"])) { 
+            $toadd[] = array('name'  => __('Serial'),
+                             'value' => nl2br($item->fields["serial"]));
+         }
+         if (! empty($item->fields["otherserial"])) { 
+            $toadd[] = array('name'  => __('Inventory number'),
+                             'value' => nl2br($item->fields["otherserial"]));
+         }
+
+         $location = new Location();
+         $location->getFromDB($item->fields["entities_id"]);
+         $location = $location->getName();
+         if (! empty($location)) { 
+            $toadd[] = array('name'  => __('Location'),
+                             'value' => nl2br($location));
+         }
+         
+         if (($this instanceof CommonDropdown)
+             && $this->isField('comment')) {
+            $toadd[] = array('name'  => __('Comments'),
+                             'value' => nl2br($this->getField('comment')));
+         }
+
+         if (count($toadd)) {
+            foreach ($toadd as $data) {
+               $comment .= sprintf(__('%1$s: %2$s')."<br>",
+                                   "<span class='b'>".$data['name'], "</span>".$data['value']);
+            }
+         }
+
+         if (!empty($comment)) {
+            return Html::showToolTip($comment, array('display' => false));
+         }
+      }
+
+      return $comment;
+   }
+   
+   
    /**
     * Put in session informations for add in log what change in config
     * 
