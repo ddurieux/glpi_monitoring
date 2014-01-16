@@ -40,7 +40,7 @@
    ------------------------------------------------------------------------
  */
 
-define ("PLUGIN_MONITORING_VERSION","0.84+1.2d");
+define ("PLUGIN_MONITORING_VERSION","0.84+1.3");
 
 define('_MPDF_TEMP_PATH', GLPI_PLUGIN_DOC_DIR.'/monitoring/pdf/');
 
@@ -142,6 +142,7 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['perfdata'] = 'front/perfdata.php';
          
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['service'] = 'front/display.php';
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['service'] = 'front/host.php';
          
          if (isset($_SESSION["glpiname"])) {
          

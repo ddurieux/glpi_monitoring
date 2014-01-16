@@ -429,18 +429,16 @@ function plugin_monitoring_getDropdown(){
 function plugin_monitoring_searchOptionsValues($item) {
    global $CFG_GLPI;
    
+   // Search options for services
    if ($item['searchoption']['table'] == 'glpi_plugin_monitoring_services'
            AND $item['searchoption']['field'] == 'state') {
       $input = array();
       $input['CRITICAL'] = 'CRITICAL';
-      $input['DOWN'] = 'DOWN';
       $input['DOWNTIME'] = 'DOWNTIME';
       $input['FLAPPING'] = 'FLAPPING';
       $input['OK'] = 'OK';
       $input['RECOVERY'] = 'RECOVERY';
       $input['UNKNOWN'] = 'UNKNOWN';
-      $input['UNREACHABLE'] = 'UNREACHABLE';
-      $input['UP'] = 'UP';
       $input['WARNING'] = 'WARNING';
 
       Dropdown::showFromArray($item['name'], $input, array('value'=>$item['value']));
@@ -489,6 +487,29 @@ function plugin_monitoring_searchOptionsValues($item) {
       return true;
    }
    
+   // Search options for hosts
+   if ($item['searchoption']['table'] == 'glpi_plugin_monitoring_hosts'
+           AND $item['searchoption']['field'] == 'state') {
+      $input = array();
+      $input['DOWN'] = 'DOWN';
+      $input['DOWNTIME'] = 'DOWNTIME';
+      $input['FLAPPING'] = 'FLAPPING';
+      $input['RECOVERY'] = 'RECOVERY';
+      $input['UNKNOWN'] = 'UNKNOWN';
+      $input['UNREACHABLE'] = 'UNREACHABLE';
+      $input['UP'] = 'UP';
+
+      Dropdown::showFromArray($item['name'], $input, array('value'=>$item['value']));
+      return true;
+   } else if ($item['searchoption']['table'] == 'glpi_plugin_monitoring_hosts'
+           AND $item['searchoption']['field'] == 'state_type') {
+      $input = array();
+      $input['HARD'] = 'HARD';
+      $input['SOFT'] = 'SOFT';
+
+      Dropdown::showFromArray($item['name'], $input, array('value'=>$item['value']));
+      return true;
+   }
 }
 
 function plugin_monitoring_ReplayRulesForItem($args) {

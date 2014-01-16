@@ -47,6 +47,76 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringHost extends CommonDBTM {
 
    
+   static function getTypeName($nb=0) {
+      return __('Host', 'monitoring');
+   }
+   
+   
+   static function canCreate() {
+      return Session::haveRight('computer', 'w');
+   }
+
+   
+   function getSearchOptions() {
+      $tab = array();
+      $tab['common'] = _n('Host characteristic', 'Host characteristics', 2);
+
+      $tab[1]['table']           = 'glpi_computers';
+      $tab[1]['field']           = 'name';
+      $tab[1]['name']            = __('Host name');
+      $tab[1]['datatype']        = 'string';
+      
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'state';
+      $tab[2]['name']            = __('Host state', 'monitoring');
+      $tab[2]['datatype']        = 'string';
+      // $tab[3]['searchtype']      = 'equals';
+      // $tab[3]['datatype']        = 'itemlink';
+      // $tab[3]['itemlink_type']   = 'PluginMonitoringService';
+      
+      $tab[3]['table']           = $this->getTable();
+      $tab[3]['field']           = 'state_type';
+      $tab[3]['name']            = __('Host state type', 'monitoring');
+      $tab[3]['datatype']        = 'string';
+      // $tab[3]['searchtype']      = 'equals';
+      // $tab[3]['datatype']        = 'itemlink';
+      // $tab[3]['itemlink_type']   = 'PluginMonitoringService';
+      
+      // $tab[4]['table']           = $this->getTable();
+      // $tab[4]['field']           = 'state';
+      // $tab[4]['name']            = __('Host resources state', 'monitoring');
+      // $tab[4]['datatype']        = 'string';
+      // $tab[4]['searchtype']      = 'equals';
+      // $tab[4]['datatype']        = 'itemlink';
+      // $tab[4]['itemlink_type']   = 'PluginMonitoringService';
+      
+      // $tab[5]['table']           = $this->getTable();
+      // $tab[5]['field']           = 'ip_address';
+      // $tab[5]['name']            = __('IP address', 'monitoring');
+      // $tab[5]['datatype']        = 'string';
+
+      $tab[6]['table']           = $this->getTable();
+      $tab[6]['field']           = 'last_check';
+      $tab[6]['name']            = __('Last check', 'monitoring');
+      $tab[6]['datatype']        = 'datetime';
+
+      $tab[7]['table']           = $this->getTable();
+      $tab[7]['field']           = 'event';
+      $tab[7]['name']            = __('Result details', 'monitoring');
+      $tab[7]['massiveaction']   = false;
+
+      $tab[8]['table']          = $this->getTable();
+      $tab[8]['field']          = 'perf_data';
+      $tab[8]['name']           = __('Performance data', 'monitoring');
+      $tab[8]['datatype']       = 'string';
+     
+      $tab[9]['table']          = $this->getTable();
+      $tab[9]['field']          = 'is_acknowledged';
+      $tab[9]['name']           = __('Acknowledge', 'monitoring');
+      $tab[9]['datatype']       = 'bool';
+     
+      return $tab;
+   }
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
@@ -54,7 +124,7 @@ class PluginMonitoringHost extends CommonDBTM {
          switch ($item->getType()) {
             case 'Central' :
                if (PluginMonitoringProfile::haveRight("homepage", 'r') && PluginMonitoringProfile::haveRight("homepage_hosts_status", 'r')) {
-                  return array(1 => "[".__('Monitoring', 'monitoring')."] ".__('Hosts status', 'monitoring'));
+                  return array(1 => __('Hosts status', 'monitoring'));
                } else {
                   return '';
                }
@@ -62,10 +132,10 @@ class PluginMonitoringHost extends CommonDBTM {
          $array_ret = array();
          if ($item->getID() > 0) {
             $array_ret[0] = self::createTabEntry(
-                    "[".__('Monitoring', 'monitoring')."] ".__('Resources', 'monitoring'),
+                    __('Resources', 'monitoring'),
                     self::countForItem($item));
             $array_ret[1] = self::createTabEntry(
-                    "[".__('Monitoring', 'monitoring')."] ".__('Resources (graph)', 'monitoring'));
+                    __('Resources (graph)', 'monitoring'));
          }
          return $array_ret;
       }
