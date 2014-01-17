@@ -231,9 +231,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
          if ($item->getID() > 0) {
             $ong[1] = 'items';
             
-            if ($item->canUpdate()
-                    && isset($item->fields['is_frontview'])
-                    && $item->fields['is_frontview'] == 1) {
+            if ($item->canUpdate()) {
                $ong[2] = __('Targets');
             }
             $pmDisplayview_rule = new PluginMonitoringDisplayview_rule();
