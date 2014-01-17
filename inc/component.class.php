@@ -591,24 +591,61 @@ class PluginMonitoringComponent extends CommonDBTM {
    function hasPerfdata($incremental=false) {
       if ($this->fields['graph_template'] == 0) return false;
       
-      if ($incremental) {
-         $a_perf = PluginMonitoringPerfdata::getArrayPerfdata($this->fields['graph_template']);
-         
-         foreach ($a_perf['parseperfdata'] as $data) {
-            $i=0;
-            $myPerfdata = array();
-            foreach ($data['DS'] as $data2) {
-               $myPerfdata[$data2['dsname']] = $data['incremental'][$i];
-               $i++;
-            }
-         }
-         
-         foreach ($myPerfdata as $name=>$incremental) {
-            if ($incremental != 0) return true;
-         }
-         return false;
+      // TODO : improve this function !
+      
+      // Get component graph configuration ...
+      if(!isset($_SESSION['glpi_plugin_monitoring']['perfname'][$this->fields['id']])) {
+         PluginMonitoringServicegraph::loadPreferences($this->fields['id']);
       }
-      return ($this->fields['graph_template'] != 0);
+      
+      $a_perf = PluginMonitoringPerfdata::getArrayPerfdata($this->fields['graph_template']);
+      
+      $myPerfdata = array();
+      foreach ($a_perf['parseperfdata'] as $data) {
+         // Toolbox::logInFile("pm", "perf : ".serialize($data)."\n");
+         $i=0;
+         foreach ($data['DS'] as $data2) {
+            // Toolbox::logInFile("pm", "perf : ".serialize($data2)."\n");
+            $counter = preg_replace("/[^A-Za-z0-9\-_]/","",$data['name']);
+            if ($incremental) {
+               if ($data['incremental'][$i]=='1') {
+                  $myPerfdata[] = $data2['dsname'];
+               }
+            } else {
+               $myPerfdata[] = $data2['dsname'];
+            }
+            $i++;
+         }
+      }
+     
+      return $myPerfdata;
+   }
+   
+   
+   
+   function hasCounters() {
+      if ($this->fields['graph_template'] == 0) return false;
+      
+       // Get component graph configuration ...
+      if(!isset($_SESSION['glpi_plugin_monitoring']['perfname'][$this->fields['id']])) {
+         PluginMonitoringServicegraph::loadPreferences($this->fields['id']);
+      }
+      
+      $a_perf = PluginMonitoringPerfdata::getArrayPerfdata($this->fields['graph_template']);
+      
+      $myPerfdata = array();
+      foreach ($a_perf['parseperfdata'] as $data) {
+         $i=0;
+         foreach ($data['DS'] as $data2) {
+            $counter = preg_replace("/[^A-Za-z0-9\-_]/","",$data['name']);
+            if ($data['incremental'][$i]=='1') {
+               $myPerfdata[$counter] = $data2['dsname'];
+            }
+            $i++;
+         }
+      }
+     
+      return $myPerfdata;
    }
 }
 

@@ -181,10 +181,15 @@ class PluginMonitoringServiceevent extends CommonDBTM {
               $rrdtool_template,
               date('Y-m-d H:i:s', $enddate),
               date('Y-m-d H:i:s', $enddate));
-      if (is_array($ret)) {
-         foreach ($ret[0] as $name=>$data) {
-            // Toolbox::logInFile("pm", "$name : ". $data[0]."\n");
-            $counters[$name] = $data[0];
+
+      if (is_array($ret) && is_array($ret[0]) && is_array($ret[4])) {
+         foreach ($ret[4] as $name=>$data) {
+            // Toolbox::logInFile("pm", "$name -> $data = ".$ret[0][$data][0]."\n");
+            $counter = array();
+            $counter['id'] = preg_replace("/[^A-Za-z0-9\-_]/","",$name);
+            $counter['name'] = $data;
+            $counter['value'] = $ret[0][$data][0];
+            $counters[] = $counter;
          }
       }
    
@@ -204,6 +209,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       
       $mydatat = array();
       $a_labels = array();
+      $a_perfdata_name = array();
 
       $a_perf = PluginMonitoringPerfdata::getArrayPerfdata($rrdtool_template);
       $previous_timestamp = strtotime($start_date);
@@ -249,8 +255,9 @@ class PluginMonitoringServiceevent extends CommonDBTM {
          $a_time = explode(" ", $edata['date']);
          $a_time2 = explode(":", $a_time[1]);
          $day = explode("-", $a_time[0]);
-         array_push($a_labels, "(".$day[2].")".$a_time2[0].":".$a_time2[1]);
+         $a_labels[] = "(".$day[2].")".$a_time2[0].":".$a_time2[1];
          foreach ($a_perf['parseperfdata'] as $num=>$data) {
+            // Toolbox::logInFile("pm", "perfdata : $num, ".serialize($data)."\n");
             if (isset($a_perfdata[$num])) {
                $a_perfdata[$num] = trim($a_perfdata[$num], ", ");
                $a_a_perfdata = explode("=", $a_perfdata[$num]);
@@ -260,6 +267,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                   $datanameregex = str_replace("*", "(.*)", $data['name']);
                   $regex = 1;
                }
+               // $a_perfdata_name[] = $data['name'];
                if (($a_a_perfdata[0] == $data['name']
                        OR $data['name'] == ''
                        OR ($regex == 1
@@ -326,6 +334,8 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                               break;                                                   
                         }                                                
 
+                        $a_perfdata_name[$data['name']] = $data['DS'][$nb_val]['dsname'];
+                        
                         if (!isset($mydatat[$data['DS'][$nb_val]['dsname']])) {
                            $mydatat[$data['DS'][$nb_val]['dsname']] = array();
                         }
@@ -340,6 +350,8 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                   }
                } else {
                   for ($nb_val=0; $nb_val < count($data['DS']); $nb_val++) {
+                     $a_perfdata_name[$data['name']] = $data['DS'][$nb_val]['dsname'];
+                     
                      if (!isset($mydatat[$data['DS'][$nb_val]['dsname']])) {
                         $mydatat[$data['DS'][$nb_val]['dsname']] = array();
                      }
@@ -354,6 +366,8 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                }
             } else {
                for ($nb_val=0; $nb_val < count($data['DS']); $nb_val++) {
+                  $a_perfdata_name[$data['name']] = $data['DS'][$nb_val]['dsname'];
+                  
                   if (!isset($mydatat[$data['DS'][$nb_val]['dsname']])) {
                      $mydatat[$data['DS'][$nb_val]['dsname']] = array();
                   }
@@ -387,7 +401,11 @@ class PluginMonitoringServiceevent extends CommonDBTM {
             $mydatat[$name] = $data;
          }
       }
-      return array($mydatat, $a_labels, $a_ref, $a_convert);
+
+      $a_perfdata_name = array_unique($a_perfdata_name);
+      // Toolbox::logInFile("pm", "a_perfdata_name : ".serialize($a_perfdata_name)."\n");
+      // Toolbox::logInFile("pm", "mydatat : ".serialize($mydatat)."\n");
+      return array($mydatat, $a_labels, $a_ref, $a_convert, $a_perfdata_name);
    }
    
    

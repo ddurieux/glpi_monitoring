@@ -49,16 +49,16 @@ class PluginMonitoringServicegraph extends CommonDBTM {
    private $jsongraph_a_convert = array();
 
    
-   function displayCounter($rrdtool_template, $itemtype, $items_id, $timezone, $time='1d') {
+   function displayCounter($rrdtool_template, $items_id, $json=0, $counter_id='', $counter_name='') {
       global $CFG_GLPI;
 
-      // Toolbox::logInFile("pm", "displayCounter : $rrdtool_template, $itemtype, $items_id, $timezone, $time\n");
+      // Toolbox::logInFile("pm", "displayCounter : $rrdtool_template, $items_id\n");
       $pmComponent = new PluginMonitoringComponent();
-      $item = new $itemtype();
+      $item = new PluginMonitoringService();
       if (! $item->getFromDB($items_id)) return '';
 
       $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
-      $ret = '<div id="counters_'.$items_id.$time.'"></div>';
+      $ret = '<div class="counter" id="counters_'.$counter_id.'_'.$items_id.'">'.$counter_id.'</div>';
       $ret .= "<script>
          // window.setInterval(function () {
             Ext.Ajax.request({
@@ -67,14 +67,34 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       // define 'debug' parameter to add debug data in server response
       // $ret .= "   'debug': 'debug',";
       // define 'json' parameter to get a json server response
-      // $ret .= "   'json': 'json',";
+      $ret .= "   'json': '$json',";
       $ret .= "   'rrdtool_template': '$rrdtool_template',
+                  'counter_id': '$counter_id',
+                  'counter_name': '$counter_name',
                   'items_id': '$items_id',
                   'components_id': '". $item->fields['plugin_monitoring_components_id'] ."'
                },
-               success: function(response){
+               success: function(response)  {
                   var text = response.responseText;
-                  document.getElementById('counters_".$items_id.$time."').innerHTML = text;
+                  // console.log(text);
+                  document.getElementById('counters_".$counter_id.'_'.$items_id."').innerHTML = text;
+                  
+                  if ('$counter_id' == '') return;
+                  
+                  var createGlobalCounter = true;
+                  Ext.select('#global_counter_".$counter_id."').each(function(el) {
+                     console.log('Global counter for ".$counter_id." / ".$counter_name." exists.');
+                     createGlobalCounter = false;
+                  }); 
+                  if (createGlobalCounter) {
+                     var html = \"<th id='global_counter_".$counter_id."' class='global_counter'>\";
+                     html += \"<span class='global_counter_name'>".$counter_name."</span>\";
+                     html += \"<span>&nbsp;:&nbsp;</span>\";
+                     html += \"<span class='global_counter_value'>0</span>\";
+                     html += \"</th>\";
+                     Ext.select('#global_counters').createChild(html);
+                     console.log('Created an element for global \'".$counter_name."\' counter.');
+                  }
                }
             });
          // } , 5000);
