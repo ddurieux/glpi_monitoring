@@ -3042,7 +3042,6 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    
    
    // * Calculate unavailability
-   $unavailability_reset = 1;
    if ($unavailability_reset == 1) {
       // Delete unavailability periods
       $query = "DELETE FROM `glpi_plugin_monitoring_unavailabilities`";
