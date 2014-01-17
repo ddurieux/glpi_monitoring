@@ -3042,16 +3042,17 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    
    
    // * Calculate unavailability
-   $unavailability_reset = 1;
    if ($unavailability_reset == 1) {
       // Delete unavailability periods
       $query = "DELETE FROM `glpi_plugin_monitoring_unavailabilities`";
       $DB->query($query) or die('Unable to delete table `glpi_plugin_monitoring_unavailabilities`');
       
       // Reset service events unavailability
+      $DB->query("ALTER TABLE glpi_plugin_monitoring_serviceevents DISABLE KEYS");
       $query = "UPDATE `glpi_plugin_monitoring_serviceevents`
          SET `unavailability`='0'";
       $DB->query($query) or die('Unable to update table `glpi_plugin_monitoring_serviceevents`');
+      $DB->query("ALTER TABLE glpi_plugin_monitoring_serviceevents ENABLE KEYS");
       include (GLPI_ROOT . "/plugins/monitoring/inc/display.class.php");
       include (GLPI_ROOT . "/plugins/monitoring/inc/serviceevent.class.php");
       include (GLPI_ROOT . "/plugins/monitoring/inc/unavailability.class.php"); 
