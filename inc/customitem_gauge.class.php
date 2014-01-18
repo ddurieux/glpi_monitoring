@@ -257,9 +257,10 @@ time_specific // like use working hours
       $pmServiceevent   = new PluginMonitoringServiceevent();
       $pmComponent      = new PluginMonitoringComponent();
       $pmPerfdataDetail = new PluginMonitoringPerfdataDetail();
-      
+
       foreach ($data as $items_id=>$data2) {
          $pmService->getFromDB($items_id);
+         $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks($pmService->fields['plugin_monitoring_components_id']);
          $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
          $getvalues = $pmServiceevent->getSpecificData(
                  $pmComponent->fields['graph_template'], 
@@ -297,6 +298,7 @@ time_specific // like use working hours
             case 'PluginMonitoringService':
                foreach ($data as $items_id=>$data2) {
                   $pmService->getFromDB($items_id);
+                  $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks($pmService->fields['plugin_monitoring_components_id']);
                   $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
                   $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                      WHERE `plugin_monitoring_services_id`='".$items_id."'
@@ -331,6 +333,8 @@ time_specific // like use working hours
                            AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
                      $result = $DB->query($query);
                      while ($dataq=$DB->fetch_array($result)) {
+                        $pmService->getFromDB($dataq['id']);
+                        $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks($pmService->fields['plugin_monitoring_components_id']);
                         $pmComponent->getFromDB($dataq['plugin_monitoring_components_id']);
                         $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                            WHERE `plugin_monitoring_services_id`='".$dataq['id']."'
@@ -358,7 +362,6 @@ time_specific // like use working hours
       }
       if ($nb_val != 0) {
          if ($type == 'average') {
-            echo $val."-".$nb_val."<br>";
             $val = ($val / $nb_val);
          } else if ($type == 'median') {
             sort($a_val);
