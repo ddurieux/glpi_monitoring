@@ -2507,6 +2507,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                               'dashboard_components_catalogs', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+         $migration->addField($newTable, 
+                              'dashboard_perfdata', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
                               
          $migration->addField($newTable, 
                               'restartshinken', 
@@ -2538,6 +2541,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
          $migration->addField($newTable, 
                               'homepage_components_catalogs', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+         $migration->addField($newTable, 
+                              'homepage_perfdata', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
                               
       $migration->migrationOneTable($newTable);
