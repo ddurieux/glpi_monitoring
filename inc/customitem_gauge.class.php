@@ -157,8 +157,6 @@ time_specific // like use working hours
           'lastvaluediff'  => __('Last value (diff for incremantal)', 'monitoring'),
           'average'        => __('Average', 'monitoring'),
           'median'         => __('Median', 'monitoring'),
-          'counter'        => __('counter (for incremental values)', 'monitoring'),
-          
       );
       return $a_types;
    }
@@ -277,6 +275,165 @@ time_specific // like use working hours
    }
 
    
+   
+   function type_other($type='average') {
+      global $DB;
+      
+      $pmService        = new PluginMonitoringService();
+      $pmServiceevent   = new PluginMonitoringServiceevent();
+      $pmComponent      = new PluginMonitoringComponent();
+      $pmPerfdataDetail = new PluginMonitoringPerfdataDetail();
+
+      $a_date = $this->getTimeRange();
+      
+      $val    = 0;
+      $a_val  = array();
+      $nb_val = 0;
+      
+      $items = importArrayFromDB($this->fields['aggregate_items']);
+      foreach ($items as $itemtype=>$data) {
+         switch ($itemtype) {
+            
+            case 'PluginMonitoringService':
+               foreach ($data as $items_id=>$data2) {
+                  $pmService->getFromDB($items_id);
+                  $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
+                  $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
+                     WHERE `plugin_monitoring_services_id`='".$items_id."'
+                        AND `date` >= '".$a_date['begin']."'
+                     ORDER BY `date`";
+                  $result = $DB->query($query);
+
+                  $ret = $pmServiceevent->getData(
+                          $result, 
+                          $pmComponent->fields['graph_template'], 
+                          $a_date['begin'],
+                          $a_date['end']);
+                  foreach ($data2 as $a_perfdatadetails) {
+                     $pmPerfdataDetail->getFromDB($a_perfdatadetails['perfdatadetails_id']);
+                     $nb_val += count($ret[0][$pmPerfdataDetail->fields['dsname'.$a_perfdatadetails['perfdatadetails_dsname']]]);
+                     $val += array_sum($ret[0][$pmPerfdataDetail->fields['dsname'.$a_perfdatadetails['perfdatadetails_dsname']]]);
+                     $a_val = array_merge($a_val, $ret[0][$pmPerfdataDetail->fields['dsname'.$a_perfdatadetails['perfdatadetails_dsname']]]);
+                  }
+               }
+               break;
+            
+            case 'PluginMonitoringComponentscatalog':
+               $pmComponentscatalog = new PluginMonitoringComponentscatalog();
+               foreach ($data as $items_id=>$data2) {
+                  $ret = $pmComponentscatalog->getInfoOfCatalog($items_id);
+                  $a_hosts = $ret[5];
+                  foreach ($data2['PluginMonitoringComponents'] as $items_id_components=>$data4) {
+                     $query = "SELECT * FROM `glpi_plugin_monitoring_services`
+                        WHERE `plugin_monitoring_components_id`='".$items_id_components."'
+                           AND `plugin_monitoring_componentscatalogs_hosts_id` IN 
+                              ('".implode("','", $a_hosts)."')
+                           AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
+                     $result = $DB->query($query);
+                     while ($dataq=$DB->fetch_array($result)) {
+                        $pmComponent->getFromDB($dataq['plugin_monitoring_components_id']);
+                        $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
+                           WHERE `plugin_monitoring_services_id`='".$dataq['id']."'
+                              AND `date` >= '".$a_date['begin']."'
+                           ORDER BY `date`";
+                        $result = $DB->query($query);
+
+                        $ret = $pmServiceevent->getData(
+                                $result, 
+                                $pmComponent->fields['graph_template'], 
+                                $a_date['begin'],
+                                $a_date['end']);
+                        foreach ($data4 as $a_perfdatadetails) {
+                           $pmPerfdataDetail->getFromDB($a_perfdatadetails['perfdatadetails_id']);
+                           $nb_val += count($ret[0][$pmPerfdataDetail->fields['dsname'.$a_perfdatadetails['perfdatadetails_dsname']]]);
+                           $val += array_sum($ret[0][$pmPerfdataDetail->fields['dsname'.$a_perfdatadetails['perfdatadetails_dsname']]]);
+                           $a_val = array_merge($a_val, $ret[0][$pmPerfdataDetail->fields['dsname'.$a_perfdatadetails['perfdatadetails_dsname']]]);
+                        }
+                     }
+                  }
+               }
+               break;
+               
+         }
+      }
+      if ($nb_val != 0) {
+         if ($type == 'average') {
+            echo $val."-".$nb_val."<br>";
+            $val = ($val / $nb_val);
+         } else if ($type == 'median') {
+            sort($a_val);
+            $count = count($a_val); //total numbers in array
+            $middleval = floor(($count-1)/2); // find the middle value, or the lowest middle value
+            if($count % 2) { // odd number, middle is the median
+               $median = $a_val[$middleval];
+            } else { // even number, calculate avg of 2 medians
+               $low = $arr[$middleval];
+               $high = $arr[$middleval+1];
+               $median = (($low+$high)/2);
+            }
+            $val = $median;
+         }
+         
+      }
+      return $val;
+   }
+
+   
+   
+   function getTimeRange() {
+      
+      $begin = '';
+      switch ($this->fields['time']) {
+         
+         case 'lastday24h':
+            $begin = date('Y-m-d H:i:s', strtotime("-1 day"));
+            break;
+        
+         case 'lastdaymidnight':
+            $begin = date('Y-m-d H:i:s', strtotime("today"));
+            break;
+        
+         case 'week7d':
+            $begin = date('Y-m-d H:i:s', strtotime("-1 week"));
+            break;
+        
+         case 'weekmonday':
+            $begin = date('Y-m-d H:i:s', strtotime("last Monday"));
+            break;
+        
+         case 'weeksunday':
+            $begin = date('Y-m-d H:i:s', strtotime("last Sunday"));
+            break;
+        
+         case 'month30d':
+            $begin = date('Y-m-d H:i:s', strtotime("-1 month"));
+            break;
+        
+         case 'monthfirstday':
+            $begin = date('Y-m-d H:i:s', strtotime("first day of this month"));
+            break;
+        
+         case 'year365day':
+            $begin = date('Y-m-d H:i:s', strtotime("-1 year"));
+            break;
+        
+         case 'yearjanuary':
+            $begin = date('Y-m-d H:i:s', strtotime("first day of this year"));
+            break;
+        
+      }
+      return array(
+          'begin' => $begin,
+          'end'   => date('Y-m-d H:i:s')
+      );
+   }
+   
+   // *********************************************************************//
+   // ************************** Show widget ******************************//
+   // *********************************************************************//
+   
+   
+   
    function showWidget($id) {
       PluginMonitoringServicegraph::loadLib();
       
@@ -289,10 +446,14 @@ time_specific // like use working hours
       global $DB, $CFG_GLPI;
       
       $this->getFromDB($id);
-      $func = 'type_'.$this->fields['type'];
-      $val = $this->$func();
+      if ($this->fields['type'] == 'average'
+              || $this->fields['type'] == 'median') {
+         $val = $this->type_other($this->fields['type']);
+      } else {
+         $func = 'type_'.$this->fields['type'];
+         $val = $this->$func();
+      }
       
-      //$val = mt_rand(0, 100);
       echo "<script>
 			var gauges = [];
 			
