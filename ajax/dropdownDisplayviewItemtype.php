@@ -77,6 +77,10 @@ switch ($_POST['itemtype']) {
       Dropdown::showFromArray('type', $elements);
       break;
 
+   case 'PluginMonitoringCustomitem_Gauge':
+      Dropdown::show('PluginMonitoringCustomitem_Gauge', array('name'=>'items_id'));
+      break;
+
    default:
       break;
    

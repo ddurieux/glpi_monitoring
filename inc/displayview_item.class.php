@@ -564,6 +564,9 @@ Ext.onReady(function(){
       } else if($itemtype == "PluginMonitoringDisplayview") {
          $pmDisplayview = new PluginMonitoringDisplayview();
          $pmDisplayview->ajaxLoad($data['items_id']);
+      } else if($itemtype == "PluginMonitoringCustomitem_Gauge") {
+         $pmCustomitem_Gauge = new PluginMonitoringCustomitem_Gauge();
+         $pmCustomitem_Gauge->ajaxLoad($data['items_id']);
       }
       
       if ($itemtype == "PluginMonitoringWeathermap") {
@@ -620,6 +623,7 @@ Ext.onReady(function(){
       $elements['PluginMonitoringService']            = __('Resources (graph)', 'monitoring');
       $elements['PluginMonitoringComponentscatalog']  = __('Components catalog', 'monitoring');
       $elements['PluginMonitoringWeathermap']         = __('Weathermap', 'monitoring');
+      $elements['PluginMonitoringCustomitem_Gauge']   = PluginMonitoringCustomitem_Gauge::getTypeName();
       
       $rand = Dropdown::showFromArray('itemtype', $elements, array('value'=>$this->fields['itemtype']));
       

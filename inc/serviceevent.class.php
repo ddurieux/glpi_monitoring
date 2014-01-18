@@ -137,7 +137,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
    
    
    
-   function getSpecificData($rrdtool_template, $items_id, $which='last') { 
+   function getSpecificData($rrdtool_template, $items_id, $which='last', $state="AND `state` = 'OK'") { 
       global $DB;      
    
       // ** Get in table serviceevents
@@ -154,25 +154,25 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       $counters = array();
       
       switch ($which) {
-      case 'first': 
-         $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
-            WHERE `plugin_monitoring_services_id`='".$items_id."'
-               AND `state` = 'OK'
-            ORDER BY `date` ASC
-            LIMIT 1";
-         break;
-         
-      case 'last': 
-         $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
-            WHERE `plugin_monitoring_services_id`='".$items_id."'
-               AND `state` = 'OK'
-            ORDER BY `date` DESC
-            LIMIT 1";
-         break;
+         case 'first': 
+            $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
+               WHERE `plugin_monitoring_services_id`='".$items_id."'
+                  ".$state."
+               ORDER BY `date` ASC
+               LIMIT 1";
+            break;
 
-      default: 
-         return $counters;
-         break;
+         case 'last': 
+            $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
+               WHERE `plugin_monitoring_services_id`='".$items_id."'
+                  ".$state."
+               ORDER BY `date` DESC
+               LIMIT 1";
+            break;
+
+         default: 
+            return $counters;
+            break;
       }
       
       $result = $DB->query($query);
@@ -183,7 +183,6 @@ class PluginMonitoringServiceevent extends CommonDBTM {
               date('Y-m-d H:i:s', $enddate));
       if (is_array($ret)) {
          foreach ($ret[0] as $name=>$data) {
-            // Toolbox::logInFile("pm", "$name : ". $data[0]."\n");
             $counters[$name] = $data[0];
          }
       }
@@ -239,7 +238,6 @@ class PluginMonitoringServiceevent extends CommonDBTM {
             );
          }
       }
-      
       foreach ($query_data as $edata) {
          $current_timestamp = strtotime($edata['date']);
          if ($previous_timestamp == '') {
