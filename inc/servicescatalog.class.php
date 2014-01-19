@@ -303,7 +303,8 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
             foreach ($a_brulesg as $brulesdata) {
                echo "<tr class='tab_bg_1'>";
                $pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id']);
-               PluginMonitoringDisplay::displayLine($pMonitoringService->fields, 1, false);
+               // Last parameter is true to display counters/graphs, false if not needed
+               PluginMonitoringDisplay::displayLine($pMonitoringService->fields, 1, false, true);
               echo "</tr>";
             }
             echo "</table>";

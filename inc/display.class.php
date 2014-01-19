@@ -885,7 +885,7 @@ echo "
    
    
    
-   static function displayLine($data, $displayhost=1, $displayCounters=0) {
+   static function displayLine($data, $displayhost=1, $displayCounters=0, $displayGraphs=true) {
       global $DB,$CFG_GLPI;
 
       $pMonitoringService = new PluginMonitoringService();
@@ -925,6 +925,7 @@ echo "
          $timezone = $_SESSION['plugin_monitoring_timezone'];
       }
          
+      if ($displayGraphs) {
       if (! $_SESSION['plugin_monitoring']['reduced_interface']) {
          echo "<td class='center'>";
          // Only if exist incremental perfdata ...
@@ -965,6 +966,7 @@ echo "
             echo "</a>";
          }
          echo "</td>";
+      }
       }
       
       if ($displayhost == '1') {
