@@ -103,6 +103,6 @@ $query = "INSERT INTO `glpi_plugin_fusioninventory_taskjobstates`
 
 $result = $DB->query($query);
 
-$_SESSION["MESSAGE_AFTER_REDIRECT"] = __('Host command \'', 'monitoring').$host_command.__('\' requested for host \'', 'monitoring').$computerName.'\'';
+$_SESSION["MESSAGE_AFTER_REDIRECT"] = __('Host command \'', 'monitoring').$host_command.__('\' requested for the host \'', 'monitoring').$computerName.'\'';
 Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
 ?>

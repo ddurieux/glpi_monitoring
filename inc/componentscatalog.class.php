@@ -159,7 +159,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          case 'Central' :
             $pmDisplay = new PluginMonitoringDisplay();
             $pmComponentscatalog = new PluginMonitoringComponentscatalog();
-            $pmDisplay->showCounters("Componentscatalog");
+            // $pmDisplay->showCounters("Componentscatalog");
             $pmComponentscatalog->showChecks();
             return true;
 

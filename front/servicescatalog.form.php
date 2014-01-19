@@ -42,17 +42,21 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("config_services_catalogs","r");
+if (PluginMonitoringProfile::haveRight("dashboard_services_catalogs", 'r')
+   || PluginMonitoringProfile::haveRight("homepage_services_catalogs", 'r')) {
 
-$dropdown = new PluginMonitoringServicescatalog();
-if (isset($_GET['detail']) AND isset($_GET['id'])) {
-   Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
+   $dropdown = new PluginMonitoringServicescatalog();
+   if (isset($_GET['detail']) AND isset($_GET['id'])) {
+      Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
+                "monitoring", "servicescatalog");
+      $dropdown->showBADetail($_GET['id']);
+      Html::footer();
+   } else {
+      Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "servicescatalog");
-   $dropdown->showBADetail($_GET['id']);
-   Html::footer();
+      include (GLPI_ROOT . "/front/dropdown.common.form.php");
+   }
 } else {
-   Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-          "monitoring", "servicescatalog");
-   include (GLPI_ROOT . "/front/dropdown.common.form.php");
+   PluginMonitoringProfile::checkRight("dashboard_services_catalogs","r");
 }
 ?>

@@ -72,6 +72,8 @@ function plugin_init_monitoring() {
               array('addtabon' => array('Central')));
          Plugin::registerClass('PluginMonitoringHost',
               array('addtabon' => array('Central', 'Computer', 'Device', 'Printer', 'NetworkEquipment')));
+         Plugin::registerClass('PluginMonitoringService',
+              array('addtabon' => array('Central')));
          Plugin::registerClass('PluginMonitoringProfile',
               array('addtabon' => array('Profile')));
          Plugin::registerClass('PluginMonitoringServicescatalog',
