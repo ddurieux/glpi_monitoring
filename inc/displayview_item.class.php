@@ -567,6 +567,9 @@ Ext.onReady(function(){
       } else if($itemtype == "PluginMonitoringCustomitem_Gauge") {
          $pmCustomitem_Gauge = new PluginMonitoringCustomitem_Gauge();
          $pmCustomitem_Gauge->ajaxLoad($data['items_id']);
+      } else if($itemtype == "PluginMonitoringCustomitem_Counter") {
+         $pmCustomitem_Counter = new PluginMonitoringCustomitem_Counter();
+         $pmCustomitem_Counter->ajaxLoad($data['items_id']);
       }
       
       if ($itemtype == "PluginMonitoringWeathermap") {
@@ -624,6 +627,7 @@ Ext.onReady(function(){
       $elements['PluginMonitoringComponentscatalog']  = __('Components catalog', 'monitoring');
       $elements['PluginMonitoringWeathermap']         = __('Weathermap', 'monitoring');
       $elements['PluginMonitoringCustomitem_Gauge']   = PluginMonitoringCustomitem_Gauge::getTypeName();
+      $elements['PluginMonitoringCustomitem_Counter'] = PluginMonitoringCustomitem_Counter::getTypeName();
       
       $rand = Dropdown::showFromArray('itemtype', $elements, array('value'=>$this->fields['itemtype']));
       

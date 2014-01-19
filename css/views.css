@@ -124,6 +124,10 @@
 	background: rgba(76,180,73, 0.8);
 }
 
+.ch-info-counter{
+	background: rgba(196,196,196, 0.8);
+}
+
 .ch-item div>h1, .ch-itemup div>h1 {
 	color: #fff;
 	letter-spacing: 2px;

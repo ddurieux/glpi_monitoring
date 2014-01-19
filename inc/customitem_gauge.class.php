@@ -163,23 +163,6 @@ time_specific // like use working hours
    
    
    
-   function getGaugeTimes() {
-      $a_times = array(
-          'lastday24h'      => __('Last day (last 24 hours)', 'monitoring'),
-          'lastdaymidnight' => __('Last day (since midnight)', 'monitoring'),
-          'week7d'          => __('Last week (last 7 days)', 'monitoring'),
-          'weekmonday'      => __('Last week (since Monday)', 'monitoring'),
-          'weeksunday'      => __('Last week (since Sunday)', 'monitoring'),
-          'month30d'        => __('Last month (last 30 days)', 'monitoring'),
-          'monthfirstday'   => __('Last month (since first day of month)', 'monitoring'),
-          'year365day'      => __('Last year (365 days)', 'monitoring'),
-          'yearjanuary'     => __('Last year (since first January)', 'monitoring')
-      );
-      return $a_times;
-   }
-   
-   
-   
    function type_lastvalue() {
       global $DB;
       
@@ -250,7 +233,7 @@ time_specific // like use working hours
                $pmComponentscatalog = new PluginMonitoringComponentscatalog();
                foreach ($data as $items_id=>$data2) {
                   $ret = $pmComponentscatalog->getInfoOfCatalog($items_id);
-                  $a_hosts = $ret[5];
+                  $a_hosts = $ret[6];
                   foreach ($data2['PluginMonitoringComponents'] as $items_id_components=>$data4) {
                      // get services  (use entities of user)
                      $query = "SELECT * FROM `glpi_plugin_monitoring_services`
@@ -322,7 +305,7 @@ time_specific // like use working hours
       $pmComponent      = new PluginMonitoringComponent();
       $pmPerfdataDetail = new PluginMonitoringPerfdataDetail();
 
-      $a_date = $this->getTimeRange();
+      $a_date = PluginMonitoringCustomitem_Common::getTimeRange($this->fields);
       
       $val    = 0;
       $a_val  = array();
@@ -388,7 +371,7 @@ time_specific // like use working hours
                $pmComponentscatalog = new PluginMonitoringComponentscatalog();
                foreach ($data as $items_id=>$data2) {
                   $ret = $pmComponentscatalog->getInfoOfCatalog($items_id);
-                  $a_hosts = $ret[5];
+                  $a_hosts = $ret[6];
                   foreach ($data2['PluginMonitoringComponents'] as $items_id_components=>$data4) {
                      $query = "SELECT * FROM `glpi_plugin_monitoring_services`
                         WHERE `plugin_monitoring_components_id`='".$items_id_components."'
@@ -405,7 +388,7 @@ time_specific // like use working hours
                               AND `date` >= '".$a_date['begin']."'
                            ORDER BY `date`";
                         $result = $DB->query($query);
-
+                        
                         $ret = $pmServiceevent->getData(
                                 $result, 
                                 $pmComponent->fields['graph_template'], 
@@ -460,55 +443,6 @@ time_specific // like use working hours
       return $a_ret;
    }
 
-   
-   
-   function getTimeRange() {
-      
-      $begin = '';
-      switch ($this->fields['time']) {
-         
-         case 'lastday24h':
-            $begin = date('Y-m-d H:i:s', strtotime("-1 day"));
-            break;
-        
-         case 'lastdaymidnight':
-            $begin = date('Y-m-d H:i:s', strtotime("today"));
-            break;
-        
-         case 'week7d':
-            $begin = date('Y-m-d H:i:s', strtotime("-1 week"));
-            break;
-        
-         case 'weekmonday':
-            $begin = date('Y-m-d H:i:s', strtotime("last Monday"));
-            break;
-        
-         case 'weeksunday':
-            $begin = date('Y-m-d H:i:s', strtotime("last Sunday"));
-            break;
-        
-         case 'month30d':
-            $begin = date('Y-m-d H:i:s', strtotime("-1 month"));
-            break;
-        
-         case 'monthfirstday':
-            $begin = date('Y-m-d H:i:s', strtotime("first day of this month"));
-            break;
-        
-         case 'year365day':
-            $begin = date('Y-m-d H:i:s', strtotime("-1 year"));
-            break;
-        
-         case 'yearjanuary':
-            $begin = date('Y-m-d H:i:s', strtotime("first day of this year"));
-            break;
-        
-      }
-      return array(
-          'begin' => $begin,
-          'end'   => date('Y-m-d H:i:s')
-      );
-   }
    
    // *********************************************************************//
    // ************************** Show widget ******************************//
