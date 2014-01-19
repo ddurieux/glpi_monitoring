@@ -183,9 +183,21 @@ class PluginMonitoringServiceevent extends CommonDBTM {
               $rrdtool_template,
               $dataevent['date'],
               $dataevent['date']);
+/*
       if (is_array($ret)) {
          foreach ($ret[0] as $name=>$data) {
             $counters[$name] = $data[0];
+         }
+      }
+*/
+      if (is_array($ret) && is_array($ret[0]) && is_array($ret[4])) {
+         foreach ($ret[4] as $name=>$data) {
+            // Toolbox::logInFile("pm", "$name -> $data = ".$ret[0][$data][0]."\n");
+            $counter = array();
+            $counter['id'] = preg_replace("/[^A-Za-z0-9\-_]/","",$name);
+            $counter['name'] = $data;
+            $counter['value'] = $ret[0][$data][0];
+            $counters[] = $counter;
          }
       }
    

@@ -70,7 +70,9 @@ foreach ($counter_types as $type => $type_title) {
    
    $counters[$type] = array();
    $a_ret = $pmServiceevent->getSpecificData($_POST['rrdtool_template'], $_POST['items_id'], $type);
+   if (isset($_POST['debug'])) echo "<pre>".print_r($a_ret)."</pre>";
    foreach ($a_ret as $counter) {
+      if (isset($_POST['debug'])) echo "<pre>".print_r($a_ret)."</pre>";
       if (isset($_POST['debug'])) echo "<pre>".$counter['id']." (".$counter['name'].") =".$counter['value']."</pre>";
       if (! isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']][$counter['name']])) continue;
 
@@ -116,14 +118,18 @@ if (isset($_POST['counter_id']) && (! empty($_POST['counter_id']))) {
          if ($id != $_POST['counter_id']) continue;
          
          $hdr_counter = $data['name'];
-         $row_counter .= "<td counter='".$_POST['counter_id']."' class='localCounter center'>".$data['value']."</th>";
+         $row_counter .= "<td counter='".$_POST['counter_id']."' counterType='".$type."' class='localCounter center'>".$data['value']."</th>";
       }
    }
-   echo "<table class='tab_cadrehov'>";
-   echo "<tr class='tab_bg_1'><th colspan='".count($counters)."' counterId='".$_POST['counter_id']."' counterName='".$hdr_counter."' class='counterId center'>$hdr_counter</th></tr>";
-   echo "<tr class='tab_bg_1'>$hdr_types</tr>";
-   echo "<tr class='tab_bg_2'>$row_counter</tr>";
-   echo "</table>";
+   if (isset($hdr_counter)) {
+      echo "<table class='tab_cadrehov'>";
+      echo "<tr class='tab_bg_1'><th colspan='".count($counters)."' counterId='".$_POST['counter_id']."' counterName='".$hdr_counter."' class='counterId center'>$hdr_counter</th></tr>";
+      echo "<tr class='tab_bg_1'>$hdr_types</tr>";
+      echo "<tr class='tab_bg_2'>$row_counter</tr>";
+      echo "</table>";
+   } else {
+      echo "&nbsp;";
+   }
 } else {
    if (isset($_POST['json']) && ($_POST['json']=='1')) {
       echo json_encode($counters);

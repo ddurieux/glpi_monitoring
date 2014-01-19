@@ -163,13 +163,13 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       $return = true;
       if ($ret === false) {
          Session::addMessageAfterRedirect(
-                 __('Shinken restart failed:', 'monitoring').' '.curl_error($ch), 
+                 __('Shinken communication failed:', 'monitoring').' '.curl_error($ch), 
                  false, 
                  ERROR);
          $return = false;
       } else if (strstr($ret, 'error')) {
          Session::addMessageAfterRedirect(
-                 __('Shinken restart failed:', 'monitoring').' '.$ret, 
+                 __('Shinken communication failed:', 'monitoring').' '.$ret, 
                  false, 
                  ERROR);
          $return = false;

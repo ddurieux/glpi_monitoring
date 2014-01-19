@@ -75,27 +75,8 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                   'components_id': '". $item->fields['plugin_monitoring_components_id'] ."'
                },
                success: function(response)  {
-                  var text = response.responseText;
-                  // console.log(text);
-                  document.getElementById('counters_".$counter_id.'_'.$items_id."').innerHTML = text;
-                  
-                  if ('$counter_id' == '') return;
-                  
-                  var createGlobalCounter = true;
-                  Ext.select('#global_counter_".$counter_id."').each(function(el) {
-                     console.log('Global counter for ".$counter_id." / ".$counter_name." exists.');
-                     createGlobalCounter = false;
-                  }); 
-                  if (createGlobalCounter) {
-                     var html = \"<th id='global_counter_".$counter_id."' class='global_counter'>\";
-                     html += \"<span class='global_counter_name'>".$counter_name."</span>\";
-                     html += \"<span>&nbsp;:&nbsp;</span>\";
-                     html += \"<span class='global_counter_value'>0</span>\";
-                     html += \"</th>\";
-                     Ext.select('#global_counters').createChild(html);
-                     console.log('Created an element for global \'".$counter_name."\' counter.');
-                  }
-               }
+                  document.getElementById('counters_".$counter_id.'_'.$items_id."').innerHTML = response.responseText;
+                }
             });
          // } , 5000);
       </script>";

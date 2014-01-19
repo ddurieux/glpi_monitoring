@@ -48,49 +48,7 @@ Html::header(__('Monitoring', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
              "monitoring", "display");
 
 
-$pmDisplay = new PluginMonitoringDisplay();
-$pmMessage = new PluginMonitoringMessage();
-
-$pmMessage->getMessages();
-
-$pmDisplay->menu();
-
-$pmDisplay->refreshPage();
-
-// $pmDisplay->showCounters("Ressources", 1, 0);
-// Manage search
-if (isset($_SESSION['plugin_monitoring']['perfdatas'])) {
-   $_GET = $_SESSION['plugin_monitoring']['perfdatas'];
-}
-if (isset($_GET['reset'])) {
-   unset($_SESSION['glpisearch']['PluginMonitoringService']);
-}
-if (isset($_GET['glpi_tab'])) {
-   unset($_GET['glpi_tab']);
-}
-Search::manageGetValues("PluginMonitoringService");
-if (isset($_GET['hidesearch'])) {
-   echo "<table class='tab_cadre_fixe'>";
-   echo "<tr class='tab_bg_1'>";
-   echo "<th>";
-   echo "<a onClick='Ext.get(\"searchformperfdatas\").toggle();'>
-      <img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' />&nbsp;
-         ".__('Display search form', 'monitoring')."
-      &nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' /></a>";
-   echo "</th>";
-   echo "</tr>";
-   echo "</table>";
-   echo "<div style='display: none;' id='searchformperfdatas'>";
-}
-Search::showGenericSearch("PluginMonitoringService", $_GET);
-if (isset($_GET['hidesearch'])) {
-   echo "</div>";
-}
-
-$pmDisplay->showPerfdatasBoard();
-if (isset($_SESSION['glpisearch']['PluginMonitoringService']['reset'])) {
-   unset($_SESSION['glpisearch']['PluginMonitoringService']['reset']);
-}
+Html::redirect($CFG_GLPI['root_doc']."/plugins/monitoring/front/service.php?perfdatas=1");
 
 Html::footer();
 ?>

@@ -46,7 +46,11 @@ if (!defined('GLPI_ROOT')) {
 
 Session::checkLoginUser();
 
+if (! isset($_SESSION['plugin_monitoring']['reduced_interface'])) {
+   $_SESSION['plugin_monitoring']['reduced_interface'] = false;
+}
+
 $pmComponentscatalog = new PluginMonitoringComponentscatalog();
-$pmComponentscatalog->showWidgetFrame($_POST['id']);
+$pmComponentscatalog->showWidgetFrame($_POST['id'], $_SESSION['plugin_monitoring']['reduced_interface']);
 
 ?>

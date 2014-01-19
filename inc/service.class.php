@@ -100,6 +100,7 @@ class PluginMonitoringService extends CommonDBTM {
       $tab[6]['table']           = $this->getTable();
       $tab[6]['field']           = 'event';
       $tab[6]['name']            = __('Result details', 'monitoring');
+      $tab[6]['datatype']        = 'string';
       $tab[6]['massiveaction']   = false;
 
       $tab[7]['table']          = $this->getTable();
@@ -107,22 +108,33 @@ class PluginMonitoringService extends CommonDBTM {
       $tab[7]['name']           = __('Acknowledge', 'monitoring');
       $tab[7]['datatype']       = 'bool';
      
-      $tab[8]['table']          = 'glpi_computers';
-      $tab[8]['field']          = 'name';
-      $tab[8]['name']           = __('Item')." > ".__('Computer');
-      $tab[8]['searchtype']     = 'equals';
-      $tab[8]['datatype']       = 'itemlink';
-      
-      $tab[9]['table']          = $this->getTable();
-      $tab[9]['field']          = 'Printer';
-      $tab[9]['name']           = __('Item')." > ".__('Printer');
+      $tab[8]['table']          = 'glpi_plugin_monitoring_hosts';
+      $tab[8]['field']          = 'is_acknowledged';
+      $tab[8]['name']           = __('Host acknowledge', 'monitoring');
+      $tab[8]['datatype']       = 'bool';
+     
+      $tab[9]['table']          = 'glpi_computers';
+      $tab[9]['field']          = 'name';
+      $tab[9]['name']           = __('Item')." > ".__('Computer');
       $tab[9]['searchtype']     = 'equals';
+      $tab[9]['datatype']       = 'itemlink';
       
       $tab[10]['table']          = $this->getTable();
-      $tab[10]['field']          = 'NetworkEquipment';
-      $tab[10]['name']           = __('Item')." > ".__('Network device');
+      $tab[10]['field']          = 'Printer';
+      $tab[10]['name']           = __('Item')." > ".__('Printer');
       $tab[10]['searchtype']     = 'equals';
       
+      $tab[11]['table']          = $this->getTable();
+      $tab[11]['field']          = 'NetworkEquipment';
+      $tab[11]['name']           = __('Item')." > ".__('Network device');
+      $tab[11]['searchtype']     = 'equals';
+      
+      // TODO : ...
+      // $tab[12]['table']          = 'glpi_plugin_monitoring_componentscatalogs_hosts';
+      // $tab[12]['field']          = 'plugin_monitoring_componentscatalog_id';
+      // $tab[12]['name']           = __('Components catalog', 'monitoring');
+      // $tab[12]['datatype']       = 'equals';
+     
       return $tab;
    }
 
@@ -943,14 +955,15 @@ class PluginMonitoringService extends CommonDBTM {
          if ($allServices) {
             echo __('Add an acknowledge for all faulty services of the host', 'monitoring').' '.$hostname;
          } else {
-            echo __('Add an acknowledge for the host', 'monitoring').' '.$hostname;
+            echo __('Add an acknowledge for the host and all faulty services of the host', 'monitoring').' '.$hostname;
          }
          echo "</td>";
          echo "</tr>";
          
          echo "<tr><td colspan='3'><hr/></td></tr>";
          
-         if ($allServices) {
+         // Acknowledge host AND all faulty services ...
+         // if ($allServices) {
             // Get all host services except if state is ok or is already acknowledged ...
             $query = "SELECT 
                      `glpi_plugin_monitoring_services`.*
@@ -974,11 +987,12 @@ class PluginMonitoringService extends CommonDBTM {
                $i++;
             }
             if ($i != 0) {
-               echo "<tr><td colspan='3'>".__('All these services will be acknowledged: ')."</td></tr>";
+               echo "<tr><td colspan='3'>".__('All these services will be acknowledged')."</td></tr>";
                echo "<input type='hidden' name='serviceCount' value='$i' />";
                echo "<tr><td colspan='3'><hr/></td></tr>";
             }
-         } else {
+         // } else {
+         if (! $allServices) {
             echo "<input type='hidden' name='hostAcknowledge' value='$hostname' />";
          }
 

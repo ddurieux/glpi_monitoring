@@ -48,18 +48,31 @@ Html::header(__('Monitoring', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
              "monitoring", "display");
 
 
+// Display ressources perfdata ?
+if (isset($_SESSION['plugin_monitoring']['ressources_perfdata'])) {
+   unset($_SESSION['plugin_monitoring']['ressources_perfdata']);
+}
+// Reduced or normal interface ?
+if (! isset($_SESSION['plugin_monitoring']['reduced_interface'])) {
+   $_SESSION['plugin_monitoring']['reduced_interface'] = false;
+}
+if (isset($_POST['reduced_interface'])) {
+   $_SESSION['plugin_monitoring']['reduced_interface'] = $_POST['reduced_interface'];
+}
+
 $pmDisplay = new PluginMonitoringDisplay();
-$pmComponentscatalog = new PluginMonitoringComponentscatalog();
 $pmMessage = new PluginMonitoringMessage();
 
 $pmMessage->getMessages();
 
 $pmDisplay->menu();
 
-PluginMonitoringProfile::checkRight("dashboard_components_catalogs", 'r');
+$pmDisplay->refreshPage();
 
 $pmDisplay->showCounters("Componentscatalog");
-$pmComponentscatalog->showChecks();
+
+$pmComponentscatalog = new PluginMonitoringComponentscatalog();
+$pmComponentscatalog->showChecks($_SESSION['plugin_monitoring']['reduced_interface']);
 
 Html::footer();
 ?>

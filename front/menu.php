@@ -64,6 +64,7 @@ if (PluginMonitoringProfile::haveRight("dashboard", 'r')
          || PluginMonitoringProfile::haveRight("dashboard_services_catalogs", 'r')
          || PluginMonitoringProfile::haveRight("dashboard_components_catalogs", 'r')
          || PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')
+         || PluginMonitoringProfile::haveRight("dashboard_perfdata", 'r')
          || PluginMonitoringProfile::haveRight("dashboard_views", 'r'))) {
    $toDisplayArea++;
 
@@ -83,48 +84,28 @@ if (PluginMonitoringProfile::haveRight("config_services_catalogs", 'r')
       || PluginMonitoringProfile::haveRight("config_views", 'r')) {
    echo "<table class='tab_cadre' width='950'>";
    echo "<tr class='tab_bg_1'>";
-
-   if (PluginMonitoringProfile::haveRight("config_views", 'r')) {
-      $toDisplayArea++;
-      echo "<th align='center' height='50' width='100%'>";
-      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/displayview.php'>".__('Views', 'monitoring')."</a>";
-      echo "</th>";
-   }
-   echo "</tr>";
-   echo "</table>";
-   echo "<br/>";
-}
-
-
-if (PluginMonitoringProfile::haveRight("config_services_catalogs", 'r')
-      || PluginMonitoringProfile::haveRight("config_weathermap", 'r')
-      || PluginMonitoringProfile::haveRight("config_views", 'r')) {
-   echo "<table class='tab_cadre' width='950'>";
-   echo "<tr class='tab_bg_1'>";
    if (PluginMonitoringProfile::haveRight("config_services_catalogs", 'r')) {
       $toDisplayArea++;
       echo "<th align='center' height='40' width='33%'>";
-      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicescatalog.php'>".__('Services catalog', 'monitoring')."</a>";
+      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicescatalog.php'>".__('Services catalogs', 'monitoring')."</a>";
       echo "</th>";
    }
 
    if (PluginMonitoringProfile::haveRight("config_weathermap", 'r')) {
       $toDisplayArea++;
       echo "<th align='center' height='40' width='33%'>";
-      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/weathermap.php'>".__('Weathermap', 'monitoring')."</a>";
+      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/weathermap.php'>".__('Weathermaps', 'monitoring')."</a>";
       echo "</th>";
    }
 
-   if (PluginMonitoringProfile::haveRight("config", 'r')) {
+   if (PluginMonitoringProfile::haveRight("config_views", 'r')) {
       $toDisplayArea++;
       echo "<th align='center' height='40' width='34%'>";
-      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/customitem_gauge.php'>".PluginMonitoringCustomitem_Gauge::getTypeName()."</a>";
+      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/displayview.php'>".__('Views', 'monitoring')."</a>";
       echo "</th>";
    }
-   
    echo "</tr>";
    echo "</table>";
-
    echo "<br/>";
 }
 
