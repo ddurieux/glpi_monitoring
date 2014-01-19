@@ -241,6 +241,21 @@ CREATE TABLE `glpi_plugin_monitoring_configs` (
 
 
 
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_customitems_counters`;
+
+CREATE TABLE `glpi_plugin_monitoring_customitems_counters` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `name` varchar(255) DEFAULT NULL,
+   `entities_id` int(11) NOT NULL DEFAULT '0',
+   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
+   `aggregate_items` text DEFAULT NULL COLLATE utf8_unicode_ci,
+   `time` varchar(255) DEFAULT NULL,
+   `time_specific` varchar(255) DEFAULT NULL,
+   PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_customitems_gauges`;
 
 CREATE TABLE `glpi_plugin_monitoring_customitems_gauges` (

@@ -81,6 +81,10 @@ switch ($_POST['itemtype']) {
       Dropdown::show('PluginMonitoringCustomitem_Gauge', array('name'=>'items_id'));
       break;
 
+   case 'PluginMonitoringCustomitem_Counter':
+      Dropdown::show('PluginMonitoringCustomitem_Counter', array('name'=>'items_id'));
+      break;
+
    default:
       break;
    
