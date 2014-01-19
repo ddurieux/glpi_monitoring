@@ -535,6 +535,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $hosts_states = array();
       $services_ids = array();
       $hosts_ressources = array();
+      $a_componentscatalogs_hosts = array();
       $query = "SELECT `glpi_computers`.`name`, `glpi_computers`.`entities_id`, `glpi_plugin_monitoring_componentscatalogs_hosts`.`id` AS catalog_id, `glpi_plugin_monitoring_hosts`.* 
          FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
          LEFT JOIN `glpi_computers` ON `glpi_computers`.`id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`
@@ -641,6 +642,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          
          $hosts_ids[$dataComponentscatalog_Host['name']] = $dataComponentscatalog_Host['items_id'];
          $hosts_states[$dataComponentscatalog_Host['name']] = $host_overall_state_ok;
+         $a_componentscatalogs_hosts[$dataComponentscatalog_Host['catalog_id']] = $dataComponentscatalog_Host['catalog_id'];
          $hosts_ressources[$dataComponentscatalog_Host['name']] = $ressources;
       }
 
@@ -649,7 +651,8 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                    $hosts_ids,
                    $services_ids,
                    $hosts_ressources,
-                   $hosts_states);
+                   $hosts_states,
+                   $a_componentscatalogs_hosts);
    }
 
    

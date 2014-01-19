@@ -233,7 +233,7 @@ time_specific // like use working hours
                $pmComponentscatalog = new PluginMonitoringComponentscatalog();
                foreach ($data as $items_id=>$data2) {
                   $ret = $pmComponentscatalog->getInfoOfCatalog($items_id);
-                  $a_hosts = $ret[5];
+                  $a_hosts = $ret[6];
                   foreach ($data2['PluginMonitoringComponents'] as $items_id_components=>$data4) {
                      // get services  (use entities of user)
                      $query = "SELECT * FROM `glpi_plugin_monitoring_services`
@@ -371,7 +371,7 @@ time_specific // like use working hours
                $pmComponentscatalog = new PluginMonitoringComponentscatalog();
                foreach ($data as $items_id=>$data2) {
                   $ret = $pmComponentscatalog->getInfoOfCatalog($items_id);
-                  $a_hosts = $ret[5];
+                  $a_hosts = $ret[6];
                   foreach ($data2['PluginMonitoringComponents'] as $items_id_components=>$data4) {
                      $query = "SELECT * FROM `glpi_plugin_monitoring_services`
                         WHERE `plugin_monitoring_components_id`='".$items_id_components."'
@@ -388,7 +388,7 @@ time_specific // like use working hours
                               AND `date` >= '".$a_date['begin']."'
                            ORDER BY `date`";
                         $result = $DB->query($query);
-
+                        
                         $ret = $pmServiceevent->getData(
                                 $result, 
                                 $pmComponent->fields['graph_template'], 

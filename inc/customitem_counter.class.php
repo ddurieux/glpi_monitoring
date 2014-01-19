@@ -167,12 +167,11 @@ class PluginMonitoringCustomitem_Counter extends CommonDBTM {
       $pmServiceevent   = new PluginMonitoringServiceevent();
       $pmComponent      = new PluginMonitoringComponent();
       $pmPerfdataDetail = new PluginMonitoringPerfdataDetail();
-
+      
       $a_date = PluginMonitoringCustomitem_Common::getTimeRange($this->fields);
       
       $val    = 0;
-      $nb_val = 0;
-      
+     
       $items = importArrayFromDB($this->fields['aggregate_items']);
       foreach ($items as $itemtype=>$data) {
          switch ($itemtype) {
@@ -236,7 +235,7 @@ class PluginMonitoringCustomitem_Counter extends CommonDBTM {
                $pmComponentscatalog = new PluginMonitoringComponentscatalog();
                foreach ($data as $items_id=>$data2) {
                   $ret = $pmComponentscatalog->getInfoOfCatalog($items_id);
-                  $a_hosts = $ret[5];
+                  $a_hosts = $ret[6];
                   foreach ($data2['PluginMonitoringComponents'] as $items_id_components=>$data4) {
                      $query = "SELECT * FROM `glpi_plugin_monitoring_services`
                         WHERE `plugin_monitoring_components_id`='".$items_id_components."'
@@ -322,8 +321,8 @@ class PluginMonitoringCustomitem_Counter extends CommonDBTM {
    
    function showWidgetFrame($id) {
       global $DB, $CFG_GLPI;
-      
       $this->getFromDB($id);
+      
       echo '<div class="ch-item">
          <div class="ch-info-counter">
 			<h1><a href="';
