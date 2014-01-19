@@ -180,7 +180,7 @@ time_specific // like use working hours
    
    
    
-   function type_lastvalue($field='aggregate_items') {
+   function type_lastvalue() {
       global $DB;
       
       $pmService        = new PluginMonitoringService();
@@ -191,6 +191,23 @@ time_specific // like use working hours
       $val    = 0;
       $nb_val = 0;
 
+      $a_tocheck = array(
+          'warn'  => 0,
+          'crit'  => 0,
+          'limit' => 0
+      );
+      
+      $a_types = array('warn', 'crit', 'limit');
+      for ($i=0; $i< count($a_types); $i++) {
+         if (is_numeric($this->fields['aggregate_'.$a_types[$i]])) {
+            $a_ret[$a_types[$i]] = $this->fields['aggregate_'.$a_types[$i]];
+         } else {
+            $a_ret[$a_types[$i]] = 0;
+            $a_tocheck[$a_types[$i]] = 1;
+         }
+      }
+
+      
 //      $input = array(
 //          'PluginMonitoringComponentscatalog' => array(
 //              '9' => array(
@@ -209,7 +226,7 @@ time_specific // like use working hours
 //    'aggregate_items' => exportArrayToDB($input)
 //));
       
-      $items = importArrayFromDB($this->fields[$field]);
+      $items = importArrayFromDB($this->fields['aggregate_items']);
       foreach ($items as $itemtype=>$data) {
          switch ($itemtype) {
             
@@ -217,6 +234,16 @@ time_specific // like use working hours
                $a_ret = $this->getLastValofService($data, $val, $nb_val);
                $val    = $a_ret[0];
                $nb_val = $a_ret[1];
+               // for manage warn, crit and limit
+               foreach ($a_tocheck as $other_type=>$num_type) {
+                  if ($num_type == 1) {
+                     $other_items = importArrayFromDB($this->fields['aggregate_'.$other_type]);
+                     foreach ($other_items[$itemtype] as $a_perfdatadetails) {
+                        $pmPerfdataDetail->getFromDB($a_perfdatadetails['perfdatadetails_id']);
+                        $a_ret[$other_type] += array_sum($ret[0][$pmPerfdataDetail->fields['dsname'.$a_perfdatadetails['perfdatadetails_dsname']]]);
+                     }
+                  }
+               }
                break;
             
             case 'PluginMonitoringComponentscatalog':
@@ -237,6 +264,16 @@ time_specific // like use working hours
                                 array($dataq['id'] => $data4), 
                                 $val, 
                                 $nb_val);
+//                        // for manage warn, crit and limit
+//                        foreach ($a_tocheck as $other_type=>$num_type) {
+//                           if ($num_type == 1) {
+//                              $other_items = importArrayFromDB($this->fields['aggregate_'.$other_type]);
+//                              foreach ($other_items[$itemtype][$items_id]['PluginMonitoringComponents'][$items_id_components] as $a_perfdatadetails) {
+//                                 $pmPerfdataDetail->getFromDB($a_perfdatadetails['perfdatadetails_id']);
+//                                 $a_ret[$other_type] += array_sum($ret[0][$pmPerfdataDetail->fields['dsname'.$a_perfdatadetails['perfdatadetails_dsname']]]);
+//                              }
+//                           }
+//                        }
                      }
                   }
                }
@@ -277,7 +314,7 @@ time_specific // like use working hours
 
    
    
-   function type_other($type='average', $field='aggregate_items') {
+   function type_other($type='average') {
       global $DB;
       
       $pmService        = new PluginMonitoringService();
@@ -290,8 +327,25 @@ time_specific // like use working hours
       $val    = 0;
       $a_val  = array();
       $nb_val = 0;
+
+      $a_tocheck = array(
+          'warn'  => 0,
+          'crit'  => 0,
+          'limit' => 0
+      );
       
-      $items = importArrayFromDB($this->fields[$field]);
+      $a_types = array('warn', 'crit', 'limit');
+      for ($i=0; $i< count($a_types); $i++) {
+         if (is_numeric($this->fields['aggregate_'.$a_types[$i]])) {
+            $a_ret[$a_types[$i]] = $this->fields['aggregate_'.$a_types[$i]];
+         } else {
+            $a_ret[$a_types[$i]] = 0;
+            $a_tocheck[$a_types[$i]] = 1;
+         }
+      }
+
+      
+      $items = importArrayFromDB($this->fields['aggregate_items']);
       foreach ($items as $itemtype=>$data) {
          switch ($itemtype) {
             
@@ -316,6 +370,16 @@ time_specific // like use working hours
                      $nb_val += count($ret[0][$pmPerfdataDetail->fields['dsname'.$a_perfdatadetails['perfdatadetails_dsname']]]);
                      $val += array_sum($ret[0][$pmPerfdataDetail->fields['dsname'.$a_perfdatadetails['perfdatadetails_dsname']]]);
                      $a_val = array_merge($a_val, $ret[0][$pmPerfdataDetail->fields['dsname'.$a_perfdatadetails['perfdatadetails_dsname']]]);
+                  }
+                  // for manage warn, crit and limit
+                  foreach ($a_tocheck as $other_type=>$num_type) {
+                     if ($num_type == 1) {
+                        $other_items = importArrayFromDB($this->fields['aggregate_'.$other_type]);
+                        foreach ($other_items[$itemtype][$items_id] as $a_perfdatadetails) {
+                           $pmPerfdataDetail->getFromDB($a_perfdatadetails['perfdatadetails_id']);
+                           $a_ret[$other_type] += array_sum($ret[0][$pmPerfdataDetail->fields['dsname'.$a_perfdatadetails['perfdatadetails_dsname']]]);
+                        }
+                     }
                   }
                }
                break;
@@ -353,6 +417,16 @@ time_specific // like use working hours
                            $val += array_sum($ret[0][$pmPerfdataDetail->fields['dsname'.$a_perfdatadetails['perfdatadetails_dsname']]]);
                            $a_val = array_merge($a_val, $ret[0][$pmPerfdataDetail->fields['dsname'.$a_perfdatadetails['perfdatadetails_dsname']]]);
                         }
+                        // for manage warn, crit and limit
+                        foreach ($a_tocheck as $other_type=>$num_type) {
+                           if ($num_type == 1) {
+                              $other_items = importArrayFromDB($this->fields['aggregate_'.$other_type]);
+                              foreach ($other_items[$itemtype][$items_id]['PluginMonitoringComponents'][$items_id_components] as $a_perfdatadetails) {
+                                 $pmPerfdataDetail->getFromDB($a_perfdatadetails['perfdatadetails_id']);
+                                 $a_ret[$other_type] += array_sum($ret[0][$pmPerfdataDetail->fields['dsname'.$a_perfdatadetails['perfdatadetails_dsname']]]);
+                              }
+                           }
+                        }
                      }
                   }
                }
@@ -376,9 +450,14 @@ time_specific // like use working hours
             }
             $val = $median;
          }
-         
       }
-      return $val;
+      foreach ($a_tocheck as $other_type=>$num_type) {
+         if ($num_type == 1) {
+            $a_ret[$other_type] = ($a_ret[$other_type] / $nb_val); 
+         }
+      }
+      $a_ret['val'] = $val;
+      return $a_ret;
    }
 
    
@@ -451,29 +530,21 @@ time_specific // like use working hours
       $this->getFromDB($id);
       if ($this->fields['type'] == 'average'
               || $this->fields['type'] == 'median') {
-         $val = $this->type_other($this->fields['type']);
-         $a_types = array('warn', 'crit', 'limit');
-         for ($i=0; $i< count($a_types); $i++) {
-            if (is_numeric($this->fields['aggregate_'.$a_types[$i]])) {
-               $a_val[$a_types[$i]] = $this->fields['aggregate_'.$a_types[$i]];
-            } else {
-               $a_val[$a_types[$i]] = $this->type_other($this->fields['type'], 'aggregate_'.$a_types[$i]);
-            }
-         }
+         $a_val = $this->type_other($this->fields['type']);
       } else {
          $func = 'type_'.$this->fields['type'];
-         $val = $this->$func();
-         $a_types = array('warn', 'crit', 'limit');
-         for ($i=0; $i< count($a_types); $i++) {
-            if (is_numeric($this->fields['aggregate_'.$a_types[$i]])) {
-               $a_val[$a_types[$i]] = $this->fields['aggregate_'.$a_types[$i]];
-            } else {
-               $a_val[$a_types[$i]] = $this->$func('aggregate_'.$a_types[$i]);
-            }
-         }
+         $a_val = $this->$func();
       }
       $warn_cnt = $a_val['warn'] / $a_val['limit'];
       $crit_cnt = $a_val['crit'] / $a_val['limit'];
+
+      $val = $a_val['val'];
+      if (strstr($val, '.')) {
+         $split = explode('.', $val);
+         if (count($split[1]) > 2) {
+            $val = round($val, 2);
+         }
+      }
       
       echo "<script>
 			var gauges = [];
