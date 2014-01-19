@@ -250,6 +250,8 @@ CREATE TABLE `glpi_plugin_monitoring_customitems_gauges` (
    `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
    `type` varchar(255) DEFAULT NULL,
    `aggregate_items` text DEFAULT NULL COLLATE utf8_unicode_ci,
+   `aggregate_warn` text DEFAULT NULL COLLATE utf8_unicode_ci,
+   `aggregate_crit` text DEFAULT NULL COLLATE utf8_unicode_ci,
    `aggregate_limit` text DEFAULT NULL COLLATE utf8_unicode_ci,
    `time` varchar(255) DEFAULT NULL,
    `time_specific` varchar(255) DEFAULT NULL,

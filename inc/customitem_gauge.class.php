@@ -180,7 +180,7 @@ time_specific // like use working hours
    
    
    
-   function type_lastvalue() {
+   function type_lastvalue($field='aggregate_items') {
       global $DB;
       
       $pmService        = new PluginMonitoringService();
@@ -209,7 +209,7 @@ time_specific // like use working hours
 //    'aggregate_items' => exportArrayToDB($input)
 //));
       
-      $items = importArrayFromDB($this->fields['aggregate_items']);
+      $items = importArrayFromDB($this->fields[$field]);
       foreach ($items as $itemtype=>$data) {
          switch ($itemtype) {
             
@@ -277,7 +277,7 @@ time_specific // like use working hours
 
    
    
-   function type_other($type='average') {
+   function type_other($type='average', $field='aggregate_items') {
       global $DB;
       
       $pmService        = new PluginMonitoringService();
@@ -291,7 +291,7 @@ time_specific // like use working hours
       $a_val  = array();
       $nb_val = 0;
       
-      $items = importArrayFromDB($this->fields['aggregate_items']);
+      $items = importArrayFromDB($this->fields[$field]);
       foreach ($items as $itemtype=>$data) {
          switch ($itemtype) {
             
@@ -452,10 +452,28 @@ time_specific // like use working hours
       if ($this->fields['type'] == 'average'
               || $this->fields['type'] == 'median') {
          $val = $this->type_other($this->fields['type']);
+         $a_types = array('warn', 'crit', 'limit');
+         for ($i=0; $i< count($a_types); $i++) {
+            if (is_numeric($this->fields['aggregate_'.$a_types[$i]])) {
+               $a_val[$a_types[$i]] = $this->fields['aggregate_'.$a_types[$i]];
+            } else {
+               $a_val[$a_types[$i]] = $this->type_other($this->fields['type'], 'aggregate_'.$a_types[$i]);
+            }
+         }
       } else {
          $func = 'type_'.$this->fields['type'];
          $val = $this->$func();
+         $a_types = array('warn', 'crit', 'limit');
+         for ($i=0; $i< count($a_types); $i++) {
+            if (is_numeric($this->fields['aggregate_'.$a_types[$i]])) {
+               $a_val[$a_types[$i]] = $this->fields['aggregate_'.$a_types[$i]];
+            } else {
+               $a_val[$a_types[$i]] = $this->$func('aggregate_'.$a_types[$i]);
+            }
+         }
       }
+      $warn_cnt = $a_val['warn'] / $a_val['limit'];
+      $crit_cnt = $a_val['crit'] / $a_val['limit'];
       
       echo "<script>
 			var gauges = [];
@@ -465,15 +483,15 @@ time_specific // like use working hours
 					size: 198,
 					label: label,
 					min: undefined != min ? min : 0,
-					max: undefined != max ? max : 100,
+					max: undefined != max ? max : ".$a_val['limit'].",
 					majorTicks: 11,
 					minorTicks: 5
 				}
 				
 				var range = config.max - config.min;
-				config.greenZones = [{ from: config.min, to: config.min + range*0.80 }];
-				config.yellowZones = [{ from: config.min + range*0.80, to: config.min + range*0.95 }];
-				config.redZones = [{ from: config.min + range*0.95, to: config.max }];
+				config.greenZones = [{ from: config.min, to: config.min + range*".$warn_cnt." }];
+				config.yellowZones = [{ from: config.min + range*".$warn_cnt.", to: config.min + range*".$crit_cnt." }];
+				config.redZones = [{ from: config.min + range*".$crit_cnt.", to: config.max }];
 				
 				gauges[name] = new Gauge(name + 'GaugeContainer', config);
 				gauges[name].render();
