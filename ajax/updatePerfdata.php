@@ -70,7 +70,9 @@ foreach ($counter_types as $type => $type_title) {
    
    $counters[$type] = array();
    $a_ret = $pmServiceevent->getSpecificData($_POST['rrdtool_template'], $_POST['items_id'], $type);
+   if (isset($_POST['debug'])) echo "<pre>".print_r($a_ret)."</pre>";
    foreach ($a_ret as $counter) {
+      if (isset($_POST['debug'])) echo "<pre>".print_r($a_ret)."</pre>";
       if (isset($_POST['debug'])) echo "<pre>".$counter['id']." (".$counter['name'].") =".$counter['value']."</pre>";
       if (! isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']][$counter['name']])) continue;
 

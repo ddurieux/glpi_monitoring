@@ -629,16 +629,17 @@ echo "
                window.setInterval(function(){
                   Ext.select('.global_counter').each(function(el) {
                      var counterType = el.getAttribute('counterType');
-                     //console.log('Global counter for '+counterType+' exists.');
+                     // console.log('Global counter for '+counterType+' exists.');
                      
                      el.select('.global_counter_value').each(function(elGlobalValue) {
                         elGlobalValue.update('0');
-                        //console.log('Global counter value is : '+elGlobalValue.dom.innerHTML);
+                        // console.log('Global counter value is : '+parseFloat(elGlobalValue.dom.innerHTML));
                         
                         var select = 'td[counter=\'' + counterType + '\'][counterType=\'difference\']';
                         Ext.select(select).each(function(el) {
-                           //console.log('Local counter is ' + el.getAttribute('counter') + ', value is : '+el.dom.innerHTML);
-                           elGlobalValue.update(parseFloat(elGlobalValue.dom.innerHTML) + parseFloat(el.dom.innerHTML));
+                           // console.log('Local counter is ' + el.getAttribute('counter') + ', value is : '+parseFloat(el.dom.innerHTML));
+                           var newCounter = parseFloat(elGlobalValue.dom.innerHTML) + parseFloat(el.dom.innerHTML);
+                           elGlobalValue.update(newCounter.toString());
                         }); 
                      }); 
                   }); 
