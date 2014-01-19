@@ -137,7 +137,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
    
    
    
-   function getSpecificData($rrdtool_template, $items_id, $which='last') { 
+   function getSpecificData($rrdtool_template, $items_id, $which='last', $state="AND `state` = 'OK'") { 
       global $DB;      
    
       // ** Get in table serviceevents
@@ -150,46 +150,42 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks($pmService->fields['plugin_monitoring_components_id']);
       
       $enddate = date('U');
-      $begin = date('Y-m-d H:i:s', $enddate);
       $counters = array();
       
       switch ($which) {
-      case 'first': 
-         $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
-            WHERE `plugin_monitoring_services_id`='".$items_id."'
-               AND `state` = 'OK'
-            ORDER BY `date` ASC
-            LIMIT 1";
-         break;
-         
-      case 'last': 
-         $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
-            WHERE `plugin_monitoring_services_id`='".$items_id."'
-               AND `state` = 'OK'
-            ORDER BY `date` DESC
-            LIMIT 1";
-         break;
+         case 'first': 
+            $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
+               WHERE `plugin_monitoring_services_id`='".$items_id."'
+                  ".$state."
+               ORDER BY `date` ASC
+               LIMIT 1";
+            break;
 
-      default: 
-         return $counters;
-         break;
+         case 'last': 
+            $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
+               WHERE `plugin_monitoring_services_id`='".$items_id."'
+                  ".$state."
+               ORDER BY `date` DESC
+               LIMIT 1";
+            break;
+
+         default: 
+            return $counters;
+            break;
       }
       
+      $resultevent = $DB->query($query);
+      $dataevent = $DB->fetch_assoc($resultevent);
       $result = $DB->query($query);
+
       $ret = $this->getData(
               $result, 
               $rrdtool_template,
-              date('Y-m-d H:i:s', $enddate),
-              date('Y-m-d H:i:s', $enddate));
-
-      if (is_array($ret) && is_array($ret[0]) && is_array($ret[4])) {
-         foreach ($ret[4] as $name=>$data) {
-            // Toolbox::logInFile("pm", "$name -> $data = ".$ret[0][$data][0]."\n");
-            $counter = array();
-            $counter['id'] = preg_replace("/[^A-Za-z0-9\-_]/","",$name);
-            $counter['name'] = $data;
-            $counter['value'] = $ret[0][$data][0];
-            $counters[] = $counter;
+              $dataevent['date'],
+              $dataevent['date']);
+      if (is_array($ret)) {
+         foreach ($ret[0] as $name=>$data) {
+            $counters[$name] = $data[0];
          }
       }
    
@@ -245,7 +241,6 @@ class PluginMonitoringServiceevent extends CommonDBTM {
             );
          }
       }
-      
       foreach ($query_data as $edata) {
          $current_timestamp = strtotime($edata['date']);
          if ($previous_timestamp == '') {

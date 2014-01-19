@@ -3002,13 +3002,18 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
    }
    if (!$crontask->getFromDBbyName('PluginMonitoringUnavailability', 'unavailability')) {
-      CronTask::Register('PluginMonitoringUnavailability', 'Update unavailability periods', '300', 
+      CronTask::Register('PluginMonitoringUnavailability', 'Unavailability', '300', 
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
    }
    if (!$crontask->getFromDBbyName('PluginMonitoringDisplayview_rule', 'replayallviewrules')) {
       CronTask::Register('PluginMonitoringDisplayview_rule', 'replayallviewrules', '1200', 
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
    }
+   if ($crontask->getFromDBbyName('PluginMonitoringUnavaibility', 'unavaibility')) {
+      $crontask->getFromDBbyName('PluginMonitoringUnavaibility', 'unavaibility');
+      $crontask->delete($crontask->fields);
+   }
+   
    
    /*
     * Clean services not have host
