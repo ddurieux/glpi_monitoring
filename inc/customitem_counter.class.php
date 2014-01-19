@@ -135,23 +135,6 @@ class PluginMonitoringCustomitem_Counter extends CommonDBTM {
    
    
    
-   function getGaugeTimes() {
-      $a_times = array(
-          'lastday24h'      => __('Last day (last 24 hours)', 'monitoring'),
-          'lastdaymidnight' => __('Last day (since midnight)', 'monitoring'),
-          'week7d'          => __('Last week (last 7 days)', 'monitoring'),
-          'weekmonday'      => __('Last week (since Monday)', 'monitoring'),
-          'weeksunday'      => __('Last week (since Sunday)', 'monitoring'),
-          'month30d'        => __('Last month (last 30 days)', 'monitoring'),
-          'monthfirstday'   => __('Last month (since first day of month)', 'monitoring'),
-          'year365day'      => __('Last year (365 days)', 'monitoring'),
-          'yearjanuary'     => __('Last year (since first January)', 'monitoring')
-      );
-      return $a_times;
-   }
-   
-   
-   
 //   function getLastValofService($data, &$val, &$nb_val) {
 //      $pmService        = new PluginMonitoringService();
 //      $pmServiceevent   = new PluginMonitoringServiceevent();
@@ -185,7 +168,7 @@ class PluginMonitoringCustomitem_Counter extends CommonDBTM {
       $pmComponent      = new PluginMonitoringComponent();
       $pmPerfdataDetail = new PluginMonitoringPerfdataDetail();
 
-      $a_date = $this->getTimeRange();
+      $a_date = PluginMonitoringCustomitem_Common::getTimeRange($this->fields);
       
       $val    = 0;
       $nb_val = 0;
@@ -322,56 +305,7 @@ class PluginMonitoringCustomitem_Counter extends CommonDBTM {
       return $val;
    }
 
-   
-   
-   function getTimeRange() {
-      
-      $begin = '';
-      switch ($this->fields['time']) {
-         
-         case 'lastday24h':
-            $begin = date('Y-m-d H:i:s', strtotime("-1 day"));
-            break;
-        
-         case 'lastdaymidnight':
-            $begin = date('Y-m-d H:i:s', strtotime("today"));
-            break;
-        
-         case 'week7d':
-            $begin = date('Y-m-d H:i:s', strtotime("-1 week"));
-            break;
-        
-         case 'weekmonday':
-            $begin = date('Y-m-d H:i:s', strtotime("last Monday"));
-            break;
-        
-         case 'weeksunday':
-            $begin = date('Y-m-d H:i:s', strtotime("last Sunday"));
-            break;
-        
-         case 'month30d':
-            $begin = date('Y-m-d H:i:s', strtotime("-1 month"));
-            break;
-        
-         case 'monthfirstday':
-            $begin = date('Y-m-d H:i:s', strtotime("first day of this month"));
-            break;
-        
-         case 'year365day':
-            $begin = date('Y-m-d H:i:s', strtotime("-1 year"));
-            break;
-        
-         case 'yearjanuary':
-            $begin = date('Y-m-d H:i:s', strtotime("first day of this year"));
-            break;
-        
-      }
-      return array(
-          'begin' => $begin,
-          'end'   => date('Y-m-d H:i:s')
-      );
-   }
-   
+
    // *********************************************************************//
    // ************************** Show widget ******************************//
    // *********************************************************************//
