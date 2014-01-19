@@ -48,6 +48,21 @@ Html::header(__('Monitoring', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
              "monitoring", "display");
 
 
+/*
+// Display ressources perfdata ?
+if (isset($_SESSION['plugin_monitoring']['ressources_perfdata'])) {
+   Html::redirect($CFG_GLPI['root_doc']."/plugins/monitoring/front/perfdatas.php");
+   unset($_SESSION['plugin_monitoring']['ressources_perfdata']);
+}
+*/
+// Reduced or normal interface ?
+if (! isset($_SESSION['plugin_monitoring']['reduced_interface'])) {
+   $_SESSION['plugin_monitoring']['reduced_interface'] = false;
+}
+if (isset($_POST['reduced_interface'])) {
+   $_SESSION['plugin_monitoring']['reduced_interface'] = $_POST['reduced_interface'];
+}
+
 $pmDisplay = new PluginMonitoringDisplay();
 $pmMessage = new PluginMonitoringMessage();
 
@@ -86,8 +101,12 @@ Search::showGenericSearch("PluginMonitoringService", $_GET);
 if (isset($_GET['hidesearch'])) {
    echo "</div>";
 }
+$perfdatas=false;
+if (isset($_GET['perfdatas'])) {
+   $perfdatas=true;
+}
 
-$pmDisplay->showResourcesBoard();
+$pmDisplay->showResourcesBoard('', $perfdatas);
 if (isset($_SESSION['glpisearch']['PluginMonitoringService']['reset'])) {
    unset($_SESSION['glpisearch']['PluginMonitoringService']['reset']);
 }

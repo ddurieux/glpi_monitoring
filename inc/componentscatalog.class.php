@@ -93,7 +93,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          switch ($item->getType()) {
             case 'Central' :
                if (PluginMonitoringProfile::haveRight("homepage", 'r') && PluginMonitoringProfile::haveRight("homepage_components_catalogs", 'r')) {
-                  return array(1 => "[".__('Monitoring', 'monitoring')."] ".__('Components catalog', 'monitoring'));
+                  return array(1 => __('Components catalogs', 'monitoring'));
                } else {
                   return '';
                }
@@ -247,7 +247,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    
    
    
-   function showChecks() {      
+   function showChecks() {
 
       echo "<table class='tab_cadre' width='100%'>";
       echo "<tr class='tab_bg_4' style='background: #cececc;'>";
@@ -322,7 +322,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    
    
    
-   function showWidgetFrame($id) {
+   function showWidgetFrame($id, $reduced_interface=false) {
       global $DB, $CFG_GLPI;
       
       $this->getFromDB($id);
@@ -344,48 +344,52 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $hosts_ids = $ret[2];
       $services_ids = $ret[3];
       $hosts_ressources = $ret[4];
+      $hosts_states = $ret[5];
       
       $colorclass = 'ok';
       $count = 0;
             
       $link = '';
+      // Toolbox::logInFile("pm", "stateg $id - ".serialize($stateg)."\n");
       if ($stateg['CRITICAL'] > 0) {
          $count = $stateg['CRITICAL'];
          $colorclass = 'crit';
          $link = $CFG_GLPI['root_doc'].
-         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=CRITICAL".
-            "&link[1]=AND&field[1]=8&searchtype[1]=equals&contains[1]=".$id.
-            "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=DOWN".
-            "&link[3]=AND&field[3]=8&searchtype[3]=equals&contains[3]=".$id.
-            "&link[4]=OR&field[4]=3&searchtype[4]=equals&contains[4]=UNREACHABLE".
-            "&link[5]=AND&field[5]=8&searchtype[5]=equals&contains[5]=".$id.
-            "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
+         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&".
+            "field[0]=3&searchtype[0]=equals&contains[0]=CRITICAL".
+            "&link[1]=AND&field[1]=2&searchtype[1]=equals&contains[1]=".$id.
+            "&itemtype=PluginMonitoringService&start=0";
       } else if ($stateg['WARNING'] > 0) {
          $count = $stateg['WARNING'];
          $colorclass = 'warn';
          $link = $CFG_GLPI['root_doc'].
-         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=WARNING".
-            "&link[1]=AND&field[1]=8&searchtype[1]=equals&contains[1]=".$id.
+         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&".
+            "field[0]=3&searchtype[0]=equals&contains[0]=WARNING".
+            "&link[1]=AND&field[1]=2&searchtype[1]=equals&contains[1]=".$id.
             "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=UNKNOWN".
-            "&link[3]=AND&field[3]=8&searchtype[3]=equals&contains[3]=".$id.
+            "&link[3]=AND&field[3]=2&searchtype[3]=equals&contains[3]=".$id.
             "&link[4]=OR&field[4]=3&searchtype[4]=equals&contains[4]=RECOVERY".
-            "&link[5]=AND&field[5]=8&searchtype[5]=equals&contains[5]=".$id.
+            "&link[5]=AND&field[5]=2&searchtype[5]=equals&contains[5]=".$id.
             "&link[6]=OR&field[6]=3&searchtype[6]=equals&contains[6]=FLAPPING".
-            "&link[7]=AND&field[7]=8&searchtype[7]=equals&contains[7]=".$id.
-            "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
+            "&link[7]=AND&field[7]=2&searchtype[7]=equals&contains[7]=".$id.
+            "&itemtype=PluginMonitoringService&start=0";
       } else {
          $count = $stateg['OK'];
          $count += $stateg['ACKNOWLEDGE'];
          $link = $CFG_GLPI['root_doc'].
-         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&field[0]=3&searchtype[0]=equals&contains[0]=OK".
-            "&link[1]=AND&field[1]=8&searchtype[1]=equals&contains[1]=".$id.
+         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&".
+            "field[0]=3&searchtype[0]=equals&contains[0]=OK".
+            "&link[1]=AND&field[1]=2&searchtype[1]=equals&contains[1]=".$id.
             "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=UP".
-            "&itemtype=PluginMonitoringService&start=0&glpi_tab=3";
+            "&itemtype=PluginMonitoringService&start=0";
       }
-      if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+
+      // TODO : filter with componentscatalogs_id ...
+//      if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+      if (false) {
          $link_catalog = $CFG_GLPI['root_doc'].
             "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset"
-               . "&field[0]=8&searchtype[0]=equals&contains[0]=".$id.
+               . "&field[0]=2&searchtype[0]=equals&contains[0]=".$id.
                "&itemtype=PluginMonitoringService&start=0";
 
          echo '<br/><div class="ch-item">
@@ -413,13 +417,6 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          </div>';
       }
 
-/* For debugging purposes ...
-      echo '<pre>';
-      print_r($hosts_ids);
-      print_r($services_ids);
-      print_r($hosts_ressources);
-      echo '</pre>';
-*/
       // Get services list ...
       $services = array();
       $i = 0;
@@ -435,68 +432,52 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       echo '<table class="tab_cadrehov" >';
       
       // Header with services name and link to services list ...
-      foreach ($hosts_ressources as $host=>$resources) {
-         echo  '<tr>';
-         echo "<th>";
-         echo __('Hosts', 'monitoring');
-         echo "</th>";
-         for ($i = 0; $i < count($services); $i++) {
-            if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
-               $link = $CFG_GLPI['root_doc'].
-                  "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-                     "&field[0]=7&searchtype[0]=equals&contains[0]=".$services_ids[$services[$i]].
-                     "&itemtype=PluginMonitoringService&start=0'";
-                  
-               echo  '<th class="vertical">';
-               echo  '<a href="'.$link.'"><div class="rotated-text"><span class="rotated-text__inner">'.$services[$i].'</span></div></a>';
-               echo  '</th>';
-            } else {
-               echo  '<th class="vertical">';
-               echo  '<div class="rotated-text"><span class="rotated-text__inner">'.$services[$i].'</span></div>';
-               echo  '</th>';
-            }
-         }
-         echo  '</tr>';
-         break;
-      }
-      
-/*
-      if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
-         // Header with services name and service availability ...
-         foreach ($hosts_ressources as $host=>$resources) {
-            echo  '<tr>';
-            echo "<th>";
-            echo "</th>";
-            for ($i = 0; $i < count($services); $i++) {
-               $link = $CFG_GLPI['root_doc'].
-                  "/plugins/monitoring/front/unavailability.php?".
-                       "field[0]=2&searchtype[0]=equals&contains[0]=".$data['id'].
-                       "&sort=3&order=DESC&itemtype=PluginMonitoringUnavailability'";
-                  
-               echo  '<th>';
-               echo  '<a href="'.$link.'"><img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/info.png"/></a>';
-               echo  '</th>';
-            }
-            echo  '</tr>';
-            break;
+      echo '<tr>';
+      echo "<th>";
+      echo __('Hosts', 'monitoring');
+      echo "</th>";
+      for ($i = 0; $i < count($services); $i++) {
+         // Do not display fake host service ...
+         if ($services[$i] == '_fake_') continue;
+         
+         if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+            $link = $CFG_GLPI['root_doc'].
+               "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
+                  "&field[0]=2&searchtype[0]=equals&contains[0]=".$services_ids[$services[$i]].
+                  "&itemtype=PluginMonitoringService&start=0'";
+            echo  '<th class="vertical">';
+            echo  '<a href="'.$link.'"><div class="rotated-text"><span class="rotated-text__inner">'.$services[$i].'</span></div></a>';
+            echo  '</th>';
+         } else {
+            echo  '<th class="vertical">';
+            echo  '<div class="rotated-text"><span class="rotated-text__inner">'.$services[$i].'</span></div>';
+            echo  '</th>';
          }
       }
-*/      
+      echo '</tr>';
       
-      // Content with host/service status and link to services list ...
       foreach ($hosts_ressources as $host=>$resources) {
+         // Reduced array or not ?
+         if ($reduced_interface and $hosts_states[$host]) continue;
+         
          $link = $CFG_GLPI['root_doc'].
             "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-               "&field[0]=20&searchtype[0]=equals&contains[0]=".$hosts_ids[$host].
+               "&field[0]=9&searchtype[0]=equals&contains[0]=".$hosts_ids[$host].
                "&itemtype=PluginMonitoringService&start=0'";
             
-         echo  "<tr class='tab_bg_2'>";
+         if ($hosts_states[$host]) {
+            echo  "<tr class='tab_bg_2' style='height: 50px;'>";
+         } else {
+            echo  "<tr class='tab_bg_3' style='height: 50px;'>";
+         }
          if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
             echo  "<td class='left'><a href='".$link."'>".$host."</a></td>";
          } else {
             echo  "<td class='left'>".$host."</td>";
          }
          for ($i = 0; $i < count($services); $i++) {
+            if ($services[$i] == '_fake_') continue;
+            
             echo '<td>';
             if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
                echo '<a href="'.$link.'">'.
@@ -551,10 +532,12 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $a_gstate = array();
       $nb_ressources = 0;
       $hosts_ids = array();
+      $hosts_states = array();
       $services_ids = array();
       $hosts_ressources = array();
-      $query = "SELECT `glpi_computers`.`name`, `glpi_computers`.`entities_id`, ".$pmComponentscatalog_Host->getTable().".*, `glpi_plugin_monitoring_hosts`.`is_acknowledged` AS host_acknowledged FROM `".$pmComponentscatalog_Host->getTable()."`
-         LEFT JOIN `glpi_computers` ON `glpi_computers`.`id` = `".$pmComponentscatalog_Host->getTable()."`.`items_id`
+      $query = "SELECT `glpi_computers`.`name`, `glpi_computers`.`entities_id`, `glpi_plugin_monitoring_componentscatalogs_hosts`.`id` AS catalog_id, `glpi_plugin_monitoring_hosts`.* 
+         FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+         LEFT JOIN `glpi_computers` ON `glpi_computers`.`id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`
          INNER JOIN `glpi_plugin_monitoring_hosts` ON (`glpi_computers`.`id` = `glpi_plugin_monitoring_hosts`.`items_id`)
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."' AND `glpi_computers`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].") 
          ORDER BY name ASC";
@@ -562,10 +545,48 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $result = $DB->query($query);
       while ($dataComponentscatalog_Host=$DB->fetch_array($result)) {
          $ressources = array();
+         $fakeService = array();
+         $host_overall_state_ok = false;
+         
+         // Dummy service id ...
+         $fakeService['name'] = '_fake_';
+         $fakeService['id'] = $dataComponentscatalog_Host['id'] + 1000000;
+         $fakeService['is_acknowledged'] = $dataComponentscatalog_Host['is_acknowledged'];
+         $fakeService['last_check'] = $dataComponentscatalog_Host['last_check'];
+         $fakeService['event'] = $dataComponentscatalog_Host['event'];
+         $fakeService['perf_data'] = $dataComponentscatalog_Host['perf_data'];
+         $fakeService['state_type'] = $dataComponentscatalog_Host['state_type'];
+         $fakeService['state'] = ($dataComponentscatalog_Host['is_acknowledged']=='1') ? 'ACKNOWLEDGE' : $dataComponentscatalog_Host['state'];
+         $fakeService['state'] = ($dataComponentscatalog_Host['state_type']=='HARD') ? $fakeService['state'] : 'UNKNOWN';
+         switch($fakeService['state']) {
+            case 'UP':
+               $fakeService['state'] = 'OK';
+               $host_overall_state_ok = true;
+               break;
+
+            case 'DOWN':
+            case 'UNREACHABLE':
+               $fakeService['state'] = 'CRITICAL';
+               break;
+
+            case 'DOWNTIME':
+               $fakeService['state'] = 'ACKNOWLEDGE';
+               break;
+
+            case 'WARNING':
+            case 'RECOVERY':
+            case 'FLAPPING':
+               $fakeService['state'] = 'WARNING';
+               break;
+            
+            default:
+               $fakeService['state'] = 'UNKNOWN';
+               break;
+         }
          
          $queryService = "SELECT *, `glpi_plugin_monitoring_components`.`name`, `glpi_plugin_monitoring_components`.`description` FROM `".$pmService->getTable()."`
             INNER JOIN `glpi_plugin_monitoring_components` ON (`plugin_monitoring_components_id` = `glpi_plugin_monitoring_components`.`id`)
-            WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'
+            WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['catalog_id']."'
                AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].") 
             ORDER BY `glpi_plugin_monitoring_services`.`name` ASC;";
          // Toolbox::logInFile("pm", "query services - $queryService\n");
@@ -573,20 +594,14 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          while ($dataService=$DB->fetch_array($resultService)) {
             $nb_ressources++;
             
-            // If host is acknowledged, force service to be displayed as unknown acknowledged.
-            if ($dataComponentscatalog_Host['host_acknowledged'] == '1') {
-               $shortstate = 'yellowblue';
-               $dataService['state'] = 'UNKNOWN';
-               $dataService['state_type'] = 'SOFT';
+            if ($dataService['is_acknowledged'] == '1') {
+               $dataService['state'] = 'ACKNOWLEDGE';
             }
-            
-/*
-            // Fred: pourquoi ce test ... HARD ou SOFT, quand c'est CRITICAL, c'est CRITICAL !
+            // If not hard state, then unknown ...
             if ($dataService['state_type'] != "HARD") {
                $a_gstate[$dataService['id']] = "UNKNOWN";
-               // $a_gstate[$dataService['id']] = "OK";
+               if ($host_overall_state_ok) $host_overall_state_ok = false;
             } else {
-*/
                $statecurrent = PluginMonitoringDisplay::getState($dataService['state'], 
                                                                  $dataService['state_type'],
                                                                  $dataService['event'],
@@ -595,34 +610,46 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                   $a_gstate[$dataService['id']] = "OK";
                } else if ($statecurrent == 'orange') {
                   $a_gstate[$dataService['id']] = "WARNING";
+                  if ($host_overall_state_ok) $host_overall_state_ok = false;
                } else if ($statecurrent == 'yellow') {
                   $a_gstate[$dataService['id']] = "WARNING";
+                  if ($host_overall_state_ok) $host_overall_state_ok = false;
                } else if ($statecurrent == 'red') {
                   $a_gstate[$dataService['id']] = "CRITICAL";
+                  if ($host_overall_state_ok) $host_overall_state_ok = false;
                } else if ($statecurrent == 'redblue') {
                   $a_gstate[$dataService['id']] = "ACKNOWLEDGE";
+                  if ($host_overall_state_ok) $host_overall_state_ok = false;
                }
-/*
-            }
-*/
-            if ($dataService['is_acknowledged'] == 1) {
-               $dataService['state'] = 'ACKNOWLEDGE';
             }
             $ressources[$dataService['name']] = $dataService;
             $services_ids[$dataService['name']] = $dataService['plugin_monitoring_components_id'];
+            
+            $stateg[$a_gstate[$dataService['id']]]++;
+            // Toolbox::logInFile("pm", "stateg - ".serialize($stateg)."\n");
          }
          
+         if ($host_overall_state_ok) {
+            $fakeService['state'] = 'OK';
+         } else {
+            $fakeService['state'] = 'CRITICAL';
+         }
+         $ressources[$fakeService['name']] = $fakeService;
+         $services_ids[$fakeService['name']] = '';
+         $a_gstate[$fakeService['id']] = $fakeService['state'];
+         // $stateg[$a_gstate[$fakeService['id']]]++;
+         
          $hosts_ids[$dataComponentscatalog_Host['name']] = $dataComponentscatalog_Host['items_id'];
+         $hosts_states[$dataComponentscatalog_Host['name']] = $host_overall_state_ok;
          $hosts_ressources[$dataComponentscatalog_Host['name']] = $ressources;
       }
-      foreach ($a_gstate as $value) {
-         $stateg[$value]++;
-      }
+
       return array($nb_ressources,
                    $stateg, 
                    $hosts_ids,
                    $services_ids,
-                   $hosts_ressources);
+                   $hosts_ressources,
+                   $hosts_states);
    }
 
    

@@ -191,7 +191,7 @@ class PluginMonitoringMessage extends CommonDBTM {
          }
          $input .= "<br/>";
          
-         // Try to restart Shinken vi webservice
+         // Try to restart Shinken via webservice
          $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
          $pmShinkenwebservice->sendRestartArbiter();
          $input .= __('Shinken is restarted automatically', 'monitoring');
@@ -209,10 +209,7 @@ class PluginMonitoringMessage extends CommonDBTM {
       global $DB;
 
       $input = '';
-      $query = "SELECT * FROM `glpi_plugin_monitoring_checks`
-         
-         ORDER BY `check_interval` DESC 
-         LIMIT 1";
+      $query = "SELECT * FROM `glpi_plugin_monitoring_checks` ORDER BY `check_interval` DESC LIMIT 1";
       
       $result = $DB->query($query);
       $data = $DB->fetch_assoc($result);
@@ -223,7 +220,6 @@ class PluginMonitoringMessage extends CommonDBTM {
       $data = $DB->fetch_assoc($result);
       if ($data['cnt'] > 0) {
          $query = "SELECT * FROM `glpi_plugin_monitoring_services`
-            
             WHERE UNIX_TIMESTAMP(last_check) > UNIX_TIMESTAMP()-".$time_s."
                ORDER BY `last_check`
                LIMIT 1";
@@ -248,11 +244,11 @@ class PluginMonitoringMessage extends CommonDBTM {
          $a_restart = current($a_restart_planned);
          if ($a_restart['action'] == 'restart_planned') {
             echo "<div class='msgboxmonit msgboxmonit-red'>";
-            echo __('Shinken restart order has been made at '.Html::convDateTime($a_restart['date_mod']));
+            echo __('Shinken restart order has been sent at '.Html::convDateTime($a_restart['date_mod']));
             echo "</div>";
          } else {
             echo "<div class='msgboxmonit msgboxmonit-orange'>";
-            echo __('Shinken has restarted at '.Html::convDateTime($a_restart['date_mod']));
+            echo __('Shinken restarted at '.Html::convDateTime($a_restart['date_mod']));
             echo "</div>";
          }
       }

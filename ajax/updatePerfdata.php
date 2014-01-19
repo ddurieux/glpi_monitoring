@@ -116,14 +116,18 @@ if (isset($_POST['counter_id']) && (! empty($_POST['counter_id']))) {
          if ($id != $_POST['counter_id']) continue;
          
          $hdr_counter = $data['name'];
-         $row_counter .= "<td counter='".$_POST['counter_id']."' class='localCounter center'>".$data['value']."</th>";
+         $row_counter .= "<td counter='".$_POST['counter_id']."' counterType='".$type."' class='localCounter center'>".$data['value']."</th>";
       }
    }
-   echo "<table class='tab_cadrehov'>";
-   echo "<tr class='tab_bg_1'><th colspan='".count($counters)."' counterId='".$_POST['counter_id']."' counterName='".$hdr_counter."' class='counterId center'>$hdr_counter</th></tr>";
-   echo "<tr class='tab_bg_1'>$hdr_types</tr>";
-   echo "<tr class='tab_bg_2'>$row_counter</tr>";
-   echo "</table>";
+   if (isset($hdr_counter)) {
+      echo "<table class='tab_cadrehov'>";
+      echo "<tr class='tab_bg_1'><th colspan='".count($counters)."' counterId='".$_POST['counter_id']."' counterName='".$hdr_counter."' class='counterId center'>$hdr_counter</th></tr>";
+      echo "<tr class='tab_bg_1'>$hdr_types</tr>";
+      echo "<tr class='tab_bg_2'>$row_counter</tr>";
+      echo "</table>";
+   } else {
+      echo "&nbsp;";
+   }
 } else {
    if (isset($_POST['json']) && ($_POST['json']=='1')) {
       echo json_encode($counters);

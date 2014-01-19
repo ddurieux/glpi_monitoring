@@ -242,7 +242,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
          foreach ($a_views as $views_id=>$name) {
             $this->getFromDB($views_id);
             if (PluginMonitoringProfile::haveRight("homepage_views", 'r') && $this->haveVisibilityAccess()) {
-               $ong[] = "[".__('Monitoring', 'monitoring')." - "._n('View', 'Views', 1, 'monitoring')."] ".$this->fields['name'];
+               $ong[] = "["._n('View', 'Views', 1, 'monitoring')."] ".$this->fields['name'];
             }
          }
       }

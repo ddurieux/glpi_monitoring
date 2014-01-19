@@ -89,7 +89,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       } else {
          if (PluginMonitoringProfile::haveRight("homepage", 'r') && PluginMonitoringProfile::haveRight("homepage_services_catalogs", 'r')) {
             $array_ret[49] = self::createTabEntry(
-                    "[".__('Monitoring', 'monitoring')."] ".__('Services catalog', 'monitoring'));
+                    __('Services catalogs', 'monitoring'));
          }
       }
       
@@ -303,7 +303,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
             foreach ($a_brulesg as $brulesdata) {
                echo "<tr class='tab_bg_1'>";
                $pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id']);
-               PluginMonitoringDisplay::displayLine($pMonitoringService->fields);
+               PluginMonitoringDisplay::displayLine($pMonitoringService->fields, 1, false);
               echo "</tr>";
             }
             echo "</table>";

@@ -61,10 +61,17 @@ class PluginMonitoringHost extends CommonDBTM {
       $tab = array();
       $tab['common'] = _n('Host characteristic', 'Host characteristics', 2);
 
+      $tab[0]['table']           = 'glpi_entities';
+      $tab[0]['field']           = 'name';
+      $tab[0]['name']            = __('Entity');
+      $tab[0]['datatype']        = 'string';
+      
       $tab[1]['table']           = 'glpi_computers';
       $tab[1]['field']           = 'name';
       $tab[1]['name']            = __('Host name');
-      $tab[1]['datatype']        = 'string';
+      $tab[1]['datatype']        = 'itemlink';
+      $tab[1]['itemlink_type']   = $this->getType();
+      $tab[1]['massiveaction']   = false;
       
       $tab[2]['table']           = $this->getTable();
       $tab[2]['field']           = 'state';
@@ -103,6 +110,7 @@ class PluginMonitoringHost extends CommonDBTM {
       $tab[7]['table']           = $this->getTable();
       $tab[7]['field']           = 'event';
       $tab[7]['name']            = __('Result details', 'monitoring');
+      $tab[7]['datatype']       = 'string';
       $tab[7]['massiveaction']   = false;
 
       $tab[8]['table']          = $this->getTable();
@@ -118,6 +126,7 @@ class PluginMonitoringHost extends CommonDBTM {
       return $tab;
    }
 
+   
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
@@ -247,6 +256,91 @@ class PluginMonitoringHost extends CommonDBTM {
          WHERE `itemtype`='".$itemtype."'
            AND `items_id`='".$items_id."'";
       $DB->query($query);
+   }
+
+   
+   function getComments() {
+      global $CFG_GLPI;
+
+      $comment = "";
+      $toadd   = array();
+      
+      // associated computer ...
+      $item = new $this->fields['itemtype'];
+      $item->getFromDB($this->fields['items_id']);
+      
+      $toadd[] = array('name'  => __('Host type'),
+                       'value' => nl2br($item->getTypeName()));
+      
+      if ($this->fields['itemtype'] == 'Computer') {
+         $type = new ComputerType();
+         $type->getFromDB($item->fields["computertypes_id"]);
+         $type = $type->getName();
+         if (! empty($type)) { 
+            $toadd[] = array('name'  => __('Type'),
+                             'value' => nl2br($type));
+         }
+
+         $model = new ComputerModel();
+         $model->getFromDB($item->fields["computermodels_id"]);
+         $model = $model->getName();
+         if (! empty($model)) { 
+            $toadd[] = array('name'  => __('Model'),
+                             'value' => nl2br($model));
+         }
+
+         $state = new State();
+         $state->getFromDB($item->fields["states_id"]);
+         $state = $state->getName();
+         if (! empty($state)) { 
+            $toadd[] = array('name'  => __('State'),
+                             'value' => nl2br($state));
+         }
+
+         $entity = new Entity();
+         $entity->getFromDB($item->fields["entities_id"]);
+         $entity = $entity->getName();
+         if (! empty($entity)) { 
+            $toadd[] = array('name'  => __('Entity'),
+                             'value' => nl2br($entity));
+         }
+
+         $location = new Location();
+         $location->getFromDB($item->fields["locations_id"]);
+         $location = $location->getName();
+         if (! empty($location)) { 
+            $toadd[] = array('name'  => __('Location'),
+                             'value' => nl2br($location));
+         }
+         
+         if (! empty($item->fields["serial"])) { 
+            $toadd[] = array('name'  => __('Serial'),
+                             'value' => nl2br($item->fields["serial"]));
+         }
+         if (! empty($item->fields["otherserial"])) { 
+            $toadd[] = array('name'  => __('Inventory number'),
+                             'value' => nl2br($item->fields["otherserial"]));
+         }
+
+         if (($this instanceof CommonDropdown)
+             && $this->isField('comment')) {
+            $toadd[] = array('name'  => __('Comments'),
+                             'value' => nl2br($this->getField('comment')));
+         }
+
+         if (count($toadd)) {
+            foreach ($toadd as $data) {
+               $comment .= sprintf(__('%1$s: %2$s')."<br>",
+                                   "<span class='b'>".$data['name'], "</span>".$data['value']);
+            }
+         }
+
+         if (!empty($comment)) {
+            return Html::showToolTip($comment, array('display' => false));
+         }
+      }
+
+      return $comment;
    }
 }
 
