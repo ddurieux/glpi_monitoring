@@ -709,7 +709,7 @@ echo "
          $where = "(".$where;
          $where .= ") AND ";
       }
-      $where .= ' `glpi_computers`.`entities_id` IN ('.$_SESSION['glpiactiveentities_string'].')';
+      $where .= " CONCAT_WS('', `glpi_computers`.`entities_id`, `glpi_printers`.`entities_id`, `glpi_networkequipments`.`entities_id`) IN (".$_SESSION['glpiactiveentities_string'].")";
 
       if ($where != '') {
          $where = " WHERE ".$where;
@@ -719,10 +719,18 @@ echo "
       }
       
       $leftjoin = " 
-         INNER JOIN `glpi_computers` 
-            ON (`glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`)
-         INNER JOIN `glpi_entities` 
-            ON (`glpi_computers`.`entities_id` = `glpi_entities`.`id`)
+         LEFT JOIN `glpi_computers`
+            ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`
+               AND `glpi_plugin_monitoring_hosts`.`itemtype`='Computer'
+         LEFT JOIN `glpi_printers`
+            ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_printers`.`id`
+               AND `glpi_plugin_monitoring_hosts`.`itemtype`='Printer'
+         LEFT JOIN `glpi_networkequipments`
+            ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_networkequipments`.`id`
+               AND `glpi_plugin_monitoring_hosts`.`itemtype`='NetworkEquipment'
+         LEFT JOIN `glpi_entities`
+            ON CONCAT_WS('', `glpi_computers`.`entities_id`, `glpi_printers`.`entities_id`, `glpi_networkequipments`.`entities_id`) = `glpi_entities`.`id`
+               
       ";
 
       // * ORDER
@@ -748,13 +756,15 @@ echo "
          }
       }
       
+//            `glpi_computers`.*
 
       $query = "SELECT
-         `glpi_entities`.`name` AS entity_name
-            , `glpi_computers`.*
-            , `glpi_computers`.`id` AS idComputer, `glpi_computers`.`name` AS host_name
-            , `glpi_plugin_monitoring_hosts`.*
-            , `glpi_plugin_monitoring_hosts`.`state` AS host_state, `glpi_plugin_monitoring_hosts`.`is_acknowledged` AS host_acknowledged
+            `glpi_entities`.`name` AS entity_name,
+            CONCAT_WS('', `glpi_computers`.`id`, `glpi_printers`.`id`, `glpi_networkequipments`.`id`) AS idComputer, 
+            CONCAT_WS('', `glpi_computers`.`name`, `glpi_printers`.`name`, `glpi_networkequipments`.`name`) AS host_name,
+            `glpi_plugin_monitoring_hosts`.*,
+            `glpi_plugin_monitoring_hosts`.`state` AS host_state, 
+            `glpi_plugin_monitoring_hosts`.`is_acknowledged` AS host_acknowledged
          FROM `glpi_plugin_monitoring_hosts`
          ".$leftjoin."
          ".$where."
@@ -811,6 +821,7 @@ echo "
       
       echo "<tr class='tab_bg_1'>";
       $this->showHeaderItem(__('Entity'), 0, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
+      $this->showHeaderItem(__('Type'), 0, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
       $this->showHeaderItem(__('Host', 'monitoring'), 1, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
       $this->showHeaderItem(__('Host state'), 2, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
       if (isset($host_command_name)) {
@@ -1174,6 +1185,11 @@ echo "
       echo $entity = $entity->getName();
       // echo "&nbsp;".$entity->getComments();
       echo "</td>";
+
+      echo "<td>";
+      $item = new $data['itemtype'];
+      echo $item->getTypeName();
+      echo "</td>";
       
       echo "<td>";
       $itemtype = $data['itemtype'];
@@ -1198,7 +1214,7 @@ echo "
               || $shortstate == 'orange') {
          if (PluginMonitoringProfile::haveRight("acknowledge", 'r')) {
             echo "<span>&nbsp;";
-            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?host=".$data['name']."&id=".$data['idComputer']."'>"
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?host=".$data['host_name']."&id=".$data['idComputer']."'>"
                      ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_checked.png'"
                     ." alt='".htmlspecialchars(__('Add an acknowledge for the host and all faulty services of the host', 'monitoring'), ENT_QUOTES)."'"
                     ." title='".htmlspecialchars(__('Add an acknowledge for the host and all faulty services of the host', 'monitoring'), ENT_QUOTES)."'/>"
@@ -1212,14 +1228,14 @@ echo "
 
       if (isset($data['host_command_name'])) {
          $scriptName=$CFG_GLPI['root_doc']."/plugins/monitoring/scripts/".$data['host_command_command'];
-         $scriptArgs=$data['name']." ".$data['ip'];
+         $scriptArgs=$data['host_name']." ".$data['ip'];
 
          echo "<td class='center'>";
          echo "<form name='form' method='post' 
             action='".$CFG_GLPI['root_doc']."/plugins/monitoring/scripts/".$data['host_command_command'].".php'>";
       
          echo "<input type='hidden' name='host_id' value='".$data['idComputer']."' />";
-         echo "<input type='hidden' name='host_name' value='".$data['name']."' />";
+         echo "<input type='hidden' name='host_name' value='".$data['host_name']."' />";
          echo "<input type='hidden' name='host_ip' value='".$data['ip']."' />";
          echo "<input type='hidden' name='host_state' value='".$data['state']."' />";
          echo "<input type='hidden' name='host_statetype' value='".$data['state_type']."' />";
@@ -1257,7 +1273,7 @@ echo "
       if (!empty($data['host_services_status'])) {
          if (PluginMonitoringProfile::haveRight("acknowledge", 'r')) {
             echo "<span>&nbsp;";
-            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?host=".$data['name']."&allServices&id=".$data['idComputer']."'>"
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?host=".$data['host_name']."&allServices&id=".$data['idComputer']."'>"
                      ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_checked.png'"
                     ." alt='".htmlspecialchars(__('Add an acknowledge for all faulty services of the host', 'monitoring'), ENT_QUOTES)."'"
                     ." title='".htmlspecialchars(__('Add an acknowledge for all faulty services of the host', 'monitoring'), ENT_QUOTES)."'/>"
@@ -1300,7 +1316,7 @@ echo "
          echo "<br/>";
          echo"<i>". __('Comments')." : </i>";
          if (PluginMonitoringProfile::haveRight("acknowledge", 'r')) {
-            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?host=".$data['name']."&form=".$data['idComputer']."' title='".htmlspecialchars(__('Modify acknowledge comment for the host', 'monitoring'), ENT_QUOTES)."'>";
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?host=".$data['host_name']."&form=".$data['idComputer']."' title='".htmlspecialchars(__('Modify acknowledge comment for the host', 'monitoring'), ENT_QUOTES)."'>";
             echo $data['acknowledge_comment']."</a>";
          } else {
             echo $data['acknowledge_comment'];
