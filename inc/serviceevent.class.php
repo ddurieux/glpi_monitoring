@@ -156,6 +156,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
          case 'first': 
             $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
+                  AND `perf_data` != ''
                   ".$state."
                ORDER BY `date` ASC
                LIMIT 1";
@@ -164,6 +165,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
          case 'last': 
             $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
+                  AND `perf_data` != ''
                   ".$state."
                ORDER BY `date` DESC
                LIMIT 1";

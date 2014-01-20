@@ -117,34 +117,121 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
       $this->showTabs($options);
       $this->showFormHeader($options);
 
-/*
-  
-DB
-
-name
-entities_id
-is_recursive
-type
-aggregate_items // we aggrgate many services (services and/or components)
-   [itemtype][id]...
-time // 1 day, 1 week(7 days or since last monday), 1 month(30 days or since 01) , 1 year
-time_specific // like use working hours
-
-  
-       
-  */    
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')." :</td>";
       echo "<td>";
       echo "<input type='text' name='name' value='".$this->fields["name"]."' size='30'/>";
       echo "</td>";
-      echo "<td>".__('Command name', 'monitoring')."&nbsp;:</td>";
+      echo "<td>".__('Type', 'monitoring')."&nbsp;:</td>";
       echo "<td>";
-      echo "<input type='text' name='command_name' value='".$this->fields["command_name"]."' size='30'/>";
+      $elements = $this->getGaugeTypes(); 
+      Dropdown::showFromArray('type', $elements, array('value' => $this->fields["type"]));
       echo "</td>";
       echo "</tr>";
-      
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Time', 'monitoring')." :</td>";
+      echo "<td>";
+      $elements = PluginMonitoringCustomitem_Common::getTimes(); 
+      Dropdown::showFromArray('time', $elements, array('value' => $this->fields["time"]));
+      echo "</td>";
+      echo "<td>".__('Calendar', 'monitoring')."&nbsp;:</td>";
+      echo "<td>";
+      Dropdown::show('Calendar', array(
+          'name'  => 'time_specific',
+          'value' => $this->fields['time_specific']
+      ));
+      echo "</td>";
+      echo "</tr>";
+
       $this->showFormButtons($options);
+      
+      
+      
+      
+      
+      
+      $array = importArrayFromDB($this->fields['aggregate_items']);
+      $pmPerfdataDetail = new PluginMonitoringPerfdataDetail();
+      echo "<table class='tab_cadre_fixe'>";
+      foreach ($array as $itemtype=>$data1) {
+         foreach ($data1 as $items_id=>$data2) {
+            $item1 = new $itemtype();
+            $item1->getFromDB($items_id);
+            echo "<tr class='tab_bg_3'>";
+            echo "<td>";
+            echo "[".$item1->getTypeName()."] ";
+            echo $item1->fields['name'];
+            echo "</td>";
+            echo "<td>";
+            foreach ($data2 as $itemtype2=>$data3) {
+               foreach ($data3 as $items_id2=>$data4) {
+                  $item2 = new $itemtype2();
+                  $item2->getFromDB($items_id2);
+                  echo "[".$item2->getTypeName()."] ";
+                  echo $item2->fields['name'];
+    
+                  echo "</td>";
+                  echo "<td>";
+                  foreach ($data4 as $num=>$data5) {
+                     $perfdetail = getAllDatasFromTable(
+                             'glpi_plugin_monitoring_perfdatadetails', 
+                             "`plugin_monitoring_perfdatas_id`='".$item2->fields['graph_template']."'");
+                     $elements = array();
+                     foreach ($perfdetail as $perfdata) {
+                        for ($i=1; $i <= 15; $i++) {
+                           if ($perfdata['dsname'.$i] != '') {
+                              $elements[$perfdata['id']."/".$i] = $perfdata['dsname'.$i];
+                           }
+                        }
+                     }
+                     echo "<table>";
+                     echo "<tr>";
+                     echo "<td>";
+                     echo __('Value', 'monitoring');
+                     echo " : </td>";
+                     echo "<td>";
+                     Dropdown::showFromArray('tt', $elements);
+                     echo "</td>";
+                     echo "</tr>";
+                     echo "<tr>";
+                     echo "<td>";
+                     echo __('Warning', 'monitoring');
+                     echo " : </td>";
+                     echo "<td>";
+                     Dropdown::showFromArray('tt', $elements);
+                     echo "</td>";
+                     echo "</tr>";
+                     echo "<tr>";
+                     echo "<td>";
+                     echo __('Critical', 'monitoring');
+                     echo " : </td>";
+                     echo "<td>";
+                     Dropdown::showFromArray('tt', $elements);
+                     echo "</td>";
+                     echo "</tr>";
+                     echo "<tr>";
+                     echo "<td>";
+                     echo __('Limit', 'monitoring');
+                     echo " : </td>";
+                     echo "<td>";
+                     Dropdown::showFromArray('tt', $elements);
+                     echo "</td>";
+                     echo "</tr>";
+                     
+                  }
+                  // Show value / warn / crit / limit
+
+                  
+               }
+            }
+            
+            
+            echo "</td>";
+            echo "</tr>";
+         }         
+      }
+      echo "</table>";
       
       return true;
    }
@@ -194,7 +281,7 @@ time_specific // like use working hours
 //      $input = array(
 //          'PluginMonitoringComponentscatalog' => array(
 //              '9' => array(
-//                      'PluginMonitoringComponents' => array(
+//                      'PluginMonitoringComponent' => array(
 //                          '11' => array(array(
 //                              'perfdatadetails_id' => '3',
 //                              'perfdatadetails_dsname' => '1'
@@ -234,7 +321,7 @@ time_specific // like use working hours
                foreach ($data as $items_id=>$data2) {
                   $ret = $pmComponentscatalog->getInfoOfCatalog($items_id);
                   $a_hosts = $ret[6];
-                  foreach ($data2['PluginMonitoringComponents'] as $items_id_components=>$data4) {
+                  foreach ($data2['PluginMonitoringComponent'] as $items_id_components=>$data4) {
                      // get services  (use entities of user)
                      $query = "SELECT * FROM `glpi_plugin_monitoring_services`
                         WHERE `plugin_monitoring_components_id`='".$items_id_components."'
@@ -246,7 +333,9 @@ time_specific // like use working hours
                         $this->getLastValofService(
                                 array($dataq['id'] => $data4), 
                                 $val, 
-                                $nb_val);
+                                $nb_val,
+                                $a_tocheck, 
+                                $a_ret);
 //                        // for manage warn, crit and limit
 //                        foreach ($a_tocheck as $other_type=>$num_type) {
 //                           if ($num_type == 1) {
@@ -267,12 +356,20 @@ time_specific // like use working hours
       if ($nb_val != 0) {
          $val = ($val / $nb_val);
       }
-      return $val;
+      foreach ($a_tocheck as $other_type=>$num_type) {
+         if ($num_type == 1) {
+            $a_ret[$other_type] = ($a_ret[$other_type] / $nb_val); 
+         }
+      }
+      $a_ret['val'] = $val;
+      return $a_ret;
    }
 
    
    
-   function getLastValofService($data, &$val, &$nb_val) {
+   function getLastValofService($data, &$val, &$nb_val, $a_tocheck, &$a_ret) {
+      global $DB;
+      
       $pmService        = new PluginMonitoringService();
       $pmServiceevent   = new PluginMonitoringServiceevent();
       $pmComponent      = new PluginMonitoringComponent();
@@ -282,15 +379,36 @@ time_specific // like use working hours
          $pmService->getFromDB($items_id);
          $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks($pmService->fields['plugin_monitoring_components_id']);
          $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
-         $getvalues = $pmServiceevent->getSpecificData(
+         
+         $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
+            WHERE `plugin_monitoring_services_id`='".$items_id."'
+               AND `state` = 'OK'
+               AND `perf_data` != ''
+            ORDER BY `date` DESC
+            LIMIT 1";
+         $resultevent = $DB->query($query);
+         $dataevent = $DB->fetch_assoc($resultevent);
+
+         $result = $DB->query($query);
+         $ret = $pmServiceevent->getData(
+                 $result, 
                  $pmComponent->fields['graph_template'], 
-                 $items_id, 
-                 'last',
-                 '');
+                 $dataevent['date'],
+                 $dataevent['date']);
          foreach ($data2 as $a_perfdatadetails) {
             $pmPerfdataDetail->getFromDB($a_perfdatadetails['perfdatadetails_id']);
-            $val += $getvalues[$pmPerfdataDetail->fields['dsname'.$a_perfdatadetails['perfdatadetails_dsname']]];
+            $val += $ret[0][$pmPerfdataDetail->fields['dsname'.$a_perfdatadetails['perfdatadetails_dsname']]][0];
             $nb_val++;
+         }
+         // for manage warn, crit and limit
+         foreach ($a_tocheck as $other_type=>$num_type) {
+            if ($num_type == 1) {
+               $other_items = importArrayFromDB($this->fields['aggregate_'.$other_type]);
+               foreach ($other_items[$itemtype][$items_id]['PluginMonitoringComponent'][$items_id_components] as $a_perfdatadetails) {
+                  $pmPerfdataDetail->getFromDB($a_perfdatadetails['perfdatadetails_id']);
+                  $a_ret[$other_type] += array_sum($ret[0][$pmPerfdataDetail->fields['dsname'.$a_perfdatadetails['perfdatadetails_dsname']]]);
+               }
+            }
          }
       }
    }
@@ -372,7 +490,7 @@ time_specific // like use working hours
                foreach ($data as $items_id=>$data2) {
                   $ret = $pmComponentscatalog->getInfoOfCatalog($items_id);
                   $a_hosts = $ret[6];
-                  foreach ($data2['PluginMonitoringComponents'] as $items_id_components=>$data4) {
+                  foreach ($data2['PluginMonitoringComponent'] as $items_id_components=>$data4) {
                      $query = "SELECT * FROM `glpi_plugin_monitoring_services`
                         WHERE `plugin_monitoring_components_id`='".$items_id_components."'
                            AND `plugin_monitoring_componentscatalogs_hosts_id` IN 
@@ -404,7 +522,7 @@ time_specific // like use working hours
                         foreach ($a_tocheck as $other_type=>$num_type) {
                            if ($num_type == 1) {
                               $other_items = importArrayFromDB($this->fields['aggregate_'.$other_type]);
-                              foreach ($other_items[$itemtype][$items_id]['PluginMonitoringComponents'][$items_id_components] as $a_perfdatadetails) {
+                              foreach ($other_items[$itemtype][$items_id]['PluginMonitoringComponent'][$items_id_components] as $a_perfdatadetails) {
                                  $pmPerfdataDetail->getFromDB($a_perfdatadetails['perfdatadetails_id']);
                                  $a_ret[$other_type] += array_sum($ret[0][$pmPerfdataDetail->fields['dsname'.$a_perfdatadetails['perfdatadetails_dsname']]]);
                               }

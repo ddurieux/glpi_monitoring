@@ -52,7 +52,7 @@ $pmMessage->getMessages();
 
 $toDisplayArea=0;
 
-if (PluginMonitoringProfile::haveRight("dashboard", 'r') && ! PluginMonitoringProfile::haveRight("config", 'r')) {
+if (PluginMonitoringProfile::haveRight("dashboard", 'r') && !PluginMonitoringProfile::haveRight("config", 'r')) {
    Html::redirect($CFG_GLPI['root_doc']."/plugins/monitoring/front/dashboard.php");
 }
 
