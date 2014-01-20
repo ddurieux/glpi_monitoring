@@ -357,7 +357,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          $link = $CFG_GLPI['root_doc'].
          "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&".
             "field[0]=3&searchtype[0]=equals&contains[0]=CRITICAL".
-            "&link[1]=AND&field[1]=2&searchtype[1]=equals&contains[1]=".$id.
+            "&link[1]=AND&field[1]=9&searchtype[1]=equals&contains[1]=".$id.
             "&itemtype=PluginMonitoringService&start=0";
       } else if ($stateg['WARNING'] > 0) {
          $count = $stateg['WARNING'];
@@ -365,13 +365,13 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          $link = $CFG_GLPI['root_doc'].
          "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&".
             "field[0]=3&searchtype[0]=equals&contains[0]=WARNING".
-            "&link[1]=AND&field[1]=2&searchtype[1]=equals&contains[1]=".$id.
+            "&link[1]=AND&field[1]=9&searchtype[1]=equals&contains[1]=".$id.
             "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=UNKNOWN".
-            "&link[3]=AND&field[3]=2&searchtype[3]=equals&contains[3]=".$id.
+            "&link[3]=AND&field[3]=9&searchtype[3]=equals&contains[3]=".$id.
             "&link[4]=OR&field[4]=3&searchtype[4]=equals&contains[4]=RECOVERY".
-            "&link[5]=AND&field[5]=2&searchtype[5]=equals&contains[5]=".$id.
+            "&link[5]=AND&field[5]=9&searchtype[5]=equals&contains[5]=".$id.
             "&link[6]=OR&field[6]=3&searchtype[6]=equals&contains[6]=FLAPPING".
-            "&link[7]=AND&field[7]=2&searchtype[7]=equals&contains[7]=".$id.
+            "&link[7]=AND&field[7]=9&searchtype[7]=equals&contains[7]=".$id.
             "&itemtype=PluginMonitoringService&start=0";
       } else {
          $count = $stateg['OK'];
@@ -379,17 +379,16 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          $link = $CFG_GLPI['root_doc'].
          "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&".
             "field[0]=3&searchtype[0]=equals&contains[0]=OK".
-            "&link[1]=AND&field[1]=2&searchtype[1]=equals&contains[1]=".$id.
+            "&link[1]=AND&field[1]=9&searchtype[1]=equals&contains[1]=".$id.
             "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=UP".
             "&itemtype=PluginMonitoringService&start=0";
       }
 
       // TODO : filter with componentscatalogs_id ...
-//      if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
-      if (false) {
+      if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
          $link_catalog = $CFG_GLPI['root_doc'].
             "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset"
-               . "&field[0]=2&searchtype[0]=equals&contains[0]=".$id.
+               . "&field[0]=9&searchtype[0]=equals&contains[0]=".$id.
                "&itemtype=PluginMonitoringService&start=0";
 
          echo '<br/><div class="ch-item">

@@ -369,7 +369,11 @@ function plugin_monitoring_addWhere($link,$nott,$type,$id,$val) {
             case "glpi_plugin_monitoring_services.Printer":
             case "glpi_plugin_monitoring_services.NetworkEquipment":
                return $link." (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = '".$val."') ";
+               break;
 
+            case 'glpi_plugin_monitoring_componentscatalogs.name':
+               return $link." (`plugin_monitoring_componentscalalog_id` = '".$val."') ";
+               break;
          }
          break;
          

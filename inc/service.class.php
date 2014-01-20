@@ -113,6 +113,11 @@ class PluginMonitoringService extends CommonDBTM {
       $tab[8]['field']          = 'is_acknowledged';
       $tab[8]['name']           = __('Host acknowledge', 'monitoring');
       $tab[8]['datatype']       = 'bool';
+      
+      $tab[9]['table']          = "glpi_plugin_monitoring_componentscatalogs";
+      $tab[9]['field']          = 'name';
+      $tab[9]['name']           = __('Components catalog', 'monitoring');
+      $tab[9]['datatype']       = 'itemlink';
      
       $tab[20]['table']          = 'glpi_computers';
       $tab[20]['field']          = 'name';

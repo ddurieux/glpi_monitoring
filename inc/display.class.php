@@ -474,7 +474,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                  "", $where);
          
       }
-      
+
       $leftjoin = " 
          INNER JOIN `glpi_plugin_monitoring_services` 
             ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
