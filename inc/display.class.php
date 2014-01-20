@@ -1040,8 +1040,8 @@ echo "
             }
          }
       } else {
-         echo "<td class='center'>";
-         echo "<div class='page foldtl resource".$data['state']."'>";
+         echo "<td class='center page foldtl resource".$data['state']."'>";
+         echo "<div class=''>";
          if ($shortstate == 'red'
                  || $shortstate == 'yellow'
                  || $shortstate == 'orange') {
