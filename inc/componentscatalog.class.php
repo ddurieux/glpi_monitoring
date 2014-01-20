@@ -460,9 +460,16 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          // Reduced array or not ?
          if ($reduced_interface and $hosts_states[$hosts_id]) continue;
          
+         $field_id = 20;
+         if ($hosts_ids[$hosts_id]['itemtype'] == 'Printer') {
+            $field_id = 21;
+         } else if ($hosts_ids[$hosts_id]['itemtype'] == 'NetworkEquipment') {
+            $field_id = 22;
+         }
+         
          $link = $CFG_GLPI['root_doc'].
             "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-               "&field[0]=9&searchtype[0]=equals&contains[0]=".$hosts_ids[$hosts_id]['id'].
+               "&field[0]=".$field_id."&searchtype[0]=equals&contains[0]=".$hosts_ids[$hosts_id]['items_id'].
                "&itemtype=PluginMonitoringService&start=0'";
             
          if ($hosts_states[$hosts_id]) {
@@ -480,7 +487,10 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             
             echo '<td>';
             if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
-               echo '<a href="'.$link.'">'.
+               $link_service = $link;
+               $link_service .= "&link[1]=AND&field[1]=2&searchtype[1]=equals&contains[1]=".
+                       $resources[$services[$i]]['plugin_monitoring_components_id'];
+               echo '<a href="'.$link_service.'">'.
                         '<div title="'.$resources[$services[$i]]['state'].
                         " - ".$resources[$services[$i]]['last_check']." - ".
                         $resources[$services[$i]]['event'].
