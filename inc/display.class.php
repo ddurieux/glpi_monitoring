@@ -835,14 +835,14 @@ echo "
          
          // Get all host services except if state is ok or is already acknowledged ...
          $data['host_services_status'] = '';
+         $data['services_state'] = 'OK';
          $query2 = "SELECT
             `glpi_plugin_monitoring_services`.*
             FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
-            INNER JOIN `glpi_computers` 
-               ON (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_computers`.`id`)
             INNER JOIN `glpi_plugin_monitoring_services` 
                ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
-            WHERE `glpi_computers`.`id` = '". $data['idComputer'] ."' 
+            WHERE  `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = '". $data['idComputer'] ."' 
+               AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype` = 'Computer'
                AND `glpi_plugin_monitoring_services`.`state` != 'OK'
                AND `glpi_plugin_monitoring_services`.`is_acknowledged` = '0'
             ORDER BY `glpi_plugin_monitoring_services`.`name` ASC;";
@@ -854,6 +854,11 @@ echo "
                // Toolbox::logInFile("pm", "Service ".$data2['name']." is ".$data2['state'].", state : ".$data2['event']."\n");
                if (! empty($data['host_services_status'])) $data['host_services_status'] .= "\n";
                $data['host_services_status'] .= "Service ".$data2['name']." is ".$data2['state'].", event : ".$data2['event'];
+               if ($data2['state'] == 'CRITICAL') {
+                   // Do nothing
+               } else {
+                  $data['services_state'] = $data2['state'];
+               }
             }
          }
          
@@ -1140,7 +1145,7 @@ echo "
    
    static function displayHostLine($data) {
       global $DB,$CFG_GLPI;
-
+      
       $pm_Host = new PluginMonitoringHost();
       $pm_Host->getFromDB($data["id"]);
       
@@ -1230,10 +1235,10 @@ echo "
       }
  
       echo "<td class='center'>";
-      echo "<div class='page foldtl resource".$data['state']."'>";
+      echo "<div class='page foldtl resource".$data['services_state']."'>";
       echo "<div style='vertical-align:middle;'>";
       echo "<span>";
-      if (! empty($data['host_services_status'])) {
+      if (!empty($data['host_services_status'])) {
          $data['services_state'] = __('Ko', 'monitoring');
       } else {
          $data['services_state'] = __('Ok or Ack', 'monitoring');
@@ -1249,7 +1254,7 @@ echo "
          echo '<span title="'.$data['host_services_status'].'">'.$data['services_state']."</span>";
       }
       echo "</span>";
-      if (! empty($data['host_services_status'])) {
+      if (!empty($data['host_services_status'])) {
          if (PluginMonitoringProfile::haveRight("acknowledge", 'r')) {
             echo "<span>&nbsp;";
             echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?host=".$data['name']."&allServices&id=".$data['idComputer']."'>"
