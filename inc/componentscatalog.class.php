@@ -420,7 +420,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       // Get services list ...
       $services = array();
       $i = 0;
-      foreach ($hosts_ressources as $host=>$resources) {
+      foreach ($hosts_ressources as $resources) {
          foreach ($resources as $resource=>$status) {
             $services[$i++] = $resource;
          }
@@ -456,22 +456,22 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       }
       echo '</tr>';
       
-      foreach ($hosts_ressources as $host=>$resources) {
+      foreach ($hosts_ressources as $hosts_id=>$resources) {
          // Reduced array or not ?
-         if ($reduced_interface and $hosts_states[$host]) continue;
+         if ($reduced_interface and $hosts_states[$hosts_id]) continue;
          
          $link = $CFG_GLPI['root_doc'].
             "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-               "&field[0]=9&searchtype[0]=equals&contains[0]=".$hosts_ids[$host].
+               "&field[0]=9&searchtype[0]=equals&contains[0]=".$hosts_ids[$hosts_id]['id'].
                "&itemtype=PluginMonitoringService&start=0'";
             
-         if ($hosts_states[$host]) {
+         if ($hosts_states[$hosts_id]) {
             echo  "<tr class='tab_bg_2' style='height: 50px;'>";
          } else {
             echo  "<tr class='tab_bg_3' style='height: 50px;'>";
          }
          if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
-            echo  "<td class='left'><a href='".$link."'>".$host."</a></td>";
+            echo  "<td class='left'><a href='".$link."'>".$hosts_ids[$hosts_id]['name']."</a></td>";
          } else {
             echo  "<td class='left'>".$host."</td>";
          }
@@ -532,17 +532,35 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $a_gstate = array();
       $nb_ressources = 0;
       $hosts_ids = array();
-      $hosts_itemtypes = array();
       $hosts_states = array();
       $services_ids = array();
       $hosts_ressources = array();
       $a_componentscatalogs_hosts = array();
-      $query = "SELECT `glpi_computers`.`name`, `glpi_computers`.`entities_id`, `glpi_plugin_monitoring_componentscatalogs_hosts`.`id` AS catalog_id, `glpi_plugin_monitoring_hosts`.* 
+      
+      $query = "
+         SELECT 
+            CONCAT_WS('', `glpi_computers`.`name`, `glpi_printers`.`name`, `glpi_networkequipments`.`name`) AS name,
+            CONCAT_WS('', `glpi_computers`.`entities_id`, `glpi_printers`.`entities_id`, `glpi_networkequipments`.`entities_id`) AS entities_id,
+            `glpi_plugin_monitoring_componentscatalogs_hosts`.`id` AS catalog_id, 
+            `glpi_plugin_monitoring_hosts`.* 
          FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
-         LEFT JOIN `glpi_computers` ON `glpi_computers`.`id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`
-         INNER JOIN `glpi_plugin_monitoring_hosts` ON (`glpi_computers`.`id` = `glpi_plugin_monitoring_hosts`.`items_id`)
-         WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."' AND `glpi_computers`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].") 
+         LEFT JOIN `glpi_computers`
+            ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_computers`.`id`
+               AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`='Computer'
+         LEFT JOIN `glpi_printers`
+            ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_printers`.`id`
+               AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`='Printer'
+         LEFT JOIN `glpi_networkequipments`
+            ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_networkequipments`.`id`
+               AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`='NetworkEquipment'
+
+         INNER JOIN `glpi_plugin_monitoring_hosts` 
+            ON (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_plugin_monitoring_hosts`.`items_id`
+            AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype` = `glpi_plugin_monitoring_hosts`.`itemtype`)
+         WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'
+            AND CONCAT_WS('', `glpi_computers`.`entities_id`, `glpi_printers`.`entities_id`, `glpi_networkequipments`.`entities_id`) IN (".$_SESSION['glpiactiveentities_string'].") 
          ORDER BY name ASC";
+      
       // Toolbox::logInFile("pm", "query hosts - $query\n");
       $result = $DB->query($query);
       while ($dataComponentscatalog_Host=$DB->fetch_array($result)) {
@@ -586,8 +604,10 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                break;
          }
          
-         $queryService = "SELECT *, `glpi_plugin_monitoring_components`.`name`, `glpi_plugin_monitoring_components`.`description` FROM `".$pmService->getTable()."`
-            INNER JOIN `glpi_plugin_monitoring_components` ON (`plugin_monitoring_components_id` = `glpi_plugin_monitoring_components`.`id`)
+         $queryService = "SELECT *, `glpi_plugin_monitoring_components`.`name`, 
+                 `glpi_plugin_monitoring_components`.`description` FROM `".$pmService->getTable()."`
+            INNER JOIN `glpi_plugin_monitoring_components` 
+               ON (`plugin_monitoring_components_id` = `glpi_plugin_monitoring_components`.`id`)
             WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['catalog_id']."'
                AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].") 
             ORDER BY `glpi_plugin_monitoring_services`.`name` ASC;";
@@ -641,11 +661,10 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          $a_gstate[$fakeService['id']] = $fakeService['state'];
          // $stateg[$a_gstate[$fakeService['id']]]++;
          
-         $hosts_ids[$dataComponentscatalog_Host['name']] = $dataComponentscatalog_Host['items_id'];
-         $hosts_itemtypes[$dataComponentscatalog_Host['name']] = $dataComponentscatalog_Host['itemtype'];
-         $hosts_states[$dataComponentscatalog_Host['name']] = $host_overall_state_ok;
+         $hosts_ids[$dataComponentscatalog_Host['id']] = $dataComponentscatalog_Host;
+         $hosts_states[$dataComponentscatalog_Host['id']] = $host_overall_state_ok;
          $a_componentscatalogs_hosts[$dataComponentscatalog_Host['catalog_id']] = $dataComponentscatalog_Host['catalog_id'];
-         $hosts_ressources[$dataComponentscatalog_Host['name']] = $ressources;
+         $hosts_ressources[$dataComponentscatalog_Host['id']] = $ressources;
       }
 
       return array($nb_ressources,

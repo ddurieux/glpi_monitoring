@@ -68,6 +68,7 @@ class PluginMonitoringService extends CommonDBTM {
       $tab[1]['datatype']        = 'itemlink';
       $tab[1]['itemlink_type']   = $this->getType();
       $tab[1]['massiveaction']   = false; // implicit key==1
+      $tab[1]['nosearch']        = TRUE;
       
       $tab[2]['table']           = "glpi_plugin_monitoring_components";
       $tab[2]['field']           = 'name';
