@@ -104,7 +104,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
          $pmServicescatalog   = new PluginMonitoringServicescatalog();
          $pmDisplay           = new PluginMonitoringDisplay();
 
-         $pmDisplay->showCounters("Businessrules");
+         // $pmDisplay->showCounters("Businessrules");
          $pmServicescatalog->showChecks();  
       } else if ($tabnum == 50) {
          $pmContact_Item = new PluginMonitoringContact_Item();

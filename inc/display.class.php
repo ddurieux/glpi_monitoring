@@ -927,47 +927,47 @@ echo "
       }
          
       if ($displayGraphs) {
-      if (! $_SESSION['plugin_monitoring']['reduced_interface']) {
-         echo "<td class='center'>";
-         // Only if exist incremental perfdata ...
-         if ($pMonitoringComponent->hasCounters()) {
-            $pmServicegraph = new PluginMonitoringServicegraph();
-            $html = $pmServicegraph->displayCounter($pMonitoringComponent->fields['graph_template'], $data['id']);
-            $counters = "<table width='600' class='tab_cadre'><tr><td>".$html."</td></tr></table>";
-            Html::showToolTip($counters, array(
-               // 'title'  => __('Counters', 'monitoring'), 
-               'img'    => $CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"
-            ));
+         if (! $_SESSION['plugin_monitoring']['reduced_interface']) {
+            echo "<td class='center'>";
+            // Only if exist incremental perfdata ...
+            if ($pMonitoringComponent->hasCounters()) {
+               $pmServicegraph = new PluginMonitoringServicegraph();
+               $html = $pmServicegraph->displayCounter($pMonitoringComponent->fields['graph_template'], $data['id']);
+               $counters = "<table width='600' class='tab_cadre'><tr><td>".$html."</td></tr></table>";
+               Html::showToolTip($counters, array(
+                  // 'title'  => __('Counters', 'monitoring'), 
+                  'img'    => $CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"
+               ));
+            }
+            echo "</td>";
+            
+            echo "<td class='center'>";
+            // Even if not exist incremental perfdata ...
+            if ($pMonitoringComponent->hasPerfdata()) {
+               echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$data['id']."'>";
+               ob_start();
+               $pmServicegraph = new PluginMonitoringServicegraph();
+               $pmServicegraph->displayGraph($pMonitoringComponent->fields['graph_template'], 
+                                             "PluginMonitoringService", 
+                                             $data['id'], 
+                                             "0", 
+                                             '2h', 
+                                             "div", 
+                                             "600");
+               $div = ob_get_contents();
+               ob_end_clean();
+               $chart = "<table width='600' class='tab_cadre'><tr><td>".$div."</td></tr></table>";
+               Html::showToolTip($chart, array('img'=>$CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"));
+               $pmServicegraph->displayGraph($pMonitoringComponent->fields['graph_template'], 
+                                             "PluginMonitoringService", 
+                                             $data['id'], 
+                                             "0", 
+                                             '2h', 
+                                             "js");
+               echo "</a>";
+            }
+            echo "</td>";
          }
-         echo "</td>";
-         
-         echo "<td class='center'>";
-         // Even if not exist incremental perfdata ...
-         if ($pMonitoringComponent->hasPerfdata()) {
-            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$data['id']."'>";
-            ob_start();
-            $pmServicegraph = new PluginMonitoringServicegraph();
-            $pmServicegraph->displayGraph($pMonitoringComponent->fields['graph_template'], 
-                                          "PluginMonitoringService", 
-                                          $data['id'], 
-                                          "0", 
-                                          '2h', 
-                                          "div", 
-                                          "600");
-            $div = ob_get_contents();
-            ob_end_clean();
-            $chart = "<table width='600' class='tab_cadre'><tr><td>".$div."</td></tr></table>";
-            Html::showToolTip($chart, array('img'=>$CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"));
-            $pmServicegraph->displayGraph($pMonitoringComponent->fields['graph_template'], 
-                                          "PluginMonitoringService", 
-                                          $data['id'], 
-                                          "0", 
-                                          '2h', 
-                                          "js");
-            echo "</a>";
-         }
-         echo "</td>";
-      }
       }
       
       if ($displayhost == '1') {

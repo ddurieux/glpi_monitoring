@@ -179,7 +179,7 @@ class PluginMonitoringHost extends CommonDBTM {
       switch ($item->getType()) {
          case 'Central' :
             $pmDisplay = new PluginMonitoringDisplay();
-            $pmDisplay->showHostsCounters("Hosts", 1, 1);
+            // $pmDisplay->showHostsCounters("Hosts", 1, 1);
             $pmDisplay->showHostsBoard();
             return true;
 

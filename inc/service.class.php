@@ -140,6 +140,43 @@ class PluginMonitoringService extends CommonDBTM {
 
    
    
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+
+      if (!$withtemplate) {
+         switch ($item->getType()) {
+            case 'Central' :
+               if (PluginMonitoringProfile::haveRight("homepage", 'r') && PluginMonitoringProfile::haveRight("homepage_all_ressources", 'r')) {
+                  return array(1 => __('All resources', 'monitoring'));
+               } else {
+                  if (PluginMonitoringProfile::haveRight("homepage", 'r') && PluginMonitoringProfile::haveRight("homepage_perfdata", 'r')) {
+                     return array(1 => __('Performance data', 'monitoring'));
+                  } else {
+                     return '';
+                  }
+               }
+         }
+      }
+      return '';
+   }
+   
+   
+   
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      switch ($item->getType()) {
+         case 'Central' :
+            $pmDisplay = new PluginMonitoringDisplay();
+            // $pmDisplay->showCounters('Ressources');
+            $pmDisplay->showResourcesBoard();
+            //$pmDisplay->showResourcesBoard('', $perfdatas);
+            return true;
+
+      }
+      return true;
+   }
+   
+   
+   
    function manageServices($itemtype, $items_id) {
       
       if ($itemtype == 'Computer') {
