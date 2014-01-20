@@ -819,10 +819,17 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       
       // Content with host/service status and link to services list ...
       foreach ($services as $services_id) {
+         $field_id = 20;
+         if ($itemtype == 'Printer') {
+            $field_id = 21;
+         } else if ($itemtype == 'NetworkEquipment') {
+            $field_id = 22;
+         }
+
          $link = $CFG_GLPI['root_doc'].
             "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-               "&field[0]=20&searchtype[0]=equals&contains[0]=".$item->getID().
-               "&link[1]=AND&field[1]=7&searchtype[1]=equals&contains[1]=".$resources[$services_id]['plugin_monitoring_components_id'].  
+               "&field[0]=".$field_id."&searchtype[0]=equals&contains[0]=".$item->getID().
+               "&link[1]=AND&field[1]=2&searchtype[1]=equals&contains[1]=".$resources[$services_id]['plugin_monitoring_components_id'].  
                "&itemtype=PluginMonitoringService&start=0'";
 
          echo "<tr class='tab_bg_2'>";
