@@ -334,6 +334,7 @@ CREATE TABLE `glpi_plugin_monitoring_displayviews_items` (
    `items_id` int(11) NOT NULL DEFAULT '0',
    `itemtype` varchar(100) DEFAULT NULL,
    `extra_infos` varchar(255) DEFAULT NULL,
+   `is_minemap` tinyint(1) NOT NULL DEFAULT '0',
    PRIMARY KEY (`id`),
    KEY `plugin_monitoring_displayviews_id` (`plugin_monitoring_displayviews_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

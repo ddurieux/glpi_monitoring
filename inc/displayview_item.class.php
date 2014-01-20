@@ -554,13 +554,13 @@ Ext.onReady(function(){
                                        "js");
       } else if($itemtype == "PluginMonitoringComponentscatalog") {
          $pmComponentscatalog = new PluginMonitoringComponentscatalog();
-         $pmComponentscatalog->ajaxLoad($data['items_id']);
+         $pmComponentscatalog->ajaxLoad($data['items_id'], $data['is_minemap']);
       } else if($itemtype == "PluginMonitoringServicescatalog") {
          $pmServicescatalog = new PluginMonitoringServicescatalog();
          $pmServicescatalog->ajaxLoad($data['items_id']);
       } else if ($itemtype2 != '') {
          $pmDisplayview = new PluginMonitoringDisplayview();
-         $pmDisplayview->ajaxLoad2($data['id']);
+         $pmDisplayview->ajaxLoad2($data['id'], $data['is_minemap']);
       } else if($itemtype == "PluginMonitoringDisplayview") {
          $pmDisplayview = new PluginMonitoringDisplayview();
          $pmDisplayview->ajaxLoad($data['items_id']);
@@ -620,7 +620,7 @@ Ext.onReady(function(){
       $elements = array();
       $elements['NULL'] = Dropdown::EMPTY_VALUE;
       $elements['PluginMonitoringDisplayview']        = __('Views', 'monitoring');
-      $elements['PluginMonitoringServicescatalog']    = __('Business rules', 'monitoring');
+      $elements['PluginMonitoringServicescatalog']    = PluginMonitoringServicescatalog::getTypeName();
 //      $elements['service']                             = __('Resources (info)', 'monitoring');
       $elements['host']                               = __('Host (info)', 'monitoring');
       $elements['PluginMonitoringService']            = __('Resources (graph)', 'monitoring');

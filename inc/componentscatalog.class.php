@@ -322,7 +322,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    
    
    
-   function showWidgetFrame($id, $reduced_interface=false) {
+   function showWidgetFrame($id, $reduced_interface=false, $is_minemap=FALSE) {
       global $DB, $CFG_GLPI;
       
       $this->getFromDB($id);
@@ -428,7 +428,14 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       }
       sort($services);
       
-      echo '<div class="minemapdiv">';
+      echo "<div class='minemapdiv' align='center'>"
+      ."<a onclick='Ext.get(\"minemapcomponentscatalog".$id."\").toggle()'>"
+              ."Minemap</a></div>";
+      if (!$is_minemap) {
+         echo '<div class="minemapdiv" id="minemapcomponentscatalog'.$id.'" style="display: none; z-index: 1500">';
+      } else {
+         echo '<div class="minemapdiv" id="minemapcomponentscatalog'.$id.'">';
+      }
       echo '<table class="tab_cadrehov" >';
       
       // Header with services name and link to services list ...
@@ -512,7 +519,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    
    
    
-   function ajaxLoad($id) {
+   function ajaxLoad($id, $is_minemap) {
       global $CFG_GLPI;
       
       echo "<script type=\"text/javascript\">
@@ -521,7 +528,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       var mgrcc".$id." = elcc".$id.".getUpdateManager();
       mgrcc".$id.".loadScripts=true;
       mgrcc".$id.".showLoadIndicator=false;
-      mgrcc".$id.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateWidgetComponentscatalog.php\", \"id=".$id."\", \"\", true);
+      mgrcc".$id.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateWidgetComponentscatalog.php\", \"id=".$id."&is_minemap=".$is_minemap."\", \"\", true);
       </script>";
    }
    

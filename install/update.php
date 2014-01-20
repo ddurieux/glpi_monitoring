@@ -1420,6 +1420,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                               'extra_infos', 
                               "varchar(255) DEFAULT NULL"); 
+         $migration->addField($newTable, 
+                              'is_minemap', 
+                              "tinyint(1) NOT NULL DEFAULT '0'"); 
          $migration->addKey($newTable, 
                             "plugin_monitoring_displayviews_id");
       $migration->migrationOneTable($newTable);

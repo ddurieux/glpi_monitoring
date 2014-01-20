@@ -653,7 +653,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
    
    
    
-   function ajaxLoad2($id) {
+   function ajaxLoad2($id, $is_minemap) {
       global $CFG_GLPI;
       
       echo "<script type=\"text/javascript\">
@@ -662,7 +662,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       var mgrcc".$id." = elcc".$id.".getUpdateManager();
       mgrcc".$id.".loadScripts=true;
       mgrcc".$id.".showLoadIndicator=false;
-      mgrcc".$id.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateWidgetDisplayview2.php\", \"id=".$id."\", \"\", true);
+      mgrcc".$id.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateWidgetDisplayview2.php\", \"id=".$id."&is_minemap=".$is_minemap."\", \"\", true);
       </script>";
    }
    
@@ -718,7 +718,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
     * @global type $DB
     * @param type $id
     */
-   function showWidget2Frame($id) {
+   function showWidget2Frame($id, $is_minemap=FALSE) {
       global $DB, $CFG_GLPI;
       
       $pmDisplayview_item = new PluginMonitoringDisplayview_item();
@@ -806,6 +806,16 @@ class PluginMonitoringDisplayview extends CommonDBTM {
          fittext('devicea-".$id."');
       </script>";
       
+      echo "<div class='minemapdiv' align='center'>"
+      ."<a onclick='Ext.get(\"minemapdisplayview2-".$id."\").toggle()'>"
+              ."Minemap</a></div>";
+      if (!$is_minemap) {
+         echo '<div class="minemapdiv" id="minemapdisplayview2-'.$id.'" style="display: none; z-index: 1500">';
+      } else {
+         echo '<div class="minemapdiv" id="minemapdisplayview2-'.$id.'">';
+      }
+      echo '<table class="tab_cadrehov" >';
+
       // Get services list ...
       echo '<div class="minemapdiv">';
       echo '<table class="tab_cadrehov">';

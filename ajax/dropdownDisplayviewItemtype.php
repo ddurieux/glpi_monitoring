@@ -14,6 +14,8 @@ switch ($_POST['itemtype']) {
 
    case 'PluginMonitoringComponentscatalog':
       Dropdown::show('PluginMonitoringComponentscatalog', array('name'=>'items_id'));
+      echo "<br/>".__('Display minemap', 'monitoring')." : ";
+      Dropdown::showYesNo('is_minemap');
       break;
 
    case 'PluginMonitoringService':
@@ -75,6 +77,8 @@ switch ($_POST['itemtype']) {
          }
       }
       Dropdown::showFromArray('type', $elements);
+      echo "<br/>".__('Display minemap', 'monitoring')." : ";
+      Dropdown::showYesNo('is_minemap');
       break;
 
    case 'PluginMonitoringCustomitem_Gauge':
