@@ -476,18 +476,31 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       
       $leftjoin = " 
-         INNER JOIN `glpi_computers` 
-            ON (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_computers`.`id`)
          INNER JOIN `glpi_plugin_monitoring_services` 
             ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
          INNER JOIN `glpi_plugin_monitoring_hosts` 
-            ON (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_plugin_monitoring_hosts`.`items_id`)
+            ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_plugin_monitoring_hosts`.`items_id`
+            AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype` = `glpi_plugin_monitoring_hosts`.`itemtype`
          INNER JOIN `glpi_plugin_monitoring_components` 
             ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_components_id` = `glpi_plugin_monitoring_components`.`id`)
          INNER JOIN `glpi_entities` 
-            ON (`glpi_computers`.`entities_id` = `glpi_entities`.`id`)
+            ON (`glpi_plugin_monitoring_services`.`entities_id` = `glpi_entities`.`id`)
       ";
+      
+      $leftjoin .= " LEFT JOIN `glpi_computers`
+         ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = 
+               `glpi_computers`.`id`
+               AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`='Computer'";
+      $leftjoin .= " LEFT JOIN `glpi_printers`
+         ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = 
+               `glpi_printers`.`id`
+               AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`='Printer'";
+      $leftjoin .= " LEFT JOIN `glpi_networkequipments`
+         ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = 
+               `glpi_networkequipments`.`id`
+               AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`='NetworkEquipment'";
 
+      
       // * ORDER
       $ORDERQUERY = "ORDER BY `glpi_plugin_monitoring_services`.`name` ASC";
       $toview = array(1, 2, 3, 4, 5);
@@ -509,10 +522,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
       
       $query = "SELECT
-         `glpi_plugin_monitoring_services`.*
-         , `glpi_computers`.`name` AS host_name
-         , `glpi_plugin_monitoring_hosts`.`id` AS host_id, `glpi_plugin_monitoring_hosts`.`state` AS host_state, `glpi_plugin_monitoring_hosts`.`is_acknowledged` AS host_acknowledged
-         , `glpi_plugin_monitoring_components`.`id` AS component_id, `glpi_plugin_monitoring_components`.`name` AS component_name
+         `glpi_plugin_monitoring_services`.*,
+         CONCAT_WS('', `glpi_computers`.`name`, `glpi_printers`.`name`, `glpi_networkequipments`.`name`) AS host_name,
+         `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`,
+         `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`,
+         `glpi_plugin_monitoring_hosts`.`id` AS host_id, `glpi_plugin_monitoring_hosts`.`state` AS host_state, `glpi_plugin_monitoring_hosts`.`is_acknowledged` AS host_acknowledged,
+         `glpi_plugin_monitoring_components`.`id` AS component_id, `glpi_plugin_monitoring_components`.`name` AS component_name
          FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
          ".$leftjoin."
          ".$where."

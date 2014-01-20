@@ -532,6 +532,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $a_gstate = array();
       $nb_ressources = 0;
       $hosts_ids = array();
+      $hosts_itemtypes = array();
       $hosts_states = array();
       $services_ids = array();
       $hosts_ressources = array();
@@ -641,6 +642,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          // $stateg[$a_gstate[$fakeService['id']]]++;
          
          $hosts_ids[$dataComponentscatalog_Host['name']] = $dataComponentscatalog_Host['items_id'];
+         $hosts_itemtypes[$dataComponentscatalog_Host['name']] = $dataComponentscatalog_Host['itemtype'];
          $hosts_states[$dataComponentscatalog_Host['name']] = $host_overall_state_ok;
          $a_componentscatalogs_hosts[$dataComponentscatalog_Host['catalog_id']] = $dataComponentscatalog_Host['catalog_id'];
          $hosts_ressources[$dataComponentscatalog_Host['name']] = $ressources;

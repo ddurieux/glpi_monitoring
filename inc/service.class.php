@@ -113,21 +113,28 @@ class PluginMonitoringService extends CommonDBTM {
       $tab[8]['name']           = __('Host acknowledge', 'monitoring');
       $tab[8]['datatype']       = 'bool';
      
-      $tab[9]['table']          = 'glpi_computers';
-      $tab[9]['field']          = 'name';
-      $tab[9]['name']           = __('Item')." > ".__('Computer');
-      $tab[9]['searchtype']     = 'equals';
-      $tab[9]['datatype']       = 'itemlink';
+      $tab[20]['table']          = 'glpi_computers';
+      $tab[20]['field']          = 'name';
+      $tab[20]['name']           = __('Item')." > ".__('Computer');
+      $tab[20]['searchtype']     = 'equals';
+      $tab[20]['datatype']       = 'itemlink';
+      $tab[20]['itemlink_type']  = 'Computer';
       
-      $tab[10]['table']          = $this->getTable();
-      $tab[10]['field']          = 'Printer';
-      $tab[10]['name']           = __('Item')." > ".__('Printer');
-      $tab[10]['searchtype']     = 'equals';
+      $tab[21]['table']          = 'glpi_printers';
+      $tab[21]['field']          = 'name';
+      $tab[21]['name']           = __('Item')." > ".__('Printer');
+      $tab[21]['searchtype']     = 'equals';
+      $tab[21]['datatype']       = 'itemlink';
+      $tab[21]['itemlink_type']  = 'Printer';
       
-      $tab[11]['table']          = $this->getTable();
-      $tab[11]['field']          = 'NetworkEquipment';
-      $tab[11]['name']           = __('Item')." > ".__('Network device');
-      $tab[11]['searchtype']     = 'equals';
+      $tab[22]['table']          = 'glpi_networkequipments';
+      $tab[22]['field']          = 'name';
+//      $tab[22]['linkfield']      = 'items_id';
+      $tab[22]['name']           = __('Item')." > ".__('Network device');
+      $tab[22]['searchtype']     = 'equals';
+      $tab[22]['datatype']       = 'itemlink';
+      $tab[22]['itemlink_type']  = 'NetworkEquipment';
+
       
       // TODO : ...
       // $tab[12]['table']          = 'glpi_plugin_monitoring_componentscatalogs_hosts';
