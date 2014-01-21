@@ -2511,7 +2511,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               'dashboard_components_catalogs', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
          $migration->addField($newTable, 
-                              'dashboard_perfdata', 
+                              'dashboard_perfdatas', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
                               
          $migration->addField($newTable, 
@@ -2546,7 +2546,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               'homepage_components_catalogs', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
          $migration->addField($newTable, 
-                              'homepage_perfdata', 
+                              'homepage_perfdatas', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
                               
       $migration->migrationOneTable($newTable);

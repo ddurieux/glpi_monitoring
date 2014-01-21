@@ -88,7 +88,7 @@ class PluginMonitoringProfile extends CommonDBTM {
          $input['homepage_hosts_status'] = 'r';
          $input['homepage_services_catalogs'] = 'r';
          $input['homepage_components_catalogs'] = 'r';
-         $input['homepage_perfdata'] = 'r';
+         $input['homepage_perfdatas'] = 'r';
          $input['homepage_all_ressources'] = 'r';
 
          $input['dashboard'] = 'r';
@@ -97,7 +97,7 @@ class PluginMonitoringProfile extends CommonDBTM {
          $input['dashboard_hosts_status'] = 'r';
          $input['dashboard_services_catalogs'] = 'r';
          $input['dashboard_components_catalogs'] = 'r';
-         $input['dashboard_perfdata'] = 'r';
+         $input['dashboard_perfdatas'] = 'r';
          $input['dashboard_all_ressources'] = 'r';
 
          $input['restartshinken'] = 'r';
@@ -314,7 +314,7 @@ class PluginMonitoringProfile extends CommonDBTM {
       echo __('View performance data', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
-      Profile::dropdownNoneReadWrite("dashboard_perfdata", $this->fields["dashboard_perfdata"], 1, 1, 0);
+      Profile::dropdownNoneReadWrite("dashboard_perfdatas", $this->fields["dashboard_perfdatas"], 1, 1, 0);
       echo "</td>";
       echo "</tr>";
       
@@ -381,7 +381,7 @@ class PluginMonitoringProfile extends CommonDBTM {
       echo __('View performance data', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
-      Profile::dropdownNoneReadWrite("homepage_perfdata", $this->fields["homepage_perfdata"], 1, 1, 0);
+      Profile::dropdownNoneReadWrite("homepage_perfdatas", $this->fields["homepage_perfdatas"], 1, 1, 0);
       echo "</td>";
       echo "</tr>";
       
