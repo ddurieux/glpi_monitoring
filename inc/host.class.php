@@ -307,7 +307,7 @@ class PluginMonitoringHost extends CommonDBTM {
 
          $location = new Location();
          $location->getFromDB($item->fields["locations_id"]);
-         $location = $location->getName();
+         $location = $location->getName(array('complete'  => true));
          if (! empty($location)) { 
             $toadd[] = array('name'  => __('Location'),
                              'value' => nl2br($location));
