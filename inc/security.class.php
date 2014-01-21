@@ -112,7 +112,15 @@ class PluginMonitoringSecurity extends CommonDBTM {
          // Its a monitoring ajax page
          $maxlifetime = ini_get("session.gc_maxlifetime");
          if (date('U') > ($_SESSION['plugin_monitoring_lastsessiontime'] + $maxlifetime - 200)) {
-            session_start();
+            $a_data = $this->find("`users_id`='".$_SESSION['glpiID']."'", '', 1);
+            if (count($a_data) == 1) {
+               $data = current($a_data);
+               if (date('U') > (strtotime($data['last_session_start']) + $maxlifetime - 200)) {
+                  session_start();
+                  $data['last_session_start'] = date('Y-m-d H:i:s');
+                  $this->update($data);
+               }
+            }
             $_SESSION['plugin_monitoring_lastsessiontime'] = date('U');
          }
       } else {
