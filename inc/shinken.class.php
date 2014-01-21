@@ -195,7 +195,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_hosts[$i]['hostgroups'] = "hostgroup-".$data['entityId'];
                $a_hosts[$i]['_ITEMSID'] = $data['items_id'];
                $a_hosts[$i]['_ITEMTYPE'] = $classname;
-
+/* Problem with non conventional characters
                if (! empty($data['completename'])) {
                   $a_hosts[$i]['_LOC_NAME'] = preg_replace("/[\r\n]/"," / ",$data['completename']);
                }
@@ -212,7 +212,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                      $a_hosts[$i]['_LOC_BUILDING'] = preg_replace("/[\r\n]/","",$data['building']);
                   }
                }
-               
+*/               
                $a_hosts_found[$a_hosts[$i]['host_name']] = 1;
                $a_hosts[$i]['alias'] = preg_replace("/[^A-Za-z0-9\-_]/","",$class->fields['name'])." / ".$classname."-".$data['items_id'];
                if (isset($class->fields['networkequipmenttypes_id'])) {                  
