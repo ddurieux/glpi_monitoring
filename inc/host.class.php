@@ -269,24 +269,32 @@ class PluginMonitoringHost extends CommonDBTM {
       $item = new $this->fields['itemtype'];
       $item->getFromDB($this->fields['items_id']);
       
-      $toadd[] = array('name'  => __('Host type'),
-                       'value' => nl2br($item->getTypeName()));
-      
-      if ($this->fields['itemtype'] == 'Computer') {
+      if ($this->getField('itemtype') == 'Computer') {
+         if ($item->isField('completename')) {
+            $toadd[] = array('name'  => __('Complete name'),
+                             'value' => nl2br($item->getField('completename')));
+         }
+         
          $type = new ComputerType();
-         $type->getFromDB($item->fields["computertypes_id"]);
-         $type = $type->getName();
-         if (! empty($type)) { 
-            $toadd[] = array('name'  => __('Type'),
-                             'value' => nl2br($type));
+         if ($item->getField("computertypes_id")) {
+            $type->getFromDB($item->getField("computertypes_id"));
+            $type = $type->getName();
+            if (! empty($type)) { 
+               $toadd[] = array('name'  => __('Type'),
+                                'value' => nl2br($type));
+            }
+         } else {
+            return $comment;
          }
 
          $model = new ComputerModel();
-         $model->getFromDB($item->fields["computermodels_id"]);
-         $model = $model->getName();
-         if (! empty($model)) { 
-            $toadd[] = array('name'  => __('Model'),
-                             'value' => nl2br($model));
+         if ($item->getField("computermodels_id")) {
+            $model->getFromDB($item->getField("computermodels_id"));
+            $model = $model->getName();
+            if (! empty($model)) { 
+               $toadd[] = array('name'  => __('Model'),
+                                'value' => nl2br($model));
+            }
          }
 
          $state = new State();
@@ -334,13 +342,19 @@ class PluginMonitoringHost extends CommonDBTM {
                                    "<span class='b'>".$data['name'], "</span>".$data['value']);
             }
          }
-
-         if (!empty($comment)) {
-            return Html::showToolTip($comment, array('display' => false));
+      } else {
+         $toadd[] = array('name'  => __('Host type'),
+                          'value' => nl2br($item->getTypeName()));
+                          
+         if ($item->isField('completename')) {
+            $toadd[] = array('name'  => __('Complete name'),
+                             'value' => nl2br($item->getField('completename')));
          }
       }
 
-      return $comment;
+      if (!empty($comment)) {
+         return Html::showToolTip($comment, array('display' => false));
+      }
    }
 }
 
