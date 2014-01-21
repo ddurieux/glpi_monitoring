@@ -33,6 +33,10 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+$_SESSION = unserialize(str_replace('#####', '"', $_POST['sess']));
+session_id($_POST['sess_id']);
+$_SESSION['plugin_monitoring_checktime'] = 1;
+
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'],"updateHostsCounter.php")) {
    include ("../../../inc/includes.php");
@@ -43,6 +47,10 @@ if (strpos($_SERVER['PHP_SELF'],"updateHostsCounter.php")) {
 if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
+
+$pmSecurity = new PluginMonitoringSecurity();
+$pmSecurity->isSecure();
+PluginMonitoringSecurity::deleteCheckSessionTime();
 
 Session::checkLoginUser();
 

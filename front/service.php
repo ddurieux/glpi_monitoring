@@ -47,7 +47,6 @@ Session::checkCentralAccess();
 Html::header(__('Monitoring', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
              "monitoring", "display");
 
-
 /*
 // Display ressources perfdata ?
 if (isset($_SESSION['plugin_monitoring']['ressources_perfdata'])) {

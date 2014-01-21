@@ -521,13 +521,17 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    function ajaxLoad($id, $is_minemap) {
       global $CFG_GLPI;
       
+      $sess = serialize($_SESSION);
+      $sess = str_replace('"', "#####", $sess);
+
+      $sess_id = session_id();
       echo "<script type=\"text/javascript\">
 
       var elcc".$id." = Ext.get(\"updatecomponentscatalog".$id."\");
       var mgrcc".$id." = elcc".$id.".getUpdateManager();
       mgrcc".$id.".loadScripts=true;
       mgrcc".$id.".showLoadIndicator=false;
-      mgrcc".$id.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateWidgetComponentscatalog.php\", \"id=".$id."&is_minemap=".$is_minemap."\", \"\", true);
+      mgrcc".$id.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateWidgetComponentscatalog.php\", \"id=".$id."&is_minemap=".$is_minemap."&sess=".$sess."&sess_id=".$sess_id."\", \"\", true);
       </script>";
    }
    

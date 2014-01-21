@@ -581,9 +581,14 @@ Ext.onReady(function(){
 //            setInterval(updateimagew".$data['items_id'].", 50000);
 //         </script>";
 //      }
+         
+         $sess = serialize($_SESSION);
+         $sess = str_replace('"', "#####", $sess);
+
+         $sess_id = session_id();
          echo "<script type='text/javascript'>
          var mgr = new Ext.UpdateManager('weathermap-".$data['items_id']."');
-         mgr.startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/widgetWeathermap.php\", \"id=".$data['items_id']."&extra_infos=".$data['extra_infos']."\", \"\", true);
+         mgr.startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/widgetWeathermap.php\", \"id=".$data['items_id']."&extra_infos=".$data['extra_infos']."&sess=".$sess."&sess_id=".$sess_id."\", \"\", true);
          </script>";
       }
       return true;
