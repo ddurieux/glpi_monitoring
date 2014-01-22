@@ -523,6 +523,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       
       $sess = serialize($_SESSION);
       $sess = str_replace('"', "#####", $sess);
+      $sess = str_replace("'", "@@@@@", $sess);
 
       $sess_id = session_id();
       echo "<script type=\"text/javascript\">

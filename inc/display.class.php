@@ -2441,6 +2441,7 @@ Ext.onReady(function(){
       if ($ajax == 1) {
          $sess = serialize($_SESSION);
          $sess = str_replace('"', "#####", $sess);
+         $sess = str_replace("'", "@@@@@", $sess);
 
          $sess_id = session_id();
          echo "<div id=\"updatecounter".$type."\"></div>";
@@ -2469,6 +2470,7 @@ Ext.onReady(function(){
       if ($ajax == 1) {
          $sess = serialize($_SESSION);
          $sess = str_replace('"', "#####", $sess);
+         $sess = str_replace("'", "@@@@@", $sess);
 
          $sess_id = session_id();
          echo "<div id=\"updatecounter".$type."\"></div>";

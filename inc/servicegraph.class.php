@@ -62,6 +62,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       
       $sess = serialize($_SESSION);
       $sess = str_replace('"', "#####", $sess);
+      $sess = str_replace("'", "@@@@@", $sess);
 
       $sess_id = session_id();
       $ret .= "<script>
@@ -135,6 +136,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       
       $sess = serialize($_SESSION);
       $sess = str_replace('"', "#####", $sess);
+      $sess = str_replace("'", "@@@@@", $sess);
 
       $sess_id = session_id();
 
