@@ -155,7 +155,8 @@ class PluginMonitoringSecurity extends CommonDBTM {
                     . " AND `session_id`='".session_id()."'", '', 1);
             if (count($a_data) == 1) {
                $data = current($a_data);
-               if (session_id() != $data['session_id']) {
+               if (session_id() != $data['session_id']
+                       || $data['last_session_start'] < (date('Y-m-d H:i:s', (date('U') - $maxlifetime - 200)))) {
                   $data['key'] = $this->generateKey();
                   $data['session_id'] = session_id();
                   $data['last_session_start'] = $_SESSION['glpi_currenttime'];
