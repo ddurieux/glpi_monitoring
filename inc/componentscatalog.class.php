@@ -380,6 +380,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       } else {
          $count = $stateg['OK'];
          $count += $stateg['ACKNOWLEDGE'];
+         $count += $stateg['UNKNOWN'];
          $link = $CFG_GLPI['root_doc'].
          "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&".
             "field[0]=3&searchtype[0]=equals&contains[0]=OK".
@@ -403,7 +404,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             }
             echo '</a></h1>
                <p><a href="'.$link.'">'.$count.'</a><font style="font-size: 14px;">/ '.
-               ($stateg['CRITICAL'] + $stateg['WARNING'] + $stateg['OK'] + $stateg['ACKNOWLEDGE']).'</font></p>
+               ($stateg['CRITICAL'] + $stateg['WARNING'] + $stateg['OK'] + $stateg['ACKNOWLEDGE'] + $stateg['UNKNOWN']).'</font></p>
             </div>
          </div>';
       } else {
@@ -415,7 +416,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             }
             echo '</h1>
                <p>'.$count.'<font style="font-size: 14px;">/ '.
-               ($stateg['CRITICAL'] + $stateg['WARNING'] + $stateg['OK'] + $stateg['ACKNOWLEDGE']).'</font></p>
+               ($stateg['CRITICAL'] + $stateg['WARNING'] + $stateg['OK'] + $stateg['ACKNOWLEDGE'] + $stateg['UNKNOWN']).'</font></p>
             </div>
          </div>';
       }
