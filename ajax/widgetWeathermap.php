@@ -40,10 +40,18 @@
    ------------------------------------------------------------------------
  */
 
+$_SESSION = unserialize(str_replace('#####', '"', $_POST['sess']));
+session_id($_POST['sess_id']);
+$_SESSION['plugin_monitoring_checktime'] = 1;
+
 include ("../../../inc/includes.php");
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
+
+$pmSecurity = new PluginMonitoringSecurity();
+$pmSecurity->isSecure();
+PluginMonitoringSecurity::deleteCheckSessionTime();
 
 if (!isset($_POST["id"])
         OR !isset($_POST['extra_infos'])) {

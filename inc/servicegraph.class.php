@@ -59,6 +59,11 @@ class PluginMonitoringServicegraph extends CommonDBTM {
 
       $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
       $ret = '<div class="counter" id="counters_'.$counter_id.'_'.$items_id.'">'.$counter_id.'</div>';
+      
+      $sess = serialize($_SESSION);
+      $sess = str_replace('"', "#####", $sess);
+
+      $sess_id = session_id();
       $ret .= "<script>
          // window.setInterval(function () {
             Ext.Ajax.request({
@@ -72,7 +77,9 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                   'counter_id': '$counter_id',
                   'counter_name': '$counter_name',
                   'items_id': '$items_id',
-                  'components_id': '". $item->fields['plugin_monitoring_components_id'] ."'
+                  'components_id': '". $item->fields['plugin_monitoring_components_id'] ."',
+                  'sess': '".$sess."',
+                  'sess_id': '".$sess_id."'
                },
                success: function(response)  {
                   document.getElementById('counters_".$counter_id.'_'.$items_id."').innerHTML = response.responseText;
@@ -126,6 +133,11 @@ class PluginMonitoringServicegraph extends CommonDBTM {
    function startAutoRefresh($rrdtool_template, $itemtype, $items_id, $timezone, $time, $pmComponents_id) {
       global $CFG_GLPI;
       
+      $sess = serialize($_SESSION);
+      $sess = str_replace('"', "#####", $sess);
+
+      $sess_id = session_id();
+
       echo "mgr".$items_id.$time.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"].
                  "/plugins/monitoring/ajax/updateChart.php\", ".
                  "\"rrdtool_template=".$rrdtool_template.
@@ -135,7 +147,7 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                  "&time=".$time.
                  "&customdate=\" + document.getElementById('custom_date').textContent + \"".
                  "&customtime=\" + document.getElementById('custom_time').textContent + \"".
-                 "&components_id=".$pmComponents_id."\", \"\", true);
+                 "&components_id=".$pmComponents_id."&sess=".$sess."&sess_id=".$sess_id."\", \"\", true);
                     ";
    }
       

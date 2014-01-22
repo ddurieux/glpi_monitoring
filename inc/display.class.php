@@ -2439,6 +2439,10 @@ Ext.onReady(function(){
       }
             
       if ($ajax == 1) {
+         $sess = serialize($_SESSION);
+         $sess = str_replace('"', "#####", $sess);
+
+         $sess_id = session_id();
          echo "<div id=\"updatecounter".$type."\"></div>";
          echo "<script type=\"text/javascript\">
 
@@ -2446,7 +2450,7 @@ Ext.onReady(function(){
          var mgrcc".$type." = elcc".$type.".getUpdateManager();
          mgrcc".$type.".loadScripts=true;
          mgrcc".$type.".showLoadIndicator=false;
-         mgrcc".$type.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateCounter.php\", \"type=".$type."\", \"\", true);
+         mgrcc".$type.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateCounter.php\", \"type=".$type."&sess=".$sess."&sess_id=".$sess_id."\", \"\", true);
          </script>";
       } else {
          $this->displayCounters($type);
@@ -2463,6 +2467,10 @@ Ext.onReady(function(){
       }
             
       if ($ajax == 1) {
+         $sess = serialize($_SESSION);
+         $sess = str_replace('"', "#####", $sess);
+
+         $sess_id = session_id();
          echo "<div id=\"updatecounter".$type."\"></div>";
          echo "<script type=\"text/javascript\">
 
@@ -2470,7 +2478,7 @@ Ext.onReady(function(){
          var mgrcc".$type." = elcc".$type.".getUpdateManager();
          mgrcc".$type.".loadScripts=true;
          mgrcc".$type.".showLoadIndicator=false;
-         mgrcc".$type.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateHostsCounter.php\", \"type=".$type."\", \"\", true);
+         mgrcc".$type.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateHostsCounter.php\", \"type=".$type."&sess=".$sess."&sess_id=".$sess_id."\", \"\", true);
          </script>";
       } else {
          $this->displayHostsCounters();

@@ -2551,6 +2551,38 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               
       $migration->migrationOneTable($newTable);
       
+
+      
+    /*
+    * Table glpi_plugin_monitoring_securities
+    */
+      $a_table = array();
+      $a_table['name'] = 'glpi_plugin_monitoring_securities';
+      $a_table['oldname'] = array();
+
+      $a_table['fields']  = array(
+         'id'           => array('type'    => 'autoincrement', 'value'   => ''),
+         'users_id' 
+                        => array('type'    => 'integer',       'value'   => 0),
+         'key' 
+                        => array('type'    => 'string',        'value'   => NULL),
+         'session_id' 
+                        => array('type'    => 'string',        'value'   => NULL),
+         'last_session_start' 
+                        => array('type'    => 'datetime',      'value'   => NULL),
+      );
+
+      $a_table['oldfields']  = array();
+
+      $a_table['renamefields'] = array();
+
+      $a_table['keys'] = array();
+
+      $a_table['oldkeys'] = array();
+
+      migrateTablesMonitoring($migration, $a_table);
+
+      
       
       
     /*

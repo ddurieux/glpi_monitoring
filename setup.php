@@ -57,7 +57,6 @@ function plugin_init_monitoring() {
 //      if (isset($_SESSION["glpiID"])) {
 //         Plugin::loadLang("monitoring");
          
-
          Plugin::registerClass('PluginMonitoringEntity',
               array('addtabon' => array('Entity')));
          Plugin::registerClass('PluginMonitoringCommmand');
@@ -76,13 +75,16 @@ function plugin_init_monitoring() {
               array('addtabon' => array('Central')));
          Plugin::registerClass('PluginMonitoringProfile',
               array('addtabon' => array('Profile')));
+         Plugin::registerClass('PluginMonitoringSecurity');
          Plugin::registerClass('PluginMonitoringServicescatalog',
               array('addtabon' => array('Central')));
          Plugin::registerClass('PluginMonitoringUnavailability');
          Plugin::registerClass('PluginMonitoringSystem',
               array('addtabon' => array('Central')));
          
-         
+         $pmSecurity = new PluginMonitoringSecurity();
+         $pmSecurity->updateSecurity();
+
          
          $PLUGIN_HOOKS['use_massive_action']['monitoring']=1;
          $PLUGIN_HOOKS['add_css']['monitoring']="css/views.css";
