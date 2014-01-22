@@ -237,7 +237,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       
       echo "<tr class='tab_bg_1'>";
       
-      $color = PluginMonitoringDisplay::getState($this->fields['state'], 
+      $color = PluginMonitoringHost::getState($this->fields['state'], 
                                                  $this->fields['state_type'],
                                                  'data',
                                                  $this->fields['is_acknowledged']);
@@ -266,7 +266,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
          $state['green_soft'] = 0;
          foreach ($a_brulesg as $brulesdata) {
             $pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id']);
-            $state[PluginMonitoringDisplay::getState($pMonitoringService->fields['state'], 
+            $state[PluginMonitoringHost::getState($pMonitoringService->fields['state'], 
                                                      $pMonitoringService->fields['state_type'],
                                                      'data',
                                                      $pMonitoringService->fields['is_acknowledged'])]++;

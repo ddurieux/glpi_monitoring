@@ -291,7 +291,7 @@ LINK DEFAULT
 //            }
             $conf .= "   ".$bwlabelpos[$i]."\n";
             // Manage for port down
-               $retflag = PluginMonitoringDisplay::getState($pmService->fields['state'], 
+               $retflag = PluginMonitoringHost::getState($pmService->fields['state'], 
                                                             $pmService->fields['state_type'], 
                                                             '', 
                                                             $pmService->fields['is_acknowledged']);

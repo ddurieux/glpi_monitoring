@@ -209,7 +209,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
          foreach ($a_services as $gdata) {
             if ($pmService->getFromDB($gdata['plugin_monitoring_services_id'])) {
 
-               $shortstate = PluginMonitoringDisplay::getState(
+               $shortstate = PluginMonitoringHost::getState(
                                  $pmService->fields['state'], 
                                  $pmService->fields['state_type'],
                                  '',
@@ -279,7 +279,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
                  "`plugin_monitoring_businessrulegroups_id`='".$items_id."'"
                  . " AND `is_dynamic`='1'");
          foreach ($a_services as $gdata) {
-            $shortstate = PluginMonitoringDisplay::getState(
+            $shortstate = PluginMonitoringHost::getState(
                               $pmService->fields['state'], 
                               $pmService->fields['state_type'],
                               '',

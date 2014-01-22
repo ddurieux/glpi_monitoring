@@ -225,7 +225,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
       
       // Toolbox::logInFile("pm", "unavailability_details - ".$this->unavailability_details." : $event\n");
       // Toolbox::logInFile("pm", "checkState - $services_id : $event\n");
-      $state = PluginMonitoringDisplay::getState($stateevent, "HARD", $event);
+      $state = PluginMonitoringHost::getState($stateevent, "HARD", $event);
       
       if ($state == 'red') { // Critical
          if ($this->currentstate == 'ok') {

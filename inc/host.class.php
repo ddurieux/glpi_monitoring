@@ -200,7 +200,7 @@ class PluginMonitoringHost extends CommonDBTM {
    }
    
    
-   
+   // Only used when plugin is updated ... should be static ?
    function verifyHosts() {
       global $DB;
       
@@ -224,8 +224,7 @@ class PluginMonitoringHost extends CommonDBTM {
    
    
    /**
-    * If host not exist add it 
-    * 
+    * If host does not exist add it 
     * 
     */
    static function addHost($item) {
@@ -259,17 +258,158 @@ class PluginMonitoringHost extends CommonDBTM {
    }
 
    
-   function getComments() {
+   /**
+    * Get host short state (state + acknowledgement)
+    */
+   static function getState($state, $state_type, $event, $acknowledge=0) {
+      $shortstate = '';
+      switch($state) {
+
+         case 'UP':
+         case 'OK':
+            $shortstate = 'green';
+            break;
+
+         case 'DOWN':
+         case 'UNREACHABLE':
+         case 'CRITICAL':
+         case 'DOWNTIME':
+            if ($acknowledge) {
+               $shortstate = 'redblue';
+            } else {
+               $shortstate = 'red';
+            }
+            break;
+
+         case 'WARNING':
+         case 'RECOVERY':
+         case 'FLAPPING':
+            if ($acknowledge) {
+               $shortstate = 'orangeblue';
+            } else {
+               $shortstate = 'orange';
+            }
+            break;
+         
+         
+         // case 'UNKNOWN':
+         // case '':
+         default:
+            if ($acknowledge) {
+               $shortstate = 'yellowblue';
+            } else {
+               $shortstate = 'yellow';
+            }
+            break;
+         
+      }
+      if ($state == 'WARNING'
+              && $event == '') {
+         if ($acknowledge) {
+            $shortstate = 'yellowblue';
+         } else {
+            $shortstate = 'yellow';
+         }
+      }
+      if ($state_type == 'SOFT') {
+         $shortstate.= '_soft';
+      }
+      return $shortstate;
+   }
+   
+   
+   /**
+    * Get summarized state for all host services
+    * $id, host id
+    *    default is current host instance
+    *
+    * $where, services search criteria
+    *    default is not acknowledged faulty services
+    *
+    */
+   static function getServicesState($id=-1, $where="`glpi_plugin_monitoring_services`.`state` != 'OK' AND `glpi_plugin_monitoring_services`.`is_acknowledged` = '0'") {
+      global $DB;
+      
+      if ($id == 0) {
+         $id = $this->getID();
+      }
+      
+      if ($id == -1) {
+         return;
+      }
+      
+      // Get all host services except if state is ok or is already acknowledged ...
+      $host_services_state_list = '';
+      $host_services_state = 'OK';
+      $query = "SELECT
+         `glpi_plugin_monitoring_services`.*
+         FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+         INNER JOIN `glpi_plugin_monitoring_services` 
+            ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
+         WHERE $where
+            AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = '$id' 
+            AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype` = 'Computer'
+         ORDER BY `glpi_plugin_monitoring_services`.`name` ASC;";
+      // Toolbox::logInFile("pm", "Query services for host : $id : $query\n");
+      $result = $DB->query($query);
+      if ($DB->numrows($result) > 0) {
+         $host_services_state_list = '';
+         while ($data=$DB->fetch_array($result)) {
+            // Toolbox::logInFile("pm", "Service ".$data['name']." is ".$data['state'].", state : ".$data['event']."\n");
+            if (! empty($host_services_state_list)) $host_services_state_list .= "\n";
+            $host_services_state_list .= "Service ".$data['name']." is ".$data['state'].", event : ".$data['event'];
+            
+            switch ($host_services_state) {
+               case 'OK':
+                  if ($data['state'] != 'OK') $host_services_state = $data['state'];
+                  break;
+
+               case 'CRITICAL':
+               case 'DOWNTIME':
+                  break;
+
+               case 'WARNING':
+               case 'RECOVERY':
+               case 'FLAPPING':
+                  break;
+               
+               
+               case 'UNKNOWN':
+               case '':
+                  break;
+            }
+         }
+      }
+      
+      return (array($host_services_state, $host_services_state_list));
+   }
+   
+   
+   /**
+    * Get comments for host
+    * $id, host id
+    *    default is current host instance
+    *
+    */
+   function getComments($id=-1) {
       global $CFG_GLPI;
 
+      if ($id == -1) {
+         $pm_Host = $this;
+      } else {
+         $pm_Host = new PluginMonitoringHost();
+         $pm_Host->getFromDB($id);
+      }
+      
+      Toolbox::logInFile("pm", "Host getcomments : $id : ".$pm_Host->getID()."\n");
       $comment = "";
       $toadd   = array();
       
       // associated computer ...
-      $item = new $this->fields['itemtype'];
-      $item->getFromDB($this->fields['items_id']);
+      $item = new $pm_Host->fields['itemtype'];
+      $item->getFromDB($pm_Host->fields['items_id']);
       
-      if ($this->getField('itemtype') == 'Computer') {
+      if ($pm_Host->getField('itemtype') == 'Computer') {
          if ($item->isField('completename')) {
             $toadd[] = array('name'  => __('Complete name'),
                              'value' => nl2br($item->getField('completename')));
@@ -330,10 +470,10 @@ class PluginMonitoringHost extends CommonDBTM {
                              'value' => nl2br($item->fields["otherserial"]));
          }
 
-         if (($this instanceof CommonDropdown)
-             && $this->isField('comment')) {
+         if (($pm_Host instanceof CommonDropdown)
+             && $pm_Host->isField('comment')) {
             $toadd[] = array('name'  => __('Comments'),
-                             'value' => nl2br($this->getField('comment')));
+                             'value' => nl2br($pm_Host->getField('comment')));
          }
 
          if (count($toadd)) {

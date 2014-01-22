@@ -845,8 +845,10 @@ echo "
          }
          
          // Get all host services except if state is ok or is already acknowledged ...
-         $data['host_services_status'] = '';
-         $data['services_state'] = 'OK';
+         $a_ret = PluginMonitoringHost::getServicesState($data['idComputer']);
+         $data['host_services_state'] = $a_ret[0];
+         $data['host_services_state_list'] = $a_ret[1];
+/*
          $query2 = "SELECT
             `glpi_plugin_monitoring_services`.*
             FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
@@ -860,19 +862,14 @@ echo "
          // Toolbox::logInFile("pm", "Query services for host : ".$data['idComputer']." : $query2\n");
          $result2 = $DB->query($query2);
          if ($DB->numrows($result2) > 0) {
-            $data['host_services_status'] = '';
+            $data['host_services_state_list'] = '';
             while ($data2=$DB->fetch_array($result2)) {
                // Toolbox::logInFile("pm", "Service ".$data2['name']." is ".$data2['state'].", state : ".$data2['event']."\n");
-               if (! empty($data['host_services_status'])) $data['host_services_status'] .= "\n";
-               $data['host_services_status'] .= "Service ".$data2['name']." is ".$data2['state'].", event : ".$data2['event'];
-               if ($data2['state'] == 'CRITICAL') {
-                   // Do nothing
-               } else {
-                  $data['services_state'] = $data2['state'];
-               }
+               if (! empty($data['host_services_state_list'])) $data['host_services_state_list'] .= "\n";
+               $data['host_services_state_list'] .= "Service ".$data2['name']." is ".$data2['state'].", event : ".$data2['event'];
             }
          }
-         
+*/         
           // Get host first IP address
          $data['ip'] = __('Unknown IP address', 'monitoring');
          $queryIp = "SELECT `glpi_ipaddresses`.`name` FROM `glpi_ipaddresses` LEFT JOIN `glpi_networknames` ON `glpi_ipaddresses`.`itemtype`='NetworkName' AND `glpi_ipaddresses`.`items_id`=`glpi_networknames`.`id` LEFT JOIN `glpi_networkports` ON `glpi_networknames`.`itemtype`='NetworkPort' AND `glpi_networknames`.`items_id`=`glpi_networkports`.`id` WHERE `glpi_networkports`.`itemtype`='Computer' AND `glpi_networkports`.`items_id`='".$data['idComputer']."' LIMIT 1";
@@ -932,7 +929,7 @@ echo "
          $shortstate = 'yellowblue';
          $data['state'] = 'UNKNOWN';
       } else {
-         $shortstate = self::getState($data['state'], 
+         $shortstate = PluginMonitoringHost::getState($data['state'], 
                                       $data['state_type'], 
                                       $data['event'], 
                                       $data['is_acknowledged']);
@@ -1160,25 +1157,10 @@ echo "
       $pm_Host = new PluginMonitoringHost();
       $pm_Host->getFromDB($data["id"]);
       
-      $shortstate = self::getState($data['state'], 
+      $shortstate = $pm_Host->getState($data['state'], 
                                    $data['state_type'], 
                                    $data['event'], 
                                    $data['is_acknowledged']);
-/*
-      $alt = __('Ok', 'monitoring');
-      if ($shortstate == 'orange') {
-         $alt = __('Warning (data)', 'monitoring');
-      } else if ($shortstate == 'yellow') {
-         $alt = __('Warning (connection)', 'monitoring');
-      } else if ($shortstate == 'red') {
-         $alt = __('Critical', 'monitoring');
-      } else if ($shortstate == 'redblue'
-              || $shortstate == 'orangeblue'
-              || $shortstate == 'yellowblue') {
-         $alt = __('Critical / Acknowledge', 'monitoring');
-      }
-*/
-
       echo "<td>";
       $entity = new Entity();
       $entity->getFromDB($data["entities_id"]);
@@ -1251,26 +1233,30 @@ echo "
       }
  
       echo "<td class='center'>";
-      echo "<div class='page foldtl resource".$data['services_state']."'>";
+      // if (!empty($data['host_services_state_list'])) {
+         // $data['host_services_state'] = __('Ko', 'monitoring');
+      // } else {
+         // $data['host_services_state'] = __('Ok or Ack', 'monitoring');
+      // }
+      echo "<div class='page foldtl resource".$data['host_services_state']."'>";
       echo "<div style='vertical-align:middle;'>";
       echo "<span>";
-      if (!empty($data['host_services_status'])) {
-         $data['services_state'] = __('Ko', 'monitoring');
-      } else {
-         $data['services_state'] = __('Ok or Ack', 'monitoring');
-      }
-      if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+      if (($data['host_services_state'] != 'OK') and PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
          $link = $CFG_GLPI['root_doc'].
             "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
                "&field[0]=1&searchtype[0]=equals&contains[0]=".$data['items_id'].
                "&itemtype=PluginMonitoringService&start=0'";
             
-         echo '<a href="'.$link.'" title="'.$data['host_services_status'].'">'.$data['services_state']."</a>";
+         echo '<a href="'.$link.'">'.$data['host_services_state']."</a>";
       } else {
-         echo '<span title="'.$data['host_services_status'].'">'.$data['services_state']."</span>";
+         echo '<span>'.$data['host_services_state']."</span>";
       }
+      if (!empty($data['host_services_state_list'])) {
+         echo "&nbsp;".Html::showToolTip($data['host_services_state_list'], array('display' => false));
+      }
+
       echo "</span>";
-      if (!empty($data['host_services_status'])) {
+      if (!empty($data['host_services_state_list'])) {
          if (PluginMonitoringProfile::haveRight("acknowledge", 'r')) {
             echo "<span>&nbsp;";
             echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?host=".$data['host_name']."&allServices&id=".$data['idComputer']."'>"
@@ -1327,6 +1313,7 @@ echo "
 
    
    
+/*
    static function getState($state, $state_type, $event, $acknowledge=0) {
       $shortstate = '';
       switch($state) {
@@ -1381,7 +1368,7 @@ echo "
       }
       return $shortstate;
    }
-   
+*/   
    
    
    function displayGraphs($itemtype, $items_id) {
