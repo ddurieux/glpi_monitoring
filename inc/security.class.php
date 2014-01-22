@@ -134,6 +134,7 @@ class PluginMonitoringSecurity extends CommonDBTM {
             }
          } else {
             // It's standard page
+            $use_id = 0;
             $_SESSION['plugin_monitoring_lastsessiontime'] = date('U');
                // Clean old sessions
                $maxlifetime = ini_get("session.gc_maxlifetime");
@@ -143,7 +144,11 @@ class PluginMonitoringSecurity extends CommonDBTM {
                        "`users_id`='".$_SESSION['glpiID']."'"
                        . " AND `last_session_start`<'".$cleandate."'");
                foreach ($a_cleans as $a_clean) {
-                  $this->delete($a_clean);
+                  if ($use_id == 0) {
+                     $use_id = $a_clean['id'];
+                  } else {
+                     $this->delete($a_clean);
+                  }
                }
             
             $a_data = $this->find("`users_id`='".$_SESSION['glpiID']."'"
@@ -164,7 +169,12 @@ class PluginMonitoringSecurity extends CommonDBTM {
                    'session_id' => session_id(),
                    'last_session_start' => $_SESSION['glpi_currenttime']
                );
-               $this->add($input);
+               if ($use_id == 0) {
+                  $this->add($input);
+               } else {
+                  $input['id'] = $use_id;
+                  $this->update($input);
+               }
                $_SESSION['plugin_monitoring_securekey'] = $input['key'];
             }
          }
