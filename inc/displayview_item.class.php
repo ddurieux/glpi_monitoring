@@ -690,7 +690,7 @@ Ext.onReady(function(){
          
          $result = $DB->query($query);
          while ($data2=$DB->fetch_array($result)) {
-            $ret = PluginMonitoringDisplay::getState($data2['state'], 
+            $ret = PluginMonitoringHost::getState($data2['state'], 
                                                      $data2['state_type'], 
                                                      '', 
                                                      $data2['is_acknowledged']);

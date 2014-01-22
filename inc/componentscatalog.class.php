@@ -650,7 +650,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                $a_gstate[$dataService['id']] = "UNKNOWN";
                if ($host_overall_state_ok) $host_overall_state_ok = false;
             } else {
-               $statecurrent = PluginMonitoringDisplay::getState($dataService['state'], 
+               $statecurrent = PluginMonitoringHost::getState($dataService['state'], 
                                                                  $dataService['state_type'],
                                                                  $dataService['event'],
                                                                  $dataService['is_acknowledged']);
@@ -722,7 +722,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          ORDER BY `name`";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
-         if (PluginMonitoringDisplay::getState($data['state'], 
+         if (PluginMonitoringHost::getState($data['state'], 
                                                $data['state_type'],
                                                '',
                                                $data['is_acknowledged']) == $state) {

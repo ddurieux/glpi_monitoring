@@ -757,7 +757,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       $resources = array();
       $i = 0;
       while ($data=$DB->fetch_array($result)) {
-         $ret = PluginMonitoringDisplay::getState($data['state'], 
+         $ret = PluginMonitoringHost::getState($data['state'], 
                                                   $data['state_type'], 
                                                   '', 
                                                   $data['is_acknowledged']);

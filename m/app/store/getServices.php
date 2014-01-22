@@ -23,7 +23,7 @@ $query = "SELECT * FROM `glpi_plugin_monitoring_services`
          ORDER BY `name`";
 $result = $DB->query($query);
 while ($data=$DB->fetch_array($result)) {
-   $state = PluginMonitoringDisplay::getState($data['state'], $data['state_type'], $data['event']);
+   $state = PluginMonitoringHost::getState($data['state'], $data['state_type'], $data['event']);
    
    $host = '';
    $pmComponentscatalog_Host->getFromDB($data["plugin_monitoring_componentscatalogs_hosts_id"]);
