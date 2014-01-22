@@ -518,7 +518,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    
    
    
-   function ajaxLoad($id, $is_minemap) {
+   function ajaxLoad($id, $is_minemap=false) {
       global $CFG_GLPI;
       
       $sess = serialize($_SESSION);
