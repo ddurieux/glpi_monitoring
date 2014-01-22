@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$_SESSION = unserialize(str_replace('#####', '"', $_POST['sess']));
+$_SESSION = unserialize(str_replace('@@@@@', "'", str_replace('#####', '"', $_POST['sess'])));
 session_id($_POST['sess_id']);
 $_SESSION['plugin_monitoring_checktime'] = 1;
 

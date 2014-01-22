@@ -54,6 +54,7 @@ class PluginMonitoringMessage extends CommonDBTM {
 
       $sess = serialize($_SESSION);
       $sess = str_replace('"', "#####", $sess);
+      $sess = str_replace("'", "@@@@@", $sess);
 
       $sess_id = session_id();
       // Display if shinken is in restart or if restarted less than 5 minutes

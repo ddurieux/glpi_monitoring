@@ -92,13 +92,16 @@ class PluginMonitoringSecurity extends CommonDBTM {
     * Check if security key in ajax page is same than kay of DB
     */
    function isSecure() {
-      $a_data = $this->find("`users_id`='".$_SESSION['glpiID']."'", '', 1);
-      if (count($a_data) == 1) {
-         $data = current($a_data);
-         if (isset($_SESSION['plugin_monitoring_securekey'])
-                 && $_SESSION['plugin_monitoring_securekey'] == $data['key']) {
-            // It's ok
-            return;
+      if (isset($_POST['sess_id'])) {
+         $a_data = $this->find("`users_id`='".$_SESSION['glpiID']."'"
+                 . " AND `session_id`='".$_POST['sess_id']."'", '', 1);
+         if (count($a_data) == 1) {
+            $data = current($a_data);
+            if (isset($_SESSION['plugin_monitoring_securekey'])
+                    && $_SESSION['plugin_monitoring_securekey'] == $data['key']) {
+               // It's ok
+               return;
+            }
          }
       }
       Html::displayRightError();
@@ -107,44 +110,63 @@ class PluginMonitoringSecurity extends CommonDBTM {
    
    
    function updateSecurity() {
-      
-      if (isset($_SESSION['plugin_monitoring_checktime'])) {
-         // Its a monitoring ajax page
-         $maxlifetime = ini_get("session.gc_maxlifetime");
-         if (date('U') > ($_SESSION['plugin_monitoring_lastsessiontime'] + $maxlifetime - 200)) {
-            $a_data = $this->find("`users_id`='".$_SESSION['glpiID']."'", '', 1);
-            if (count($a_data) == 1) {
-               $data = current($a_data);
-               if (date('U') > (strtotime($data['last_session_start']) + $maxlifetime - 200)) {
-                  session_start();
-                  $data['last_session_start'] = date('Y-m-d H:i:s');
-                  $this->update($data);
+      if (isset($_SESSION['glpiID'])
+              && is_numeric($_SESSION['glpiID'])
+              && $_SESSION['glpiID'] > 0) {
+         if (isset($_SESSION['plugin_monitoring_checktime'])) {
+            if (isset($_POST['sess_id'])) {
+               // Its a monitoring ajax page
+               $maxlifetime = ini_get("session.gc_maxlifetime");
+               if (date('U') > ($_SESSION['plugin_monitoring_lastsessiontime'] + $maxlifetime - 200)) {
+                  $a_data = $this->find("`users_id`='".$_SESSION['glpiID']."'"
+                          . " AND `session_id`='".$_POST['sess_id']."'", '', 1);
+                  if (count($a_data) == 1) {
+                     $data = current($a_data);
+                     if (date('U') > (strtotime($data['last_session_start']) + $maxlifetime - 200)) {
+                        session_start();
+                        Toolbox::logInFile('SESSION', date('Y-m-d H:i:s')."\n");
+                        $data['last_session_start'] = date('Y-m-d H:i:s');
+                        $this->update($data);
+                     }
+                  }
+                  $_SESSION['plugin_monitoring_lastsessiontime'] = date('U');
                }
             }
-            $_SESSION['plugin_monitoring_lastsessiontime'] = date('U');
-         }
-      } else {
-         // It's standard page
-         $_SESSION['plugin_monitoring_lastsessiontime'] = date('U');
-         $a_data = $this->find("`users_id`='".$_SESSION['glpiID']."'", '', 1);
-         if (count($a_data) == 1) {
-            $data = current($a_data);
-            if (session_id() != $data['session_id']) {
-               $data['key'] = $this->generateKey();
-               $data['session_id'] = session_id();
-               $data['last_session_start'] = $_SESSION['glpi_currenttime'];
-               $this->update($data);
-            }
-            $_SESSION['plugin_monitoring_securekey'] = $data['key'];
          } else {
-            $input = array(
-                'users_id' => $_SESSION['glpiID'],
-                'key' => $this->generateKey(),
-                'session_id' => session_id(),
-                'last_session_start' => $_SESSION['glpi_currenttime']
-            );
-            $this->add($input);
-            $_SESSION['plugin_monitoring_securekey'] = $input['key'];
+            // It's standard page
+            $_SESSION['plugin_monitoring_lastsessiontime'] = date('U');
+               // Clean old sessions
+               $maxlifetime = ini_get("session.gc_maxlifetime");
+               $cleandate = date('Y-m-d H:i:s', (date('U') - $maxlifetime - 200));
+               $a_cleans = getAllDatasFromTable(
+                       $this->getTable(),
+                       "`users_id`='".$_SESSION['glpiID']."'"
+                       . " AND `last_session_start`<'".$cleandate."'");
+               foreach ($a_cleans as $a_clean) {
+                  $this->delete($a_clean);
+               }
+            
+            $a_data = $this->find("`users_id`='".$_SESSION['glpiID']."'"
+                    . " AND `session_id`='".session_id()."'", '', 1);
+            if (count($a_data) == 1) {
+               $data = current($a_data);
+               if (session_id() != $data['session_id']) {
+                  $data['key'] = $this->generateKey();
+                  $data['session_id'] = session_id();
+                  $data['last_session_start'] = $_SESSION['glpi_currenttime'];
+                  $this->update($data);
+               }
+               $_SESSION['plugin_monitoring_securekey'] = $data['key'];
+            } else {
+               $input = array(
+                   'users_id' => $_SESSION['glpiID'],
+                   'key' => $this->generateKey(),
+                   'session_id' => session_id(),
+                   'last_session_start' => $_SESSION['glpi_currenttime']
+               );
+               $this->add($input);
+               $_SESSION['plugin_monitoring_securekey'] = $input['key'];
+            }
          }
       }
    }
