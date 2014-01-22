@@ -196,7 +196,11 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
          echo "<td>";
 
          echo $this->showWidget($data['id']);
-         $this->ajaxLoad($data['id']);
+         if (isset($_SESSION['plugin_monitoring']['reduced_interface'])) {
+            $this->ajaxLoad($data['id'], ! $_SESSION['plugin_monitoring']['reduced_interface']);
+         } else {
+            $this->ajaxLoad($data['id'], $reduced);
+         }
 
          echo "</td>";
          

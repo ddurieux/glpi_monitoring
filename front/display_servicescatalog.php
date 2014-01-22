@@ -47,6 +47,11 @@ Session::checkCentralAccess();
 Html::header(__('Monitoring', 'monitoring'), $_SERVER["PHP_SELF"], "plugins", 
              "monitoring", "display");
 
+// Reduced or normal interface ?
+if (! isset($_SESSION['plugin_monitoring']['reduced_interface'])) {
+   $_SESSION['plugin_monitoring']['reduced_interface'] = false;
+}
+
 $pmDisplay = new PluginMonitoringDisplay();
 $pmServicescatalog = new PluginMonitoringServicescatalog();
 $pmMessage = new PluginMonitoringMessage();
@@ -58,7 +63,7 @@ $pmDisplay->menu();
 PluginMonitoringProfile::checkRight("dashboard_services_catalogs", 'r');
 
 $pmDisplay->showCounters("Businessrules");
-$pmServicescatalog->showChecks();
+$pmServicescatalog->showChecks($_SESSION['plugin_monitoring']['reduced_interface']);
 
 Html::footer();
 ?>
