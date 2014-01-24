@@ -673,9 +673,9 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             $ressources[$dataService['name']] = $dataService;
             $services_ids[$dataService['name']] = $dataService['plugin_monitoring_components_id'];
             
-            if (isset($dataService['id']) and isset($a_gstate[$dataService['id']])) {
+            if (isset($dataService['id']) 
+                    && isset($a_gstate[$dataService['id']])) {
                $stateg[$a_gstate[$dataService['id']]]++;
-               // Toolbox::logInFile("pm", "stateg - ".serialize($stateg)."\n");
             }
          }
          
