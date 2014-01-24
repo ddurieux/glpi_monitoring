@@ -1276,10 +1276,23 @@ myPicker.fromString(\''.$color.'\')
       
       $_SESSION['glpi_plugin_monitoring']['perfname'][$components_id] = array();
       // $a_perfname = importArrayFromDB($pmComponent->fields['perfname']);
-      $a_perfname = unserialize($pmComponent->fields['perfname']);
+      $a_perfname = @unserialize($pmComponent->fields['perfname']);
+      
+      if ($a_perfname === FALSE) {
+         // Val not serialized
+         $input = array(
+             'id' => $pmComponent->fields['id'],
+             'perfname' => ''
+         );
+         $pmComponent->update($input);
+         $a_perfname = array();
+         if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$components_id])) {
+            unset($_SESSION['glpi_plugin_monitoring']['perfname'][$components_id]);
+         }
+      }
       
       // No perfdata for this service ...
-      if (! is_array($a_perfname)) return false;
+      if (!is_array($a_perfname)) return false;
       
       foreach ($a_perfname as $perfname=>$active) {
          $_SESSION['glpi_plugin_monitoring']['perfname'][$components_id][$perfname] = 'checked';
