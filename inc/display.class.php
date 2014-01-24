@@ -1135,7 +1135,7 @@ echo "
       
       if ($displayhost == '0') { 
          echo "<td>";
-         if (PluginMonitoringProfile::haveRight("componentscatalog", 'w')) {
+         if (PluginMonitoringProfile::haveRight("config_components_catalogs", 'w')) {
 
             $a_arg = importArrayFromDB($pMonitoringService->fields['arguments']);
             $cnt = '';
