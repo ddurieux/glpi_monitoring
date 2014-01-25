@@ -53,6 +53,18 @@ function pluginMonitoringInstall($version) {
       if (!empty($sql_line)) $DB->query($sql_line);
    }
 
+   // ** Update DB
+   $DB_file = GLPI_ROOT ."/plugins/monitoring/install/mysql/plugin_monitoring-update-".PLUGIN_MONITORING_VERSION.".sql";
+   $DBf_handle = fopen($DB_file, "rt");
+   if ($DBf_handle) {
+      $sql_query = fread($DBf_handle, filesize($DB_file));
+      fclose($DBf_handle);
+      foreach ( explode(";\n", "$sql_query") as $sql_line) {
+         if (get_magic_quotes_runtime()) $sql_line=Toolbox::stripslashes_deep($sql_line);
+         if (!empty($sql_line)) $DB->query($sql_line);
+      }
+   }
+
    include (GLPI_ROOT . "/plugins/monitoring/inc/profile.class.php");
    $pmProfile = new PluginMonitoringProfile();
    $pmProfile->initProfile();
