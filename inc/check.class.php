@@ -69,6 +69,13 @@ class PluginMonitoringCheck extends CommonDBTM {
       $input['check_interval']     = '15';
       $input['retry_interval']     = '1';
       $this->add($input);
+      
+      $input = array();
+      $input['name'] = '60 minutes / 1 retry';
+      $input['max_check_attempts'] = '1';
+      $input['check_interval']     = '60';
+      $input['retry_interval']     = '1';
+      $this->add($input);
 
    }
 
