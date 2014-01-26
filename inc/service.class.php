@@ -1062,9 +1062,18 @@ class PluginMonitoringService extends CommonDBTM {
          echo "<input type='hidden' name='acknowledge_users_id' value='".$_SESSION['glpiID']."' />";
          echo "<input type='hidden' name='referer' value='".$_SERVER['HTTP_REFERER']."' />";
          
-         echo "<input type='submit' name='add' value=\"".__('Add')."\" class='submit'>";            
+         echo "<input type='submit' name='add' value=\"".__('Acknowledge host problems', 'monitoring')."\" class='submit'>";            
          echo "</td>";
          echo "</tr>";
+         if (Session::haveRight('create_ticket', 1)) {
+            echo "<tr class='tab_bg_1'>";
+            echo "<td colspan='3' align='center'>";
+            echo "<input type='hidden' name='name' value='".__('Host is down', 'monitoring')."' />";
+            echo "<input type='hidden' name='redirect' value='".$CFG_GLPI["root_doc"]."/front/ticket.form.php' />";
+            echo "<input type='submit' name='add_and_ticket' value=\"".__('Acknowledge host problems and create a ticket', 'monitoring')."\" class='submit'>";            
+            echo "</td>";
+            echo "</tr>";
+         }
          echo "</table>";
          
          Html::closeForm();

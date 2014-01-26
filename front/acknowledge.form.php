@@ -49,14 +49,14 @@ Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
 
 $pmService = new PluginMonitoringService();
 
-if (isset($_POST['add']) ||isset($_POST['update']) ) {
+if (isset($_POST['add']) || isset($_POST['update']) || isset($_POST['add_and_ticket'])) {
    $user = new User();
    $user->getFromDB($_POST['acknowledge_users_id']);
    
    if (isset($_POST['hostname'])) {
       // Acknowledge an host ...
       if (isset($_POST['hostAcknowledge'])) {
-         // Toolbox::logInFile("monitoring", "Acknowledge host ".$_POST['host_id']." / ".$_POST['hostname']."\n");
+         // Toolbox::logInFile("pm", "Acknowledge host ".$_POST['host_id']." / ".$_POST['hostname']."\n");
    
          // Send acknowledge command for an host to shinken via webservice   
          $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
@@ -74,10 +74,10 @@ if (isset($_POST['add']) ||isset($_POST['update']) ) {
       
       // Acknowledge all services of an host ...
       if (isset($_POST['serviceCount'])) {
-         // Toolbox::logInFile("monitoring", "Acknowledge host (all services) ".$_POST['host_id']." / ".$_POST['hostname']."\n");
+         // Toolbox::logInFile("pm", "Acknowledge host (all services) ".$_POST['host_id']." / ".$_POST['hostname']."\n");
    
          for ($i = 0; $i < $_POST['serviceCount']; $i++) {
-            // Toolbox::logInFile("monitoring", " - acknowledge service ".$_POST['serviceId'.$i]."\n");
+            // Toolbox::logInFile("pm", " - acknowledge service ".$_POST['serviceId'.$i]."\n");
             
             // Send acknowledge command for a service to shinken via webservice   
             $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
@@ -91,8 +91,38 @@ if (isset($_POST['add']) ||isset($_POST['update']) ) {
             }
          }
       }
+      
+      // Request for a ticket creation ...
+      if (isset($_POST['add_and_ticket'])) {
+         // Toolbox::logInFile("pm", "Request ticket creation ".$_POST['host_id']." / ".$_POST['hostname']."\n");
+   
+         $pmTicket = new Ticket();
+         $tkt = array();
+         $tkt['_users_id_requester'] = $_POST['acknowledge_users_id'];
+         $tkt["_users_id_requester_notif"]['use_notification'] = 1;
+
+         $tkt['_auto_update'] = 1;
+         // $tkt['itemtype']     = $_POST['itemtype'];
+         // $tkt["items_id`"]    = $_POST['items_id`'];
+         
+         $tkt['_head']        = $_POST['name'];
+         $tkt['content']      = $_POST['acknowledge_comment'];
+         
+         // Medium urgency
+         $tkt['urgency']      = "3";
+         
+         // $tkt['entities_id']  = $entity;
+         // $tkt['date']         = $head['date'];
+         // Medium
+         $tkt['urgency']      = "3";
+
+         $ticketId = $pmTicket->add($tkt);
+         // Toolbox::logInFile("pm", "Ticket id ".$ticketId."\n");
+         
+         Html::redirect($_POST['redirect']);
+      }
    } else {
-      // Toolbox::logInFile("monitoring", "Acknowledge service ".$_POST['id']."\n");
+      // Toolbox::logInFile("pm", "Acknowledge service ".$_POST['id']."\n");
    
       // Send acknowledge command for a service to shinken via webservice   
       $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
