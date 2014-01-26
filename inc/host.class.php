@@ -401,7 +401,7 @@ class PluginMonitoringHost extends CommonDBTM {
          $pm_Host->getFromDB($id);
       }
       
-      Toolbox::logInFile("pm", "Host getcomments : $id : ".$pm_Host->getID()."\n");
+      // Toolbox::logInFile("pm", "Host getcomments : $id : ".$pm_Host->getID()."\n");
       $comment = "";
       $toadd   = array();
       
