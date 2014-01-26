@@ -54,6 +54,8 @@ if (isset($_POST['add']) || isset($_POST['update']) || isset($_POST['add_and_tic
    $user->getFromDB($_POST['acknowledge_users_id']);
    
    if (isset($_POST['hostname'])) {
+      // Toolbox::logInFile("pm", "Acknowledge for host ".$_POST['host_id']." : ".$_POST['acknowledge_comment']." : \n");
+   
       // Acknowledge an host ...
       if (isset($_POST['hostAcknowledge'])) {
          // Toolbox::logInFile("pm", "Acknowledge host ".$_POST['host_id']." / ".$_POST['hostname']."\n");

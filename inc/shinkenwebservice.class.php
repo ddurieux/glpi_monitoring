@@ -71,7 +71,8 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
          }
          
          $a_component = current($pmComponent->find("`id`='".$pmService->fields['plugin_monitoring_components_id']."'", "", 1));
-         $service_description = preg_replace("/[^A-Za-z0-9\-_]/","",$a_component['name']);
+         $service_description = preg_replace("/[^A-Za-z0-9\-_]/","",$a_component['description']);
+         if (empty($service_description)) $service_description = preg_replace("/[^A-Za-z0-9\-_]/","",$a_component['name']);
          
          $tag = PluginMonitoringEntity::getTagByEntities($pmService->fields['entities_id']);
          $ip = $pmTag->getIP($tag);
@@ -79,11 +80,17 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
          
          $url = 'http://'.$ip.':7760/';
          $action = 'acknowledge';
+         // If the "sticky" option is set to two (2), the acknowledgement will remain until the service returns to an OK state. Otherwise the acknowledgement will automatically be removed when the service changes state. 
+         // If the "notify" option is set to one (1), a notification will be sent out to contacts indicating that the current service problem has been acknowledged. 
+         // If the "persistent" option is set to one (1), the comment associated with the acknowledgement will survive across restarts of the Nagios process.
          $a_fields = array(
-             'host_name'            => urlencode($hostname),
-             'service_description'  => urlencode($service_description),
-             'author'               => urlencode($_SESSION['glpiname']),
-             'comment'              => urlencode($comment)
+             'host_name'            => $hostname,
+             'service_description'  => $service_description,
+             'author'               => $_SESSION['glpiname'],
+             'comment'              => mb_convert_encoding($comment, "iso-8859-1"),
+             'sticky'               => '1',
+             'notify'               => '0',
+             'persistent'           => '1'
          );
          
          return $this->sendCommand($url, $action, $a_fields,'', $auth);
@@ -99,9 +106,12 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
          $url = 'http://'.$ip.':7760/';
          $action = 'acknowledge';
          $a_fields = array(
-             'host_name'            => urlencode($hostname),
-             'author'               => urlencode($_SESSION['glpiname']),
-             'comment'              => urlencode($comment)
+             'host_name'            => $hostname,
+             'author'               => $_SESSION['glpiname'],
+             'comment'              => mb_convert_encoding($comment, "iso-8859-1"),
+             'sticky'               => '1',
+             'notify'               => '0',
+             'persistent'           => '1'
          );
          
          return $this->sendCommand($url, $action, $a_fields,'', $auth);
@@ -154,7 +164,7 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       curl_setopt($ch,CURLOPT_URL, $url.$action);
       curl_setopt($ch,CURLOPT_POST, count($a_fields));
       curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
-      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+      curl_setopt($ch,CURLOPT_RETURNTRANSFER, true);
       if ($auth != '') {
          curl_setopt($ch,CURLOPT_USERPWD, $auth);
       }
