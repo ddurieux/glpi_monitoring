@@ -103,8 +103,8 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    
    // ** Update DB
    $DB_file = GLPI_ROOT ."/plugins/monitoring/install/mysql/plugin_monitoring-update-".PLUGIN_MONITORING_VERSION.".sql";
-   Toolbox::logInFile("pm", "DB update file - $DB_file\n");
-   $DBf_handle = fopen($DB_file, "rt");
+   // Toolbox::logInFile("pm", "DB update file - $DB_file\n");
+   $DBf_handle = @fopen($DB_file, "rt");
    if ($DBf_handle) {
       Toolbox::logInFile("pm", "DB update file exists\n");
       $sql_query = fread($DBf_handle, filesize($DB_file));
@@ -728,10 +728,15 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'plugin_monitoring_componentscatalogs_hosts_id', 
                                  'plugin_monitoring_componentscatalogs_hosts_id', 
                                  "int(11) NOT NULL DEFAULT '0'");
+         // Event should contain up to 4096 bytes (Nagios plugin specification)
          $migration->changeField($newTable, 
                                  'event', 
                                  'event', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+                                 "varchar(4096) COLLATE utf8_unicode_ci DEFAULT NULL");
+         // $migration->changeField($newTable, 
+                                 // 'event', 
+                                 // 'event', 
+                                 // "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->changeField($newTable, 
                                  'state', 
                                  'state', 
@@ -1635,11 +1640,15 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $a_hosts = getAllDatasFromTable($newTable,
                     "`itemtype`='Computer'");
       }
+         // Duplicate field with event
+         $migration->dropField($newTable, 
+                                 'ouput');
+      $migration->migrationOneTable($newTable);
+      
          $migration->changeField($newTable, 
                                  'id', 
                                  'id', 
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         // Fred
          $migration->changeField($newTable, 
                                  'entities_id', 
                                  'entities_id', 
@@ -1652,10 +1661,11 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'itemtype', 
                                  'itemtype', 
                                  "varchar(100) DEFAULT NULL");
+         // Event should contain up to 4096 bytes (Nagios plugin specification)
          $migration->changeField($newTable, 
                                  'event', 
                                  'event', 
-                                 "varchar(512) COLLATE utf8_unicode_ci DEFAULT NULL");
+                                 "varchar(4096) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->changeField($newTable, 
                                  'state', 
                                  'state', 
@@ -1672,15 +1682,15 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'dependencies', 
                                  'dependencies', 
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL"); 
-         // Fred
          $migration->changeField($newTable, 
                                  'perf_data', 
                                  'perf_data', 
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->changeField($newTable, 
-                                 'output', 
-                                 'output', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         // Duplicate field with event
+         // $migration->changeField($newTable, 
+                                 // 'output', 
+                                 // 'output', 
+                                 // "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->changeField($newTable, 
                                  'latency', 
                                  'latency', 
@@ -1691,7 +1701,6 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
                                  
       $migration->migrationOneTable($newTable);
-         // Fred
          $migration->addField($newTable, 
                                  'entities_id', 
                                  "int(11) NOT NULL DEFAULT '0'");
@@ -1731,9 +1740,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                               'perf_data', 
                               "text COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'output', 
-                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         // Duplicate field with event
+         // $migration->addField($newTable, 
+                              // 'output', 
+                              // "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
                               'latency', 
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
@@ -1922,6 +1932,11 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
+         // Duplicate field with event
+         $migration->dropField($newTable, 
+                                 'ouput');
+      $migration->migrationOneTable($newTable);
+      
          $migration->changeField($newTable, 
                                  'id', 
                                  'id', 
@@ -1934,18 +1949,20 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'date', 
                                  'date', 
                                  "datetime DEFAULT NULL");
+         // Event should contain up to 4096 bytes (Nagios plugin specification)
          $migration->changeField($newTable, 
                                  'event', 
                                  'event', 
-                                 "varchar(512) COLLATE utf8_unicode_ci DEFAULT NULL");
+                                 "varchar(4096) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->changeField($newTable, 
                                  'perf_data', 
                                  'perf_data', 
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->changeField($newTable, 
-                                 'output', 
-                                 'output', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         // Duplicate field with event
+         // $migration->changeField($newTable, 
+                                 // 'output', 
+                                 // 'output', 
+                                 // "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->changeField($newTable, 
                                  'state', 
                                  'state', 
@@ -1979,9 +1996,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                                  'perf_data', 
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->addField($newTable, 
-                                 'output', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         // Duplicate field with event
+         // $migration->addField($newTable, 
+                                 // 'output', 
+                                 // "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
                                  'state', 
                                  "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
