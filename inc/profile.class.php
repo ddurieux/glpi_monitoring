@@ -244,7 +244,7 @@ class PluginMonitoringProfile extends CommonDBTM {
       echo __('Acknowledge problems', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
-      Profile::dropdownNoneReadWrite("acknowledge", $this->fields["acknowledge"], 1, 1, 0);
+      Profile::dropdownNoneReadWrite("acknowledge", $this->fields["acknowledge"], 1, 1, 1);
       echo "</td>";
       echo "</tr>";
       
