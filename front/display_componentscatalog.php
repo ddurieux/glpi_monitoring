@@ -67,7 +67,7 @@ $pmMessage->getMessages();
 
 $pmDisplay->menu();
 
-$pmDisplay->refreshPage();
+$pmDisplay->refreshPage(TRUE);
 
 $pmDisplay->showCounters("Componentscatalog");
 

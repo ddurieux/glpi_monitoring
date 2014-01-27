@@ -2418,31 +2418,35 @@ Ext.onReady(function(){
 
    
    
-   function refreshPage() {
+   function refreshPage($onlyreduced=FALSE) {
 
-      if (isset($_POST['_refresh'])) {
-         $_SESSION['glpi_plugin_monitoring']['_refresh'] = $_POST['_refresh'];
+      if (!$onlyreduced) {
+         if (isset($_POST['_refresh'])) {
+            $_SESSION['glpi_plugin_monitoring']['_refresh'] = $_POST['_refresh'];
+         }
+
+         echo '<meta http-equiv ="refresh" content="'.$_SESSION['glpi_plugin_monitoring']['_refresh'].'">';
       }
       
-      echo '<meta http-equiv ="refresh" content="'.$_SESSION['glpi_plugin_monitoring']['_refresh'].'">';
-
       echo "<form name='form' method='post' action='".$_SERVER["PHP_SELF"]."' >";
-         echo "<div align='right'>";
-         echo __('Page refresh (in seconds)', 'monitoring')." : ";
-         echo "&nbsp;";
-         Dropdown::showNumber("_refresh", array(
-                'value' => $_SESSION['glpi_plugin_monitoring']['_refresh'], 
-                'min'   => 30, 
-                'max'   => 1000,
-                'step'  => 10)
-         );
-         echo "&nbsp;";
-         echo __('Reduced interface', 'monitoring')." : ";
-         echo "&nbsp;";
-         Dropdown::showYesNo("reduced_interface", $_SESSION['plugin_monitoring']['reduced_interface']);
-         echo "&nbsp;";
-         echo "<input type='submit' name='sessionupdate' class='submit' value=\"".__('Post')."\">";
-         echo "</div>";
+      echo "<div align='right'>";
+      if (!$onlyreduced) {
+            echo __('Page refresh (in seconds)', 'monitoring')." : ";
+            echo "&nbsp;";
+            Dropdown::showNumber("_refresh", array(
+                   'value' => $_SESSION['glpi_plugin_monitoring']['_refresh'], 
+                   'min'   => 30, 
+                   'max'   => 1000,
+                   'step'  => 10)
+            );
+            echo "&nbsp;";
+      }
+      echo __('Reduced interface', 'monitoring')." : ";
+      echo "&nbsp;";
+      Dropdown::showYesNo("reduced_interface", $_SESSION['plugin_monitoring']['reduced_interface']);
+      echo "&nbsp;";
+      echo "<input type='submit' name='sessionupdate' class='submit' value=\"".__('Post')."\">";
+      echo "</div>";
       Html::closeForm();
    }
    
