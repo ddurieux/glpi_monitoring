@@ -85,9 +85,9 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
       echo "<tr>";
       echo "<th colspan='5'>";
       if ($DB->numrows($result)==0) {
-         echo __('No associated item');
+         echo __('No associated hosts', 'monitoring');
       } else {
-         echo __('Associated item');
+         echo __('Associated hosts', 'monitoring');
       }
       echo "</th>";
       echo "</tr>";

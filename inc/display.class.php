@@ -1313,64 +1313,6 @@ echo "
 
    
    
-/*
-   static function getState($state, $state_type, $event, $acknowledge=0) {
-      $shortstate = '';
-      switch($state) {
-
-         case 'UP':
-         case 'OK':
-            $shortstate = 'green';
-            break;
-
-         case 'DOWN':
-         case 'UNREACHABLE':
-         case 'CRITICAL':
-         case 'DOWNTIME':
-            if ($acknowledge) {
-               $shortstate = 'redblue';
-            } else {
-               $shortstate = 'red';
-            }
-            break;
-
-         case 'WARNING':
-         case 'RECOVERY':
-         case 'FLAPPING':
-            if ($acknowledge) {
-               $shortstate = 'orangeblue';
-            } else {
-               $shortstate = 'orange';
-            }
-            break;
-         
-         
-         case 'UNKNOWN':
-         case '':
-            if ($acknowledge) {
-               $shortstate = 'yellowblue';
-            } else {
-               $shortstate = 'yellow';
-            }
-            break;
-         
-      }
-      if ($state == 'WARNING'
-              && $event == '') {
-         if ($acknowledge) {
-            $shortstate = 'yellowblue';
-         } else {
-            $shortstate = 'yellow';
-         }
-      }
-      if ($state_type == 'SOFT') {
-         $shortstate.= '_soft';
-      }
-      return $shortstate;
-   }
-*/   
-   
-   
    function displayGraphs($itemtype, $items_id) {
       global $CFG_GLPI;
 

@@ -190,6 +190,12 @@ function plugin_init_monitoring() {
 
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['notificationcommand']['title'] = __('Notification commands', 'monitoring');
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['notificationcommand']['page']  = '/plugins/monitoring/front/notificationcommand.php';
+
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['perfdata']['title'] = __('Graph templates', 'monitoring');
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['perfdata']['page']  = '/plugins/monitoring/front/perfdata.php';
+
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['dashboard']['title'] = __('Dashboard', 'monitoring');
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['dashboard']['page']  = '/plugins/monitoring/front/dashboard.php';
          }
          $rule_check = array('PluginMonitoringComponentscatalog_rule','isThisItemCheckRule');
          $rule_check_networkport = array('PluginMonitoringComponentscatalog_rule', 'isThisItemCheckRuleNetworkport');
