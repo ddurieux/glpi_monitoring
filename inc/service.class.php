@@ -406,7 +406,9 @@ class PluginMonitoringService extends CommonDBTM {
                echo "<table class='tab_cadre'>";
                echo "<tr class='tab_bg_3'>";
                echo "<th width='475'>";
+               echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$datas['id']."'>";
                echo $pmComponent->fields['name'];
+               echo "</a>";
                echo "</th>";
                echo "</tr>";
                echo "<tr class='tab_bg_1'>";
