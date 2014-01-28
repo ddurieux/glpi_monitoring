@@ -2604,6 +2604,8 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                         => array('type'    => 'string',        'value'   => NULL),
          'last_session_start' 
                         => array('type'    => 'datetime',      'value'   => NULL),
+         'session' 
+                        => array('type'    => 'text',          'value'   => NULL),
       );
 
       $a_table['oldfields']  = array();

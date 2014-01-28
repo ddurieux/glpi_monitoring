@@ -2368,11 +2368,9 @@ Ext.onReady(function(){
       }
             
       if ($ajax == 1) {
-         $sess = serialize($_SESSION);
-         $sess = str_replace('"', "#####", $sess);
-         $sess = str_replace("'", "@@@@@", $sess);
-
          $sess_id = session_id();
+         PluginMonitoringSecurity::updateSession();
+      
          echo "<div id=\"updatecounter".$type."\"></div>";
          echo "<script type=\"text/javascript\">
 
@@ -2380,7 +2378,12 @@ Ext.onReady(function(){
          var mgrcc".$type." = elcc".$type.".getUpdateManager();
          mgrcc".$type.".loadScripts=true;
          mgrcc".$type.".showLoadIndicator=false;
-         mgrcc".$type.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateCounter.php\", \"type=".$type."&sess=".$sess."&sess_id=".$sess_id."\", \"\", true);
+         mgrcc".$type.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"].
+                 "/plugins/monitoring/ajax/updateCounter.php\","
+                 . " \"type=".$type."&sess_id=".$sess_id.
+                 "&glpiID=".$_SESSION['glpiID'].
+                 "&plugin_monitoring_securekey=".$_SESSION['plugin_monitoring_securekey'].
+                 "\", \"\", true);
          </script>";
       } else {
          $this->displayCounters($type);
@@ -2397,11 +2400,9 @@ Ext.onReady(function(){
       }
             
       if ($ajax == 1) {
-         $sess = serialize($_SESSION);
-         $sess = str_replace('"', "#####", $sess);
-         $sess = str_replace("'", "@@@@@", $sess);
-
          $sess_id = session_id();
+         PluginMonitoringSecurity::updateSession();
+      
          echo "<div id=\"updatecounter".$type."\"></div>";
          echo "<script type=\"text/javascript\">
 
@@ -2409,7 +2410,12 @@ Ext.onReady(function(){
          var mgrcc".$type." = elcc".$type.".getUpdateManager();
          mgrcc".$type.".loadScripts=true;
          mgrcc".$type.".showLoadIndicator=false;
-         mgrcc".$type.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateHostsCounter.php\", \"type=".$type."&sess=".$sess."&sess_id=".$sess_id."\", \"\", true);
+         mgrcc".$type.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"].
+                 "/plugins/monitoring/ajax/updateHostsCounter.php\","
+                 . " \"type=".$type."&sess_id=".$sess_id.
+                 "&glpiID=".$_SESSION['glpiID'].
+                 "&plugin_monitoring_securekey=".$_SESSION['plugin_monitoring_securekey'].
+                 "\", \"\", true);
          </script>";
       } else {
          $this->displayHostsCounters();

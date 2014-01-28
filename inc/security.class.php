@@ -99,12 +99,16 @@ class PluginMonitoringSecurity extends CommonDBTM {
             $data = current($a_data);
             if (isset($_SESSION['plugin_monitoring_securekey'])
                     && $_SESSION['plugin_monitoring_securekey'] == $data['key']) {
+
+               $_SESSION = importArrayFromDB(Toolbox::stripslashes_deep($data['session']));
+               $this->updateSecurity();
                // It's ok
                return;
             }
          }
       }
-      Html::displayRightError();
+      echo "Error, security key not valid!";
+      exit;
    }
    
    
@@ -124,8 +128,9 @@ class PluginMonitoringSecurity extends CommonDBTM {
                      $data = current($a_data);
                      if (date('U') > (strtotime($data['last_session_start']) + $maxlifetime - 200)) {
                         session_start();
-                        Toolbox::logInFile('SESSION', date('Y-m-d H:i:s')."\n");
+                        $_SESSION['plugin_monitoring_lastsessiontime'] = date('U');
                         $data['last_session_start'] = date('Y-m-d H:i:s');
+                        $data['session'] = Toolbox::addslashes_deep(exportArrayToDB($_SESSION));
                         $this->update($data);
                      }
                   }
@@ -160,15 +165,17 @@ class PluginMonitoringSecurity extends CommonDBTM {
                   $data['key'] = $this->generateKey();
                   $data['session_id'] = session_id();
                   $data['last_session_start'] = $_SESSION['glpi_currenttime'];
+                  $data['session'] = Toolbox::addslashes_deep(exportArrayToDB($_SESSION));
                   $this->update($data);
                }
                $_SESSION['plugin_monitoring_securekey'] = $data['key'];
             } else {
                $input = array(
-                   'users_id' => $_SESSION['glpiID'],
-                   'key' => $this->generateKey(),
-                   'session_id' => session_id(),
-                   'last_session_start' => $_SESSION['glpi_currenttime']
+                   'users_id'    => $_SESSION['glpiID'],
+                   'key'         => $this->generateKey(),
+                   'session_id'  => session_id(),
+                   'last_session_start' => $_SESSION['glpi_currenttime'],
+                   'session'     => Toolbox::addslashes_deep(exportArrayToDB($_SESSION))
                );
                if ($use_id == 0) {
                   $this->add($input);
@@ -196,6 +203,19 @@ class PluginMonitoringSecurity extends CommonDBTM {
       }
    }
 
+   
+   
+   static function updateSession() {
+      
+      $pmSecurity = new self();
+      $a_data = $pmSecurity->find("`users_id`='".$_SESSION['glpiID']."' "
+              . " AND `session_id`='".session_id()."'", '', 1);
+      if (count($a_data) == 1) {
+         $data = current($a_data);
+         $data['session'] = Toolbox::addslashes_deep(exportArrayToDB($_SESSION));
+         $pmSecurity->update($data);
+      }
+   }
 }
 
 ?>

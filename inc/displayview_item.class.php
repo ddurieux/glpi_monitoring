@@ -582,14 +582,18 @@ Ext.onReady(function(){
 //         </script>";
 //      }
          
-         $sess = serialize($_SESSION);
-         $sess = str_replace('"', "#####", $sess);
-         $sess = str_replace("'", "@@@@@", $sess);
-
          $sess_id = session_id();
+         PluginMonitoringSecurity::updateSession();
+
          echo "<script type='text/javascript'>
          var mgr = new Ext.UpdateManager('weathermap-".$data['items_id']."');
-         mgr.startAutoRefresh(50, \"".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/widgetWeathermap.php\", \"id=".$data['items_id']."&extra_infos=".$data['extra_infos']."&sess=".$sess."&sess_id=".$sess_id."\", \"\", true);
+         mgr.startAutoRefresh(50, \"".$CFG_GLPI["root_doc"].
+                 "/plugins/monitoring/ajax/widgetWeathermap.php\","
+                 . " \"id=".$data['items_id']."&extra_infos=".
+                 $data['extra_infos']."&sess_id=".$sess_id.
+                 "&glpiID=".$_SESSION['glpiID'].
+                 "&plugin_monitoring_securekey=".$_SESSION['plugin_monitoring_securekey'].
+                 "\", \"\", true);
          </script>";
       }
       return true;

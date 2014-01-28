@@ -650,6 +650,7 @@ CREATE TABLE `glpi_plugin_monitoring_securities` (
   `key` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `session_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `last_session_start`  datetime DEFAULT NULL,
+  `session` text DEFAULT NULL COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

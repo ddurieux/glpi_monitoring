@@ -35,8 +35,9 @@
 
 $USEDBREPLICATE = 1;
 
-$_SESSION = unserialize(str_replace('@@@@@', "'", str_replace('#####', '"', $_POST['sess'])));
 session_id($_POST['sess_id']);
+$_SESSION['glpiID'] = $_POST['glpiID'];
+$_SESSION['plugin_monitoring_securekey'] = $_POST['plugin_monitoring_securekey'];
 $_SESSION['plugin_monitoring_checktime'] = 1;
 
 // Direct access to file
