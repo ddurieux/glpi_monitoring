@@ -44,8 +44,7 @@ include ("../../../inc/includes.php");
 
 PluginMonitoringProfile::checkRight("acknowledge","r");
 
-Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins", 
-             "monitoring", "acknowledge");
+Html::header(__('Monitoring - acknowledge', 'monitoring'),'', "monitoring", "acknowledge");
 
 $pmService = new PluginMonitoringService();
 

@@ -259,6 +259,17 @@ class PluginMonitoringHost extends CommonDBTM {
 
    
    /**
+    * Get host link to display
+    */
+   function getLink($options = array()) {
+      $itemtype = $this->getField("itemtype");
+      $item = new $itemtype();
+      $item->getFromDB($this->getField("items_id"));
+      return $item->getLink()."&nbsp;".$this->getComments();
+   }
+
+   
+   /**
     * Get host short state (state + acknowledgement)
     */
    static function getState($state, $state_type, $event, $acknowledge=0) {
