@@ -1063,7 +1063,7 @@ class PluginMonitoringService extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2'>";
-      echo __('Add an acknowledge for a service: ', 'monitoring').$pm_Service->fields['name'];
+      echo __('Add an acknowledge for a service ', 'monitoring').' : '.$pm_Service->fields['name'];
       echo "</td>";
       echo "</tr>";
       
@@ -1078,7 +1078,7 @@ class PluginMonitoringService extends CommonDBTM {
       
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='2' align='center'>";
-      echo "<input type='hidden' name='id' value='".$pm_Service->fields['name']."' />";
+      echo "<input type='hidden' name='id' value='".$pm_Service->fields['id']."' />";
       echo "<input type='hidden' name='is_acknowledged' value='1' />";
       echo "<input type='hidden' name='acknowledge_users_id' value='".$_SESSION['glpiID']."' />";
       echo "<input type='hidden' name='referer' value='".$_SERVER['HTTP_REFERER']."' />";
@@ -1114,7 +1114,7 @@ class PluginMonitoringService extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2'>";
-      echo __('Modify acknowledge for the service', 'monitoring').' '.$pm_Service->getName();
+      echo __('Modify acknowledge for the service', 'monitoring').' : '.$pm_Service->getName();
       echo "</td>";
       echo "</tr>";
       
