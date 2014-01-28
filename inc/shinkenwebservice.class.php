@@ -29,7 +29,7 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
+   @co-author Frédéric Mohier
    @comment   
    @copyright Copyright (c) 2011-2013 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
@@ -46,78 +46,92 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringShinkenwebservice extends CommonDBTM {
    
-   function sendAcknowledge($services_id, $author= '', $comment='', $host_id='', $hostname='') {
+   function sendAcknowledge($host_id=-1, $service_id=-1, $author= '', $comment='', $sticky='1', $notify='0', $persistent='1') {
       global $DB;
       
-      $pmTag = new PluginMonitoringTag();
+      if (($host_id == -1) && ($service_id == -1)) return false;
       
-      if (empty($host_id)) {
-         // Acknowledge a service ...
-         $pmService   = new PluginMonitoringService();
-         $pmComponent = new PluginMonitoringComponent();
-         $pmService->getFromDB($services_id);
-         
-         $hostname = '';
-         $queryh = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts` 
-            WHERE `id` = '".$pmService->fields['plugin_monitoring_componentscatalogs_hosts_id']."'
-            LIMIT 1";
-         $resulth = $DB->query($queryh);
-         while ($datah=$DB->fetch_array($resulth)) {
-            $itemtype = $datah['itemtype'];
-            $item = new $itemtype();
-            if ($item->getFromDB($datah['items_id'])) {
-               $hostname = preg_replace("/[^A-Za-z0-9\-_]/","",$item->fields['name']);
-            }         
-         }
-         
-         $a_component = current($pmComponent->find("`id`='".$pmService->fields['plugin_monitoring_components_id']."'", "", 1));
-         $service_description = preg_replace("/[^A-Za-z0-9\-_]/","",$a_component['description']);
-         if (empty($service_description)) $service_description = preg_replace("/[^A-Za-z0-9\-_]/","",$a_component['name']);
-         
-         $tag = PluginMonitoringEntity::getTagByEntities($pmService->fields['entities_id']);
-         $ip = $pmTag->getIP($tag);
-         $auth = $pmTag->getAuth($tag);
-         
-         $url = 'http://'.$ip.':7760/';
-         $action = 'acknowledge';
-         // If the "sticky" option is set to two (2), the acknowledgement will remain until the service returns to an OK state. Otherwise the acknowledgement will automatically be removed when the service changes state. 
-         // If the "notify" option is set to one (1), a notification will be sent out to contacts indicating that the current service problem has been acknowledged. 
-         // If the "persistent" option is set to one (1), the comment associated with the acknowledgement will survive across restarts of the Nagios process.
-         $a_fields = array(
-             'host_name'            => $hostname,
-             'service_description'  => $service_description,
-             'author'               => $_SESSION['glpiname'],
-             'comment'              => mb_convert_encoding($comment, "iso-8859-1"),
-             'sticky'               => '1',
-             'notify'               => '0',
-             'persistent'           => '1'
-         );
-         
-         return $this->sendCommand($url, $action, $a_fields,'', $auth);
+      $pmTag = new PluginMonitoringTag();
+      $pmService = new PluginMonitoringService();
+      $pmService->getFromDB($service_id);
+      $service_description = $pmService->getName();
+      $pmHost = new PluginMonitoringHost();
+      $pmHost->getFromDB(($host_id == -1) ? $pmService->getHostID() : $host_id);
+      $hostname = $pmHost->getName();
+      
+      // Acknowledge an host ...
+      $acknowledgeServiceOnly = true;
+      $a_fields = array();
+      
+      if ($host_id == -1) {
+         $tag = PluginMonitoringEntity::getTagByEntities($pmService->getEntityID());
       } else {
-         // Acknowledge an host ...
-         $pmHost = new PluginMonitoringHost();
-         $pmHost->getFromDBByQuery("WHERE `items_id` = '$host_id'");
-         $tag = PluginMonitoringEntity::getTagByEntities($pmHost->fields['entities_id']);
-         
-         $ip = $pmTag->getIP($tag);
-         $auth = $pmTag->getAuth($tag);
-         
-         $url = 'http://'.$ip.':7760/';
-         $action = 'acknowledge';
-         $a_fields = array(
-             'host_name'            => $hostname,
-             'author'               => $_SESSION['glpiname'],
-             'comment'              => mb_convert_encoding($comment, "iso-8859-1"),
-             'sticky'               => '1',
-             'notify'               => '0',
-             'persistent'           => '1'
-         );
-         
-         return $this->sendCommand($url, $action, $a_fields,'', $auth);
+         // ... one service of the host.
+         $tag = PluginMonitoringEntity::getTagByEntities($pmHost->getEntityID());
       }
+      $ip = $pmTag->getIP($tag);
+      $auth = $pmTag->getAuth($tag);
+      
+      
+      $url = 'http://'.$ip.':7760/';
+      $action = 'acknowledge';
+      $a_fields = array(
+          'host_name'            => $hostname,
+          'author'               => $author,
+          'service_description'  => $service_description,
+          'comment'              => mb_convert_encoding($comment, "iso-8859-1"),
+          // 'comment'              => $comment,
+          'sticky'               => $sticky,
+          'notify'               => $notify,
+          'persistent'           => $persistent
+      );
+      
+      return $this->sendCommand($url, $action, $a_fields, '', $auth);
    }
    
+   
+   function sendDowntime($host_id=-1, $service_id=-1, $author= '', $comment='', $start_time='0', $fixed='0', $duration='1') {
+      global $DB;
+      
+      if (($host_id == -1) && ($service_id == -1)) return false;
+      
+      $pmTag = new PluginMonitoringTag();
+      $pmService = new PluginMonitoringService();
+      $pmService->getFromDB($service_id);
+      $service_description = $pmService->getName();
+      $pmHost = new PluginMonitoringHost();
+      $pmHost->getFromDB(($host_id == -1) ? $pmService->getHostID() : $host_id);
+      $hostname = $pmHost->getName();
+      
+      // Downtime an host ...
+      $acknowledgeServiceOnly = true;
+      $a_fields = array();
+      
+      if ($host_id == -1) {
+         $tag = PluginMonitoringEntity::getTagByEntities($pmService->getEntityID());
+      } else {
+         // ... one service of the host.
+         $tag = PluginMonitoringEntity::getTagByEntities($pmHost->getEntityID());
+      }
+      $ip = $pmTag->getIP($tag);
+      $auth = $pmTag->getAuth($tag);
+      
+      $url = 'http://'.$ip.':7760/';
+      $action = 'downtime';
+      $a_fields = array(
+          'host_name'            => $hostname,
+          'service_description'  => $service_description,
+          'author'               => $author,
+          'comment'              => mb_convert_encoding($comment, "iso-8859-1"),
+          'start_time'           => $start_time,
+          'fixed'                => $fixed,
+          'end_time'             => $start_time,
+          'trigger_id'           => '0',
+          'duration'             => $duration
+      );
+      
+      return $this->sendCommand($url, $action, $a_fields, '', $auth);
+   }
    
    
    function sendRestartArbiter($force=0) {

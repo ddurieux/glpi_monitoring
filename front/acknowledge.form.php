@@ -44,32 +44,34 @@ include ("../../../inc/includes.php");
 
 PluginMonitoringProfile::checkRight("acknowledge","r");
 
-Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins", 
-             "monitoring", "acknowledge");
+Html::header(__('Monitoring - acknowledge', 'monitoring'),'', "monitoring", "acknowledge");
 
 $pmService = new PluginMonitoringService();
 
 if (isset($_POST['add']) || isset($_POST['update']) || isset($_POST['add_and_ticket'])) {
    $user = new User();
    $user->getFromDB($_POST['acknowledge_users_id']);
+   $username = $user->getName(1);
+   $comment = $_POST['acknowledge_comment'];
    
    if (isset($_POST['hostname'])) {
-      // Toolbox::logInFile("pm", "Acknowledge for host ".$_POST['host_id']." : ".$_POST['acknowledge_comment']." : \n");
+      $pmHost = new PluginMonitoringHost();
+      $pmHost->getFromDB($_POST['host_id']);
+      // Toolbox::logInFile("pm", "Acknowledge for host ".$pmHost->getName()." : ".$comment." : \n");
    
       // Acknowledge an host ...
       if (isset($_POST['hostAcknowledge'])) {
-         // Toolbox::logInFile("pm", "Acknowledge host ".$_POST['host_id']." / ".$_POST['hostname']."\n");
+         // Toolbox::logInFile("pm", "Acknowledge host ".$_POST['host_id']." / ".$pmHost->getName()."\n");
    
          // Send acknowledge command for an host to shinken via webservice   
          $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
-         if ($pmShinkenwebservice->sendAcknowledge('', $user->getName(1), $_POST['acknowledge_comment'], $_POST['id'], $_POST['hostname'])) {
-            $pmHost = new PluginMonitoringHost();
-            $pmHost->getFromDBByQuery("WHERE `items_id` = '".$_POST['host_id']."'");
+         if ($pmShinkenwebservice->sendAcknowledge($_POST['host_id'], -1, $username, $comment)) {
             $hostData = array();
             $hostData['id'] = $pmHost->fields['id'];
             $hostData['is_acknowledged'] = '1';
+            $hostData['is_acknowledgeconfirmed'] = '1';
             $hostData['acknowledge_users_id'] = $_POST['acknowledge_users_id'];
-            $hostData['acknowledge_comment'] = $_POST['acknowledge_comment'];
+            $hostData['acknowledge_comment'] = $comment;
             $pmHost->update($hostData);
          }
       }
@@ -83,12 +85,13 @@ if (isset($_POST['add']) || isset($_POST['update']) || isset($_POST['add_and_tic
             
             // Send acknowledge command for a service to shinken via webservice   
             $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
-            if ($pmShinkenwebservice->sendAcknowledge($_POST['serviceId'.$i], $user->getName(1), $_POST['acknowledge_comment'])) {
+            if ($pmShinkenwebservice->sendAcknowledge(-1, $_POST['serviceId'.$i], $username, $comment)) {
                $serviceData = array();
                $serviceData['id'] = $_POST['serviceId'.$i];
                $serviceData['is_acknowledged'] = '1';
+               $serviceData['is_acknowledgeconfirmed'] = '0';
                $serviceData['acknowledge_users_id'] = $_POST['acknowledge_users_id'];
-               $serviceData['acknowledge_comment'] = $_POST['acknowledge_comment'];
+               $serviceData['acknowledge_comment'] = $comment;
                $pmService->update($serviceData);
             }
          }
@@ -108,7 +111,7 @@ if (isset($_POST['add']) || isset($_POST['update']) || isset($_POST['add_and_tic
          // $tkt["items_id`"]    = $_POST['items_id`'];
          
          $tkt['_head']        = $_POST['name'];
-         $tkt['content']      = $_POST['acknowledge_comment'];
+         $tkt['content']      = $comment;
          
          // Medium urgency
          $tkt['urgency']      = "3";
@@ -124,13 +127,19 @@ if (isset($_POST['add']) || isset($_POST['update']) || isset($_POST['add_and_tic
          Html::redirect($_POST['redirect']);
       }
    } else {
-      // Toolbox::logInFile("pm", "Acknowledge service ".$_POST['id']."\n");
+      Toolbox::logInFile("pm", "Acknowledge service ".$_POST['id']."\n");
    
       // Send acknowledge command for a service to shinken via webservice   
       $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
-      if ($pmShinkenwebservice->sendAcknowledge($_POST['id'], $user->getName(1), $_POST['acknowledge_comment'])) {
+      if ($pmShinkenwebservice->sendAcknowledge(-1, $_POST['id'], $username, $comment)) {
          // Simply acknowledge a service ...
-         $pmService->update($_POST);
+         $serviceData = array();
+         $serviceData['id'] = $_POST['id'];
+         $serviceData['is_acknowledged'] = '1';
+         $serviceData['is_acknowledgeconfirmed'] = '0';
+         $serviceData['acknowledge_users_id'] = $_POST['acknowledge_users_id'];
+         $serviceData['acknowledge_comment'] = $comment;
+         $pmService->update($serviceData);
       }
    }
    
@@ -138,21 +147,25 @@ if (isset($_POST['add']) || isset($_POST['update']) || isset($_POST['add_and_tic
 }
 
 if (isset($_GET['host']) && isset($_GET['id'])) {
-   // Acknowledge an host ...
-   $pmService->addAcknowledge($_GET['id'], $_GET['host'], isset($_GET['allServices']));
+   // Acknowledge an host ... id is pmHost identifier !
+   $pmHost = new PluginMonitoringHost();
+   $pmHost->getFromDBByQuery("WHERE `items_id` = '".$_GET['id']."'");
+   $pmHost->showAddAcknowledgeForm($_GET['id'], isset($_GET['allServices']));
 } else if (isset($_GET['id'])) {
    // Acknowledge a service ...
-   $pmService->addAcknowledge($_GET['id']);
+   $pmService->showAddAcknowledgeForm($_GET['id']);
 }
 
 // Modify acknowledge comment ...
 if (isset($_GET['form'])) {
    if (isset($_GET['host'])) {
       // ... for an host
-      $pmService->formAcknowledge($_GET['form'], $_GET['host']);
+      $pmHost = new PluginMonitoringHost();
+      $pmHost->getFromDBByQuery("WHERE `items_id` = '".$_GET['form']."'");
+      $pmHost->showUpdateAcknowledgeForm($_GET['form']);
    } else {
       // ... for a service
-      $pmService->formAcknowledge($_GET['form']);
+      $pmService->showUpdateAcknowledgeForm($_GET['form']);
    }
 }
 

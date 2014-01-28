@@ -53,7 +53,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
    *
    **/
    static function getTypeName($nb=0) {
-      return __('Host daily counters', 'monitoring');
+      return _n(__('Host daily counter', 'monitoring'),__('Host daily counters', 'monitoring'),$nb);
    }
    
    
@@ -159,74 +159,81 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
      
 		$tab[2]['table']           = $this->getTable();
 		$tab[2]['field']           = 'hostname';
-		$tab[2]['linkfield']       = 'hostname';
 		$tab[2]['name']            = __('Host name');
-      // No link to every item in the table ...
-		// $tab[2]['datatype']        = 'itemlink';
+      // TODO ...
+      // $tab[2]['datatype']        = 'specific';
+      $tab[2]['nosearch']        = true;
+      $tab[2]['nosort']          = true;
       $tab[2]['massiveaction']   = false;
 
 		$tab[3]['table']           = $this->getTable();
 		$tab[3]['field']           = 'day';
-		$tab[3]['linkfield']       = 'day';
 		$tab[3]['name']            = __('Day', 'monitoring');
       $tab[3]['datatype']        = 'datetime';
       $tab[3]['massiveaction']   = false;
 
 		$tab[4]['table']           = $this->getTable();
 		$tab[4]['field']           = 'cPagesTotal';
-		$tab[4]['linkfield']       = 'cPagesTotal';
 		$tab[4]['name']            = __('Cumulative total for printed pages', 'monitoring');
       $tab[4]['massiveaction']   = false;
 
 		$tab[5]['table']           = $this->getTable();
 		$tab[5]['field']           = 'cPagesToday';
-		$tab[5]['linkfield']       = 'cPagesToday';
 		$tab[5]['name']            = __('Daily printed pages', 'monitoring');
       $tab[5]['massiveaction']   = false;
 
 		$tab[6]['table']           = $this->getTable();
 		$tab[6]['field']           = 'cPagesRemaining';
-		$tab[6]['linkfield']       = 'cPagesRemaining';
 		$tab[6]['name']            = __('Remaining pages', 'monitoring');
       $tab[6]['massiveaction']   = false;
 
 		$tab[7]['table']           = $this->getTable();
 		$tab[7]['field']           = 'cRetractedTotal';
-		$tab[7]['linkfield']       = 'cRetractedTotal';
 		$tab[7]['name']            = __('Cumulative total for retracted pages', 'monitoring');
       $tab[7]['massiveaction']   = false;
 
 		$tab[8]['table']           = $this->getTable();
 		$tab[8]['field']           = 'cRetractedToday';
-		$tab[8]['linkfield']       = 'cRetractedToday';
 		$tab[8]['name']            = __('Daily retracted pages', 'monitoring');
       $tab[8]['massiveaction']   = false;
 
 		$tab[9]['table']           = $this->getTable();
 		$tab[9]['field']           = 'cRetractedRemaining';
-		$tab[9]['linkfield']       = 'cRetractedRemaining';
 		$tab[9]['name']            = __('Stored retracted pages', 'monitoring');
       $tab[9]['massiveaction']   = false;
 
 		$tab[10]['table']          = $this->getTable();
 		$tab[10]['field']          = 'cPrinterChanged';
-		$tab[10]['linkfield']      = 'cPrinterChanged';
 		$tab[10]['name']           = __('Cumulative total for printer changed', 'monitoring');
       $tab[10]['massiveaction']  = false;
 
 		$tab[11]['table']          = $this->getTable();
 		$tab[11]['field']          = 'cPaperChanged';
-		$tab[11]['linkfield']      = 'cPaperChanged';
 		$tab[11]['name']           = __('Cumulative total for paper changed', 'monitoring');
       $tab[11]['massiveaction']  = false;
 
 		$tab[12]['table']          = $this->getTable();
 		$tab[12]['field']          = 'cBinEmptied';
-		$tab[12]['linkfield']      = 'cBinEmptied';
 		$tab[12]['name']           = __('Cumulative total for bin emptied', 'monitoring');
       $tab[12]['massiveaction']  = false;
 
       return $tab;
+   }
+
+
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'glpi_plugin_monitoring_hosts_id':
+            $pm_host = new PluginMonitoringHost();
+            $pm_host->getFromDB($values[$field]);
+            return $pm_host->getLink();
+            break;
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
    }
 
 
