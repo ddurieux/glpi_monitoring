@@ -171,8 +171,62 @@ class PluginMonitoringService extends CommonDBTM {
       }
       return '';
    }
+
    
+   /**
+    * Get service name
+    */
+   function getName($shinken = false) {
+      if ($this->getID() == -1) return '';
+      
+      $pmComponent = new PluginMonitoringComponent();
+      $a_component = current($pmComponent->find("`id`='".$this->fields['plugin_monitoring_components_id']."'", "", 1));
+      
+      $service_description = $a_component['description'];
+      if ($shinken) {
+         $service_description = preg_replace("/[^A-Za-z0-9\-_]/","",$a_component['description']);
+         if (empty($service_description)) $service_description = preg_replace("/[^A-Za-z0-9\-_]/","",$a_component['name']);
+      }
+      
+      return $service_description;
+   }
+
    
+   /**
+    * Get service entity
+    */
+   function getEntityID($options = array()) {
+      return $this->fields["entities_id"];
+   }
+   
+
+   /**
+    * Get host identifier for a service
+    */
+   function getHostID() {
+      global $DB;
+      
+      $query = "SELECT
+                  `glpi_plugin_monitoring_hosts`.`id`
+                  , `glpi_computers`.`name`
+               FROM `glpi_plugin_monitoring_hosts`
+                  INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts` 
+                     ON (`glpi_plugin_monitoring_hosts`.`itemtype` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`) AND (`glpi_plugin_monitoring_hosts`.`items_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`)
+                  INNER JOIN `glpi_computers` 
+                     ON (`glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`)
+                  INNER JOIN `glpi_plugin_monitoring_services` 
+                     ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
+               WHERE (`glpi_plugin_monitoring_services`.`id` = '".$this->getID()."');";
+      $result = $DB->query($query);
+      if ($DB->numrows($result) > 0) {
+         while ($data=$DB->fetch_array($result)) {
+            return $data['id'];
+         }
+      } else {
+         return -1;
+      }
+   }
+
    
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
@@ -988,238 +1042,115 @@ class PluginMonitoringService extends CommonDBTM {
    /**
     * Form to add acknowledge on a service/host
     */
-   function addAcknowledge($id, $hostname='', $allServices=false) {
+   function showAddAcknowledgeForm($id=-1) {
       global $CFG_GLPI,$DB;
       
-      // Acknowledge an host ... note that $id is Glpi computer Id
-      if (! empty($hostname)) {
-         echo "<form name='form' method='post' 
-            action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php'>";
+      PluginMonitoringProfile::checkRight("acknowledge", 'w');
       
-         echo "<input type='hidden' name='host_id' value='$id' />";
-         echo "<input type='hidden' name='hostname' value='$hostname' />";
-
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<th colspan='3'>";
-         if ($allServices) {
-            echo __('Add an acknowledge for all faulty services of the host', 'monitoring').' '.$hostname;
-         } else {
-            echo __('Add an acknowledge for the host and all faulty services of the host', 'monitoring').' '.$hostname;
-         }
-         echo "</td>";
-         echo "</tr>";
-         
-         echo "<tr><td colspan='3'><hr/></td></tr>";
-         
-         // Acknowledge host AND all faulty services ...
-         // if ($allServices) {
-            // Get all host services except if state is ok or is already acknowledged ...
-            $query = "SELECT 
-                     `glpi_plugin_monitoring_services`.*
-                     FROM `glpi_plugin_monitoring_services` 
-                     WHERE `glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` IN (SELECT id FROM `glpi_plugin_monitoring_componentscatalogs_hosts` WHERE `glpi_plugin_monitoring_componentscatalogs_hosts`.items_id ='".$id."') 
-                     AND `glpi_plugin_monitoring_services`.`state` != 'OK'
-                     AND `glpi_plugin_monitoring_services`.`is_acknowledged` = '0'
-                     ORDER BY `name`";
-            // Toolbox::logInFile("monitoring", "Query : ".$query."\n");
-
-            $result = $DB->query($query);
-            $i=0;
-            while ($data=$DB->fetch_array($result)) {
-               // Toolbox::logInFile("monitoring", "Service ".$data['name']." is ".$data['state'].", state : ".$data['event']."\n");
-               echo "<tr class='tab_bg_1'>";
-               echo "<td>".$data['name']."</td>";
-               echo "<td>".$data['state']."</td>";
-               echo "<td>".$data['event']."</td>";
-               echo "</tr>";
-               echo "<input type='hidden' name='serviceId$i' value='".$data['id']."' />";
-               $i++;
-            }
-            if ($i != 0) {
-               echo "<tr><td colspan='3'>".__('All these services will be acknowledged')."</td></tr>";
-               echo "<input type='hidden' name='serviceCount' value='$i' />";
-               echo "<tr><td colspan='3'><hr/></td></tr>";
-            }
-         // } else {
-         if (! $allServices) {
-            echo "<input type='hidden' name='hostAcknowledge' value='$hostname' />";
-         }
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>";
-         echo __('Comments');
-         echo "</td>";
-         echo "<td colspan='2'>";
-         echo "<textarea cols='80' rows='4' name='acknowledge_comment' ></textarea>";
-         echo "</td>";
-         echo "</tr>";
-         
-         echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='3' align='center'>";
-         echo "<input type='hidden' name='id' value='".$id."' />";
-         echo "<input type='hidden' name='is_acknowledged' value='1' />";
-         echo "<input type='hidden' name='acknowledge_users_id' value='".$_SESSION['glpiID']."' />";
-         echo "<input type='hidden' name='referer' value='".$_SERVER['HTTP_REFERER']."' />";
-         
-         echo "<input type='submit' name='add' value=\"".__('Acknowledge host problems', 'monitoring')."\" class='submit'>";            
-         echo "</td>";
-         echo "</tr>";
-         if (Session::haveRight('create_ticket', 1)) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td colspan='3' align='center'>";
-            echo "<input type='hidden' name='name' value='".__('Host is down', 'monitoring')."' />";
-            echo "<input type='hidden' name='redirect' value='".$CFG_GLPI["root_doc"]."/front/ticket.form.php' />";
-            echo "<input type='submit' name='add_and_ticket' value=\"".__('Acknowledge host problems and create a ticket', 'monitoring')."\" class='submit'>";            
-            echo "</td>";
-            echo "</tr>";
-         }
-         echo "</table>";
-         
-         Html::closeForm();
-         
-         return;
+      if ($id == -1) {
+         $pm_Service = $this;
+      } else {
+         $pm_Service = new PluginMonitoringService();
+         $pm_Service->getFromDB($id);
       }
       
-      // Acknowledge a service ...
-      if ($this->getFromDB($id)) {
-         echo "<form name='form' method='post' 
-            action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php'>";
+      echo "<form name='form' method='post' 
+         action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php'>";
+   
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<th colspan='2'>";
+      echo __('Add an acknowledge for a service: ', 'monitoring').$pm_Service->fields['name'];
+      echo "</td>";
+      echo "</tr>";
       
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<th colspan='2'>";
-         echo __('Add an acknowledge for a service: ', 'monitoring').$this->fields['name'];
-         echo "</td>";
-         echo "</tr>";
-         
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>";
-         echo __('Comments');
-         echo "</td>";
-         echo "<td>";
-         echo "<textarea cols='80' rows='4' name='acknowledge_comment' ></textarea>";
-         echo "</td>";
-         echo "</tr>";
-         
-         echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2' align='center'>";
-         echo "<input type='hidden' name='id' value='".$id."' />";
-         echo "<input type='hidden' name='is_acknowledged' value='1' />";
-         echo "<input type='hidden' name='acknowledge_users_id' value='".$_SESSION['glpiID']."' />";
-         echo "<input type='hidden' name='referer' value='".$_SERVER['HTTP_REFERER']."' />";
-         
-         echo "<input type='submit' name='add' value=\"".__('Add')."\" class='submit'>";            
-         echo "</td>";
-         echo "</tr>";
-         echo "</table>";
-         
-         Html::closeForm();
-      }
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo __('Comments');
+      echo "</td>";
+      echo "<td>";
+      echo "<textarea cols='80' rows='4' name='acknowledge_comment' ></textarea>";
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='2' align='center'>";
+      echo "<input type='hidden' name='id' value='".$pm_Service->fields['name']."' />";
+      echo "<input type='hidden' name='is_acknowledged' value='1' />";
+      echo "<input type='hidden' name='acknowledge_users_id' value='".$_SESSION['glpiID']."' />";
+      echo "<input type='hidden' name='referer' value='".$_SERVER['HTTP_REFERER']."' />";
+      
+      echo "<input type='submit' name='add' value=\"".__('Add an acknowledge', 'monitoring')."\" class='submit'>";            
+      echo "</td>";
+      echo "</tr>";
+      echo "</table>";
+      
+      Html::closeForm();
    }
    
    
    
    /**
-    * Form to modify acknowledge on a service/host
+    * Form to modify acknowledge on a service
     */
-   function formAcknowledge($id, $hostname='') {
+   function showUpdateAcknowledgeForm($id='-1') {
       global $CFG_GLPI;
       
-      // Modify acknowledge of an host ... note that $id is Glpi computer Id
-      if (! empty($hostname)) {
-         /*
-         Ce serait plus cohérent de faire une méthode dans la classe PluginMonitoringHost ... mais pour l'instant, on dira que ça le fait :-)
-         */
-         $pmHost = new PluginMonitoringHost();
-         $pmHost->getFromDBByQuery("WHERE `items_id` = '$id'");
-
-         echo "<form name='form' method='post' 
-            action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php'>";
+      PluginMonitoringProfile::checkRight("acknowledge", 'w');
       
-         echo "<input type='hidden' name='host_id' value='$id' />";
-         echo "<input type='hidden' name='hostname' value='$hostname' />";
-         echo "<input type='hidden' name='hostAcknowledge' value='$hostname' />";
-         
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<th colspan='2'>";
-         echo __('Add an acknowledge for the host', 'monitoring').' '.$hostname;
-         echo "</td>";
-         echo "</tr>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>";
-         echo _n('User', 'Users', 1)." :";
-         echo "</td>";
-         echo "<td>";
-         $user = new User();
-         $user->getFromDB($pmHost->fields['acknowledge_users_id']);    
-         echo $user->getName(1);
-         echo "</td>";
-         echo "</tr>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>";
-         echo __('Comments');
-         echo "</td>";
-         echo "<td>";
-         echo "<textarea cols='80' rows='4' name='acknowledge_comment' >".$pmHost->fields['acknowledge_comment']."</textarea>";
-         echo "</td>";
-         echo "</tr>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2' align='center'>";
-         echo "<input type='hidden' name='id' value='".$id."' />";
-         echo "<input type='hidden' name='is_acknowledged' value='1' />";
-         echo "<input type='hidden' name='acknowledge_users_id' value='".$_SESSION['glpiID']."' />";
-         echo "<input type='hidden' name='referer' value='".$_SERVER['HTTP_REFERER']."' />";
-
-         echo "<input type='submit' name='update' value=\"".__('Update')."\" class='submit'>";            
-         echo "</td>";
-         echo "</tr>";
-         echo "</table>";
-         Html::closeForm();
+      if ($id == -1) {
+         $pm_Service = $this;
+      } else {
+         $pm_Service = new PluginMonitoringService();
+         $pm_Service->getFromDB($id);
       }
       
       // Modify acknowledge of a service ...
-      if ($this->getFromDB($id)) {
-         echo "<form name='form' method='post' 
-            action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php'>";
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<th colspan='2'>";
-         echo __('Add an acknowledge for a service: ', 'monitoring').$this->fields['name'];
-         echo "</td>";
-         echo "</tr>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>";
-         echo _n('User', 'Users', 1)." :";
-         echo "</td>";
-         echo "<td>";
-         $user = new User();
-         $user->getFromDB($this->fields['acknowledge_users_id']);    
-         echo $user->getName(1);
-         echo "</td>";
-         echo "</tr>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>";
-         echo __('Comments');
-         echo "</td>";
-         echo "<td>";
-         echo "<textarea cols='80' rows='4' name='acknowledge_comment' >".$this->fields['acknowledge_comment']."</textarea>";
-         echo "</td>";
-         echo "</tr>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2' align='center'>";
-         echo "<input type='hidden' name='id' value='".$id."' />";
-         echo "<input type='hidden' name='is_acknowledged' value='1' />";
-         echo "<input type='hidden' name='acknowledge_users_id' value='".$_SESSION['glpiID']."' />";
-         echo "<input type='hidden' name='referer' value='".$_SERVER['HTTP_REFERER']."' />";
+      echo "<form name='form' method='post' 
+         action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php'>";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<th colspan='2'>";
+      echo __('Modify acknowledge for the service', 'monitoring').' '.$pm_Service->getName();
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "</td>";
+      echo "</tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo __('Acknowledge comment', 'monitoring');
+      echo "</td>";
+      echo "<td>";
+      echo "<textarea cols='80' rows='4' name='acknowledge_comment' >".$pm_Service->fields['acknowledge_comment']."</textarea>";
+      echo "</td>";
+      echo "</tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='2' align='center'>";
+      echo "<input type='hidden' name='id' value='".$pm_Service->fields['id']."' />";
+      echo "<input type='hidden' name='is_acknowledged' value='1' />";
+      echo "<input type='hidden' name='acknowledge_users_id' value='".$_SESSION['glpiID']."' />";
+      echo "<input type='hidden' name='referer' value='".$_SERVER['HTTP_REFERER']."' />";
 
-         echo "<input type='submit' name='update' value=\"".__('Update')."\" class='submit'>";            
-         echo "</td>";
-         echo "</tr>";
-         echo "</table>";
-         Html::closeForm();
-      }
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo __('Acknowledge user', 'monitoring');
+      echo "</td>";
+      echo "<td>";
+      $user = new User();
+      $user->getFromDB($pm_Service->fields['acknowledge_users_id']);    
+      echo $user->getName(1);
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='3' align='center'>";
+      echo "<input type='submit' name='update' value=\"".__('Update acknowledge comment', 'monitoring')."\" class='submit'>";
+      echo "</td>";
+      echo "</tr>";
+
+      echo "</table>";
+      Html::closeForm();
    }
 }
 
