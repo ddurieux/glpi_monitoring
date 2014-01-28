@@ -127,7 +127,7 @@ if (isset($_POST['add']) || isset($_POST['update']) || isset($_POST['add_and_tic
          Html::redirect($_POST['redirect']);
       }
    } else {
-      Toolbox::logInFile("pm", "Acknowledge service ".$_POST['id']."\n");
+      // Toolbox::logInFile("pm", "Acknowledge service : ".$_POST['id']."\n");
    
       // Send acknowledge command for a service to shinken via webservice   
       $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();

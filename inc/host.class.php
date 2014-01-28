@@ -685,7 +685,7 @@ class PluginMonitoringHost extends CommonDBTM {
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2'>";
-      echo __('Modify acknowledge for the host', 'monitoring').' '.$pm_Host->getLink();
+      echo __('Modify acknowledge for the host', 'monitoring').' : '.$pm_Host->getLink();
       echo "</td>";
       echo "</tr>";
       

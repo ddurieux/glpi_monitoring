@@ -196,6 +196,7 @@ class PluginMonitoringService extends CommonDBTM {
     * Get service entity
     */
    function getEntityID($options = array()) {
+      // Toolbox::logInFile("pm", "service, getEntityID : ".$this->fields["entities_id"]."\n");
       return $this->fields["entities_id"];
    }
    
