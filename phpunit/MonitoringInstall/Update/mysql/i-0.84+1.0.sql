@@ -290,7 +290,7 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_monitoring_configs` (
 --
 
 INSERT INTO `glpi_plugin_monitoring_configs` (`id`, `timezones`, `version`, `logretention`) VALUES
-(1, '["0"]', '0.84+1.0', 30);
+(1, '["0"]', '0.84+1.3b', 30);
 
 -- --------------------------------------------------------
 

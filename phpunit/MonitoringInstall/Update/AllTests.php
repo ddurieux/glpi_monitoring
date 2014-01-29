@@ -48,7 +48,7 @@ class Update extends PHPUnit_Framework_TestCase {
       $PF_CONFIG = array();
       
       $Update = new Update();
-      $Update->update("0.84+1.0");
+      $Update->update("0.84+1.3b");
    }
    
    
