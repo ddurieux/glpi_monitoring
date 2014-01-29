@@ -232,6 +232,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
                echo "<td>";
                echo "<input type='submit' name='deletebusinessrules-".$gdata['id']."' value=\""._sx('button', 'Delete permanently')."\" class='submit'>";
                echo "</td>";
+               echo "</tr>";
             } else {
                // resource deleted
                echo "<tr class='tab_bg_1'>";
@@ -241,8 +242,8 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
                echo "<td>";
                echo "<input type='submit' name='deletebusinessrules-".$gdata['id']."' value=\"".__('Clean')."\" class='submit'>";
                echo "</td>";
+               echo "</tr>";
             }
-            echo "</tr>";
          }
          echo "</table>";
          echo "<hr/>";
@@ -270,6 +271,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
             echo "<td>";
             echo "<input type='submit' name='deletebrcomponents-".$a_br_component['id']."' value=\""._sx('button', 'Delete permanently')."\" class='submit'>";
             echo "</td>";
+            echo "</tr>";
          }         
          echo "</table>";
          
@@ -301,8 +303,9 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
             $item2->getFromDB($pmComponentscatalog_Host->fields['items_id']);
             echo $item2->getLink(1);
             echo "</td>";
+            echo "</tr>";
          }
-         echo "</tr>";
+         echo "</table>";
       }  
       
       echo "</td>";      
