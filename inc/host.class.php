@@ -276,6 +276,23 @@ class PluginMonitoringHost extends CommonDBTM {
       return $hostname;
    }
 
+   
+   /**
+    * Is host in scheduled downtime ?
+    */
+   function isInScheduledDowntime() {
+      if ($this->getID() == -1) return false;
+      
+      $pmDowntime = new PluginMonitoringDowntime();
+      $pmDowntime->getFromDBByQuery("WHERE `" . $pmDowntime->getTable() . "`.`plugin_monitoring_hosts_id` = '" . $this->getID() . "' LIMIT 1");
+      
+      if ($pmDowntime->getID() != -1) {
+         return $pmDowntime->isInDowntime();
+      }
+      
+      return -1;
+   }
+
 
    /**
     * Get host entity

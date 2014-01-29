@@ -2555,6 +2555,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               'acknowledge', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
+                              'downtime', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
                               'host_command', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
                               
@@ -3009,7 +3012,31 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $migration->migrationOneTable($newTable);      
       
       
-         
+    /*
+    * Table glpi_plugin_monitoring_downtimes
+    */
+      $newTable = "glpi_plugin_monitoring_downtimes";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `$newTable` (
+                    `id` int(11) NOT NULL AUTO_INCREMENT,
+                    `plugin_monitoring_hosts_id` int(11) NOT NULL DEFAULT '0',
+                    `flexible` tinyint(1) DEFAULT '1',
+                    `start_time` datetime NOT NULL,
+                    `end_time` datetime DEFAULT NULL,
+                    `duration` int(1) DEFAULT '24',
+                    `duration_type` varchar(64) COLLATE utf8_unicode_ci DEFAULT 'days',
+                    `comment` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
+                    `services` tinyint(1) DEFAULT '1',
+                    `users_id` int(11) DEFAULT '-1',
+                    `notified` tinyint(1) DEFAULT '1',
+                    `expired` tinyint(1) DEFAULT '1',
+                    PRIMARY KEY (`id`),
+                    KEY `plugin_monitoring_hosts_id` (`plugin_monitoring_hosts_id`)
+                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+         $DB->query($query);
+      }
+
+      
    /*
     * Table Delete old table not used
     */

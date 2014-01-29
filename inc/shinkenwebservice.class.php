@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringShinkenwebservice extends CommonDBTM {
    
-   function sendAcknowledge($host_id=-1, $service_id=-1, $author= '', $comment='', $sticky='1', $notify='0', $persistent='1') {
+   function sendAcknowledge($host_id=-1, $service_id=-1, $author= '', $comment='', $sticky='1', $notify='1', $persistent='1') {
       global $DB;
       
       if (($host_id == -1) && ($service_id == -1)) return false;
@@ -54,10 +54,10 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       $pmTag = new PluginMonitoringTag();
       $pmService = new PluginMonitoringService();
       $pmService->getFromDB($service_id);
-      $service_description = $pmService->getName();
+      $service_description = $pmService->getName(true);
       $pmHost = new PluginMonitoringHost();
       $pmHost->getFromDB(($host_id == -1) ? $pmService->getHostID() : $host_id);
-      $hostname = $pmHost->getName();
+      $hostname = $pmHost->getName(true);
       
       // Acknowledge an host ...
       $acknowledgeServiceOnly = true;
@@ -90,7 +90,7 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
    }
    
    
-   function sendDowntime($host_id=-1, $service_id=-1, $author= '', $comment='', $start_time='0', $fixed='0', $duration='1') {
+   function sendDowntime($host_id=-1, $service_id=-1, $author= '', $comment='', $flexible='0', $start_time='0', $end_time='0', $duration='3600', $operation='') {
       global $DB;
       
       if (($host_id == -1) && ($service_id == -1)) return false;
@@ -98,10 +98,10 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       $pmTag = new PluginMonitoringTag();
       $pmService = new PluginMonitoringService();
       $pmService->getFromDB($service_id);
-      $service_description = $pmService->getName();
+      $service_description = $pmService->getName(true);
       $pmHost = new PluginMonitoringHost();
       $pmHost->getFromDB(($host_id == -1) ? $pmService->getHostID() : $host_id);
-      $hostname = $pmHost->getName();
+      $hostname = $pmHost->getName(true);
       
       // Downtime an host ...
       $acknowledgeServiceOnly = true;
@@ -119,18 +119,25 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       $url = 'http://'.$ip.':7760/';
       $action = 'downtime';
       $a_fields = array(
+          'action'               => empty($operation) ? 'add' : $operation,
           'host_name'            => $hostname,
           'service_description'  => $service_description,
           'author'               => $author,
           'comment'              => mb_convert_encoding($comment, "iso-8859-1"),
-          'start_time'           => $start_time,
-          'fixed'                => $fixed,
-          'end_time'             => $start_time,
+          'flexible'             => $flexible,
+          'start_time'           => PluginMonitoringServiceevent::convert_datetime_timestamp($start_time),
+          'end_time'             => PluginMonitoringServiceevent::convert_datetime_timestamp($end_time),
           'trigger_id'           => '0',
           'duration'             => $duration
       );
       
-      return $this->sendCommand($url, $action, $a_fields, '', $auth);
+      // Send downtime command ...
+      if ($this->sendCommand($url, $action, $a_fields, '', $auth)) {
+         // ... and then send an acknowledge for the host
+         return $this->sendAcknowledge($host_id, $service_id, $author, $comment, '1', '1', '1');
+      }
+      
+      return false;
    }
    
    
@@ -161,7 +168,6 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
          }
       }
    }
-   
    
    
    function sendCommand($url, $action, $a_fields, $fields_string='', $auth='') {

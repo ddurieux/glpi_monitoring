@@ -834,8 +834,9 @@ echo "
       $this->showHeaderItem(__('Last check', 'monitoring'), 4, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
       $this->showHeaderItem(__('Result details', 'monitoring'), 5, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
       $this->showHeaderItem(__('Performance data', 'monitoring'), 6, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
-      if (PluginMonitoringProfile::haveRight("acknowledge", 'r')) {
-         $this->showHeaderItem(__('Acknowledge', 'monitoring'), 7, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
+      if (PluginMonitoringProfile::haveRight("acknowledge", 'r')
+         || PluginMonitoringProfile::haveRight("downtime", 'r')) {
+         $this->showHeaderItem(__('Maintenance', 'monitoring'), 7, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
       }
       echo "</tr>";
       
@@ -1264,8 +1265,49 @@ echo "
       echo $data['perf_data'];
       echo "</td>";
 
-      if (PluginMonitoringProfile::haveRight("acknowledge", 'r')) {
+      if (PluginMonitoringProfile::haveRight("acknowledge", 'r') 
+         || PluginMonitoringProfile::haveRight("downtime", 'r')) {
          echo "<td>";
+         // Schedule downtime for an host
+         if (PluginMonitoringProfile::haveRight("downtime", 'r')) {
+            $downtime_id = $pm_Host->isInScheduledDowntime();
+            if ($downtime_id != -1) {
+               Toolbox::logInFile("pm", "Host ".$pm_Host->getName()." is in downtime period \n");
+               if (PluginMonitoringProfile::haveRight("downtime", 'w')) {
+                  echo "<div style='float: left; margin-right: 10px;'>";
+                  echo "<span>";
+                  echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/downtime.form.php?id=$downtime_id&host_id=".$data['id']."'>"
+                           ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/downtime_scheduled.png'"
+                          ." alt='".htmlspecialchars(__('Edit the downtime scheduled for the host', 'monitoring'), ENT_QUOTES)."'"
+                          ." title='".htmlspecialchars(__('Edit the downtime scheduled for the host', 'monitoring'), ENT_QUOTES)."'/>"
+                       ."</a>";
+                  echo "&nbsp;&nbsp;</span>";
+                  echo "</div>";
+               } else {
+                  echo "<div style='float: left; margin-right: 10px;'>";
+                  echo "<span>";
+                  echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/downtime_scheduled.png'"
+                          ." alt='".htmlspecialchars(__('A downtime is scheduled for the host', 'monitoring'), ENT_QUOTES)."'"
+                          ." title='".htmlspecialchars(__('A downtime is scheduled for the host', 'monitoring'), ENT_QUOTES)."'/>";
+                  echo "&nbsp;&nbsp;</span>";
+                  echo "</div>";
+               }
+            } else {
+               if (PluginMonitoringProfile::haveRight("downtime", 'w')) {
+                  echo "<div style='float: left; margin-right: 10px;'>";
+                  echo "<span>";
+                  echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/downtime.form.php?id=-1&host_id=".$data['id']."'>"
+                           ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/downtime_to_schedule.png'"
+                          ." alt='".htmlspecialchars(__('Schedule a downtime for the host', 'monitoring'), ENT_QUOTES)."'"
+                          ." title='".htmlspecialchars(__('Schedule a downtime for the host', 'monitoring'), ENT_QUOTES)."'/>"
+                       ."</a>";
+                  echo "&nbsp;&nbsp;</span>";
+                  echo "</div>";
+               }
+            }
+         }
+         echo "<div style='float: left;'>";
+         // Manage acknowledgement for an host
          if ($data['is_acknowledged']=='1') {
             if (PluginMonitoringProfile::haveRight("acknowledge", 'w')) {
                echo "<span>";
@@ -1282,24 +1324,6 @@ echo "
                        ." title='".htmlspecialchars(__('Host problem has been acknowledged', 'monitoring'), ENT_QUOTES)."'/>";
                echo "&nbsp;&nbsp;</span>";
             }
-         } else if ($shortstate == 'red'
-                 || $shortstate == 'yellow'
-                 || $shortstate == 'orange'
-                 || !empty($data['host_services_state_list'])) {
-            if (PluginMonitoringProfile::haveRight("acknowledge", 'w')) {
-               echo "<span>";
-               echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?host=".$data['host_name']."&id=".$data['id']."'>"
-                        ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge.png'"
-                       ." alt='".htmlspecialchars(__('Add an acknowledge for the host and all faulty services of the host', 'monitoring'), ENT_QUOTES)."'"
-                       ." title='".htmlspecialchars(__('Add an acknowledge for the host and all faulty services of the host', 'monitoring'), ENT_QUOTES)."'/>"
-                    ."</a>";
-               echo "&nbsp;&nbsp;</span>";
-            }
-         }
-         
-         if ($shortstate == 'redblue'
-                 || $shortstate == 'orangeblue'
-                 || $shortstate == 'yellowblue') {
             $user = new User();
             $user->getFromDB($data['acknowledge_users_id']);
             echo"<i>". __('Acknowledged by: ', 'monitoring').$user->getName(1)."</i><br/>";
@@ -1309,7 +1333,22 @@ echo "
             } else {
                echo $data['acknowledge_comment'];
             }
+            
+         } else if ($shortstate == 'red'
+                 || $shortstate == 'yellow'
+                 || $shortstate == 'orange'
+                 || !empty($data['host_services_state_list'])) {
+            if (PluginMonitoringProfile::haveRight("acknowledge", 'w')) {
+               echo "<span>";
+               echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?host=".$data['host_name']."&id=".$data['id']."'>"
+                        ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_ko.png'"
+                       ." alt='".htmlspecialchars(__('Add an acknowledge for the host and all faulty services of the host', 'monitoring'), ENT_QUOTES)."'"
+                       ." title='".htmlspecialchars(__('Add an acknowledge for the host and all faulty services of the host', 'monitoring'), ENT_QUOTES)."'/>"
+                    ."</a>";
+               echo "&nbsp;&nbsp;</span>";
+            }
          }
+         echo "</div>";
          echo "</td>";
       }
    }
