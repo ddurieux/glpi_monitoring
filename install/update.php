@@ -101,22 +101,6 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $unavailability_reset = 1;
    }
    
-   // ** Update DB
-   $DB_file = GLPI_ROOT ."/plugins/monitoring/install/mysql/plugin_monitoring-update-".PLUGIN_MONITORING_VERSION.".sql";
-   // Toolbox::logInFile("pm", "DB update file - $DB_file\n");
-   $DBf_handle = @fopen($DB_file, "rt");
-   if ($DBf_handle) {
-      Toolbox::logInFile("pm", "DB update file exists\n");
-      $sql_query = fread($DBf_handle, filesize($DB_file));
-      fclose($DBf_handle);
-      // if (!empty($sql_query)) $DB->query($sql_query);
-      foreach ( explode(";\n", "$sql_query") as $sql_line) {
-         if (get_magic_quotes_runtime()) $sql_line=Toolbox::stripslashes_deep($sql_line);
-         Toolbox::logInFile("pm", "DB update file - $sql_line\n");
-         if (!empty($sql_line)) $DB->query($sql_line);
-      }
-   }
-
     /*
     * Table glpi_plugin_monitoring_servicescatalogs
     */
