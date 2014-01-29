@@ -57,7 +57,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
 
 
    static function canUpdate() {
-      return PluginMonitoringProfile::haveRight('acknowledge', 'u');
+      return PluginMonitoringProfile::haveRight('acknowledge', 'w');
    }
 
 
