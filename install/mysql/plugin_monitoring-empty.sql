@@ -634,7 +634,6 @@ CREATE TABLE `glpi_plugin_monitoring_profiles` (
   `homepage_system_status` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `homepage_hosts_status` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `homepage_all_ressources` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `dashboard_perfdatas` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `acknowledge` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `downtime` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `restartshinken` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
