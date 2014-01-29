@@ -121,20 +121,22 @@ class PluginMonitoringSecurity extends CommonDBTM {
             if (isset($_POST['sess_id'])) {
                // Its a monitoring ajax page
                $maxlifetime = ini_get("session.gc_maxlifetime");
-               if (date('U') > ($_SESSION['plugin_monitoring_lastsessiontime'] + $maxlifetime - 200)) {
-                  $a_data = $this->find("`users_id`='".$_SESSION['glpiID']."'"
-                          . " AND `session_id`='".$_POST['sess_id']."'", '', 1);
-                  if (count($a_data) == 1) {
-                     $data = current($a_data);
-                     if (date('U') > (strtotime($data['last_session_start']) + $maxlifetime - 200)) {
-                        session_start();
-                        $_SESSION['plugin_monitoring_lastsessiontime'] = date('U');
-                        $data['last_session_start'] = date('Y-m-d H:i:s');
-                        $data['session'] = Toolbox::addslashes_deep(exportArrayToDB($_SESSION));
-                        $this->update($data);
+               if (isset($_SESSION['plugin_monitoring_lastsessiontime'])) {
+                  if (date('U') > ($_SESSION['plugin_monitoring_lastsessiontime'] + $maxlifetime - 200)) {
+                     $a_data = $this->find("`users_id`='".$_SESSION['glpiID']."'"
+                             . " AND `session_id`='".$_POST['sess_id']."'", '', 1);
+                     if (count($a_data) == 1) {
+                        $data = current($a_data);
+                        if (date('U') > (strtotime($data['last_session_start']) + $maxlifetime - 200)) {
+                           session_start();
+                           $_SESSION['plugin_monitoring_lastsessiontime'] = date('U');
+                           $data['last_session_start'] = date('Y-m-d H:i:s');
+                           $data['session'] = Toolbox::addslashes_deep(exportArrayToDB($_SESSION));
+                           $this->update($data);
+                        }
                      }
+                     $_SESSION['plugin_monitoring_lastsessiontime'] = date('U');
                   }
-                  $_SESSION['plugin_monitoring_lastsessiontime'] = date('U');
                }
             }
          } else {
