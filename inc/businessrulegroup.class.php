@@ -232,6 +232,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
                echo "<td>";
                echo "<input type='submit' name='deletebusinessrules-".$gdata['id']."' value=\""._sx('button', 'Delete permanently')."\" class='submit'>";
                echo "</td>";
+               echo "</tr>";
             } else {
                // resource deleted
                echo "<tr class='tab_bg_1'>";
@@ -241,8 +242,8 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
                echo "<td>";
                echo "<input type='submit' name='deletebusinessrules-".$gdata['id']."' value=\"".__('Clean')."\" class='submit'>";
                echo "</td>";
+               echo "</tr>";
             }
-            echo "</tr>";
          }
          echo "</table>";
          echo "<hr/>";
@@ -270,6 +271,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
             echo "<td>";
             echo "<input type='submit' name='deletebrcomponents-".$a_br_component['id']."' value=\""._sx('button', 'Delete permanently')."\" class='submit'>";
             echo "</td>";
+            echo "</tr>";
          }         
          echo "</table>";
          
@@ -279,6 +281,8 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
                  "`plugin_monitoring_businessrulegroups_id`='".$items_id."'"
                  . " AND `is_dynamic`='1'");
          foreach ($a_services as $gdata) {
+            // Toolbox::logInFile("pm", "BR group - ".$gdata['id']." : ".$gdata['name']."\n");
+            $pmService->getFromDB($gdata["plugin_monitoring_services_id"]);
             $shortstate = PluginMonitoringHost::getState(
                               $pmService->fields['state'], 
                               $pmService->fields['state_type'],
@@ -292,7 +296,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
             echo "</td>";
             echo "<td>";
             $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
-            $pmService->getFromDB($gdata["plugin_monitoring_services_id"]);
+            // $pmService->getFromDB($gdata["plugin_monitoring_services_id"]);
             $pmComponentscatalog_Host->getFromDB($pmService->fields['plugin_monitoring_componentscatalogs_hosts_id']);
             echo $pmService->getLink(1);
             echo " ".__('on', 'monitoring')." ";
@@ -301,8 +305,9 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
             $item2->getFromDB($pmComponentscatalog_Host->fields['items_id']);
             echo $item2->getLink(1);
             echo "</td>";
+            echo "</tr>";
          }
-         echo "</tr>";
+         echo "</table>";
       }  
       
       echo "</td>";      
