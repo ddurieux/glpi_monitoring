@@ -2570,28 +2570,28 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
          $migration->addField($newTable, 
                               'dashboard', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
                               'dashboard_views', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
                               'dashboard_system_status', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
                               'dashboard_hosts_status', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
                               'dashboard_all_ressources', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
                               'dashboard_services_catalogs', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
                               'dashboard_components_catalogs', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
                               'dashboard_perfdatas', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
                               
          $migration->addField($newTable, 
                               'restartshinken', 
@@ -2611,25 +2611,25 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
                               'homepage_views', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
                               'homepage_system_status', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
                               'homepage_hosts_status', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
                               'homepage_all_ressources', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
                               'homepage_services_catalogs', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
                               'homepage_components_catalogs', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
                               'homepage_perfdatas', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
                               
       $migration->migrationOneTable($newTable);
       
