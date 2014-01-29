@@ -147,13 +147,16 @@ $tables_toremove = array_diff($a_tables_db_tableonly, $a_tables_ref_tableonly);
 $tables_toadd = array_diff($a_tables_ref_tableonly, $a_tables_db_tableonly);
 
 // See tables missing or to delete
-echo "Tables missing :\n";
-print_r($tables_toadd);
-echo "================\n";
-echo "Tables to delete :\n";
-print_r($tables_toremove);
-echo "================\n";
-
+if (count($tables_toadd) > 0) {
+   echo "Tables missing :\n";
+   print_r($tables_toadd);
+   echo "================\n";
+}
+if (count($tables_toremove) > 0) {
+   echo "Tables to delete :\n";
+   print_r($tables_toremove);
+   echo "================\n";
+}
 
 // See if fields are same
 foreach ($a_tables_db as $table=>$data) {
@@ -164,10 +167,14 @@ foreach ($a_tables_db as $table=>$data) {
       $diff .= print_r($data, TRUE);
       $diff .= print_r($a_tables_ref[$table], TRUE);
 
-      echo "Fields missing/not good in ".$when." ".$table." into ".$diff."\n";
-      print_r($fields_toadd);
-      echo "Fields to delete in ".$when." ".$table." into ".$diff."\n";
-      print_r($fields_toremove);
+      if (count($fields_toadd) > 0) {
+         echo "Fields missing/not good in ".$when." ".$table." into ".$diff."\n";
+         print_r($fields_toadd);
+      }
+      if (count($fields_toremove) > 0) {
+         echo "Fields to delete in ".$when." ".$table." into ".$diff."\n";
+         print_r($fields_toremove);
+      }
    }
 }
 
