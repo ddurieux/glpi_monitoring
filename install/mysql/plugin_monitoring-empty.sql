@@ -404,15 +404,18 @@ CREATE TABLE `glpi_plugin_monitoring_hosts` (
   `items_id` int(11) NOT NULL DEFAULT '0',
   `entities_id` int(11) NOT NULL DEFAULT '0',
   `itemtype` varchar(100) DEFAULT NULL,
-  `event` varchar(512) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `event` varchar(4096) COLLATE utf8_unicode_ci DEFAULT NULL,
   `state` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `state_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `last_check` datetime DEFAULT NULL,
   `dependencies` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `perf_data` text DEFAULT NULL COLLATE utf8_unicode_ci,
-  `output` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `latency` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `execution_time` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `is_acknowledged` tinyint(1) NOT NULL DEFAULT '0',
+  `is_acknowledgeconfirmed` tinyint(1) NOT NULL DEFAULT '0',
+  `acknowledge_comment` text DEFAULT NULL COLLATE utf8_unicode_ci,
+  `acknowledge_users_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
