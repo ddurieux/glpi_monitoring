@@ -139,7 +139,8 @@ class MonitoringInstall_AllTests  {
       $suite = new PHPUnit_Framework_TestSuite('MonitoringInstall');
       $suite->addTest(Install_AllTests::suite());
       if (!(isset($_SERVER['argv']) 
-              && isset($_SERVER['argv'][2]))) {
+              && isset($_SERVER['argv'][2])
+              && !isset($_SERVER['argv'][3]))) {
          $suite->addTest(Update_AllTests::suite());
       }
       return $suite;
