@@ -590,7 +590,6 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             AND CONCAT_WS('', `glpi_computers`.`entities_id`, `glpi_printers`.`entities_id`, `glpi_networkequipments`.`entities_id`) IN (".$_SESSION['glpiactiveentities_string'].") 
          ORDER BY name ASC";
       
-      // Toolbox::logInFile("pm", "query hosts - $query\n");
       $result = $DB->query($query);
       while ($dataComponentscatalog_Host=$DB->fetch_array($result)) {
          $ressources = array();
