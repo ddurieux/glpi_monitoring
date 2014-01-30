@@ -295,6 +295,29 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
               $this->fields['id']);
    }
 
+   
+   
+   function post_purgeItem() {
+      global $DB;
+      
+      $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+         WHERE `itemtype`='".$this->fields['itemtype']."'
+            AND `items_id`='".$this->fields['items_id']."'
+         LIMIT 1";
+      $result = $DB->query($query);
+      if ($DB->numrows($result) == 0) {
+         $queryH = "SELECT * FROM `glpi_plugin_monitoring_hosts`
+            WHERE `itemtype`='".$this->fields['itemtype']."'
+              AND `items_id`='".$this->fields['items_id']."'
+            LIMIT 1";
+         $resultH = $DB->query($queryH);
+         if ($DB->numrows($resultH) == 1) {
+            $dataH = $DB->fetch_assoc($resultH);
+            $pmHost = new PluginMonitoringHost();
+            $pmHost->delete($dataH);
+         }
+      }
+   }
 }
 
 ?>

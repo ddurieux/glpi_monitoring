@@ -50,9 +50,18 @@ class Host extends PHPUnit_Framework_TestCase {
       ));
   
       $this->assertEquals(1, countElementsInTable('glpi_plugin_monitoring_services'), "May have one service");
-      $this->assertEquals(1, countElementsInTable('glpi_plugin_monitoring_hosts'), "May have a host created");
    }
 
+   
+   
+   public function testAddHost() {
+      global $DB;
+
+      $DB->connect();
+      
+      $this->assertEquals(1, countElementsInTable('glpi_plugin_monitoring_hosts'), "May have a host created");
+   }
+   
    
    
    public function testDeleteService() {
@@ -70,18 +79,26 @@ class Host extends PHPUnit_Framework_TestCase {
       $pmComponentscatalog_Host->delete(array('id' => '1'));
       
       $this->assertEquals(0, countElementsInTable('glpi_plugin_monitoring_services'), "The service may be deleted");
+   }
+   
+   
+   
+   public function testDeleteHost() {
+      global $DB;
+
+      $DB->connect();
+
       $this->assertEquals(0, countElementsInTable('glpi_plugin_monitoring_hosts'), "The host may be deleted (no service in this host)");
-      
    }
 }
 
 
 
-class Host_AllTests  {
+class LinkItems_AllTests  {
 
    public static function suite() {
 
-      $suite = new PHPUnit_Framework_TestSuite('Host');
+      $suite = new PHPUnit_Framework_TestSuite('LinkItems');
       return $suite;
    }
 }
