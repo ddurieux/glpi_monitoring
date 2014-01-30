@@ -119,7 +119,7 @@ require_once 'MonitoringInstall/AllTests.php';
 require_once 'GLPIlogs/AllTests.php';
 
 require_once '1_Unit/PerfdataForGraph.php';
-require_once '1_Integration/Host.php';
+require_once '2_Integration/Host.php';
 
 class AllTests {
    public static function suite() {
