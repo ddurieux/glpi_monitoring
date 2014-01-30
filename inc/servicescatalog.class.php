@@ -190,7 +190,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       echo "<table class='tab_cadre' width='100%'>";
       echo "<tr class='tab_bg_4' style='background: #cececc;'>";
       
-      $a_ba = $this->find("`entities_id` IN (".$_SESSION['glpiactiveentities_string'].")");
+      $a_ba = $this->find("`entities_id` IN (".$_SESSION['glpiactiveentities_string'].")", "`business_priority`");
       $i = 0;
       foreach ($a_ba as $data) {
          echo "<td>";
