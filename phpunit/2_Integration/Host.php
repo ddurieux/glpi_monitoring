@@ -60,6 +60,9 @@ class Host extends PHPUnit_Framework_TestCase {
 
       $DB->connect();
 
+      $_SESSION["glpiname"] = 'glpi';
+      Plugin::load('monitoring');
+      
       Plugin::loadLang('monitoring');
 
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
