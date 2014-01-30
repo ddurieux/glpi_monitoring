@@ -87,7 +87,7 @@ class Host extends PHPUnit_Framework_TestCase {
           'is_dynamic'                              => '0'
       ));
       
-      $this->assertEquals(1, countElementsInTable('glpi_plugin_monitoring_hosts'), "May have a host created");
+      $this->assertEquals(1, countElementsInTable('glpi_plugin_monitoring_businessrules'), "May have one service in services catalog");
       
    }
    
