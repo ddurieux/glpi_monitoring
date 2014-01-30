@@ -47,12 +47,12 @@ if (PluginMonitoringProfile::haveRight("dashboard_services_catalogs", 'r')
 
    $dropdown = new PluginMonitoringServicescatalog();
    if (isset($_GET['detail']) AND isset($_GET['id'])) {
-      Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
+      Html::header(__('Monitoring - services catalogs', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
                 "monitoring", "servicescatalog");
       $dropdown->showBADetail($_GET['id']);
       Html::footer();
    } else {
-      Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
+      Html::header(__('Monitoring - services catalogs', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "servicescatalog");
       include (GLPI_ROOT . "/front/dropdown.common.form.php");
    }

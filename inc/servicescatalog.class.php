@@ -323,7 +323,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    
 
 
-   function showWidgetFrame($id) {
+   function showWidgetFrame($id, $reduced_interface=false, $is_minemap=FALSE) {
       global $DB, $CFG_GLPI;
 
       $pMonitoringBusinessrule = new PluginMonitoringBusinessrule();
@@ -381,7 +381,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       $cs_info = array();
       foreach ($a_group as $gdata) {
          $a_brules = $pMonitoringBusinessrule->find("`plugin_monitoring_businessrulegroups_id`='".$gdata['id']."'");
-         // Toolbox::logInFile("pm", "BR group - ".$gdata['id']." : ".$gdata['name']."\n");
+
          $state = array();
          $state['OK'] = 0;
          $state['WARNING'] = 0;
@@ -390,13 +390,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
          $cs_info_services = array();
          foreach ($a_brules as $brulesdata) {
             if ($pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id'])) {
-               // Toolbox::logInFile("pm", "BR group - ".$gdata['id']." : host/service ".$pMonitoringService->getHostName()." / ".$pMonitoringService->getName()."\n");
-/*
-               $cs_info_hosts[$pMonitoringService->getID()] = array();
-               $cs_info_hosts[$pMonitoringService->getID()]['hostname'] = $pMonitoringService->getHostName();
-               $cs_info_hosts[$pMonitoringService->getID()]['service'] = $pMonitoringService->getName();
-               $cs_info_hosts[$pMonitoringService->getID()]['state'] = $pMonitoringService->fields['state'];
-*/
+
                if (! isset($cs_info_hosts[$pMonitoringService->getHostName()])) $cs_info_hosts[$pMonitoringService->getHostName()] = array();
                $cs_info_hosts[$pMonitoringService->getHostName()]['id'] = $pMonitoringService->getHostId();
                $cs_info_hosts[$pMonitoringService->getHostName()]['name'] = $pMonitoringService->getHostName();
@@ -481,28 +475,22 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       </div>';
 
 
-      // Test to build a minemap
-      $is_minemap=true;
-      // echo "<pre>";
-      // print_r($cs_info);
-      // echo "</pre>";
-
-      
+      // Show a minemap if requested ...
       echo "<div class='minemapdiv' align='center'>"
-      ."<a onclick='Ext.get(\"minemapcomponentsservice".$id."\").toggle()'>"
-              ."Minemap</a></div>";
+      ."<a onclick='Ext.get(\"minemapservicescatalog".$id."\").toggle()'>"
+              .__('Minemap', 'monitoring')."</a></div>";
       if (!$is_minemap) {
-         echo '<div class="minemapdiv" id="minemapcomponentsservice'.$id.'" style="display: none; z-index: 1500">';
+         echo '<div class="minemapdiv" id="minemapservicescatalog'.$id.'" style="display: none; z-index: 1500">';
       } else {
-         echo '<div class="minemapdiv" id="minemapcomponentsservice'.$id.'">';
+         echo '<div class="minemapdiv" id="minemapservicescatalog'.$id.'">';
       }
       echo '<table class="tab_cadrehov">';
       
       
-      foreach ($cs_info as $group) {
+      foreach ($cs_info as $groupName=>$group) {
          echo '<table class="tab_cadrehov">';
          echo '<tr>';
-         echo '<th colspan="'. (1+count($group['services'])) .'">'.__('Business rules group', 'monitoring')."&nbsp; : ".$gdata['name'].'</th>';
+         echo '<th colspan="'. (1+count($group['services'])) .'">'.__('Business rules group', 'monitoring')."&nbsp; : ".$group['name'].'</th>';
          echo '</tr>';
 
          echo '<tr>';
