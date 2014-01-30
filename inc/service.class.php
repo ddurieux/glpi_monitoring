@@ -228,7 +228,63 @@ class PluginMonitoringService extends CommonDBTM {
       }
    }
 
-   
+
+   /**
+    * Get host name for a service
+    */
+   function getHostName() {
+      global $DB;
+      
+      $query = "SELECT
+                  `glpi_plugin_monitoring_hosts`.`id`
+                  , `glpi_computers`.`name`
+               FROM `glpi_plugin_monitoring_hosts`
+                  INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts` 
+                     ON (`glpi_plugin_monitoring_hosts`.`itemtype` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`) AND (`glpi_plugin_monitoring_hosts`.`items_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`)
+                  INNER JOIN `glpi_computers` 
+                     ON (`glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`)
+                  INNER JOIN `glpi_plugin_monitoring_services` 
+                     ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
+               WHERE (`glpi_plugin_monitoring_services`.`id` = '".$this->getID()."');";
+      $result = $DB->query($query);
+      if ($DB->numrows($result) > 0) {
+         while ($data=$DB->fetch_array($result)) {
+            return $data['name'];
+         }
+      } else {
+         return -1;
+      }
+   }
+
+
+   /**
+    * Get host overall state 
+    */
+   function getHostState() {
+      global $DB;
+      
+      $query = "SELECT
+                  `glpi_plugin_monitoring_hosts`.`id`
+                  , `glpi_computers`.`name`
+               FROM `glpi_plugin_monitoring_hosts`
+                  INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts` 
+                     ON (`glpi_plugin_monitoring_hosts`.`itemtype` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`) AND (`glpi_plugin_monitoring_hosts`.`items_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`)
+                  INNER JOIN `glpi_computers` 
+                     ON (`glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`)
+                  INNER JOIN `glpi_plugin_monitoring_services` 
+                     ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
+               WHERE (`glpi_plugin_monitoring_services`.`id` = '".$this->getID()."');";
+      $result = $DB->query($query);
+      if ($DB->numrows($result) > 0) {
+         while ($data=$DB->fetch_array($result)) {
+            return $data['name'];
+         }
+      } else {
+         return -1;
+      }
+   }
+
+
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       switch ($item->getType()) {
