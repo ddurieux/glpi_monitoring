@@ -427,6 +427,10 @@ class PluginMonitoringDisplay extends CommonDBTM {
    function showResourcesBoard($width='', $perfdatas=false) {
       global $DB,$CFG_GLPI;
 
+      if (! isset($_SESSION['plugin_monitoring_reduced_interface'])) {
+         $_SESSION['plugin_monitoring_reduced_interface'] = false;
+      }
+      
       $order = "ASC";
       if (isset($_GET['order'])) {
          $order = $_GET['order'];
@@ -587,7 +591,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $num = 0;
  
       echo "<tr class='tab_bg_1'>";
-      if (! $_SESSION['plugin_monitoring']['reduced_interface']) {
+      if (! $_SESSION['plugin_monitoring_reduced_interface']) {
          echo Search::showHeaderItem(0, __('Show counters', 'monitoring'), $num);
          echo Search::showHeaderItem(0, __('Show graphics', 'monitoring'), $num);
       }
@@ -608,7 +612,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       PluginMonitoringServicegraph::loadLib();
       while ($data=$DB->fetch_array($result)) {
          // Reduced array or not ?
-         if ($_SESSION['plugin_monitoring']['reduced_interface'] and $data['state'] == 'OK') continue;
+         if ($_SESSION['plugin_monitoring_reduced_interface'] and $data['state'] == 'OK') continue;
 
          echo "<tr class='tab_bg_3'>";
          $this->displayLine($data, 1, $perfdatas);
@@ -673,6 +677,10 @@ echo "
    function showHostsBoard($width='', $limit='') {
       global $DB,$CFG_GLPI;
 
+      if (! isset($_SESSION['plugin_monitoring_reduced_interface'])) {
+         $_SESSION['plugin_monitoring_reduced_interface'] = false;
+      }
+      
       if (! isset($_GET['order'])) {
          $_GET['order'] = "ASC";
       }
@@ -842,7 +850,7 @@ echo "
       
       while ($data=$DB->fetch_array($result)) {
          // Reduced array or not ?
-         if ($_SESSION['plugin_monitoring']['reduced_interface'] and $data['state'] == 'UP') continue;
+         if ($_SESSION['plugin_monitoring_reduced_interface'] and $data['state'] == 'UP') continue;
 
          if (isset($host_command_name)) {
             $data['host_command_name'] = $host_command_name;
@@ -927,7 +935,7 @@ echo "
       }
          
       if ($displayGraphs) {
-         if (! $_SESSION['plugin_monitoring']['reduced_interface']) {
+         if (! $_SESSION['plugin_monitoring_reduced_interface']) {
             echo "<td class='center'>";
             // Only if exist incremental perfdata ...
             if ($pMonitoringComponent->hasCounters()) {

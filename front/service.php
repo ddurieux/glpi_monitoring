@@ -55,11 +55,11 @@ if (isset($_SESSION['plugin_monitoring']['ressources_perfdata'])) {
 }
 */
 // Reduced or normal interface ?
-if (! isset($_SESSION['plugin_monitoring']['reduced_interface'])) {
-   $_SESSION['plugin_monitoring']['reduced_interface'] = false;
+if (! isset($_SESSION['plugin_monitoring_reduced_interface'])) {
+   $_SESSION['plugin_monitoring_reduced_interface'] = false;
 }
 if (isset($_POST['reduced_interface'])) {
-   $_SESSION['plugin_monitoring']['reduced_interface'] = $_POST['reduced_interface'];
+   $_SESSION['plugin_monitoring_reduced_interface'] = $_POST['reduced_interface'];
 }
 
 $pmDisplay = new PluginMonitoringDisplay();

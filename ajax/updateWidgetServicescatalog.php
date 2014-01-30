@@ -55,14 +55,14 @@ PluginMonitoringSecurity::deleteCheckSessionTime();
 
 Session::checkLoginUser();
 
-if (! isset($_SESSION['plugin_monitoring']['reduced_interface'])) {
-   $_SESSION['plugin_monitoring']['reduced_interface'] = false;
+if (! isset($_SESSION['plugin_monitoring_reduced_interface'])) {
+   $_SESSION['plugin_monitoring_reduced_interface'] = false;
 }
 
 $pmServicescatalog = new PluginMonitoringServicescatalog();
 $pmServicescatalog->showWidgetFrame(
         $_POST['id'], 
-        $_SESSION['plugin_monitoring']['reduced_interface'],
+        $_SESSION['plugin_monitoring_reduced_interface'],
         isset($_POST['is_minemap']) ? $_POST['is_minemap'] : false);
 
 ?>
