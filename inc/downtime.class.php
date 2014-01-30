@@ -52,22 +52,22 @@ class PluginMonitoringDowntime extends CommonDBTM {
    
    
    static function canCreate() {      
-      return PluginMonitoringProfile::haveRight("acknowledge", 'w');
+      return PluginMonitoringProfile::haveRight("downtime", 'w');
    }
 
 
    static function canUpdate() {
-      return PluginMonitoringProfile::haveRight('acknowledge', 'w');
+      return PluginMonitoringProfile::haveRight('downtime', 'w');
    }
 
 
    static function canDelete() {
-      return PluginMonitoringProfile::haveRight('acknowledge', 'w');
+      return PluginMonitoringProfile::haveRight('downtime', 'w');
    }
 
 
    static function canView() {
-      return PluginMonitoringProfile::haveRight("acknowledge", 'r');
+      return PluginMonitoringProfile::haveRight("downtime", 'r');
    }
 
 

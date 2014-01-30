@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("acknowledge","r");
+PluginMonitoringProfile::checkRight("downtime","r");
 
 Html::header(__('Monitoring - downtimes', 'monitoring'),'', "plugins", "monitoring", "downtime");
 
