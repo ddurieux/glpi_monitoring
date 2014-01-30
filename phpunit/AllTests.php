@@ -117,6 +117,8 @@ $_SESSION['glpiactiveprofile']['networking'] = 'w';
 $_SESSION['glpiactiveentities'] = array(0, 1);
 
 $_SESSION["glpiname"] = 'glpi';
+
+require_once GLPI_ROOT . "/plugin/monitoring/setup.php";
 plugin_init_monitoring();
 
 require_once 'GLPIInstall/AllTests.php';
