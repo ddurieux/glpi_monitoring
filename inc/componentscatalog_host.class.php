@@ -291,8 +291,8 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
    
    function post_addItem() {
       $this->linkComponentsToItem(
-              $this->field['plugin_monitoring_componentscalalog_id'], 
-              $this->field['id']);
+              $this->fields['plugin_monitoring_componentscalalog_id'], 
+              $this->fields['id']);
    }
 
 }
