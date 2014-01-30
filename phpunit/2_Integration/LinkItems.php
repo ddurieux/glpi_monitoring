@@ -53,6 +53,45 @@ class Host extends PHPUnit_Framework_TestCase {
    }
 
    
+
+   public function testAddServicesCatalog() {
+      global $DB;
+
+      $DB->connect();
+
+      $_SESSION["glpiname"] = 'glpi';
+      Plugin::load('monitoring');
+
+      Plugin::loadLang('monitoring');
+
+      $pmServicescatalog = new PluginMonitoringServicescatalog();
+      $pmBusinessruleGroup = new PluginMonitoringBusinessruleGroup();
+      $pmBusinessrule = new PluginMonitoringBusinessrule();
+      
+      
+      $pmServicescatalog->add(array(
+          'name'                        => 'bp1',
+          'entities_id'                 => '0',
+          'plugin_monitoring_checks_id' => '2',
+          'calendars_id'                => '2',
+          'notification_interval'       => '30'
+      ));
+      $pmBusinessruleGroup->add(array(
+          'name'                                  => 'first group',
+          'plugin_monitoring_servicescatalogs_id' => '1',
+          'operator'                              => 'and'
+      ));
+      $pmBusinessrule->add(array(
+          'plugin_monitoring_businessrulegroups_id' => '1',
+          'plugin_monitoring_services_id'           => '1',
+          'is_dynamic'                              => '0'
+      ));
+      
+      $this->assertEquals(1, countElementsInTable('glpi_plugin_monitoring_hosts'), "May have a host created");
+      
+   }
+   
+   
    
    public function testAddHost() {
       global $DB;
@@ -79,6 +118,16 @@ class Host extends PHPUnit_Framework_TestCase {
       $pmComponentscatalog_Host->delete(array('id' => '1'));
       
       $this->assertEquals(0, countElementsInTable('glpi_plugin_monitoring_services'), "The service may be deleted");
+   }
+   
+
+   
+   public function testDeleteServiceofServicesCatalog() {
+      global $DB;
+
+      $DB->connect();
+
+      $this->assertEquals(0, countElementsInTable('glpi_plugin_monitoring_businessrules'), "The service may be deleted of services catalog");
    }
    
    
