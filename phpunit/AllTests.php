@@ -92,6 +92,8 @@ if (!defined('GLPI_ROOT')) {
    }
 
    spl_autoload_register('glpiautoload');
+   
+   $_SESSION["glpiname"] = 'glpi';
 
    include (GLPI_ROOT . "/config/based_config.php");
    include (GLPI_ROOT . "/inc/includes.php");
@@ -113,6 +115,9 @@ $_SESSION['glpiactiveprofile']['peripheral'] = 'w';
 $_SESSION['glpiactiveprofile']['networking'] = 'w';
 
 $_SESSION['glpiactiveentities'] = array(0, 1);
+
+$_SESSION["glpiname"] = 'glpi';
+
 
 require_once 'GLPIInstall/AllTests.php';
 require_once 'MonitoringInstall/AllTests.php';
