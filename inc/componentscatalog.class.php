@@ -434,7 +434,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       
       echo "<div class='minemapdiv' align='center'>"
       ."<a onclick='Ext.get(\"minemapcomponentscatalog".$id."\").toggle()'>"
-              ."Minemap</a></div>";
+              .__('Minemap', 'monitoring')."</a></div>";
       if (!$is_minemap) {
          echo '<div class="minemapdiv" id="minemapcomponentscatalog'.$id.'" style="display: none; z-index: 1500">';
       } else {

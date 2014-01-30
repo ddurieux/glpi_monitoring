@@ -190,7 +190,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       echo "<table class='tab_cadre' width='100%'>";
       echo "<tr class='tab_bg_4' style='background: #cececc;'>";
       
-      $a_ba = $this->find();
+      $a_ba = $this->find("`entities_id` IN (".$_SESSION['glpiactiveentities_string'].")", "`business_priority`");
       $i = 0;
       foreach ($a_ba as $data) {
          echo "<td>";
@@ -323,7 +323,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    
 
 
-   function showWidgetFrame($id) {
+   function showWidgetFrame($id, $reduced_interface=false, $is_minemap=FALSE) {
       global $DB, $CFG_GLPI;
 
       $pMonitoringBusinessrule = new PluginMonitoringBusinessrule();
@@ -376,14 +376,35 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       $colorclass = 'ok';
       $a_group = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_servicescatalogs_id`='".$data['id']."'");
       $a_gstate = array();
+      
+      // Array updated dynamically with groups/hosts/services status ...
+      $cs_info = array();
       foreach ($a_group as $gdata) {
          $a_brules = $pMonitoringBusinessrule->find("`plugin_monitoring_businessrulegroups_id`='".$gdata['id']."'");
+
          $state = array();
          $state['OK'] = 0;
          $state['WARNING'] = 0;
          $state['CRITICAL'] = 0;
+         $cs_info_hosts = array();
+         $cs_info_services = array();
          foreach ($a_brules as $brulesdata) {
             if ($pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id'])) {
+
+               if (! isset($cs_info_hosts[$pMonitoringService->getHostName()])) $cs_info_hosts[$pMonitoringService->getHostName()] = array();
+               $cs_info_hosts[$pMonitoringService->getHostName()]['id'] = $pMonitoringService->getHostId();
+               $cs_info_hosts[$pMonitoringService->getHostName()]['name'] = $pMonitoringService->getHostName();
+               $cs_info_hosts[$pMonitoringService->getHostName()]['services'][$pMonitoringService->getName()]['id'] = $pMonitoringService->fields['id'];
+               $cs_info_hosts[$pMonitoringService->getHostName()]['services'][$pMonitoringService->getName()]['state'] = $pMonitoringService->fields['state'];
+               $cs_info_hosts[$pMonitoringService->getHostName()]['services'][$pMonitoringService->getName()]['last_check'] = $pMonitoringService->fields['last_check'];
+               $cs_info_hosts[$pMonitoringService->getHostName()]['services'][$pMonitoringService->getName()]['event'] = $pMonitoringService->fields['event'];
+               
+               // Get all host services except if state is ok or is already acknowledged ...
+               $a_ret = PluginMonitoringHost::getServicesState($pMonitoringService->getHostId(), "`glpi_plugin_monitoring_services`.`state` != 'OK'");
+               $cs_info_hosts[$pMonitoringService->getHostName()]['state'] = $a_ret[0];
+
+               $cs_info_services[$pMonitoringService->getName()] = $pMonitoringService->fields['plugin_monitoring_components_id'];
+
                switch($pMonitoringService->fields['state']) {
 
                   case 'UP':
@@ -416,6 +437,11 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
             $a_gstate[$gdata['id']] = "OK";
          }            
 
+         $cs_info[$gdata['id']] = array();
+         $cs_info[$gdata['id']]['name'] = $gdata['name'];
+         $cs_info[$gdata['id']]['state'] = $a_gstate[$gdata['id']];
+         $cs_info[$gdata['id']]['hosts'] = $cs_info_hosts;
+         $cs_info[$gdata['id']]['services'] = $cs_info_services;
       }
       $state = array();
       $state['OK'] = 0;
@@ -432,21 +458,89 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
          $color = 'orange';
          $colorclass = 'warn';
       }
-
+      
       echo '<div class="ch-itemdown">
          <div class="ch-info-'.$colorclass.'">
-			<p><font style="font-size: 20px;">';
+         <p><font style="font-size: 20px;">';
 //      echo "<font style='font-size: 18px;'>".__('Status');
 //      echo $display_img;
       if ($colorclass != 'ok') {
          echo __('Degraded mode', 'monitoring').'!';
       } else {
-         echo __('Services catalog', 'monitoring');
+         // echo __('Services catalog', 'monitoring');
       }
 
       echo '</font></p>
          </div>
-		</div>';
+      </div>';
+
+
+      // Show a minemap if requested ...
+      echo "<div class='minemapdiv' align='center'>"
+      ."<a onclick='Ext.get(\"minemapservicescatalog".$id."\").toggle()'>"
+              .__('Minemap', 'monitoring')."</a></div>";
+      if (!$is_minemap) {
+         echo '<div class="minemapdiv" id="minemapservicescatalog'.$id.'" style="display: none; z-index: 1500">';
+      } else {
+         echo '<div class="minemapdiv" id="minemapservicescatalog'.$id.'">';
+      }
+      echo '<table class="tab_cadrehov">';
+      
+      
+      foreach ($cs_info as $groupName=>$group) {
+         echo '<table class="tab_cadrehov">';
+         echo '<tr>';
+         echo '<th colspan="'. (1+count($group['services'])) .'">'.__('Business rules group', 'monitoring')."&nbsp; : ".$group['name'].'</th>';
+         echo '</tr>';
+
+         echo '<tr>';
+         echo "<th>";
+         echo __('Hosts', 'monitoring');
+         echo "</th>";
+         foreach ($group['services'] as $serviceName => $service) {
+            if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+               $link = $CFG_GLPI['root_doc'].
+                  "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
+                     "&field[0]=2&searchtype[0]=equals&contains[0]=".$service.
+                     "&itemtype=PluginMonitoringService&start=0'";
+               echo  '<th class="vertical">';
+               echo  '<a href="'.$link.'"><div class="rotated-text"><span class="rotated-text__inner">'.$serviceName.'</span></div></a>';
+               echo  '</th>';
+            } else {
+               echo  '<th class="vertical">';
+               echo  '<div class="rotated-text"><span class="rotated-text__inner">'.$serviceName.'</span></div>';
+               echo  '</th>';
+            }
+         }
+         echo '</tr>';
+            
+         foreach ($group['hosts'] as $host) {
+            echo  "<tr class='tab_bg_2' style='height: 50px;'>";
+            
+            if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+               $link = $CFG_GLPI['root_doc'].
+                  "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
+                     "&field[0]=20&searchtype[0]=equals&contains[0]=".$host['id'].
+                     "&itemtype=PluginMonitoringService&start=0'";
+               echo  "<td class='left'><a href='".$link."'>".$host['name']."</a></td>";
+            } else {
+               echo  "<td class='left'>".$host['name']."</td>";
+            }
+            // echo  "<td class='left'>".$host['name']."</td>";
+            foreach ($host['services'] as $serviceName => $service) {
+               echo '<td>';
+               echo '<div title="'.$service['last_check'].' - '.$service['event'].'" class="service'.$service['state'].'"></div>';
+               echo  '</td>';
+            }
+
+            
+            echo  '</tr>';
+         }
+         echo  '</table>';
+      }
+      
+      echo  '</table>';
+      echo '</div>';
    }
    
    

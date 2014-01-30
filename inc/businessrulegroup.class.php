@@ -106,6 +106,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
       
       $rand = mt_rand();
       
+      // Toolbox::logInFile("pm", "BR group - ".$items_id." : ".$servicescatalogs_id."\n");
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
       echo "<input type='hidden' name='plugin_monitoring_servicescatalogs_id' value='".$servicescatalogs_id."'/>";
@@ -152,6 +153,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
          if (PluginMonitoringProfile::haveRight("config_services_catalogs", 'w')) {
             // ** Dropdown to display
             echo "<div style='display:none' id='ressources".$rand."' >";
+            // Static (a service for an host)
             echo "<table>";
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
@@ -181,13 +183,13 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
             $options = array(
                 'toupdate' => array(
                                  'value_fieldname' => 'plugin_monitoring_componentscalalog_id',
-                                 'to_update'       => "componentdropdown",
+                                 'to_update'       => "componentdropdown".$rand,
                                  'url'             => $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownComponent.php",
                                  'moreparams'      => array()
                               )
             );
             Dropdown::show('PluginMonitoringComponentscatalog', $options);
-            echo '<div id="componentdropdown"></div>';
+            echo '<div id="componentdropdown'.$rand.'"></div>';
             //PluginMonitoringBusinessrule::dropdownService(0, array('name' => 'type'));         
             echo "<input type='submit' name='add' value=\"".__('Add')."\" class='submit'>";
             Html::closeForm();
@@ -196,84 +198,89 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
             echo "</table>";
             echo "<hr>";
             
-            
             echo "</div>";
          }
 
 
-         echo "<table width='100%'>";
          $pmBusinessrule = new PluginMonitoringBusinessrule();
          $pmService = new PluginMonitoringService();
          $a_services = $pmBusinessrule->find("`plugin_monitoring_businessrulegroups_id`='".$items_id."'"
                  . " AND `is_dynamic`='0'");
-         foreach ($a_services as $gdata) {
-            if ($pmService->getFromDB($gdata['plugin_monitoring_services_id'])) {
+         if (count($a_services) > 0) {
+            echo "<strong>".__('Static hosts', 'monitoring')." :</strong>";
+            echo "<table width='100%'>";
+            foreach ($a_services as $gdata) {
+               if ($pmService->getFromDB($gdata['plugin_monitoring_services_id'])) {
 
-               $shortstate = PluginMonitoringHost::getState(
-                                 $pmService->fields['state'], 
-                                 $pmService->fields['state_type'],
-                                 '',
-                                 $pmService->fields['is_acknowledged']);
-               echo "<tr class='tab_bg_1'>";
-               echo "<td>";
-               echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/>";
-               echo "</td>";
-               echo "<td>";
-               $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
-               $pmService->getFromDB($gdata["plugin_monitoring_services_id"]);
-               $pmComponentscatalog_Host->getFromDB($pmService->fields['plugin_monitoring_componentscatalogs_hosts_id']);
-               echo $pmService->getLink(1);
-               echo " ".__('on', 'monitoring')." ";
-               $itemtype2 = $pmComponentscatalog_Host->fields['itemtype'];
-               $item2 = new $itemtype2();
-               $item2->getFromDB($pmComponentscatalog_Host->fields['items_id']);
-               echo $item2->getLink(1);
-               echo "</td>";
-               echo "<td>";
-               echo "<input type='submit' name='deletebusinessrules-".$gdata['id']."' value=\""._sx('button', 'Delete permanently')."\" class='submit'>";
-               echo "</td>";
-               echo "</tr>";
-            } else {
-               // resource deleted
-               echo "<tr class='tab_bg_1'>";
-               echo "<td colspan='2' bgcolor='#ff0000'>";
-               echo __('Resource deleted', 'monitoring');
-               echo "</td>";
-               echo "<td>";
-               echo "<input type='submit' name='deletebusinessrules-".$gdata['id']."' value=\"".__('Clean')."\" class='submit'>";
-               echo "</td>";
-               echo "</tr>";
+                  $shortstate = PluginMonitoringHost::getState(
+                                    $pmService->fields['state'], 
+                                    $pmService->fields['state_type'],
+                                    '',
+                                    $pmService->fields['is_acknowledged']);
+                  echo "<tr class='tab_bg_1'>";
+                  echo "<td>";
+                  echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/>";
+                  echo "</td>";
+                  echo "<td>";
+                  $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+                  $pmService->getFromDB($gdata["plugin_monitoring_services_id"]);
+                  $pmComponentscatalog_Host->getFromDB($pmService->fields['plugin_monitoring_componentscatalogs_hosts_id']);
+                  echo $pmService->getLink(1);
+                  echo " ".__('on', 'monitoring')." ";
+                  $itemtype2 = $pmComponentscatalog_Host->fields['itemtype'];
+                  $item2 = new $itemtype2();
+                  $item2->getFromDB($pmComponentscatalog_Host->fields['items_id']);
+                  echo $item2->getLink(1);
+                  echo "</td>";
+                  echo "<td>";
+                  echo "<input type='submit' name='deletebusinessrules-".$gdata['id']."' value=\""._sx('button', 'Delete permanently')."\" class='submit'>";
+                  echo "</td>";
+                  echo "</tr>";
+               } else {
+                  // resource deleted
+                  echo "<tr class='tab_bg_1'>";
+                  echo "<td colspan='2' bgcolor='#ff0000'>";
+                  echo __('Resource deleted', 'monitoring');
+                  echo "</td>";
+                  echo "<td>";
+                  echo "<input type='submit' name='deletebusinessrules-".$gdata['id']."' value=\"".__('Clean')."\" class='submit'>";
+                  echo "</td>";
+                  echo "</tr>";
+               }
             }
+            echo "</table>";
+            echo "<hr/>";
          }
-         echo "</table>";
-         echo "<hr/>";
-         echo "<strong>".__('Dynamic', 'monitoring')." :</strong>";
          
          $a_br_components = $pmBusinessrule_component->find(
                  "`plugin_monitoring_businessrulegroups_id`='".$items_id."'"
                  );
-         echo "<table width='100%'>";
          $pmComponentscatalog_Component = new PluginMonitoringComponentscatalog_Component();
          $pmComponentscatalog = new PluginMonitoringComponentscatalog();
          $pmComponent = new PluginMonitoringComponent();
-         foreach ($a_br_components as $a_br_component) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            $pmComponentscatalog_Component->getFromDB(
-                    $a_br_component['plugin_monitoring_componentscatalogs_components_id']);
-            $pmComponentscatalog->getFromDB($pmComponentscatalog_Component->fields['plugin_monitoring_componentscalalog_id']);
-            echo $pmComponentscatalog->getLink();
-            echo ' > ';
-            $pmComponent->getFromDB(
-                    $pmComponentscatalog_Component->fields['plugin_monitoring_components_id']);
-            echo $pmComponent->getLink();
-            echo "</td>";
-            echo "<td>";
-            echo "<input type='submit' name='deletebrcomponents-".$a_br_component['id']."' value=\""._sx('button', 'Delete permanently')."\" class='submit'>";
-            echo "</td>";
-            echo "</tr>";
-         }         
-         echo "</table>";
+         if (count($a_br_components) > 0) {
+            echo "<strong>".__('Dynamic hosts', 'monitoring')." :</strong>";
+            echo "<table width='100%'>";
+            
+            foreach ($a_br_components as $a_br_component) {
+               echo "<tr class='tab_bg_1'>";
+               echo "<td>";
+               $pmComponentscatalog_Component->getFromDB(
+                       $a_br_component['plugin_monitoring_componentscatalogs_components_id']);
+               $pmComponentscatalog->getFromDB($pmComponentscatalog_Component->fields['plugin_monitoring_componentscalalog_id']);
+               echo $pmComponentscatalog->getLink();
+               echo ' > ';
+               $pmComponent->getFromDB(
+                       $pmComponentscatalog_Component->fields['plugin_monitoring_components_id']);
+               echo $pmComponent->getLink();
+               echo "</td>";
+               echo "<td>";
+               echo "<input type='submit' name='deletebrcomponents-".$a_br_component['id']."' value=\""._sx('button', 'Delete permanently')."\" class='submit'>";
+               echo "</td>";
+               echo "</tr>";
+            }         
+            echo "</table>";
+         }
          
          
          echo "<table width='100%'>";
