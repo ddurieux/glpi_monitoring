@@ -536,9 +536,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                $input['is_static'] = '0';
                $input['items_id'] = $items_id;
                $input['itemtype'] = $itemtype;
-               $componentscatalogs_hosts_id = $pmComponentscatalog_Host->add($input);
-               $pmComponentscatalog_Host->linkComponentsToItem($componentscalalog_id, 
-                                                               $componentscatalogs_hosts_id);
+               $pmComponentscatalog_Host->add($input);
             } else {
                $data2 = $DB->fetch_assoc($result);
                // modify entity of services (if entity of device is changed)
