@@ -349,7 +349,7 @@ class PluginMonitoringCustomitem_Counter extends CommonDBTM {
       mgrcc".$id.".showLoadIndicator=false;
       mgrcc".$id.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"].
               "/plugins/monitoring/ajax/updateWidgetCustomitem_counter.php\","
-              . " \"id=".$id."sess_id=".$sess_id.
+              . " \"id=".$id."&sess_id=".$sess_id.
               "&glpiID=".$_SESSION['glpiID'].
               "&plugin_monitoring_securekey=".$_SESSION['plugin_monitoring_securekey'].
               "\", \"\", true);
