@@ -45,7 +45,9 @@ class Host extends PHPUnit_Framework_TestCase {
           'items_id'                               => '1',
           'itemtype'                               => 'Computer'
       ));
-
+      // Used in front/componentscatalog_host.form.php
+         $pmComponentscatalog_Host->linkComponentsToItem(1, 1);
+      
       $this->assertEquals(1, countElementsInTable('glpi_plugin_monitoring_services'), "May have one service");
       $this->assertEquals(1, countElementsInTable('glpi_plugin_monitoring_hosts'), "May have a host created");
    }
