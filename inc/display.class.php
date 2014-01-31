@@ -431,6 +431,13 @@ class PluginMonitoringDisplay extends CommonDBTM {
          $_SESSION['plugin_monitoring_reduced_interface'] = false;
       }
       
+      if (! isset($_GET['order'])) {
+         $_GET['order'] = "ASC";
+      }
+      if (! isset($_GET['sort'])) {
+         $_GET['sort'] = "";
+      }
+      
       $order = "ASC";
       if (isset($_GET['order'])) {
          $order = $_GET['order'];
@@ -558,7 +565,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                 Search::getArrayUrlLink("link2",$_GET['link2']);
 
       $parameters = "sort=".$_GET['sort']."&amp;order=".$_GET['order'].$globallinkto;
-      Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/service.php", $parameters);
+      Html::printPager($start, $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/service.php", $parameters);
 
       $limit = $numrows;
       if ($_SESSION["glpilist_limit"] < $numrows) {
@@ -2499,7 +2506,7 @@ Ext.onReady(function(){
       }
       echo __('Reduced interface', 'monitoring')." : ";
       echo "&nbsp;";
-      Dropdown::showYesNo("reduced_interface", $_SESSION['plugin_monitoring']['reduced_interface']);
+      Dropdown::showYesNo("reduced_interface", $_SESSION['plugin_monitoring_reduced_interface']);
       echo "&nbsp;";
       echo "<input type='submit' name='sessionupdate' class='submit' value=\"".__('Post')."\">";
       echo "</div>";

@@ -260,10 +260,18 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
          $state = array();
          $state['red'] = 0;
          $state['red_soft'] = 0;
+         $state['redblue'] = 0;
+         $state['redblue_soft'] = 0;
          $state['orange'] = 0;
          $state['orange_soft'] = 0;
+         $state['orangeblue'] = 0;
+         $state['orangeblue_soft'] = 0;
          $state['green'] = 0;
          $state['green_soft'] = 0;
+         $state['yellow'] = 0;
+         $state['yellow_soft'] = 0;
+         $state['yellowblue'] = 0;
+         $state['yellowblue_soft'] = 0;
          foreach ($a_brulesg as $brulesdata) {
             $pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id']);
             $state[PluginMonitoringHost::getState($pMonitoringService->fields['state'], 

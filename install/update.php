@@ -3099,7 +3099,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring/templates");
    }
    
-   
+   // Update calendars
    $query = "SELECT * FROM `glpi_calendars`
       WHERE `name`='24x7'
       LIMIT 1";
@@ -3133,8 +3133,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $calendarSegment->add($input);
    }
 
-      
-      
+
+
+   // Update crontasks
    $crontask = new CronTask();
    if (!$crontask->getFromDBbyName('PluginMonitoringServiceevent', 'updaterrd')) {
       CronTask::Register('PluginMonitoringServiceevent', 'updaterrd', '300', 
@@ -3158,8 +3159,56 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    }
    
    
+   $pmCommand = new PluginMonitoringCommand();
+   $a_list = $pmCommand->find();
+   $check_dummy_found = false;
+   $restart_shinken_found = false;
+   $host_action_found = false;
+   foreach ($a_list as $data) {
+      if ($data['command_name'] == "check_dummy") {
+         $check_dummy_found = true;
+      }
+      if ($data['command_name'] == "restart_shinken") {
+         $restart_shinken_found = true;
+      }
+      if ($data['command_name'] == "host_action") {
+         $host_action_found = true;
+      }
+   }
+   if (! $host_action_found) {
+      // Host action command
+      $pmCommand = new PluginMonitoringCommand();
+      $input = array();
+      $input['name'] = "Host action";
+      $input['command_name'] = "host_action";
+      $input['command_line'] = $DB->escape("host_action");
+      $pmCommand->add($input);
+   }
+   if (! $restart_shinken_found) {
+      // Restart shinken command
+      $pmCommand = new PluginMonitoringCommand();
+      $input = array();
+      $input['name'] = "Restart Shinken";
+      $input['command_name'] = "restart_shinken";
+      $input['command_line'] = $DB->escape("nohup sh -c '/usr/local/shinken/bin/stop_arbiter.sh && sleep 3 && /usr/local/shinken/bin/launch_arbiter.sh' > /dev/null 2>&1 &");
+      $pmCommand->add($input);
+   }
+   if (! $check_dummy_found) {
+      // Check dummy command
+      $pmCommand = new PluginMonitoringCommand();
+      $input = array();
+      $input['name'] = "Dummy check";
+      $input['command_name'] = "check_dummy";
+      $input['command_line'] = $DB->escape("\$PLUGINSDIR\$/check_dummy \$ARG1\$ \"\$ARG2$\"");
+      $arg = array();
+      $arg['ARG1'] = 'INTEGER: dummy status code';
+      $arg['ARG2'] = 'TEXT: dummy status output text';
+      $input['arguments'] = exportArrayToDB($arg);
+      $pmCommand->add($input);
+   }
+   
    /*
-    * Clean services not have host
+    * Clean services not having hosts
     */
    $query = "SELECT `glpi_plugin_monitoring_services`.* FROM `glpi_plugin_monitoring_services`
       LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
@@ -3172,10 +3221,27 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $DB->query($queryd);
    }
    
+   /*
+    * Clean components catalog not having hosts
+    */
+   $query = "SELECT `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
+      FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+      LEFT JOIN `glpi_computers` 
+         ON (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_computers`.`id`)
+      WHERE (`glpi_computers`.`name` IS NULL);";
+   $result = $DB->query($query);
+   while ($data=$DB->fetch_array($result)) {
+      $queryd = "DELETE FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+         WHERE `id`='".$data['id']."'";
+      $DB->query($queryd);
+   }
+   
+   // Update hosts config
    include (GLPI_ROOT . "/plugins/monitoring/inc/hostconfig.class.php");
    $pmHostconfig = new PluginMonitoringHostconfig();
    $pmHostconfig->initConfig();
    
+   // Verify hosts
    include (GLPI_ROOT . "/plugins/monitoring/inc/host.class.php");
    $pmHost = new PluginMonitoringHost();
    $pmHost->verifyHosts();

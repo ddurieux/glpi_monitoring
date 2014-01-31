@@ -48,25 +48,30 @@ class PluginMonitoringCommand extends CommonDBTM {
    
 
    function initCommands() {
+      global $DB;
 
-      // Fred : Should be tested ...
-      // $input = array();
-      // $input['name'] = 'Dummy check';
-      // $input['command_name'] = 'check_dummy';
-      // $input['command_line'] = "\$PLUGINSDIR\$/check_dummy \$ARG1\$ \"\$ARG2$\"";
-      // $arg = array();
-      // $arg['ARG1'] = 'Check return code';
-      // $arg['ARG2'] = 'Check return output';
-      // $input['arguments'] = exportArrayToDB($arg);
-      // $this->add($input);
+      $input = array();
+      $input['name'] = "Dummy check";
+      $input['command_name'] = "check_dummy";
+      $input['command_line'] = $DB->escape("\$PLUGINSDIR\$/check_dummy \$ARG1\$ \"\$ARG2$\"");
+      $arg = array();
+      $arg['ARG1'] = 'INTEGER: dummy status code';
+      $arg['ARG2'] = 'TEXT: dummy status output text';
+      $input['arguments'] = exportArrayToDB($arg);
+      $this->add($input);
 
-      // Fred : Should be tested ...
-      // $input = array();
-      // $input['name'] = 'Restart Shinken';
-      // $input['command_name'] = 'restart_shinken';
-      // $input['command_line'] = "nohup sh -c '/usr/local/shinken/bin/stop_arbiter.sh && sleep 3 && /usr/local/shinken/bin/launch_arbiter.sh'  &gt; /dev/null 2&gt;&1 &";
-      // $this->add($input);
-      // Fred : If uncommented, should comment in shinken.class.php, lines 107-109 to avoid duplicates in configuration !
+      $input = array();
+      $input['name'] = "Restart Shinken";
+      $input['command_name'] = "restart_shinken";
+      $input['command_line'] = $DB->escape("nohup sh -c '/usr/local/shinken/bin/stop_arbiter.sh && sleep 3 && /usr/local/shinken/bin/launch_arbiter.sh' > /dev/null 2>&1 &");
+      $this->add($input);
+
+      // Host action command
+      $input = array();
+      $input['name'] = "Host action";
+      $input['command_name'] = "host_action";
+      $input['command_line'] = $DB->escape("host_action");
+      $this->add($input);
 
       $input = array();
       $input['name'] = 'Simple tcp port check';

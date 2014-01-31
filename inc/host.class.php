@@ -322,6 +322,15 @@ class PluginMonitoringHost extends CommonDBTM {
 
    /**
     * Get host short state (state + acknowledgement)
+    * 
+    * Return : 
+    * - green if host is UP
+    * - red if host is DOWN, UNREACHABLE or DOWNTIME
+    * - redblue if red and acknowledged
+    * - orange if host is WARNING, RECOVERY or FLAPPING
+    * - orangeblue if orange and acknowledged
+    * - yellow for every other state
+    * - yellowblue if yellow and acknowledged
     */
    static function getState($state, $state_type, $event, $acknowledge=0) {
       $shortstate = '';
