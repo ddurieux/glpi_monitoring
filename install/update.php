@@ -3159,6 +3159,54 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    }
    
    
+   $pmCommand = new PluginMonitoringCommand();
+   $a_list = $pmCommand->find();
+   $check_dummy_found = false;
+   $restart_shinken_found = false;
+   $host_action_found = false;
+   foreach ($a_list as $data) {
+      if ($data['command_name'] == "check_dummy") {
+         $check_dummy_found = true;
+      }
+      if ($data['command_name'] == "restart_shinken") {
+         $restart_shinken_found = true;
+      }
+      if ($data['command_name'] == "host_action") {
+         $host_action_found = true;
+      }
+   }
+   if (! $host_action_found) {
+      // Host action command
+      $pmCommand = new PluginMonitoringCommand();
+      $input = array();
+      $input['name'] = "Host action";
+      $input['command_name'] = "host_action";
+      $input['command_line'] = $DB->escape("host_action");
+      $pmCommand->add($input);
+   }
+   if (! $restart_shinken_found) {
+      // Restart shinken command
+      $pmCommand = new PluginMonitoringCommand();
+      $input = array();
+      $input['name'] = "Restart Shinken";
+      $input['command_name'] = "restart_shinken";
+      $input['command_line'] = $DB->escape("nohup sh -c '/usr/local/shinken/bin/stop_arbiter.sh && sleep 3 && /usr/local/shinken/bin/launch_arbiter.sh' > /dev/null 2>&1 &");
+      $pmCommand->add($input);
+   }
+   if (! $check_dummy_found) {
+      // Check dummy command
+      $pmCommand = new PluginMonitoringCommand();
+      $input = array();
+      $input['name'] = "Dummy check";
+      $input['command_name'] = "check_dummy";
+      $input['command_line'] = $DB->escape("\$PLUGINSDIR\$/check_dummy \$ARG1\$ \"\$ARG2$\"");
+      $arg = array();
+      $arg['ARG1'] = 'INTEGER: dummy status code';
+      $arg['ARG2'] = 'TEXT: dummy status output text';
+      $input['arguments'] = exportArrayToDB($arg);
+      $pmCommand->add($input);
+   }
+   
    /*
     * Clean services not having hosts
     */
