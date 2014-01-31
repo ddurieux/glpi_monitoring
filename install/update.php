@@ -3099,7 +3099,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring/templates");
    }
    
-   
+   // Update calendars
    $query = "SELECT * FROM `glpi_calendars`
       WHERE `name`='24x7'
       LIMIT 1";
@@ -3133,8 +3133,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $calendarSegment->add($input);
    }
 
-      
-      
+
+
+   // Update crontasks
    $crontask = new CronTask();
    if (!$crontask->getFromDBbyName('PluginMonitoringServiceevent', 'updaterrd')) {
       CronTask::Register('PluginMonitoringServiceevent', 'updaterrd', '300', 
@@ -3159,7 +3160,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    
    
    /*
-    * Clean services not have host
+    * Clean services not having hosts
     */
    $query = "SELECT `glpi_plugin_monitoring_services`.* FROM `glpi_plugin_monitoring_services`
       LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
@@ -3172,10 +3173,27 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $DB->query($queryd);
    }
    
+   /*
+    * Clean components catalog not having hosts
+    */
+   $query = "SELECT `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
+      FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+      LEFT JOIN `glpi_computers` 
+         ON (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_computers`.`id`)
+      WHERE (`glpi_computers`.`name` IS NULL);";
+   $result = $DB->query($query);
+   while ($data=$DB->fetch_array($result)) {
+      $queryd = "DELETE FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+         WHERE `id`='".$data['id']."'";
+      $DB->query($queryd);
+   }
+   
+   // Update hosts config
    include (GLPI_ROOT . "/plugins/monitoring/inc/hostconfig.class.php");
    $pmHostconfig = new PluginMonitoringHostconfig();
    $pmHostconfig->initConfig();
    
+   // Verify hosts
    include (GLPI_ROOT . "/plugins/monitoring/inc/host.class.php");
    $pmHost = new PluginMonitoringHost();
    $pmHost->verifyHosts();
