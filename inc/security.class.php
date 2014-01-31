@@ -100,7 +100,7 @@ class PluginMonitoringSecurity extends CommonDBTM {
             if (isset($_SESSION['plugin_monitoring_securekey'])
                     && $_SESSION['plugin_monitoring_securekey'] == $data['key']) {
 
-               $_SESSION = importArrayFromDB(Toolbox::stripslashes_deep($data['session']));
+               $_SESSION = importArrayFromDB($data['session']);
                $this->updateSecurity();
                // It's ok
                return;
@@ -114,6 +114,8 @@ class PluginMonitoringSecurity extends CommonDBTM {
    
    
    function updateSecurity() {
+      global $DB;
+      
       if (isset($_SESSION['glpiID'])
               && is_numeric($_SESSION['glpiID'])
               && $_SESSION['glpiID'] > 0) {
@@ -131,7 +133,7 @@ class PluginMonitoringSecurity extends CommonDBTM {
                            session_start();
                            $_SESSION['plugin_monitoring_lastsessiontime'] = date('U');
                            $data['last_session_start'] = date('Y-m-d H:i:s');
-                           $data['session'] = Toolbox::addslashes_deep(exportArrayToDB($_SESSION));
+                           $data['session'] = $DB->escape(exportArrayToDB($_SESSION));
                            $this->update($data);
                         }
                      }
@@ -167,7 +169,7 @@ class PluginMonitoringSecurity extends CommonDBTM {
                   $data['key'] = $this->generateKey();
                   $data['session_id'] = session_id();
                   $data['last_session_start'] = $_SESSION['glpi_currenttime'];
-                  $data['session'] = Toolbox::addslashes_deep(exportArrayToDB($_SESSION));
+                  $data['session'] = $DB->escape(exportArrayToDB($_SESSION));
                   $this->update($data);
                }
                $_SESSION['plugin_monitoring_securekey'] = $data['key'];
@@ -177,7 +179,7 @@ class PluginMonitoringSecurity extends CommonDBTM {
                    'key'         => $this->generateKey(),
                    'session_id'  => session_id(),
                    'last_session_start' => $_SESSION['glpi_currenttime'],
-                   'session'     => Toolbox::addslashes_deep(exportArrayToDB($_SESSION))
+                   'session'     => $DB->escape(exportArrayToDB($_SESSION))
                );
                if ($use_id == 0) {
                   $this->add($input);
