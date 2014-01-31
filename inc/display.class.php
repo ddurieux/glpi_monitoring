@@ -2506,7 +2506,7 @@ Ext.onReady(function(){
       }
       echo __('Reduced interface', 'monitoring')." : ";
       echo "&nbsp;";
-      Dropdown::showYesNo("reduced_interface", $_SESSION['plugin_monitoring']['reduced_interface']);
+      Dropdown::showYesNo("reduced_interface", $_SESSION['plugin_monitoring_reduced_interface']);
       echo "&nbsp;";
       echo "<input type='submit' name='sessionupdate' class='submit' value=\"".__('Post')."\">";
       echo "</div>";
