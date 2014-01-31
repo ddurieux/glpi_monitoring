@@ -48,6 +48,7 @@ class PluginMonitoringCommand extends CommonDBTM {
    
 
    function initCommands() {
+      global $DB;
 
       $input = array();
       $input['name'] = "Dummy check";
