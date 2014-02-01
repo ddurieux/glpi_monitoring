@@ -179,6 +179,15 @@ class PluginMonitoringComponent extends CommonDBTM {
 		$tab[6]['name']            = __('Check period', 'monitoring');
       $tab[6]['datatype']        = 'specific';
 
+		$tab[7]['table']           = $this->getTable();
+		$tab[7]['field']           = 'freshness_count';
+		$tab[7]['name']            = __('Freshness count', 'monitoring');
+
+		$tab[8]['table']           = $this->getTable();
+		$tab[8]['field']           = 'freshness_type';
+		$tab[8]['name']            = __('Freshness type', 'monitoring');
+      $tab[8]['datatype']        = 'specific';
+
       return $tab;
    }
 
@@ -195,10 +204,13 @@ class PluginMonitoringComponent extends CommonDBTM {
             return $calendar->getName(1);
             break;
             
-         case 'users_id':
-            $user = new User();
-            $user->getFromDB($values[$field]);    
-            return $user->getName(1);
+         case 'freshness_type':
+            $a_freshness_type = array();
+            $a_freshness_type['seconds'] = __('Second(s)', 'monitoring');
+            $a_freshness_type['minutes'] = __('Minute(s)', 'monitoring');
+            $a_freshness_type['hours']   = __('Hour(s)', 'monitoring');
+            $a_freshness_type['days']    = __('Day(s)', 'monitoring');
+            return $a_freshness_type[$values[$field]];
             break;
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
