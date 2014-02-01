@@ -3107,7 +3107,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $crontask->delete($crontask->fields);
    }
    
-   
+   include (GLPI_ROOT . "/plugins/monitoring/inc/command.class.php");
    $pmCommand = new PluginMonitoringCommand();
    $a_list = $pmCommand->find();
    $check_dummy_found = false;
