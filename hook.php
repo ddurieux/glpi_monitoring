@@ -423,16 +423,18 @@ function plugin_monitoring_registerMethods() {
 **/
 function plugin_monitoring_getDropdown(){
 
-   return array('PluginMonitoringServicescatalog'     => __('Services catalog', 'monitoring'),
-                'PluginMonitoringCheck'               => __('Check definition', 'monitoring'),
+   return array('PluginMonitoringServicescatalog'     => __('Services catalogs', 'monitoring'),
+                'PluginMonitoringCheck'               => __('Check definitions', 'monitoring'),
                 'PluginMonitoringCommand'             => __('Commands', 'monitoring'),
-                'PluginMonitoringComponentscatalog'   => __('Components catalog', 'monitoring'),
+                'PluginMonitoringComponentscatalog'   => __('Components catalogs', 'monitoring'),
                 'PluginMonitoringComponent'           => __('Components', 'monitoring'));
 }
 
 function plugin_monitoring_searchOptionsValues($item) {
    global $CFG_GLPI;
    
+   // Fred : Add a log to check whether this function is still called ...
+   Toolbox::logInFile("pm", "plugin_monitoring_searchOptionsValues is called ..\n");
    // Search options for services
    if ($item['searchoption']['table'] == 'glpi_plugin_monitoring_services'
            AND $item['searchoption']['field'] == 'state') {

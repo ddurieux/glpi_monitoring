@@ -155,21 +155,69 @@ class PluginMonitoringComponent extends CommonDBTM {
 		$tab[1]['name'] = __('Name');
 		$tab[1]['datatype'] = 'itemlink';
 
-      $tab[2]['table']         = $this->getTable();
-      $tab[2]['field']         = 'id';
-      $tab[2]['name']          = __('ID');
-      $tab[2]['massiveaction'] = false; // implicit field is id
-     
-		$tab[3]['table'] = $this->getTable();
-		$tab[3]['field'] = 'description';
-		$tab[3]['linkfield'] = 'description';
-		$tab[3]['name'] = __('Alias');
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'id';
+      $tab[2]['name']            = __('ID');
+      $tab[2]['massiveaction']   = false; // implicit field is id
+
+		$tab[3]['table']           = $this->getTable();
+		$tab[3]['field']           = 'description';
+		$tab[3]['name']            = __('Alias (Shinken service_description)', 'monitoring');
+
+		$tab[4]['table']           = $this->getTable();
+		$tab[4]['field']           = 'active_checks_enabled';
+		$tab[4]['name']            = __('Active check', 'monitoring');
+      $tab[4]['datatype']        = 'bool';
+
+		$tab[5]['table']           = $this->getTable();
+		$tab[5]['field']           = 'passive_checks_enabled';
+		$tab[5]['name']            = __('Passive check', 'monitoring');
+      $tab[5]['datatype']        = 'bool';
+
+		$tab[6]['table']           = $this->getTable();
+		$tab[6]['field']           = 'calendars_id';
+		$tab[6]['name']            = __('Check period', 'monitoring');
+      $tab[6]['datatype']        = 'specific';
+
+		$tab[7]['table']           = $this->getTable();
+		$tab[7]['field']           = 'freshness_count';
+		$tab[7]['name']            = __('Freshness count', 'monitoring');
+
+		$tab[8]['table']           = $this->getTable();
+		$tab[8]['field']           = 'freshness_type';
+		$tab[8]['name']            = __('Freshness type', 'monitoring');
+      $tab[8]['datatype']        = 'specific';
 
       return $tab;
    }
 
 
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'calendars_id':
+            $calendar = new Calendar();
+            $calendar->getFromDB($values[$field]);    
+            return $calendar->getName(1);
+            break;
+            
+         case 'freshness_type':
+            $a_freshness_type = array();
+            $a_freshness_type['seconds'] = __('Second(s)', 'monitoring');
+            $a_freshness_type['minutes'] = __('Minute(s)', 'monitoring');
+            $a_freshness_type['hours']   = __('Hour(s)', 'monitoring');
+            $a_freshness_type['days']    = __('Day(s)', 'monitoring');
+            return $a_freshness_type[$values[$field]];
+            break;
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
    
+
+
    /**
    * Display form for service configuration
    *
@@ -255,7 +303,7 @@ class PluginMonitoringComponent extends CommonDBTM {
 */
       // * active check
       echo "<td>";
-      echo __('Active checks', 'monitoring')."<font class='red'>*</font>&nbsp;:";
+      echo __('Active check', 'monitoring')."<font class='red'>*</font>&nbsp;:";
       echo "</td>";
       echo "<td>";
       Dropdown::showYesNo("active_checks_enabled", $this->fields['active_checks_enabled']);
