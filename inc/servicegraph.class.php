@@ -197,7 +197,12 @@ class PluginMonitoringServicegraph extends CommonDBTM {
          
          case '2h':
             $begin = date('Y-m-d H:i:s', $enddate - (2 * 3600));
+            $timecomplete = 0;
             $dateformat = "(%d)%H:%M";
+            if (date('m', $enddate) != date('m', $enddate - (2 * 3600))) {
+               $timecomplete = 2;
+               $dateformat = "%m-%d %H:%M";
+            }
             
             $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
@@ -213,13 +218,16 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                        $begin,
                        date('Y-m-d H:i:s', $enddate),
                        array($this->jsongraph_a_ref[$rrdtool_template], 
-                             $this->jsongraph_a_convert[$rrdtool_template]));
+                             $this->jsongraph_a_convert[$rrdtool_template]),
+                       $timecomplete);
             } else {
                $ret = $pmServiceevent->getData(
                        $result, 
                        $rrdtool_template,
                        $begin,
-                       date('Y-m-d H:i:s', $enddate));
+                       date('Y-m-d H:i:s', $enddate),
+                       array(),
+                       $timecomplete);
             }
             if (is_array($ret)) {
                $mydatat  = $ret[0];
@@ -234,7 +242,12 @@ class PluginMonitoringServicegraph extends CommonDBTM {
          
          case '12h':
             $begin = date('Y-m-d H:i:s', $enddate - (12 * 3600));
+            $timecomplete = 0;
             $dateformat = "(%d)%H:%M";
+            if (date('m', $enddate) != date('m', $enddate - (12 * 3600))) {
+               $timecomplete = 2;
+               $dateformat = "%m-%d %H:%M";
+            }
             
             $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
@@ -246,7 +259,9 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                     $result, 
                     $rrdtool_template,
                     $begin,
-                    date('Y-m-d H:i:s', $enddate));
+                    date('Y-m-d H:i:s', $enddate),
+                    array(),
+                    $timecomplete);
             if (is_array($ret)) {
                $mydatat  = $ret[0];
                $a_labels = $ret[1];
@@ -256,7 +271,12 @@ class PluginMonitoringServicegraph extends CommonDBTM {
          
          case '1d':
             $begin = date('Y-m-d H:i:s', $enddate - (24 * 3600));
+            $timecomplete = 0;
             $dateformat = "(%d)%H:%M";
+            if (date('m', $enddate) != date('m', $enddate - (24 * 3600))) {
+               $timecomplete = 2;
+               $dateformat = "%m-%d %H:%M";
+            }
             
             $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
@@ -268,7 +288,9 @@ class PluginMonitoringServicegraph extends CommonDBTM {
                     $result, 
                     $rrdtool_template,
                     $begin,
-                    date('Y-m-d H:i:s', $enddate));
+                    date('Y-m-d H:i:s', $enddate),
+                    array(),
+                    $timecomplete);
             if (is_array($ret)) {
                $mydatat  = $ret[0];
                $a_labels = $ret[1];
