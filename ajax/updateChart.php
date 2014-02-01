@@ -96,7 +96,7 @@ if (isset($_POST['suffix'])) {
 }
 
 if(!isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']])) {
-   PluginMonitoringServicegraph::loadPreferences($_POST['components_id']);
+   PluginMonitoringToolbox::loadPreferences($_POST['components_id']);
 }
 
 //$format = "%H:%M";

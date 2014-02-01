@@ -122,21 +122,6 @@ class PluginMonitoringServiceevent extends CommonDBTM {
  
    
    
-   static function cronUpdaterrd() {
-      ini_set("max_execution_time", "0");
-//      $pmServiceevent = new PluginMonitoringServiceevent();
-      $pmService = new PluginMonitoringService();
-      $pmServicegraph = new PluginMonitoringServicegraph();
-      
-      $a_lisths = $pmService->find();
-      foreach ($a_lisths as $data) {
-         $pmServicegraph->parseToDB($data['id']);
-      }
-      return true;
-   }
-   
-   
-   
    function getSpecificData($rrdtool_template, $items_id, $which='last', $state="AND `state` = 'OK'") { 
       global $DB;      
    

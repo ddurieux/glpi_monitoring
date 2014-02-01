@@ -614,7 +614,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       
       echo "<tr class='tab_bg_3'>";
       echo "<td>";
-      PluginMonitoringServicegraph::preferences($components_id);
+      PluginMonitoringToolbox::preferences($components_id);
       echo "</td>";
       echo "</tr>";
       echo "</table>";
@@ -643,7 +643,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       
       // Get component graph configuration ...
       if(!isset($_SESSION['glpi_plugin_monitoring']['perfname'][$this->fields['id']])) {
-         PluginMonitoringServicegraph::loadPreferences($this->fields['id']);
+         PluginMonitoringToolbox::loadPreferences($this->fields['id']);
       }
       
       $a_perf = PluginMonitoringPerfdata::getArrayPerfdata($this->fields['graph_template']);
@@ -676,7 +676,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       
        // Get component graph configuration ...
       if(!isset($_SESSION['glpi_plugin_monitoring']['perfname'][$this->fields['id']])) {
-         PluginMonitoringServicegraph::loadPreferences($this->fields['id']);
+         PluginMonitoringToolbox::loadPreferences($this->fields['id']);
       }
       
       $a_perf = PluginMonitoringPerfdata::getArrayPerfdata($this->fields['graph_template']);

@@ -805,7 +805,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          echo "<td width='10'>";
          echo "</td>";
          echo "<td>";
-         PluginMonitoringServicegraph::preferences($pmComponent->getID(), 1, 1);
+         PluginMonitoringToolbox::preferences($pmComponent->getID(), 1, 1);
          echo "</td>";
       
          echo "</tr>";
@@ -912,7 +912,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          echo "</td>";
          echo "<td>";
          
-         PluginMonitoringServicegraph::loadPreferences($pmComponent->getID());
+         PluginMonitoringToolbox::loadPreferences($pmComponent->getID());
          
          $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($pmComponent->fields['graph_template']);
          echo "<table class='tab_cadre_fixe'>";      

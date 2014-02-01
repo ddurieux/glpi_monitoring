@@ -47,7 +47,7 @@ Session::checkCentralAccess();
 Html::header(__('Monitoring', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
              "monitoring", "display");
 
-PluginMonitoringServicegraph::loadLib();
+PluginMonitoringToolbox::loadLib();
 $pmService = new PluginMonitoringService();
 $pmService->manageServices($_GET['itemtype'], $_GET['items_id']);
 

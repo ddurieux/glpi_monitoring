@@ -63,7 +63,7 @@ $html = str_replace(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$id.".png",
          $CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=weathermap-".$id.".png", $html);
 
 
-PluginMonitoringServicegraph::loadLib();
+PluginMonitoringToolbox::loadLib();
 echo $html;
 
 echo '<meta http-equiv ="refresh" content="150">';

@@ -138,20 +138,6 @@ CREATE TABLE `glpi_plugin_monitoring_services` (
 
 
 
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_servicegraphs`;
-
-CREATE TABLE IF NOT EXISTS `glpi_plugin_monitoring_servicegraphs` (
-  `id` bigint(30) NOT NULL AUTO_INCREMENT,
-  `plugin_monitoring_services_id` int(11) NOT NULL DEFAULT '0',
-  `date` datetime DEFAULT NULL,
-  `data` text DEFAULT NULL COLLATE utf8_unicode_ci,
-  `type` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `plugin_monitoring_services_id` (`plugin_monitoring_services_id`,`type`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_contacttemplates`;
 
 CREATE TABLE `glpi_plugin_monitoring_contacttemplates` (

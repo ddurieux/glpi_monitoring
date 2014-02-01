@@ -429,7 +429,7 @@ class PluginMonitoringService extends CommonDBTM {
    function showGraphsByHost($itemtype, $items_id) {
       global $CFG_GLPI,$DB;
 
-      PluginMonitoringServicegraph::loadLib();
+      PluginMonitoringToolbox::loadLib();
       $pmComponentscatalog = new PluginMonitoringComponentscatalog();
       $pmComponent = new PluginMonitoringComponent();
       $pmServicegraph = new PluginMonitoringServicegraph();

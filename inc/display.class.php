@@ -616,7 +616,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "</tr>";
       
       PluginMonitoringDisplay::$ar_counterTypes = array();
-      PluginMonitoringServicegraph::loadLib();
+      PluginMonitoringToolbox::loadLib();
       while ($data=$DB->fetch_array($result)) {
          // Reduced array or not ?
          if ($_SESSION['plugin_monitoring_reduced_interface'] and $data['state'] == 'OK') continue;
@@ -1400,7 +1400,7 @@ echo "
       $item->getFromDB($items_id);
       $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
       if(!isset($_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->fields['id']])) {
-         PluginMonitoringServicegraph::loadPreferences($pmComponent->fields['id']);
+         PluginMonitoringToolbox::loadPreferences($pmComponent->fields['id']);
       }
       $css_width = '950';
       if (isset($_GET['mobile'])) {
@@ -1467,7 +1467,7 @@ echo "
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='2'>";
          echo "<div id='options' style='display:none'>";
-         PluginMonitoringServicegraph::preferences($pmComponent->fields['id'], 0);
+         PluginMonitoringToolbox::preferences($pmComponent->fields['id'], 0);
          echo "</div>";
          echo "</td>";
          echo "</tr>";

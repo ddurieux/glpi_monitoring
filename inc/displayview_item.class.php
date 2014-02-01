@@ -121,7 +121,7 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
             }
          </script>";
       
-      PluginMonitoringServicegraph::loadLib();
+      PluginMonitoringToolbox::loadLib();
       
       if ($config == '1') {
          $this->addItem($id);

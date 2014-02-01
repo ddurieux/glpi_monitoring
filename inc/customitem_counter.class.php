@@ -312,7 +312,7 @@ class PluginMonitoringCustomitem_Counter extends CommonDBTM {
    
    
    function showWidget($id) {
-      PluginMonitoringServicegraph::loadLib();
+      PluginMonitoringToolbox::loadLib();
       
       return "<div id=\"updatecustomitem_counter".$id."\"></div>";
    }

@@ -110,10 +110,9 @@ $pMonitoringDisplay = new PluginMonitoringDisplay();
 
 if (isset($_GET['itemtype']) AND isset($_GET['items_id'])) {
 
-   PluginMonitoringServicegraph::loadLib();
+   PluginMonitoringToolbox::loadLib();
    
    $pmServicegraph = new PluginMonitoringServicegraph();
-   $pmServicegraph->parseToDB($_GET['items_id']);
    $pMonitoringDisplay->displayGraphs($_GET['itemtype'], $_GET['items_id']);
 }
 

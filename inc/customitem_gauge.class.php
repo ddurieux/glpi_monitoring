@@ -569,7 +569,7 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
    
    
    function showWidget($id) {
-      PluginMonitoringServicegraph::loadLib();
+      PluginMonitoringToolbox::loadLib();
       
       return "<div id=\"updatecustomitem_gauge".$id."\"></div>";
    }

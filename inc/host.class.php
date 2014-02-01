@@ -186,7 +186,7 @@ class PluginMonitoringHost extends CommonDBTM {
       }
       if ($item->getID() > 0) {
          if ($tabnum == 0) {
-            PluginMonitoringServicegraph::loadLib();
+            PluginMonitoringToolbox::loadLib();
             $pmService = new PluginMonitoringService();
             $pmService->manageServices(get_class($item), $item->fields['id']);
             $pmHostconfig = new PluginMonitoringHostconfig();
