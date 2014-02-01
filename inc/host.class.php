@@ -309,14 +309,28 @@ class PluginMonitoringHost extends CommonDBTM {
 
    /**
     * Get host link to display
+    * options : 
+    *    'monitoring' to return a link to the monitoring hosts view filtered with the host
+    *    else, a link to GLPI computer form
     */
    function getLink($options = array()) {
+      global $CFG_GLPI;
+
       if ($this->getID() == -1) return '';
       
-      $itemtype = $this->getField("itemtype");
-      $item = new $itemtype();
-      $item->getFromDB($this->getField("items_id"));
-      return $item->getLink()."&nbsp;".$this->getComments();
+      if (isset($options['monitoring']) && $options['monitoring']) {
+         $itemtype = $this->getField("itemtype");
+         $item = new $itemtype();
+         $item->getFromDB($this->getField("items_id"));
+         $link = $CFG_GLPI['root_doc'].
+            "/plugins/monitoring/front/host.php?field[0]=1&searchtype[0]=equals&contains[0]=".$item->getID()."&itemtype=PluginMonitoringHost&start=0";
+         return "<a href='$link'>".$this->getName($options)."</a>"."&nbsp;".$this->getComments();
+      } else {
+         $itemtype = $this->getField("itemtype");
+         $item = new $itemtype();
+         $item->getFromDB($this->getField("items_id"));
+         return $item->getLink()."&nbsp;".$this->getComments();
+      }
    }
 
 

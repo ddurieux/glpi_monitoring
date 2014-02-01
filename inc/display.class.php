@@ -996,7 +996,8 @@ echo "
             $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
             $item = new $itemtype();
             $item->getFromDB($pmComponentscatalog_Host->fields['items_id']);
-            echo "<span>".$item->getLink()."</span>&nbsp;";
+            
+            // echo "<span>".$item->getLink(array ("monitoring" => "1"))."</span>&nbsp;";
             if (!is_null($pMonitoringService->fields['networkports_id'])
                     AND $pMonitoringService->fields['networkports_id'] > 0) {
                $networkPort->getFromDB($pMonitoringService->fields['networkports_id']);
@@ -1005,7 +1006,8 @@ echo "
             $pm_Host = new PluginMonitoringHost();
             if (isset($data["host_id"])) {
                $pm_Host->getFromDB($data["host_id"]);
-               echo "&nbsp;".$pm_Host->getComments();
+               echo "<span>".$pm_Host->getLink(array ("monitoring" => "1"))."</span>";
+               // echo "&nbsp;".$pm_Host->getComments();
             } else {
                $pm_Host->getFromDB($data["id"]);
             }
@@ -1193,15 +1195,16 @@ echo "
       echo "</td>";
       
       echo "<td>";
-      $itemtype = $data['itemtype'];
-      $item = new $itemtype();
-      $item->getFromDB($data['items_id']);
-      $link = $CFG_GLPI['root_doc'].
-         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-            "&field[0]=20&searchtype[0]=equals&contains[0]=".$data['items_id'].
-            "&itemtype=PluginMonitoringService&start=0'";
-      echo '<a href="'.$link.'" title="'.$item->getName().'">'.$item->getName()."</a>";
-      echo "&nbsp;".$pm_Host->getComments();
+      // $itemtype = $data['itemtype'];
+      // $item = new $itemtype();
+      // $item->getFromDB($data['items_id']);
+      // $link = $CFG_GLPI['root_doc'].
+         // "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
+            // "&field[0]=20&searchtype[0]=equals&contains[0]=".$data['items_id'].
+            // "&itemtype=PluginMonitoringService&start=0'";
+      // echo '<a href="'.$link.'" title="'.$item->getName().'">'.$item->getName()."</a>";
+      // echo "&nbsp;".$pm_Host->getComments();
+      echo "<span>".$pm_Host->getLink()."</span>";
       echo "</td>";
       
       echo "<td class='center'>";
