@@ -1195,15 +1195,6 @@ echo "
       echo "</td>";
       
       echo "<td>";
-      // $itemtype = $data['itemtype'];
-      // $item = new $itemtype();
-      // $item->getFromDB($data['items_id']);
-      // $link = $CFG_GLPI['root_doc'].
-         // "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-            // "&field[0]=20&searchtype[0]=equals&contains[0]=".$data['items_id'].
-            // "&itemtype=PluginMonitoringService&start=0'";
-      // echo '<a href="'.$link.'" title="'.$item->getName().'">'.$item->getName()."</a>";
-      // echo "&nbsp;".$pm_Host->getComments();
       echo "<span>".$pm_Host->getLink()."</span>";
       echo "</td>";
       
@@ -1245,7 +1236,8 @@ echo "
       echo "<div class='page foldtl resource".$data['host_services_state']."'>";
       echo "<div style='vertical-align:middle;'>";
       echo "<span>";
-      if (($data['host_services_state'] != 'OK') and PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+      // if (($data['host_services_state'] != 'OK') and PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+      if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
          $link = $CFG_GLPI['root_doc'].
             "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
                "&field[0]=1&searchtype[0]=equals&contains[0]=".$data['items_id'].
