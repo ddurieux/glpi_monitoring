@@ -168,8 +168,8 @@ class b_MonitoringInstall extends PHPUnit_Framework_TestCase {
        * Verify cron created
        */
       $crontask = new CronTask();
-      $this->assertTrue($crontask->getFromDBbyName('PluginMonitoringServiceevent', 'updaterrd'), 
-              'Cron updaterrd not created');
+      $this->assertFalse($crontask->getFromDBbyName('PluginMonitoringServiceevent', 'updaterrd'), 
+              'Cron updaterrd may be deleted');
       
       // TODO : test glpi_displaypreferences, rules, bookmark...
       
