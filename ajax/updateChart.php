@@ -89,6 +89,7 @@ $a_ret = $pmServicegraph->generateData($_POST['rrdtool_template'],
 $mydatat = $a_ret[0];
 $a_labels = $a_ret[1];
 $format = $a_ret[2];
+
 $suffix = '';
 if (isset($_POST['suffix'])) {
    $suffix = $_POST['suffix'];

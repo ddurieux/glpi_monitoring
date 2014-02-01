@@ -208,7 +208,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       
       
       
-   function getData($result, $rrdtool_template, $start_date, $end_date, $ret=array()) {
+   function getData($result, $rrdtool_template, $start_date, $end_date, $ret=array(), $timecomplete=FALSE) {
       global $DB;
       
       if (empty($ret)) {
@@ -263,8 +263,12 @@ class PluginMonitoringServiceevent extends CommonDBTM {
          $a_perfdata = PluginMonitoringPerfdata::splitPerfdata($edata['perf_data']);
          $a_time = explode(" ", $edata['date']);
          $a_time2 = explode(":", $a_time[1]);
-         $day = explode("-", $a_time[0]);
-         $a_labels[] = "(".$day[2].")".$a_time2[0].":".$a_time2[1];
+         if ($timecomplete) {
+            $a_labels[] = $a_time[0]." ".$a_time2[0].":".$a_time2[1];
+         } else {
+            $day = explode("-", $a_time[0]);
+            $a_labels[] = "(".$day[2].")".$a_time2[0].":".$a_time2[1];
+         }
          foreach ($a_perf['parseperfdata'] as $num=>$data) {
             // Toolbox::logInFile("pm", "perfdata : $num, ".serialize($data)."\n");
             if (isset($a_perfdata[$num])) {

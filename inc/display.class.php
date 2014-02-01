@@ -1521,8 +1521,12 @@ Ext.onReady(function(){
                mgr".$items_id."2h.stopAutoRefresh();
                mgr".$items_id."12h.stopAutoRefresh();
                mgr".$items_id."1d.stopAutoRefresh();
+               mgr".$items_id."1w.stopAutoRefresh();
+               mgr".$items_id."1m.stopAutoRefresh();
+               mgr".$items_id."0y6m.stopAutoRefresh();
+               mgr".$items_id."1y.stopAutoRefresh();
                   ";
-               $a_graphlist = array('2h', '12h', '1d');
+               $a_graphlist = array('2h', '12h', '1d', '1w', '1m', '0y6m', '1y');
                foreach ($a_graphlist as $time) {
                   $pmServicegraph->startAutoRefresh($pmComponent->fields['graph_template'], 
                                                     $itemtype, 
@@ -1582,8 +1586,12 @@ Ext.onReady(function(){
                mgr".$items_id."2h.stopAutoRefresh();
                mgr".$items_id."12h.stopAutoRefresh();
                mgr".$items_id."1d.stopAutoRefresh();
+               mgr".$items_id."1w.stopAutoRefresh();
+               mgr".$items_id."1m.stopAutoRefresh();
+               mgr".$items_id."0y6m.stopAutoRefresh();
+               mgr".$items_id."1y.stopAutoRefresh();
                   ";
-               $a_graphlist = array('2h', '12h', '1d');
+               $a_graphlist = array('2h', '12h', '1d', '1w', '1m', '0y6m', '1y');
                foreach ($a_graphlist as $time) {
                   $pmServicegraph->startAutoRefresh($pmComponent->fields['graph_template'], 
                                                     $itemtype, 

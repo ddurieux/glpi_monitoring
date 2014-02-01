@@ -135,8 +135,15 @@ class PluginMonitoringServicegraph extends CommonDBTM {
       
       $sess_id = session_id();
       PluginMonitoringSecurity::updateSession();
+      $refresh = "50"; // all 50 seconds
+      if ($time == '1w'
+              || $time == '1m'
+              || $time == '0y6m'
+              || $time == '1y') {
+         $refresh = "600";
+      }      
       
-      echo "mgr".$items_id.$time.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"].
+      echo "mgr".$items_id.$time.".startAutoRefresh(".$refresh.", \"".$CFG_GLPI["root_doc"].
                  "/plugins/monitoring/ajax/updateChart.php\", ".
                  "\"rrdtool_template=".$rrdtool_template.
                  "&itemtype=".$itemtype.
@@ -270,178 +277,250 @@ class PluginMonitoringServicegraph extends CommonDBTM {
             break;
          
          case '1w':
-            $begin = date('Y-m-d H:i:s', date('U') - (7 * 24 * 3600));
-            $display_month = 0;
-            $dateformat = "(%d) %Hh";
-            if (date('m', date('U') - (7 * 24 * 3600)) != date('m', date('U'))) {
-               $display_month = 1;
-               $dateformat = "%m-%d %Hh";
-            }
+            $begin = date('Y-m-d H:i:s', $enddate - (7 * 24 * 3600));
+            $dateformat = "%Y-%m-%d %H:%M";
             
-            $query = "SELECT * FROM `".$this->getTable()."`
+            $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
-                  AND `type`='6h'
+                  AND `date` > '".$begin."'
+                  AND `date` <= '".date('Y-m-d H:i:s', $enddate)."'
                ORDER BY `date`";
             $result = $DB->query($query);
-            while ($edata=$DB->fetch_array($result)) {
-               // $dat = importArrayFromDB($edata['data']);
-               $dat = unserialize($edata['data']);
-               $datemod = $edata['date'];
-               $daynum = Calendar::getDayNumberInWeek(PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
-               $split = explode(' ', $datemod);
-               $split2 = explode(':', $split[1]);
-               $splitymd = explode('-', $split[0]);
-               $dateymd = "(".$splitymd[2].")";
-               if ($display_month == 1) {
-                  $dateymd = $splitymd[1]."-".$splitymd[2];
-               }
-               array_push($a_labels, $dateymd." ".$split2[0].'h');
-               if (count($dat) == 0) {
-                  $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($rrdtool_template);
-                  foreach ($a_perfnames as $name) {                     
-                     if (!isset($mydatat[$name])) {
-                        $mydatat[$name] = array();
+            $ret = $pmServiceevent->getData(
+                    $result, 
+                    $rrdtool_template,
+                    $begin,
+                    date('Y-m-d H:i:s', $enddate),
+                    array(),
+                    TRUE);
+            if (is_array($ret)) {
+               $mydatat  = $ret[0];
+               $a_labels = $ret[1];
+               $a_ref    = $ret[2];
+               
+               $nb_val = count($a_labels);
+               // May have 22 points in the graph
+               $nb_val_period = $nb_val / 75;
+               $mydatatNew = array();
+               foreach ($mydatat as $name=>$data) {
+                  $nb = 1;
+                  $val = 0;
+                  foreach ($data as $value) {
+                     $val += $value;
+                     $nb++;
+                     if ($nb > $nb_val_period) {
+                        $mydatatNew[$name][] = round($val / ($nb - 1), 2);
+                        $nb = 1;
+                        $val = 0;
                      }
-                     array_push($mydatat[$name], '');
                   }
-                  
-               } else {
-                  foreach ($dat as $name=>$value) {
-                     if (!isset($mydatat[$name])) {
-                        $mydatat[$name] = array();
-                     }
-                     array_push($mydatat[$name], $value);
+                  if ($nb > 1
+                          && $nb <= $nb_val_period) {
+                     
+                        $mydatatNew[$name][] = round($val / ($nb - 1), 2);
                   }
                }
+               $mydatat = $mydatatNew;
+               $a_labelsNew = array();
+               $nb = 1;
+               $val = 0;
+               foreach ($a_labels as $value) {
+                  if ($nb == 1) {
+                     $a_labelsNew[] = $value;
+                  }
+                  $nb++;
+                  if ($nb > $nb_val_period) {
+                     $nb = 1;
+                  }
+               }
+               $a_labels = $a_labelsNew;
             }
-            $ret = $pmServiceevent->getRef($rrdtool_template);
             break;
 
          case '1m':
-            $begin = date('Y-m-d H:i:s', date('U') - (30 * 24 * 3600));
-            $display_year = 0;
-            $dateformat = "%m-%d %Hh";
-            if (date('Y', date('U') - (7 * 24 * 3600)) != date('Y', date('U'))) {
-               $display_year = 1;
-               $dateformat = "%Y-%m-%d %Hh";
-            }
+            $begin = date('Y-m-d H:i:s', $enddate - (30 * 24 * 3600));
+            $dateformat = "%Y-%m-%d %H:%M";
             
-            $query = "SELECT * FROM `".$this->getTable()."`
+            $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
-                  AND `type`='1d'
+                  AND `date` > '".$begin."'
+                  AND `date` <= '".date('Y-m-d H:i:s', $enddate)."'
                ORDER BY `date`";
             $result = $DB->query($query);
-            while ($edata=$DB->fetch_array($result)) {
-               // $dat = importArrayFromDB($edata['data']);
-               $dat = unserialize($edata['data']);
-               $datemod = $edata['date'];
-//               $daynum = Calendar::getDayNumberInWeek(PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
-               $split = explode(' ', $datemod);
-               $split2 = explode(':', $split[1]);
-               $day = explode("-", $split[0]);
-               $dateymd = $day[1]."-".$day[2];
-               if ($display_year == 1) {
-                  $dateymd = $split[0];
-               }
-               array_push($a_labels, $dateymd." ".$split2[0].'h');
-               if (count($dat) == 0) {
-                  $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($rrdtool_template);
-                  foreach ($a_perfnames as $name) {                     
-                     if (!isset($mydatat[$name])) {
-                        $mydatat[$name] = array();
+            $ret = $pmServiceevent->getData(
+                    $result, 
+                    $rrdtool_template,
+                    $begin,
+                    date('Y-m-d H:i:s', $enddate),
+                    array(),
+                    TRUE);
+            if (is_array($ret)) {
+               $mydatat  = $ret[0];
+               $a_labels = $ret[1];
+               $a_ref    = $ret[2];
+               
+               $nb_val = count($a_labels);
+               // May have 22 points in the graph
+               $nb_val_period = $nb_val / 75;
+               $mydatatNew = array();
+               foreach ($mydatat as $name=>$data) {
+                  $nb = 1;
+                  $val = 0;
+                  foreach ($data as $value) {
+                     $val += $value;
+                     $nb++;
+                     if ($nb > $nb_val_period) {
+                        $mydatatNew[$name][] = ceil($val / ($nb - 1));
+                        $nb = 1;
+                        $val = 0;
                      }
-                     array_push($mydatat[$name], '');
                   }
-                  
-               } else {
-                  foreach ($dat as $name=>$value) {
-                     if (!isset($mydatat[$name])) {
-                        $mydatat[$name] = array();
-                     }
-                     array_push($mydatat[$name], $value);
+                  if ($nb > 1
+                          && $nb <= $nb_val_period) {
+                     
+                        $mydatatNew[$name][] = ceil($val / ($nb - 1));
                   }
                }
+               $mydatat = $mydatatNew;
+               
+               $a_labelsNew = array();
+               $nb = 1;
+               $val = 0;
+               foreach ($a_labels as $value) {
+                  if ($nb == 1) {
+                     $a_labelsNew[] = $value;
+                  }
+                  $nb++;
+                  if ($nb > $nb_val_period) {
+                     $nb = 1;
+                  }
+               }
+               $a_labels = $a_labelsNew;
             }
-            $ret = $pmServiceevent->getRef($rrdtool_template);
             break;
          
          case '0y6m':
             $begin = date('Y-m-d H:i:s', date('U') - ((364 / 2) * 24 * 3600));
-
-            $query = "SELECT * FROM `".$this->getTable()."`
+            $dateformat = "%Y-%m-%d %H:%M";
+            
+            $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
-                  AND `type`='5d'
+                  AND `date` > '".$begin."'
+                  AND `date` <= '".date('Y-m-d H:i:s', $enddate)."'
                ORDER BY `date`";
             $result = $DB->query($query);
-            while ($edata=$DB->fetch_array($result)) {
-               // $dat = importArrayFromDB($edata['data']);
-               $dat = unserialize($edata['data']);
-               $datemod = $edata['date'];
-               $daynum = date('m', PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
-               $daynum = $daynum - 1;
-               $split = explode(' ', $datemod);
-               $split2 = explode(':', $split[1]);
-               $day = explode("-", $split[0]);
-               array_push($a_labels, $split[0]." ".$split2[0].'h');
-               if (count($dat) == 0) {
-                  $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($rrdtool_template);
-                  foreach ($a_perfnames as $name) {                     
-                     if (!isset($mydatat[$name])) {
-                        $mydatat[$name] = array();
+            $ret = $pmServiceevent->getData(
+                    $result, 
+                    $rrdtool_template,
+                    $begin,
+                    date('Y-m-d H:i:s', $enddate),
+                    array(),
+                    TRUE);
+            if (is_array($ret)) {
+               $mydatat  = $ret[0];
+               $a_labels = $ret[1];
+               $a_ref    = $ret[2];
+               
+               $nb_val = count($a_labels);
+               // May have 22 points in the graph
+               $nb_val_period = $nb_val / 75;
+               $mydatatNew = array();
+               foreach ($mydatat as $name=>$data) {
+                  $nb = 1;
+                  $val = 0;
+                  foreach ($data as $value) {
+                     $val += $value;
+                     $nb++;
+                     if ($nb > $nb_val_period) {
+                        $mydatatNew[$name][] = ceil($val / ($nb - 1));
+                        $nb = 1;
+                        $val = 0;
                      }
-                     array_push($mydatat[$name], '');
                   }
-                  
-               } else {
-                  foreach ($dat as $name=>$value) {
-                     if (!isset($mydatat[$name])) {
-                        $mydatat[$name] = array();
-                     }
-                     array_push($mydatat[$name], $value);
+                  if ($nb > 1
+                          && $nb <= $nb_val_period) {
+                     
+                        $mydatatNew[$name][] = ceil($val / ($nb - 1));
                   }
                }
+               $mydatat = $mydatatNew;
+               
+               $a_labelsNew = array();
+               $nb = 1;
+               $val = 0;
+               foreach ($a_labels as $value) {
+                  if ($nb == 1) {
+                     $a_labelsNew[] = $value;
+                  }
+                  $nb++;
+                  if ($nb > $nb_val_period) {
+                     $nb = 1;
+                  }
+               }
+               $a_labels = $a_labelsNew;
             }
-            $ret = $pmServiceevent->getRef($rrdtool_template);
-            $a_ref = $ret[0];
             break;
          
          case '1y':
             $begin = date('Y-m-d H:i:s', date('U') - (365 * 24 * 3600));
+            $dateformat = "%Y-%m-%d %H:%M";
             
-            $query = "SELECT * FROM `".$this->getTable()."`
+            $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
-                  AND `type`='10d'
+                  AND `date` > '".$begin."'
+                  AND `date` <= '".date('Y-m-d H:i:s', $enddate)."'
                ORDER BY `date`";
             $result = $DB->query($query);
-            while ($edata=$DB->fetch_array($result)) {
-               // $dat = importArrayFromDB($edata['data']);
-               $dat = unserialize($edata['data']);
-               $datemod = $edata['date'];
-               $daynum = date('m', PluginMonitoringServiceevent::convert_datetime_timestamp($edata['date']));
-               $daynum = $daynum - 1;
-               $split = explode(' ', $datemod);
-               $split2 = explode(':', $split[1]);
-               $day = explode("-", $split[0]);
-               array_push($a_labels, $split[0]." ".$split2[0].'h');
-               if (count($dat) == 0) {
-                  $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($rrdtool_template);
-                  foreach ($a_perfnames as $name) {                     
-                     if (!isset($mydatat[$name])) {
-                        $mydatat[$name] = array();
+            $ret = $pmServiceevent->getData(
+                    $result, 
+                    $rrdtool_template,
+                    $begin,
+                    date('Y-m-d H:i:s', $enddate),
+                    array(),
+                    TRUE);
+            if (is_array($ret)) {
+               $mydatat  = $ret[0];
+               $a_labels = $ret[1];
+               $a_ref    = $ret[2];
+               
+               $nb_val = count($a_labels);
+               // May have 22 points in the graph
+               $nb_val_period = $nb_val / 75;
+               $mydatatNew = array();
+               foreach ($mydatat as $name=>$data) {
+                  $nb = 1;
+                  $val = 0;
+                  foreach ($data as $value) {
+                     $val += $value;
+                     $nb++;
+                     if ($nb > $nb_val_period) {
+                        $mydatatNew[$name][] = ceil($val / ($nb - 1));
+                        $nb = 1;
+                        $val = 0;
                      }
-                     array_push($mydatat[$name], '');
                   }
-                  
-               } else {
-                  foreach ($dat as $name=>$value) {
-                     if (!isset($mydatat[$name])) {
-                        $mydatat[$name] = array();
-                     }
-                     array_push($mydatat[$name], $value);
+                  if ($nb > 1
+                          && $nb <= $nb_val_period) {
+                     
+                        $mydatatNew[$name][] = ceil($val / ($nb - 1));
                   }
                }
+               $mydatat = $mydatatNew;
+               
+               $a_labelsNew = array();
+               $nb = 1;
+               $val = 0;
+               foreach ($a_labels as $value) {
+                  if ($nb == 1) {
+                     $a_labelsNew[] = $value;
+                  }
+                  $nb++;
+                  if ($nb > $nb_val_period) {
+                     $nb = 1;
+                  }
+               }
+               $a_labels = $a_labelsNew;
             }
-            $ret = $pmServiceevent->getRef($rrdtool_template);
             break;
       }
       return array($mydatat, $a_labels, $dateformat);      
