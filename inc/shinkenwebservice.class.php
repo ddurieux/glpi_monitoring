@@ -132,12 +132,7 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       );
       
       // Send downtime command ...
-      if ($this->sendCommand($url, $action, $a_fields, '', $auth)) {
-         // ... and then send an acknowledge for the host
-         return $this->sendAcknowledge($host_id, $service_id, $author, $comment, '1', '1', '1');
-      }
-      
-      return false;
+      return $this->sendCommand($url, $action, $a_fields, '', $auth);
    }
    
    

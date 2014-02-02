@@ -1176,7 +1176,7 @@ echo "
       global $DB,$CFG_GLPI;
       
       $pm_Host = new PluginMonitoringHost();
-      $pm_Host->getFromDB($data["id"]);
+      $pm_Host->getFromDB($data['id']);
       
       $shortstate = $pm_Host->getState($data['state'], 
                                    $data['state_type'], 
@@ -1278,15 +1278,18 @@ echo "
       if (PluginMonitoringProfile::haveRight("acknowledge", 'r') 
          || PluginMonitoringProfile::haveRight("downtime", 'r')) {
          echo "<td>";
-         // Schedule downtime for an host
+         // Manage downtimes for an host
          if (PluginMonitoringProfile::haveRight("downtime", 'r')) {
-            $downtime_id = $pm_Host->isInScheduledDowntime();
-            if ($downtime_id != -1) {
-               Toolbox::logInFile("pm", "Host ".$pm_Host->getName()." is in downtime period \n");
+            if ($pm_Host->isInScheduledDowntime()) {
+               $pmDowntime = new PluginMonitoringDowntime();
+               $pmDowntime->getFromDBByQuery("WHERE `" . $pmDowntime->getTable() . "`.`plugin_monitoring_hosts_id` = '" . $pm_Host->getID() . "' ORDER BY end_time DESC LIMIT 1");
+               
+               $downtime_id = $pmDowntime->getID();
+               // Toolbox::logInFile("pm", "Host ".$pm_Host->getName()." is in downtime period \n");
                if (PluginMonitoringProfile::haveRight("downtime", 'w')) {
                   echo "<div style='float: left; margin-right: 10px;'>";
                   echo "<span>";
-                  echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/downtime.form.php?id=$downtime_id&host_id=".$data['id']."'>"
+                  echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/downtime.form.php?host_id=".$data['id']."'>"
                            ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/downtime_scheduled.png'"
                           ." alt='".htmlspecialchars(__('Edit the downtime scheduled for the host', 'monitoring'), ENT_QUOTES)."'"
                           ." title='".htmlspecialchars(__('Edit the downtime scheduled for the host', 'monitoring'), ENT_QUOTES)."'/>"

@@ -81,6 +81,8 @@ function plugin_init_monitoring() {
          Plugin::registerClass('PluginMonitoringUnavailability');
          Plugin::registerClass('PluginMonitoringSystem',
               array('addtabon' => array('Central')));
+         Plugin::registerClass('PluginMonitoringDowntime',
+              array('addtabon' => array('Ticket')));
          
          $pmSecurity = new PluginMonitoringSecurity();
          $pmSecurity->updateSecurity();

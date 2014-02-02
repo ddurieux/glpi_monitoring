@@ -50,117 +50,19 @@ $pmDowntime = new PluginMonitoringDowntime();
 
 if (isset ($_POST["add"])) {
    $pmDowntime->add($_POST);
-   Html::back();
+   $pmDowntime->redirectToList();
 } else if (isset ($_POST["update"])) {
    $pmDowntime->update($_POST);
-   Html::back();
+   $pmDowntime->redirectToList();
 } else if (isset ($_POST["delete"])) {
    $pmDowntime->delete($_POST);
    $pmDowntime->redirectToList();
 }
 
-if (isset($_POST['add']) || isset($_POST['add_and_ticket'])) {
-   $user = new User();
-   $user->getFromDB($_POST['downtime_users_id']);
-   $username = $user->getName(1);
-   
-   if (isset($_POST['hostname'])) {
-      $pmHost = new PluginMonitoringHost();
-      $pmHost->getFromDB($_POST['host_id']);
-      // Toolbox::logInFile("pm", "Downtime for host ".$pmHost->getName()." : ".$comment." : \n");
-   
-      // Downtime an host ...
-      if (isset($_POST['hostdowntime'])) {
-         // Toolbox::logInFile("pm", "Downtime host ".$_POST['host_id']." / ".$pmHost->getName()."\n");
-   
-         // Send downtime command for an host to shinken via webservice   
-         $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
-         if ($pmShinkenwebservice->sendDowntime($_POST['host_id'], -1, $username, $comment)) {
-            $hostData = array();
-            $hostData['id'] = $pmHost->fields['id'];
-            $hostData['is_downtimed'] = '1';
-            $hostData['is_downtimeconfirmed'] = '1';
-            $hostData['downtime_users_id'] = $_POST['downtime_users_id'];
-            $hostData['downtime_comment'] = $comment;
-            $pmHost->update($hostData);
-         }
-      }
-      
-      // Downtime all services of an host ...
-      if (isset($_POST['serviceCount'])) {
-         // Toolbox::logInFile("pm", "Downtime host (all services) ".$_POST['host_id']." / ".$_POST['hostname']."\n");
-   
-         for ($i = 0; $i < $_POST['serviceCount']; $i++) {
-            // Toolbox::logInFile("pm", " - downtime service ".$_POST['serviceId'.$i]."\n");
-            
-            // Send downtime command for a service to shinken via webservice   
-            $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
-            if ($pmShinkenwebservice->sendDowntime(-1, $_POST['serviceId'.$i], $username, $comment)) {
-               $serviceData = array();
-               $serviceData['id'] = $_POST['serviceId'.$i];
-               $serviceData['is_downtimed'] = '1';
-               $serviceData['is_downtimeconfirmed'] = '0';
-               $serviceData['downtime_users_id'] = $_POST['downtime_users_id'];
-               $serviceData['downtime_comment'] = $comment;
-               $pmService->update($serviceData);
-            }
-         }
-      }
-      
-      // Request for a ticket creation ...
-      if (isset($_POST['add_and_ticket'])) {
-         // Toolbox::logInFile("pm", "Request ticket creation ".$_POST['host_id']." / ".$_POST['hostname']."\n");
-   
-         $pmTicket = new Ticket();
-         $tkt = array();
-         $tkt['_users_id_requester'] = $_POST['downtime_users_id'];
-         $tkt["_users_id_requester_notif"]['use_notification'] = 1;
-
-         $tkt['_auto_update'] = 1;
-         // $tkt['itemtype']     = $_POST['itemtype'];
-         // $tkt["items_id`"]    = $_POST['items_id`'];
-         
-         $tkt['_head']        = $_POST['name'];
-         $tkt['content']      = $comment;
-         
-         // Medium urgency
-         $tkt['urgency']      = "3";
-         
-         // $tkt['entities_id']  = $entity;
-         // $tkt['date']         = $head['date'];
-         // Medium
-         $tkt['urgency']      = "3";
-
-         $ticketId = $pmTicket->add($tkt);
-         // Toolbox::logInFile("pm", "Ticket id ".$ticketId."\n");
-         
-         Html::redirect($_POST['redirect']);
-      }
-   } else {
-      // Toolbox::logInFile("pm", "Downtime service ".$_POST['id']."\n");
-   
-      // Send downtime command for a service to shinken via webservice   
-      $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
-      if ($pmShinkenwebservice->sendDowntime(-1, $_POST['id'], $username, $comment)) {
-         // Simply downtime a service ...
-         $serviceData = array();
-         $serviceData['id'] = $_POST['id'];
-         $serviceData['is_downtimed'] = '1';
-         $serviceData['is_downtimeconfirmed'] = '0';
-         $serviceData['downtime_users_id'] = $_POST['downtime_users_id'];
-         $serviceData['downtime_comment'] = $comment;
-         $pmService->update($serviceData);
-      }
-   }
-   
-   Html::redirect($_POST['referer']);
-}
-
 // Read or edit downtime ...
-if (isset($_GET['id'])) {
-   // Toolbox::logInFile("pm", "Downtime, showForm ".$_GET['id']."\n");
+if (isset($_GET['id']) || isset($_GET['host_id'])) {
    // If host_id is defined, use it ...
-   $pmDowntime->showForm($_GET['id'], (isset($_GET['host_id'])) ? $_GET['host_id'] : '');
+   $pmDowntime->showForm((isset($_GET['id'])) ? $_GET['id'] : -1, (isset($_GET['host_id'])) ? $_GET['host_id'] : -1);
 }
 
 Html::footer();
