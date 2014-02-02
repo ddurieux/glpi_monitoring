@@ -225,6 +225,9 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
                   echo "</td>";
                   echo "<td>";
                   foreach ($data4 as $num=>$data5) {
+                     if ($num > 0) {
+                        echo "<hr/>";
+                     }
                      $this->showDefineDataOfGauge(
                              $items_id2,
                              array(
@@ -233,92 +236,7 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
                                  'c' => $itemtype2,
                                  'd' => str_replace('id', '', $items_id2),
                                  'num' => $num
-                             ));                     
-/*                     
-                     $perfdetail = getAllDatasFromTable(
-                             'glpi_plugin_monitoring_perfdatadetails', 
-                             "`plugin_monitoring_perfdatas_id`='".$item2->fields['graph_template']."'");
-                     $elements = array();
-                     foreach ($perfdetail as $perfdata) {
-                        for ($i=1; $i <= 15; $i++) {
-                           if ($perfdata['dsname'.$i] != '') {
-                              $elements[$perfdata['id']."/".$i] = $perfdata['dsname'.$i];
-                           }
-                        }
-                     }
-                     echo "<table>";
-                     echo "<tr>";
-                     echo "<td>";
-                     echo __('Value', 'monitoring');
-                     echo " : </td>";
-                     echo "<td>";
-                     Dropdown::showFromArray(
-                             'item', 
-                             $elements);
-                     echo "</td>";
-                     echo "</tr>";
-                     echo "<tr>";
-                     echo "<td>";
-                     echo __('Warning', 'monitoring');
-                     echo " : </td>";
-                     echo "<td>";
-                     $used = '';
-                     $other = 10;
-                     if (is_numeric($this->fields['aggregate_warn'])) {
-                        $used = $this->fields['aggregate_warn'];
-                        $other = $used;
-                     } else {
-                        $used = $this->fields['aggregate_warn'][$itemtype][$items_id][$itemtype2][$items_id2][$num];
-                     }
-                     Dropdown::showFromArray(
-                             'warn', 
-                             $elements, 
-                             array('other' => $other,
-                                   'used'  => $used));
-                     echo "</td>";
-                     echo "</tr>";
-                     echo "<tr>";
-                     echo "<td>";
-                     echo __('Critical', 'monitoring');
-                     echo " : </td>";
-                     echo "<td>";
-                     $used = '';
-                     $other = 10;
-                     if (is_numeric($this->fields['aggregate_crit'])) {
-                        $used = $this->fields['aggregate_crit'];
-                        $other = $used;
-                     } else {
-                        $used = $this->fields['aggregate_crit'][$itemtype][$items_id][$itemtype2][$items_id2][$num];
-                     }
-                     Dropdown::showFromArray(
-                             'crit', 
-                             $elements, 
-                             array('other' => $other,
-                                   'used'  => $used));
-                     echo "</td>";
-                     echo "</tr>";
-                     echo "<tr>";
-                     echo "<td>";
-                     echo __('Limit (max)', 'monitoring');
-                     echo " : </td>";
-                     echo "<td>";
-                     $used = '';
-                     $other = 10;
-                     if (is_numeric($this->fields['aggregate_limit'])) {
-                        $used = $this->fields['aggregate_limit'];
-                        $other = $used;
-                     } else {
-                        $used = $this->fields['aggregate_limit'][$itemtype][$items_id][$itemtype2][$items_id2][$num];
-                     }
-                     Dropdown::showFromArray(
-                             'limit', 
-                             $elements, 
-                             array('other' => $other,
-                                   'used'  => $used));
-                     echo "</td>";
-                     echo "</tr>";
-                     echo "</table>";
-*/
+                             ));
                      $nb4++;
                   }
                }
