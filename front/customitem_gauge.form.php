@@ -112,20 +112,18 @@ if (isset($_POST['add_item'])) {
 [add_item] => Ajouter
 [_glpi_csrf_token] => d528e2fecc2c544c2bd9ddabdbaed592 )
 */
-   }   
+   }
+   Html::back();
+} else if (isset ($_POST["add"])) {
+   $pmCustomitem_Gauge->add($_POST);
+   Html::back();
+} else if (isset ($_POST["update"])) {
+   $pmCustomitem_Gauge->update($_POST);
+   Html::back();
+} else if (isset ($_POST["delete"])) {
+   $pmCustomitem_Gauge->delete($_POST);
+   $pmCustomitem_Gauge->redirectToList();
 }
-//if (isset ($_POST["add"])) {
-//   $_POST = $pMonitoringCommand->convertPostdata($_POST);
-//   $pMonitoringCommand->add($_POST);
-//   Html::back();
-//} else if (isset ($_POST["update"])) {
-//   $_POST = $pMonitoringCommand->convertPostdata($_POST);
-//   $pMonitoringCommand->update($_POST);
-//   Html::back();
-//} else if (isset ($_POST["delete"])) {
-//   $pMonitoringCommand->delete($_POST);
-//   $pMonitoringCommand->redirectToList();
-//}
 
 
 if (isset($_GET["id"])) {

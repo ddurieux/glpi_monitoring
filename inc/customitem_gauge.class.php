@@ -146,6 +146,10 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
 
       $this->showFormButtons($options);
       
+      if ($items_id == 0) {
+         return;
+      }
+      
       echo "<form name='form' method='post' action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/customitem_gauge.form.php'>";
       echo "<input type='hidden' name='id' value='".$items_id."' />";
       echo "<table class='tab_cadre_fixe'>";
@@ -315,7 +319,7 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
    function getGaugeTypes() {
       $a_types = array(
           'lastvalue'      => __('Last value', 'monitoring'),
-          'lastvaluediff'  => __('Last value (diff for incremantal)', 'monitoring'),
+          'lastvaluediff'  => __('Last value(diff for incremantal)', 'monitoring'),
           'average'        => __('Average', 'monitoring'),
           'median'         => __('Median', 'monitoring'),
       );
