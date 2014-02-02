@@ -101,21 +101,10 @@ if (isset($_POST['add_item'])) {
      
       $pmCustomitem_Gauge->update($input);
       Html::back();
-/*
-[id] => 1 
-[plugin_monitoring_componentscatalogs_id] => 6 
-[PluginMonitoringComponent] => 6 
-[item] => 37/1 
-[warn] => warn_other_value
-[warn_other_value] => 75 
-[crit] => crit_other_value 
-[crit_other_value] => 90 
-[limit] => limit_other_value 
-[limit_other_value] => 100 
-[add_item] => Ajouter
-[_glpi_csrf_token] => d528e2fecc2c544c2bd9ddabdbaed592 )
-*/
    }
+   Html::back();
+} else if (isset($_POST['delete_item'])) {
+   $pmCustomitem_Gauge->deleteGaugeItems($_POST);
    Html::back();
 } else if (isset ($_POST["add"])) {
    $pmCustomitem_Gauge->add($_POST);

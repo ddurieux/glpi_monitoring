@@ -198,9 +198,9 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
       $pmPerfdataDetail = new PluginMonitoringPerfdataDetail();
       echo "<table class='tab_cadre_fixe'>";
       foreach ($array as $itemtype=>$data1) {
-         foreach ($data1 as $items_id=>$data2) {
+         foreach ($data1 as $items_id1=>$data2) {
             $item1 = new $itemtype();
-            $item1->getFromDB(str_replace('id', '', $items_id));
+            $item1->getFromDB(str_replace('id', '', $items_id1));
             echo "<tr class='tab_bg_3'>";
             echo "<td>";
             echo "[".$item1->getTypeName()."] ";
@@ -224,19 +224,23 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
                   echo $item2->getLink();
                   echo "</td>";
                   echo "<td>";
+                  $j = 0;
                   foreach ($data4 as $num=>$data5) {
-                     if ($num > 0) {
+                     if ($j > 0) {
                         echo "<hr/>";
                      }
                      $this->showDefineDataOfGauge(
                              $items_id2,
                              array(
                                  'a' => $itemtype,
-                                 'b' => str_replace('id', '', $items_id),
+                                 'b' => str_replace('id', '', $items_id1),
                                  'c' => $itemtype2,
                                  'd' => str_replace('id', '', $items_id2),
-                                 'num' => $num
-                             ));
+                                 'num' => $num,
+                                 'id' => $items_id
+                             ),
+                             TRUE);
+                     $j++;
                      $nb4++;
                   }
                }
@@ -686,7 +690,8 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
 
    
    
-   function showDefineDataOfGauge($components_id, $a_path=array()) {
+   function showDefineDataOfGauge($components_id, $a_path=array(), $deletebutton=FALSE) {
+      
       if (!isset($this->fields)
               || !isset($this->fields['aggregate_items'])
               || $this->fields['aggregate_items'] == '') {
@@ -725,6 +730,19 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
               $elements,
               array('value' => $value));
       echo "</td>";
+      if ($deletebutton) {
+         echo "<td rowspan='4'>";
+         echo "<form name='form2' method='post' action=''>";
+
+         echo "<input type='hidden' name='id' value='".$a_path['id']."' />";
+         echo "<input type='hidden' name='delete_item' value='".
+                 $a_path['a']."|id".$a_path['b']."|".$a_path['c']."|id".$a_path['d']."|".$a_path['num']."' />";
+         echo "<input type='submit' class='submit' name='delete' value='".
+                 _sx('button', 'Delete permanently')."' />";
+         Html::closeForm();
+         echo "</td>";
+     }
+      
       echo "</tr>";
       echo "<tr>";
       echo "<td>";
@@ -794,6 +812,35 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
       echo "</tr>";
       echo "</table>";
 
+   }
+   
+   
+   
+   function deleteGaugeItems($array) {
+      $this->getFromDB($array['id']);
+
+      $aggregate_items = importArrayFromDB($this->fields['aggregate_items']);
+      $split = explode('|', $array['delete_item']);
+      if (count($split) == 5) {
+         unset($aggregate_items[$split[0]][$split[1]][$split[2]][$split[3]][$split[4]]);
+         if (count($aggregate_items[$split[0]][$split[1]][$split[2]][$split[3]]) == 0) {
+            unset($aggregate_items[$split[0]][$split[1]][$split[2]][$split[3]]);
+            if (count($aggregate_items[$split[0]][$split[1]][$split[2]]) == 0) {
+               unset($aggregate_items[$split[0]][$split[1]][$split[2]]);
+               if (count($aggregate_items[$split[0]][$split[1]]) == 0) {
+                  unset($aggregate_items[$split[0]][$split[1]]);
+                  if (count($aggregate_items[$split[0]]) == 0) {
+                     unset($aggregate_items[$split[0]]);
+                  }      
+               }      
+            }      
+         }
+      }
+      $input = array(
+          'id' => $array['id'],
+          'aggregate_items' => exportArrayToDB($aggregate_items)
+      );
+      $this->update($input);
    }
 }
 
