@@ -68,7 +68,7 @@ if (isset($_POST['add_item'])) {
          $d = $_POST['PluginMonitoringComponent'];
          $item_split = explode('/', $_POST['item']);
          
-         $aggregate_items_add[$a][$b][$c][$d] = array(
+         $aggregate_items_add[$a]["id".$b][$c]["id".$d] = array(
              array(
                  'perfdatadetails_id' => $item_split[0],
                  'perfdatadetails_dsname' => $item_split[1]    
@@ -81,6 +81,9 @@ if (isset($_POST['add_item'])) {
       if (isset($_POST['warn_other_value'])) {
          $input['aggregate_warn'] = $_POST['warn_other_value'];
       } else {
+         if (is_numeric($input['aggregate_warn'])) {
+            
+         }
          // It's an array
       }
 

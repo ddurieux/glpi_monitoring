@@ -200,22 +200,41 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
       foreach ($array as $itemtype=>$data1) {
          foreach ($data1 as $items_id=>$data2) {
             $item1 = new $itemtype();
-            $item1->getFromDB($items_id);
+            $item1->getFromDB(str_replace('id', '', $items_id));
             echo "<tr class='tab_bg_3'>";
             echo "<td>";
             echo "[".$item1->getTypeName()."] ";
             echo $item1->getLink();
             echo "</td>";
-            echo "<td>";
             foreach ($data2 as $itemtype2=>$data3) {
+               $nb4 = 0;
                foreach ($data3 as $items_id2=>$data4) {
+                  if ($nb4 > 0) {
+                     echo "</tr>";
+                     echo "<tr class='tab_bg_3'>";
+                     echo "<td>";
+                     echo "[".$item1->getTypeName()."] ";
+                     echo $item1->getLink();
+                     echo "</td>";
+                  }
                   $item2 = new $itemtype2();
-                  $item2->getFromDB($items_id2);
+                  $item2->getFromDB(str_replace('id', '', $items_id2));
+                  echo "<td>";
                   echo "[".$item2->getTypeName()."] ";
                   echo $item2->getLink();
                   echo "</td>";
                   echo "<td>";
                   foreach ($data4 as $num=>$data5) {
+                     $this->showDefineDataOfGauge(
+                             $items_id2,
+                             array(
+                                 'a' => $itemtype,
+                                 'b' => str_replace('id', '', $items_id),
+                                 'c' => $itemtype2,
+                                 'd' => str_replace('id', '', $items_id2),
+                                 'num' => $num
+                             ));                     
+/*                     
                      $perfdetail = getAllDatasFromTable(
                              'glpi_plugin_monitoring_perfdatadetails', 
                              "`plugin_monitoring_perfdatas_id`='".$item2->fields['graph_template']."'");
@@ -234,7 +253,7 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
                      echo " : </td>";
                      echo "<td>";
                      Dropdown::showFromArray(
-                             'tt', 
+                             'item', 
                              $elements);
                      echo "</td>";
                      echo "</tr>";
@@ -252,7 +271,7 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
                         $used = $this->fields['aggregate_warn'][$itemtype][$items_id][$itemtype2][$items_id2][$num];
                      }
                      Dropdown::showFromArray(
-                             'tt', 
+                             'warn', 
                              $elements, 
                              array('other' => $other,
                                    'used'  => $used));
@@ -272,7 +291,7 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
                         $used = $this->fields['aggregate_crit'][$itemtype][$items_id][$itemtype2][$items_id2][$num];
                      }
                      Dropdown::showFromArray(
-                             'tt', 
+                             'crit', 
                              $elements, 
                              array('other' => $other,
                                    'used'  => $used));
@@ -292,23 +311,39 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
                         $used = $this->fields['aggregate_limit'][$itemtype][$items_id][$itemtype2][$items_id2][$num];
                      }
                      Dropdown::showFromArray(
-                             'tt', 
+                             'limit', 
                              $elements, 
                              array('other' => $other,
                                    'used'  => $used));
                      echo "</td>";
                      echo "</tr>";
-                     
+                     echo "</table>";
+*/
+                     $nb4++;
                   }
                }
             }
             
-            echo "</table>";
             echo "</td>";
             echo "</tr>";
             
          }         
       }
+      echo "</table>";
+      
+      echo "<table class='tab_cadre'>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<th>";
+      echo __("Preview");
+      echo "</th>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      $this->showWidget($items_id);
+      $this->showWidgetFrame($items_id);
+      echo "</td>";
+      echo "</tr>";
       echo "</table>";
       
       return true;
@@ -397,12 +432,12 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
             case 'PluginMonitoringComponentscatalog':
                $pmComponentscatalog = new PluginMonitoringComponentscatalog();
                foreach ($data as $items_id=>$data2) {
-                  $ret = $pmComponentscatalog->getInfoOfCatalog($items_id);
+                  $ret = $pmComponentscatalog->getInfoOfCatalog(str_replace('id', '', $items_id));
                   $a_hosts = $ret[6];
                   foreach ($data2['PluginMonitoringComponent'] as $items_id_components=>$data4) {
                      // get services  (use entities of user)
                      $query = "SELECT * FROM `glpi_plugin_monitoring_services`
-                        WHERE `plugin_monitoring_components_id`='".$items_id_components."'
+                        WHERE `plugin_monitoring_components_id`='".str_replace('id', '', $items_id_components)."'
                            AND `plugin_monitoring_componentscatalogs_hosts_id` IN 
                               ('".implode("','", $a_hosts)."')
                            AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
@@ -475,8 +510,10 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
                  $dataevent['date']);
          foreach ($data2 as $a_perfdatadetails) {
             $pmPerfdataDetail->getFromDB($a_perfdatadetails['perfdatadetails_id']);
-            $val += $ret[0][$pmPerfdataDetail->fields['dsname'.$a_perfdatadetails['perfdatadetails_dsname']]][0];
-            $nb_val++;
+            if (isset($ret[0][$pmPerfdataDetail->fields['dsname'.$a_perfdatadetails['perfdatadetails_dsname']]])) {
+               $val += $ret[0][$pmPerfdataDetail->fields['dsname'.$a_perfdatadetails['perfdatadetails_dsname']]][0];
+               $nb_val++;
+            }
          }
          // for manage warn, crit and limit
          foreach ($a_tocheck as $other_type=>$num_type) {
@@ -566,11 +603,11 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
             case 'PluginMonitoringComponentscatalog':
                $pmComponentscatalog = new PluginMonitoringComponentscatalog();
                foreach ($data as $items_id=>$data2) {
-                  $ret = $pmComponentscatalog->getInfoOfCatalog($items_id);
+                  $ret = $pmComponentscatalog->getInfoOfCatalog(str_replace('id', '', $items_id));
                   $a_hosts = $ret[6];
                   foreach ($data2['PluginMonitoringComponent'] as $items_id_components=>$data4) {
                      $query = "SELECT * FROM `glpi_plugin_monitoring_services`
-                        WHERE `plugin_monitoring_components_id`='".$items_id_components."'
+                        WHERE `plugin_monitoring_components_id`='".str_replace('id', '', $items_id_components)."'
                            AND `plugin_monitoring_componentscatalogs_hosts_id` IN 
                               ('".implode("','", $a_hosts)."')
                            AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
@@ -731,9 +768,12 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
 
    
    
-   function showDefineDataOfGauge($components_id) {
-
-      $this->getEmpty();              
+   function showDefineDataOfGauge($components_id, $a_path=array()) {
+      if (!isset($this->fields)
+              || !isset($this->fields['aggregate_items'])
+              || $this->fields['aggregate_items'] == '') {
+         $this->getEmpty();              
+      }
       
       $pmComponent = new PluginMonitoringComponent();
       $pmComponent->getFromDB($components_id);
@@ -756,9 +796,16 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
       echo __('Value', 'monitoring');
       echo " : </td>";
       echo "<td>";
+      $value = '';
+      if ($this->fields['aggregate_items'] != '') {
+         $aggregate_items = importArrayFromDB($this->fields['aggregate_items']);
+         $value = $aggregate_items[$a_path['a']]["id".$a_path['b']][$a_path['c']]["id".$a_path['d']][$a_path['num']]['perfdatadetails_id'].
+              '/'.$aggregate_items[$a_path['a']]["id".$a_path['b']][$a_path['c']]["id".$a_path['d']][$a_path['num']]['perfdatadetails_dsname'];
+      }
       Dropdown::showFromArray(
               'item', 
-              $elements);
+              $elements,
+              array('value' => $value));
       echo "</td>";
       echo "</tr>";
       echo "<tr>";
@@ -774,7 +821,7 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
       } else if ($this->fields['aggregate_warn'] == '') {
          $used = '';
       } else {
-         $used = $this->fields['aggregate_warn'][$itemtype][$items_id][$itemtype2][$items_id2][$num];
+         $used = $this->fields['aggregate_warn'][$a_path['a']][$a_path['b']][$a_path['c']][$a_path['d']][$a_path['num']];
       }
       Dropdown::showFromArray(
               'warn', 
@@ -796,7 +843,7 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
       } else if ($this->fields['aggregate_crit'] == '') {
          $used = '';
       } else {
-         $used = $this->fields['aggregate_crit'][$itemtype][$items_id][$itemtype2][$items_id2][$num];
+         $used = $this->fields['aggregate_crit'][$a_path['a']][$a_path['b']][$a_path['c']][$a_path['d']][$a_path['num']];
       }
       Dropdown::showFromArray(
               'crit', 
@@ -818,7 +865,7 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
       } else if ($this->fields['aggregate_limit'] == '') {
          $used = '';
       } else {
-         $used = $this->fields['aggregate_limit'][$itemtype][$items_id][$itemtype2][$items_id2][$num];
+         $used = $this->fields['aggregate_limit'][$a_path['a']][$a_path['b']][$a_path['c']][$a_path['d']][$a_path['num']];
       }
       Dropdown::showFromArray(
               'limit', 
