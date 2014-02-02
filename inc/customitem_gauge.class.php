@@ -130,7 +130,7 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Time', 'monitoring')." :</td>";
+      echo "<td>".__('Time (not used for `last value` type)', 'monitoring')." :</td>";
       echo "<td>";
       $elements = PluginMonitoringCustomitem_Common::getTimes(); 
       Dropdown::showFromArray('time', $elements, array('value' => $this->fields["time"]));
@@ -146,10 +146,49 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
 
       $this->showFormButtons($options);
       
+      echo "<form name='form' method='post' action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/customitem_gauge.form.php'>";
+      echo "<input type='hidden' name='id' value='".$items_id."' />";
+      echo "<table class='tab_cadre_fixe'>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<th colspan='4'>";
+      echo __('Add gauge', 'monitoring');
+      echo "</th>";
+      echo "</tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<th>";
+      echo PluginMonitoringComponentscatalog::getTypeName();
+      echo "</th>";
+      echo "<th>";
+      echo PluginMonitoringComponent::getTypeName();
+      echo "</th>";
+      echo "<th colspan='2'>";
+      echo "</th>";
+      echo "</tr>";
       
+      echo "<tr class='tab_bg_3'>";
+      echo "<td>";
+      $toupdate = array(
+          'value_fieldname' => 'id',
+          'to_update'  => "add_selectcomponent",
+          'url'        => $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/gaugeComponents.php"
+      );
+      Dropdown::show(
+              'PluginMonitoringComponentscatalog',
+              array('toupdate' => $toupdate));      
+      echo "</td>";
+      echo "<td id='add_selectcomponent'>";
       
+      echo "</td>";
+      echo "<td id='add_data'>";
       
+      echo "</td>";
+      echo "<td>";
+      echo "<input type='submit' name='add_item' value='".__('Add')."' class='submit' />";
+      echo "</td>";
+      echo "</tr>";
       
+      echo "</table>";
+      Html::closeForm();
       
       $array = importArrayFromDB($this->fields['aggregate_items']);
       $pmPerfdataDetail = new PluginMonitoringPerfdataDetail();
@@ -161,7 +200,7 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
             echo "<tr class='tab_bg_3'>";
             echo "<td>";
             echo "[".$item1->getTypeName()."] ";
-            echo $item1->fields['name'];
+            echo $item1->getLink();
             echo "</td>";
             echo "<td>";
             foreach ($data2 as $itemtype2=>$data3) {
@@ -169,8 +208,7 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
                   $item2 = new $itemtype2();
                   $item2->getFromDB($items_id2);
                   echo "[".$item2->getTypeName()."] ";
-                  echo $item2->fields['name'];
-    
+                  echo $item2->getLink();
                   echo "</td>";
                   echo "<td>";
                   foreach ($data4 as $num=>$data5) {
@@ -191,7 +229,9 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
                      echo __('Value', 'monitoring');
                      echo " : </td>";
                      echo "<td>";
-                     Dropdown::showFromArray('tt', $elements);
+                     Dropdown::showFromArray(
+                             'tt', 
+                             $elements);
                      echo "</td>";
                      echo "</tr>";
                      echo "<tr>";
@@ -199,7 +239,19 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
                      echo __('Warning', 'monitoring');
                      echo " : </td>";
                      echo "<td>";
-                     Dropdown::showFromArray('tt', $elements);
+                     $used = '';
+                     $other = 10;
+                     if (is_numeric($this->fields['aggregate_warn'])) {
+                        $used = $this->fields['aggregate_warn'];
+                        $other = $used;
+                     } else {
+                        $used = $this->fields['aggregate_warn'][$itemtype][$items_id][$itemtype2][$items_id2][$num];
+                     }
+                     Dropdown::showFromArray(
+                             'tt', 
+                             $elements, 
+                             array('other' => $other,
+                                   'used'  => $used));
                      echo "</td>";
                      echo "</tr>";
                      echo "<tr>";
@@ -207,28 +259,50 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
                      echo __('Critical', 'monitoring');
                      echo " : </td>";
                      echo "<td>";
-                     Dropdown::showFromArray('tt', $elements);
+                     $used = '';
+                     $other = 10;
+                     if (is_numeric($this->fields['aggregate_crit'])) {
+                        $used = $this->fields['aggregate_crit'];
+                        $other = $used;
+                     } else {
+                        $used = $this->fields['aggregate_crit'][$itemtype][$items_id][$itemtype2][$items_id2][$num];
+                     }
+                     Dropdown::showFromArray(
+                             'tt', 
+                             $elements, 
+                             array('other' => $other,
+                                   'used'  => $used));
                      echo "</td>";
                      echo "</tr>";
                      echo "<tr>";
                      echo "<td>";
-                     echo __('Limit', 'monitoring');
+                     echo __('Limit (max)', 'monitoring');
                      echo " : </td>";
                      echo "<td>";
-                     Dropdown::showFromArray('tt', $elements);
+                     $used = '';
+                     $other = 10;
+                     if (is_numeric($this->fields['aggregate_limit'])) {
+                        $used = $this->fields['aggregate_limit'];
+                        $other = $used;
+                     } else {
+                        $used = $this->fields['aggregate_limit'][$itemtype][$items_id][$itemtype2][$items_id2][$num];
+                     }
+                     Dropdown::showFromArray(
+                             'tt', 
+                             $elements, 
+                             array('other' => $other,
+                                   'used'  => $used));
                      echo "</td>";
                      echo "</tr>";
                      
                   }
-                  // Show value / warn / crit / limit
-
-                  
                }
             }
             
-            
+            echo "</table>";
             echo "</td>";
             echo "</tr>";
+            
          }         
       }
       echo "</table>";
@@ -651,6 +725,107 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
       </script>";
    }
 
+   
+   
+   function showDefineDataOfGauge($components_id) {
+
+      $this->getEmpty();              
+      
+      $pmComponent = new PluginMonitoringComponent();
+      $pmComponent->getFromDB($components_id);
+      
+      $perfdetail = getAllDatasFromTable(
+              'glpi_plugin_monitoring_perfdatadetails', 
+              "`plugin_monitoring_perfdatas_id`='".$pmComponent->fields['graph_template']."'");
+      $elements = array();
+      foreach ($perfdetail as $perfdata) {
+         for ($i=1; $i <= 15; $i++) {
+            if ($perfdata['dsname'.$i] != '') {
+               $elements[$perfdata['id']."/".$i] = $perfdata['dsname'.$i];
+            }
+         }
+      }
+
+      echo "<table>";
+      echo "<tr>";
+      echo "<td>";
+      echo __('Value', 'monitoring');
+      echo " : </td>";
+      echo "<td>";
+      Dropdown::showFromArray(
+              'item', 
+              $elements);
+      echo "</td>";
+      echo "</tr>";
+      echo "<tr>";
+      echo "<td>";
+      echo __('Warning', 'monitoring');
+      echo " : </td>";
+      echo "<td>";
+      $used = '';
+      $other = '75';
+      if (is_numeric($this->fields['aggregate_warn'])) {
+         $used = $this->fields['aggregate_warn'];
+         $other = $used;
+      } else if ($this->fields['aggregate_warn'] == '') {
+         $used = '';
+      } else {
+         $used = $this->fields['aggregate_warn'][$itemtype][$items_id][$itemtype2][$items_id2][$num];
+      }
+      Dropdown::showFromArray(
+              'warn', 
+              $elements, 
+              array('other' => $other,
+                    'used'  => $used));
+      echo "</td>";
+      echo "</tr>";
+      echo "<tr>";
+      echo "<td>";
+      echo __('Critical', 'monitoring');
+      echo " : </td>";
+      echo "<td>";
+      $used = '';
+      $other = '90';
+      if (is_numeric($this->fields['aggregate_crit'])) {
+         $used = $this->fields['aggregate_crit'];
+         $other = $used;
+      } else if ($this->fields['aggregate_crit'] == '') {
+         $used = '';
+      } else {
+         $used = $this->fields['aggregate_crit'][$itemtype][$items_id][$itemtype2][$items_id2][$num];
+      }
+      Dropdown::showFromArray(
+              'crit', 
+              $elements, 
+              array('other' => $other,
+                    'used'  => $used));
+      echo "</td>";
+      echo "</tr>";
+      echo "<tr>";
+      echo "<td>";
+      echo __('Limit (max)', 'monitoring');
+      echo " : </td>";
+      echo "<td>";
+      $used = '';
+      $other = '100';
+      if (is_numeric($this->fields['aggregate_limit'])) {
+         $used = $this->fields['aggregate_limit'];
+         $other = $used;
+      } else if ($this->fields['aggregate_limit'] == '') {
+         $used = '';
+      } else {
+         $used = $this->fields['aggregate_limit'][$itemtype][$items_id][$itemtype2][$items_id2][$num];
+      }
+      Dropdown::showFromArray(
+              'limit', 
+              $elements, 
+              array('other' => $other,
+                    'used'  => $used));
+      echo "</td>";
+      echo "</tr>";
+      echo "</table>";
+
+   }
 }
 
 ?>

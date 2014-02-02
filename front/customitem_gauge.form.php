@@ -49,6 +49,71 @@ Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
 
 $pmCustomitem_Gauge = new PluginMonitoringCustomitem_Gauge();
 
+if (isset($_POST['add_item'])) {
+   if (isset($_POST['item'])) {
+      $pmCustomitem_Gauge->getFromDB($_POST['id']);
+      $input = array();
+      $input['id'] = $_POST['id'];
+      
+      if ($pmCustomitem_Gauge->fields['aggregate_items'] == '') {
+         $aggregate_items = array();
+      } else {
+         $aggregate_items = importArrayFromDB($pmCustomitem_Gauge->fields['aggregate_items']);
+      }
+      if (isset($_POST['plugin_monitoring_componentscatalogs_id'])) {
+         $aggregate_items_add = array();
+         $a = 'PluginMonitoringComponentscatalog';
+         $b = $_POST['plugin_monitoring_componentscatalogs_id'];
+         $c = 'PluginMonitoringComponent';
+         $d = $_POST['PluginMonitoringComponent'];
+         $item_split = explode('/', $_POST['item']);
+         
+         $aggregate_items_add[$a][$b][$c][$d] = array(
+             array(
+                 'perfdatadetails_id' => $item_split[0],
+                 'perfdatadetails_dsname' => $item_split[1]    
+             )
+         );
+         $aggregate_items = $aggregate_items + $aggregate_items_add;
+      }
+      $input['aggregate_items'] = exportArrayToDB($aggregate_items);
+      
+      if (isset($_POST['warn_other_value'])) {
+         $input['aggregate_warn'] = $_POST['warn_other_value'];
+      } else {
+         // It's an array
+      }
+
+      if (isset($_POST['crit_other_value'])) {
+         $input['aggregate_crit'] = $_POST['crit_other_value'];
+      } else {
+         // It's an array
+      }
+
+      if (isset($_POST['limit_other_value'])) {
+         $input['aggregate_limit'] = $_POST['limit_other_value'];
+      } else {
+         // It's an array
+      }
+     
+      $pmCustomitem_Gauge->update($input);
+      Html::back();
+/*
+[id] => 1 
+[plugin_monitoring_componentscatalogs_id] => 6 
+[PluginMonitoringComponent] => 6 
+[item] => 37/1 
+[warn] => warn_other_value
+[warn_other_value] => 75 
+[crit] => crit_other_value 
+[crit_other_value] => 90 
+[limit] => limit_other_value 
+[limit_other_value] => 100 
+[add_item] => Ajouter
+[_glpi_csrf_token] => d528e2fecc2c544c2bd9ddabdbaed592 )
+*/
+   }   
+}
 //if (isset ($_POST["add"])) {
 //   $_POST = $pMonitoringCommand->convertPostdata($_POST);
 //   $pMonitoringCommand->add($_POST);
