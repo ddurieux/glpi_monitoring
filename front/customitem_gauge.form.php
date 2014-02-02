@@ -74,7 +74,7 @@ if (isset($_POST['add_item'])) {
                  'perfdatadetails_dsname' => $item_split[1]    
              )
          );
-         $aggregate_items = $aggregate_items + $aggregate_items_add;
+         $aggregate_items = array_merge_recursive($aggregate_items, $aggregate_items_add);
       }
       $input['aggregate_items'] = exportArrayToDB($aggregate_items);
       
