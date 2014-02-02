@@ -285,6 +285,22 @@ class PluginMonitoringService extends CommonDBTM {
    }
 
 
+   /**
+    * Set service as acknowledged
+    */
+   function setAcknowledged($comment='') {
+      if ($this->getID() == -1) return false;
+      
+      $serviceData = array();
+      $serviceData['id'] = $this->getID();
+      $serviceData['is_acknowledged'] = '1';
+      $serviceData['is_acknowledgeconfirmed'] = '1';
+      $serviceData['acknowledge_users_id'] = $_SESSION['glpiID'];
+      $serviceData['acknowledge_comment'] = $comment;
+      $this->update($serviceData);
+   }
+
+
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       switch ($item->getType()) {

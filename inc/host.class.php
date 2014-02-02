@@ -277,23 +277,76 @@ class PluginMonitoringHost extends CommonDBTM {
    }
 
    
-   /**
+    /**
+    * Get host identifier for a service
+    */
+   function getServicesID() {
+      if ($this->getID() == -1) return -1;
+      
+      global $DB;
+      
+      $query = "SELECT
+                  `glpi_plugin_monitoring_services`.`id` as service_id
+                  , `glpi_plugin_monitoring_services`.`name` as service_name
+                  , `glpi_plugin_monitoring_hosts`.`id` as host_id
+                  , `glpi_computers`.`name` as host_name
+               FROM
+                  `glpi_plugin_monitoring_hosts`
+               INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts` 
+                    ON (`glpi_plugin_monitoring_hosts`.`itemtype` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`) AND (`glpi_plugin_monitoring_hosts`.`items_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`)
+               INNER JOIN `glpi_computers` 
+                    ON (`glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`)
+               INNER JOIN `glpi_plugin_monitoring_services` 
+                    ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
+               WHERE (`glpi_plugin_monitoring_hosts`.`id` = '".$this->getID()."');";
+      $result = $DB->query($query);
+      if ($DB->numrows($result) > 0) {
+         $a_services = array();
+         while ($data=$DB->fetch_array($result)) {
+            $a_services[] = $data['service_id'];
+         }
+         return $a_services;
+      } else {
+         return false;
+      }
+   }
+
+
+  /**
     * Is host in scheduled downtime ?
     */
    function isInScheduledDowntime() {
       if ($this->getID() == -1) return false;
       
+      // Toolbox::logInFile("pm", "Scheduled downtime ? ".$this->getID()." \n");
       $pmDowntime = new PluginMonitoringDowntime();
-      $pmDowntime->getFromDBByQuery("WHERE `" . $pmDowntime->getTable() . "`.`plugin_monitoring_hosts_id` = '" . $this->getID() . "' LIMIT 1");
+      $pmDowntime->getFromDBByQuery("WHERE `" . $pmDowntime->getTable() . "`.`plugin_monitoring_hosts_id` = '" . $this->getID() . "' ORDER BY end_time DESC LIMIT 1");
+      // Toolbox::logInFile("pm", "Scheduled downtime ? ".$pmDowntime->getID()." \n");
       
       if ($pmDowntime->getID() != -1) {
          return $pmDowntime->isInDowntime();
       }
       
-      return -1;
+      return false;
    }
 
+   
+   /**
+    * Set host as acknowledged
+    */
+   function setAcknowledged($comment='') {
+      if ($this->getID() == -1) return false;
+      
+      $hostData = array();
+      $hostData['id'] = $this->getID();
+      $hostData['is_acknowledged'] = '1';
+      $hostData['is_acknowledgeconfirmed'] = '1';
+      $hostData['acknowledge_users_id'] = $_SESSION['glpiID'];
+      $hostData['acknowledge_comment'] = $comment;
+      $this->update($hostData);
+   }
 
+   
    /**
     * Get host entity
     */
