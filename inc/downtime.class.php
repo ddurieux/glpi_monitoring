@@ -153,12 +153,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
       $tab[2]['field']           = 'plugin_monitoring_hosts_id';
       $tab[2]['name']            = __('Host name', 'monitoring');
       $tab[2]['datatype']        = 'specific';
-      //      $tab[2]['nosearch']        = true;
-      //      $tab[2]['nosort']          = true;
-      // No link to every item in the table ...
-      // $tab[2]['datatype']        = 'itemlink';
       $tab[2]['massiveaction']   = false;
-      // $tab[2]['additionalfields']  = array('itemtype');
 
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'flexible';
@@ -285,6 +280,16 @@ class PluginMonitoringDowntime extends CommonDBTM {
    
    
    /**
+    * Get current downtime for an host
+    */
+   function getFromHost($host_id) {
+      // $pmDowntime = new PluginMonitoringDowntime();
+      $this->getFromDBByQuery("WHERE `" . $this->getTable() . "`.`plugin_monitoring_hosts_id` = '" . $this->getID() . "' AND `expired` = '0' ORDER BY end_time DESC LIMIT 1");
+      return $this->getID();
+   }
+   
+   
+   /**
     * Get user name for a downtime
     */
    function getUsername() {
@@ -334,6 +339,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
       
       $this->fields["expired"] = ($now > $end_time);
       $this->update($this->fields);
+      // Toolbox::logInFile("pm", "isExpired, ".$this->fields["expired"]."\n");
       return ($this->fields["expired"] == 1);
    }
 
@@ -398,7 +404,6 @@ class PluginMonitoringDowntime extends CommonDBTM {
             $a_services = $pmHost->getServicesID();
             if (is_array($a_services)) {
                foreach ($a_services as $service_id) {
-                  // Toolbox::logInFile("pm", "Ack service, $service_id\n");
                   // Send acknowledge command for a service to shinken via webservice   
                   $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
                   if ($pmShinkenwebservice->sendAcknowledge(-1, 
@@ -463,10 +468,10 @@ class PluginMonitoringDowntime extends CommonDBTM {
                                              $this->fields['duration_seconds'],
                                              'delete'
                                              )) {
-         Session::addMessageAfterRedirect(__('Downtime notified to the monitoring application:', 'monitoring'));
+         Session::addMessageAfterRedirect(__('Downtime deletion notified to the monitoring application:', 'monitoring'));
          $this->fields['notified'] = 1;
       } else {
-         Session::addMessageAfterRedirect(__('Downtime has not been accepted by the monitoring application:', 'monitoring'), false, ERROR);
+         Session::addMessageAfterRedirect(__('Downtime deletion has not been accepted by the monitoring application:', 'monitoring'), false, ERROR);
          return false;
       }
 
@@ -633,6 +638,17 @@ class PluginMonitoringDowntime extends CommonDBTM {
       echo "</tr>";
          
       $this->showFormButtons();
+      
+      return true;
+   }
+
+
+   static function cronDowntimesExpired() {
+      global $DB;
+
+      $query = "UPDATE `glpi_plugin_monitoring_downtimes` SET `expired` = '1' WHERE `expired` = '0' AND `end_time` < NOW();";
+      Toolbox::logInFile("pm", "cronDowntimesExpired, query : $query\n");
+      $DB->query($query);
       
       return true;
    }

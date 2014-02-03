@@ -53,12 +53,21 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $redirect = FALSE;
       $a_url = array();
       
+      if (PluginMonitoringProfile::haveRight("restartshinken", 'r')) {
+         echo "<table class='tab_cadre_fixe' style='width: 120px; position: absolute; float: left;'>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>";
+         echo "<button><a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/restartshinken.form.php'>".__('Restart Shinken', 'monitoring')."</a></button>";
+         echo "</td>";
+         echo "</tr>";
+         echo "</table>";
+      }
+      
       echo "<table class='tab_cadre_fixe' width='950'>";
       echo "<tr class='tab_bg_3'>";
       echo "<td>";
 
-      if (PluginMonitoringProfile::haveRight("restartshinken", 'r')
-              || PluginMonitoringProfile::haveRight("dashboard_system_status", 'r')
+      if (PluginMonitoringProfile::haveRight("dashboard_system_status", 'r')
               || PluginMonitoringProfile::haveRight("dashboard_perfdata", 'r')
               || PluginMonitoringProfile::haveRight("dashboard_hosts_status", 'r')
               || PluginMonitoringProfile::haveRight("dashboard_services_catalogs", 'r')
@@ -146,15 +155,19 @@ class PluginMonitoringDisplay extends CommonDBTM {
          }
          echo "</tr>";
          echo "</table>";
-         if (PluginMonitoringProfile::haveRight("restartshinken", 'r')) {
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_1'>";
-            echo "<td colspan='100'>";
-            echo "<button><a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/restartshinken.form.php'>".__('Restart Shinken', 'monitoring')."</a></button>";
-            echo "</td>";
-            echo "</tr>";
-            echo "</table>";
-         }
+         echo "<table class='tab_cadre_fixe'>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<th>";
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/hostdailycounter.php'>".__('Daily counters', 'monitoring')."</a>";
+         echo "</th>";
+         echo "<th>";
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/downtime.php'>".__('Downtimes', 'monitoring')."</a>";
+         echo "</th>";
+         echo "<th>";
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.php'>".__('Acknowledges', 'monitoring')."</a>";
+         echo "</th>";
+         echo "</tr>";
+         echo "</table>";
       } else {
          if (basename($_SERVER['PHP_SELF']) == 'display_servicescatalog.php') {
             $redirect = TRUE;
@@ -933,7 +946,7 @@ echo "
          $shortstate = PluginMonitoringHost::getState($data['state'], 
                                       $data['state_type'], 
                                       $data['event'], 
-                                      $data['is_acknowledged']);
+                                      $pMonitoringService->isCurrentlyAcknowledged());
       }
 
       $timezone = '0';
@@ -1045,28 +1058,9 @@ echo "
       } else {
          echo "<td class='center page foldtl resource".$data['state']."'>";
          echo "<div class=''>";
-         if ($shortstate == 'red'
-                 || $shortstate == 'yellow'
-                 || $shortstate == 'orange') {
-            echo "<div style='vertical-align:middle;'>";
-            echo "<span>";
-            echo $data['state'];
-            echo "</span>";
-            if (PluginMonitoringProfile::haveRight("acknowledge", 'w')) {
-               echo "<span>&nbsp;";
-               echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?id=".$data['id']."'>"
-                        ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_checked.png'"
-                       ." alt='".htmlspecialchars(__('Acknowledge a faulty resource', 'monitoring'), ENT_QUOTES)."'"
-                       ." title='".htmlspecialchars(__('Acknowledge a faulty resource', 'monitoring'), ENT_QUOTES)."'/>"
-                    ."</a>";
-               echo "</span>";
-            }
-            echo "</div>";
-         } else {
-            echo "<div>";
-            echo $data['state'];
-            echo "</div>";
-         }
+         echo "<div>";
+         echo $data['state'];
+         echo "</div>";
          echo "</div>";
          echo "</td>";
 
@@ -1105,10 +1099,11 @@ echo "
 
          if (PluginMonitoringProfile::haveRight("acknowledge", 'r')) {
             echo "<td>";
-            if ($data['is_acknowledged']=='1') {
+//            Toolbox::logInFile("pm", "shortstate : $shortstate \n");
+            if ($pMonitoringService->isCurrentlyAcknowledged()) {
                if (PluginMonitoringProfile::haveRight("acknowledge", 'w')) {
                   echo "<span>";
-                  echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?form=".$data['id']."'>"
+                  echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?itemtype=Service&items_id=".$data['id']."'>"
                            ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_ok.png'"
                           ." alt='".htmlspecialchars(__('Modify acknowledge comment for the service', 'monitoring'), ENT_QUOTES)."'"
                           ." title='".htmlspecialchars(__('Modify acknowledge comment for the service', 'monitoring'), ENT_QUOTES)."'/>"
@@ -1121,33 +1116,20 @@ echo "
                           ." title='".htmlspecialchars(__('Service problem has been acknowledged', 'monitoring'), ENT_QUOTES)."'/>";
                   echo "&nbsp;&nbsp;</span>";
                }
+               // Display acknowledge data ...
+               $pMonitoringService->getAcknowledge();
             } else if ($shortstate == 'red'
                     || $shortstate == 'yellow'
                     || $shortstate == 'orange'
                     || !empty($data['host_services_state_list'])) {
                if (PluginMonitoringProfile::haveRight("acknowledge", 'w')) {
                   echo "<span>";
-                  // $data["idComputer"]
-                  echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?id=".$data['id']."'>"
-                           ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge.png'"
+                  echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?itemtype=Service&items_id=".$data['id']."'>"
+                           ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_ko.png'"
                           ." alt='".htmlspecialchars(__('Add an acknowledge for the service', 'monitoring'), ENT_QUOTES)."'"
                           ." title='".htmlspecialchars(__('Add an acknowledge for the service', 'monitoring'), ENT_QUOTES)."'/>"
                        ."</a>";
                   echo "&nbsp;&nbsp;</span>";
-               }
-            }
-            
-            if ($shortstate == 'redblue'
-                    || $shortstate == 'orangeblue'
-                    || $shortstate == 'yellowblue') {
-               $user = new User();
-               $user->getFromDB($data['acknowledge_users_id']);
-               echo"<i>". __('Acknowledged by: ', 'monitoring').$user->getName(1)."</i><br/>";
-               if (PluginMonitoringProfile::haveRight("acknowledge", 'w')) {
-                  echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?form=".$data['id']."' title='".htmlspecialchars(__('Modify acknowledge comment for the service', 'monitoring'), ENT_QUOTES)."'>";
-                  echo $data['acknowledge_comment']."</a>";
-               } else {
-                  echo $data['acknowledge_comment'];
                }
             }
             echo "</td>";
@@ -1181,7 +1163,7 @@ echo "
       $shortstate = $pm_Host->getState($data['state'], 
                                    $data['state_type'], 
                                    $data['event'], 
-                                   $data['is_acknowledged']);
+                                   $pm_Host->isCurrentlyAcknowledged());
       echo "<td>";
       $entity = new Entity();
       $entity->getFromDB($data["entities_id"]);
@@ -1236,7 +1218,6 @@ echo "
       echo "<div class='page foldtl resource".$data['host_services_state']."'>";
       echo "<div style='vertical-align:middle;'>";
       echo "<span>";
-      // if (($data['host_services_state'] != 'OK') and PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
       if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
          $link = $CFG_GLPI['root_doc'].
             "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
@@ -1266,10 +1247,6 @@ echo "
       echo "<td>";
       echo $data['event'];
       echo "</td>";
-
-      // echo "<td>";
-      // echo $data['output'];
-      // echo "</td>";
 
       echo "<td>";
       echo $data['perf_data'];
@@ -1321,10 +1298,10 @@ echo "
          }
          echo "<div style='float: left;'>";
          // Manage acknowledgement for an host
-         if ($data['is_acknowledged']=='1') {
+         if ($pm_Host->isCurrentlyAcknowledged()) {
             if (PluginMonitoringProfile::haveRight("acknowledge", 'w')) {
                echo "<span>";
-               echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?host=".$data['host_name']."&form=".$data['id']."'>"
+               echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?itemtype=Host&items_id=".$data['id']."'>"
                         ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_ok.png'"
                        ." alt='".htmlspecialchars(__('Modify acknowledge comment for the host', 'monitoring'), ENT_QUOTES)."'"
                        ." title='".htmlspecialchars(__('Modify acknowledge comment for the host', 'monitoring'), ENT_QUOTES)."'/>"
@@ -1337,23 +1314,15 @@ echo "
                        ." title='".htmlspecialchars(__('Host problem has been acknowledged', 'monitoring'), ENT_QUOTES)."'/>";
                echo "&nbsp;&nbsp;</span>";
             }
-            $user = new User();
-            $user->getFromDB($data['acknowledge_users_id']);
-            echo"<i>". __('Acknowledged by: ', 'monitoring').$user->getName(1)."</i><br/>";
-            if (PluginMonitoringProfile::haveRight("acknowledge", 'w')) {
-               echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?host=".$data['host_name']."&form=".$data['id']."' title='".htmlspecialchars(__('Modify acknowledge comment for the host', 'monitoring'), ENT_QUOTES)."'>";
-               echo $data['acknowledge_comment']."</a>";
-            } else {
-               echo $data['acknowledge_comment'];
-            }
-            
+            // Display acknowledge data ...
+            $pm_Host->getAcknowledge();
          } else if ($shortstate == 'red'
                  || $shortstate == 'yellow'
                  || $shortstate == 'orange'
                  || !empty($data['host_services_state_list'])) {
             if (PluginMonitoringProfile::haveRight("acknowledge", 'w')) {
                echo "<span>";
-               echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?host=".$data['host_name']."&id=".$data['id']."'>"
+               echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?itemtype=Host&items_id=".$data['id']."'>"
                         ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_ko.png'"
                        ." alt='".htmlspecialchars(__('Add an acknowledge for the host and all faulty services of the host', 'monitoring'), ENT_QUOTES)."'"
                        ." title='".htmlspecialchars(__('Add an acknowledge for the host and all faulty services of the host', 'monitoring'), ENT_QUOTES)."'/>"

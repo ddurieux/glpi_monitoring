@@ -787,17 +787,37 @@ CREATE TABLE `glpi_plugin_monitoring_downtimes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `plugin_monitoring_hosts_id` int(11) NOT NULL DEFAULT '0',
   `flexible` tinyint(1) DEFAULT '1',
-  `start_time` datetime NOT NULL,
-  `end_time` datetime DEFAULT NULL,
+  `start_time` datetime NOT NULL DEFAULT '2014-01-01 00:00:00',
+  `end_time` datetime NOT NULL DEFAULT '2014-01-01 00:00:00',
   `duration` int(1) DEFAULT '24',
   `duration_type` varchar(64) COLLATE utf8_unicode_ci DEFAULT 'days',
   `comment` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
   `services` tinyint(1) DEFAULT '1',
   `users_id` int(11) DEFAULT '-1',
   `notified` tinyint(1) DEFAULT '1',
-  `expired` tinyint(1) DEFAULT '1',
+  `expired` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `plugin_monitoring_hosts_id` (`plugin_monitoring_hosts_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_acknowledges`;
+
+CREATE TABLE `glpi_plugin_monitoring_acknowledges` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `itemtype` varchar(100) DEFAULT 'Host',
+  `items_id` int(11) NOT NULL DEFAULT '0',
+  `start_time` datetime NOT NULL DEFAULT '2014-01-01 00:00:00',
+  `end_time` datetime NOT NULL DEFAULT '2014-01-01 00:00:00',
+  `sticky` tinyint(1) DEFAULT '1',
+  `persistent` tinyint(1) DEFAULT '1',
+  `notify` tinyint(1) DEFAULT '1',
+  `comment` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `users_id` int(11) DEFAULT '-1',
+  `notified` tinyint(1) DEFAULT '1',
+  `expired` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `itemtype` (`itemtype`,`items_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

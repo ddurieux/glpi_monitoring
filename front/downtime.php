@@ -46,6 +46,11 @@ PluginMonitoringProfile::checkRight("downtime","r");
 
 Html::header(__('Monitoring - downtimes', 'monitoring'),'', "plugins", "monitoring", "downtime");
 
+$pmMessage = new PluginMonitoringMessage();
+$pmMessage->getMessages();
+
+$pmDisplay = new PluginMonitoringDisplay();
+$pmDisplay->menu();
 
 Search::show('PluginMonitoringDowntime');
 

@@ -93,7 +93,7 @@ class PluginMonitoringLog extends CommonDBTM {
       $DB->query($query);
       
       // Clean too events
-      PluginMonitoringServiceevent::cronUpdaterrd();
+      // PluginMonitoringServiceevent::cronUpdaterrd();
       
       $pmUnavailability = new PluginMonitoringUnavailability();
       $pmUnavailability->runUnavailability();      

@@ -176,16 +176,20 @@ class PluginMonitoringService extends CommonDBTM {
    /**
     * Get service name
     */
-   function getName($shinken = false) {
+   function getName($shinken = false, $hostname=false) {
       if ($this->getID() == -1) return '';
       
       $pmComponent = new PluginMonitoringComponent();
       $a_component = current($pmComponent->find("`id`='".$this->fields['plugin_monitoring_components_id']."'", "", 1));
       
-      $service_description = $a_component['description'];
+      $service_description = $a_component['name'];
       if ($shinken) {
          $service_description = preg_replace("/[^A-Za-z0-9\-_]/","",$a_component['description']);
          if (empty($service_description)) $service_description = preg_replace("/[^A-Za-z0-9\-_]/","",$a_component['name']);
+      }
+      
+      if ($hostname) {
+         $service_description .= ' '.__('on', 'monitoring').' '.$this->getHostName();
       }
       
       return $service_description;
@@ -288,16 +292,69 @@ class PluginMonitoringService extends CommonDBTM {
    /**
     * Set service as acknowledged
     */
-   function setAcknowledged($comment='') {
+   function setAcknowledged($comment='', $creation=true) {
+      if ($this->getID() == -1) return false;
+      
+      $start_time = strtotime(date('Y-m-d H:i:s'));
+      $end_time = $start_time;
+
+      if ($creation) {
+         $ackData = array();
+         $ackData['itemtype']       = 'PluginMonitoringService';
+         $ackData['items_id']       = $this->getID();
+         $ackData["start_time"]     = date('Y-m-d H:i:s', $start_time);
+         $ackData["end_time"]       = date('Y-m-d H:i:s', $end_time);
+         $ackData["comment"]        = $comment;
+         $ackData["sticky"]         = 1;
+         $ackData["persistent"]     = 1;
+         $ackData["notify"]         = 1;
+         $ackData["users_id"]       = $_SESSION['glpiID'];
+         $ackData["notified"]       = 0;
+         $ackData["expired"]        = 0;
+         $pmAcknowledge = new PluginMonitoringAcknowledge();
+         $pmAcknowledge->add($ackData);
+      }
+
+      $serviceData = array();
+      $serviceData['id'] = $this->getID();
+      $serviceData['is_acknowledged'] = '1';
+      $this->update($serviceData);
+   }
+   function setUnacknowledged($comment='') {
       if ($this->getID() == -1) return false;
       
       $serviceData = array();
       $serviceData['id'] = $this->getID();
-      $serviceData['is_acknowledged'] = '1';
-      $serviceData['is_acknowledgeconfirmed'] = '1';
-      $serviceData['acknowledge_users_id'] = $_SESSION['glpiID'];
-      $serviceData['acknowledge_comment'] = $comment;
+      $serviceData['is_acknowledged'] = '0';
       $this->update($serviceData);
+   }
+
+
+  /**
+    * Is currently acknowledged ?
+    */
+   function isCurrentlyAcknowledged() {
+      if ($this->getID() == -1) return false;
+      
+      $pmAcknowledge = new PluginMonitoringAcknowledge();
+      if ($pmAcknowledge->getFromHost($this->getID(), 'Service') != -1) {
+         Toolbox::logInFile("pm", "isCurrentlyAcknowledged ? ".$this->getID()." : ".(! $pmAcknowledge->isExpired())." \n");
+         return (! $pmAcknowledge->isExpired());
+      }
+      
+      return false;
+   }
+
+
+   function getAcknowledge() {
+      if ($this->getID() == -1) return false;
+      
+      $pmAcknowledge = new PluginMonitoringAcknowledge();
+      if ($pmAcknowledge->getFromHost($this->getID(), 'Service') != -1) {
+         return ($pmAcknowledge->getComments());
+      }
+      
+      return '';
    }
 
 

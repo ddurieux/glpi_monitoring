@@ -46,11 +46,13 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringShinkenwebservice extends CommonDBTM {
    
-   function sendAcknowledge($host_id=-1, $service_id=-1, $author= '', $comment='', $sticky='1', $notify='1', $persistent='1') {
+   function sendAcknowledge($host_id=-1, $service_id=-1, $author= '', $comment='', $sticky='1', $notify='1', $persistent='1', $operation='') {
       global $DB;
       
       if (($host_id == -1) && ($service_id == -1)) return false;
       
+//      Toolbox::logInFile("pm", "acknowledge, sendAcknowledge, host : $host_id / $service_id\n");
+
       $pmTag = new PluginMonitoringTag();
       $pmService = new PluginMonitoringService();
       $pmService->getFromDB($service_id);
@@ -59,6 +61,8 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       $pmHost->getFromDB(($host_id == -1) ? $pmService->getHostID() : $host_id);
       $hostname = $pmHost->getName(true);
       
+//      Toolbox::logInFile("pm", "acknowledge, sendAcknowledge, host : $hostname\n");
+
       // Acknowledge an host ...
       $acknowledgeServiceOnly = true;
       $a_fields = array();
@@ -76,6 +80,7 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       $url = 'http://'.$ip.':7760/';
       $action = 'acknowledge';
       $a_fields = array(
+          'action'               => empty($operation) ? 'add' : $operation,
           'host_name'            => $hostname,
           'author'               => $author,
           'service_description'  => $service_description,

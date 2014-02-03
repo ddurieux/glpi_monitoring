@@ -40,7 +40,7 @@
    ------------------------------------------------------------------------
  */
 
-define ("PLUGIN_MONITORING_VERSION","0.84+1.3b");
+define ("PLUGIN_MONITORING_VERSION","0.84+1.3c");
 
 define('_MPDF_TEMP_PATH', GLPI_PLUGIN_DOC_DIR.'/monitoring/pdf/');
 
@@ -83,6 +83,7 @@ function plugin_init_monitoring() {
               array('addtabon' => array('Central')));
          Plugin::registerClass('PluginMonitoringDowntime',
               array('addtabon' => array('Ticket')));
+         Plugin::registerClass('PluginMonitoringAcknowledge');
          
          $pmSecurity = new PluginMonitoringSecurity();
          $pmSecurity->updateSecurity();
@@ -198,6 +199,9 @@ function plugin_init_monitoring() {
 
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['downtime']['title'] = __('Downtimes', 'monitoring');
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['downtime']['page']  = '/plugins/monitoring/front/downtime.php';
+
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['acknowledge']['title'] = __('Acknowledges', 'monitoring');
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['acknowledge']['page']  = '/plugins/monitoring/front/acknowledge.php';
 
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['perfdata']['title'] = __('Graph templates', 'monitoring');
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['perfdata']['page']  = '/plugins/monitoring/front/perfdata.php';

@@ -57,26 +57,14 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
    }
    
    
-   /*
-    * Add something at install ...
-    * 
-   function initCounters() {
-      
-   }
-    */
-
-
-
    static function canCreate() {      
       return PluginMonitoringProfile::haveRight("config", 'w');
    }
-
 
    
    static function canView() {
       return PluginMonitoringProfile::haveRight("config", 'r');
    }
-
 
    
    function defineTabs($options=array()){
@@ -89,17 +77,6 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
    
    
    function getComments() {
-      // TODO ...
-      $comment = 
-         __('Max check attempts (number of retries)', 'monitoring').' : '.$this->fields['max_check_attempts'].'<br/>
-         '.__('Time in minutes between 2 checks', 'monitoring').' : '.$this->fields['check_interval'].' minutes<br/>
-         '.__('Time in minutes between 2 retries', 'monitoring').' : '.$this->fields['retry_interval'].' minutes';
-      
-      if (!empty($comment)) {
-         return Html::showToolTip($comment, array('display' => false));
-      }
-
-      return $comment;
    }
 
    
@@ -113,7 +90,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
     * @return varchar name of the tab(s) to display
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      global $CFG_GLPI;
+      if ($item->getType() == 'Computer'){
+         return __('Daily counters', 'monitoring');
+      }
       
       return '';
    }
@@ -131,14 +110,12 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
-      if ($item->getType()=='PluginMonitoringHostdailycounter') {
-         if ($tabnum == '0') {
-            $item->copyItem($item->getID());
-         } else if ($tabnum == '1') {
-            PluginMonitoringHostdailycounterscatalog_Component::listForComponents($item->getID());
-         } else if ($tabnum == '2') {
-            $item->preferences($item->getID());
-         }         
+      if ($item->getType()=='Computer') {
+         Toolbox::logInFile("pm", "Daily counters, displayTabContentForItem, item concerned : ".$item->getField('itemtype')."/".$item->getField('items_id')."\n");
+         if (self::canView()) {
+            // TODO ...
+            return true;
+         }
       }
       return true;
    }
@@ -148,73 +125,70 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
    function getSearchOptions() {
 
       $tab = array();
-    
+
       $tab['common'] = __('Host daily counters', 'monitoring');
 
       $tab[1]['table']           = $this->getTable();
       $tab[1]['field']           = 'id';
-		$tab[1]['linkfield']       = 'id';
+      $tab[1]['linkfield']       = 'id';
       $tab[1]['name']            = __('Identifier');
       $tab[1]['massiveaction']   = false; // implicit field is id
-     
-		$tab[2]['table']           = $this->getTable();
-		$tab[2]['field']           = 'hostname';
-		$tab[2]['name']            = __('Host name');
-      // TODO ...
-      // $tab[2]['datatype']        = 'specific';
-      $tab[2]['nosearch']        = true;
-      $tab[2]['nosort']          = true;
+
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'hostname';
+      $tab[2]['name']            = __('Host name', 'monitoring');
+      $tab[2]['datatype']        = 'specific';
       $tab[2]['massiveaction']   = false;
 
-		$tab[3]['table']           = $this->getTable();
-		$tab[3]['field']           = 'day';
-		$tab[3]['name']            = __('Day', 'monitoring');
-      $tab[3]['datatype']        = 'datetime';
+      $tab[3]['table']           = $this->getTable();
+      $tab[3]['field']           = 'day';
+      $tab[3]['name']            = __('Day', 'monitoring');
+      $tab[3]['datatype']        = 'date';
       $tab[3]['massiveaction']   = false;
 
-		$tab[4]['table']           = $this->getTable();
-		$tab[4]['field']           = 'cPagesTotal';
-		$tab[4]['name']            = __('Cumulative total for printed pages', 'monitoring');
+      $tab[4]['table']           = $this->getTable();
+      $tab[4]['field']           = 'cPagesTotal';
+      $tab[4]['name']            = __('Cumulative total for printed pages', 'monitoring');
       $tab[4]['massiveaction']   = false;
 
-		$tab[5]['table']           = $this->getTable();
-		$tab[5]['field']           = 'cPagesToday';
-		$tab[5]['name']            = __('Daily printed pages', 'monitoring');
+      $tab[5]['table']           = $this->getTable();
+      $tab[5]['field']           = 'cPagesToday';
+      $tab[5]['name']            = __('Daily printed pages', 'monitoring');
       $tab[5]['massiveaction']   = false;
 
-		$tab[6]['table']           = $this->getTable();
-		$tab[6]['field']           = 'cPagesRemaining';
-		$tab[6]['name']            = __('Remaining pages', 'monitoring');
+      $tab[6]['table']           = $this->getTable();
+      $tab[6]['field']           = 'cPagesRemaining';
+      $tab[6]['name']            = __('Remaining pages', 'monitoring');
       $tab[6]['massiveaction']   = false;
 
-		$tab[7]['table']           = $this->getTable();
-		$tab[7]['field']           = 'cRetractedTotal';
-		$tab[7]['name']            = __('Cumulative total for retracted pages', 'monitoring');
+      $tab[7]['table']           = $this->getTable();
+      $tab[7]['field']           = 'cRetractedTotal';
+      $tab[7]['name']            = __('Cumulative total for retracted pages', 'monitoring');
       $tab[7]['massiveaction']   = false;
 
-		$tab[8]['table']           = $this->getTable();
-		$tab[8]['field']           = 'cRetractedToday';
-		$tab[8]['name']            = __('Daily retracted pages', 'monitoring');
+      $tab[8]['table']           = $this->getTable();
+      $tab[8]['field']           = 'cRetractedToday';
+      $tab[8]['name']            = __('Daily retracted pages', 'monitoring');
       $tab[8]['massiveaction']   = false;
 
-		$tab[9]['table']           = $this->getTable();
-		$tab[9]['field']           = 'cRetractedRemaining';
-		$tab[9]['name']            = __('Stored retracted pages', 'monitoring');
+      $tab[9]['table']           = $this->getTable();
+      $tab[9]['field']           = 'cRetractedRemaining';
+      $tab[9]['name']            = __('Stored retracted pages', 'monitoring');
       $tab[9]['massiveaction']   = false;
 
-		$tab[10]['table']          = $this->getTable();
-		$tab[10]['field']          = 'cPrinterChanged';
-		$tab[10]['name']           = __('Cumulative total for printer changed', 'monitoring');
+      $tab[10]['table']          = $this->getTable();
+      $tab[10]['field']          = 'cPrinterChanged';
+      $tab[10]['name']           = __('Cumulative total for printer changed', 'monitoring');
       $tab[10]['massiveaction']  = false;
 
-		$tab[11]['table']          = $this->getTable();
-		$tab[11]['field']          = 'cPaperChanged';
-		$tab[11]['name']           = __('Cumulative total for paper changed', 'monitoring');
+      $tab[11]['table']          = $this->getTable();
+      $tab[11]['field']          = 'cPaperChanged';
+      $tab[11]['name']           = __('Cumulative total for paper changed', 'monitoring');
       $tab[11]['massiveaction']  = false;
 
-		$tab[12]['table']          = $this->getTable();
-		$tab[12]['field']          = 'cBinEmptied';
-		$tab[12]['name']           = __('Cumulative total for bin emptied', 'monitoring');
+      $tab[12]['table']          = $this->getTable();
+      $tab[12]['field']          = 'cBinEmptied';
+      $tab[12]['name']           = __('Cumulative total for bin emptied', 'monitoring');
       $tab[12]['massiveaction']  = false;
 
       return $tab;
@@ -227,10 +201,10 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          $values = array($field => $values);
       }
       switch ($field) {
-         case 'glpi_plugin_monitoring_hosts_id':
-            $pm_host = new PluginMonitoringHost();
-            $pm_host->getFromDB($values[$field]);
-            return $pm_host->getLink();
+         case 'hostname':
+            $computer = new Computer();
+            $computer->getFromDBByQuery("WHERE `name` = '" . $values[$field] . "' LIMIT 1");
+            return $computer->getLink();
             break;
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);

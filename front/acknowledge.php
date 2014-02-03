@@ -42,9 +42,9 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("config","r");
+PluginMonitoringProfile::checkRight("acknowledge","r");
 
-Html::header(__('Monitoring - daily counters', 'monitoring'),'', "plugins", "monitoring", "hostdailycounter");
+Html::header(__('Monitoring - acknowledges', 'monitoring'),'', "plugins", "monitoring", "acknowledge");
 
 $pmMessage = new PluginMonitoringMessage();
 $pmMessage->getMessages();
@@ -52,7 +52,7 @@ $pmMessage->getMessages();
 $pmDisplay = new PluginMonitoringDisplay();
 $pmDisplay->menu();
 
-Search::show('PluginMonitoringHostdailycounter');
+Search::show('PluginMonitoringAcknowledge');
 
 Html::footer();
 ?>

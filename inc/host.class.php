@@ -68,7 +68,7 @@ class PluginMonitoringHost extends CommonDBTM {
       
       $tab[1]['table']           = 'glpi_computers';
       $tab[1]['field']           = 'name';
-      $tab[1]['name']            = __('Host name');
+      $tab[1]['name']            = __('Host name', 'monitoring');
       $tab[1]['datatype']        = 'itemlink';
       $tab[1]['itemlink_type']   = $this->getType();
       $tab[1]['massiveaction']   = false;
@@ -318,31 +318,83 @@ class PluginMonitoringHost extends CommonDBTM {
    function isInScheduledDowntime() {
       if ($this->getID() == -1) return false;
       
-      // Toolbox::logInFile("pm", "Scheduled downtime ? ".$this->getID()." \n");
       $pmDowntime = new PluginMonitoringDowntime();
-      $pmDowntime->getFromDBByQuery("WHERE `" . $pmDowntime->getTable() . "`.`plugin_monitoring_hosts_id` = '" . $this->getID() . "' ORDER BY end_time DESC LIMIT 1");
-      // Toolbox::logInFile("pm", "Scheduled downtime ? ".$pmDowntime->getID()." \n");
-      
-      if ($pmDowntime->getID() != -1) {
+      if ($pmDowntime->getFromHost($this->getID()) != -1) {
          return $pmDowntime->isInDowntime();
       }
+
+      // Toolbox::logInFile("pm", "Scheduled downtime ? ".$this->getID()." \n");
+      // $pmDowntime->getFromDBByQuery("WHERE `" . $pmDowntime->getTable() . "`.`plugin_monitoring_hosts_id` = '" . $this->getID() . "' ORDER BY end_time DESC LIMIT 1");
+      // Toolbox::logInFile("pm", "Scheduled downtime ? ".$pmAcknowledge->getID()." \n");
+      // if ($pmDowntime->getID() != -1) {
+         // return $pmDowntime->isInDowntime();
+      // }
       
       return false;
    }
 
    
+  /**
+    * Is host currently acknowledged ?
+    */
+   function isCurrentlyAcknowledged() {
+      if ($this->getID() == -1) return false;
+      
+      $pmAcknowledge = new PluginMonitoringAcknowledge();
+      if ($pmAcknowledge->getFromHost($this->getID(), 'Host') != -1) {
+         Toolbox::logInFile("pm", "isCurrentlyAcknowledged ? ".$this->getID()." : ".(! $pmAcknowledge->isExpired())." \n");
+         return (! $pmAcknowledge->isExpired());
+      }
+      
+      return false;
+   }
+
+
+   function getAcknowledge() {
+      if ($this->getID() == -1) return false;
+      
+      $pmAcknowledge = new PluginMonitoringAcknowledge();
+      if ($pmAcknowledge->getFromHost($this->getID(), 'Service') != -1) {
+         return ($pmAcknowledge->getComments());
+      }
+      
+      return '';
+   }
+
+
    /**
     * Set host as acknowledged
     */
    function setAcknowledged($comment='') {
       if ($this->getID() == -1) return false;
       
+      // Do not create a new acknoledge because this function is called from acknoledge creation function !
+      // $ackData = array();
+      // $ackData['itemtype']       = 'PluginMonitoringHost';
+      // $ackData['items_id']       = $this->getID();
+      // $ackData["start_time"]     = date('Y-m-d H:i:s', $start_time);
+      // $ackData["end_time"]       = date('Y-m-d H:i:s', $end_time);
+      // $ackData["comment"]        = $comment;
+      // $ackData["sticky"]         = 1;
+      // $ackData["persistent"]     = 1;
+      // $ackData["notify"]         = 1;
+      // $ackData["users_id"]       = $_SESSION['glpiID'];
+      // $ackData["notified"]       = 0;
+      // $ackData["expired"]        = 0;
+      // $pmAcknowledge = new PluginMonitoringAcknowledge();
+      // $pmAcknowledge->add($ackData);
+
       $hostData = array();
       $hostData['id'] = $this->getID();
       $hostData['is_acknowledged'] = '1';
-      $hostData['is_acknowledgeconfirmed'] = '1';
-      $hostData['acknowledge_users_id'] = $_SESSION['glpiID'];
-      $hostData['acknowledge_comment'] = $comment;
+      $this->update($hostData);
+   }
+   function setUnacknowledged($comment='') {
+      if ($this->getID() == -1) return false;
+      
+      $hostData = array();
+      $hostData['id'] = $this->getID();
+      $hostData['is_acknowledged'] = '0';
       $this->update($hostData);
    }
 

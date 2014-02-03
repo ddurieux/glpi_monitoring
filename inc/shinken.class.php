@@ -191,10 +191,13 @@ class PluginMonitoringShinken extends CommonDBTM {
          $classname = $data['itemtype'];
          $class = new $classname;
          if ($class->getFromDB($data['items_id'])) {
-            
+         
             if (isset($a_entities_allowed['-1'])
                     OR isset($a_entities_allowed[$class->fields['entities_id']])) {
 
+               $pmHost->getFromDBByQuery("WHERE `glpi_plugin_monitoring_hosts`.`itemtype` = '" . $data['itemtype'] . "' AND `glpi_plugin_monitoring_hosts`.`items_id` = '" . $data['items_id'] . "' LIMIT 1");
+               $a_hosts[$i]['_HOSTID'] = $pmHost->getField('id');
+               
                $a_hosts[$i]['host_name'] = preg_replace("/[^A-Za-z0-9\-_]/","",$class->fields['name']);
                $a_hosts[$i]['_ENTITIESID'] = $data['entityId'];
                $a_hosts[$i]['_ENTITY'] = $data['entityName'];
@@ -616,7 +619,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             $a_services[$i]['_ENTITIESID'] = $item->fields['entities_id'];
             // $a_services[$i]['_ENTITY'] = $item->fields['entityName'];
             $a_services[$i]['_ITEMSID'] = $data['id'];
-            $a_services[$i]['_ITEMTYPE'] = 'service';
+            $a_services[$i]['_ITEMTYPE'] = 'Service';
          
             // Manage freshness
             if ($a_component['freshness_count'] == 0) {
@@ -913,7 +916,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9\-_]/","",$dataBA['name']);
                // $a_services[$i]['_ENTITIESID'] = $dataBA['id'];
                $a_services[$i]['_ITEMSID'] = $dataBA['id'];
-               $a_services[$i]['_ITEMTYPE'] = 'servicecatalog';
+               $a_services[$i]['_ITEMTYPE'] = 'ServiceCatalog';
                $command = "bp_rule!";
 
                foreach ($a_group as $key=>$value) {

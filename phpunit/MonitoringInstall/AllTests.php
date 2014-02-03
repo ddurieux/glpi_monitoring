@@ -126,6 +126,8 @@ class MonitoringInstall extends PHPUnit_Framework_TestCase {
               'Cron cleanlogs not created');
       $this->assertTrue($crontask->getFromDBbyName('PluginMonitoringDisplayview_rule', 'replayallviewrules'),
               'Cron replayallviewrules not created');
+      $this->assertTrue($crontask->getFromDBbyName('PluginMonitoringDowntime', 'cronDowntimesExpired'),
+              'Cron cronDowntimesExpired not created');
    }
 }
 
