@@ -179,11 +179,16 @@ class PluginMonitoringShinken extends CommonDBTM {
          `glpi_plugin_monitoring_componentscatalogs_hosts`.*, 
          `glpi_computers`.`id`, `glpi_computers`.`locations_id`,
          `glpi_entities`.`id` AS entityId, `glpi_entities`.`name` AS entityName,
-         `glpi_locations`.`id`, `glpi_locations`.`completename`, `glpi_locations`.`comment`, `glpi_locations`.`building`
+         `glpi_locations`.`id`, `glpi_locations`.`completename`, 
+         `glpi_locations`.`comment`, `glpi_locations`.`building`,
+         `glpi_plugin_monitoring_services`.`networkports_id`
          FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
          LEFT JOIN `glpi_computers` ON `glpi_computers`.`id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`
          LEFT JOIN `glpi_entities` ON `glpi_computers`.`entities_id` = `glpi_entities`.`id`
          LEFT JOIN `glpi_locations` ON `glpi_locations`.`id` = `glpi_computers`.`locations_id`
+         LEFT JOIN `glpi_plugin_monitoring_services` 
+            ON `glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id`
+               = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
          GROUP BY `itemtype`, `items_id`";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
@@ -314,7 +319,8 @@ class PluginMonitoringShinken extends CommonDBTM {
                            $logicalnum = $pfNetworkPort->fields['logical_number'];
                            $a_arguments[$arg] = str_replace("[[NETWORKPORTNUM]]", $logicalnum, $a_arguments[$arg]);
                         } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTNAME]]")) {
-                           if (isset($data['networkports_id'])) {
+                           if (isset($data['networkports_id'])
+                                   && $data['networkports_id'] > 0) {
                               $networkPort = new NetworkPort();
                               $networkPort->getFromDB($data['networkports_id']);
                               $portname = $pfNetworkPort->fields['name'];
@@ -692,11 +698,26 @@ class PluginMonitoringShinken extends CommonDBTM {
                         $networkPort->getFromDB($data['networkports_id']);
                         $logicalnum = $pfNetworkPort->fields['logical_number'];
                         $a_arguments[$arg] = str_replace("[[NETWORKPORTNUM]]", $logicalnum, $a_arguments[$arg]);
-                     } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTNAME]]")){
-                        $networkPort = new NetworkPort();
-                        $networkPort->getFromDB($data['networkports_id']);
-                        $portname = $pfNetworkPort->fields['name'];
-                        $a_arguments[$arg] = str_replace("[[NETWORKPORTNAME]]", $portname, $a_arguments[$arg]);
+                        if (isset($data['networkports_id'])
+                                && $data['networkports_id'] > 0) {
+                           $networkPort = new NetworkPort();
+                           $networkPort->getFromDB($data['networkports_id']);
+                           $portname = $pfNetworkPort->fields['name'];
+                           $a_arguments[$arg] = str_replace("[[NETWORKPORTNAME]]", $portname, $a_arguments[$arg]);
+                        } else if ($a_services[$i]['_HOSTITEMTYPE'] == 'Computer') {
+                           // Get networkportname of networkcard defined
+                           $pmHostaddress = new PluginMonitoringHostaddress();
+                           $a_hostaddresses = $pmHostaddress->find("`itemtype`='Computer'"
+                                   . " AND  `items_id`='".$a_services[$i]['_HOSTITEMSID']."'", '', 1);
+                           if (count($a_hostaddresses) == 1) {
+                              $a_hostaddress = current($a_hostaddresses);
+                              if ($a_hostaddress['networkports_id'] > 0) {
+                                 $networkPort = new NetworkPort();
+                                 $networkPort->getFromDB($a_hostaddress['networkports_id']);
+                                 $a_arguments[$arg] = str_replace("[[NETWORKPORTNAME]]", $networkPort->fields['name'], $a_arguments[$arg]);
+                              }
+                           }
+                        }
                      } else if (strstr($a_arguments[$arg], "[")) {
                         $a_arguments[$arg] = PluginMonitoringService::convertArgument($data['id'], $a_arguments[$arg]);
                      }
