@@ -2480,16 +2480,16 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
          // Remove old fields ...
          // $migration->dropField($newTable, 'dashboard');
-         // $migration->dropField($newTable, 'servicescatalog');
-         // $migration->dropField($newTable, 'view');
-         // $migration->dropField($newTable, 'componentscatalog');
-         // $migration->dropField($newTable, 'viewshomepage');
-         // $migration->dropField($newTable, 'weathermap');
-         // $migration->dropField($newTable, 'component');
-         // $migration->dropField($newTable, 'command');
+         $migration->dropField($newTable, 'servicescatalog');
+         $migration->dropField($newTable, 'view');
+         $migration->dropField($newTable, 'componentscatalog');
+         $migration->dropField($newTable, 'viewshomepage');
+         $migration->dropField($newTable, 'weathermap');
+         $migration->dropField($newTable, 'component');
+         $migration->dropField($newTable, 'command');
          // $migration->dropField($newTable, 'config');
-         // $migration->dropField($newTable, 'check');
-         // $migration->dropField($newTable, 'allressources');
+         $migration->dropField($newTable, 'check');
+         $migration->dropField($newTable, 'allressources');
          // $migration->dropField($newTable, 'hosts_status');
          // $migration->dropField($newTable, 'system_status');
          // $migration->dropField($newTable, 'host_command');
@@ -3021,13 +3021,22 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                     `comment` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
                     `services` tinyint(1) DEFAULT '1',
                     `users_id` int(11) DEFAULT '-1',
-                    `notified` tinyint(1) DEFAULT '1',
-                    `expired` tinyint(1) DEFAULT '1',
+                    `notified` tinyint(1) DEFAULT '0',
+                    `expired` tinyint(1) DEFAULT '0',
                     PRIMARY KEY (`id`),
                     KEY `plugin_monitoring_hosts_id` (`plugin_monitoring_hosts_id`)
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query);
       }
+         $migration->changeField($newTable, 
+                                 'notified', 
+                                 'notified', 
+                                 "tinyint(1) DEFAULT '0'");
+         $migration->changeField($newTable, 
+                                 'expired', 
+                                 'expired', 
+                                 "tinyint(1) DEFAULT '0'");
+      $migration->migrationOneTable($newTable);
       
       
     /*
@@ -3046,13 +3055,18 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                     `notify` tinyint(1) DEFAULT '1',
                     `comment` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
                     `users_id` int(11) DEFAULT '-1',
-                    `notified` tinyint(1) DEFAULT '1',
+                    `notified` tinyint(1) DEFAULT '0',
                     `expired` tinyint(1) DEFAULT '0',
                     PRIMARY KEY (`id`),
                     KEY `itemtype` (`itemtype`,`items_id`)
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query);
       }
+         $migration->changeField($newTable, 
+                                 'notified', 
+                                 'notified', 
+                                 "tinyint(1) DEFAULT '0'");
+      $migration->migrationOneTable($newTable);
 
       
    /*
