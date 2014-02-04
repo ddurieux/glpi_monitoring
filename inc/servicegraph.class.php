@@ -136,11 +136,13 @@ class PluginMonitoringServicegraph {
       $sess_id = session_id();
       PluginMonitoringSecurity::updateSession();
       $refresh = "50"; // all 50 seconds
-      if ($time == '1w'
+      if ($time == '1d') {
+         $refresh = "300"; // 5 minutes
+      } else if ($time == '1w'
               || $time == '1m'
               || $time == '0y6m'
               || $time == '1y') {
-         $refresh = "600";
+         $refresh = "1000";
       }      
       
       echo "mgr".$items_id.$time.".startAutoRefresh(".$refresh.", \"".$CFG_GLPI["root_doc"].
