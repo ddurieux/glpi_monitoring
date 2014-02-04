@@ -1,6 +1,13 @@
 DELIMITER $$
 
--- USE `glpidb`$$
+-- --------------------------------------------------------------------------------
+-- Script: 		trigger ai_glpi_plugin_monitoring_hostcounters
+-- Function:	update glpi_plugin_monitoring_hostdailycounters after insertion in
+-- 				glpi_plugin_monitoring_hostcounters table by shinken
+-- Author:		Frédéric Mohier / IPM France
+-- --------------------------------------------------------------------------------
+-- Version 1.0 : initial version
+-- --------------------------------------------------------------------------------
 
 DROP TRIGGER /*!50032 IF EXISTS */ `ai_glpi_plugin_monitoring_hostcounters`$$
 
