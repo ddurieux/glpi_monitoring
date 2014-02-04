@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: GLPI Project - plugin monitoring \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-02-03 21:42+0100\n"
-"PO-Revision-Date: 2014-02-03 20:44+0000\n"
-"Last-Translator: David Durieux <d.durieux@siprossii.com>\n"
+"PO-Revision-Date: 2014-02-04 03:54+0000\n"
+"Last-Translator: mohier <frederic.mohier@gmail.com>\n"
 "Language-Team: French (France) (http://www.transifex.com/projects/p/GLPI_monitoring/language/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -38,7 +38,7 @@ msgstr "Catalogues de services"
 
 #: hook.php:427
 msgid "Check definitions"
-msgstr ""
+msgstr "Définitions des contrôles"
 
 #: hook.php:428 setup.php:164 front/menu.php:166 inc/command.class.php:296
 #: inc/command.class.php:317 inc/customitem_counter.class.php:79
@@ -144,15 +144,15 @@ msgstr "Commandes de notifications"
 #: setup.php:197 inc/hostdailycounter.class.php:56
 #: inc/hostdailycounter.class.php:129
 msgid "Host daily counters"
-msgstr ""
+msgstr "Compteurs quotidiens"
 
 #: setup.php:200 inc/display.class.php:164 inc/downtime.class.php:99
 msgid "Downtimes"
-msgstr ""
+msgstr "Maintenances"
 
 #: setup.php:203 inc/display.class.php:167
 msgid "Acknowledges"
-msgstr ""
+msgstr "Acquittements"
 
 #: setup.php:206 front/menu.php:184
 msgid "Graph templates"
@@ -161,7 +161,7 @@ msgstr "Modèles de graphique"
 #: ajax/dropdownDisplayviewItemtype.php:17
 #: ajax/dropdownDisplayviewItemtype.php:80
 msgid "Display minemap"
-msgstr ""
+msgstr "Afficher la minemap"
 
 #: ajax/dropdownDisplayviewItemtype.php:45
 #, php-format
@@ -198,7 +198,7 @@ msgstr "Compteurs : valeurs enregistrées"
 
 #: front/acknowledge.form.php:47 front/acknowledge.php:47
 msgid "Monitoring - acknowledges"
-msgstr ""
+msgstr "Monitoring - acquittements"
 
 #: front/component.form.php:68 front/component.form.php:93
 msgid "Fields with asterisk are required"
@@ -206,19 +206,19 @@ msgstr "Les champs avec un astérisque sont obligatoires"
 
 #: front/componentscatalog.form.php:47 front/componentscatalog.php:47
 msgid "Monitoring - components catalogs"
-msgstr ""
+msgstr "Monitoring - catalogues de composants"
 
 #: front/dashboard.php:47 front/menu.php:47
 msgid "Monitoring - dashboard"
-msgstr ""
+msgstr "Monitoring - tableau de bord"
 
 #: front/display_componentscatalog.php:47
 msgid "Monitoring - dashboard (components catalogs)"
-msgstr ""
+msgstr "Monitoring - tableau de bord catalogues de composants"
 
 #: front/display_servicescatalog.php:47
 msgid "Monitoring - dashboard (services catalogs)"
-msgstr ""
+msgstr "Monitoring - tableau de bord catalogues de services"
 
 #: front/display_system_status.php:54 inc/system.class.php:75
 msgid "Sorry, this content is not yet available in the Monitoring"
@@ -226,11 +226,11 @@ msgstr "Désolé, mais ce contenu n'est pas encore disponible !"
 
 #: front/downtime.form.php:47 front/downtime.php:47
 msgid "Monitoring - downtimes"
-msgstr ""
+msgstr "Monitoring - maintenances"
 
 #: front/host.php:47
 msgid "Monitoring - dashboard (hosts)"
-msgstr ""
+msgstr "Monitoring - tableau de bord hôtes"
 
 #: front/host.php:91 front/service.php:92
 msgid "Display search form"
@@ -238,7 +238,7 @@ msgstr "Afficher le formulaire de recherche"
 
 #: front/hostdailycounter.php:47
 msgid "Monitoring - daily counters"
-msgstr ""
+msgstr "Monitoring - compteurs quotidiens"
 
 #: front/menu.php:110
 msgid "Weathermaps"
@@ -255,15 +255,15 @@ msgstr "Désolé, mais votre profil ne permet pas cette visualisation."
 
 #: front/perfdata.php:47
 msgid "Monitoring - dashboard (perfdata)"
-msgstr ""
+msgstr "Monitoring - tableau de bord métriques"
 
 #: front/service.php:47
 msgid "Monitoring - dashboard (resources)"
-msgstr ""
+msgstr "Monitoring - tableau de bord ressources"
 
 #: front/servicescatalog.form.php:50 front/servicescatalog.form.php:55
 msgid "Monitoring - services catalogs"
-msgstr ""
+msgstr "Monitoring - catalogues de services"
 
 #: inc/acknowledge.class.php:50 inc/service.class.php:114
 msgid "Host acknowledge"
@@ -271,105 +271,105 @@ msgstr "Acquittement de l'hôte"
 
 #: inc/acknowledge.class.php:50 inc/acknowledge.class.php:140
 msgid "Host acknowledges"
-msgstr ""
+msgstr "Acquittements des hôtes"
 
 #: inc/acknowledge.class.php:94
 msgid "Acknowledged by: "
-msgstr ""
+msgstr "Par : "
 
 #: inc/acknowledge.class.php:95
 msgid "Acknowledge started: "
-msgstr ""
+msgstr "Heure de début de l'acquittement"
 
 #: inc/acknowledge.class.php:97
 msgid "Modify acknowledge comment"
-msgstr ""
+msgstr "Modifier le commentaire de l'acquittement"
 
 #: inc/acknowledge.class.php:169 inc/acknowledge.class.php:616
 #: inc/downtime.class.php:166 inc/downtime.class.php:550
 msgid "Start time"
-msgstr ""
+msgstr "Heure de début"
 
 #: inc/acknowledge.class.php:175 inc/acknowledge.class.php:640
 #: inc/downtime.class.php:172 inc/downtime.class.php:574
 msgid "End time"
-msgstr ""
+msgstr "Heure de fin"
 
 #: inc/acknowledge.class.php:181
 msgid "Sticky"
-msgstr ""
+msgstr "Sticky"
 
 #: inc/acknowledge.class.php:187
 msgid "Notify"
-msgstr ""
+msgstr "Notification par mail"
 
 #: inc/acknowledge.class.php:193
 msgid "Persistent"
-msgstr ""
+msgstr "Persistent"
 
 #: inc/acknowledge.class.php:199 inc/acknowledge.class.php:664
 #: inc/downtime.class.php:188 inc/downtime.class.php:615
 msgid "Comment"
-msgstr ""
+msgstr "Commentaire"
 
 #: inc/acknowledge.class.php:206 inc/acknowledge.class.php:677
 #: inc/downtime.class.php:195 inc/downtime.class.php:628
 msgid "User"
-msgstr ""
+msgstr "Utilisateur"
 
 #: inc/acknowledge.class.php:211 inc/downtime.class.php:200
 msgid "Notified to monitoring system"
-msgstr ""
+msgstr "Notifié au système de supervision"
 
 #: inc/acknowledge.class.php:217
 msgid "Expired"
-msgstr ""
+msgstr "Expiré"
 
 #: inc/acknowledge.class.php:349
 msgid "Acknowledge period has already expired!"
-msgstr ""
+msgstr "La période d'acquittement a déjà expiré !"
 
 #: inc/acknowledge.class.php:412
 msgid "Acknowledge notified to the monitoring application for the host"
-msgstr ""
+msgstr "L'acquittement de l'hôte a été notifié à l'application de supervision"
 
 #: inc/acknowledge.class.php:415
 msgid ""
 "Acknowledge has not been accepted by the monitoring application for the host"
-msgstr ""
+msgstr "L'acquittement de l'hôte n'a pas été accepté par l'application de supervision "
 
 #: inc/acknowledge.class.php:436
 msgid "Acknowledge notified to the monitoring application:"
-msgstr ""
+msgstr "L'acquittement a été notifié à l'application de supervision"
 
 #: inc/acknowledge.class.php:439
 msgid "Acknowledge has not been accepted by the monitoring application:"
-msgstr ""
+msgstr "L'acquittement n'a pas été accepté par l'application de supervision"
 
 #: inc/acknowledge.class.php:514 inc/acknowledge.class.php:533
 msgid "Acknowledge deletion notified to the monitoring application:"
-msgstr ""
+msgstr "La suppression de l'acquittement a été notifié à l'application de supervision"
 
 #: inc/acknowledge.class.php:517 inc/acknowledge.class.php:536
 msgid ""
 "Acknowledge deletion has not been accepted by the monitoring application:"
-msgstr ""
+msgstr "La suppression de l'acquittement n'a pas été accepté par l'application de supervision"
 
 #: inc/acknowledge.class.php:604
 msgid "Sticky ?"
-msgstr ""
+msgstr "Sticky ?"
 
 #: inc/acknowledge.class.php:628
 msgid "Persistent ?"
-msgstr ""
+msgstr "Persistent ?"
 
 #: inc/acknowledge.class.php:652
 msgid "Notify ?"
-msgstr ""
+msgstr "Notification ?"
 
 #: inc/acknowledge.class.php:683 inc/downtime.class.php:634
 msgid "Expired ?"
-msgstr ""
+msgstr "Expiré ?"
 
 #: inc/businessrule.class.php:80 inc/businessrulegroup.class.php:140
 msgid "2 of"
@@ -516,11 +516,11 @@ msgstr "Période de contrôle"
 
 #: inc/component.class.php:184
 msgid "Freshness count"
-msgstr ""
+msgstr "Durée de fraîcheur"
 
 #: inc/component.class.php:188
 msgid "Freshness type"
-msgstr ""
+msgstr "Type"
 
 #: inc/component.class.php:209 inc/component.class.php:352
 #: inc/downtime.class.php:228 inc/downtime.class.php:598
@@ -661,7 +661,7 @@ msgstr "Rien à voir ..."
 
 #: inc/componentscatalog.class.php:437 inc/servicescatalog.class.php:489
 msgid "Minemap"
-msgstr ""
+msgstr "Minemap"
 
 #: inc/componentscatalog.class.php:448 inc/componentscatalog_host.class.php:51
 #: inc/contacttemplate.class.php:121 inc/servicescatalog.class.php:506
@@ -727,11 +727,11 @@ msgstr "Ajout d'un nouveau composant"
 
 #: inc/componentscatalog_host.class.php:88
 msgid "No associated hosts"
-msgstr ""
+msgstr "Pas d'hôte associés"
 
 #: inc/componentscatalog_host.class.php:90
 msgid "Associated hosts"
-msgstr ""
+msgstr "Hôtes associés"
 
 #: inc/componentscatalog_rule.class.php:178 inc/displayview_rule.class.php:177
 msgid "Preview"
@@ -880,7 +880,7 @@ msgstr "Type"
 
 #: inc/customitem_gauge.class.php:133
 msgid "Time (not used for `last value` type)"
-msgstr ""
+msgstr "Temps (non utilisé pour le type 'dernière valeur')"
 
 #: inc/customitem_gauge.class.php:138
 msgid "Calendar"
@@ -888,11 +888,11 @@ msgstr "Calendrier"
 
 #: inc/customitem_gauge.class.php:158
 msgid "Add gauge"
-msgstr ""
+msgstr "Ajouter une jauge"
 
 #: inc/customitem_gauge.class.php:279
 msgid "Last value(diff for incremantal)"
-msgstr ""
+msgstr "Dernière valeur (différence pour un incrémental)"
 
 #: inc/customitem_gauge.class.php:280
 msgid "Average"
@@ -918,7 +918,7 @@ msgstr "Critique"
 
 #: inc/customitem_gauge.class.php:793
 msgid "Limit (max)"
-msgstr ""
+msgstr "Limite (max)"
 
 #: inc/display.class.php:60
 msgid "Restart Shinken"
@@ -944,7 +944,7 @@ msgstr "Métriques"
 
 #: inc/display.class.php:161 inc/hostdailycounter.class.php:94
 msgid "Daily counters"
-msgstr ""
+msgstr "Compteurs quotidiens"
 
 #: inc/display.class.php:601
 msgid "Global counters"
@@ -998,7 +998,7 @@ msgstr "Adresse IP"
 
 #: inc/display.class.php:867
 msgid "Maintenance"
-msgstr ""
+msgstr "Maintenance"
 
 #: inc/display.class.php:888
 msgid "Unknown IP address"
@@ -1006,15 +1006,15 @@ msgstr "Adresse IP inconnue"
 
 #: inc/display.class.php:1108 inc/display.class.php:1109
 msgid "Modify acknowledge comment for the service"
-msgstr ""
+msgstr "Modifier le commentaire d'acquittement"
 
 #: inc/display.class.php:1115 inc/display.class.php:1116
 msgid "Service problem has been acknowledged"
-msgstr ""
+msgstr "Le problème a été acquitté"
 
 #: inc/display.class.php:1129 inc/display.class.php:1130
 msgid "Add an acknowledge for the service"
-msgstr ""
+msgstr "Ajouter un acquittement pour le service"
 
 #: inc/display.class.php:1149
 msgid "Configure"
@@ -1022,15 +1022,15 @@ msgstr "Configurer"
 
 #: inc/display.class.php:1271 inc/display.class.php:1272
 msgid "Edit the downtime scheduled for the host"
-msgstr ""
+msgstr "Modifier la maintenance programmée pour l'hôte"
 
 #: inc/display.class.php:1280 inc/display.class.php:1281
 msgid "A downtime is scheduled for the host"
-msgstr ""
+msgstr "Une maintenance est programmée pour l'hôte"
 
 #: inc/display.class.php:1291 inc/display.class.php:1292
 msgid "Schedule a downtime for the host"
-msgstr ""
+msgstr "Programmer une maintenance pour l'hôte"
 
 #: inc/display.class.php:1306 inc/display.class.php:1307
 msgid "Modify acknowledge comment for the host"
@@ -1038,7 +1038,7 @@ msgstr "Modifier le commentaire d'acquittement"
 
 #: inc/display.class.php:1313 inc/display.class.php:1314
 msgid "Host problem has been acknowledged"
-msgstr ""
+msgstr "Le problème a été acquitté"
 
 #: inc/display.class.php:1327 inc/display.class.php:1328
 #: inc/host.class.php:731
@@ -1187,15 +1187,15 @@ msgstr "Rejouer toutes les règles"
 
 #: inc/downtime.class.php:50
 msgid "Host downtime"
-msgstr ""
+msgstr "Maintenance de l'hôte"
 
 #: inc/downtime.class.php:50 inc/downtime.class.php:143
 msgid "Host downtimes"
-msgstr ""
+msgstr "Maintenances de l'hôte"
 
 #: inc/downtime.class.php:160
 msgid "Flexible downtime"
-msgstr ""
+msgstr "Maintenance flexible"
 
 #: inc/downtime.class.php:178 inc/downtime.class.php:586
 #: inc/unavailability.class.php:105
@@ -1204,35 +1204,35 @@ msgstr "Durée"
 
 #: inc/downtime.class.php:183
 msgid "Duration type"
-msgstr ""
+msgstr "Type de durée"
 
 #: inc/downtime.class.php:206
 msgid "Period expired"
-msgstr ""
+msgstr "Période expirée"
 
 #: inc/downtime.class.php:351
 msgid "Downtime period has already expired!"
-msgstr ""
+msgstr "La période de maintenance a déjà expiré"
 
 #: inc/downtime.class.php:423
 msgid "Downtime notified to the monitoring application:"
-msgstr ""
+msgstr "La maintenance a été notifiée à l'application de supervision"
 
 #: inc/downtime.class.php:426
 msgid "Downtime has not been accepted by the monitoring application:"
-msgstr ""
+msgstr "La maintenance n'a pas été acceptée par l'application de supervision"
 
 #: inc/downtime.class.php:471
 msgid "Downtime deletion notified to the monitoring application:"
-msgstr ""
+msgstr "La suppression de la maintenance a été notifiée à l'application de supervision"
 
 #: inc/downtime.class.php:474
 msgid "Downtime deletion has not been accepted by the monitoring application:"
-msgstr ""
+msgstr "La suppression de la maintenance n'a pas été acceptée par l'application de supervision"
 
 #: inc/downtime.class.php:562
 msgid "Flexible ?"
-msgstr ""
+msgstr "Flexible ?"
 
 #: inc/entity.class.php:132
 msgid "Set tag to link entity with a specific Shinken server"
@@ -1252,35 +1252,35 @@ msgstr "Acquitter toutes les ressources en défaut pour l'hôte"
 
 #: inc/host.class.php:748
 msgid "All these services will be acknowledged"
-msgstr ""
+msgstr "Tous ces services vont être acquittés"
 
 #: inc/host.class.php:772 inc/host.class.php:840 inc/service.class.php:1254
 msgid "Acknowledge comment"
-msgstr ""
+msgstr "Commentaire"
 
 #: inc/host.class.php:786
 msgid "Add an acknowledge for host"
-msgstr ""
+msgstr "Ajouter un acquittement pour l'hôte"
 
 #: inc/host.class.php:793
 msgid "Host is down"
-msgstr ""
+msgstr "L'hôte est DOWN"
 
 #: inc/host.class.php:795
 msgid "Add an acknowledge for host and create a ticket"
-msgstr ""
+msgstr "Ajouter un acquittement pour l'hôte et créer un ticket"
 
 #: inc/host.class.php:834
 msgid "Modify acknowledge for the host"
-msgstr ""
+msgstr "Modifier l'acquittement pour l'hôte"
 
 #: inc/host.class.php:855 inc/service.class.php:1269
 msgid "Acknowledge user"
-msgstr ""
+msgstr "Par"
 
 #: inc/host.class.php:866 inc/service.class.php:1280
 msgid "Update acknowledge comment"
-msgstr ""
+msgstr "Mettre à jour le commentaire de l'acquittement"
 
 #: inc/hostaddress.class.php:103
 msgid "Interface and IP to use for checks (only if have many IPs)"
@@ -1304,47 +1304,47 @@ msgstr "Serveur Shinken"
 
 #: inc/hostdailycounter.class.php:56
 msgid "Host daily counter"
-msgstr ""
+msgstr "Compteurs quotidiens de l'hôte"
 
 #: inc/hostdailycounter.class.php:145
 msgid "Day"
-msgstr ""
+msgstr "Jour"
 
 #: inc/hostdailycounter.class.php:151
 msgid "Cumulative total for printed pages"
-msgstr ""
+msgstr "Pages imprimées (cumul total)"
 
 #: inc/hostdailycounter.class.php:156
 msgid "Daily printed pages"
-msgstr ""
+msgstr "Pages imprimées dans la journée"
 
 #: inc/hostdailycounter.class.php:161
 msgid "Remaining pages"
-msgstr ""
+msgstr "Pages restantes"
 
 #: inc/hostdailycounter.class.php:166
 msgid "Cumulative total for retracted pages"
-msgstr ""
+msgstr "Pages rétractées (cumul)"
 
 #: inc/hostdailycounter.class.php:171
 msgid "Daily retracted pages"
-msgstr ""
+msgstr "Pages rétractées dans la journée"
 
 #: inc/hostdailycounter.class.php:176
 msgid "Stored retracted pages"
-msgstr ""
+msgstr "Pages rétractées dans la corbeille"
 
 #: inc/hostdailycounter.class.php:181
 msgid "Cumulative total for printer changed"
-msgstr ""
+msgstr "Imprimantes changées"
 
 #: inc/hostdailycounter.class.php:186
 msgid "Cumulative total for paper changed"
-msgstr ""
+msgstr "Papier chargé"
 
 #: inc/hostdailycounter.class.php:191
 msgid "Cumulative total for bin emptied"
-msgstr ""
+msgstr "Corbeille vidée"
 
 #: inc/log.class.php:57
 msgid "Logs"
@@ -1376,7 +1376,7 @@ msgstr "Pas d'évènements trouvés dans les dernières minutes, donc Shinken se
 
 #: inc/message.class.php:254
 msgid "Shinken restart order has been sent at"
-msgstr ""
+msgstr "L'ordre de redémarrage de Shinken a été envoyé"
 
 #: inc/networkport.class.php:56 inc/networkport.class.php:75
 msgid "Network ports of networking devices"
@@ -1420,7 +1420,7 @@ msgstr "Acquitter les problèmes"
 
 #: inc/profile.class.php:251
 msgid "Schedule downtimes"
-msgstr ""
+msgstr "Maintenances programmées"
 
 #: inc/profile.class.php:261
 msgid "dashboard"
@@ -1476,7 +1476,7 @@ msgstr "Charger les fichiers perfdata et graph"
 
 #: inc/security.class.php:57
 msgid "Security"
-msgstr ""
+msgstr "Sécurité"
 
 #: inc/service.class.php:90
 msgid "Service state type"
@@ -1516,15 +1516,15 @@ msgstr "Arguments personalisés pour cette ressource (vide = hérité)"
 
 #: inc/service.class.php:1195
 msgid "Add an acknowledge for a service "
-msgstr ""
+msgstr "Ajouter un acquittement pour le service"
 
 #: inc/service.class.php:1215
 msgid "Add an acknowledge"
-msgstr ""
+msgstr "Ajouter un acquittement"
 
 #: inc/service.class.php:1246
 msgid "Modify acknowledge for the service"
-msgstr ""
+msgstr "Modifier l'acquittement du service"
 
 #: inc/servicedef.class.php:196
 msgid "Active checks enable"
@@ -1564,7 +1564,7 @@ msgstr "Mode dégradé"
 
 #: inc/servicescatalog.class.php:501
 msgid "Business rules group"
-msgstr ""
+msgstr "Groupe de règles"
 
 #: inc/shinkenwebservice.class.php:196 inc/shinkenwebservice.class.php:202
 msgid "Shinken communication failed:"
@@ -1708,4 +1708,4 @@ msgstr "Commande de l'hôte '"
 
 #: scripts/restart_host.php:106
 msgid "' requested for the host '"
-msgstr ""
+msgstr " demandée pour l'hôte "
