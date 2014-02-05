@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: GLPI Project - plugin monitoring \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-02-03 21:42+0100\n"
-"PO-Revision-Date: 2014-02-04 03:54+0000\n"
+"PO-Revision-Date: 2014-02-04 14:17+0000\n"
 "Last-Translator: mohier <frederic.mohier@gmail.com>\n"
 "Language-Team: French (France) (http://www.transifex.com/projects/p/GLPI_monitoring/language/fr_FR/)\n"
 "MIME-Version: 1.0\n"
@@ -1336,7 +1336,7 @@ msgstr "Pages rétractées dans la corbeille"
 
 #: inc/hostdailycounter.class.php:181
 msgid "Cumulative total for printer changed"
-msgstr "Imprimantes changées"
+msgstr "Imprimante changée"
 
 #: inc/hostdailycounter.class.php:186
 msgid "Cumulative total for paper changed"

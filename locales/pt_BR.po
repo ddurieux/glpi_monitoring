@@ -5,14 +5,14 @@
 # Translators:
 # Rafael Ferreira <rafael.f.f1@gmail.com>, 2012
 # Thiago Passamani <thiagopassamani@gmail.com>, 2013
-# Thiago Passamani <thiagopassamani@gmail.com>, 2013
+# Thiago Passamani <thiagopassamani@gmail.com>, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project - plugin monitoring \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-02-03 21:42+0100\n"
-"PO-Revision-Date: 2014-02-03 20:44+0000\n"
-"Last-Translator: David Durieux <d.durieux@siprossii.com>\n"
+"PO-Revision-Date: 2014-02-04 12:25+0000\n"
+"Last-Translator: Thiago Passamani <thiagopassamani@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) (http://www.transifex.com/projects/p/GLPI_monitoring/language/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -35,11 +35,11 @@ msgstr "Forçar regras do jogo"
 #: hook.php:426 front/menu.php:103 inc/display.class.php:134
 #: inc/servicescatalog.class.php:92
 msgid "Services catalogs"
-msgstr ""
+msgstr "Catálogo de serviços"
 
 #: hook.php:427
 msgid "Check definitions"
-msgstr ""
+msgstr "Verifique as definições"
 
 #: hook.php:428 setup.php:164 front/menu.php:166 inc/command.class.php:296
 #: inc/command.class.php:317 inc/customitem_counter.class.php:79
@@ -50,7 +50,7 @@ msgstr "Comandos"
 
 #: hook.php:429 inc/componentscatalog.class.php:96 inc/display.class.php:147
 msgid "Components catalogs"
-msgstr ""
+msgstr "Catálogo de componentes"
 
 #: hook.php:430 setup.php:167 front/menu.php:143 inc/component.class.php:56
 #: inc/component.class.php:150 inc/componentscatalog.class.php:103
@@ -157,7 +157,7 @@ msgstr ""
 
 #: setup.php:206 front/menu.php:184
 msgid "Graph templates"
-msgstr ""
+msgstr "Modelos de Gráfico"
 
 #: ajax/dropdownDisplayviewItemtype.php:17
 #: ajax/dropdownDisplayviewItemtype.php:80
@@ -223,7 +223,7 @@ msgstr ""
 
 #: front/display_system_status.php:54 inc/system.class.php:75
 msgid "Sorry, this content is not yet available in the Monitoring"
-msgstr ""
+msgstr "Desculpe, este conteúdo ainda não está disponível no Monitoramento"
 
 #: front/downtime.form.php:47 front/downtime.php:47
 msgid "Monitoring - downtimes"
@@ -311,12 +311,12 @@ msgstr ""
 #: inc/acknowledge.class.php:199 inc/acknowledge.class.php:664
 #: inc/downtime.class.php:188 inc/downtime.class.php:615
 msgid "Comment"
-msgstr ""
+msgstr "Comentário"
 
 #: inc/acknowledge.class.php:206 inc/acknowledge.class.php:677
 #: inc/downtime.class.php:195 inc/downtime.class.php:628
 msgid "User"
-msgstr ""
+msgstr "Usuários"
 
 #: inc/acknowledge.class.php:211 inc/downtime.class.php:200
 msgid "Notified to monitoring system"
@@ -439,7 +439,7 @@ msgstr "Componente"
 
 #: inc/businessrulegroup.class.php:176
 msgid "Dynamic"
-msgstr ""
+msgstr "Dinâmico"
 
 #: inc/businessrulegroup.class.php:210 inc/componentscatalog.class.php:104
 msgid "Static hosts"
@@ -631,11 +631,11 @@ msgstr "Comunidade SNMP de impressora ou equipamento de rede"
 
 #: inc/component.class.php:588 inc/display.class.php:1348
 msgid "Add to graph"
-msgstr ""
+msgstr "Adicionar ao gráfico"
 
 #: inc/component.class.php:598 inc/display.class.php:1358
 msgid "Invert"
-msgstr ""
+msgstr "Inverter"
 
 #: inc/componentscatalog.class.php:107 inc/contact_item.class.php:51
 #: inc/contact_item.class.php:84 inc/host_contact.class.php:73
@@ -658,7 +658,7 @@ msgstr "Intervalo entre 2 notificações (em minutos)"
 
 #: inc/componentscatalog.class.php:340
 msgid "Nothing to display ..."
-msgstr ""
+msgstr "Nada para exibir..."
 
 #: inc/componentscatalog.class.php:437 inc/servicescatalog.class.php:489
 msgid "Minemap"
@@ -687,7 +687,7 @@ msgstr ""
 
 #: inc/componentscatalog.class.php:992
 msgid "Generate PDF"
-msgstr ""
+msgstr "Gerar PDF"
 
 #: inc/componentscatalog.class.php:1054
 msgid "Trend"
@@ -829,7 +829,7 @@ msgstr "O contato não receberá qualquer tipo de notificações do serviço"
 
 #: inc/customitem_common.class.php:52
 msgid "Last day (last 24 hours)"
-msgstr ""
+msgstr "Último dia (últimas 24h )"
 
 #: inc/customitem_common.class.php:53
 msgid "Last day (since midnight)"
@@ -837,7 +837,7 @@ msgstr ""
 
 #: inc/customitem_common.class.php:54
 msgid "Last week (last 7 days)"
-msgstr ""
+msgstr "Última semana (últimos 7 dias)"
 
 #: inc/customitem_common.class.php:55
 msgid "Last week (since Monday)"
@@ -877,7 +877,7 @@ msgstr ""
 
 #: inc/customitem_gauge.class.php:125
 msgid "Type"
-msgstr ""
+msgstr "Tipo"
 
 #: inc/customitem_gauge.class.php:133
 msgid "Time (not used for `last value` type)"
@@ -885,7 +885,7 @@ msgstr ""
 
 #: inc/customitem_gauge.class.php:138
 msgid "Calendar"
-msgstr ""
+msgstr "Calendário"
 
 #: inc/customitem_gauge.class.php:158
 msgid "Add gauge"
@@ -897,15 +897,15 @@ msgstr ""
 
 #: inc/customitem_gauge.class.php:280
 msgid "Average"
-msgstr ""
+msgstr "Média"
 
 #: inc/customitem_gauge.class.php:281
 msgid "Median"
-msgstr ""
+msgstr "Mediana"
 
 #: inc/customitem_gauge.class.php:719 inc/perfdatadetail.class.php:67
 msgid "Value"
-msgstr ""
+msgstr "Valor"
 
 #: inc/customitem_gauge.class.php:749 inc/display.class.php:1978
 #: inc/display.class.php:1982 inc/display.class.php:1984
@@ -927,11 +927,11 @@ msgstr "Reiniciar o Shinken"
 
 #: inc/display.class.php:82 inc/display.class.php:240 inc/system.class.php:57
 msgid "System status"
-msgstr ""
+msgstr "Status do Sistema"
 
 #: inc/display.class.php:95 inc/display.class.php:243 inc/host.class.php:136
 msgid "Hosts status"
-msgstr ""
+msgstr "Status do Host's"
 
 #: inc/display.class.php:108 inc/display.class.php:252
 #: inc/service.class.php:162
@@ -953,16 +953,16 @@ msgstr ""
 
 #: inc/display.class.php:615 inc/service.class.php:440
 msgid "Show counters"
-msgstr ""
+msgstr "Exibir contadores"
 
 #: inc/display.class.php:616 inc/service.class.php:443
 msgid "Show graphics"
-msgstr ""
+msgstr "Exibir gráficos"
 
 #: inc/display.class.php:618 inc/downtime.class.php:154 inc/host.class.php:71
 #: inc/hostdailycounter.class.php:139
 msgid "Host name"
-msgstr ""
+msgstr "Nome do Host"
 
 #: inc/display.class.php:621 inc/service.class.php:82
 #: inc/service.class.php:449
@@ -995,11 +995,11 @@ msgstr ""
 
 #: inc/display.class.php:861
 msgid "IP address"
-msgstr ""
+msgstr "Endereço IP"
 
 #: inc/display.class.php:867
 msgid "Maintenance"
-msgstr ""
+msgstr "Manutenção"
 
 #: inc/display.class.php:888
 msgid "Unknown IP address"
@@ -1118,8 +1118,8 @@ msgstr ""
 #: inc/displayview_item.class.php:305
 msgid "View"
 msgid_plural "Views"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Visualizar"
+msgstr[1] "Visualizações"
 
 #: inc/displayview.class.php:197 inc/displayview.class.php:321
 msgid "Display view in dashboard"
@@ -1188,15 +1188,15 @@ msgstr "Repetir todas as regras"
 
 #: inc/downtime.class.php:50
 msgid "Host downtime"
-msgstr ""
+msgstr "Tempo de parada do Host"
 
 #: inc/downtime.class.php:50 inc/downtime.class.php:143
 msgid "Host downtimes"
-msgstr ""
+msgstr "Tempo de paradas do Host"
 
 #: inc/downtime.class.php:160
 msgid "Flexible downtime"
-msgstr ""
+msgstr "Tempo de parada flexível"
 
 #: inc/downtime.class.php:178 inc/downtime.class.php:586
 #: inc/unavailability.class.php:105
@@ -1233,7 +1233,7 @@ msgstr ""
 
 #: inc/downtime.class.php:562
 msgid "Flexible ?"
-msgstr ""
+msgstr "Flexível?"
 
 #: inc/entity.class.php:132
 msgid "Set tag to link entity with a specific Shinken server"
@@ -1265,7 +1265,7 @@ msgstr ""
 
 #: inc/host.class.php:793
 msgid "Host is down"
-msgstr ""
+msgstr "Host está parado"
 
 #: inc/host.class.php:795
 msgid "Add an acknowledge for host and create a ticket"
@@ -1309,7 +1309,7 @@ msgstr ""
 
 #: inc/hostdailycounter.class.php:145
 msgid "Day"
-msgstr ""
+msgstr "Dia"
 
 #: inc/hostdailycounter.class.php:151
 msgid "Cumulative total for printed pages"
@@ -1397,7 +1397,7 @@ msgstr ""
 
 #: inc/perfdatadetail.class.php:63
 msgid "Position"
-msgstr ""
+msgstr "Posição"
 
 #: inc/perfdatadetail.class.php:105 inc/perfdatadetail.class.php:106
 msgid "Incremental"
@@ -1405,7 +1405,7 @@ msgstr ""
 
 #: inc/profile.class.php:183
 msgid "configuration"
-msgstr ""
+msgstr "configuração"
 
 #: inc/profile.class.php:230
 msgid "Restart shinken"
@@ -1425,7 +1425,7 @@ msgstr ""
 
 #: inc/profile.class.php:261
 msgid "dashboard"
-msgstr ""
+msgstr "dashboard"
 
 #: inc/profile.class.php:276 inc/profile.class.php:349
 msgid "View system status"
@@ -1441,15 +1441,15 @@ msgstr ""
 
 #: inc/profile.class.php:297 inc/profile.class.php:370
 msgid "View components catalogs"
-msgstr ""
+msgstr "Exibir catálogo de componentes"
 
 #: inc/profile.class.php:306 inc/profile.class.php:379
 msgid "View views"
-msgstr ""
+msgstr "Exibir visualizações"
 
 #: inc/profile.class.php:312
 msgid "View all resources"
-msgstr ""
+msgstr "Exibir todos os recursos"
 
 #: inc/profile.class.php:321 inc/profile.class.php:388
 msgid "View performance data"
@@ -1477,7 +1477,7 @@ msgstr "Fazer upload de arquivos de perfdata e gráficos"
 
 #: inc/security.class.php:57
 msgid "Security"
-msgstr ""
+msgstr "Segurança"
 
 #: inc/service.class.php:90
 msgid "Service state type"
@@ -1569,7 +1569,7 @@ msgstr ""
 
 #: inc/shinkenwebservice.class.php:196 inc/shinkenwebservice.class.php:202
 msgid "Shinken communication failed:"
-msgstr ""
+msgstr "Comunicação com Shinken falhou:"
 
 #: inc/tag.class.php:99 inc/tag.class.php:132
 msgid "Username (Shinken webservice)"
