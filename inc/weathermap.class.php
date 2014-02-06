@@ -590,7 +590,7 @@ LINK DEFAULT
 
          Ajax::updateItemOnSelectEvent("dropdown_id_update$rand", "show_updatenode$rand",
                                      $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownWnode.php",
-                                     $params, false);
+                                     $params, TRUE);
 
          echo "<span id='show_updatenode$rand'></span>\n";
          
@@ -913,7 +913,7 @@ LINK DEFAULT
 
          Ajax::updateItemOnSelectEvent("dropdown_id_update$rand", "show_updatelink$rand",
                                      $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/dropdownWlink.php",
-                                     $params, false);
+                                     $params, TRUE);
          echo "<span id='show_updatelink$rand'></span>\n";
          echo "</td>";
          echo "</tr>";
