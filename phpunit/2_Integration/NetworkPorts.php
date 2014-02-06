@@ -16,7 +16,7 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
       Plugin::load('monitoring');
 
       Plugin::loadLang('monitoring');
-  
+      
       $networkEquipment             = new NetworkEquipment();
       $networkPort                  = new NetworkPort();
       $pmNetworkport                = new PluginMonitoringNetworkport();
@@ -48,7 +48,7 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
              'plugin_monitoring_components_id'        => 1
          );
          $id = $pmComponentscatalog_Component->add($input);
-         $this->assertGreaterThan(0, $id, 'Componentscatalog_component not created');
+         $this->assertEquals(1, $id, 'Componentscatalog_component not created');
       
       // Add components catalog rule
          $input = array(
@@ -57,8 +57,8 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
              'itemtype'    => 'PluginMonitoringNetworkport',
              'condition'   => '{"field":["view"],"searchtype":["contains"],"contains":[""],"itemtype":"PluginMonitoringNetworkport","start":"0"}'
          );
-         $id = $pmComponentscatalog_Component->add($input);
-         $this->assertGreaterThan(0, $id, 'Componentscatalog_rule not created');
+         $id = $pmComponentscatalog_rule->add($input);
+         $this->assertEquals(1, $id, 'Componentscatalog_rule not created');
       
       // Add a new switch
          $input = array(
@@ -66,7 +66,7 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
              'name'        => 'switch'
          );
          $id = $networkEquipment->add($input);
-         $this->assertGreaterThan(0, $id, 'NetworkEquipment not created');
+         $this->assertEquals(1, $id, 'NetworkEquipment not created');
 
       // Add 2 ports on the switch
          $input = array(
