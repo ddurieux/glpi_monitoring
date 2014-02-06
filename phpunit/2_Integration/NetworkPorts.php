@@ -68,7 +68,7 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
          $id = $networkEquipment->add($input);
          $this->assertGreaterThan(0, $id, 'NetworkEquipment not created');
 
-      // Add port on the switch
+      // Add 2 ports on the switch
          $input = array(
              'name'               => 'Fa0',
              'entities_id'        => 0,
@@ -78,18 +78,36 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
              'logical_number'     => 10001
          );
          $id = $networkPort->add($input);
-         $this->assertGreaterThan(0, $id, 'NetworkPort not created');
+         $this->assertEquals(1, $id, 'NetworkPort not created');
+         
+         $input = array(
+             'name'               => 'Fa1',
+             'entities_id'        => 0,
+             'items_id'           => '1',
+             'itemtype'           => 'NetworkEquipment',
+             'instantiation_type' => 'NetworkPortEthernet',
+             'logical_number'     => 10002
+         );
+         $id = $networkPort->add($input);
+         $this->assertEquals(2, $id, 'NetworkPort not created');
       
       // Add the port in monitoring
          $_POST = array(
              'itemtype'        => 'NetworkEquipment',
              'items_id'        => '1',
-             'networkports_id' => array('1')
+             'networkports_id' => array(1, 2)
          );
          $pmNetworkport->updateNetworkports();
       
-      $a_services = getAllDatasFromTable('glpi_plugin_monitoring_services');
-      $this->assertEquals(1, count($a_services), "May have one service");
+      // Check glpi_plugin_monitoring_componentscatalogs_hosts have 1 entry
+         $this->assertEquals(
+                 1, 
+                 countElementsInTable('glpi_plugin_monitoring_componentscatalogs_hosts'), 
+                 "May have one entrie in glpi_plugin_monitoring_componentscatalogs_hosts");
+         
+      // Check have services created
+         $a_services = getAllDatasFromTable('glpi_plugin_monitoring_services');
+         $this->assertEquals(1, count($a_services), "May have one service");
 
    }
 }
