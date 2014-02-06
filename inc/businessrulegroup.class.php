@@ -212,11 +212,12 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
             foreach ($a_services as $gdata) {
                if ($pmService->getFromDB($gdata['plugin_monitoring_services_id'])) {
 
-                  $shortstate = PluginMonitoringHost::getState(
-                                    $pmService->fields['state'], 
-                                    $pmService->fields['state_type'],
-                                    '',
-                                    $pmService->fields['is_acknowledged']);
+                  // $shortstate = PluginMonitoringHost::getState(
+                                    // $pmService->fields['state'], 
+                                    // $pmService->fields['state_type'],
+                                    // '',
+                                    // $pmService->fields['is_acknowledged']);
+                  $shortstate = $pmService->getShortState();
                   echo "<tr class='tab_bg_1'>";
                   echo "<td>";
                   echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/>";
@@ -290,27 +291,17 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
          foreach ($a_services as $gdata) {
             // Toolbox::logInFile("pm", "BR group - ".$gdata['id']." : ".$gdata['name']."\n");
             $pmService->getFromDB($gdata["plugin_monitoring_services_id"]);
-            $shortstate = PluginMonitoringHost::getState(
-                              $pmService->fields['state'], 
-                              $pmService->fields['state_type'],
-                              '',
-                              $pmService->fields['is_acknowledged']);
+            $shortstate = $pmService->getShortState();
             echo "<tr class='tab_bg_1'>";
             echo "<td width='130'>&nbsp;";
             echo "</td>";
             echo "<td>";
-            echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_32.png'/>";
+            echo "<img src='".$pmService->getShortState(array('image'=>'32'))."'/>";
             echo "</td>";
             echo "<td>";
             $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
-            // $pmService->getFromDB($gdata["plugin_monitoring_services_id"]);
             $pmComponentscatalog_Host->getFromDB($pmService->fields['plugin_monitoring_componentscatalogs_hosts_id']);
-            echo $pmService->getLink(1);
-            echo " ".__('on', 'monitoring')." ";
-            $itemtype2 = $pmComponentscatalog_Host->fields['itemtype'];
-            $item2 = new $itemtype2();
-            $item2->getFromDB($pmComponentscatalog_Host->fields['items_id']);
-            echo $item2->getLink(1);
+            echo $pmService->getLink();
             echo "</td>";
             echo "</tr>";
          }

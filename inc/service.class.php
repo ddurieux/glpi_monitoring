@@ -197,10 +197,27 @@ class PluginMonitoringService extends CommonDBTM {
 
    
    /**
+    * Get service link
+    */
+   function getLink($options = array()) {
+      global $CFG_GLPI;
+
+      if ($this->getID() == -1) return '';
+      
+      $link = $CFG_GLPI['root_doc'].
+         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&field[0]=20&searchtype[0]=equals&contains[0]=".$this->getComputerID()."&itemtype=PluginMonitoringService&start=0'";
+      if (isset($options['monitoring']) && $options['monitoring']) {
+         return "<a href='$link'>".$this->getName(true, true)."</a>"."&nbsp;".$this->getComments();
+      } else {
+         return "<a href='$link'>".$this->getName(false, true)."</a>"."&nbsp;".$this->getComments();
+      }
+   }
+   
+   
+   /**
     * Get service entity
     */
    function getEntityID($options = array()) {
-      // Toolbox::logInFile("pm", "service, getEntityID : ".$this->fields["entities_id"]."\n");
       return $this->fields["entities_id"];
    }
    
@@ -226,6 +243,34 @@ class PluginMonitoringService extends CommonDBTM {
       if ($DB->numrows($result) > 0) {
          while ($data=$DB->fetch_array($result)) {
             return $data['id'];
+         }
+      } else {
+         return -1;
+      }
+   }
+
+
+   /**
+    * Get computer identifier for a service
+    */
+   function getComputerID() {
+      global $DB;
+      
+      $query = "SELECT
+                  `glpi_plugin_monitoring_hosts`.`id`
+                  , `glpi_computers`.`id` AS idComputer
+               FROM `glpi_plugin_monitoring_hosts`
+                  INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts` 
+                     ON (`glpi_plugin_monitoring_hosts`.`itemtype` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`) AND (`glpi_plugin_monitoring_hosts`.`items_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`)
+                  INNER JOIN `glpi_computers` 
+                     ON (`glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`)
+                  INNER JOIN `glpi_plugin_monitoring_services` 
+                     ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
+               WHERE (`glpi_plugin_monitoring_services`.`id` = '".$this->getID()."');";
+      $result = $DB->query($query);
+      if ($DB->numrows($result) > 0) {
+         while ($data=$DB->fetch_array($result)) {
+            return $data['idComputer'];
          }
       } else {
          return -1;
@@ -358,6 +403,85 @@ class PluginMonitoringService extends CommonDBTM {
    }
 
 
+   /**
+    * Get host short state (state + acknowledgement)
+    * options : 
+    * - image, if exists, returns URL to a state image
+    * 
+    * Return : 
+    * - green if host is UP
+    * - red if host is DOWN, UNREACHABLE or DOWNTIME
+    * - redblue if red and acknowledged
+    * - orange if host is WARNING, RECOVERY or FLAPPING
+    * - orangeblue if orange and acknowledged
+    * - yellow for every other state
+    * - yellowblue if yellow and acknowledged
+    */
+   function getShortState($options=array()) {
+      global $CFG_GLPI;
+
+      Toolbox::logInFile("pm", "getShortState - ".$this->getID()."\n");
+      if ($this->getID() == -1) return '';
+      
+      $acknowledge = $this->getField('is_acknowledged');
+      $state_type = $this->getField('state_type');
+      $state = $this->getField('state');
+      $event = $this->getField('event');
+      
+      
+      $shortstate = '';
+      switch($state) {
+
+         case 'OK':
+            $shortstate = 'green';
+            break;
+
+         case 'CRITICAL':
+            if ($acknowledge) {
+               $shortstate = 'redblue';
+            } else {
+               $shortstate = 'red';
+            }
+            break;
+
+         case 'WARNING':
+         case 'RECOVERY':
+         case 'FLAPPING':
+            if ($acknowledge) {
+               $shortstate = 'orangeblue';
+            } else {
+               $shortstate = 'orange';
+            }
+            break;
+         
+         default:
+            if ($acknowledge) {
+               $shortstate = 'yellowblue';
+            } else {
+               $shortstate = 'yellow';
+            }
+            break;
+         
+      }
+      if ($state == 'WARNING'
+              && $event == '') {
+         if ($acknowledge) {
+            $shortstate = 'yellowblue';
+         } else {
+            $shortstate = 'yellow';
+         }
+      }
+      if ($state_type == 'SOFT') {
+         $shortstate.= '_soft';
+      }
+      
+      if (isset($options) && isset($options['image'])) {
+         return $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_".$options['image'].".png";
+      }
+      return $shortstate;
+   }
+   
+   
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       switch ($item->getType()) {

@@ -632,7 +632,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                break;
          }
          
-         $queryService = "SELECT *, `glpi_plugin_monitoring_components`.`name`, 
+         $queryService = "SELECT *, `glpi_plugin_monitoring_services`.`id` as serviceId, `glpi_plugin_monitoring_components`.`name`, 
                  `glpi_plugin_monitoring_components`.`description` FROM `".$pmService->getTable()."`
             INNER JOIN `glpi_plugin_monitoring_components` 
                ON (`plugin_monitoring_components_id` = `glpi_plugin_monitoring_components`.`id`)
@@ -644,6 +644,8 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          while ($dataService=$DB->fetch_array($resultService)) {
             $nb_ressources++;
             
+            $pmService->getFromDB($dataService["serviceId"]);
+            
             if ($dataService['is_acknowledged'] == '1') {
                $dataService['state'] = 'ACKNOWLEDGE';
             }
@@ -652,10 +654,11 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                $a_gstate[$dataService['id']] = "UNKNOWN";
                if ($host_overall_state_ok) $host_overall_state_ok = false;
             } else {
-               $statecurrent = PluginMonitoringHost::getState($dataService['state'], 
-                                                                 $dataService['state_type'],
-                                                                 $dataService['event'],
-                                                                 $dataService['is_acknowledged']);
+               // $statecurrent = PluginMonitoringHost::getState($dataService['state'], 
+                                                              // $dataService['state_type'],
+                                                              // $dataService['event'],
+                                                              // $dataService['is_acknowledged']);
+               $statecurrent = $pmService->getShortState();
                if ($statecurrent == 'green') {
                   $a_gstate[$dataService['id']] = "OK";
                } else if ($statecurrent == 'orange') {
@@ -714,8 +717,9 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $a_services = array();
       
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+      $pmService = new PluginMonitoringService();
       
-      $query = "SELECT * FROM `glpi_plugin_monitoring_services`         
+      $query = "SELECT * FROM `glpi_plugin_monitoring_services`
          LEFT JOIN `".$pmComponentscatalog_Host->getTable()."`
             ON `plugin_monitoring_componentscatalogs_hosts_id`=
                `".$pmComponentscatalog_Host->getTable()."`.`id`
@@ -724,10 +728,12 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          ORDER BY `name`";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
-         if (PluginMonitoringHost::getState($data['state'], 
-                                               $data['state_type'],
-                                               '',
-                                               $data['is_acknowledged']) == $state) {
+         $pmService->getFromDB($dataService["id"]);
+         if ($pmService->getShortState()) {
+         // if (PluginMonitoringHost::getState($data['state'], 
+                                               // $data['state_type'],
+                                               // '',
+                                               // $data['is_acknowledged']) == $state) {
             $a_services[] = $data;
          }
       }

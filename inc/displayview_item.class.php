@@ -678,7 +678,8 @@ Ext.onReady(function(){
    
    function getCounterOfView($id, $a_counter) {
       global $DB;
-                  
+
+      $pmService = new PluginMonitoringService();
 
       $a_hosts = $this->find("`itemtype`='host'"
               ." AND `plugin_monitoring_displayviews_id`='".$id."'");
@@ -694,10 +695,12 @@ Ext.onReady(function(){
          
          $result = $DB->query($query);
          while ($data2=$DB->fetch_array($result)) {
-            $ret = PluginMonitoringHost::getState($data2['state'], 
-                                                     $data2['state_type'], 
-                                                     '', 
-                                                     $data2['is_acknowledged']);
+            $pmService->getFromDB($dataService["id"]);
+            $ret = $pmService->getShortState();
+            // $ret = PluginMonitoringHost::getState($data2['state'], 
+                                                     // $data2['state_type'], 
+                                                     // '', 
+                                                     // $data2['is_acknowledged']);
             if (strstr($ret, '_soft')) {
                $a_counter['ok']++;
             } else if ($ret == 'red') {
