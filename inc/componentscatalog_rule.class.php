@@ -605,7 +605,13 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
             }
 
             if (!isset($_SESSION['glpiactiveentities_string'])) {
-               $_SESSION['glpiactiveentities_string'] = $parm->fields['entities_id'];
+               if (get_class($parm) == 'PluginMonitoringNetworkport') {
+                  $item = new $parm->fields['itemtype'];
+                  $item->getFromDB($parm->fields['items_id']);
+                  $_SESSION['glpiactiveentities_string'] = $item->fields['entities_id'];
+               } else {
+                  $_SESSION['glpiactiveentities_string'] = $parm->fields['entities_id'];
+               }
             }
 
             Search::manageGetValues($data['itemtype']);
