@@ -238,6 +238,9 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                     AND count($_SESSION['glpiactiveentities']) > 1) {
                $entities_isrecursive = 1;
             }
+            if (!isset($_SESSION['glpiactiveprofile']['entities'])) {
+               $_SESSION['glpiactiveprofile']['entities'] = array();
+            }
             Session::changeActiveEntities($pmComponentscatalog->fields['entities_id'], 
                                  $pmComponentscatalog->fields['is_recursive']);
          
@@ -578,7 +581,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
             
       foreach ($a_networkports_id as $networkports_id=>$networkequipments_id) {
          $a_find = array();
-
+         
          $query = "SELECT * FROM `".$pmComponentscatalog_rule->getTable()."`
             WHERE `itemtype`='PluginMonitoringNetworkport'";
          $result = $DB->query($query);
@@ -622,7 +625,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
             $_GET = $get_tmp; 
          }
          $pmComponentscatalog_Host= new PluginMonitoringComponentscatalog_Host();
-
+         
          foreach ($a_find as $componentscalalog_id => $datan) {
             foreach ($datan as $networkports_id=>$is_present) {
                // Get all networports in this rule

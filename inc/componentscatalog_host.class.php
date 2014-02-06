@@ -209,12 +209,12 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
    
    function linkComponentsToItem($componentscatalogs_id, $componentscatalogs_hosts_id, $networkports_id=0) {
       global $DB;
-
+      
       $pmService                 = new PluginMonitoringService();
       $pmComponentscatalog_Host  = new PluginMonitoringComponentscatalog_Host();
       
       $pmComponentscatalog_Host->getFromDB($componentscatalogs_hosts_id);
-      
+     
       $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_components`
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
       $result = $DB->query($query);
@@ -223,7 +223,8 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
          $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
          $item = new $itemtype();
          $item->getFromDB($pmComponentscatalog_Host->fields['items_id']);
-         if ($networkports_id == '0') {
+         
+         if ($networkports_id == 0) {
             $input['entities_id'] =  $item->fields['entities_id'];
             $input['plugin_monitoring_componentscatalogs_hosts_id'] = $componentscatalogs_hosts_id;
             $input['plugin_monitoring_components_id'] = $data['plugin_monitoring_components_id'];
@@ -237,7 +238,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
                AND `networkports_id`='".$networkports_id."'", "", 1);
             $item = new NetworkPort();
             $item->getFromDB($networkports_id);
-            if (count($a_services) == '0') {
+            if (count($a_services) == 0) {
                $input = array();
                $input['networkports_id'] = $networkports_id;
                $input['entities_id'] =  $item->fields['entities_id'];
