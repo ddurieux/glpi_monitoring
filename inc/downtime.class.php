@@ -643,6 +643,17 @@ class PluginMonitoringDowntime extends CommonDBTM {
    }
 
 
+   static function cronInfo($name){
+
+      switch ($name) {
+         case 'DowntimesExpired':
+            return array (
+               'description' => __('Update downtimes expiration','monitoring'));
+            break;
+      }
+      return array();
+   }
+
    static function cronDowntimesExpired() {
       global $DB;
 
