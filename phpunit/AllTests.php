@@ -126,6 +126,7 @@ require_once 'GLPIlogs/AllTests.php';
 
 require_once '1_Unit/PerfdataForGraph.php';
 require_once '2_Integration/LinkItems.php';
+require_once '2_Integration/NetworkPorts.php';
 
 class AllTests {
    public static function suite() {
@@ -138,6 +139,7 @@ class AllTests {
      
       $suite->addTest(PerfdataForGraph_AllTests::suite());
       $suite->addTest(LinkItems_AllTests::suite());
+      $suite->addTest(NetworkPorts+AllTests::suite());
       
       return $suite;
    }
