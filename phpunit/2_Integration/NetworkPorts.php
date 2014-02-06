@@ -40,7 +40,7 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
              'entities_id' => '0'
          );
          $id = $pmComponentscatalog->add($input);
-         $this->assertGreaterThan($id, 0, 'Componentscatalog not created');
+         $this->assertGreaterThan(0, $id, 'Componentscatalog not created');
 
       // Add components catalog component
          $input = array(
@@ -48,7 +48,7 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
              'plugin_monitoring_components_id'        => 1
          );
          $id = $pmComponentscatalog_Component->add($input);
-         $this->assertGreaterThan($id, 0, 'Componentscatalog_component not created');
+         $this->assertGreaterThan(0, $id, 'Componentscatalog_component not created');
       
       // Add components catalog rule
          $input = array(
@@ -58,7 +58,7 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
              'condition'   => '{"field":["view"],"searchtype":["contains"],"contains":[""],"itemtype":"PluginMonitoringNetworkport","start":"0"}'
          );
          $id = $pmComponentscatalog_Component->add($input);
-         $this->assertGreaterThan($id, 0, 'Componentscatalog_rule not created');
+         $this->assertGreaterThan(0, $id, 'Componentscatalog_rule not created');
       
       // Add a new switch
          $input = array(
@@ -66,7 +66,7 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
              'name'        => 'switch'
          );
          $id = $networkEquipment->add($input);
-         $this->assertGreaterThan($id, 0, 'NetworkEquipment not created');
+         $this->assertGreaterThan(0, $id, 'NetworkEquipment not created');
 
       // Add port on the switch
          $input = array(
@@ -78,7 +78,7 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
              'logical_number'     => 10001
          );
          $id = $networkPort->add($input);
-         $this->assertGreaterThan($id, 0, 'NetworkPort not created');
+         $this->assertGreaterThan(0, $id, 'NetworkPort not created');
       
       // Add the port in monitoring
          $_POST = array(
