@@ -88,7 +88,9 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
          );
          $pmNetworkport->updateNetworkports();
       
-      
+      $a_services = getAllDatasFromTable('glpi_plugin_monitoring_services');
+      $this->assertEquals(1, count($a_services), "May have one service");
+
    }
 }
 
