@@ -139,7 +139,7 @@ class AllTests {
      
       $suite->addTest(PerfdataForGraph_AllTests::suite());
       $suite->addTest(LinkItems_AllTests::suite());
-      $suite->addTest(NetworkPorts+AllTests::suite());
+      $suite->addTest(NetworkPorts_AllTests::suite());
       
       return $suite;
    }
