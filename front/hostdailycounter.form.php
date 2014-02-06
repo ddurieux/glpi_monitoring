@@ -71,9 +71,8 @@ if (isset($_POST["copy"])) {
 
 if (isset($_GET["id"])) {
    $pHostdailycounter->showForm($_GET["id"], array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
-} else {
-   $pHostdailycounter->showForm(0, array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
 }
+$pHostdailycounter->showForm(0, array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
 
 Html::footer();
 

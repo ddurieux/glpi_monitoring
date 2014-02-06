@@ -3068,7 +3068,83 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  "tinyint(1) DEFAULT '0'");
       $migration->migrationOneTable($newTable);
 
-      
+    /*
+    * Table glpi_plugin_monitoring_hostcounters
+    */
+      $newTable = "glpi_plugin_monitoring_hostcounters";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `$newTable` (
+                     `id` INT(11) NOT NULL AUTO_INCREMENT,
+                     `hostname` VARCHAR(255) DEFAULT NULL,
+                     `date` DATETIME DEFAULT NULL,
+                     `counter` VARCHAR(255) DEFAULT NULL,
+                     `value` INT(11) NOT NULL DEFAULT '0',
+                     `updated` TINYINT(1) NOT NULL DEFAULT '0',
+                     PRIMARY KEY (`id`),
+                     KEY `hostname` (`hostname`)
+                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+         $DB->query($query);
+      }
+         $migration->addField($newTable, 
+                                 'updated', 
+                                 'updated', 
+                                 "tinyint(1) DEFAULT '0'");
+      $migration->migrationOneTable($newTable);
+
+
+    /*
+    * Table glpi_plugin_monitoring_hostdailycounters
+    */
+      $newTable = "glpi_plugin_monitoring_hostdailycounters";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `$newTable` (
+                    `id` INT(11) NOT NULL AUTO_INCREMENT,
+                    `hostname` VARCHAR(255) NOT NULL DEFAULT '',
+                    `day` DATE NOT NULL DEFAULT '2013-01-01',
+                    `cPaperChanged` INT(11) NOT NULL DEFAULT '0',
+                    `cPrinterChanged` INT(11) NOT NULL DEFAULT '0',
+                    `cBinEmptied` INT(11) NOT NULL DEFAULT '0',
+                    `cPagesInitial` INT(11) NOT NULL DEFAULT '0',
+                    `cPagesTotal` INT(11) NOT NULL DEFAULT '0',
+                    `cPagesToday` INT(11) NOT NULL DEFAULT '0',
+                    `cPagesRemaining` INT(11) NOT NULL DEFAULT '0',
+                    `cRetractedInitial` INT(11) NOT NULL DEFAULT '0',
+                    `cRetractedTotal` INT(11) NOT NULL DEFAULT '0',
+                    `cRetractedToday` INT(11) NOT NULL DEFAULT '0',
+                    `cRetractedRemaining` INT(11) NOT NULL DEFAULT '0',
+                    `cPaperLoad` INT(11) NOT NULL DEFAULT '0',
+                    PRIMARY KEY (`id`),
+                    KEY (`hostname`,`day`)
+                  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+         $DB->query($query);
+      }
+         $migration->addField($newTable, 
+                              'cPagesInitial', 
+                              'cPagesInitial', 
+                              "int(11) NOT NULL DEFAULT 0");
+         $migration->addField($newTable, 
+                              'cRetractedInitial', 
+                              'cRetractedInitial', 
+                              "int(11) NOT NULL DEFAULT 0");
+      $migration->migrationOneTable($newTable);
+/*
+         $migration->addField($newTable, 
+                              'id', 
+                              'id', 
+                              "int(11) NOT NULL AUTO_INCREMENT");
+         $migration->addKey($newTable,
+                            'id',
+                            "",
+                            "PRIMARY");
+         $migration->addKey($newTable,
+                            array('hostname',
+                                  'day'),
+                            "",
+                            "UNIQUE");
+      $migration->migrationOneTable($newTable);
+*/
+
+
    /*
     * Table Delete old table not used
     */
@@ -3125,6 +3201,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
    // Update crontasks
    $crontask = new CronTask();
+   if (!$crontask->getFromDBbyName('PluginMonitoringHostdailycounter', 'DailyCounters')) {
+      CronTask::Register('PluginMonitoringHostdailycounter', 'DailyCounters', '3600', 
+                      array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
+   }
    if (!$crontask->getFromDBbyName('PluginMonitoringDowntime', 'DowntimesExpired')) {
       CronTask::Register('PluginMonitoringDowntime', 'DowntimesExpired', '3600', 
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));

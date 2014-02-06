@@ -159,6 +159,8 @@ function pluginMonitoringInstall($version) {
       mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermapbg");
    }
    
+   CronTask::Register('PluginMonitoringHostdailycounter', 'DailyCounters', '3600', 
+                      array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
    CronTask::Register('PluginMonitoringDowntime', 'cronDowntimesExpired', '3600', 
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
    CronTask::Register('PluginMonitoringLog', 'cleanlogs', '96400', 

@@ -52,6 +52,15 @@ $pmMessage->getMessages();
 $pmDisplay = new PluginMonitoringDisplay();
 $pmDisplay->menu();
 
+// if (isset($_GET['forceUpdate'])) {
+   // Hostname, up to date and limit may be specified as a parameter ... 
+   // Default hostname is all hosts, else hostname is used in SQL LIKE query 
+   // Default date is up to now for all hosts
+   // Default limit is 1000 records
+   // PluginMonitoringHostdailycounter::cronDailyCounters('2013-11-21 00:00:00', 'ek3k-cnam-0014');
+   PluginMonitoringHostdailycounter::runUpdateCounters('', '%', '1000');
+// }
+
 Search::show('PluginMonitoringHostdailycounter');
 
 Html::footer();

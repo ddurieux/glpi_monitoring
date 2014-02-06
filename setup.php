@@ -84,6 +84,8 @@ function plugin_init_monitoring() {
          Plugin::registerClass('PluginMonitoringDowntime',
               array('addtabon' => array('Ticket')));
          Plugin::registerClass('PluginMonitoringAcknowledge');
+         Plugin::registerClass('PluginMonitoringHostdailycounter');
+         Plugin::registerClass('PluginMonitoringHostCounter');
          
          $pmSecurity = new PluginMonitoringSecurity();
          $pmSecurity->updateSecurity();
