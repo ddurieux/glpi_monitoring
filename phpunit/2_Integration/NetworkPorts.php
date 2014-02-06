@@ -32,7 +32,7 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
              'plugin_monitoring_commands_id' => '7'
          );
          $id = $pmComponent->add($input);
-         $this->assertGreaterThan($id, 0, 'Components not created');
+         $this->assertGreaterThan(0, $id, 'Components not created');
          
       // add component catalog
          $input = array(
