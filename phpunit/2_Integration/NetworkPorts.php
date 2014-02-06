@@ -84,7 +84,7 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
          $_POST = array(
              'itemtype'        => 'NetworkEquipment',
              'items_id'        => '1',
-             'networkports_id' => '1'
+             'networkports_id' => array('1')
          );
          $pmNetworkport->updateNetworkports();
       
