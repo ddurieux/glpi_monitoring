@@ -57,7 +57,7 @@ $pmMessage->getMessages();
 
 $pmDisplay->menu();
 
-$pmDisplay->showCounters("Businessrules");
+// $pmDisplay->showCounters("Businessrules");
 
 
 Html::footer();
