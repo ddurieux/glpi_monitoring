@@ -865,35 +865,40 @@ CREATE TABLE `glpi_plugin_monitoring_perfdatadetails` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_hostdailycounters`;
+
 CREATE TABLE `glpi_plugin_monitoring_hostdailycounters` (
-	`id` INT(11) NOT NULL AUTO_INCREMENT,
-	`hostname` VARCHAR(255) NOT NULL DEFAULT '',
-	`day` DATE NOT NULL DEFAULT '2013-01-01',
-	`cPaperChanged` INT(11) NOT NULL DEFAULT '0',
-	`cPrinterChanged` INT(11) NOT NULL DEFAULT '0',
-	`cBinEmptied` INT(11) NOT NULL DEFAULT '0',
-	`cPagesInitial` INT(11) NOT NULL DEFAULT '0',
-	`cPagesTotal` INT(11) NOT NULL DEFAULT '0',
-	`cPagesToday` INT(11) NOT NULL DEFAULT '0',
-	`cPagesRemaining` INT(11) NOT NULL DEFAULT '0',
-	`cRetractedInitial` INT(11) NOT NULL DEFAULT '0',
-	`cRetractedTotal` INT(11) NOT NULL DEFAULT '0',
-	`cRetractedToday` INT(11) NOT NULL DEFAULT '0',
-	`cRetractedRemaining` INT(11) NOT NULL DEFAULT '0',
-	`cPaperLoad` INT(11) NOT NULL DEFAULT '0',
+	`id` int(11) NOT NULL AUTO_INCREMENT,
+	`hostname` varchar(255) NOT NULL DEFAULT '',
+	`day` date NOT NULL DEFAULT '2013-01-01',
+	`cPaperChanged` int(11) NOT NULL DEFAULT '0',
+	`cPrinterChanged` int(11) NOT NULL DEFAULT '0',
+	`cBinEmptied` int(11) NOT NULL DEFAULT '0',
+	`cPagesInitial` int(11) NOT NULL DEFAULT '0',
+	`cPagesTotal` int(11) NOT NULL DEFAULT '0',
+	`cPagesToday` int(11) NOT NULL DEFAULT '0',
+	`cPagesRemaining` int(11) NOT NULL DEFAULT '0',
+	`cRetractedInitial` int(11) NOT NULL DEFAULT '0',
+	`cRetractedTotal` int(11) NOT NULL DEFAULT '0',
+	`cRetractedToday` int(11) NOT NULL DEFAULT '0',
+	`cRetractedRemaining` int(11) NOT NULL DEFAULT '0',
+	`cPaperLoad` int(11) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`id`),
 	KEY (`hostname`,`day`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+
+
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_hostcounters`;
+
 CREATE TABLE `glpi_plugin_monitoring_hostcounters` (
-	`id` INT(11) NOT NULL AUTO_INCREMENT,
-	`hostname` VARCHAR(255) DEFAULT NULL,
-	`date` DATETIME DEFAULT NULL,
-	`counter` VARCHAR(255) DEFAULT NULL,
-	`value` INT(11) NOT NULL DEFAULT '0',
-	`updated` TINYINT(1) NOT NULL DEFAULT '0',
+	`id` int(11) NOT NULL AUTO_INCREMENT,
+	`hostname` varchar(255) DEFAULT NULL,
+	`date` datetime DEFAULT NULL,
+	`counter` varchar(255) DEFAULT NULL,
+	`value` int(11) NOT NULL DEFAULT '0',
+	`updated` tinyint(1) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`id`),
 	KEY `hostname` (`hostname`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
