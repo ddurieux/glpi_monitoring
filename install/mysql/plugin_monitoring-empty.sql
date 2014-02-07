@@ -786,7 +786,7 @@ DROP TABLE IF EXISTS `glpi_plugin_monitoring_downtimes`;
 CREATE TABLE `glpi_plugin_monitoring_downtimes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `plugin_monitoring_hosts_id` int(11) NOT NULL DEFAULT '0',
-  `flexible` tinyint(1) DEFAULT '1',
+  `flexible` tinyint(1) DEFAULT '0',
   `start_time` datetime NOT NULL DEFAULT '2014-01-01 00:00:00',
   `end_time` datetime NOT NULL DEFAULT '2014-01-01 00:00:00',
   `duration` int(1) DEFAULT '24',
