@@ -148,6 +148,7 @@ class PluginMonitoringNetworkport extends CommonDBTM {
    
    
    static function deleteNetworkPort($parm) {
+      global $DB;
       
       $query = "SELECT * FROM `glpi_plugin_monitoring_networkports`
          WHERE `networkports_id`='".$parm->fields['id']."'";
