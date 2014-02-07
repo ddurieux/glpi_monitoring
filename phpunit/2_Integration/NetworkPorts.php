@@ -98,7 +98,12 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
              'networkports_id' => array(1, 2)
          );
          $pmNetworkport->updateNetworkports();
-      
+         $this->assertEquals(
+                 2, 
+                 countElementsInTable('glpi_plugin_monitoring_networkports'), 
+                 "May have 2 networkports in glpi_plugin_monitoring_networkports");
+
+         
       // Check glpi_plugin_monitoring_componentscatalogs_hosts have 1 entry
          $this->assertEquals(
                  1, 
