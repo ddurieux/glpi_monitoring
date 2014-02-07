@@ -97,6 +97,16 @@ class PluginMonitoringTag extends CommonDBTM {
 		$tab[3]['field']     = 'username';
 		$tab[3]['linkfield'] = 'username';
 		$tab[3]['name']      = __('Username (Shinken webservice)', 'monitoring');
+
+		$tab[4]['table']     = $this->getTable();
+		$tab[4]['field']     = 'password';
+		$tab[4]['linkfield'] = 'password';
+		$tab[4]['name']      = __('Password (Shinken webservice)', 'monitoring');
+
+		$tab[5]['table']     = $this->getTable();
+		$tab[5]['field']     = 'iplock';
+		$tab[5]['linkfield'] = 'iplock';
+		$tab[5]['name']      = __('Lock shinken IP', 'monitoring');
    
       return $tab;
    }
