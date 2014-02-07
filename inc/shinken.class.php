@@ -205,7 +205,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                
                $a_hosts[$i]['host_name'] = preg_replace("/[^A-Za-z0-9\-_]/","",$class->fields['name']);
                $a_hosts[$i]['_ENTITIESID'] = $data['entityId'];
-               $a_hosts[$i]['_ENTITY'] = $data['entityName'];
+               $a_hosts[$i]['_ENTITY'] = preg_replace("/[^A-Za-z0-9\-_]/","",$data['entityName']);
                $a_hosts[$i]['hostgroups'] = "hostgroup-".$data['entityId'];
                $a_hosts[$i]['_ITEMSID'] = $data['items_id'];
                $a_hosts[$i]['_ITEMTYPE'] = $classname;
@@ -1171,7 +1171,7 @@ Nagios configuration file :
                // Toolbox::logInFile("pm", "Host group : ".$hostgroup_name."\n");
                
                $a_hostgroups[$i]['hostgroup_name'] = $hostgroup_name;
-               $a_hostgroups[$i]['alias'] = $data['entityName'];
+               $a_hostgroups[$i]['alias'] = preg_replace("/[^A-Za-z0-9\-_]/","",$data['entityName']);
 
                $a_hostgroups_found[$hostgroup_name] = 1;
 
