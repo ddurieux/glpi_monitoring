@@ -3138,7 +3138,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                                  'updated', 
-                                 "tinyint(1) DEFAULT '0'");
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
 
 
