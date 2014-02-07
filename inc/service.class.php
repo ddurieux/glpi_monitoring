@@ -1266,6 +1266,21 @@ class PluginMonitoringService extends CommonDBTM {
       $pmLog->add($input);
       
       unset($_SESSION['plugin_monitoring_hosts']);
+
+      if ($this->fields['networkports_id'] > 0) {
+         // Delete componentscatalog_host if no networkports in services
+         if (countElementsInTable(
+                 'glpi_plugin_monitoring_services', 
+                 "`plugin_monitoring_components_id`='".$this->fields['plugin_monitoring_components_id']."'
+                  AND `networkports_id`>0 
+                  AND `plugin_monitoring_componentscatalogs_hosts_id`='".$this->fields['plugin_monitoring_componentscatalogs_hosts_id']."'") == 0) {
+            $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+            $pmComponentscatalog_Host->getFromDB($this->fields['plugin_monitoring_componentscatalogs_hosts_id']);
+            if ($pmComponentscatalog_Host->fields['is_static'] == 0) {
+               $pmComponentscatalog_Host->delete($pmComponentscatalog_Host->fields);
+            }
+         }
+      }
    }
    
 
