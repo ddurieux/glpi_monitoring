@@ -3025,17 +3025,17 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'end_time', 
                                  "datetime NOT NULL DEFAULT '2014-01-01 00:00:00'");
          $migration->addField($newTable, 
-                                 'flexible`', 
+                                 'flexible', 
                                  "tinyint(1) DEFAULT '0'");
          $migration->addField($newTable, 
                                  'duration', 
                                  "tinyint(1) DEFAULT '24'");
          $migration->addField($newTable, 
                                  'duration_type', 
-                                 "varchar(64) COLLATE utf8_unicode_ci DEFAULT 'days'");
+                                 "varchar(64) DEFAULT 'days'");
          $migration->addField($newTable, 
                                  'comment', 
-                                 "varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL");
+                                 "varchar(1024) DEFAULT NULL");
          $migration->addField($newTable, 
                                  'users_id', 
                                  "int(11) DEFAULT '-1'");
@@ -3096,7 +3096,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  "tinyint(1) DEFAULT '1'");
          $migration->addField($newTable, 
                                  'comment', 
-                                 "varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL");
+                                 "varchar(1024) DEFAULT NULL");
          $migration->addField($newTable, 
                                  'users_id', 
                                  "int(11) DEFAULT '-1'");
