@@ -420,7 +420,7 @@ class PluginMonitoringService extends CommonDBTM {
    function getShortState($options=array()) {
       global $CFG_GLPI;
 
-      Toolbox::logInFile("pm", "getShortState - ".$this->getID()."\n");
+      // Toolbox::logInFile("pm", "getShortState - ".$this->getID()."\n");
       if ($this->getID() == -1) return '';
       
       $acknowledge = $this->getField('is_acknowledged');
