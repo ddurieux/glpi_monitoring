@@ -125,16 +125,18 @@ class PluginMonitoringNetworkport extends CommonDBTM {
       while ($data=$DB->fetch_array($result)) {
          $networkportInDB[$data['networkports_id']] = $data['id'];
       }
-      
-      foreach ($_POST['networkports_id'] as $networkports_id) {
-         if (isset($networkportInDB[$networkports_id])) {
-            unset($networkportInDB[$networkports_id]);
-         } else {
-            $input = array();
-            $input['itemtype'] = $_POST['itemtype'];
-            $input['items_id'] = $_POST['items_id'];
-            $input['networkports_id'] = $networkports_id;
-            $this->add($input);
+
+      if (isset($_POST['networkports_id'])) {
+         foreach ($_POST['networkports_id'] as $networkports_id) {
+            if (isset($networkportInDB[$networkports_id])) {
+               unset($networkportInDB[$networkports_id]);
+            } else {
+               $input = array();
+               $input['itemtype'] = $_POST['itemtype'];
+               $input['items_id'] = $_POST['items_id'];
+               $input['networkports_id'] = $networkports_id;
+               $this->add($input);
+            }
          }
       }
       // Remove old

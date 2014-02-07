@@ -667,6 +667,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                      $input['is_static'] = '0';
                      $input['itemtype'] = "NetworkEquipment";
                      $input['items_id'] = $networkequipments_id;
+                     $_SESSION['plugin_monitoring_nohook_addcomponentscatalog_host'] = 1;
                      $componentscatalogs_hosts_id = $pmComponentscatalog_Host->add($input);
                   } else {
                      $a_componentscatalogs_hosts = $DB->fetch_assoc($result);

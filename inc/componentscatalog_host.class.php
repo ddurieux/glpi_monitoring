@@ -219,6 +219,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
+         echo $tittkrjr;
          $input = array();         
          $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
          $item = new $itemtype();
@@ -291,9 +292,13 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
    
    
    function post_addItem() {
-      $this->linkComponentsToItem(
-              $this->fields['plugin_monitoring_componentscalalog_id'], 
-              $this->fields['id']);
+      if (isset($_SESSION['plugin_monitoring_nohook_addcomponentscatalog_host'])) {
+         unset($_SESSION['plugin_monitoring_nohook_addcomponentscatalog_host']);
+      } else {
+         $this->linkComponentsToItem(
+                 $this->fields['plugin_monitoring_componentscalalog_id'], 
+                 $this->fields['id']);
+      }
    }
 
    
