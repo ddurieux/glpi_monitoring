@@ -2553,6 +2553,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                               'host_command', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'counters', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
                               
          $migration->addField($newTable, 
                               'homepage', 
@@ -3041,7 +3044,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  "int(11) DEFAULT '-1'");
          $migration->addField($newTable, 
                                  'services', 
-                                 "tinyint(1) DEFAULT '1'");
+                                 "tinyint(1) DEFAULT '0'");
          $migration->addField($newTable, 
                                  'notified', 
                                  "tinyint(1) DEFAULT '0'");

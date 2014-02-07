@@ -627,6 +627,7 @@ CREATE TABLE `glpi_plugin_monitoring_profiles` (
   `homepage_all_ressources` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `acknowledge` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `downtime` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `counters` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `restartshinken` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `host_command` char(1) COLLATE utf8_unicode_ci DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -792,7 +793,7 @@ CREATE TABLE `glpi_plugin_monitoring_downtimes` (
   `duration` int(1) DEFAULT '24',
   `duration_type` varchar(64) COLLATE utf8_unicode_ci DEFAULT 'days',
   `comment` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `services` tinyint(1) DEFAULT '1',
+  `services` tinyint(1) DEFAULT '0',
   `users_id` int(11) DEFAULT '-1',
   `notified` tinyint(1) DEFAULT '0',
   `expired` tinyint(1) DEFAULT '0',

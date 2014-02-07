@@ -54,7 +54,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $a_url = array();
       
       if (PluginMonitoringProfile::haveRight("restartshinken", 'r')) {
-         echo "<table class='tab_cadre_fixe' style='width: 120px; position: absolute; float: left;'>";
+         echo "<table class='tab_cadre_fixe' style='width: 120px; position: absolute; left: 15px;'>";
          echo "<tr class='tab_bg_1'>";
          echo "<td>";
          echo "<button><a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/restartshinken.form.php'>".__('Restart Shinken', 'monitoring')."</a></button>";
@@ -62,6 +62,18 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "</tr>";
          echo "</table>";
       }
+      
+/* Moke-up for user's preferences ...
+      if (PluginMonitoringProfile::haveRight("preferences", 'r')) {
+         echo "<table class='tab_cadre_fixe' style='width: 120px; position: absolute; right: 15px;'>";
+         echo "<tr class='tab_bg_1'>";
+         echo "<td>";
+         echo "<button><a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/restartshinken.form.php'>".__('Restart Shinken', 'monitoring')."</a></button>";
+         echo "</td>";
+         echo "</tr>";
+         echo "</table>";
+      }
+*/
       
       echo "<table class='tab_cadre_fixe' width='950'>";
       echo "<tr class='tab_bg_3'>";
@@ -155,19 +167,28 @@ class PluginMonitoringDisplay extends CommonDBTM {
          }
          echo "</tr>";
          echo "</table>";
-         echo "<table class='tab_cadre_fixe'>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<th>";
-         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/hostdailycounter.php'>".__('Daily counters', 'monitoring')."</a>";
-         echo "</th>";
-         echo "<th>";
-         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/downtime.php'>".__('Downtimes', 'monitoring')."</a>";
-         echo "</th>";
-         echo "<th>";
-         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.php'>".__('Acknowledges', 'monitoring')."</a>";
-         echo "</th>";
-         echo "</tr>";
-         echo "</table>";
+         if (PluginMonitoringProfile::haveRight("counters", 'r')) {
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<th>";
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/hostdailycounter.php'>".__('Daily counters', 'monitoring')."</a>";
+            echo "</th>";
+            echo "</tr>";
+            echo "</table>";
+         }
+         if (PluginMonitoringProfile::haveRight("acknowledge", 'r')
+              || PluginMonitoringProfile::haveRight("downtime", 'r')) {
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<th>";
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/downtime.php'>".__('Downtimes', 'monitoring')."</a>";
+            echo "</th>";
+            echo "<th>";
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.php'>".__('Acknowledges', 'monitoring')."</a>";
+            echo "</th>";
+            echo "</tr>";
+            echo "</table>";
+         }
       } else {
          if (basename($_SERVER['PHP_SELF']) == 'display_servicescatalog.php') {
             $redirect = TRUE;
@@ -206,6 +227,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                      $a_url[] = $CFG_GLPI['root_doc']."/plugins/monitoring/front/display_view.php?id=".$views_id;
                   }
                }
+               // Fred : what is it for ?
                for ($i;$i < 6; $i++) {
                   echo "<td width='20%'>";
                   echo "</td>";

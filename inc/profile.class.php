@@ -101,6 +101,7 @@ class PluginMonitoringProfile extends CommonDBTM {
          $input['dashboard_all_ressources'] = 'r';
 
          $input['restartshinken'] = 'r';
+         $input['counters'] = 'r';
          $input['acknowledge'] = 'r';
          $input['downtime'] = 'r';
          $input['host_command'] = 'r';
@@ -252,6 +253,19 @@ class PluginMonitoringProfile extends CommonDBTM {
       echo "</td>";
       echo "<td>";
       Profile::dropdownNoneReadWrite("downtime", $this->fields["downtime"], 1, 1, 1);
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo __('Manage counters', 'monitoring')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      Profile::dropdownNoneReadWrite("counters", $this->fields["counters"], 1, 1, 1);
+      echo "</td>";
+      echo "<td>";
+      echo "</td>";
+      echo "<td>";
       echo "</td>";
       echo "</tr>";
       
