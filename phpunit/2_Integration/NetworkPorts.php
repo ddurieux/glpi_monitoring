@@ -156,6 +156,11 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
 
       $DB->connect();
 
+      $_SESSION["glpiname"] = 'glpi';
+      Plugin::load('monitoring');
+
+      Plugin::loadLang('monitoring');
+
       $networkport                = new Networkport();
 
       // Delete the second port in switch
