@@ -3026,10 +3026,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  "datetime NOT NULL DEFAULT '2014-01-01 00:00:00'");
          $migration->addField($newTable, 
                                  'flexible', 
-                                 "tinyint(1) DEFAULT '0'");
+                                 "tinyint(1) DEFAULT '1'");
          $migration->addField($newTable, 
                                  'duration', 
-                                 "tinyint(1) DEFAULT '24'");
+                                 "int(1) DEFAULT '24'");
          $migration->addField($newTable, 
                                  'duration_type', 
                                  "varchar(64) DEFAULT 'days'");
@@ -3041,7 +3041,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  "int(11) DEFAULT '-1'");
          $migration->addField($newTable, 
                                  'services', 
-                                 "tinyint(1) DEFAULT '0'");
+                                 "tinyint(1) DEFAULT '1'");
          $migration->addField($newTable, 
                                  'notified', 
                                  "tinyint(1) DEFAULT '0'");
@@ -3129,16 +3129,16 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       }
          $migration->addField($newTable, 
                                  'date', 
-                                 "DATETIME DEFAULT NULL");
+                                 "datetime DEFAULT NULL");
          $migration->addField($newTable, 
                                  'counter', 
-                                 "VARCHAR(255) DEFAULT NULL");
+                                 "varchar(255) DEFAULT NULL");
          $migration->addField($newTable, 
                                  'value', 
-                                 "INT(11) NOT NULL DEFAULT '0'");
+                                 "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                                  'updated', 
-                                 "TINYINT(1) DEFAULT '0'");
+                                 "tinyint(1) DEFAULT '0'");
       $migration->migrationOneTable($newTable);
 
 
