@@ -3012,15 +3012,12 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       if (!TableExists($newTable)) {
          $query = "CREATE TABLE `$newTable` (
                     `id` int(11) NOT NULL AUTO_INCREMENT,
+                    `plugin_monitoring_hosts_id` int(11) NOT NULL DEFAULT '0',
                     PRIMARY KEY (`id`),
                     KEY `plugin_monitoring_hosts_id` (`plugin_monitoring_hosts_id`)
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query);
       }
-         $migration->addField($newTable, 
-                                 'plugin_monitoring_hosts_id', 
-                                 'plugin_monitoring_hosts_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                                  'start_time', 
                                  'start_time', 
@@ -3085,19 +3082,13 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       if (!TableExists($newTable)) {
          $query = "CREATE TABLE `$newTable` (
                     `id` int(11) NOT NULL AUTO_INCREMENT,
+                    `itemtype` varchar(100) DEFAULT 'Host',
+                    `items_id` int(11) NOT NULL DEFAULT '0',
                     PRIMARY KEY (`id`),
                     KEY `itemtype` (`itemtype`,`items_id`)
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query);
       }
-         $migration->addField($newTable, 
-                                 'itemtype', 
-                                 'itemtype', 
-                                 "varchar(100) DEFAULT 'Host'");
-         $migration->addField($newTable, 
-                                 'items_id', 
-                                 'items_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                                  'start_time', 
                                  'start_time', 
@@ -3149,15 +3140,12 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       if (!TableExists($newTable)) {
          $query = "CREATE TABLE `$newTable` (
                      `id` INT(11) NOT NULL AUTO_INCREMENT,
+                     `hostname` VARCHAR(255) DEFAULT NULL,
                      PRIMARY KEY (`id`),
                      KEY `hostname` (`hostname`)
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query);
       }
-         $migration->addField($newTable, 
-                                 'hostname', 
-                                 'hostname', 
-                                 "varchar(255) DEFAULT NULL");
          $migration->addField($newTable, 
                                  'date', 
                                  'date', 
@@ -3184,19 +3172,13 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       if (!TableExists($newTable)) {
          $query = "CREATE TABLE `$newTable` (
                     `id` INT(11) NOT NULL AUTO_INCREMENT,
+                    `hostname` VARCHAR(255) NOT NULL DEFAULT '',
+                    `day` DATE NOT NULL DEFAULT '2013-01-01',
                     PRIMARY KEY (`id`),
                     KEY (`hostname`,`day`)
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query);
       }
-         $migration->addField($newTable, 
-                                 'hostname', 
-                                 'hostname', 
-                                 "varchar(255) DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'day', 
-                                 'day', 
-                                 "DATE NOT NULL DEFAULT '2013-01-01'");
          $migration->addField($newTable, 
                                  'cPaperChanged', 
                                  'cPaperChanged', 
