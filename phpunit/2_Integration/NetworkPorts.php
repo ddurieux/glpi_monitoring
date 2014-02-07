@@ -136,17 +136,16 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
              'networkports_id' => array(2)
          );
          $pmNetworkport->updateNetworkports();
+         
+      // Check have services deleted
+         $a_services = getAllDatasFromTable('glpi_plugin_monitoring_services');
+         $this->assertEquals(1, count($a_services), "May have one service");
 
       // Check glpi_plugin_monitoring_componentscatalogs_hosts have 1 entry
          $this->assertEquals(
                  1, 
                  countElementsInTable('glpi_plugin_monitoring_componentscatalogs_hosts'), 
                  "May have one entrie in glpi_plugin_monitoring_componentscatalogs_hosts");
-         
-      // Check have services created
-         $a_services = getAllDatasFromTable('glpi_plugin_monitoring_services');
-         $this->assertEquals(1, count($a_services), "May have one service");
-
    }
    
    
@@ -166,16 +165,15 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
       // Delete the second port in switch
          $networkport->delete(array('id' => '2'));
 
-      // Check glpi_plugin_monitoring_componentscatalogs_hosts have 1 entry
+      // Check have services deleted
+         $a_services = getAllDatasFromTable('glpi_plugin_monitoring_services');
+         $this->assertEquals(0, count($a_services), "May have one service");
+         
+      // Check glpi_plugin_monitoring_componentscatalogs_hosts have 0 entry
          $this->assertEquals(
                  0, 
                  countElementsInTable('glpi_plugin_monitoring_componentscatalogs_hosts'), 
                  "May have one entrie in glpi_plugin_monitoring_componentscatalogs_hosts");
-         
-      // Check have services created
-         $a_services = getAllDatasFromTable('glpi_plugin_monitoring_services');
-         $this->assertEquals(0, count($a_services), "May have one service");
-
    }
 
 }
