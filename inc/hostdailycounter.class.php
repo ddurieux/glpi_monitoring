@@ -46,6 +46,23 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringHostdailycounter extends CommonDBTM {
    
+   static $managedCounters = array(
+      'cPagesInitial' => 'Initial counter for printed pages',
+      'cPagesTotal' => 'Cumulative total for printed pages',
+      'cPagesToday' => 'Daily printed pages',
+      'cPagesRemaining' => 'Remaining pages',
+      'cRetractedInitial' => 'Initial counter for retracted pages',
+      'cRetractedTotal' => 'Cumulative total for retracted pages',
+      'cRetractedToday' => 'Daily retracted pages',
+      'cRetractedRemaining' => 'Stored retracted pages',
+      'cPrinterChanged' => 'Cumulative total for printer changed',
+      'cPaperChanged' => 'Cumulative total for paper changed',
+      'cBinEmptied' => 'Cumulative total for bin emptied',
+      'cPaperLoad' => 'Paper load',
+   );
+
+   
+   
    /**
    * Get name of this type
    *
@@ -58,12 +75,17 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
    
    
    static function canCreate() {      
-      return PluginMonitoringProfile::haveRight("config", 'w');
+      return PluginMonitoringProfile::haveRight("counters", 'w');
    }
 
    
+   static function canUpdate() {
+      return PluginMonitoringProfile::haveRight("counters", 'w');
+   }
+
+
    static function canView() {
-      return PluginMonitoringProfile::haveRight("config", 'r');
+      return PluginMonitoringProfile::haveRight("counters", 'r');
    }
 
    
@@ -131,6 +153,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       $tab[1]['field']           = 'id';
       $tab[1]['linkfield']       = 'id';
       $tab[1]['name']            = __('Identifier');
+      $tab[1]['datatype']        = 'itemlink';
       $tab[1]['massiveaction']   = false; // implicit field is id
 
       $tab[2]['table']           = $this->getTable();
@@ -145,71 +168,81 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       $tab[3]['datatype']        = 'date';
       $tab[3]['massiveaction']   = false;
 
+      $i = 4;
+      foreach (self::$managedCounters as $key => $value) {
+         $tab[$i]['table']           = $this->getTable();
+         $tab[$i]['field']           = $key;
+         $tab[$i]['name']            = __($value, 'monitoring');
+         $tab[$i]['massiveaction']   = false;
+         $i++;
+      }
       
-      $tab[4]['table']           = $this->getTable();
-      $tab[4]['field']           = 'cPagesInitial';
-      $tab[4]['name']            = __('Initial counter for printed pages', 'monitoring');
-      $tab[4]['massiveaction']   = false;
+/*
+      // $tab[4]['table']           = $this->getTable();
+      // $tab[4]['field']           = 'cPagesInitial';
+      // $tab[4]['name']            = __(self::$managedCounters($tab[4]['field']), 'monitoring');
+      // $tab[4]['massiveaction']   = false;
 
-      $tab[5]['table']           = $this->getTable();
-      $tab[5]['field']           = 'cPagesTotal';
-      $tab[5]['name']            = __('Cumulative total for printed pages', 'monitoring');
-      $tab[5]['massiveaction']   = false;
+      // $tab[5]['table']           = $this->getTable();
+      // $tab[5]['field']           = 'cPagesTotal';
+      // $tab[5]['name']            = __('Cumulative total for printed pages', 'monitoring');
+      // $tab[5]['massiveaction']   = false;
 
-      $tab[6]['table']           = $this->getTable();
-      $tab[6]['field']           = 'cPagesToday';
-      $tab[6]['name']            = __('Daily printed pages', 'monitoring');
-      $tab[6]['datatype']        = 'specific';
-      $tab[6]['massiveaction']   = false;
+      // $tab[6]['table']           = $this->getTable();
+      // $tab[6]['field']           = 'cPagesToday';
+      // $tab[6]['name']            = __('Daily printed pages', 'monitoring');
+      // $tab[6]['datatype']        = 'specific';
+      // $tab[6]['massiveaction']   = false;
 
-      $tab[7]['table']           = $this->getTable();
-      $tab[7]['field']           = 'cPagesRemaining';
-      $tab[7]['name']            = __('Remaining pages', 'monitoring');
-      $tab[7]['massiveaction']   = false;
-
-      
-      $tab[8]['table']           = $this->getTable();
-      $tab[8]['field']           = 'cRetractedInitial';
-      $tab[8]['name']            = __('Initial counter for retracted pages', 'monitoring');
-      $tab[8]['massiveaction']   = false;
-
-      $tab[9]['table']           = $this->getTable();
-      $tab[9]['field']           = 'cRetractedTotal';
-      $tab[9]['name']            = __('Cumulative total for retracted pages', 'monitoring');
-      $tab[9]['massiveaction']   = false;
-
-      $tab[10]['table']           = $this->getTable();
-      $tab[10]['field']           = 'cRetractedToday';
-      $tab[10]['name']            = __('Daily retracted pages', 'monitoring');
-      $tab[10]['datatype']        = 'specific';
-      $tab[10]['massiveaction']   = false;
-
-      $tab[11]['table']           = $this->getTable();
-      $tab[11]['field']           = 'cRetractedRemaining';
-      $tab[11]['name']            = __('Stored retracted pages', 'monitoring');
-      $tab[11]['massiveaction']   = false;
+      // $tab[7]['table']           = $this->getTable();
+      // $tab[7]['field']           = 'cPagesRemaining';
+      // $tab[7]['name']            = __('Remaining pages', 'monitoring');
+      // $tab[7]['massiveaction']   = false;
 
       
-      $tab[12]['table']          = $this->getTable();
-      $tab[12]['field']          = 'cPrinterChanged';
-      $tab[12]['name']           = __('Cumulative total for printer changed', 'monitoring');
-      $tab[12]['massiveaction']  = false;
+      // $tab[8]['table']           = $this->getTable();
+      // $tab[8]['field']           = 'cRetractedInitial';
+      // $tab[8]['name']            = __('Initial counter for retracted pages', 'monitoring');
+      // $tab[8]['massiveaction']   = false;
 
-      $tab[13]['table']          = $this->getTable();
-      $tab[13]['field']          = 'cPaperChanged';
-      $tab[13]['name']           = __('Cumulative total for paper changed', 'monitoring');
-      $tab[13]['massiveaction']  = false;
+      // $tab[9]['table']           = $this->getTable();
+      // $tab[9]['field']           = 'cRetractedTotal';
+      // $tab[9]['name']            = __('Cumulative total for retracted pages', 'monitoring');
+      // $tab[9]['massiveaction']   = false;
 
-      $tab[14]['table']          = $this->getTable();
-      $tab[14]['field']          = 'cBinEmptied';
-      $tab[14]['name']           = __('Cumulative total for bin emptied', 'monitoring');
-      $tab[14]['massiveaction']  = false;
+      // $tab[10]['table']           = $this->getTable();
+      // $tab[10]['field']           = 'cRetractedToday';
+      // $tab[10]['name']            = __('Daily retracted pages', 'monitoring');
+      // $tab[10]['datatype']        = 'specific';
+      // $tab[10]['massiveaction']   = false;
+
+      // $tab[11]['table']           = $this->getTable();
+      // $tab[11]['field']           = 'cRetractedRemaining';
+      // $tab[11]['name']            = __('Stored retracted pages', 'monitoring');
+      // $tab[11]['massiveaction']   = false;
+
+      
+      // $tab[12]['table']          = $this->getTable();
+      // $tab[12]['field']          = 'cPrinterChanged';
+      // $tab[12]['name']           = __('Cumulative total for printer changed', 'monitoring');
+      // $tab[12]['massiveaction']  = false;
+
+      // $tab[13]['table']          = $this->getTable();
+      // $tab[13]['field']          = 'cPaperChanged';
+      // $tab[13]['name']           = __('Cumulative total for paper changed', 'monitoring');
+      // $tab[13]['massiveaction']  = false;
+
+      // $tab[14]['table']          = $this->getTable();
+      // $tab[14]['field']          = 'cBinEmptied';
+      // $tab[14]['name']           = __('Cumulative total for bin emptied', 'monitoring');
+      // $tab[14]['massiveaction']  = false;
 
 
-      $tab[15]['table']          = $this->getTable();
-      $tab[15]['field']          = 'cPaperLoad';
-      $tab[15]['name']           = __('Paper load', 'monitoring');
-      $tab[15]['massiveaction']  = false;
+      // $tab[15]['table']          = $this->getTable();
+      // $tab[15]['field']          = 'cPaperLoad';
+      // $tab[15]['name']           = __('Paper load', 'monitoring');
+      // $tab[15]['massiveaction']  = false;
+*/
 
       return $tab;
    }
@@ -262,6 +295,14 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
    
    
    /**
+    * Before updating database ...
+    */
+   static function pre_item_update($dailyCounter) {
+      Toolbox::logInFile("pm", "daily counter, pre_item_update : ".$dailyCounter->fields['hostname']." / ".$dailyCounter->fields['day']."\n");
+   }
+   
+   
+   /**
     * Update daily counters ...
     */
    function updateDailyCounters($counter, $value, $previousRecordExists=null) {
@@ -308,6 +349,10 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             }
             break;
          case 'cRetractedTotal':
+            // Toolbox::logInFile("pm", "daily counter, updated : ".$this->fields['hostname']." / ".$this->fields['day'].", ".$counter."=".$value."\n");
+            // Set up initial pages counter if empty ...
+            if ($this->fields['cRetractedInitial'] == 0) $this->fields['cRetractedInitial'] = $value;
+            
             if ($previousRecordExists) {
                $this->fields['cRetractedTotal'] = $value - $this->fields['cRetractedInitial'];
                
@@ -319,15 +364,13 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                      $this->fields['cRetractedRemaining'] = 0;
                   }
                } else {
-                  $this->fields['cRetractedRemaining'] = $previousRecordExists->fields['cRetractedRemaining'] - $this->fields['cRetractedToday'];
+                  $this->fields['cRetractedRemaining'] = $previousRecordExists->fields['cRetractedRemaining'] + $this->fields['cRetractedToday'];
                }
             } else {
                $this->fields['cRetractedToday'] = 0;
                $this->fields['cRetractedRemaining'] = $value;
+               $this->fields['cRetractedTotal'] = $value - $this->fields['cRetractedInitial'];
             }
-               
-            // Set up initial pages counter if empty ...
-            if ($this->fields['cRetractedInitial'] == 0) $this->fields['cRetractedInitial'] = $value;
             // Compute pages printed today and pages remaining ...
             break;
       }
@@ -354,42 +397,32 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          $this->getEmpty();
       }
 
-      $this->showTabs($options);
-      $this->showFormHeader($options);
+      $this->showFormHeader(array("colspan" => count($this->fields)-3));
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Name')." :</td>";
-      echo "<td align='center'>";
-      echo "<input type='text' name='name' value='".$this->fields["name"]."' size='30'/>";
-      echo "</td>";
-      echo "<td>".__('Max check attempts (number of retries)', 'monitoring')."&nbsp;:</td>";
-      echo "<td align='center'>";
-      Dropdown::showNumber("max_check_attempts", array(
-                'value' => $this->fields['max_check_attempts'], 
-                'min'   => 1)
-      );
-      echo "</td>";
+      echo "<td>".__('Host name', 'monitoring')."&nbsp;:&nbsp;";
+      echo $this->getField('hostname')."</td>";
+      echo "<td>".__('Day', 'monitoring')."&nbsp;:&nbsp;";
+      echo Html::convDate($this->getField('day'))."</td>";
       echo "</tr>";
       
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Time in minutes between 2 checks', 'monitoring')."&nbsp;:</td>";
-      echo "<td align='center'>";
-      Dropdown::showNumber("check_interval", array(
-                'value' => $this->fields['check_interval'], 
-                'min'   => 1)
-      );
-      echo "</td>";
-      echo "<td>".__('Time in minutes between 2 retries', 'monitoring')."&nbsp;:</td>";
-      echo "<td align='center'>";
-      Dropdown::showNumber("retry_interval", array(
-                'value' => $this->fields['retry_interval'], 
-                'min'   => 1)
-      );
-      echo "</td>";
+      foreach (self::$managedCounters as $key => $value) {
+         echo "<td align='center'>".__($value, 'monitoring')."</td>";
+      }
       echo "</tr>";
       
-      $this->showFormButtons($options);
-      $this->addDivForTabs();
+      echo "<tr class='tab_bg_1'>";
+      foreach (self::$managedCounters as $key => $value) {
+         if ($this->canUpdate()) {
+            echo "<td><input type='text' name='$key' value='".$this->fields[$key]."' size='8'/></td>";
+         } else {
+            echo "<td>".$this->getValueToDisplay($key, $value)."</td>";
+         }
+      }
+      echo "</tr>";
+      
+      $this->showFormButtons(array("colspan" => count($this->fields)-3));
 
       return true;
    }

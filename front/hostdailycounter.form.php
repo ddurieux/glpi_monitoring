@@ -48,31 +48,25 @@ Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "hostdailycounter");
 
 
-$pHostdailycounter = new PluginMonitoringHostdailycounter();
+$pmHostdailycounter = new PluginMonitoringHostdailycounter();
 
-if (isset($_POST["copy"])) {
-   // $pHostdailycounter->showForm(0, array(), $_POST);
-   // Html::footer();
-   // exit;
-} else if (isset ($_POST["add"])) {
-   $pHostdailycounter->add($_POST);
-   Html::back();
+if (isset ($_POST["add"])) {
+   $pmHostdailycounter->add($_POST);
+   $pmHostdailycounter->redirectToList();
 } else if (isset ($_POST["update"])) {
-   if (isset($_POST['arg'])) {
-      $_POST['arguments'] = exportArrayToDB($_POST['arg']);
-   }   
-   $pHostdailycounter->update($_POST);
-   Html::back();
+   $pmHostdailycounter->update($_POST);
+   $pmHostdailycounter->redirectToList();
 } else if (isset ($_POST["delete"])) {
-   $pHostdailycounter->delete($_POST);
-   $pHostdailycounter->redirectToList();
+   $pmHostdailycounter->delete($_POST);
+   $pmHostdailycounter->redirectToList();
 }
 
 
 if (isset($_GET["id"])) {
-   $pHostdailycounter->showForm($_GET["id"], array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
+   $pmHostdailycounter->showForm($_GET["id"], array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
+} else {
+   $pmHostdailycounter->showForm(0, array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
 }
-$pHostdailycounter->showForm(0, array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
 
 Html::footer();
 
