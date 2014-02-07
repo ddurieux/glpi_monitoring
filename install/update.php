@@ -3053,7 +3053,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->changeField($newTable, 
                                  'flexible', 
                                  'flexible', 
-                                 "tinyint(1) DEFAULT '1'");
+                                 "tinyint(1) DEFAULT '0'");
          $migration->changeField($newTable, 
                                  'notified', 
                                  'notified', 
