@@ -108,8 +108,61 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
       // Check have services created
          $a_services = getAllDatasFromTable('glpi_plugin_monitoring_services');
          $this->assertEquals(2, count($a_services), "May have one service");
+   }
+   
+   
+   
+   public function testUncheckNetworkport() {
+      global $DB;
+
+      $DB->connect();
+
+      $pmNetworkport                = new PluginMonitoringNetworkport();
+
+      // Uncheck the first port in monitoring
+         $_POST = array(
+             'itemtype'        => 'NetworkEquipment',
+             'items_id'        => '1',
+             'networkports_id' => array(2)
+         );
+         $pmNetworkport->updateNetworkports();
+
+      // Check glpi_plugin_monitoring_componentscatalogs_hosts have 1 entry
+         $this->assertEquals(
+                 1, 
+                 countElementsInTable('glpi_plugin_monitoring_componentscatalogs_hosts'), 
+                 "May have one entrie in glpi_plugin_monitoring_componentscatalogs_hosts");
+         
+      // Check have services created
+         $a_services = getAllDatasFromTable('glpi_plugin_monitoring_services');
+         $this->assertEquals(1, count($a_services), "May have one service");
 
    }
+   
+   
+   
+   public function testDeleteNetworkport() {
+      global $DB;
+
+      $DB->connect();
+
+      $networkport                = new Networkport();
+
+      // Delete the second port in switch
+         $networkport->delete(array('id' => '2'));
+
+      // Check glpi_plugin_monitoring_componentscatalogs_hosts have 1 entry
+         $this->assertEquals(
+                 0, 
+                 countElementsInTable('glpi_plugin_monitoring_componentscatalogs_hosts'), 
+                 "May have one entrie in glpi_plugin_monitoring_componentscatalogs_hosts");
+         
+      // Check have services created
+         $a_services = getAllDatasFromTable('glpi_plugin_monitoring_services');
+         $this->assertEquals(0, count($a_services), "May have one service");
+
+   }
+
 }
 
 
