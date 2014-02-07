@@ -637,6 +637,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                // Get all networports in this rule
                if ($is_present == '0') { // * Remove from dynamic if present      
                   $query = "SELECT `glpi_plugin_monitoring_services`.`id`,
+                        `glpi_plugin_monitoring_services`.`plugin_monitoring_components_id`,
                         `glpi_plugin_monitoring_componentscatalogs_hosts`.`id` as hid
                         FROM `glpi_plugin_monitoring_services`
                      LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts` ON
@@ -654,9 +655,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                      // Delete componentscatalog_host if no networkports in services
                      if (countElementsInTable(
                              'glpi_plugin_monitoring_services', 
-                             "`plugin_monitoring_componentscalalog_id`='".$componentscalalog_id."'
-                              AND `itemtype`='NetworkEquipment'
-                              AND `items_id`='".$networkequipments_id."'
+                             "`plugin_monitoring_components_id`='".$data['plugin_monitoring_components_id']."'
                               AND `networkports_id`>0 
                               AND `plugin_monitoring_componentscatalogs_hosts_id`='".$data['hid']."'") == 0) {
                         $pmComponentscatalog_Host->delete(array('id' => $data['hid']));
