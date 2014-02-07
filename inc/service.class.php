@@ -404,13 +404,13 @@ class PluginMonitoringService extends CommonDBTM {
 
 
    /**
-    * Get host short state (state + acknowledgement)
+    * Get service short state (state + acknowledgement)
     * options : 
     * - image, if exists, returns URL to a state image
     * 
     * Return : 
-    * - green if host is UP
-    * - red if host is DOWN, UNREACHABLE or DOWNTIME
+    * - green if service is OK
+    * - red if service is CRITICAL
     * - redblue if red and acknowledged
     * - orange if host is WARNING, RECOVERY or FLAPPING
     * - orangeblue if orange and acknowledged
