@@ -3012,22 +3012,61 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       if (!TableExists($newTable)) {
          $query = "CREATE TABLE `$newTable` (
                     `id` int(11) NOT NULL AUTO_INCREMENT,
-                    `plugin_monitoring_hosts_id` int(11) NOT NULL DEFAULT '0',
-                    `flexible` tinyint(1) DEFAULT '1',
-                    `start_time` datetime NOT NULL DEFAULT '2014-01-01 00:00:00',
-                    `end_time` datetime NOT NULL DEFAULT '2014-01-01 00:00:00',
-                    `duration` int(1) DEFAULT '24',
-                    `duration_type` varchar(64) COLLATE utf8_unicode_ci DEFAULT 'days',
-                    `comment` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
-                    `services` tinyint(1) DEFAULT '1',
-                    `users_id` int(11) DEFAULT '-1',
-                    `notified` tinyint(1) DEFAULT '0',
-                    `expired` tinyint(1) DEFAULT '0',
                     PRIMARY KEY (`id`),
                     KEY `plugin_monitoring_hosts_id` (`plugin_monitoring_hosts_id`)
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query);
       }
+         $migration->addField($newTable, 
+                                 'plugin_monitoring_hosts_id', 
+                                 'plugin_monitoring_hosts_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'start_time', 
+                                 'start_time', 
+                                 "datetime NOT NULL DEFAULT '2014-01-01 00:00:00'");
+         $migration->addField($newTable, 
+                                 'end_time', 
+                                 'end_time', 
+                                 "datetime NOT NULL DEFAULT '2014-01-01 00:00:00'");
+         $migration->addField($newTable, 
+                                 'flexible`', 
+                                 'flexible`', 
+                                 "tinyint(1) DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'duration', 
+                                 'duration', 
+                                 "tinyint(1) DEFAULT '24'");
+         $migration->addField($newTable, 
+                                 'duration_type', 
+                                 'duration_type', 
+                                 "varchar(64) COLLATE utf8_unicode_ci DEFAULT 'days'");
+         $migration->addField($newTable, 
+                                 'comment', 
+                                 'comment', 
+                                 "varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'users_id', 
+                                 'users_id', 
+                                 "int(11) DEFAULT '-1'");
+         $migration->addField($newTable, 
+                                 'services', 
+                                 'services', 
+                                 "tinyint(1) DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'notified', 
+                                 'notified', 
+                                 "tinyint(1) DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'expired', 
+                                 'expired', 
+                                 "tinyint(1) DEFAULT '0'");
+      $migration->migrationOneTable($newTable);
+      
+         $migration->changeField($newTable, 
+                                 'flexible', 
+                                 'flexible', 
+                                 "tinyint(1) DEFAULT '0'");
          $migration->changeField($newTable, 
                                  'notified', 
                                  'notified', 
@@ -3046,25 +3085,60 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       if (!TableExists($newTable)) {
          $query = "CREATE TABLE `$newTable` (
                     `id` int(11) NOT NULL AUTO_INCREMENT,
-                    `itemtype` varchar(100) DEFAULT 'Host',
-                    `items_id` int(11) NOT NULL DEFAULT '0',
-                    `start_time` datetime NOT NULL DEFAULT '2014-01-01 00:00:00',
-                    `end_time` datetime NOT NULL DEFAULT '2014-01-01 00:00:00',
-                    `sticky` tinyint(1) DEFAULT '1',
-                    `persistent` tinyint(1) DEFAULT '1',
-                    `notify` tinyint(1) DEFAULT '1',
-                    `comment` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
-                    `users_id` int(11) DEFAULT '-1',
-                    `notified` tinyint(1) DEFAULT '0',
-                    `expired` tinyint(1) DEFAULT '0',
                     PRIMARY KEY (`id`),
                     KEY `itemtype` (`itemtype`,`items_id`)
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query);
       }
+         $migration->addField($newTable, 
+                                 'itemtype', 
+                                 'itemtype', 
+                                 "varchar(100) DEFAULT 'Host'");
+         $migration->addField($newTable, 
+                                 'items_id', 
+                                 'items_id', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'start_time', 
+                                 'start_time', 
+                                 "datetime NOT NULL DEFAULT '2014-01-01 00:00:00'");
+         $migration->addField($newTable, 
+                                 'end_time', 
+                                 'end_time', 
+                                 "datetime NOT NULL DEFAULT '2014-01-01 00:00:00'");
+         $migration->addField($newTable, 
+                                 'sticky', 
+                                 'sticky', 
+                                 "tinyint(1) DEFAULT '1'");
+         $migration->addField($newTable, 
+                                 'persistent', 
+                                 'persistent', 
+                                 "tinyint(1) DEFAULT '1'");
+         $migration->addField($newTable, 
+                                 'notify', 
+                                 'notify', 
+                                 "tinyint(1) DEFAULT '1'");
+         $migration->addField($newTable, 
+                                 'comment', 
+                                 'comment', 
+                                 "varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'users_id', 
+                                 'users_id', 
+                                 "int(11) DEFAULT '-1'");
+         $migration->addField($newTable, 
+                                 'notified', 
+                                 'notified', 
+                                 "tinyint(1) DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'expired', 
+                                 'expired', 
+                                 "tinyint(1) DEFAULT '0'");
+      $migration->migrationOneTable($newTable);
+      
          $migration->changeField($newTable, 
-                                 'notified', 
-                                 'notified', 
+                                 'expired', 
+                                 'expired', 
                                  "tinyint(1) DEFAULT '0'");
       $migration->migrationOneTable($newTable);
 
@@ -3075,16 +3149,27 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       if (!TableExists($newTable)) {
          $query = "CREATE TABLE `$newTable` (
                      `id` INT(11) NOT NULL AUTO_INCREMENT,
-                     `hostname` VARCHAR(255) DEFAULT NULL,
-                     `date` DATETIME DEFAULT NULL,
-                     `counter` VARCHAR(255) DEFAULT NULL,
-                     `value` INT(11) NOT NULL DEFAULT '0',
-                     `updated` TINYINT(1) NOT NULL DEFAULT '0',
                      PRIMARY KEY (`id`),
                      KEY `hostname` (`hostname`)
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query);
       }
+         $migration->addField($newTable, 
+                                 'hostname', 
+                                 'hostname', 
+                                 "varchar(255) DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'date', 
+                                 'date', 
+                                 "datetime DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'counter', 
+                                 'counter', 
+                                 "VARCHAR(255) DEFAULT NULL");
+         $migration->addField($newTable, 
+                                 'value', 
+                                 'value', 
+                                 "INT(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                                  'updated', 
                                  'updated', 
@@ -3099,50 +3184,68 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       if (!TableExists($newTable)) {
          $query = "CREATE TABLE `$newTable` (
                     `id` INT(11) NOT NULL AUTO_INCREMENT,
-                    `hostname` VARCHAR(255) NOT NULL DEFAULT '',
-                    `day` DATE NOT NULL DEFAULT '2013-01-01',
-                    `cPaperChanged` INT(11) NOT NULL DEFAULT '0',
-                    `cPrinterChanged` INT(11) NOT NULL DEFAULT '0',
-                    `cBinEmptied` INT(11) NOT NULL DEFAULT '0',
-                    `cPagesInitial` INT(11) NOT NULL DEFAULT '0',
-                    `cPagesTotal` INT(11) NOT NULL DEFAULT '0',
-                    `cPagesToday` INT(11) NOT NULL DEFAULT '0',
-                    `cPagesRemaining` INT(11) NOT NULL DEFAULT '0',
-                    `cRetractedInitial` INT(11) NOT NULL DEFAULT '0',
-                    `cRetractedTotal` INT(11) NOT NULL DEFAULT '0',
-                    `cRetractedToday` INT(11) NOT NULL DEFAULT '0',
-                    `cRetractedRemaining` INT(11) NOT NULL DEFAULT '0',
-                    `cPaperLoad` INT(11) NOT NULL DEFAULT '0',
                     PRIMARY KEY (`id`),
                     KEY (`hostname`,`day`)
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query);
       }
          $migration->addField($newTable, 
-                              'cPagesInitial', 
-                              'cPagesInitial', 
-                              "int(11) NOT NULL DEFAULT 0");
+                                 'hostname', 
+                                 'hostname', 
+                                 "varchar(255) DEFAULT NULL");
          $migration->addField($newTable, 
-                              'cRetractedInitial', 
-                              'cRetractedInitial', 
-                              "int(11) NOT NULL DEFAULT 0");
-      $migration->migrationOneTable($newTable);
-/*
+                                 'day', 
+                                 'day', 
+                                 "DATE NOT NULL DEFAULT '2013-01-01'");
          $migration->addField($newTable, 
-                              'id', 
-                              'id', 
-                              "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->addKey($newTable,
-                            'id',
-                            "",
-                            "PRIMARY");
-         $migration->addKey($newTable,
-                            array('hostname',
-                                  'day'),
-                            "",
-                            "UNIQUE");
+                                 'cPaperChanged', 
+                                 'cPaperChanged', 
+                                 "INT(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'cPrinterChanged', 
+                                 'cPrinterChanged', 
+                                 "INT(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'cBinEmptied', 
+                                 'cBinEmptied', 
+                                 "INT(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'cPaperChanged', 
+                                 'cPaperChanged', 
+                                 "INT(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'cPagesInitial', 
+                                 'cPagesInitial', 
+                                 "INT(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'cPagesTotal', 
+                                 'cPagesTotal', 
+                                 "INT(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'cPagesRemaining', 
+                                 'cPagesRemaining', 
+                                 "INT(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'cRetractedInitial', 
+                                 'cRetractedInitial', 
+                                 "INT(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'cRetractedTotal', 
+                                 'cRetractedTotal', 
+                                 "INT(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'cRetractedToday', 
+                                 'cRetractedToday', 
+                                 "INT(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'cRetractedRemaining', 
+                                 'cRetractedRemaining', 
+                                 "INT(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'cPaperLoad', 
+                                 'cPaperLoad', 
+                                 "INT(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
-*/
 
 
    /*
