@@ -122,6 +122,11 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
 
       $DB->connect();
 
+      $_SESSION["glpiname"] = 'glpi';
+      Plugin::load('monitoring');
+
+      Plugin::loadLang('monitoring');
+
       $pmNetworkport                = new PluginMonitoringNetworkport();
 
       // Uncheck the first port in monitoring
