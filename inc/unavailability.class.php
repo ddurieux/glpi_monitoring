@@ -55,26 +55,14 @@ class PluginMonitoringUnavailability extends CommonDBTM {
    
    
    static function getTypeName($nb=0) {
-      return __('Unavailability', 'monitoring');
-   }
-   
-   
-   
-   static function cronUnavailability() {      
-      
-      ini_set("max_execution_time", "0");
-      
-      $pmUnavailability = new PluginMonitoringUnavailability();
-      $pmUnavailability->runUnavailability();
-      
-      return true;
+      return _n(__('Unavailability', 'monitoring'),__('Unavailabilities', 'monitoring'),$nb);
    }
    
    
    
    function getSearchOptions() {
       $tab = array();
-      $tab['common'] = _n('Characteristic', 'Characteristics', 2);
+      $tab['common'] = _n(__('Unavailability', 'monitoring'),__('Unavailabilities', 'monitoring'), 2);
 
       $tab[1]['table']         = $this->getTable();
       $tab[1]['field']         = 'id';
@@ -90,13 +78,13 @@ class PluginMonitoringUnavailability extends CommonDBTM {
 
       $tab[3]['table']         = $this->getTable();
       $tab[3]['field']         = 'begin_date';
-      $tab[3]['name']          = __('Start', 'monitoring');
+      $tab[3]['name']          = __('Unavailability start', 'monitoring');
       $tab[3]['datatype']      = 'datetime';
       $tab[3]['massiveaction'] = false;
       
       $tab[4]['table']         = $this->getTable();
       $tab[4]['field']         = 'end_date';
-      $tab[4]['name']          = __('End', 'monitoring');
+      $tab[4]['name']          = __('Unavailability end', 'monitoring');
       $tab[4]['datatype']      = 'datetime';
       $tab[4]['massiveaction'] = false;
       
@@ -151,6 +139,29 @@ class PluginMonitoringUnavailability extends CommonDBTM {
             return $out;
       }
       return '';
+   }
+   
+   
+   
+   static function cronInfo($name){
+
+      switch ($name) {
+         case 'Unavailability':
+            return array (
+               'description' => __('Update unavailability periods','monitoring'));
+            break;
+      }
+      return array();
+   }
+
+   static function cronUnavailability() {
+      
+      ini_set("max_execution_time", "0");
+      
+      $pmUnavailability = new PluginMonitoringUnavailability();
+      $pmUnavailability->runUnavailability();
+      
+      return true;
    }
    
    
