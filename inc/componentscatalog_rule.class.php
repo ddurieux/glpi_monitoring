@@ -651,6 +651,17 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                      $pmComponentscatalog_Host->getFromDB($data['hid']);
                      $_SESSION['plugin_monitoring_hosts'] = $pmComponentscatalog_Host->fields;
                      $pmService->delete(array('id'=>$data['id']));
+                     // Delete componentscatalog_host if no networkports in services
+                     if (countElementsInTable(
+                             'glpi_plugin_monitoring_services', 
+                             "`plugin_monitoring_componentscalalog_id`='".$componentscalalog_id."'
+                              AND `itemtype`='NetworkEquipment'
+                              AND `items_id`='".$networkequipments_id."'
+                              AND `networkports_id`>0 
+                              AND `plugin_monitoring_componentscatalogs_hosts_id`='".$data['hid']."'") == 0) {
+                        $pmComponentscatalog_Host->delete(array('id' => $data['hid']));
+                     }
+                     
                   }
                } else { //  add if not present
                   // * Add componentscatalogs_hosts if not exist
