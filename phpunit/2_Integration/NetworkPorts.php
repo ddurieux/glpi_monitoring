@@ -107,7 +107,7 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
          
       // Check have services created
          $a_services = getAllDatasFromTable('glpi_plugin_monitoring_services');
-         $this->assertEquals(1, count($a_services), "May have one service");
+         $this->assertEquals(2, count($a_services), "May have one service");
 
    }
 }
