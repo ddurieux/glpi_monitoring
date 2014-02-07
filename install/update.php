@@ -3175,6 +3175,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'cPagesTotal', 
                                  "INT(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
+                                 'cPagesToday', 
+                                 "INT(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
                                  'cPagesRemaining', 
                                  "INT(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
