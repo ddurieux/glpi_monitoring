@@ -240,6 +240,7 @@ function plugin_init_monitoring() {
                                        'Printer'          => $rule_check,
                                        'Peripheral'       => $rule_check,
                                        'Phone'            => $rule_check,
+                                       'NetworkPort'      => array('PluginMonitoringNetworkport', 'deleteNetworkPort'),
                                        'PluginMonitoringNetworkport' => $rule_check_networkport,
                                        'PluginMonitoringComponentscatalog_rule' =>
                                              array('PluginMonitoringComponentscatalog_rule','getItemsDynamicly'),

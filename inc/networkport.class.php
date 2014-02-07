@@ -144,6 +144,19 @@ class PluginMonitoringNetworkport extends CommonDBTM {
          $this->delete(array('id'=>$id));
       }
    }   
+   
+   
+   
+   static function deleteNetworkPort($parm) {
+      
+      $query = "SELECT * FROM `glpi_plugin_monitoring_networkports`
+         WHERE `networkports_id`='".$parm->fields['id']."'";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         $pmNetworkPort = new PluginMonitoringNetworkport();
+         $pmNetworkPort->delete($data);
+      }
+   }
 }
 
 ?>

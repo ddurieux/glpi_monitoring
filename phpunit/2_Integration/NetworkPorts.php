@@ -167,7 +167,7 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
 
       // Check have services deleted
          $a_services = getAllDatasFromTable('glpi_plugin_monitoring_services');
-         $this->assertEquals(0, count($a_services), "May have one service");
+         $this->assertEquals(0, count($a_services), "May have no service");
          
       // Check glpi_plugin_monitoring_componentscatalogs_hosts have 0 entry
          $this->assertEquals(
