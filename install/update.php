@@ -3166,9 +3166,6 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'cBinEmptied', 
                                  "INT(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
-                                 'cPaperChanged', 
-                                 "INT(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
                                  'cPagesInitial', 
                                  "INT(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
