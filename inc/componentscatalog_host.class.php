@@ -219,7 +219,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
-         echo $tittkrjr;
+         
          $input = array();         
          $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
          $item = new $itemtype();
