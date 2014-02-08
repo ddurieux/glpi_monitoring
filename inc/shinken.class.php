@@ -1164,8 +1164,6 @@ Nagios configuration file :
          if (isset($a_entities_allowed['-1'])
                  OR isset($a_entities_allowed[$class->fields['entities_id']])) {
 
-            $host_name = preg_replace("/[^A-Za-z0-9\-_]/","",$data['hostname']);
-            
             $hostgroup_name = "hostgroup-".$data['entityId'];
             Toolbox::logInFile("pm-shinken", " - add group $hostgroup_name ...\n");
             
