@@ -1139,16 +1139,14 @@ class PluginMonitoringShinken extends CommonDBTM {
       
       $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
       
-      // Toolbox::logInFile("pm", "Building hostgroups ...\n");
-      
       $query = "SELECT 
-         `glpi_plugin_monitoring_componentscatalogs_hosts`.*, 
-         `glpi_computers`.`name` as hostname, `glpi_computers`.`locations_id`,
          `glpi_entities`.`id` AS entityId, `glpi_entities`.`name` AS entityName
          FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
-         LEFT JOIN `glpi_computers` ON `glpi_computers`.`id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`
-         LEFT JOIN `glpi_entities` ON `glpi_computers`.`entities_id` = `glpi_entities`.`id`
-         GROUP BY `itemtype`, `items_id`";
+         INNER JOIN `glpi_computers` 
+            ON `glpi_computers`.`id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`
+         INNER JOIN `glpi_entities` 
+            ON `glpi_computers`.`entities_id` = `glpi_entities`.`id`
+         GROUP BY `entityId`";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
 /*
@@ -1167,19 +1165,15 @@ Nagios configuration file :
                  OR isset($a_entities_allowed[$class->fields['entities_id']])) {
 
             $host_name = preg_replace("/[^A-Za-z0-9\-_]/","",$data['hostname']);
-            // Toolbox::logInFile("pm", "Host name : ".$host_name."\n");
             
             $hostgroup_name = "hostgroup-".$data['entityId'];
-            if (!isset($a_hostgroups_found[$hostgroup_name])) {
-               // Toolbox::logInFile("pm", "Host group : ".$hostgroup_name."\n");
-               
-               $a_hostgroups[$i]['hostgroup_name'] = $hostgroup_name;
-               $a_hostgroups[$i]['alias'] = preg_replace("/[^A-Za-z0-9\-_]/","",$data['entityName']);
+            Toolbox::logInFile("pm-shinken", " - add group $hostgroup_name ...\n");
+            
+            $a_hostgroups[$i]['hostgroup_name'] = $hostgroup_name;
+            $a_hostgroups[$i]['alias'] = preg_replace("/[^A-Za-z0-9\-_ ]/","",$data['entityName']);
+            $a_hostgroups[$i]['alias'] = $data['entityName'];
 
-               $a_hostgroups_found[$hostgroup_name] = 1;
-
-               $i++;
-            }
+            $i++;
          }
       }
 
