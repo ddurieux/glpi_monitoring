@@ -203,7 +203,7 @@ class PluginMonitoringSecurity extends CommonDBTM {
                      $debug_sql = $CFG_GLPI["debug_sql"];
                      $CFG_GLPI["debug_sql"] = 0;
                   }
-                  $this->add($data);
+                  $this->add($input);
                   if ($debug_sql) {
                      $CFG_GLPI["debug_sql"] = $debug_sql;
                   }
@@ -214,7 +214,7 @@ class PluginMonitoringSecurity extends CommonDBTM {
                      $debug_sql = $CFG_GLPI["debug_sql"];
                      $CFG_GLPI["debug_sql"] = 0;
                   }
-                  $this->update($data);
+                  $this->update($input);
                   if ($debug_sql) {
                      $CFG_GLPI["debug_sql"] = $debug_sql;
                   }
