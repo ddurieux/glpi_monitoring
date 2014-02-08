@@ -1254,17 +1254,19 @@ class PluginMonitoringService extends CommonDBTM {
       $input['items_id'] = $this->fields['id'];
       $input['action'] = "delete";
 
-      $itemtype = $_SESSION['plugin_monitoring_hosts']['itemtype'];
-      $item = new $itemtype();
-      $item->getFromDB($_SESSION['plugin_monitoring_hosts']['items_id']);
+      if (isset($_SESSION['plugin_monitoring_hosts'])
+              && isset($_SESSION['plugin_monitoring_hosts']['itemtype'])) {
+         $itemtype = $_SESSION['plugin_monitoring_hosts']['itemtype'];
+         $item = new $itemtype();
+         $item->getFromDB($_SESSION['plugin_monitoring_hosts']['items_id']);
 
-      if (isset($_SESSION['plugin_monitoring_hosts']['id'])) {
-         $input['value'] = "Service ".$this->fields['name']." of ".$item->getTypeName()." ".$item->getName();
-      } else {
-         $input['value'] = "Service ".$this->fields['name']." of port of ";
-      }
-      $pmLog->add($input);
-      
+         if (isset($_SESSION['plugin_monitoring_hosts']['id'])) {
+            $input['value'] = "Service ".$this->fields['name']." of ".$item->getTypeName()." ".$item->getName();
+         } else {
+            $input['value'] = "Service ".$this->fields['name']." of port of ";
+         }
+         $pmLog->add($input);
+      }      
       unset($_SESSION['plugin_monitoring_hosts']);
 
       if ($this->fields['networkports_id'] > 0) {
