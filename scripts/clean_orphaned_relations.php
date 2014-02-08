@@ -66,10 +66,15 @@ if (!$DB->connected) {
    die("No DB connection\n");
 }
 
-
+// Exit if plugin monitoring not activated
+$Plugin = new Plugin();
+if (!$Plugin->isActivated('monitoring')) {
+   echo "Plugin monitoring not activated!\n";
+   exit;
+}
 
 // * used to clean networkports
-   echo "Delete orphaned networkports";
+   echo "Delete orphaned networkports ";
    $pmNetworkport = new PluginMonitoringNetworkport();
    $query = "SELECT `glpi_plugin_monitoring_networkports`.* 
            FROM `glpi_plugin_monitoring_networkports`
@@ -85,7 +90,7 @@ if (!$DB->connected) {
    echo " done\n";
 
 // * Clean servcies 
-   echo "Delete orphaned services";
+   echo "Delete orphaned services ";
    $pmService = new PluginMonitoringService();
    $query = "SELECT `glpi_plugin_monitoring_services`.* 
            FROM `glpi_plugin_monitoring_services`
@@ -100,4 +105,25 @@ if (!$DB->connected) {
    }
    echo " done\n";
 
+// * clean serviceevents have service deleted
+   echo "Delete orphaned serviceevents ";
+   $query = "SELECT `plugin_monitoring_services_id` 
+           FROM `glpi_plugin_monitoring_serviceevents`
+           LEFT JOIN `glpi_plugin_monitoring_services`
+               ON `plugin_monitoring_services_id`
+                  = `glpi_plugin_monitoring_services`.`id`
+           WHERE `glpi_plugin_monitoring_services`.`id` IS NULL
+           GROUP BY `plugin_monitoring_services_id`";
+   $result = $DB->query($query);
+   $nb = 0;
+   while ($data=$DB->fetch_array($result)) {
+      $nb += countElementsInTable(
+              'glpi_plugin_monitoring_serviceevents', 
+              "`plugin_monitoring_services_id`='".$data['plugin_monitoring_services_id']."'");
+      $DB->query("DELETE FROM `glpi_plugin_monitoring_serviceevents`
+              WHERE `plugin_monitoring_services_id`='".$data['plugin_monitoring_services_id']."'");
+      echo ".";
+   }
+   echo " deleted ".$nb." rows ";
+   echo " done\n";
    
