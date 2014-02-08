@@ -82,7 +82,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
    *
    **/
    static function getTypeName($nb=0) {
-      return "Host config";
+      return __('Host configuration', 'monitoring');
    }
 
 
@@ -215,6 +215,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
          echo "</tr>";
       }
       
+/*
       if ($itemtype == 'Entity'
               AND $items_id == '0') {
          echo "<tr class='tab_bg_1'>";
@@ -230,6 +231,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
          echo "<td colspan='2'></td>";
          echo "</tr>";
       }
+*/
       
       if ($this->canCreate()) {
          echo "<tr class='tab_bg_1'>";
