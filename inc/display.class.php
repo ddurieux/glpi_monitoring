@@ -527,6 +527,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
          INNER JOIN `glpi_plugin_monitoring_hosts` 
             ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_plugin_monitoring_hosts`.`items_id`
             AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype` = `glpi_plugin_monitoring_hosts`.`itemtype`
+         INNER JOIN `glpi_plugin_monitoring_componentscatalogs` 
+            ON `plugin_monitoring_componentscalalog_id` = `glpi_plugin_monitoring_componentscatalogs`.`id`
          INNER JOIN `glpi_plugin_monitoring_components` 
             ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_components_id` = `glpi_plugin_monitoring_components`.`id`)
          INNER JOIN `glpi_entities` 

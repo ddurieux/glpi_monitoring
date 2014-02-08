@@ -333,6 +333,8 @@ function plugin_monitoring_addLeftJoin($itemtype,$ref_table,$new_table,$linkfiel
             . " ON (`glpi_computers`.`id` = `processormonit`.`items_id`"
                     . " AND `processormonit`.`itemtype` = 'Computer') ";           
          }
+         break;
+         
    }
    return "";
 }
@@ -373,9 +375,6 @@ function plugin_monitoring_addWhere($link,$nott,$type,$id,$val) {
                return $link." (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = '".$val."') ";
                break;
 
-            case 'glpi_plugin_monitoring_componentscatalogs.name':
-               return $link." (`plugin_monitoring_componentscalalog_id` = '".$val."') ";
-               break;
          }
          break;
          
