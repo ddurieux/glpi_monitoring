@@ -66,10 +66,11 @@ class PluginMonitoringHost extends CommonDBTM {
       $tab[0]['name']            = __('Entity');
       $tab[0]['datatype']        = 'string';
       
-      $tab[1]['table']           = 'glpi_computers';
+      $tab[1]['table']           = $this->getTable();
       $tab[1]['field']           = 'name';
       $tab[1]['name']            = __('Host name', 'monitoring');
-      $tab[1]['datatype']        = 'itemlink';
+      $tab[1]['datatype']        = 'string';
+      $tab[1]['searchtype']      = 'contains';
       $tab[1]['itemlink_type']   = $this->getType();
       $tab[1]['massiveaction']   = false;
       
@@ -123,6 +124,28 @@ class PluginMonitoringHost extends CommonDBTM {
       $tab[9]['name']           = __('Acknowledge', 'monitoring');
       $tab[9]['datatype']       = 'bool';
      
+      $tab[20]['table']          = 'glpi_computers';
+      $tab[20]['field']          = 'name';
+      $tab[20]['name']           = __('Item')." > ".__('Computer');
+      $tab[20]['searchtype']     = 'equals';
+      $tab[20]['datatype']       = 'itemlink';
+      $tab[20]['itemlink_type']  = 'Computer';
+      
+      $tab[21]['table']          = 'glpi_printers';
+      $tab[21]['field']          = 'name';
+      $tab[21]['name']           = __('Item')." > ".__('Printer');
+      $tab[21]['searchtype']     = 'equals';
+      $tab[21]['datatype']       = 'itemlink';
+      $tab[21]['itemlink_type']  = 'Printer';
+      
+      $tab[22]['table']          = 'glpi_networkequipments';
+      $tab[22]['field']          = 'name';
+      $tab[22]['name']           = __('Item')." > ".__('Network device');
+      $tab[22]['searchtype']     = 'equals';
+      $tab[22]['datatype']       = 'itemlink';
+      $tab[22]['itemlink_type']  = 'NetworkEquipment';
+
+      
       return $tab;
    }
 
@@ -427,8 +450,18 @@ class PluginMonitoringHost extends CommonDBTM {
          $itemtype = $this->getField("itemtype");
          $item = new $itemtype();
          $item->getFromDB($this->getField("items_id"));
+         $search_id = 1;
+         if ($itemtype == 'Computer') {
+            $search_id = 20;
+         } else if ($itemtype == 'Printer') {
+            $search_id = 21;
+         } else if ($itemtype == 'NetworkEquipment') {
+            $search_id = 22;
+         }
+         
+         
          $link = $CFG_GLPI['root_doc'].
-            "/plugins/monitoring/front/host.php?field[0]=1&searchtype[0]=equals&contains[0]=".$item->getID()."&itemtype=PluginMonitoringHost&start=0";
+            "/plugins/monitoring/front/host.php?field[0]=".$search_id."&searchtype[0]=equals&contains[0]=".$item->getID()."&itemtype=PluginMonitoringHost&start=0";
          return "<a href='$link'>".$this->getName($options)."</a>"."&nbsp;".$this->getComments();
       } else {
          $itemtype = $this->getField("itemtype");

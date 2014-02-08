@@ -382,8 +382,8 @@ function plugin_monitoring_addWhere($link,$nott,$type,$id,$val) {
       case 'PluginMonitoringHost':
          switch ($table.".".$field) {
    
-            case "glpi_computers.name":
-               return $link." (CONCAT_WS('', `glpi_computers`.`name`, `glpi_printers`.`name`, `glpi_networkequipments`.`name`) = '".$val."') ";
+            case "glpi_plugin_monitoring_hosts.name":
+               return $link." (CONCAT_WS('', `glpi_computers`.`name`, `glpi_printers`.`name`, `glpi_networkequipments`.`name`) LIKE '%".$val."%') ";
                break;
          
          }         
