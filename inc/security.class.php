@@ -100,7 +100,14 @@ class PluginMonitoringSecurity extends CommonDBTM {
             if (isset($_SESSION['plugin_monitoring_securekey'])
                     && $_SESSION['plugin_monitoring_securekey'] == $data['key']) {
 
+               $checktime = 0;
+               if (isset($_SESSION['plugin_monitoring_checktime'])) {
+                  $checktime = $_SESSION['plugin_monitoring_checktime'];
+               }
                $_SESSION = importArrayFromDB($data['session']);
+               if ($checktime != 0) {
+                  $_SESSION['plugin_monitoring_checktime'] = $checktime;
+               }
                $this->updateSecurity();
                // It's ok
                return;
@@ -134,6 +141,7 @@ class PluginMonitoringSecurity extends CommonDBTM {
                            $_SESSION['plugin_monitoring_lastsessiontime'] = date('U');
                            $data['last_session_start'] = date('Y-m-d H:i:s');
                            $data['session'] = $DB->escape(exportArrayToDB($_SESSION));
+                           unset($data['key']);
                            $debug_sql = 0;
                            if ($CFG_GLPI["debug_sql"]) {
                               $debug_sql = 1;
@@ -170,6 +178,8 @@ class PluginMonitoringSecurity extends CommonDBTM {
             
             $a_data = $this->find("`users_id`='".$_SESSION['glpiID']."'"
                     . " AND `session_id`='".session_id()."'", '', 1);
+//            Toolbox::logInFile('REGENERATE', '\n');
+//            echo $toktojit;
             if (count($a_data) == 1) {
                $data = current($a_data);
                if (session_id() != $data['session_id']
