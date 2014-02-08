@@ -114,7 +114,7 @@ class PluginMonitoringSecurity extends CommonDBTM {
    
    
    function updateSecurity() {
-      global $DB;
+      global $DB, $CFG_GLPI;
       
       if (isset($_SESSION['glpiID'])
               && is_numeric($_SESSION['glpiID'])
@@ -134,7 +134,15 @@ class PluginMonitoringSecurity extends CommonDBTM {
                            $_SESSION['plugin_monitoring_lastsessiontime'] = date('U');
                            $data['last_session_start'] = date('Y-m-d H:i:s');
                            $data['session'] = $DB->escape(exportArrayToDB($_SESSION));
+                           $debug_sql = 0;
+                           if ($CFG_GLPI["debug_sql"]) {
+                              $debug_sql = 1;
+                              $CFG_GLPI["debug_sql"] = 0;
+                           }
                            $this->update($data);
+                           if ($debug_sql) {
+                              $CFG_GLPI["debug_sql"] = $debug_sql;
+                           }
                         }
                      }
                      $_SESSION['plugin_monitoring_lastsessiontime'] = date('U');
@@ -170,7 +178,15 @@ class PluginMonitoringSecurity extends CommonDBTM {
                   $data['session_id'] = session_id();
                   $data['last_session_start'] = $_SESSION['glpi_currenttime'];
                   $data['session'] = $DB->escape(exportArrayToDB($_SESSION));
+                  $debug_sql = 0;
+                  if ($CFG_GLPI["debug_sql"]) {
+                     $debug_sql = $CFG_GLPI["debug_sql"];
+                     $CFG_GLPI["debug_sql"] = 0;
+                  }
                   $this->update($data);
+                  if ($debug_sql) {
+                     $CFG_GLPI["debug_sql"] = $debug_sql;
+                  }
                }
                $_SESSION['plugin_monitoring_securekey'] = $data['key'];
             } else {
@@ -182,10 +198,26 @@ class PluginMonitoringSecurity extends CommonDBTM {
                    'session'     => $DB->escape(exportArrayToDB($_SESSION))
                );
                if ($use_id == 0) {
-                  $this->add($input);
+                  $debug_sql = 0;
+                  if ($CFG_GLPI["debug_sql"]) {
+                     $debug_sql = $CFG_GLPI["debug_sql"];
+                     $CFG_GLPI["debug_sql"] = 0;
+                  }
+                  $this->add($data);
+                  if ($debug_sql) {
+                     $CFG_GLPI["debug_sql"] = $debug_sql;
+                  }
                } else {
                   $input['id'] = $use_id;
-                  $this->update($input);
+                  $debug_sql = 0;
+                  if ($CFG_GLPI["debug_sql"]) {
+                     $debug_sql = $CFG_GLPI["debug_sql"];
+                     $CFG_GLPI["debug_sql"] = 0;
+                  }
+                  $this->update($data);
+                  if ($debug_sql) {
+                     $CFG_GLPI["debug_sql"] = $debug_sql;
+                  }
                }
                $_SESSION['plugin_monitoring_securekey'] = $input['key'];
             }
@@ -210,6 +242,7 @@ class PluginMonitoringSecurity extends CommonDBTM {
    
    
    static function updateSession() {
+      global $CFG_GLPI;
       
       $pmSecurity = new self();
       $a_data = $pmSecurity->find("`users_id`='".$_SESSION['glpiID']."' "
@@ -217,7 +250,16 @@ class PluginMonitoringSecurity extends CommonDBTM {
       if (count($a_data) == 1) {
          $data = current($a_data);
          $data['session'] = Toolbox::addslashes_deep(exportArrayToDB($_SESSION));
+         $debug_sql = 0;
+         if ($CFG_GLPI["debug_sql"]) {
+            $debug_sql = $CFG_GLPI["debug_sql"];
+            $CFG_GLPI["debug_sql"] = 0;
+         }
          $pmSecurity->update($data);
+         if ($debug_sql) {
+            $CFG_GLPI["debug_sql"] = $debug_sql;
+         }
+
       }
    }
 }
