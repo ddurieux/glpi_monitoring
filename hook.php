@@ -361,7 +361,7 @@ function plugin_monitoring_addWhere($link,$nott,$type,$id,$val) {
    $searchopt = &Search::getOptions($type);
    $table = $searchopt[$id]["table"];
    $field = $searchopt[$id]["field"];
-
+   
   switch ($type) {
       // * Computer List (front/computer.php)
       case 'PluginMonitoringService':
@@ -379,6 +379,15 @@ function plugin_monitoring_addWhere($link,$nott,$type,$id,$val) {
          }
          break;
          
+      case 'PluginMonitoringHost':
+         switch ($table.".".$field) {
+   
+            case "glpi_computers.name":
+               return $link." (CONCAT_WS('', `glpi_computers`.`name`, `glpi_printers`.`name`, `glpi_networkequipments`.`name`) = '".$val."') ";
+               break;
+         
+         }         
+         break;
    }
 
    return "";
