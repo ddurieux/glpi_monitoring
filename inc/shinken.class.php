@@ -80,6 +80,20 @@ class PluginMonitoringShinken extends CommonDBTM {
       $pmNotificationcommand = new PluginMonitoringNotificationcommand();
       $pmEventhandler = new PluginMonitoringEventhandler();
 
+      $pmLog = new PluginMonitoringLog();
+      // Log Shinken restart event ...
+      if (isset($_SERVER['HTTP_USER_AGENT'])
+              AND strstr($_SERVER['HTTP_USER_AGENT'], 'xmlrpclib.py')) {
+         if (!isset($_SESSION['glpi_currenttime'])) {
+            $_SESSION['glpi_currenttime'] = date("Y-m-d H:i:s");
+         }
+         $input = array();
+         $input['user_name'] = "Shinken";
+         $input['action'] = "restart";
+         $input['date_mod'] = date("Y-m-d H:i:s");
+         $pmLog->add($input);
+      }
+      
       $a_commands = array();
       $i=0;
 
@@ -536,21 +550,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       $pmHostconfig            = new PluginMonitoringHostconfig();
       $calendar                = new Calendar();
       $user                    = new User();
-      $pmLog                   = new PluginMonitoringLog();
       $profile_User = new Profile_User();
-      
-      // Log Shinken restart event ...
-      if (isset($_SERVER['HTTP_USER_AGENT'])
-              AND strstr($_SERVER['HTTP_USER_AGENT'], 'xmlrpclib.py')) {
-         if (!isset($_SESSION['glpi_currenttime'])) {
-            $_SESSION['glpi_currenttime'] = date("Y-m-d H:i:s");
-         }
-         $input = array();
-         $input['user_name'] = "Shinken";
-         $input['action'] = "restart";
-         $input['date_mod'] = date("Y-m-d H:i:s");
-         $pmLog->add($input);
-      }
       
       $a_services = array();
       $i=0;
