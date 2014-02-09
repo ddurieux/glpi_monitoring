@@ -18,6 +18,7 @@ CREATE TABLE `glpi_plugin_monitoring_servicescatalogs` (
    `acknowledge_users_id` int(11) NOT NULL DEFAULT '0',
    `notification_interval` int(4) NOT NULL DEFAULT '30',
    `business_priority` tinyint(1) NOT NULL DEFAULT '1',
+   `is_generic` tinyint(1) NOT NULL DEFAULT '0',
    PRIMARY KEY (`id`),
    KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -507,6 +508,7 @@ CREATE TABLE `glpi_plugin_monitoring_businessrules` (
    `plugin_monitoring_businessrulegroups_id` int(11) NOT NULL DEFAULT '0',
    `plugin_monitoring_services_id` int(11) NOT NULL DEFAULT '0',
    `is_dynamic` tinyint(1) NOT NULL DEFAULT '0',
+   `is_generic` tinyint(1) NOT NULL DEFAULT '0',
    PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

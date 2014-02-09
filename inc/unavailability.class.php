@@ -104,7 +104,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
       $tab[7]['table']         = $this->getTable();
       $tab[7]['field']         = 'scheduled';
       $tab[7]['name']          = __('Scheduled unavailability', 'monitoring');
-      // $tab[7]['datatype']      = 'bool';
+      $tab[7]['datatype']      = 'bool';
       // $tab[7]['unit']          = '<a href="www.google.fr">Toggle</a>';
       $tab[7]['massiveaction'] = false;
       

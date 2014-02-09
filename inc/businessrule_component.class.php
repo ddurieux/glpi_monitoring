@@ -78,7 +78,7 @@ class PluginMonitoringBusinessrule_component extends CommonDBTM {
       } else {
          $restrict_entities = "AND ( `glpi_plugin_monitoring_services`.`entities_id` = '".
                  $pmServicescatalog->fields['entities_id']."' )";
-      }   
+      }
       
       $a_brcomponents = $this->find("`plugin_monitoring_businessrulegroups_id`='".$plugin_monitoring_businessrulegroups_id."'");
       
@@ -112,6 +112,14 @@ class PluginMonitoringBusinessrule_component extends CommonDBTM {
       foreach ($a_static as $data) {
          if (isset($a_services[$data['plugin_monitoring_services_id']])) {
             unset($a_services[$data['plugin_monitoring_services_id']]);
+            
+            // Update generic status
+            $pmBusinessrule->getFromDB($data['id']);
+            $input = array(
+                'id' => $data['id'],
+                'is_generic' => $pmServicescatalog->fields['is_generic']
+            );
+            $pmBusinessrule->update($input);
          }
       }
       
@@ -121,25 +129,33 @@ class PluginMonitoringBusinessrule_component extends CommonDBTM {
               . " AND `is_dynamic`=1";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
-         // Do nothing when yet in DB
+         // Update if yet in DB
          if (isset($a_services[$data['plugin_monitoring_services_id']])) {
             unset($a_services[$data['plugin_monitoring_services_id']]);
+            
+            // Update generic status
+            $pmBusinessrule->getFromDB($data['id']);
+            $input = array(
+                'id' => $data['id'],
+                'is_generic' => $pmServicescatalog->fields['is_generic']
+            );
+            $pmBusinessrule->update($input);
          } else {
             // delete if not exist
             $pmBusinessrule->delete($data);
          }
-      }      
+      }
+      
       // Add new
       foreach ($a_services as $services_id) {
          $input = array(
              'plugin_monitoring_businessrulegroups_id' => $plugin_monitoring_businessrulegroups_id,
              'plugin_monitoring_services_id' => $services_id,
-             'is_dynamic' => '1'
+             'is_dynamic' => '1',
+             'is_generic' => $pmServicescatalog->fields['is_generic']
          );
          $pmBusinessrule->add($input);
       }
-      
-      
    }
 }
 

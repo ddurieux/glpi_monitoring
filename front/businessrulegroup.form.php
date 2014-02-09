@@ -73,6 +73,7 @@ if (isset($_POST['update'])) {
    if (isset($_POST['plugin_monitoring_services_id'])) {
       $pmBusinessrule = new PluginMonitoringBusinessrule();
       $pmBusinessrule->add(array('plugin_monitoring_businessrulegroups_id'=>$_POST['plugin_monitoring_businessrulegroups_id'],
+                                 'is_generic'=>$_POST['is_generic'],
                                  'plugin_monitoring_services_id'=>$_POST['plugin_monitoring_services_id']));
       
    }   

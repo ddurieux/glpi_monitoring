@@ -57,5 +57,12 @@ if (isset($_GET['component_catalog_id'])) {
    $pmUnavailability->displayComponentscatalog($_GET['component_catalog_id']);
 }
 
+// forceUpdate request parameter is to force an update ...
+if (isset($_GET['forceUpdate'])) {
+   // A services_id may be specified as a parameter ... 
+   // Default services_id is 0 for all services 
+   PluginMonitoringUnavailability::runUnavailability(isset($_GET['services_id']) ? $_GET['services_id'] : 0);
+}
+
 Html::footer();
 ?>

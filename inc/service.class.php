@@ -176,19 +176,19 @@ class PluginMonitoringService extends CommonDBTM {
    /**
     * Get service name
     */
-   function getName($shinken = false, $hostname=false) {
+   function getName($options = array()) {
       if ($this->getID() == -1) return '';
       
       $pmComponent = new PluginMonitoringComponent();
       $a_component = current($pmComponent->find("`id`='".$this->fields['plugin_monitoring_components_id']."'", "", 1));
       
       $service_description = $a_component['name'];
-      if ($shinken) {
+      if (isset($options) && isset($options['shinken'])) {
          $service_description = preg_replace("/[^A-Za-z0-9\-_]/","",$a_component['description']);
          if (empty($service_description)) $service_description = preg_replace("/[^A-Za-z0-9\-_]/","",$a_component['name']);
       }
       
-      if ($hostname) {
+      if (isset($options) && isset($options['hostname'])) {
          $service_description .= ' '.__('on', 'monitoring').' '.$this->getHostName();
       }
       
@@ -207,9 +207,9 @@ class PluginMonitoringService extends CommonDBTM {
       $link = $CFG_GLPI['root_doc'].
          "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&field[0]=20&searchtype[0]=equals&contains[0]=".$this->getComputerID()."&itemtype=PluginMonitoringService&start=0'";
       if (isset($options['monitoring']) && $options['monitoring']) {
-         return "<a href='$link'>".$this->getName(true, true)."</a>"."&nbsp;".$this->getComments();
+         return "<a href='$link'>".$this->getName(array('shinken'=>true, 'hostname'=>true))."</a>"."&nbsp;".$this->getComments();
       } else {
-         return "<a href='$link'>".$this->getName(false, true)."</a>"."&nbsp;".$this->getComments();
+         return "<a href='$link'>".$this->getName(array('hostname'=>true))."</a>"."&nbsp;".$this->getComments();
       }
    }
    
@@ -284,25 +284,15 @@ class PluginMonitoringService extends CommonDBTM {
    function getHostName() {
       global $DB;
       
-      $query = "SELECT
-                  `glpi_plugin_monitoring_hosts`.`id`
-                  , `glpi_computers`.`name`
-               FROM `glpi_plugin_monitoring_hosts`
-                  INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts` 
-                     ON (`glpi_plugin_monitoring_hosts`.`itemtype` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`) AND (`glpi_plugin_monitoring_hosts`.`items_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`)
-                  INNER JOIN `glpi_computers` 
-                     ON (`glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`)
-                  INNER JOIN `glpi_plugin_monitoring_services` 
-                     ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
-               WHERE (`glpi_plugin_monitoring_services`.`id` = '".$this->getID()."');";
-      $result = $DB->query($query);
-      if ($DB->numrows($result) > 0) {
-         while ($data=$DB->fetch_array($result)) {
-            return $data['name'];
-         }
-      } else {
-         return -1;
+      $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+      $pmComponentscatalog_Host->getFromDB($this->fields['plugin_monitoring_componentscatalogs_hosts_id']);
+      $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
+      $item = new $itemtype();
+      if ($item->getFromDB($pmComponentscatalog_Host->fields['items_id'])) {           
+         return ($item->fields['name']);
       }
+      
+      return '';
    }
 
 

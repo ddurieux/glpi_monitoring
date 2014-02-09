@@ -389,7 +389,6 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             "&itemtype=PluginMonitoringService&start=0";
       }
 
-      // TODO : filter with componentscatalogs_id ...
       if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
          $link_catalog = $CFG_GLPI['root_doc'].
             "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset"
@@ -588,7 +587,8 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype` = `glpi_plugin_monitoring_hosts`.`itemtype`)
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'
             AND CONCAT_WS('', `glpi_computers`.`entities_id`, `glpi_printers`.`entities_id`, `glpi_networkequipments`.`entities_id`) IN (".$_SESSION['glpiactiveentities_string'].") 
-         ORDER BY name ASC";
+         ORDER BY entities_id ASC, name ASC";
+      // Toolbox::logInFile("pm", "query : $query\n");
       
       $result = $DB->query($query);
       while ($dataComponentscatalog_Host=$DB->fetch_array($result)) {

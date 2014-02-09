@@ -155,26 +155,26 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $migration->migrationOneTable($newTable);
       
          $migration->addField($newTable, 
-                                 'name', 
-                                 "varchar(255) DEFAULT NULL");
+                              'name', 
+                              "varchar(255) DEFAULT NULL");
          $migration->addField($newTable, 
-                                 'entities_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");
+                              'entities_id', 
+                              "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
-                                 'is_recursive', 
-                                 "tinyint(1) NOT NULL DEFAULT '0'");
+                              'is_recursive', 
+                              "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
-                                 'last_check', 
-                                 "datetime DEFAULT NULL");
+                              'last_check', 
+                              "datetime DEFAULT NULL");
          $migration->addField($newTable, 
                               'event', 
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
-                                 'state', 
-                                 "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
+                              'state', 
+                              "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
-                                 'state_type', 
-                                 "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
+                              'state_type', 
+                              "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                               'plugin_monitoring_checks_id', 
                               "int(11) NOT NULL DEFAULT '0'");
@@ -199,6 +199,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                               'business_priority', 
                               "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->addField($newTable, 
+                              'is_generic', 
+                              "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->addKey($newTable, 
                             "name");
       $migration->migrationOneTable($newTable);
@@ -2168,6 +2171,8 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          'plugin_monitoring_services_id' 
                         => array('type'    => 'integer',        'value'   => 0),
          'is_dynamic' 
+                        => array('type'    => 'bool',           'value'   => 0),
+         'is_generic' 
                         => array('type'    => 'bool',           'value'   => 0),
       );
 

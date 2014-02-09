@@ -53,7 +53,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    *
    **/
    static function getTypeName($nb=0) {
-      return __('Services catalog', 'monitoring');
+      return _n(__('Services catalog', 'monitoring'),__('Services catalogs', 'monitoring'),$nb);
    }
 
 
@@ -64,11 +64,17 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
 
 
    
+   static function canUpdate() {
+      return PluginMonitoringProfile::haveRight("config_services_catalogs", 'w');
+   }
+
+
+   
    static function canView() {
       return PluginMonitoringProfile::haveRight("config_services_catalogs", 'r');
    }
 
-   
+
    
    function defineTabs($options=array()){
       
@@ -113,6 +119,64 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
 
       return true;
    }
+
+   
+   function post_addItem() {
+      Toolbox::logInFile("pm", "  post_addItem : ".$this->getID()." : ".$this->getField('is_generic')."\n");
+      
+      $pmLog = new PluginMonitoringLog();
+      
+      $input = array();
+      $input['itemtype'] = "PluginMonitoringServicesCatalog";
+      $input['items_id'] = $this->fields['id'];
+      $input['action'] = "add";
+      $input['value'] = "New service catalog ".$this->fields['name'];
+      $pmLog->add($input);
+      
+      // Generic services catalogs only ...
+      if ($this->getField('is_generic')) {
+         $this->updateGenericServicesCatalogs();
+      }
+   }
+
+
+
+   function post_updateItem($history=1) {
+      Toolbox::logInFile("pm", "  post_updateItem : ".$this->getID()." : ".$this->getField('is_generic')."\n");
+      
+      // Generic services catalogs only ...
+      if ($this->getField('is_generic')) {
+         $this->updateGenericServicesCatalogs();
+      } else {
+         $this->updateGenericServicesCatalogs('delete');
+      }
+   }
+
+
+
+   function post_deleteItem() {
+   }
+
+
+
+   function post_purgeItem() {
+      // Toolbox::logInFile("pm", "  post_purgeItem : \n");
+      
+      $pmLog = new PluginMonitoringLog();
+      
+      $input = array();
+      $input['itemtype'] = "PluginMonitoringServicesCatalog";
+      $input['items_id'] = $this->fields['id'];
+      $input['action'] = "delete";
+      $input['value'] = "Deleted service catalog ".$this->fields['name'];
+      $pmLog->add($input);
+      
+      // Generic services catalogs only ...
+      if (! $this->getField('is_generic')) return;
+      
+      $this->updateGenericServicesCatalogs('delete');
+   }
+
 
    
    
@@ -174,6 +238,18 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
          'min'      => 1, 
          'max'      => 5)
       );
+      echo "</td>";
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='2'></td>";
+      echo "<td>".__('Services catalog template ?', 'monitoring')."&nbsp;:</td>";
+      echo "<td>";
+      if (PluginMonitoringServicescatalog::canUpdate()) {
+         Dropdown::showYesNo('is_generic', $this->fields['is_generic']);
+      } else {
+         echo Dropdown::getYesNo($this->fields['is_generic']);
+      }
       echo "</td>";
       echo "</tr>";
       
@@ -572,6 +648,124 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
               "&plugin_monitoring_securekey=".$_SESSION['plugin_monitoring_securekey'].
               "\", \"\", true);
       </script>";
+   }
+   
+   
+   
+   function updateGenericServicesCatalogs($action='update') {
+      global $DB;
+
+      $entity = new Entity();
+      $pmServicescatalog = new PluginMonitoringServicescatalog();
+      
+      $existingSCs = array();
+         
+      // Find existing instances of generic services catalog ...
+      $a_SCs = $this->find("`name` LIKE '".$this->getName()."%'");
+      foreach ($a_SCs as $a_SC) {
+         Toolbox::logInFile("pm", "SC : ".$a_SC['id'].", name : ".$a_SC['name'].", generic : ".$a_SC['is_generic']."\n");
+         
+         if ($a_SC['name'] == $this->getField('name')) continue;
+         $existingSCs[$a_SC['name']] = $a_SC;
+      }
+      if ($action=='delete') {
+         foreach ($existingSCs as $name=>$a_SC) {
+            $pmServicescatalog->getFromDB($a_SC['id']);
+            $pmServicescatalog->delete($pmServicescatalog->fields);
+            Toolbox::logInFile("pm", "Deleted : ".$a_SC['name']."\n");
+         }
+         return;
+      }
+      
+      // Find entities concerned ...
+      $a_entitiesServices = $this->getGenericServicesEntities();
+      foreach ($a_entitiesServices as $idEntity=>$a_entityServices) {
+         // New entity ... so it must exist a derivated SC !
+         $entity->getFromDB($idEntity);
+         // Toolbox::logInFile("pm", "Found entity : ".$idEntity." / ".$entity->getName()."\n");
+         
+         $scName = $this->getName()." - ".$entity->getName();
+         
+         if (isset($existingSCs[$scName])) {
+            // Update SC
+            $pmServicescatalog->getFromDB($existingSCs[$scName]['id']);
+            $pmServicescatalog->fields = $this->fields;
+            unset($pmServicescatalog->fields['id']);
+            $pmServicescatalog->fields['id'] = $existingSCs[$scName]['id'];
+            $pmServicescatalog->fields['entities_id'] = $idEntity;
+            $pmServicescatalog->fields['is_generic'] = 0;
+            $pmServicescatalog->fields['name'] = $DB->escape($scName);
+            $pmServicescatalog->update($pmServicescatalog->fields);
+            
+            unset($existingSCs[$scName]);
+            Toolbox::logInFile("pm", "Updated : ".$scName."\n");
+         } else {
+            // Add SC
+            $pmServicescatalog = new PluginMonitoringServicescatalog();
+            $pmServicescatalog->getEmpty();
+            $pmServicescatalog->fields = $this->fields;
+            unset($pmServicescatalog->fields['id']);
+            $pmServicescatalog->fields['entities_id'] = $idEntity;
+            $pmServicescatalog->fields['is_recursive'] = 0;
+            $pmServicescatalog->fields['is_generic'] = 0;
+            $pmServicescatalog->fields['name'] = $DB->escape($scName);
+            $pmServicescatalog->add($pmServicescatalog->fields);
+            Toolbox::logInFile("pm", "Added : ".$scName."\n");
+         }
+      }
+   }
+   
+   
+   function getGenericServicesEntities() {
+      global $DB;
+
+      // SC must be a template ...
+      if (! ($this->fields['is_generic'])) {
+         return;
+      }
+      
+      if ($this->fields['is_recursive']) {
+         $a_sons = getSonsOf("glpi_entities", $this->fields['entities_id']);
+         $restrict_entities = "AND ( `glpi_plugin_monitoring_services`.`entities_id` IN ('".implode("','", $a_sons)."') )";
+      } else {
+         $restrict_entities = "AND ( `glpi_plugin_monitoring_services`.`entities_id` = '".
+                 $this->fields['entities_id']."' )";
+      }
+      
+      $a_services = array();
+      // foreach ($a_sons as $entity) {
+         // $a_services[$entity] = array();
+      // }
+      
+      $query = "SELECT
+         `glpi_plugin_monitoring_services`.`id`
+         , `glpi_plugin_monitoring_services`.`name`
+         , `glpi_plugin_monitoring_services`.`entities_id`
+         , `glpi_plugin_monitoring_businessrules`.`plugin_monitoring_businessrulegroups_id`
+         FROM `glpi_plugin_monitoring_services`
+         INNER JOIN `glpi_plugin_monitoring_businessrules` 
+            ON (`glpi_plugin_monitoring_services`.`id` = `glpi_plugin_monitoring_businessrules`.`plugin_monitoring_services_id`)
+         INNER JOIN `glpi_plugin_monitoring_businessrulegroups` 
+            ON (`glpi_plugin_monitoring_businessrules`.`plugin_monitoring_businessrulegroups_id` = `glpi_plugin_monitoring_businessrulegroups`.`id`)
+         INNER JOIN `glpi_plugin_monitoring_servicescatalogs` 
+            ON (`glpi_plugin_monitoring_businessrulegroups`.`plugin_monitoring_servicescatalogs_id` = `glpi_plugin_monitoring_servicescatalogs`.`id`)
+         WHERE (`glpi_plugin_monitoring_servicescatalogs`.`id` ='".$this->getID()."'
+            AND `glpi_plugin_monitoring_businessrules`.`is_generic` ='1'
+            ".$restrict_entities.")
+         ORDER BY `glpi_plugin_monitoring_services`.`entities_id` ASC, `glpi_plugin_monitoring_services`.`id` ASC;
+      ";
+      // Toolbox::logInFile("pm-shinken", "  - query : ".$query."\n");
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         // Toolbox::logInFile("pm-shinken", "  - entity : ".$data['entities_id'].", service : ".$data['id']."\n");
+         $a_services[$data['entities_id']][$data['id']] = 
+                  array("entityId" => $data['entities_id'], 
+                        "serviceId" => $data['id'],
+                        "BRgroupId" => $data['plugin_monitoring_businessrulegroups_id']
+                        );
+      }
+      
+      return $a_services;
    }
 }
 

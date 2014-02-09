@@ -538,7 +538,7 @@ class PluginMonitoringShinken extends CommonDBTM {
    function generateServicesCfg($file=0, $tag='') {
       global $DB;
 
-      Toolbox::logInFile("pm-shinken", "Starting generateServicesCfg ...\n");
+      Toolbox::logInFile("pm-shinken", "Starting generateServicesCfg services ...\n");
       $pMonitoringCommand      = new PluginMonitoringCommand();
       $pmEventhandler          = new PluginMonitoringEventhandler();
       $pMonitoringCheck        = new PluginMonitoringCheck();
@@ -555,7 +555,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_services = array();
       $i=0;
       
-      // * Prepare contacts
+      // Prepare individual contacts
       $a_contacts_entities = array();
       $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
          AND `users_id`>0");
@@ -566,7 +566,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          }
          $a_contacts_entities[$data['items_id']][$data['users_id']] = $contactentities;
       }
-      // Groups
+      // Prepare groups contacts
       $group = new Group();
       $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
          AND `groups_id`>0");
@@ -592,6 +592,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       
       $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
       
+      // --------------------------------------------------
       // "Normal" services ....
       $query = "SELECT * FROM `glpi_plugin_monitoring_services`";
       $result = $DB->query($query);
@@ -726,7 +727,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                         if ($notadddescription != '') {
                            $notadddescription .= ", ";
                         }
-                        $notadddescription .= "Argument ".$a_arguments[$arg]." Not have value";
+                        $notadddescription .= "Argument ".$a_arguments[$arg]." do not have value";
                      }
                      $args .= '!'.$a_arguments[$arg];
                      if ($a_arguments[$arg] == ''
@@ -761,29 +762,29 @@ class PluginMonitoringShinken extends CommonDBTM {
             }
             
             // * Contacts
-               $a_contacts = array();
-               $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
-                  AND `items_id`='".$plugin_monitoring_componentscatalogs_id."'");
-               foreach ($a_list_contact as $data_contact) {
-                  if ($data_contact['users_id'] > 0) {
-                     if (isset($a_contacts_entities[$plugin_monitoring_componentscatalogs_id][$data_contact['users_id']])) {
-                        if (in_array($data['entities_id'], $a_contacts_entities[$plugin_monitoring_componentscatalogs_id][$data_contact['users_id']])) {
-                           $user->getFromDB($data_contact['users_id']);
-                           $a_contacts[] = $user->fields['name'];
-                        }
+            $a_contacts = array();
+            $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
+               AND `items_id`='".$plugin_monitoring_componentscatalogs_id."'");
+            foreach ($a_list_contact as $data_contact) {
+               if ($data_contact['users_id'] > 0) {
+                  if (isset($a_contacts_entities[$plugin_monitoring_componentscatalogs_id][$data_contact['users_id']])) {
+                     if (in_array($data['entities_id'], $a_contacts_entities[$plugin_monitoring_componentscatalogs_id][$data_contact['users_id']])) {
+                        $user->getFromDB($data_contact['users_id']);
+                        $a_contacts[] = $user->fields['name'];
                      }
-                  } else if ($data_contact['groups_id'] > 0) {
-                     $queryg = "SELECT * FROM `glpi_groups_users`
-                        WHERE `groups_id`='".$data_contact['groups_id']."'";
-                     $resultg = $DB->query($queryg);
-                     while ($datag=$DB->fetch_array($resultg)) {
-                        if (in_array($data['entities_id'], $a_contacts_entities[$plugin_monitoring_componentscatalogs_id][$datag['users_id']])) {
-                           $user->getFromDB($datag['users_id']);
-                           $a_contacts[] = $user->fields['name'];
-                        }
+                  }
+               } else if ($data_contact['groups_id'] > 0) {
+                  $queryg = "SELECT * FROM `glpi_groups_users`
+                     WHERE `groups_id`='".$data_contact['groups_id']."'";
+                  $resultg = $DB->query($queryg);
+                  while ($datag=$DB->fetch_array($resultg)) {
+                     if (in_array($data['entities_id'], $a_contacts_entities[$plugin_monitoring_componentscatalogs_id][$datag['users_id']])) {
+                        $user->getFromDB($datag['users_id']);
+                        $a_contacts[] = $user->fields['name'];
                      }
                   }
                }
+            }
                
             $a_contacts_unique = array_unique($a_contacts);
             $a_services[$i]['contacts'] = implode(',', $a_contacts_unique);
@@ -852,14 +853,19 @@ class PluginMonitoringShinken extends CommonDBTM {
          }
       }
 
+      Toolbox::logInFile("pm-shinken", "End generateServicesCfg services\n");
+      
+      Toolbox::logInFile("pm-shinken", "Starting generateServicesCfg business rules ...\n");
+      
+      // --------------------------------------------------
       // Business rules services ...
       $pmService = new PluginMonitoringService();
       $pmServicescatalog = new PluginMonitoringServicescatalog();
-      $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
+      $pmBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
       $pmBusinessrule = new PluginMonitoringBusinessrule();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
       $pmBusinessrule_component = new PluginMonitoringBusinessrule_component();
-      // Prepare contacts for BR ...
+      // Prepare individual contacts
       $a_contacts_entities = array();
       $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringServicescatalog'
          AND `users_id`>0");
@@ -870,7 +876,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          }
          $a_contacts_entities[$data['items_id']][$data['users_id']] = $contactentities;
       }
-      // Groups for BR ...
+      // Prepare groups contacts
       $group = new Group();
       $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringServicescatalog'
          AND `groups_id`>0");
@@ -892,25 +898,24 @@ class PluginMonitoringShinken extends CommonDBTM {
          }
       }
       
-      $a_listBA = $pmServicescatalog->find();
+      // Services catalogs
+      $a_listBA = $pmServicescatalog->find("`is_generic`='0'");
       foreach ($a_listBA as $dataBA) {
 
          if (isset($a_entities_allowed['-1'])
                  OR isset($a_entities_allowed[$dataBA['entities_id']])) {
 
-            $a_grouplist = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_servicescatalogs_id`='".$dataBA['id']."'");
+            $a_grouplist = $pmBusinessrulegroup->find("`plugin_monitoring_servicescatalogs_id`='".$dataBA['id']."'");
             $a_group = array();
             foreach ($a_grouplist as $gdata) {
+               
                $pmBusinessrule_component->replayDynamicServices($gdata['id']);
                $a_listBR = $pmBusinessrule->find(
                        "`plugin_monitoring_businessrulegroups_id`='".$gdata['id']."'");
                foreach ($a_listBR as $dataBR) {
                   if ($pmService->getFromDB($dataBR['plugin_monitoring_services_id'])) {
-                     $pmComponentscatalog_Host->getFromDB($pmService->fields['plugin_monitoring_componentscatalogs_hosts_id']);
-                     $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
-                     $item = new $itemtype();
-                     if ($item->getFromDB($pmComponentscatalog_Host->fields['items_id'])) {           
-                        $hostname = preg_replace("/[^A-Za-z0-9\-_]/","",$item->fields['name']);
+                     if ($pmService->getHostName() != '') {
+                        $hostname = preg_replace("/[^A-Za-z0-9\-_]/","",$pmService->getHostName());
 
                         if ($gdata['operator'] == 'and'
                                 OR $gdata['operator'] == 'or'
@@ -925,13 +930,14 @@ class PluginMonitoringShinken extends CommonDBTM {
                               if (strstr($gdata['operator'], ' of:')) {
                                  $a_group[$gdata['id']] = $gdata['operator'];
                               }
-                              $a_group[$gdata['id']] .= $hostname.",".preg_replace("/[^A-Za-z0-9\-_]/","",$pmService->fields['name']);
+                              $a_group[$gdata['id']] .= $hostname.",".preg_replace("/[^A-Za-z0-9\-_]/","",$pmService->getName(array('shinken'=>true)));
                            } else {
-                              $a_group[$gdata['id']] .= $operator.$hostname.",".preg_replace("/[^A-Za-z0-9\-_]/","",$pmService->fields['name']);
+                              $a_group[$gdata['id']] .= $operator.$hostname.",".preg_replace("/[^A-Za-z0-9\-_]/","",$pmService->getName(array('shinken'=>true)));
                            }
                         } else {
                            $a_group[$gdata['id']] = $gdata['operator']." ".$hostname.",".preg_replace("/[^A-Za-z0-9\-_]/","",$item->getName());
                         }
+                        Toolbox::logInFile("pm-shinken", "   - SC group : ".$a_group[$gdata['id']]."\n");
                      }
                   }
                }
@@ -947,7 +953,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_services[$i]['host_name'] = 'host_for_bp';
                $a_services[$i]['business_impact'] = $dataBA['business_priority'];
                $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9\-_]/","",$dataBA['name']);
-               // $a_services[$i]['_ENTITIESID'] = $dataBA['id'];
+               $a_services[$i]['_ENTITIESID'] = $dataBA['id'];
                $a_services[$i]['_ITEMSID'] = $dataBA['id'];
                $a_services[$i]['_ITEMTYPE'] = 'ServiceCatalog';
                $command = "bp_rule!";
@@ -987,6 +993,150 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_services[$i]['_httpstink'] = 'NO';
        
                // * Contacts
+               $a_contacts = array();
+               $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringServicescatalog'
+                  AND `items_id`='".$dataBA['id']."'");
+               foreach ($a_list_contact as $data_contact) {
+                  if ($data_contact['users_id'] > 0) {
+                     if (isset($a_contacts_entities[$dataBA['id']][$data_contact['users_id']])) {
+                        if (in_array($data['entities_id'], $a_contacts_entities[$dataBA['id']][$data_contact['users_id']])) {
+                           $user->getFromDB($data_contact['users_id']);
+                           $a_contacts[] = $user->fields['name'];
+                        }
+                     }
+                  } else if ($data_contact['groups_id'] > 0) {
+                     $queryg = "SELECT * FROM `glpi_groups_users`
+                        WHERE `groups_id`='".$data_contact['groups_id']."'";
+                     $resultg = $DB->query($queryg);
+                     while ($datag=$DB->fetch_array($resultg)) {
+                        if (in_array($data['entities_id'], $a_contacts_entities[$dataBA['id']][$datag['users_id']])) {
+                           $user->getFromDB($datag['users_id']);
+                           $a_contacts[] = $user->fields['name'];
+                        }
+                     }
+                  }
+               }
+
+               $a_contacts_unique = array_unique($a_contacts);
+               $a_services[$i]['contacts'] = implode(',', $a_contacts_unique);
+               $i++;
+            }
+         }
+      }
+
+      Toolbox::logInFile("pm-shinken", "End generateServicesCfg business rules\n");
+      
+      Toolbox::logInFile("pm-shinken", "Starting generateServicesCfg business rules templates ...\n");
+
+      // Services catalogs templates
+      $a_listBA = $pmServicescatalog->find("`is_generic`='1'");
+      foreach ($a_listBA as $dataBA) {
+         Toolbox::logInFile("pm-shinken", "   - SC : ".$dataBA['id']."\n");
+
+         if (isset($a_entities_allowed['-1'])
+                 OR isset($a_entities_allowed[$dataBA['entities_id']])) {
+
+            $pmServicescatalog->getFromDB($dataBA['id']);
+            
+            $a_entitiesServices = $pmServicescatalog->getGenericServicesEntities();
+            foreach ($a_entitiesServices as $idEntity=>$a_entityServices) {
+               // New entity ... so new business rule !
+               Toolbox::logInFile("pm-shinken", "   - SC templated services for an entity : ".$idEntity."\n");
+               
+               $pmDerivatedSC = new PluginMonitoringServicescatalog();
+               $a_derivatedSC = $pmDerivatedSC->find("`entities_id`='$idEntity' AND `name` LIKE '".$dataBA['name']."%'");
+               foreach ($a_derivatedSC as $a_derivated) {
+                  Toolbox::logInFile("pm-shinken", "   - a_derivated : ".$a_derivated['name']."\n");
+                  $a_derivatedSC = $a_derivated;
+               }
+               
+               $a_group = array();
+               foreach ($a_entityServices as $services) {
+                  if ($pmService->getFromDB($services['serviceId'])) {
+                     // Toolbox::logInFile("pm-shinken", "   - SC templated service entity : ".$services['entityId'].", service :  ".$pmService->getName(true)." on ".$pmService->getHostName()."\n");
+                     if ($pmService->getHostName() != '') {
+                        $hostname = preg_replace("/[^A-Za-z0-9\-_]/","",$pmService->getHostName());
+
+                        $serviceFakeId = $services['entityId'];
+                        
+                        $pmBusinessrulegroup->getFromDB($services['BRgroupId']);
+                        $BRoperator = $pmBusinessrulegroup->getField('operator');
+                        if ($BRoperator == 'and'
+                                OR $BRoperator == 'or'
+                                OR strstr($BRoperator, ' of:')) {
+
+                           $operator = '|';
+                           if ($BRoperator == 'and') {
+                              $operator = '&';
+                           }
+                           if (!isset($a_group[$serviceFakeId])) {
+                              $a_group[$serviceFakeId] = '';
+                              if (strstr($BRoperator, ' of:')) {
+                                 $a_group[$serviceFakeId] = $BRoperator;
+                              }
+                              $a_group[$serviceFakeId] .= $hostname.",".preg_replace("/[^A-Za-z0-9\-_]/","",$pmService->getName(array('shinken'=>true)));
+                           } else {
+                              $a_group[$serviceFakeId] .= $operator.$hostname.",".preg_replace("/[^A-Za-z0-9\-_]/","",$pmService->getName(array('shinken'=>true)));
+                           }
+                        } else {
+                           $a_group[$serviceFakeId] = $BRoperator." ".$hostname.",".preg_replace("/[^A-Za-z0-9\-_]/","",$pmService->getHostName());
+                        }
+                        // Toolbox::logInFile("pm-shinken", "   - SCT group : ".$a_group[$serviceFakeId]."\n");
+                     }
+                  }
+               }
+               if (count($a_group) > 0) {
+                  $pMonitoringCheck->getFromDB($a_derivatedSC['plugin_monitoring_checks_id']);
+                  $a_services[$i]['check_interval'] = $pMonitoringCheck->fields['check_interval'];
+                  $a_services[$i]['retry_interval'] = $pMonitoringCheck->fields['retry_interval'];
+                  $a_services[$i]['max_check_attempts'] = $pMonitoringCheck->fields['max_check_attempts'];
+                  if ($calendar->getFromDB($a_derivatedSC['calendars_id'])) {
+                     $a_services[$i]['check_period'] = $calendar->fields['name'];            
+                  }
+                  $a_services[$i]['host_name'] = preg_replace("/[^A-Za-z0-9\-_]/","",$a_derivatedSC['name']);
+                  $a_services[$i]['host_name'] = 'host_for_bp';
+                  $a_services[$i]['business_impact'] = $a_derivatedSC['business_priority'];
+                  $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9\-_]/","",$a_derivatedSC['name']);
+                  $a_services[$i]['_ENTITIESID'] = $a_derivatedSC['entities_id'];
+                  $a_services[$i]['_ITEMSID'] = $a_derivatedSC['id'];
+                  $a_services[$i]['_ITEMTYPE'] = 'ServiceCatalog';
+                  $command = "bp_rule!";
+
+                  foreach ($a_group as $key=>$value) {
+                     if (!strstr($value, "&")
+                             AND !strstr($value, "|")) {
+                        $a_group[$key] = trim($value);
+                     } else {
+                        $a_group[$key] = "(".trim($value).")";
+                     }
+                  }
+                  $a_services[$i]['check_command'] = $command.implode("&", $a_group);
+                  if ($a_derivatedSC['notification_interval'] != '30') {
+                     $a_services[$i]['notification_interval'] = $a_derivatedSC['notification_interval'];
+                  } else {
+                     $a_services[$i]['notification_interval'] = '30';
+                  }
+                  $a_services[$i]['notification_period'] = "24x7";
+                  $a_services[$i]['notification_options'] = 'w,u,c,r,f,s';
+                  $a_services[$i]['active_checks_enabled'] = '1';
+                  $a_services[$i]['process_perf_data'] = '1';
+                  $a_services[$i]['active_checks_enabled'] = '1';
+                  $a_services[$i]['passive_checks_enabled'] = '1';
+                  $a_services[$i]['parallelize_check'] = '1';
+                  $a_services[$i]['obsess_over_service'] = '1';
+                  $a_services[$i]['check_freshness'] = '1';
+                  $a_services[$i]['freshness_threshold'] = '3600';
+                  $a_services[$i]['notifications_enabled'] = '1';
+                  $a_services[$i]['event_handler_enabled'] = '0';
+                  //$a_services[$i]['event_handler'] = 'super_event_kill_everyone!DIE';
+                  $a_services[$i]['flap_detection_enabled'] = '1';
+                  $a_services[$i]['failure_prediction_enabled'] = '1';
+                  $a_services[$i]['retain_status_information'] = '1';
+                  $a_services[$i]['retain_nonstatus_information'] = '1';
+                  $a_services[$i]['is_volatile'] = '0';
+                  $a_services[$i]['_httpstink'] = 'NO';
+          
+                  // * Contacts
                   $a_contacts = array();
                   $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringServicescatalog'
                      AND `items_id`='".$dataBA['id']."'");
@@ -1011,14 +1161,15 @@ class PluginMonitoringShinken extends CommonDBTM {
                      }
                   }
 
-               $a_contacts_unique = array_unique($a_contacts);
-               $a_services[$i]['contacts'] = implode(',', $a_contacts_unique);
-               $i++;
+                  $a_contacts_unique = array_unique($a_contacts);
+                  $a_services[$i]['contacts'] = implode(',', $a_contacts_unique);
+                  $i++;
+               }
             }
          }
       }
-   
-      Toolbox::logInFile("pm-shinken", "End generateServicesCfg\n");
+
+      Toolbox::logInFile("pm-shinken", "End generateServicesCfg business rules templates\n");
    
       if ($file == "1") {
          $config = "# Generated by plugin monitoring for GLPI\n# on ".date("Y-m-d H:i:s")."\n\n";
