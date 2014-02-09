@@ -309,7 +309,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                   $a_arguments[$key] = $value;
                }
                foreach ($a_arguments as $key=>$value) {
-                  $a_arguments[$key] = html_entity_decode($value);
+                  $a_arguments[$key] = str_replace('!', '\!', html_entity_decode($value));
                }
                $args = '';
                foreach ($array[0] as $arg) {
@@ -672,7 +672,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_arguments[$key] = $value;
             }
             foreach ($a_arguments as $key=>$value) {
-               $a_arguments[$key] = html_entity_decode($value);
+               $a_arguments[$key] = str_replace('!', '\!', html_entity_decode($value));
             }
             $args = '';
             foreach ($array[0] as $arg) {
