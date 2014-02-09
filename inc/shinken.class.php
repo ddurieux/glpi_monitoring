@@ -545,6 +545,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       $pmComponent             = new PluginMonitoringComponent();
       $pmEntity                = new PluginMonitoringEntity();
       $pmContact_Item          = new PluginMonitoringContact_Item();
+      $networkPort             = new NetworkPort();
       $pmService               = new PluginMonitoringService();
       $pmComponentscatalog     = new PluginMonitoringComponentscatalog();
       $pmHostconfig            = new PluginMonitoringHostconfig();
@@ -636,6 +637,11 @@ class PluginMonitoringShinken extends CommonDBTM {
 
             // Define display_name / service_description
             $a_services[$i]['service_description'] = (! empty($a_component['description'])) ? $a_component['description'] : preg_replace("/[^A-Za-z0-9\-_]/","",$a_component['name']);
+            // In case have multiple networkt port, may have description different, else be dropped by shinken
+            if ($data['networkports_id'] > 0) {
+               $networkPort->getFromDB($data['networkports_id']);
+               $a_services[$i]['service_description'] .= '-'.preg_replace("/[^A-Za-z0-9\-_]/", "", $networkPort->fields['name']);
+            }
             $a_services[$i]['display_name'] = $a_component['name'];
             $a_services[$i]['_ENTITIESID'] = $item->fields['entities_id'];
             // $a_services[$i]['_ENTITY'] = $item->fields['entityName'];
