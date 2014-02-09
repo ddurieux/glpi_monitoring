@@ -705,6 +705,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                         $networkPort->getFromDB($data['networkports_id']);
                         $logicalnum = $pfNetworkPort->fields['logical_number'];
                         $a_arguments[$arg] = str_replace("[[NETWORKPORTNUM]]", $logicalnum, $a_arguments[$arg]);
+                     } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTNAME]]")){
                         if (isset($data['networkports_id'])
                                 && $data['networkports_id'] > 0) {
                            $networkPort = new NetworkPort();
