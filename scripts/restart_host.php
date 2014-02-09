@@ -78,28 +78,37 @@ if (! isset($_POST['host_command'])) {
    Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
 }
 $host_command = $_POST['host_command'];
-$fiCommand = new PluginFusioninventoryTaskjob();
-$a_list = $fiCommand->find("name LIKE '$host_command'");
-$task_id = '';
-foreach ($a_list as $data) {
-   $task_id = $data['id'];
-}
-if (empty($task_id)) {
+$pfTaskjob = new PluginFusioninventoryTaskjob();
+$a_lists = $pfTaskjob->find("name LIKE '$host_command'", '', 1);
+
+if (count($a_lists) == 0) {
    $_SESSION["MESSAGE_AFTER_REDIRECT"] = __('Host command task not found : ', 'monitoring').$host_command;
    Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
 }
+$a_list = current($a_lists);
 
-// Pour les valeurs :
-// $query = "INSERT INTO `glpi_plugin_fusioninventory_taskjobstates` (`plugin_fusioninventory_taskjobs_id`, `items_id`, `itemtype`, `state`, `plugin_fusioninventory_agents_id`, `uniqid`) VALUES ('0', '0', 'PluginFusioninventoryDeployPackage', '0', '0', '".uniqid()."')";
-// '0', => l'id du job dans glpi_plugin_fusioninventory_taskjobs (fixe a chaque exécution) 
-// '0', => l'id du package 'PluginFusioninventoryDeployPackage', 
-// 'PluginFusioninventoryDeployPackage' => c'est l'itemtype, donc on ne touche pas 
-// '0', => c'est le statut donc toujours 0 (=préparé) 
-// '0', => c'est l'id de l'agent de l'ordinateur, que tu peux récupérer l'id via la fonction PluginFusioninventoryAgent::getAgentWithComputerid('idducomputer') 
+$taskjob_id = $a_list['id'];
+$definition = importArrayFromDB($a_list['definition']);
+
+/*
+ Pour les valeurs :
+ $query = "INSERT INTO `glpi_plugin_fusioninventory_taskjobstates` 
+      (`plugin_fusioninventory_taskjobs_id`, `items_id`, `itemtype`, `state`, 
+       `plugin_fusioninventory_agents_id`, `uniqid`) 
+      VALUES ('0', '0', 'PluginFusioninventoryDeployPackage', '0', '0', '".uniqid()."')";
+ '0', => l'id du job dans glpi_plugin_fusioninventory_taskjobs (fixe a chaque exécution) 
+ '0', => l'id du package 'PluginFusioninventoryDeployPackage', 
+ 'PluginFusioninventoryDeployPackage' => c'est l'itemtype, donc on ne touche pas 
+ '0', => c'est le statut donc toujours 0 (=préparé) 
+ '0', => c'est l'id de l'agent de l'ordinateur, que tu peux récupérer l'id via la fonction PluginFusioninventoryAgent::getAgentWithComputerid('idducomputer') 
+ */
 $query = "INSERT INTO `glpi_plugin_fusioninventory_taskjobstates` 
-   (`plugin_fusioninventory_taskjobs_id`, `items_id`, `itemtype`, `state`, `plugin_fusioninventory_agents_id`, `uniqid`) 
+   (`plugin_fusioninventory_taskjobs_id`, `items_id`, `itemtype`, `state`, 
+    `plugin_fusioninventory_agents_id`, `uniqid`) 
    VALUES 
-   ('".$task_id."', '0', 'PluginFusioninventoryDeployPackage', '0', '".$fusionAgentId."', '".uniqid()."')";
+   ('".$taskjob_id."', '".$definition[0]['PluginFusioninventoryDeployPackage']."', 
+    'PluginFusioninventoryDeployPackage', '0',
+    '".$fusionAgentId."', '".uniqid()."')";
 
 $result = $DB->query($query);
 
