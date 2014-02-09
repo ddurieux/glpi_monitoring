@@ -89,7 +89,7 @@ if (!$Plugin->isActivated('monitoring')) {
    }
    echo " done\n";
 
-// * Clean servcies 
+// * Clean services 
    echo "Delete orphaned services ";
    $pmService = new PluginMonitoringService();
    $query = "SELECT `glpi_plugin_monitoring_services`.* 
@@ -105,6 +105,22 @@ if (!$Plugin->isActivated('monitoring')) {
    }
    echo " done\n";
 
+// * clean services for networkport not linked with networkport
+   echo "Delete services not have netwokrport linked";
+   $pmService = new PluginMonitoringService();
+   $query = "SELECT * 
+           FROM `glpi_plugin_monitoring_services`
+           WHERE `networkports_id` > 0
+           GROUP BY plugin_monitoring_components_id";
+   $result = $DB->query($query);
+   while ($data=$DB->fetch_array($result)) {
+      $DB->query("DELETE FROM `glpi_plugin_monitoring_services`
+              WHERE `plugin_monitoring_components_id`='".$data['plugin_monitoring_components_id']."'
+              AND `networkports_id`='0'");
+      echo ".";
+   }
+   echo " done\n";
+   
 // * clean serviceevents have service deleted
    echo "Delete orphaned serviceevents ";
    $query = "SELECT `plugin_monitoring_services_id` 
