@@ -95,7 +95,7 @@ if (isset($_POST['suffix'])) {
    $suffix = $_POST['suffix'];
 }
 
-if(!isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']])) {
+if (isset($_POST['components_id']) && !isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']])) {
    PluginMonitoringToolbox::loadPreferences($_POST['components_id']);
 }
 
