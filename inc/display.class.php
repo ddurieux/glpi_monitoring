@@ -672,7 +672,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          // }
          echo "<script>
             Ext.onReady(function(){
-               console.log('Ready ...');
+               // console.log('Ready ...');
                window.setTimeout(function(){";
             foreach(PluginMonitoringDisplay::$ar_counterTypes as $counter_id => $counter_name) {
 echo "
@@ -1219,7 +1219,7 @@ echo "
 
          echo "<td class='center'>";
          echo "<form name='form' method='post' 
-            action='".$CFG_GLPI['root_doc']."/plugins/monitoring/scripts/".$data['host_command_command'].".php'>";
+            action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/".$data['host_command_command'].".php'>";
       
          echo "<input type='hidden' name='host_id' value='".$data['idComputer']."' />";
          echo "<input type='hidden' name='host_name' value='".$data['host_name']."' />";
