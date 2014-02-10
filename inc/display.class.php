@@ -910,13 +910,10 @@ echo "
 
          // Get host first IP address
          $data['ip'] = __('Unknown IP address', 'monitoring');
-         $queryIp = "SELECT `glpi_ipaddresses`.`name` FROM `glpi_ipaddresses` LEFT JOIN `glpi_networknames` ON `glpi_ipaddresses`.`itemtype`='NetworkName' AND `glpi_ipaddresses`.`items_id`=`glpi_networknames`.`id` LEFT JOIN `glpi_networkports` ON `glpi_networknames`.`itemtype`='NetworkPort' AND `glpi_networknames`.`items_id`=`glpi_networkports`.`id` WHERE `glpi_networkports`.`itemtype`='Computer' AND `glpi_networkports`.`items_id`='".$data['idComputer']."' LIMIT 1";
-         $resultIp = $DB->query($queryIp);
-         if ($DB->numrows($resultIp) > 0) {
-            $dataIp=$DB->fetch_array($resultIp);
-            $data['ip'] = $dataIp['name'];
+         $ip = PluginMonitoringHostaddress::getIp($data['items_id'], $data['itemtype'], '');
+         if ($ip != '') {
+            $data['ip'] = $ip;
          }
-
          echo "<tr class='tab_bg_3'>";
          $this->displayHostLine($data);
          echo "</tr>";         
