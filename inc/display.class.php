@@ -1022,7 +1022,7 @@ echo "
          }
       }
       
-      if ($displayhost == '1') {
+      if ($displayhost) {
          $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
          $pmComponentscatalog_Host->getFromDB($data["plugin_monitoring_componentscatalogs_hosts_id"]);
          if (isset($pmComponentscatalog_Host->fields['itemtype']) 
@@ -1041,13 +1041,8 @@ echo "
                echo " [".$networkPort->getLink()."]";
             }
             $pm_Host = new PluginMonitoringHost();
-            if (isset($data["host_id"])) {
-               $pm_Host->getFromDB($data["host_id"]);
-               echo "<span>".$pm_Host->getLink(array ("monitoring" => "1"))."</span>";
-               // echo "&nbsp;".$pm_Host->getComments();
-            } else {
-               $pm_Host->getFromDB($data["id"]);
-            }
+            $pm_Host->getFromDB($pMonitoringService->getHostID());
+            echo "<span>".$pm_Host->getLink(array ("monitoring" => "1"))."</span>";
             echo "</td>";
 
          } else {
@@ -1107,7 +1102,7 @@ echo "
          }
          echo "</td>";
          
-         if ($displayhost == '0') {
+         if (! $displayhost) {
             $pmUnavailability = new PluginMonitoringUnavailability();
             $pmUnavailability->displayValues($pMonitoringService->fields['id'], 'currentmonth', 1);
             $pmUnavailability->displayValues($pMonitoringService->fields['id'], 'lastmonth', 1);
@@ -1123,7 +1118,6 @@ echo "
 
          if (PluginMonitoringProfile::haveRight("acknowledge", 'r')) {
             echo "<td>";
-//            Toolbox::logInFile("pm", "shortstate : $shortstate \n");
             if ($pMonitoringService->isCurrentlyAcknowledged()) {
                if (PluginMonitoringProfile::haveRight("acknowledge", 'w')) {
                   echo "<span>";

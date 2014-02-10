@@ -504,13 +504,13 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                         '<div title="'.$resources[$services[$i]]['state'].
                         " - ".$resources[$services[$i]]['last_check']." - ".
                         $resources[$services[$i]]['event'].
-                        '" class="service'.$resources[$services[$i]]['state_type'].' service'.$resources[$services[$i]]['state'].'"></div>'.
+                        '" class="service service'.$resources[$services[$i]]['state_type'].' service'.$resources[$services[$i]]['state'].'"></div>'.
                         '</a>';
             } else {
                echo '<div title="'.$resources[$services[$i]]['state'].
                        " - ".$resources[$services[$i]]['last_check']." - ".
                        $resources[$services[$i]]['event'].
-                       '" class="service'.$resources[$services[$i]]['state_type'].' service'.$resources[$services[$i]]['state'].'"></div>';
+                       '" class="service service'.$resources[$services[$i]]['state_type'].' service'.$resources[$services[$i]]['state'].'"></div>';
             }
             echo '</td>';
          }

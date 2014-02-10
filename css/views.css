@@ -131,7 +131,7 @@
 .ch-item div>h1, .ch-itemup div>h1 {
 	color: #fff;
 	letter-spacing: 2px;
-	font-size: 20px;
+	font-size: 14px;
 	margin: 0 30px;
 	padding: 25px 0 0 0;
 	height: 110px;
@@ -149,7 +149,7 @@
 
 .ch-item div>h1>a, .ch-itemup div>h1>a {
 	color: #fff;
-	font-size: 20px;
+	font-size: 16px;
 	text-align:center;
 }
 
@@ -228,6 +228,7 @@
 	border-radius: 0% 0% 90px 90px;
 	position: relative;
 	cursor: default;
+	opacity: 0.8;
 	box-shadow:
       inset 0 0 0 16px rgba(255,255,255,0.6),
 		0 1px 2px rgba(0,0,0,0.1);
@@ -376,40 +377,27 @@ td .vertical {
 */
 
 
-.serviceOK {
-	background-color: rgb(76,180,73);
+.service {
 	width: 20px;
 	height: 20px;
 	margin: auto;
 	border-radius: 50%;
+}
+
+.serviceOK {
+	background-color: rgb(76,180,73);
 }
 .serviceWARNING {
 	background-color: rgb(212,161,94);
-	width: 20px;
-	height: 20px;
-	margin: auto;
-	border-radius: 50%;
 }
 .serviceCRITICAL {
 	background-color: rgb(159,48,48);
-	width: 20px;
-	height: 20px;
-	margin: auto;
-	border-radius: 50%;
 }
 .serviceUNKNOWN {
 	background-color: yellow;
-	width: 20px;
-	height: 20px;
-	margin: auto;
-	border-radius: 50%;
 }
 .serviceACKNOWLEDGE {
 	background-color: rgb(18,158,255);
-	width: 20px;
-	height: 20px;
-	margin: auto;
-	border-radius: 50%;
 }
 
 .serviceSOFT{

@@ -394,6 +394,52 @@ class PluginMonitoringService extends CommonDBTM {
 
 
    /**
+    * Get service state
+    * 
+    * Return : 
+    * - OK if service is OK
+    * - CRITICAL if service is CRITICAL
+    * - WARNING if host is WARNING, RECOVERY or FLAPPING
+    * - UNKNOWN else
+    */
+   function getState() {
+      global $CFG_GLPI;
+
+      // Toolbox::logInFile("pm", "getShortState - ".$this->getID()."\n");
+      if ($this->getID() == -1) return '';
+      
+      $acknowledge = $this->getField('is_acknowledged');
+      $state_type = $this->getField('state_type');
+      $state = $this->getField('state');
+      $event = $this->getField('event');
+      
+      $returned_state = '';
+      switch($state) {
+         case 'OK':
+            $returned_state = 'OK';
+            break;
+
+         case 'CRITICAL':
+            $returned_state = 'CRITICAL';
+            break;
+
+         case 'WARNING':
+         case 'RECOVERY':
+         case 'FLAPPING':
+            $returned_state = 'WARNING';
+            break;
+         
+         default:
+            $returned_state = 'UNKNOWN';
+            break;
+         
+      }
+      
+      return $returned_state;
+   }
+   
+   
+   /**
     * Get service short state (state + acknowledgement)
     * options : 
     * - image, if exists, returns URL to a state image
@@ -406,6 +452,8 @@ class PluginMonitoringService extends CommonDBTM {
     * - orangeblue if orange and acknowledged
     * - yellow for every other state
     * - yellowblue if yellow and acknowledged
+    *
+    * append '_soft' if service is in soft statetype
     */
    function getShortState($options=array()) {
       global $CFG_GLPI;
@@ -421,7 +469,6 @@ class PluginMonitoringService extends CommonDBTM {
       
       $shortstate = '';
       switch($state) {
-
          case 'OK':
             $shortstate = 'green';
             break;

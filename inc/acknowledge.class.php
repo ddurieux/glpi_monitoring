@@ -150,12 +150,13 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
       $tab[2]['field']              = 'items_id';
       $tab[2]['name']               = __('Associated element');
       $tab[2]['datatype']           = 'specific';
-      $tab[2]['nosearch']           = true;
+      // $tab[2]['nosearch']           = true;
       $tab[2]['nosort']             = true;
       $tab[2]['massiveaction']      = false;
       $tab[2]['additionalfields']   = array('itemtype');
       $tab[2]['options']            = array('hostname'=>'1');
 
+/*
       $tab[21]['table']             = $this->getTable();
       $tab[21]['field']             = 'itemtype';
       $tab[21]['name']              = __('Associated item type');
@@ -163,6 +164,7 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
       $tab[21]['itemtype_list']     = 'ticket_types';
       $tab[21]['nosort']            = true;
       $tab[21]['massiveaction']     = false;
+*/
 
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'start_time';
@@ -198,7 +200,6 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
       $tab[8]['field']           = 'comment';
       $tab[8]['name']            = __('Comment', 'monitoring');
       $tab[8]['datatype']        = 'itemlink';
-      // $tab[8]['datatype']        = 'text';
       $tab[8]['massiveaction']   = false;
 
       $tab[9]['table']           = $this->getTable();
@@ -233,7 +234,7 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
                $itemtype = $values['itemtype'];
                $item = new $itemtype();
                $item->getFromDB($values[$field]);
-               return $item->getName(false, true);
+               return $item->getLink();
             }
             break;
             

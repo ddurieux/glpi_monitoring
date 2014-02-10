@@ -19,6 +19,7 @@ CREATE TABLE `glpi_plugin_monitoring_servicescatalogs` (
    `notification_interval` int(4) NOT NULL DEFAULT '30',
    `business_priority` tinyint(1) NOT NULL DEFAULT '1',
    `is_generic` tinyint(1) NOT NULL DEFAULT '0',
+   `plugin_monitoring_servicescatalogs_id` int(11) NOT NULL DEFAULT '0',
    PRIMARY KEY (`id`),
    KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

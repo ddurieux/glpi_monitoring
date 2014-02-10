@@ -121,7 +121,10 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    }
 
    
+   
    function post_addItem() {
+      global $DB;
+
       Toolbox::logInFile("pm", "  post_addItem : ".$this->getID()." : ".$this->getField('is_generic')."\n");
       
       $pmLog = new PluginMonitoringLog();
@@ -130,7 +133,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       $input['itemtype'] = "PluginMonitoringServicesCatalog";
       $input['items_id'] = $this->fields['id'];
       $input['action'] = "add";
-      $input['value'] = "New service catalog ".$this->fields['name'];
+      $input['value'] = "New service catalog ".$DB->escape($this->fields['name']);
       $pmLog->add($input);
       
       // Generic services catalogs only ...
@@ -147,8 +150,6 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       // Generic services catalogs only ...
       if ($this->getField('is_generic')) {
          $this->updateGenericServicesCatalogs();
-      } else {
-         $this->updateGenericServicesCatalogs('delete');
       }
    }
 
@@ -160,6 +161,8 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
 
 
    function post_purgeItem() {
+      global $DB;
+
       // Toolbox::logInFile("pm", "  post_purgeItem : \n");
       
       $pmLog = new PluginMonitoringLog();
@@ -168,7 +171,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       $input['itemtype'] = "PluginMonitoringServicesCatalog";
       $input['items_id'] = $this->fields['id'];
       $input['action'] = "delete";
-      $input['value'] = "Deleted service catalog ".$this->fields['name'];
+      $input['value'] = "Deleted service catalog : ".$DB->escape($this->fields['name']);
       $pmLog->add($input);
       
       // Generic services catalogs only ...
@@ -178,6 +181,86 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    }
 
 
+   
+   /**
+    * Get service short state (state + acknowledgement)
+    * options : 
+    * - image, if exists, returns URL to a state image
+    * 
+    * Return : 
+    * - green if service is OK
+    * - red if service is CRITICAL
+    * - redblue if red and acknowledged
+    * - orange if host is WARNING, RECOVERY or FLAPPING
+    * - orangeblue if orange and acknowledged
+    * - yellow for every other state
+    * - yellowblue if yellow and acknowledged
+    *
+    * append '_soft' if service is in soft statetype
+    */
+   function getShortState($options=array()) {
+      global $CFG_GLPI;
+
+      // Toolbox::logInFile("pm", "getShortState - ".$this->getID()."\n");
+      if ($this->getID() == -1) return '';
+      
+      $acknowledge = $this->getField('is_acknowledged');
+      $state_type = $this->getField('state_type');
+      $state = $this->getField('state');
+      $event = 'event';
+      
+      
+      $shortstate = '';
+      switch($state) {
+
+         case 'OK':
+            $shortstate = 'green';
+            break;
+
+         case 'CRITICAL':
+            if ($acknowledge) {
+               $shortstate = 'redblue';
+            } else {
+               $shortstate = 'red';
+            }
+            break;
+
+         case 'WARNING':
+         case 'RECOVERY':
+         case 'FLAPPING':
+            if ($acknowledge) {
+               $shortstate = 'orangeblue';
+            } else {
+               $shortstate = 'orange';
+            }
+            break;
+         
+         default:
+            if ($acknowledge) {
+               $shortstate = 'yellowblue';
+            } else {
+               $shortstate = 'yellow';
+            }
+            break;
+         
+      }
+      if ($state == 'WARNING'
+              && $event == '') {
+         if ($acknowledge) {
+            $shortstate = 'yellowblue';
+         } else {
+            $shortstate = 'yellow';
+         }
+      }
+      if ($state_type == 'SOFT') {
+         $shortstate.= '_soft';
+      }
+      
+      if (isset($options) && isset($options['image'])) {
+         return $CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$shortstate."_".$options['image'].".png";
+      }
+      return $shortstate;
+   }
    
    
    function showForm($items_id, $options=array()) {
@@ -266,7 +349,8 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       echo "<table class='tab_cadre' width='100%'>";
       echo "<tr class='tab_bg_4' style='background: #cececc;'>";
       
-      $a_ba = $this->find("`entities_id` IN (".$_SESSION['glpiactiveentities_string'].")", "`business_priority`");
+      // All services catalogs except generic ones ...
+      $a_ba = $this->find("`entities_id` IN (".$_SESSION['glpiactiveentities_string'].") AND `is_generic`='0'", "`business_priority`");
       $i = 0;
       foreach ($a_ba as $data) {
          echo "<td>";
@@ -303,26 +387,41 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    function showBADetail($id) {
       global $CFG_GLPI;
       
+      $pmParentSC = new PluginMonitoringServicescatalog();
       $pMonitoringBusinessrule = new PluginMonitoringBusinessrule();
       $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
       $pMonitoringService = new PluginMonitoringService();
       
       $this->getFromDB($id);
-      echo "<table class='tab_cadrehov'>";
-      $a_groups = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_servicescatalogs_id`='".$id."'");
+      $derivated = false;
+      if ($this->getField('plugin_monitoring_servicescatalogs_id') > 0) {
+         $derivated = true;
+         $pmParentSC->getFromDB($this->getField('plugin_monitoring_servicescatalogs_id'));
+      }
       
+      // If SC is derivated from a template, get groups from its parent ...
+      if ($derivated) {
+         $a_groups = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_servicescatalogs_id`='".$pmParentSC->fields['id']."'");
+      } else {
+         $a_groups = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_servicescatalogs_id`='".$id."'");
+      }
+      
+      echo "<table class='tab_cadrehov'>";
       echo "<tr class='tab_bg_1'>";
       
-      $color = PluginMonitoringHost::getState($this->fields['state'], 
-                                                 $this->fields['state_type'],
-                                                 'data',
-                                                 $this->fields['is_acknowledged']);
+/*
+      $color = $this->getShortState();
+      // $color = PluginMonitoringHost::getState($this->fields['state'], 
+                                                 // $this->fields['state_type'],
+                                                 // 'data',
+                                                 // $this->fields['is_acknowledged']);
       $pic = $color;
       $color = str_replace("_soft", "", $color);
+*/
       
-      echo "<td rowspan='".count($a_groups)."' class='center' width='200' bgcolor='".$color."'>";
+      echo "<td rowspan='".count($a_groups)."' class='center service".$this->getField('state')."' width='200'>";
       echo "<strong style='font-size: 20px'>".$this->getName()."</strong><br/>";
-      echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/box_".$pic."_40.png'/>";
+      echo "<img src='".$this->getShortState(array('image'=>'40'))."'/>";
       echo "</td>";
       
       $i = 0;
@@ -334,66 +433,68 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
          }
          
          $state = array();
-         $state['red'] = 0;
-         $state['red_soft'] = 0;
-         $state['redblue'] = 0;
-         $state['redblue_soft'] = 0;
-         $state['orange'] = 0;
-         $state['orange_soft'] = 0;
-         $state['orangeblue'] = 0;
-         $state['orangeblue_soft'] = 0;
-         $state['green'] = 0;
-         $state['green_soft'] = 0;
-         $state['yellow'] = 0;
-         $state['yellow_soft'] = 0;
-         $state['yellowblue'] = 0;
-         $state['yellowblue_soft'] = 0;
+         $state['OK'] = 0;
+         $state['WARNING'] = 0;
+         $state['CRITICAL'] = 0;
+         $state['UNKNOWN'] = 0;
          foreach ($a_brulesg as $brulesdata) {
-            $pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id']);
-            $state[PluginMonitoringHost::getState($pMonitoringService->fields['state'], 
-                                                     $pMonitoringService->fields['state_type'],
-                                                     'data',
-                                                     $pMonitoringService->fields['is_acknowledged'])]++;
+            // If SC is derivated from a template, do not care about services not from the same entity  ...
+            if (! $pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id'])) continue;
+            if ($derivated && ($pMonitoringService->getField('entities_id') != $this->getField('entities_id'))) continue;
+            
+            $state[$pMonitoringService->getState()]++;
          }
-         $color = "";
-         if ($gdata['operator'] == 'or') {
-            if ($state['green'] >= 1) {
-               $color = "green";
-            } else if ($state['orange'] >= 1) {
-               $color = "orange";
-            } else if ($state['orange_soft'] >= 1) {
-               $color = "orange";
-            } else if ($state['red'] >= 1) {
-               $color = "red";
-            } else if ($state['red_soft'] >= 1) {
-               $color = "red";
+         $overall_state = "OK";
+         if ($gdata['operator'] == 'and') {
+            if ($state['UNKNOWN'] >= 1) {
+               $overall_state = "UNKNOWN";
+            } else if ($state['CRITICAL'] >= 1) {
+               $overall_state = "CRITICAL";
+            } else if ($state['WARNING'] >= 1) {
+               $overall_state = "WARNING";
+            } else if ($state['OK'] >= 1) {
+               $overall_state = "OK";
+            }            
+         } else if ($gdata['operator'] == 'or') {
+            if ($state['OK'] >= 1) {
+               $overall_state = "OK";
+            } else if ($state['WARNING'] >= 1) {
+               $overall_state = "WARNING";
+            } else if ($state['CRITICAL'] >= 1) {
+               $overall_state = "CRITICAL";
+            } else if ($state['UNKNOWN'] >= 1) {
+               $overall_state = "UNKNOWN";
             }            
          } else {
             $num_min = str_replace(" of:", "", $gdata['operator']);
-            if ($state['green'] >= $num_min) {
-               $color = "green";
-            } else if ($state['orange'] >= $num_min) {
-               $color = "orange";
-            } else if ($state['orange_soft'] >= $num_min) {
-               $color = "orange";
-            } else if ($state['red'] >= $num_min) {
-               $color = "red";
-            } else if ($state['red_soft'] >= $num_min) {
-               $color = "red";
+            if ($state['OK'] >= $num_min) {
+               $overall_state = "OK";
+            } else if ($state['WARNING'] >= $num_min) {
+               $overall_state = "WARNING";
+            } else if ($state['CRITICAL'] >= $num_min) {
+               $overall_state = "CRITICAL";
+            } else if ($state['UNKNOWN'] >= $num_min) {
+               $overall_state = "UNKNOWN";
             } 
          }
          
-         echo "<td class='center' bgcolor='".$color."'>";
+         echo "<td class='center service".$overall_state."'>";
          echo $gdata['name']."<br/>[ ".$gdata['operator']." ]";
          echo "</td>";
-         echo "<td bgcolor='".$color."'>";
+         
+         echo "<td class='service".$overall_state."'>";
             echo "<table>";
             foreach ($a_brulesg as $brulesdata) {
-               echo "<tr class='tab_bg_1'>";
-               $pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id']);
+               // $pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id']);
+               // If SC is derivated from a template, do not care about services not from the same entity  ...
+               if (! $pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id'])) continue;
+               if ($derivated && ($pMonitoringService->getField('entities_id') != $this->getField('entities_id'))) continue;
+               
                // Last parameter is true to display counters/graphs, false if not needed
-               PluginMonitoringDisplay::displayLine($pMonitoringService->fields, 1, false, true);
-              echo "</tr>";
+               echo "<tr class='tab_bg_1'>";
+               // Display a line for the service including host information, no counters but graphs
+               PluginMonitoringDisplay::displayLine($pMonitoringService->fields, true, false, true);
+               echo "</tr>";
             }
             echo "</table>";
          echo "</th>";
@@ -410,27 +511,24 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    function showWidgetFrame($id, $reduced_interface=false, $is_minemap=FALSE) {
       global $DB, $CFG_GLPI;
 
+      $pmParentSC = new PluginMonitoringServicescatalog();
       $pMonitoringBusinessrule = new PluginMonitoringBusinessrule();
       $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
       $pMonitoringService = new PluginMonitoringService();
 
       $this->getFromDB($id);
+      $derivated = false;
+      if ($this->getField('plugin_monitoring_servicescatalogs_id') > 0) {
+         $derivated = true;
+         $pmParentSC->getFromDB($this->getField('plugin_monitoring_servicescatalogs_id'));
+      }
       $data = $this->fields;
+      // Toolbox::logInFile("pm", "SC : ".$data['id'].", name : ".$data['name'].", derivated : ".$derivated."\n");
 
-      $display_img = '';
       $colorclass = 'ok';
       switch($data['state']) {
-
-         case 'UP':
-         case 'OK':
-            $display_img = '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/box_green_40.png"/>';
-            break;
-
-         case 'DOWN':
-         case 'UNREACHABLE':
          case 'CRITICAL':
          case 'DOWNTIME':
-            $display_img = '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/box_red_40.png"/>';
             $colorclass = 'crit';
             break;
 
@@ -439,7 +537,6 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
          case 'RECOVERY':
          case 'FLAPPING':
          case '':
-            $display_img = '<img src="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/box_orange_40.png"/>';
             $colorclass = 'warn';
             break;
 
@@ -448,22 +545,28 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       
       echo '<br/><div class="ch-itemup">
          <div class="ch-info-'.$colorclass.'">
-			<h1><a href="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/servicescatalog.form.php?id='.$data['id'].'&detail=1">';
+         <h1><a href="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/servicescatalog.form.php?id='.$data['id'].'&detail=1">';
          echo $data['name'];
          if ($data['comment'] != '') {
             echo ' '.$this->getComments();
          }
          echo '</a></h1>
          </div>
-		</div>';
+      </div>';
 
-      $colorclass = 'ok';
-      $a_group = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_servicescatalogs_id`='".$data['id']."'");
-      $a_gstate = array();
+      // If SC is derivated from a template, get groups from its parent ...
+      if ($derivated) {
+         $a_group = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_servicescatalogs_id`='".$pmParentSC->fields['id']."'");
+      } else {
+         $a_group = $pMonitoringBusinessrulegroup->find("`plugin_monitoring_servicescatalogs_id`='".$data['id']."'");
+      }
       
       // Array updated dynamically with groups/hosts/services status ...
+      $colorclass = 'ok';
+      $a_gstate = array();
       $cs_info = array();
       foreach ($a_group as $gdata) {
+         // Toolbox::logInFile("pm", "BR group : ".$gdata['id'].", name : ".$gdata['name']."\n");
          $a_brules = $pMonitoringBusinessrule->find("`plugin_monitoring_businessrulegroups_id`='".$gdata['id']."'");
 
          $state = array();
@@ -473,44 +576,46 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
          $cs_info_hosts = array();
          $cs_info_services = array();
          foreach ($a_brules as $brulesdata) {
-            if ($pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id'])) {
+            // If SC is derivated from a template, do not care about services not from the same entity  ...
+            if (! $pMonitoringService->getFromDB($brulesdata['plugin_monitoring_services_id'])) continue;
+            if ($derivated && ($pMonitoringService->getField('entities_id') != $this->getField('entities_id'))) continue;
+            // Toolbox::logInFile("pm", "BR : ".$brulesdata['id'].", service : ".$brulesdata['plugin_monitoring_services_id']."\n");
 
-               if (! isset($cs_info_hosts[$pMonitoringService->getHostName()])) $cs_info_hosts[$pMonitoringService->getHostName()] = array();
-               $cs_info_hosts[$pMonitoringService->getHostName()]['id'] = $pMonitoringService->getHostId();
-               $cs_info_hosts[$pMonitoringService->getHostName()]['name'] = $pMonitoringService->getHostName();
-               $cs_info_hosts[$pMonitoringService->getHostName()]['services'][$pMonitoringService->getName()]['id'] = $pMonitoringService->fields['id'];
-               $cs_info_hosts[$pMonitoringService->getHostName()]['services'][$pMonitoringService->getName()]['state'] = $pMonitoringService->fields['state'];
-               $cs_info_hosts[$pMonitoringService->getHostName()]['services'][$pMonitoringService->getName()]['last_check'] = $pMonitoringService->fields['last_check'];
-               $cs_info_hosts[$pMonitoringService->getHostName()]['services'][$pMonitoringService->getName()]['event'] = $pMonitoringService->fields['event'];
-               
-               // Get all host services except if state is ok or is already acknowledged ...
-               $a_ret = PluginMonitoringHost::getServicesState($pMonitoringService->getHostId(), "`glpi_plugin_monitoring_services`.`state` != 'OK'");
-               $cs_info_hosts[$pMonitoringService->getHostName()]['state'] = $a_ret[0];
+            if (! isset($cs_info_hosts[$pMonitoringService->getHostName()])) $cs_info_hosts[$pMonitoringService->getHostName()] = array();
+            $cs_info_hosts[$pMonitoringService->getHostName()]['id'] = $pMonitoringService->getHostId();
+            $cs_info_hosts[$pMonitoringService->getHostName()]['name'] = $pMonitoringService->getHostName();
+            $cs_info_hosts[$pMonitoringService->getHostName()]['services'][$pMonitoringService->getName()]['id'] = $pMonitoringService->fields['id'];
+            $cs_info_hosts[$pMonitoringService->getHostName()]['services'][$pMonitoringService->getName()]['state'] = $pMonitoringService->fields['state'];
+            $cs_info_hosts[$pMonitoringService->getHostName()]['services'][$pMonitoringService->getName()]['last_check'] = $pMonitoringService->fields['last_check'];
+            $cs_info_hosts[$pMonitoringService->getHostName()]['services'][$pMonitoringService->getName()]['event'] = $pMonitoringService->fields['event'];
+            
+            // Get all host services except if state is ok or is already acknowledged ...
+            $a_ret = PluginMonitoringHost::getServicesState($pMonitoringService->getHostId(), "`glpi_plugin_monitoring_services`.`state` != 'OK'");
+            $cs_info_hosts[$pMonitoringService->getHostName()]['state'] = $a_ret[0];
 
-               $cs_info_services[$pMonitoringService->getName()] = $pMonitoringService->fields['plugin_monitoring_components_id'];
+            $cs_info_services[$pMonitoringService->getName()] = $pMonitoringService->fields['plugin_monitoring_components_id'];
 
-               switch($pMonitoringService->fields['state']) {
+            switch($pMonitoringService->fields['state']) {
 
-                  case 'UP':
-                  case 'OK':
-                     $state['OK']++;
-                     break;
+               case 'UP':
+               case 'OK':
+                  $state['OK']++;
+                  break;
 
-                  case 'DOWN':
-                  case 'UNREACHABLE':
-                  case 'CRITICAL':
-                  case 'DOWNTIME':
-                     $state['CRITICAL']++;
-                     break;
+               case 'DOWN':
+               case 'UNREACHABLE':
+               case 'CRITICAL':
+               case 'DOWNTIME':
+                  $state['CRITICAL']++;
+                  break;
 
-                  case 'WARNING':
-                  case 'UNKNOWN':
-                  case 'RECOVERY':
-                  case 'FLAPPING':
-                     $state['WARNING']++;
-                     break;
+               case 'WARNING':
+               case 'UNKNOWN':
+               case 'RECOVERY':
+               case 'FLAPPING':
+                  $state['WARNING']++;
+                  break;
 
-               }
             }
          }
          if ($state['CRITICAL'] >= 1) {
@@ -546,12 +651,8 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       echo '<div class="ch-itemdown">
          <div class="ch-info-'.$colorclass.'">
          <p><font style="font-size: 20px;">';
-//      echo "<font style='font-size: 18px;'>".__('Status');
-//      echo $display_img;
       if ($colorclass != 'ok') {
          echo __('Degraded mode', 'monitoring').'!';
-      } else {
-         // echo __('Services catalog', 'monitoring');
       }
 
       echo '</font></p>
@@ -613,7 +714,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
             // echo  "<td class='left'>".$host['name']."</td>";
             foreach ($host['services'] as $serviceName => $service) {
                echo '<td>';
-               echo '<div title="'.$service['last_check'].' - '.$service['event'].'" class="service'.$service['state'].'"></div>';
+               echo '<div title="'.$service['last_check'].' - '.$service['event'].'" class="service service'.$service['state'].'"></div>';
                echo  '</td>';
             }
 
@@ -657,6 +758,9 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
 
       $entity = new Entity();
       $pmServicescatalog = new PluginMonitoringServicescatalog();
+      $pmBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
+      $pmBusinessrulecomponent = new PluginMonitoringBusinessrule_component();
+
       
       $existingSCs = array();
          
@@ -673,9 +777,69 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
             $pmServicescatalog->getFromDB($a_SC['id']);
             $pmServicescatalog->delete($pmServicescatalog->fields);
             Toolbox::logInFile("pm", "Deleted : ".$a_SC['name']."\n");
+            
+            $pmBusinessrulecomponent = new PluginMonitoringBusinessrule_component();
+            $pmBusinessrule = new PluginMonitoringBusinessrule();
+            
+            // Get business rules groups ...
+            $a_BRgroups = $pmBusinessrulegroup->find("`plugin_monitoring_servicescatalogs_id`='".$a_SC['id']."'");
+            
+            // Delete business groups components
+            foreach ($a_BRgroups as $a_BRgroup) {
+               Toolbox::logInFile("pm", "a_BRgroup : ".$a_BRgroup['id']."\n");
+               $a_brcomponents = $pmBusinessrulecomponent->find("`plugin_monitoring_businessrulegroups_id`='".$a_BRgroup['id']."'");
+               foreach ($a_brcomponents as $a_brcomponent) {
+                  // Toolbox::logInFile("pm", "a_brcomponent : ".$a_brcomponent['id']."\n");
+                  $pmBusinessrulecomponent->getFromDB($a_brcomponent['id']);
+                  $pmBusinessrulecomponent->delete($pmBusinessrulecomponent->fields);
+               }
+            }
+            
+            // Delete business groups rules
+            foreach ($a_BRgroups as $a_BRgroup) {
+               $a_brs = $pmBusinessrule->find("`plugin_monitoring_businessrulegroups_id`='".$a_BRgroup['id']."'");
+               foreach ($a_brs as $a_br) {
+                  // Toolbox::logInFile("pm", "a_br : ".$a_br['id']."\n");
+                  $pmBusinessrulecomponent->getFromDB($a_brcomponent['id']);
+                  $pmBusinessrulecomponent->delete($pmBusinessrulecomponent->fields);
+               }
+            }
          }
          return;
+      } else {
+         foreach ($existingSCs as $name=>$a_SC) {
+            $pmServicescatalog->getFromDB($a_SC['id']);
+            
+            $pmBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
+            $pmBusinessrulecomponent = new PluginMonitoringBusinessrule_component();
+            $pmBusinessrule = new PluginMonitoringBusinessrule();
+            
+            // Get business rules groups ...
+            $a_BRgroups = $pmBusinessrulegroup->find("`plugin_monitoring_servicescatalogs_id`='".$a_SC['id']."'");
+            
+            // Delete business groups components
+            foreach ($a_BRgroups as $a_BRgroup) {
+               // Toolbox::logInFile("pm", "a_BRgroup : ".$a_BRgroup['id']."\n");
+               $a_brcomponents = $pmBusinessrulecomponent->find("`plugin_monitoring_businessrulegroups_id`='".$a_BRgroup['id']."'");
+               foreach ($a_brcomponents as $a_brcomponent) {
+                  // Toolbox::logInFile("pm", "a_brcomponent : ".$a_brcomponent['id']."\n");
+                  $pmBusinessrulecomponent->getFromDB($a_brcomponent['id']);
+                  $pmBusinessrulecomponent->delete($pmBusinessrulecomponent->fields);
+               }
+            }
+            
+            // Delete business groups rules
+            foreach ($a_BRgroups as $a_BRgroup) {
+               $a_brs = $pmBusinessrule->find("`plugin_monitoring_businessrulegroups_id`='".$a_BRgroup['id']."'");
+               foreach ($a_brs as $a_br) {
+                  // Toolbox::logInFile("pm", "a_br : ".$a_br['id']."\n");
+                  $pmBusinessrulecomponent->getFromDB($a_brcomponent['id']);
+                  $pmBusinessrulecomponent->delete($pmBusinessrulecomponent->fields);
+               }
+            }
+         }
       }
+      
       
       // Find entities concerned ...
       $a_entitiesServices = $this->getGenericServicesEntities();
@@ -696,8 +860,17 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
             $pmServicescatalog->fields['is_generic'] = 0;
             $pmServicescatalog->fields['name'] = $DB->escape($scName);
             $pmServicescatalog->update($pmServicescatalog->fields);
-            
-            unset($existingSCs[$scName]);
+
+/*            // Finish updating if needed ...
+            $a_BRgroups = $pmBusinessrulegroup->find("`plugin_monitoring_servicescatalogs_id`='".$this->fields['id']."'");
+            foreach ($a_BRgroups as $a_BRgroup) {
+               $pmBusinessrulegroup = $pmBusinessrulegroup->find("`plugin_monitoring_servicescatalogs_id`='".$a_SC['id']."' AND `name`='".$a_BRgroup['name']."'");
+               $pmBusinessrulegroup->fields = $a_BRgroup->fields;
+               unset($pmBusinessrulegroup->fields['id']);
+               $pmBusinessrulegroup->fields['plugin_monitoring_servicescatalogs_id'] = $pmServicescatalog->fields['id'];
+               $pmBusinessrulegroup->update($pmBusinessrulegroup->fields);
+            }
+*/
             Toolbox::logInFile("pm", "Updated : ".$scName."\n");
          } else {
             // Add SC
@@ -709,7 +882,35 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
             $pmServicescatalog->fields['is_recursive'] = 0;
             $pmServicescatalog->fields['is_generic'] = 0;
             $pmServicescatalog->fields['name'] = $DB->escape($scName);
+            $pmServicescatalog->fields['plugin_monitoring_servicescatalogs_id'] = $this->fields['id'];
             $pmServicescatalog->add($pmServicescatalog->fields);
+
+/*
+            // Finish updating if needed ...
+            $a_BRgroups = $pmBusinessrulegroup->find("`plugin_monitoring_servicescatalogs_id`='".$this->fields['id']."'");
+            foreach ($a_BRgroups as $a_BRgroup) {
+               $ref = new PluginMonitoringBusinessrulegroup();
+               $ref->getFromDB($a_BRgroup['id']);
+               $pmBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
+               $pmBusinessrulegroup->getEmpty();
+               $pmBusinessrulegroup->fields = $ref->fields;
+               unset($pmBusinessrulegroup->fields['id']);
+               $pmBusinessrulegroup->fields['plugin_monitoring_servicescatalogs_id'] = $pmServicescatalog->fields['id'];
+               $pmBusinessrulegroup->add($pmBusinessrulegroup->fields);
+               
+               $a_brcomponents = $pmBusinessrulecomponent->find("`plugin_monitoring_businessrulegroups_id`='".$a_BRgroup['id']."'");
+               foreach ($a_brcomponents as $a_brcomponent) {
+                  $ref = new PluginMonitoringBusinessrule_component();
+                  $ref->getFromDB($a_brcomponent['id']);
+                  $pmBusinessrule_component = new PluginMonitoringBusinessrule_component();
+                  $pmBusinessrule_component->getEmpty();
+                  $pmBusinessrule_component->fields = $ref->fields;
+                  unset($pmBusinessrule_component->fields['id']);
+                  $pmBusinessrule_component->fields['plugin_monitoring_businessrulegroups_id'] = $pmBusinessrulegroup->fields['id'];
+                  $pmBusinessrule_component->add($pmBusinessrule_component->fields);
+               }
+            }
+*/
             Toolbox::logInFile("pm", "Added : ".$scName."\n");
          }
       }
@@ -754,10 +955,8 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
             ".$restrict_entities.")
          ORDER BY `glpi_plugin_monitoring_services`.`entities_id` ASC, `glpi_plugin_monitoring_services`.`id` ASC;
       ";
-      // Toolbox::logInFile("pm-shinken", "  - query : ".$query."\n");
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
-         // Toolbox::logInFile("pm-shinken", "  - entity : ".$data['entities_id'].", service : ".$data['id']."\n");
          $a_services[$data['entities_id']][$data['id']] = 
                   array("entityId" => $data['entities_id'], 
                         "serviceId" => $data['id'],
