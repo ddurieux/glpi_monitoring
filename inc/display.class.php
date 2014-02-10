@@ -1182,6 +1182,11 @@ echo "
                                    $data['state_type'], 
                                    $data['event'], 
                                    $pm_Host->isCurrentlyAcknowledged());
+      if ($data['state'] == '') {
+         $data['state'] = 'UNKNOWN';
+         $data['state_type'] = 'SOFT';
+      }
+      
       echo "<td>";
       $entity = new Entity();
       $entity->getFromDB($data["entities_id"]);
