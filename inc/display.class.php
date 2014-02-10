@@ -672,7 +672,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          // }
          echo "<script>
             Ext.onReady(function(){
-               console.log('Ready ...');
+               // console.log('Ready ...');
                window.setTimeout(function(){";
             foreach(PluginMonitoringDisplay::$ar_counterTypes as $counter_id => $counter_name) {
 echo "
