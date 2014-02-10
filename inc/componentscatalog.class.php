@@ -249,6 +249,23 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    
    function showChecks() {      
 
+      echo "
+      <script>
+         function toggleMinemap(idMinemap) {
+            Ext.select('#'+idMinemap).each(function(el) {
+               el.setDisplayed(! el.isDisplayed());
+            }); 
+         };
+         function toggleEntity(idEntity) {
+            Ext.select('#'+idEntity).each(function(el) {
+               el.select('tr.services').each(function(elTr) {
+                  elTr.setDisplayed(! elTr.isDisplayed());
+               }); 
+            }); 
+         };
+      </script>
+      ";
+      
       echo "<table class='tab_cadre' width='100%'>";
       echo "<tr class='tab_bg_4' style='background: #cececc;'>";
       
@@ -432,18 +449,19 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       sort($services);
       
       echo "<div class='minemapdiv' align='center'>"
-      ."<a onclick='Ext.get(\"minemapcomponentscatalog".$id."\").toggle()'>"
-              .__('Minemap', 'monitoring')."</a></div>";
+            ."<a onclick='javascript: toggleMinemap(\"minemapCC-".$id."\");'>"
+            .__('Minemap', 'monitoring')."</a></div>";
       if (!$is_minemap) {
-         echo '<div class="minemapdiv" id="minemapcomponentscatalog'.$id.'" style="display: none; z-index: 1500">';
+         echo '<div class="minemapdiv" id="minemapCC-'.$id.'" style="display: none; z-index: 1500">';
       } else {
-         echo '<div class="minemapdiv" id="minemapcomponentscatalog'.$id.'">';
+         echo '<div class="minemapdiv" id="minemapCC-'.$id.'">';
       }
+
       echo '<table class="tab_cadrehov" >';
       
       // Header with services name and link to services list ...
-      echo '<tr>';
-      echo "<th>";
+      echo "<tr>";
+      echo "<th colspan='2'>";
       echo __('Hosts', 'monitoring');
       echo "</th>";
       for ($i = 0; $i < count($services); $i++) {
@@ -455,21 +473,45 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
                   "&field[0]=2&searchtype[0]=equals&contains[0]=".$services_ids[$services[$i]].
                   "&itemtype=PluginMonitoringService&start=0'";
-            echo  '<th class="vertical">';
-            echo  '<a href="'.$link.'"><div class="rotated-text"><span class="rotated-text__inner">'.$services[$i].'</span></div></a>';
-            echo  '</th>';
+            echo '<th class="vertical">';
+            echo '<a href="'.$link.'"><div class="rotated-text"><span class="rotated-text__inner">'.$services[$i].'</span></div></a>';
+            echo '</th>';
          } else {
-            echo  '<th class="vertical">';
-            echo  '<div class="rotated-text"><span class="rotated-text__inner">'.$services[$i].'</span></div>';
-            echo  '</th>';
+            echo '<th class="vertical">';
+            echo '<div class="rotated-text"><span class="rotated-text__inner">'.$services[$i].'</span></div>';
+            echo '</th>';
          }
       }
       echo '</tr>';
       
+      $pmHost = new PluginMonitoringHost();
+      $entityId = -1;
+      $overallServicesState = 'OK';
       foreach ($hosts_ressources as $hosts_id=>$resources) {
          // Reduced array or not ?
          if ($reduced_interface and $hosts_states[$hosts_id]) continue;
          
+         $pmHost->getFromDB($hosts_ids[$hosts_id]['id']);
+         if ($entityId != $pmHost->fields['entities_id']) {
+            if ($entityId != -1) {
+               echo "</table>";
+               if ($overallServicesState != 'OK') {
+                  echo "<script>
+                     Ext.onReady(function(){ 
+                        toggleEntity('entity-$id-$entityId');
+                     });</script>";
+                  $overallServicesState = 'OK';
+               }
+            }
+            // A new sub-table for each entity ...
+            $entityId = $pmHost->fields['entities_id'];
+            $pmEntity = new Entity();
+            $pmEntity->getFromDB($entityId);
+            echo "<tr class='tab_bg_1'>";
+            echo "<table class='tab_cadrehov' style='height: auto;' id='entity-$id-$entityId' onClick='javascript: toggleEntity(\"entity-$id-$entityId\");'>";
+            $overallServicesState = 'OK';
+            echo "<tr><th class='left' style='height:50px;' colspan='".(count($services))."'>".$pmEntity->fields['name']."</th></tr>";
+         }
          $field_id = 20;
          if ($hosts_ids[$hosts_id]['itemtype'] == 'Printer') {
             $field_id = 21;
@@ -483,10 +525,11 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                "&itemtype=PluginMonitoringService&start=0'";
             
          if ($hosts_states[$hosts_id]) {
-            echo  "<tr class='tab_bg_2' style='height: 50px;'>";
+            echo  "<tr class='services tab_bg_2' style='height: 50px; display:none;'>";
          } else {
-            echo  "<tr class='tab_bg_3' style='height: 50px;'>";
+            echo  "<tr class='services tab_bg_3' style='height: 50px; display:none;'>";
          }
+         // echo "<td><div style='width: 5px !important;'>&nbsp;</div></td>";
          if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
             echo  "<td class='left'><a href='".$link."'>".$hosts_ids[$hosts_id]['name']."</a></td>";
          } else {
@@ -495,6 +538,9 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          for ($i = 0; $i < count($services); $i++) {
             if ($services[$i] == '_fake_') continue;
             
+            if ($resources[$services[$i]]['state'] != 'OK') {
+               $overallServicesState = $resources[$services[$i]]['state'];
+            }
             echo '<td>';
             if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
                $link_service = $link;
