@@ -471,6 +471,15 @@ td .vertical {
 	border-bottom: 15px solid rgb(18,158,255);
 }
 
+.resourceHARD {
+	font-weight: bold;
+	color: black;
+}
+.resourceSOFT {
+	font-weight: normal;
+	color: darkgrey;
+}
+
 
 span.tagBox-container {
   display: inline-block;

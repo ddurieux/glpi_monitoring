@@ -1075,7 +1075,7 @@ echo "
             }
          }
       } else {
-         echo "<td class='center page foldtl resource".$data['state']."'>";
+         echo "<td class='center page foldtl resource".$data['state']." resource".$data['state_type']."'>";
          echo "<div class=''>";
          echo "<div>";
          echo $data['state'];
