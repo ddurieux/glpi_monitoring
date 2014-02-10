@@ -204,7 +204,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                               'plugin_monitoring_servicescatalogs_id', 
-                              "int(1) NOT NULL DEFAULT '0'");
+                              "int(11) NOT NULL DEFAULT '0'");
          $migration->addKey($newTable, 
                             "name");
       $migration->migrationOneTable($newTable);
