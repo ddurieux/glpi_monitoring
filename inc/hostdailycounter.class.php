@@ -133,7 +133,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       if ($item->getType()=='Computer') {
-         Toolbox::logInFile("pm", "Daily counters, displayTabContentForItem, item concerned : ".$item->getField('itemtype')."/".$item->getField('items_id')."\n");
+         // Toolbox::logInFile("pm", "Daily counters, displayTabContentForItem, item concerned : ".$item->getField('itemtype')."/".$item->getField('items_id')."\n");
          if (self::canView()) {
             // TODO ...
             return true;
@@ -149,12 +149,12 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
       $tab['common'] = __('Host daily counters', 'monitoring');
 
-      $tab[1]['table']           = $this->getTable();
-      $tab[1]['field']           = 'id';
-      $tab[1]['linkfield']       = 'id';
-      $tab[1]['name']            = __('Identifier');
-      $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['massiveaction']   = false; // implicit field is id
+      // $tab[1]['table']           = $this->getTable();
+      // $tab[1]['field']           = 'id';
+      // $tab[1]['linkfield']       = 'id';
+      // $tab[1]['name']            = __('Identifier');
+      // $tab[1]['datatype']        = 'itemlink';
+      // $tab[1]['massiveaction']   = false; // implicit field is id
 
       $tab[2]['table']           = $this->getTable();
       $tab[2]['field']           = 'hostname';
@@ -298,7 +298,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
     * Before updating database ...
     */
    static function pre_item_update($dailyCounter) {
-      Toolbox::logInFile("pm", "daily counter, pre_item_update : ".$dailyCounter->fields['hostname']." / ".$dailyCounter->fields['day']."\n");
+      // Toolbox::logInFile("pm", "daily counter, pre_item_update : ".$dailyCounter->fields['hostname']." / ".$dailyCounter->fields['day']."\n");
    }
    
    
@@ -467,8 +467,8 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          
          $memoryUsage = memory_get_usage() / 1024 / 1024;
          Toolbox::logInFile("pm", "Memory usage $memoryUsage\n");
-         if ($memoryUsage > 64) {
-            Toolbox::logInFile("pm", "Update daily counters for '$hostname' up to $date, limit : $limit\n");
+         if ($memoryUsage >= 64) {
+            Toolbox::logInFile("pm", "Allowed memory usage exceeded, please run the task again ...\n");
          }
       } while (($remaining > 0) && ($memoryUsage < 64));
       
@@ -494,7 +494,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       $pmCurrentCounter    = new PluginMonitoringHostdailycounter();
       $pmPreviousCounter   = new PluginMonitoringHostdailycounter();
       
-      $a_updatables = $pmHostCounter->find ("`updated`='0' AND `hostname` LIKE '$hostname' AND `date` < date('$date')", "`hostname` ASC, `date` ASC", $limit);
+      $a_updatables = $pmHostCounter->find ("`updated`='0' AND `hostname` LIKE '$hostname' AND `date` < '$date'", "`hostname` ASC, `date` ASC", $limit);
       foreach ($a_updatables as $updatable) {
          // Toolbox::logInFile("pm", "updatable counter, hostname : ".$updatable['hostname'].", date : ".$updatable['date']."\n");
          $pmHostCounter->getFromDBByQuery("WHERE `id`='".$updatable['id']."'");
