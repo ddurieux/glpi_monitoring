@@ -1199,7 +1199,7 @@ echo "
       echo "</td>";
       
       echo "<td class='center'>";
-      echo "<div class='page foldtl resource".$data['state']."'>";
+      echo "<div class='page foldtl resource".$data['state']." resource".$data['state_type']."'>";
       echo "<div style='vertical-align:middle;'>";
       echo "<span>";
       echo $data['state'];
