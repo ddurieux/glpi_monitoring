@@ -125,7 +125,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    function post_addItem() {
       global $DB;
 
-      Toolbox::logInFile("pm", "  post_addItem : ".$this->getID()." : ".$this->getField('is_generic')."\n");
+      // Toolbox::logInFile("pm", "  post_addItem : ".$this->getID()." : ".$this->getField('is_generic')."\n");
       
       $pmLog = new PluginMonitoringLog();
       
@@ -145,7 +145,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
 
 
    function post_updateItem($history=1) {
-      Toolbox::logInFile("pm", "  post_updateItem : ".$this->getID()." : ".$this->getField('is_generic')."\n");
+      // Toolbox::logInFile("pm", "  post_updateItem : ".$this->getID()." : ".$this->getField('is_generic')."\n");
       
       // Generic services catalogs only ...
       if ($this->getField('is_generic')) {
@@ -345,6 +345,16 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    
    
    function showChecks() {
+      
+      echo "
+      <script>
+         function toggleMinemap(idMinemap) {
+            Ext.select('#'+idMinemap).each(function(el) {
+               el.setDisplayed(! el.isDisplayed());
+            }); 
+         };
+      </script>
+      ";
       
       echo "<table class='tab_cadre' width='100%'>";
       echo "<tr class='tab_bg_4' style='background: #cececc;'>";
@@ -662,12 +672,12 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
 
       // Show a minemap if requested ...
       echo "<div class='minemapdiv' align='center'>"
-      ."<a onclick='Ext.get(\"minemapservicescatalog".$id."\").toggle()'>"
-              .__('Minemap', 'monitoring')."</a></div>";
+            ."<a onclick='javascript: toggleMinemap(\"minemapSC-".$id."\");'>"
+            .__('Minemap', 'monitoring')."</a></div>";
       if (!$is_minemap) {
-         echo '<div class="minemapdiv" id="minemapservicescatalog'.$id.'" style="display: none; z-index: 1500">';
+         echo '<div class="minemapdiv" id="minemapSC-'.$id.'" style="display: none; z-index: 1500">';
       } else {
-         echo '<div class="minemapdiv" id="minemapservicescatalog'.$id.'">';
+         echo '<div class="minemapdiv" id="minemapSC-'.$id.'">';
       }
       echo '<table class="tab_cadrehov">';
       
@@ -767,7 +777,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       // Find existing instances of generic services catalog ...
       $a_SCs = $this->find("`name` LIKE '".$this->getName()."%'");
       foreach ($a_SCs as $a_SC) {
-         Toolbox::logInFile("pm", "SC : ".$a_SC['id'].", name : ".$a_SC['name'].", generic : ".$a_SC['is_generic']."\n");
+         // Toolbox::logInFile("pm", "SC : ".$a_SC['id'].", name : ".$a_SC['name'].", generic : ".$a_SC['is_generic']."\n");
          
          if ($a_SC['name'] == $this->getField('name')) continue;
          $existingSCs[$a_SC['name']] = $a_SC;
@@ -776,7 +786,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
          foreach ($existingSCs as $name=>$a_SC) {
             $pmServicescatalog->getFromDB($a_SC['id']);
             $pmServicescatalog->delete($pmServicescatalog->fields);
-            Toolbox::logInFile("pm", "Deleted : ".$a_SC['name']."\n");
+            // Toolbox::logInFile("pm", "Deleted : ".$a_SC['name']."\n");
             
             $pmBusinessrulecomponent = new PluginMonitoringBusinessrule_component();
             $pmBusinessrule = new PluginMonitoringBusinessrule();
@@ -786,7 +796,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
             
             // Delete business groups components
             foreach ($a_BRgroups as $a_BRgroup) {
-               Toolbox::logInFile("pm", "a_BRgroup : ".$a_BRgroup['id']."\n");
+               // Toolbox::logInFile("pm", "a_BRgroup : ".$a_BRgroup['id']."\n");
                $a_brcomponents = $pmBusinessrulecomponent->find("`plugin_monitoring_businessrulegroups_id`='".$a_BRgroup['id']."'");
                foreach ($a_brcomponents as $a_brcomponent) {
                   // Toolbox::logInFile("pm", "a_brcomponent : ".$a_brcomponent['id']."\n");
@@ -871,7 +881,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
                $pmBusinessrulegroup->update($pmBusinessrulegroup->fields);
             }
 */
-            Toolbox::logInFile("pm", "Updated : ".$scName."\n");
+            // Toolbox::logInFile("pm", "Updated : ".$scName."\n");
          } else {
             // Add SC
             $pmServicescatalog = new PluginMonitoringServicescatalog();
@@ -911,7 +921,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
                }
             }
 */
-            Toolbox::logInFile("pm", "Added : ".$scName."\n");
+            // Toolbox::logInFile("pm", "Added : ".$scName."\n");
          }
       }
    }
