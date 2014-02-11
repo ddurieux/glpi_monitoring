@@ -3,7 +3,7 @@
 /*
    ------------------------------------------------------------------------
    Plugin Monitoring for GLPI
-   Copyright (C) 2011-2013 by the Plugin Monitoring for GLPI Development Team.
+   Copyright (C) 2011-2014 by the Plugin Monitoring for GLPI Development Team.
 
    https://forge.indepnet.net/projects/monitoring/
    ------------------------------------------------------------------------
@@ -31,7 +31,7 @@
    @author    David Durieux
    @co-author 
    @comment   
-   @copyright Copyright (c) 2011-2013 Plugin Monitoring for GLPI team
+   @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
@@ -51,8 +51,8 @@ chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
 chdir("../../..");
 $url = "/" . basename(getcwd()) . "/plugins/webservices/xmlrpc.php";
 
-$url = "glpi083/plugins/webservices/xmlrpc.php";
-$host = 'localhost';
+$url = "glpi084/plugins/webservices/xmlrpc.php";
+$host = '127.0.0.1';
 $glpi_user  = "glpi";
 $glpi_pass  = "glpi";
 

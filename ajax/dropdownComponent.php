@@ -3,7 +3,7 @@
 /*
    ------------------------------------------------------------------------
    Plugin Monitoring for GLPI
-   Copyright (C) 2011-2013 by the Plugin Monitoring for GLPI Development Team.
+   Copyright (C) 2011-2014 by the Plugin Monitoring for GLPI Development Team.
 
    https://forge.indepnet.net/projects/monitoring/
    ------------------------------------------------------------------------
