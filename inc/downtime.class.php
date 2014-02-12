@@ -47,10 +47,10 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringDowntime extends CommonDBTM {
    
    static function getTypeName($nb=0) {
-      return _n(__('Host downtime', 'monitoring'),__('Host downtimes', 'monitoring'),$nb);
+      return __CLASS__;
    }
-   
-   
+
+
    static function canCreate() {      
       return PluginMonitoringProfile::haveRight("downtime", 'w');
    }
@@ -99,11 +99,15 @@ class PluginMonitoringDowntime extends CommonDBTM {
          return __('Downtimes', 'monitoring');
       }
       
+      if ($item->getType() == 'Computer'){
+         return __('Downtimes', 'monitoring');
+      }
+      
       return '';
    }
-   
-   
- 
+
+
+
    /**
     * Display content of tab
     * 
@@ -131,6 +135,17 @@ class PluginMonitoringDowntime extends CommonDBTM {
             return true;
          }
       }
+      
+      if ($item->getType()=='Computer') {
+         if (self::canView()) {
+            // Show list filtered on item, sorted on day descending ...
+            Search::showList(PluginMonitoringDowntime::getTypeName(), array(
+               'field' => array(2), 'searchtype' => array('equals'), 'contains' => array($item->getID()), 
+               'sort' => 4, 'order' => 'DESC'
+               ));
+            return true;
+         }
+      }
       return true;
    }
 
@@ -142,18 +157,23 @@ class PluginMonitoringDowntime extends CommonDBTM {
 
       $tab['common'] = __('Host downtimes', 'monitoring');
 
-      $tab[1]['table']           = $this->getTable();
-      $tab[1]['field']           = 'id';
-      $tab[1]['linkfield']       = 'id';
-      $tab[1]['name']            = __('ID');
-      $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['massiveaction']   = false; // implicit field is id
+      // $tab[1]['table']           = $this->getTable();
+      // $tab[1]['field']           = 'id';
+      // $tab[1]['linkfield']       = 'id';
+      // $tab[1]['name']            = __('ID');
+      // $tab[1]['datatype']        = 'itemlink';
+      // $tab[1]['massiveaction']   = false; // implicit field is id
 
-      $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'plugin_monitoring_hosts_id';
-      $tab[2]['name']            = __('Host name', 'monitoring');
-      $tab[2]['datatype']        = 'specific';
-      $tab[2]['massiveaction']   = false;
+      // $tab[2]['table']           = $this->getTable();
+      // $tab[2]['field']           = 'plugin_monitoring_hosts_id';
+      // $tab[2]['name']            = __('Host name', 'monitoring');
+      // $tab[2]['datatype']        = 'specific';
+      // $tab[2]['massiveaction']   = false;
+
+      $tab[2]['table']           = "glpi_computers";
+      $tab[2]['field']           = 'name';
+      $tab[2]['name']            = __('Computer');
+      $tab[2]['datatype']        = 'itemlink';
 
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'flexible';
