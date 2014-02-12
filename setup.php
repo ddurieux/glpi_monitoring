@@ -82,9 +82,12 @@ function plugin_init_monitoring() {
          Plugin::registerClass('PluginMonitoringSystem',
               array('addtabon' => array('Central')));
          Plugin::registerClass('PluginMonitoringDowntime',
-              array('addtabon' => array('Ticket')));
+              array('addtabon' => array('Computer', 'Ticket')));
          Plugin::registerClass('PluginMonitoringAcknowledge');
-         Plugin::registerClass('PluginMonitoringHostdailycounter');
+         Plugin::registerClass('PluginMonitoringHostdailycounter',
+              array('addtabon' => array('Computer')));
+         Plugin::registerClass('PluginMonitoringServiceevent',
+              array('addtabon' => array('Computer')));
          Plugin::registerClass('PluginMonitoringHostCounter');
          
          $pmSecurity = new PluginMonitoringSecurity();

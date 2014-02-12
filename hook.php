@@ -334,6 +334,47 @@ function plugin_monitoring_addLeftJoin($itemtype,$ref_table,$new_table,$linkfiel
                     . " AND `processormonit`.`itemtype` = 'Computer') ";           
          }
          break;
+      
+      case 'PluginMonitoringServiceevent':
+         // Join between service events and components catalogs
+         if ($new_table.".".$linkfield == "glpi_plugin_monitoring_components.plugin_monitoring_components_id") {
+            return "
+               INNER JOIN `glpi_plugin_monitoring_services` 
+                  ON (`glpi_plugin_monitoring_serviceevents`.`plugin_monitoring_services_id` = `glpi_plugin_monitoring_services`.`id`)
+               INNER JOIN `glpi_plugin_monitoring_components` 
+                  ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_components_id` = `glpi_plugin_monitoring_components`.`id`)
+            ";
+         }
+         // Join between service events and services
+         if ($new_table.".".$linkfield == "glpi_plugin_monitoring_services.plugin_monitoring_services_id") {
+            return "
+               INNER JOIN `glpi_plugin_monitoring_services` 
+                  ON (`glpi_plugin_monitoring_serviceevents`.`plugin_monitoring_services_id` = `glpi_plugin_monitoring_services`.`id`)
+            ";
+         }
+         break;
+      
+      case 'PluginMonitoringHostdailycounter':
+         // Join between daily counters and computers
+         if ($new_table.".".$linkfield == "glpi_computers.computers_id") {
+            return "
+               INNER JOIN `glpi_computers` 
+                  ON (`glpi_plugin_monitoring_hostdailycounters`.`hostname` = `glpi_computers`.`name`)
+            ";
+         }
+         break;
+         
+      case 'PluginMonitoringDowntime':
+         // Join between daily counters and computers
+         if ($new_table.".".$linkfield == "glpi_computers.computers_id") {
+            return "
+               INNER JOIN `glpi_plugin_monitoring_hosts` 
+                 ON (`glpi_plugin_monitoring_downtimes`.`plugin_monitoring_hosts_id` = `glpi_plugin_monitoring_hosts`.`id`)
+               INNER JOIN `glpi_computers` 
+                 ON (`glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`)
+            ";
+         }
+         break;
          
    }
    return "";

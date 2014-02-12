@@ -46,6 +46,117 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringServiceevent extends CommonDBTM {
 
+   static function getTypeName($nb=0) {
+      return __CLASS__;
+   }
+
+
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      if ($item->getType() == 'Computer'){
+         return __('Service events', 'monitoring');
+      }
+      
+      return '';
+   }
+
+
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType()=='Computer') {
+         if (self::canView()) {
+            // Show list filtered on item, sorted on day descending ...
+            Search::showList(PluginMonitoringServiceevent::getTypeName(), array(
+               'field' => array(2), 'searchtype' => array('equals'), 'contains' => array($item->getID()), 
+               'sort' => 3, 'order' => 'DESC'
+               ));
+            return true;
+         }
+      }
+      return true;
+   }
+
+
+   function getSearchOptions() {
+
+      $tab = array();
+
+      $tab['common'] = __('Service events', 'monitoring');
+
+      $tab[1]['table']           = $this->getTable();
+      $tab[1]['field']           = 'id';
+      $tab[1]['linkfield']       = 'id';
+      $tab[1]['name']            = __('ID');
+      $tab[1]['datatype']        = 'itemlink';
+      $tab[1]['massiveaction']   = false; // implicit field is id
+
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'plugin_monitoring_services_id';
+      $tab[2]['name']            = __('Service instance', 'monitoring');
+      $tab[2]['datatype']        = 'specific';
+      // $tab[2]['datatype']        = 'itemlink';
+      $tab[2]['searchtype']      = 'equals';
+      $tab[2]['itemlink_type']   = 'Component';
+      // $tab[201]['table']          = "glpi_plugin_monitoring_services";
+      // $tab[201]['field']          = 'name';
+      // $tab[201]['name']           = __('Components catalog', 'monitoring');
+      // $tab[201]['datatype']       = 'itemlink';
+
+      $tab[201]['table']          = "glpi_plugin_monitoring_components";
+      $tab[201]['field']          = 'name';
+      $tab[201]['name']           = __('Components catalog', 'monitoring');
+      $tab[201]['datatype']       = 'specific';
+
+      // $tab[201]['table']         = 'glpi_plugin_monitoring_components';
+      // $tab[201]['field']         = 'name';
+      // $tab[201]['name']          = __('Component', 'monitoring');
+      // $tab[201]['datatype']      = 'specific';
+
+      $tab[3]['table']           = $this->getTable();
+      $tab[3]['field']           = 'date';
+      $tab[3]['name']            = __('Date', 'monitoring');
+      $tab[3]['datatype']        = 'datetime';
+      $tab[3]['massiveaction']   = false;
+
+      $tab[4]['table']           = $this->getTable();
+      $tab[4]['field']           = 'event';
+      $tab[4]['name']            = __('Event output', 'monitoring');
+      $tab[4]['massiveaction']   = false;
+
+      $tab[5]['table']           = $this->getTable();
+      $tab[5]['field']           = 'perf_data';
+      $tab[5]['name']            = __('Event performance data', 'monitoring');
+      $tab[5]['massiveaction']   = false;
+
+      $tab[6]['table']           = $this->getTable();
+      $tab[6]['field']           = 'state';
+      $tab[6]['name']            = __('Service state', 'monitoring');
+      $tab[6]['massiveaction']   = false;
+
+      $tab[7]['table']           = $this->getTable();
+      $tab[7]['field']           = 'state_type';
+      $tab[7]['name']            = __('Service state type', 'monitoring');
+      $tab[7]['massiveaction']   = false;
+
+      return $tab;
+   }
+
+
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'plugin_monitoring_services_id':
+            $pmService = new PluginMonitoringService();
+            $pmService->getFromDB($values[$field]);
+            return $pmService->getLink();
+            break;
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
+   
+
    static function convert_datetime_timestamp($str) {
 
       list($date, $time) = explode(' ', $str);
