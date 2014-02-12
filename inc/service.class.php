@@ -151,8 +151,23 @@ class PluginMonitoringService extends CommonDBTM {
       return $tab;
    }
 
+
+   static function getSpecificValueToDisplay($field, $values, array $options=array()) {
+
+      if (!is_array($values)) {
+         $values = array($field => $values);
+      }
+      switch ($field) {
+         case 'link':
+            $pmService = new PluginMonitoringService();
+            $pmService->getFromDB($values[$field]);
+            return $pmService->getLink();
+            break;
+      }
+      return parent::getSpecificValueToDisplay($field, $values, $options);
+   }
    
-   
+
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
@@ -662,7 +677,7 @@ class PluginMonitoringService extends CommonDBTM {
     **/
    function showGraphsByHost($itemtype, $items_id) {
       global $CFG_GLPI,$DB;
-      
+
       PluginMonitoringToolbox::loadLib();
       $pmComponentscatalog = new PluginMonitoringComponentscatalog();
       $pmComponent = new PluginMonitoringComponent();
