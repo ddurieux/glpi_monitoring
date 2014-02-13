@@ -84,7 +84,7 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
    function getComments() {
       global $CFG_GLPI;
 
-      Toolbox::logInFile("pm", "getComments ".$this->getID()." \n");
+      // Toolbox::logInFile("pm", "getComments ".$this->getID()." \n");
       $this->isExpired();
       
       // echo $this->fields["start_time"];
