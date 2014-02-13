@@ -61,7 +61,7 @@ $pmDailyCounters = new PluginMonitoringHostdailycounter();
 $counters = array();
 
 $counter_types = array (
-   'first'        => __('First value', 'monitoring'), 
+   // 'first'        => __('First value', 'monitoring'), 
    'last'         => __('Last value', 'monitoring')
 );
 
@@ -136,7 +136,7 @@ if (isset($_POST['counters']) && (! empty($_POST['counters']))) {
    }
    echo "<table class='tab_cadrehov'>";
    echo "$hdr_counters</tr>";
-   echo "$hdr_types</tr>";
+   if (count ($counters) != 1) echo "$hdr_types</tr>";
    echo "$row_counter</tr>";
    echo "</table>";
 } else {

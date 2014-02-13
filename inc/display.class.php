@@ -1188,8 +1188,8 @@ echo "
       // Only if counters exist for the host 
       if ($pm_Host->hasDailyCounters()) {
          $pmCounters = new PluginMonitoringHostdailycounter();
-         $html = $pm_Host->displayCounters(array('cPagesTotal', 'cRetractedTotal'), $data['id']);
-         $counters = "<table width='360' class='tab_cadre'><tr><td>".$html."</td></tr></table>";
+         $html = $pm_Host->displayCounters(array('cPagesTotal', 'cRetractedTotal', 'cPrinterChanged', 'cPaperChanged'), $data['id']);
+         $counters = "<table width='600' class='tab_cadre'><tr><td>".$html."</td></tr></table>";
          Html::showToolTip($counters, array(
             // 'title'  => __('Counters', 'monitoring'), 
             'img'    => $CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"
