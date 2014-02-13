@@ -321,25 +321,47 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       $previous_timestamp = strtotime($start_date);
       $query_data = array();
       $cnt = 0;
-      while ($edata=$DB->fetch_array($result)) {
-         $current_timestamp = strtotime($edata['date']);
-         $cnt++;
-                              
-         // Timeup = time between 2 checks + 20%
-         $timeup = $_SESSION['plugin_monitoring_checkinterval'] * 1.2;
-         while (($previous_timestamp + $timeup) < $current_timestamp) {
-            $previous_timestamp += $_SESSION['plugin_monitoring_checkinterval'];
-            if ($previous_timestamp < $current_timestamp) {
-               $query_data[] = array(
-                   'date'      => date('Y-m-d H:i:s', $previous_timestamp),
-                   'perf_data' => ''
-               );
-            }
-         }
-         $previous_timestamp = $current_timestamp;
-         $query_data[] = $edata;
-      }
+      if (gettype($result) == 'object') {
+         while ($edata=$DB->fetch_array($result)) {
 
+            $current_timestamp = strtotime($edata['date']);
+            $cnt++;
+
+            // Timeup = time between 2 checks + 20%
+            $timeup = $_SESSION['plugin_monitoring_checkinterval'] * 1.2;
+            while (($previous_timestamp + $timeup) < $current_timestamp) {
+               $previous_timestamp += $_SESSION['plugin_monitoring_checkinterval'];
+               if ($previous_timestamp < $current_timestamp) {
+                  $query_data[] = array(
+                      'date'      => date('Y-m-d H:i:s', $previous_timestamp),
+                      'perf_data' => ''
+                  );
+               }
+            }
+            $previous_timestamp = $current_timestamp;
+            $query_data[] = $edata;
+         }
+      } else {
+         foreach ($result as $edata) {
+
+            $current_timestamp = strtotime($edata['date']);
+            $cnt++;
+
+            // Timeup = time between 2 checks + 20%
+            $timeup = $_SESSION['plugin_monitoring_checkinterval'] * 1.2;
+            while (($previous_timestamp + $timeup) < $current_timestamp) {
+               $previous_timestamp += $_SESSION['plugin_monitoring_checkinterval'];
+               if ($previous_timestamp < $current_timestamp) {
+                  $query_data[] = array(
+                      'date'      => date('Y-m-d H:i:s', $previous_timestamp),
+                      'perf_data' => ''
+                  );
+               }
+            }
+            $previous_timestamp = $current_timestamp;
+            $query_data[] = $edata;
+         }
+      }
       $timeup = $_SESSION['plugin_monitoring_checkinterval'] * 1.2;
       $current_timestamp = strtotime($end_date);
       while (($previous_timestamp + $timeup) < $current_timestamp) {
@@ -495,6 +517,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
             }        
          }
       }
+      
       foreach ($mydatat as $name=>$data) {
          if (strstr($name, " | diff")) {
             $old_val = -1;

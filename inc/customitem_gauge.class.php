@@ -336,7 +336,7 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
          switch ($itemtype) {
             
             case 'PluginMonitoringService':
-               $a_ret = $this->getLastValofService($data, $val, $nb_val);
+               $a_ret = $this->getLastValofServices($data, $val, $nb_val);
                $val    = $a_ret[0];
                $nb_val = $a_ret[1];
                // for manage warn, crit and limit
@@ -358,6 +358,7 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
                   $a_hosts = $ret[6];
                   foreach ($data2['PluginMonitoringComponent'] as $items_id_components=>$data4) {
                      // get services  (use entities of user)
+                     $a_services = array();
                      $query = "SELECT * FROM `glpi_plugin_monitoring_services`
                         WHERE `plugin_monitoring_components_id`='".str_replace('id', '', $items_id_components)."'
                            AND `plugin_monitoring_componentscatalogs_hosts_id` IN 
@@ -365,23 +366,14 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
                            AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
                      $result = $DB->query($query);
                      while ($dataq=$DB->fetch_array($result)) {
-                        $this->getLastValofService(
-                                array($dataq['id'] => $data4), 
-                                $val, 
-                                $nb_val,
-                                $a_tocheck, 
-                                $a_ret);
-//                        // for manage warn, crit and limit
-//                        foreach ($a_tocheck as $other_type=>$num_type) {
-//                           if ($num_type == 1) {
-//                              $other_items = importArrayFromDB($this->fields['aggregate_'.$other_type]);
-//                              foreach ($other_items[$itemtype][$items_id]['PluginMonitoringComponents'][$items_id_components] as $a_perfdatadetails) {
-//                                 $pmPerfdataDetail->getFromDB($a_perfdatadetails['perfdatadetails_id']);
-//                                 $a_ret[$other_type] += array_sum($ret[0][$pmPerfdataDetail->fields['dsname'.$a_perfdatadetails['perfdatadetails_dsname']]]);
-//                              }
-//                           }
-//                        }
+                        $a_services[$dataq['id']] = $data4;
                      }
+                     $this->getLastValofServices(
+                             $a_services, 
+                             $val, 
+                             $nb_val,
+                             $a_tocheck, 
+                             $a_ret);
                   }
                }
                break;
@@ -402,7 +394,7 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
 
    
    
-   function getLastValofService($data, &$val, &$nb_val, $a_tocheck, &$a_ret) {
+   function getLastValofServices($data, &$val, &$nb_val, $a_tocheck, &$a_ret) {
       global $DB;
       
       $pmService        = new PluginMonitoringService();
@@ -410,23 +402,34 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
       $pmComponent      = new PluginMonitoringComponent();
       $pmPerfdataDetail = new PluginMonitoringPerfdataDetail();
 
-      foreach ($data as $items_id=>$data2) {
-         $pmService->getFromDB($items_id);
-         $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks($pmService->fields['plugin_monitoring_components_id']);
-         $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
-         
-         $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
-            WHERE `plugin_monitoring_services_id`='".$items_id."'
-               AND `state` = 'OK'
-               AND `perf_data` != ''
-            ORDER BY `date` DESC
-            LIMIT 1";
-         $resultevent = $DB->query($query);
-         $dataevent = $DB->fetch_assoc($resultevent);
+      $a_services_id = array_keys($data);
+      $data2 = current($data);
 
-         $result = $DB->query($query);
+      $pmService->getFromDB($a_services_id[0]);
+      $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks($pmService->fields['plugin_monitoring_components_id']);
+      $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
+      
+      $query = "SELECT
+           id,
+           perf_data,
+           date
+         FROM
+           glpi_plugin_monitoring_serviceevents
+             JOIN
+               (SELECT MAX(glpi_plugin_monitoring_serviceevents.id) AS max
+                FROM glpi_plugin_monitoring_serviceevents
+                WHERE `plugin_monitoring_services_id` IN ('".implode("','", $a_services_id)."') 
+                   AND `glpi_plugin_monitoring_serviceevents`.`state` = 'OK'
+                   AND `glpi_plugin_monitoring_serviceevents`.`perf_data` != ''
+
+                GROUP BY plugin_monitoring_services_id 
+                ORDER BY glpi_plugin_monitoring_serviceevents.`date` DESC) max_id ON 
+              (max_id.max = id)";
+      
+      $resultevent = $DB->query($query);
+      while ($dataevent=$DB->fetch_array($resultevent)) {
          $ret = $pmServiceevent->getData(
-                 $result, 
+                 array($dataevent), 
                  $pmComponent->fields['graph_template'], 
                  $dataevent['date'],
                  $dataevent['date']);
