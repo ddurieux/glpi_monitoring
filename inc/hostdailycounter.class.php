@@ -202,18 +202,21 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
    function setDefaultContent($hostname, $date, $previousRecordExists=null) {
       $this->fields['hostname']            = $hostname;
       $this->fields['day']                 = $date;
-      $this->fields['cPrinterChanged']     = $previousRecordExists ? $previousRecordExists->fields['cPrinterChanged'] : 0;
-      $this->fields['cPaperChanged']       = $previousRecordExists ? $previousRecordExists->fields['cPaperChanged'] : 0;
-      $this->fields['cBinEmptied']         = $previousRecordExists ? $previousRecordExists->fields['cBinEmptied'] : 0;
-      $this->fields['cPagesInitial']       = $previousRecordExists ? $previousRecordExists->fields['cPagesInitial'] : 0;
-      $this->fields['cPagesTotal']         = $previousRecordExists ? $previousRecordExists->fields['cPagesTotal'] : 0;
-      $this->fields['cPagesToday']         = $previousRecordExists ? $previousRecordExists->fields['cPagesToday'] : 0;
-      $this->fields['cPagesRemaining']     = $previousRecordExists ? $previousRecordExists->fields['cPagesRemaining'] : 0;
-      $this->fields['cRetractedInitial']   = $previousRecordExists ? $previousRecordExists->fields['cRetractedInitial'] : 0;
-      $this->fields['cRetractedTotal']     = $previousRecordExists ? $previousRecordExists->fields['cRetractedTotal'] : 0;
-      $this->fields['cRetractedToday']     = $previousRecordExists ? $previousRecordExists->fields['cRetractedToday'] : 0;
-      $this->fields['cRetractedRemaining'] = $previousRecordExists ? $previousRecordExists->fields['cRetractedRemaining'] : 0;
-      $this->fields['cPaperLoad']          = $previousRecordExists ? $previousRecordExists->fields['cPaperLoad'] : 2000;
+      foreach (self::$managedCounters as $key => $value) {
+         $this->fields[$key] = $previousRecordExists ? $previousRecordExists->fields[$key] : 0;
+      }
+      // $this->fields['cPrinterChanged']     = $previousRecordExists ? $previousRecordExists->fields['cPrinterChanged'] : 0;
+      // $this->fields['cPaperChanged']       = $previousRecordExists ? $previousRecordExists->fields['cPaperChanged'] : 0;
+      // $this->fields['cBinEmptied']         = $previousRecordExists ? $previousRecordExists->fields['cBinEmptied'] : 0;
+      // $this->fields['cPagesInitial']       = $previousRecordExists ? $previousRecordExists->fields['cPagesInitial'] : 0;
+      // $this->fields['cPagesTotal']         = $previousRecordExists ? $previousRecordExists->fields['cPagesTotal'] : 0;
+      // $this->fields['cPagesToday']         = $previousRecordExists ? $previousRecordExists->fields['cPagesToday'] : 0;
+      // $this->fields['cPagesRemaining']     = $previousRecordExists ? $previousRecordExists->fields['cPagesRemaining'] : 0;
+      // $this->fields['cRetractedInitial']   = $previousRecordExists ? $previousRecordExists->fields['cRetractedInitial'] : 0;
+      // $this->fields['cRetractedTotal']     = $previousRecordExists ? $previousRecordExists->fields['cRetractedTotal'] : 0;
+      // $this->fields['cRetractedToday']     = $previousRecordExists ? $previousRecordExists->fields['cRetractedToday'] : 0;
+      // $this->fields['cRetractedRemaining'] = $previousRecordExists ? $previousRecordExists->fields['cRetractedRemaining'] : 0;
+      // $this->fields['cPaperLoad']          = $previousRecordExists ? $previousRecordExists->fields['cPaperLoad'] : 2000;
    }
    
    
@@ -351,6 +354,51 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
    }
 
    
+   function getSpecificData($hostname='%', $which='last', $date='') { 
+      global $DB;      
+   
+      if ($date == '') $date = date('Y-m-d H:i:s');
+      
+      $pmCounters = new PluginMonitoringHostdailycounter();
+      $counters = array();
+      
+      $condition = "`hostname` LIKE '$hostname'";
+      $order = "`day` ASC";
+      $limit = "1";
+      switch ($which) {
+         case 'first': 
+            $condition = "`hostname` LIKE '$hostname'";
+            $order = "`day` ASC";
+            $limit = "1";
+            break;
+
+         case 'last': 
+            $condition = "`hostname` LIKE '$hostname'";
+            $order = "`day` DESC";
+            $limit = "1";
+            break;
+
+         default: 
+            return;
+            break;
+      }
+      
+      $a_dailyCounters = $pmCounters->find ($condition, $order, $limit);
+      foreach ($a_dailyCounters as $dailyCounter) {
+         $counter = array();
+         foreach (self::$managedCounters as $key => $value) {
+            // Toolbox::logInFile("pm", "Counter '$key' ($value) = ".$dailyCounter[$key]."\n");
+            $counter['id'] = $key;
+            $counter['name'] = $value;
+            $counter['value'] = $dailyCounter[$key];
+            $counters[] = $counter;
+         }
+      }
+   
+      return $counters;
+   }
+      
+      
    static function cronInfo($name){
 
       switch ($name) {

@@ -636,7 +636,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
  
       echo "<tr class='tab_bg_1'>";
       if (! $_SESSION['plugin_monitoring_reduced_interface']) {
-         echo Search::showHeaderItem(0, __('Show counters', 'monitoring'), $num);
+         // echo Search::showHeaderItem(0, __('Show counters', 'monitoring'), $num);
          echo Search::showHeaderItem(0, __('Show graphics', 'monitoring'), $num);
       }
       $this->showHeaderItem(__('Host name', 'monitoring'), 1, $num, $start, $globallinkto, 'service.php', 'PluginMonitoringService');
@@ -874,6 +874,7 @@ echo "
       }
       
       echo "<tr class='tab_bg_1'>";
+      $this->showHeaderItem(__('Daily counters', 'monitoring'), 0, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
       $this->showHeaderItem(__('Entity'), 0, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
       $this->showHeaderItem(__('Type'), 0, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
       $this->showHeaderItem(__('Host', 'monitoring'), 1, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
@@ -977,18 +978,16 @@ echo "
          
       if ($displayGraphs) {
          if (! $_SESSION['plugin_monitoring_reduced_interface']) {
-            echo "<td class='center'>";
-            // Only if exist incremental perfdata ...
-            if ($pMonitoringComponent->hasCounters()) {
-               $pmServicegraph = new PluginMonitoringServicegraph();
-               $html = $pmServicegraph->displayCounter($pMonitoringComponent->fields['graph_template'], $data['id']);
-               $counters = "<table width='600' class='tab_cadre'><tr><td>".$html."</td></tr></table>";
-               Html::showToolTip($counters, array(
-                  // 'title'  => __('Counters', 'monitoring'), 
-                  'img'    => $CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"
-               ));
-            }
-            echo "</td>";
+            // echo "<td class='center'>";
+            // if ($pMonitoringComponent->hasCounters()) {
+               // $pmServicegraph = new PluginMonitoringServicegraph();
+               // $html = $pmServicegraph->displayCounter($pMonitoringComponent->fields['graph_template'], $data['id']);
+               // $counters = "<table width='600' class='tab_cadre'><tr><td>".$html."</td></tr></table>";
+               // Html::showToolTip($counters, array(
+                  // 'img'    => $CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"
+               // ));
+            // }
+            // echo "</td>";
             
             echo "<td class='center'>";
             // Even if not exist incremental perfdata ...
@@ -1175,14 +1174,28 @@ echo "
       $pm_Host = new PluginMonitoringHost();
       $pm_Host->getFromDB($data['id']);
       
-      $shortstate = $pm_Host->getState($data['state'], 
-                                   $data['state_type'], 
-                                   $data['event'], 
-                                   $pm_Host->isCurrentlyAcknowledged());
       if ($data['state'] == '') {
          $data['state'] = 'UNKNOWN';
          $data['state_type'] = 'SOFT';
       }
+      
+      $shortstate = $pm_Host->getState($data['state'], 
+                                      $data['state_type'], 
+                                      $data['event'], 
+                                      $pm_Host->isCurrentlyAcknowledged());
+
+      echo "<td class='center'>";
+      // Only if counters exist for the host 
+      if ($pm_Host->hasDailyCounters()) {
+         $pmCounters = new PluginMonitoringHostdailycounter();
+         $html = $pm_Host->displayCounters(array('cPagesTotal', 'cRetractedTotal'), $data['id']);
+         $counters = "<table width='360' class='tab_cadre'><tr><td>".$html."</td></tr></table>";
+         Html::showToolTip($counters, array(
+            // 'title'  => __('Counters', 'monitoring'), 
+            'img'    => $CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"
+         ));
+      }
+      echo "</td>";
       
       echo "<td>";
       $entity = new Entity();
@@ -2476,8 +2489,9 @@ Ext.onReady(function(){
 
    
    
-   function refreshPage($onlyreduced=FALSE) {
+   function refreshPage($onlyreduced=false) {
 
+      // Toolbox::logInFile("pm", "refreshPage : $onlyreduced\n");
       if (!$onlyreduced) {
          if (isset($_POST['_refresh'])) {
             $_SESSION['glpi_plugin_monitoring']['_refresh'] = $_POST['_refresh'];
