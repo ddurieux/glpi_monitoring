@@ -520,8 +520,10 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       
       $a_incremental = array();
       foreach ($a_perf['parseperfdata'] as $data) {
-         if ($data['incremental'][0] == 1) {
-            $a_incremental[$data['name']] = 1;
+         foreach ($data['DS'] as $num=>$data1) {
+            if ($data['incremental'][$num] == 1) {
+               $a_incremental[$data1['dsname']] = 1;
+            }
          }
       }
       
