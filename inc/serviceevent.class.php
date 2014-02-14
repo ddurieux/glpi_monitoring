@@ -518,6 +518,13 @@ class PluginMonitoringServiceevent extends CommonDBTM {
          }
       }
       
+      $a_incremental = array();
+      foreach ($a_perf['parseperfdata'] as $data) {
+         if ($data['incremental'][0] == 1) {
+            $a_incremental[$data['name']] = 1;
+         }
+      }
+      
       foreach ($mydatat as $name=>$data) {
          if (strstr($name, " | diff")) {
             $old_val = -1;
@@ -533,6 +540,17 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                   $data[0] = $data[$num];
                }
                $old_val = $val;
+            }
+            $mydatat[$name] = $data;
+         } else if (isset($a_incremental[$name])) {
+            $old_val = 0;
+            foreach ($data as $num=>$val) {
+               if ($val == 0) {
+                  $val = $old_val;
+               } else {
+                  $old_val = $val;
+               }
+               $data[$num] = $val;
             }
             $mydatat[$name] = $data;
          }
