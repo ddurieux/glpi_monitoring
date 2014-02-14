@@ -678,7 +678,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
       global $DB;
 
       $query = "UPDATE `glpi_plugin_monitoring_downtimes` SET `expired` = '1' WHERE `expired` = '0' AND `end_time` < NOW();";
-      Toolbox::logInFile("pm", "cronDowntimesExpired, query : $query\n");
+      // Toolbox::logInFile("pm", "cronDowntimesExpired, query : $query\n");
       $DB->query($query);
       
       return true;
