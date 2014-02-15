@@ -304,7 +304,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       
       
       
-   function getData($result, $rrdtool_template, $start_date, $end_date, $ret=array(), $timecomplete=0) {
+   function getData($result, $rrdtool_template, $start_date, $end_date, $ret=array(), $timecomplete=0, $todisplay) {
       global $DB;
       
       if (empty($ret)) {
@@ -392,101 +392,119 @@ class PluginMonitoringServiceevent extends CommonDBTM {
             }
          }
          foreach ($a_perf['parseperfdata'] as $num=>$data) {
-            // Toolbox::logInFile("pm", "perfdata : $num, ".serialize($data)."\n");
-            if (isset($a_perfdata[$num])) {
-               $a_perfdata[$num] = trim($a_perfdata[$num], ", ");
-               $a_a_perfdata = explode("=", $a_perfdata[$num]);
-               $a_a_perfdata[0] = trim($a_a_perfdata[0], "'");
-               $regex = 0;
-               if (strstr($data['name'], "*")) {
-                  $datanameregex = str_replace("*", "(.*)", $data['name']);
-                  $regex = 1;
-               }
-               // $a_perfdata_name[] = $data['name'];
-               if (($a_a_perfdata[0] == $data['name']
-                       OR $data['name'] == ''
-                       OR ($regex == 1
-                               AND preg_match("/".$datanameregex."/", $data['name']))
-                    )
-                       AND isset($a_a_perfdata[1])) {
-                     
-                  $a_perfdata_final = explode(";", $a_a_perfdata[1]);
-                  // New perfdata row, no unit knew.
-                  $unity = '';
-                  foreach ($a_perfdata_final as $nb_val=>$val) {
+            if (count($todisplay) == 0
+                    || isset($todisplay[$data['name']])) {
+               // Toolbox::logInFile("pm", "perfdata : $num, ".serialize($data)."\n");
+               if (isset($a_perfdata[$num])) {
+                  $a_perfdata[$num] = trim($a_perfdata[$num], ", ");
+                  $a_a_perfdata = explode("=", $a_perfdata[$num]);
+                  $a_a_perfdata[0] = trim($a_a_perfdata[0], "'");
+                  $regex = 0;
+                  if (strstr($data['name'], "*")) {
+                     $datanameregex = str_replace("*", "(.*)", $data['name']);
+                     $regex = 1;
+                  }
+                  // $a_perfdata_name[] = $data['name'];
+                  if (($a_a_perfdata[0] == $data['name']
+                          OR $data['name'] == ''
+                          OR ($regex == 1
+                                  AND preg_match("/".$datanameregex."/", $data['name']))
+                       )
+                          AND isset($a_a_perfdata[1])) {
 
-                        //No value, no graph
-                        if ($val == '') {
-                           if ($nb_val >=(count($a_perfdata_final) - 1)) {
-                              continue;
-                           } else {
-                              $val = 0;
-                           }
-                        }
-                        $matches = array();
-                        preg_match("/^([\d-\.]*)(.*)/",$val,$matches);
-                        //Numeric part is data value
-                        $val = (float)$matches[1];
-                        //Maintain for a same perfdata row, unity data. If set it's normally a new perfdata row.
-                        if ($matches[2]) {
-                           $unity = $matches[2];
-                        }
-                        switch ($unity) {                           
-                           case 'ms':
-                           case 'bps':
-                           case 'B' :
-                           case "Bits/s" :
-                              $val = round($val, 0);
-                              break;
-                           case '%' :
-                              $val = round($val, 2);
-                              break;
-                           case 'KB' :
-                              $val = $val * 1000; // Have in B
-                              break;                              
-                           case 'MB' :
-                              $val = $val * 1000000; // Have in B
-                              break;                              
-                           case 'TB':
-                              $val = $val * 1000000000; // Have in B
-                              break;                              
-                           case 's' :
-                              $val = round($val * 1000, 0);
-                              break;                             
-                           case 'timeout' :  
-                              if ($val > 2) {
-                                 $val = round($val);
+                     $a_perfdata_final = explode(";", $a_a_perfdata[1]);
+                     // New perfdata row, no unit knew.
+                     $unity = '';
+                     foreach ($a_perfdata_final as $nb_val=>$val) {
+
+                           //No value, no graph
+                           if ($val == '') {
+                              if ($nb_val >=(count($a_perfdata_final) - 1)) {
+                                 continue;
                               } else {
-                                 $val = round($val, 2);
-                              }
-                              break;                              
-                           default :
-                              if (!is_numeric($val)) {
                                  $val = 0;
-                              } else {
-                                 $val = round($val, 2);
                               }
-                              break;                                                   
-                        }                                                
+                           }
+                           $matches = array();
+                           preg_match("/^([\d-\.]*)(.*)/",$val,$matches);
+                           //Numeric part is data value
+                           $val = (float)$matches[1];
+                           //Maintain for a same perfdata row, unity data. If set it's normally a new perfdata row.
+                           if ($matches[2]) {
+                              $unity = $matches[2];
+                           }
+                           switch ($unity) {                           
+                              case 'ms':
+                              case 'bps':
+                              case 'B' :
+                              case "Bits/s" :
+                                 $val = round($val, 0);
+                                 break;
+                              case '%' :
+                                 $val = round($val, 2);
+                                 break;
+                              case 'KB' :
+                                 $val = $val * 1000; // Have in B
+                                 break;                              
+                              case 'MB' :
+                                 $val = $val * 1000000; // Have in B
+                                 break;                              
+                              case 'TB':
+                                 $val = $val * 1000000000; // Have in B
+                                 break;                              
+                              case 's' :
+                                 $val = round($val * 1000, 0);
+                                 break;                             
+                              case 'timeout' :  
+                                 if ($val > 2) {
+                                    $val = round($val);
+                                 } else {
+                                    $val = round($val, 2);
+                                 }
+                                 break;                              
+                              default :
+                                 if (!is_numeric($val)) {
+                                    $val = 0;
+                                 } else {
+                                    $val = round($val, 2);
+                                 }
+                                 break;                                                   
+                           }                                                
 
+                           $a_perfdata_name[$data['name']] = $data['DS'][$nb_val]['dsname'];
+
+                           if (!isset($mydatat[$data['DS'][$nb_val]['dsname']])) {
+                              $mydatat[$data['DS'][$nb_val]['dsname']] = array();
+                           }
+                           array_push($mydatat[$data['DS'][$nb_val]['dsname']], $val);
+                           if ($data['incremental'][$nb_val] == 1) {
+                              if (!isset($mydatat[$data['DS'][$nb_val]['dsname']." | diff"])) {
+                                 $mydatat[$data['DS'][$nb_val]['dsname']." | diff"] = array();
+                              }
+                              array_push($mydatat[$data['DS'][$nb_val]['dsname']." | diff"], $val);                           
+                           }
+   //                     }
+                     }
+                  } else {
+                     for ($nb_val=0; $nb_val < count($data['DS']); $nb_val++) {
                         $a_perfdata_name[$data['name']] = $data['DS'][$nb_val]['dsname'];
-                        
+
                         if (!isset($mydatat[$data['DS'][$nb_val]['dsname']])) {
                            $mydatat[$data['DS'][$nb_val]['dsname']] = array();
                         }
-                        array_push($mydatat[$data['DS'][$nb_val]['dsname']], $val);
+                        array_push($mydatat[$data['DS'][$nb_val]['dsname']], 0);                     
                         if ($data['incremental'][$nb_val] == 1) {
                            if (!isset($mydatat[$data['DS'][$nb_val]['dsname']." | diff"])) {
                               $mydatat[$data['DS'][$nb_val]['dsname']." | diff"] = array();
                            }
-                           array_push($mydatat[$data['DS'][$nb_val]['dsname']." | diff"], $val);                           
+                           array_push($mydatat[$data['DS'][$nb_val]['dsname']." | diff"], 0);                           
                         }
-//                     }
+                     }                  
                   }
                } else {
                   for ($nb_val=0; $nb_val < count($data['DS']); $nb_val++) {
                      $a_perfdata_name[$data['name']] = $data['DS'][$nb_val]['dsname'];
-                     
+
                      if (!isset($mydatat[$data['DS'][$nb_val]['dsname']])) {
                         $mydatat[$data['DS'][$nb_val]['dsname']] = array();
                      }
@@ -497,24 +515,9 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                         }
                         array_push($mydatat[$data['DS'][$nb_val]['dsname']." | diff"], 0);                           
                      }
-                  }                  
-               }
-            } else {
-               for ($nb_val=0; $nb_val < count($data['DS']); $nb_val++) {
-                  $a_perfdata_name[$data['name']] = $data['DS'][$nb_val]['dsname'];
-                  
-                  if (!isset($mydatat[$data['DS'][$nb_val]['dsname']])) {
-                     $mydatat[$data['DS'][$nb_val]['dsname']] = array();
-                  }
-                  array_push($mydatat[$data['DS'][$nb_val]['dsname']], 0);                     
-                  if ($data['incremental'][$nb_val] == 1) {
-                     if (!isset($mydatat[$data['DS'][$nb_val]['dsname']." | diff"])) {
-                        $mydatat[$data['DS'][$nb_val]['dsname']." | diff"] = array();
-                     }
-                     array_push($mydatat[$data['DS'][$nb_val]['dsname']." | diff"], 0);                           
-                  }
-               } 
-            }        
+                  } 
+               }    
+            }
          }
       }
       

@@ -80,12 +80,17 @@ if ($_POST['customdate'] == ''
                       date('Y', $_POST['customdate']));
 }
 
+if (isset($_POST['components_id']) && !isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']])) {
+   PluginMonitoringToolbox::loadPreferences($_POST['components_id']);
+}
+
 $a_ret = $pmServicegraph->generateData($_POST['rrdtool_template'], 
                              $_POST['itemtype'], 
                              $_POST['items_id'], 
                              $_POST['timezone'], 
                              $_POST['time'],
-                             $enddate);
+                             $enddate,
+                             $_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']]);
 $mydatat = $a_ret[0];
 $a_labels = $a_ret[1];
 $format = $a_ret[2];
@@ -95,9 +100,6 @@ if (isset($_POST['suffix'])) {
    $suffix = $_POST['suffix'];
 }
 
-if (isset($_POST['components_id']) && !isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']])) {
-   PluginMonitoringToolbox::loadPreferences($_POST['components_id']);
-}
 
 //$format = "%H:%M";
 //if ($_POST['time'] != "2h"

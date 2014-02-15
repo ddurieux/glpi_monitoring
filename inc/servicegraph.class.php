@@ -163,7 +163,7 @@ class PluginMonitoringServicegraph {
       
       
       
-   function generateData($rrdtool_template, $itemtype, $items_id, $timezone, $time, $enddate='') { 
+   function generateData($rrdtool_template, $itemtype, $items_id, $timezone, $time, $enddate='', $todisplay=array()) { 
       global $DB;      
 
       if ($enddate == '') {
@@ -221,7 +221,8 @@ class PluginMonitoringServicegraph {
                        date('Y-m-d H:i:s', $enddate),
                        array($this->jsongraph_a_ref[$rrdtool_template], 
                              $this->jsongraph_a_convert[$rrdtool_template]),
-                       $timecomplete);
+                       $timecomplete,
+                       $todisplay);
             } else {
                $ret = $pmServiceevent->getData(
                        $result, 
@@ -229,7 +230,8 @@ class PluginMonitoringServicegraph {
                        $begin,
                        date('Y-m-d H:i:s', $enddate),
                        array(),
-                       $timecomplete);
+                       $timecomplete,
+                       $todisplay);
             }
             if (is_array($ret)) {
                $mydatat  = $ret[0];
@@ -263,7 +265,8 @@ class PluginMonitoringServicegraph {
                     $begin,
                     date('Y-m-d H:i:s', $enddate),
                     array(),
-                    $timecomplete);
+                    $timecomplete,
+                    $todisplay);
             if (is_array($ret)) {
                $mydatat  = $ret[0];
                $a_labels = $ret[1];
@@ -292,7 +295,8 @@ class PluginMonitoringServicegraph {
                     $begin,
                     date('Y-m-d H:i:s', $enddate),
                     array(),
-                    $timecomplete);
+                    $timecomplete,
+                    $todisplay);
             if (is_array($ret)) {
                $mydatat  = $ret[0];
                $a_labels = $ret[1];
@@ -316,7 +320,8 @@ class PluginMonitoringServicegraph {
                     $begin,
                     date('Y-m-d H:i:s', $enddate),
                     array(),
-                    TRUE);
+                    TRUE,
+                    $todisplay);
             if (is_array($ret)) {
                $mydatat  = $ret[0];
                $a_labels = $ret[1];
@@ -364,7 +369,7 @@ class PluginMonitoringServicegraph {
          case '1m':
             $begin = date('Y-m-d H:i:s', $enddate - (30 * 24 * 3600));
             $dateformat = "%Y-%m-%d %H:%M";
-            
+
             $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
                   AND `date` > '".$begin."'
@@ -377,7 +382,8 @@ class PluginMonitoringServicegraph {
                     $begin,
                     date('Y-m-d H:i:s', $enddate),
                     array(),
-                    TRUE);
+                    TRUE,
+                    $todisplay);
             if (is_array($ret)) {
                $mydatat  = $ret[0];
                $a_labels = $ret[1];
@@ -426,7 +432,7 @@ class PluginMonitoringServicegraph {
          case '0y6m':
             $begin = date('Y-m-d H:i:s', date('U') - ((364 / 2) * 24 * 3600));
             $dateformat = "%Y-%m-%d %H:%M";
-            
+
             $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
                   AND `date` > '".$begin."'
@@ -439,7 +445,8 @@ class PluginMonitoringServicegraph {
                     $begin,
                     date('Y-m-d H:i:s', $enddate),
                     array(),
-                    TRUE);
+                    TRUE,
+                    $todisplay);
             if (is_array($ret)) {
                $mydatat  = $ret[0];
                $a_labels = $ret[1];
@@ -501,7 +508,8 @@ class PluginMonitoringServicegraph {
                     $begin,
                     date('Y-m-d H:i:s', $enddate),
                     array(),
-                    TRUE);
+                    TRUE,
+                    $todisplay);
             if (is_array($ret)) {
                $mydatat  = $ret[0];
                $a_labels = $ret[1];
