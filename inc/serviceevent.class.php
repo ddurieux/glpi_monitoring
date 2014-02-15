@@ -51,6 +51,11 @@ class PluginMonitoringServiceevent extends CommonDBTM {
    }
 
 
+   static function canView() {
+      return PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r') || PluginMonitoringProfile::haveRight("homepage_all_ressources", 'r');
+   }
+
+   
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       if ($item->getType() == 'Computer'){
          return __('Service events', 'monitoring');
@@ -93,23 +98,6 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       $tab[2]['field']           = 'plugin_monitoring_services_id';
       $tab[2]['name']            = __('Service instance', 'monitoring');
       $tab[2]['datatype']        = 'specific';
-      // $tab[2]['datatype']        = 'itemlink';
-      $tab[2]['searchtype']      = 'equals';
-      $tab[2]['itemlink_type']   = 'Component';
-      // $tab[201]['table']          = "glpi_plugin_monitoring_services";
-      // $tab[201]['field']          = 'name';
-      // $tab[201]['name']           = __('Components catalog', 'monitoring');
-      // $tab[201]['datatype']       = 'itemlink';
-
-      $tab[201]['table']          = "glpi_plugin_monitoring_components";
-      $tab[201]['field']          = 'name';
-      $tab[201]['name']           = __('Components catalog', 'monitoring');
-      $tab[201]['datatype']       = 'specific';
-
-      // $tab[201]['table']         = 'glpi_plugin_monitoring_components';
-      // $tab[201]['field']         = 'name';
-      // $tab[201]['name']          = __('Component', 'monitoring');
-      // $tab[201]['datatype']      = 'specific';
 
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'date';
