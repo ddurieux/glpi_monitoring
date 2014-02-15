@@ -3169,40 +3169,49 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       }
          $migration->addField($newTable, 
                                  'cPaperChanged', 
-                                 "INT(11) NOT NULL DEFAULT '0'");
+                                 "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                                  'cPrinterChanged', 
-                                 "INT(11) NOT NULL DEFAULT '0'");
+                                 "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                                  'cBinEmptied', 
-                                 "INT(11) NOT NULL DEFAULT '0'");
+                                 "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                                  'cPagesInitial', 
-                                 "INT(11) NOT NULL DEFAULT '0'");
+                                 "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                                  'cPagesTotal', 
-                                 "INT(11) NOT NULL DEFAULT '0'");
+                                 "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                                  'cPagesToday', 
-                                 "INT(11) NOT NULL DEFAULT '0'");
+                                 "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                                  'cPagesRemaining', 
-                                 "INT(11) NOT NULL DEFAULT '0'");
+                                 "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                                  'cRetractedInitial', 
-                                 "INT(11) NOT NULL DEFAULT '0'");
+                                 "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                                  'cRetractedTotal', 
-                                 "INT(11) NOT NULL DEFAULT '0'");
+                                 "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                                  'cRetractedToday', 
-                                 "INT(11) NOT NULL DEFAULT '0'");
+                                 "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                                  'cRetractedRemaining', 
-                                 "INT(11) NOT NULL DEFAULT '0'");
+                                 "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable, 
                                  'cPaperLoad', 
-                                 "INT(11) NOT NULL DEFAULT '0'");
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'cCardsInsertedOk', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'cCardsInsertedKo', 
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                                 'cCardsRemoved', 
+                                 "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
 
 

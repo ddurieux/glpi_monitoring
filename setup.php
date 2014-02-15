@@ -237,6 +237,10 @@ function plugin_init_monitoring() {
                                              array('PluginMonitoringComponentscatalog','replayRulesCatalog'),
                                        'PluginMonitoringComponentscatalog_rule' =>
                                              array('PluginMonitoringComponentscatalog_rule','getItemsDynamicly'));
+         $PLUGIN_HOOKS['pre_item_update']['monitoring'] = 
+                                 array('PluginMonitoringHostdailycounter' =>
+                                             array('PluginMonitoringHostdailycounter','pre_item_update')
+                                 );
          $PLUGIN_HOOKS['item_purge']['monitoring'] = 
                                  array('Computer'         => $rule_check,
                                        'NetworkEquipment' => $rule_check,
@@ -256,7 +260,6 @@ function plugin_init_monitoring() {
 
          if (!isset($_SESSION['glpi_plugin_monitoring']['_refresh'])) {
             $_SESSION['glpi_plugin_monitoring']['_refresh'] = '60';
-            
          }
 //      }
 
