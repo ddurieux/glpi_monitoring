@@ -304,7 +304,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       
       
       
-   function getData($result, $rrdtool_template, $start_date, $end_date, $ret=array(), $timecomplete=0, $todisplay) {
+   function getData($result, $rrdtool_template, $start_date, $end_date, $ret=array(), $timecomplete=0, $todisplay=array()) {
       global $DB;
       
       if (empty($ret)) {
@@ -362,6 +362,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
             $query_data[] = $edata;
          }
       }
+
       $timeup = $_SESSION['plugin_monitoring_checkinterval'] * 1.2;
       $current_timestamp = strtotime($end_date);
       while (($previous_timestamp + $timeup) < $current_timestamp) {
@@ -375,7 +376,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       }
       foreach ($query_data as $edata) {
          $current_timestamp = strtotime($edata['date']);
-         if ($previous_timestamp == '') {
+         if ('' == $previous_timestamp) {
             $previous_timestamp = $current_timestamp;
          }
          $a_perfdata = PluginMonitoringPerfdata::splitPerfdata($edata['perf_data']);
@@ -394,7 +395,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
          foreach ($a_perf['parseperfdata'] as $num=>$data) {
             if (count($todisplay) == 0
                     || isset($todisplay[$data['name']])) {
-               // Toolbox::logInFile("pm", "perfdata : $num, ".serialize($data)."\n");
+               
                if (isset($a_perfdata[$num])) {
                   $a_perfdata[$num] = trim($a_perfdata[$num], ", ");
                   $a_a_perfdata = explode("=", $a_perfdata[$num]);
@@ -404,9 +405,8 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                      $datanameregex = str_replace("*", "(.*)", $data['name']);
                      $regex = 1;
                   }
-                  // $a_perfdata_name[] = $data['name'];
                   if (($a_a_perfdata[0] == $data['name']
-                          OR $data['name'] == ''
+                          OR '' == $data['name']
                           OR ($regex == 1
                                   AND preg_match("/".$datanameregex."/", $data['name']))
                        )
@@ -418,7 +418,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                      foreach ($a_perfdata_final as $nb_val=>$val) {
 
                            //No value, no graph
-                           if ($val == '') {
+                           if ('' == $val) {
                               if ($nb_val >=(count($a_perfdata_final) - 1)) {
                                  continue;
                               } else {
@@ -468,8 +468,8 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                                  } else {
                                     $val = round($val, 2);
                                  }
-                                 break;                                                   
-                           }                                                
+                              
+                           }
 
                            $a_perfdata_name[$data['name']] = $data['DS'][$nb_val]['dsname'];
 
@@ -486,7 +486,8 @@ class PluginMonitoringServiceevent extends CommonDBTM {
    //                     }
                      }
                   } else {
-                     for ($nb_val=0; $nb_val < count($data['DS']); $nb_val++) {
+                     $nb_DS = count($data['DS']);
+                     for ($nb_val=0; $nb_val < $nb_DS; $nb_val++) {
                         $a_perfdata_name[$data['name']] = $data['DS'][$nb_val]['dsname'];
 
                         if (!isset($mydatat[$data['DS'][$nb_val]['dsname']])) {
@@ -502,7 +503,8 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                      }                  
                   }
                } else {
-                  for ($nb_val=0; $nb_val < count($data['DS']); $nb_val++) {
+                  $nb_DS = count($data['DS']);
+                  for ($nb_val=0; $nb_val < $nb_DS; $nb_val++) {
                      $a_perfdata_name[$data['name']] = $data['DS'][$nb_val]['dsname'];
 
                      if (!isset($mydatat[$data['DS'][$nb_val]['dsname']])) {
@@ -520,7 +522,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
             }
          }
       }
-      
+
       $a_incremental = array();
       foreach ($a_perf['parseperfdata'] as $data) {
          foreach ($data['DS'] as $num=>$data1) {
@@ -560,7 +562,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
             $mydatat[$name] = $data;
          }
       }
-
+      
       $a_perfdata_name = array_unique($a_perfdata_name);
       // Toolbox::logInFile("pm", "a_perfdata_name : ".serialize($a_perfdata_name)."\n");
       // Toolbox::logInFile("pm", "mydatat : ".serialize($mydatat)."\n");
