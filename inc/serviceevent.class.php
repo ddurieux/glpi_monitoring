@@ -393,46 +393,47 @@ class PluginMonitoringServiceevent extends CommonDBTM {
             }
          }
          foreach ($a_perf['parseperfdata'] as $num=>$data) {
-            if (count($todisplay) == 0
-                    || isset($todisplay[$data['name']])) {
-               
-               if (isset($a_perfdata[$num])) {
-                  $a_perfdata[$num] = trim($a_perfdata[$num], ", ");
-                  $a_a_perfdata = explode("=", $a_perfdata[$num]);
-                  $a_a_perfdata[0] = trim($a_a_perfdata[0], "'");
-                  $regex = 0;
-                  if (strstr($data['name'], "*")) {
-                     $datanameregex = str_replace("*", "(.*)", $data['name']);
-                     $regex = 1;
-                  }
-                  if (($a_a_perfdata[0] == $data['name']
-                          OR '' == $data['name']
-                          OR ($regex == 1
-                                  AND preg_match("/".$datanameregex."/", $data['name']))
-                       )
-                          AND isset($a_a_perfdata[1])) {
 
-                     $a_perfdata_final = explode(";", $a_a_perfdata[1]);
-                     // New perfdata row, no unit knew.
-                     $unity = '';
-                     foreach ($a_perfdata_final as $nb_val=>$val) {
+            if (isset($a_perfdata[$num])) {
+               $a_perfdata[$num] = trim($a_perfdata[$num], ", ");
+               $a_a_perfdata = explode("=", $a_perfdata[$num]);
+               $a_a_perfdata[0] = trim($a_a_perfdata[0], "'");
+               $regex = 0;
+               if (strstr($data['name'], "*")) {
+                  $datanameregex = str_replace("*", "(.*)", $data['name']);
+                  $regex = 1;
+               }
+               if (($a_a_perfdata[0] == $data['name']
+                       OR '' == $data['name']
+                       OR ($regex == 1
+                               AND preg_match("/".$datanameregex."/", $data['name']))
+                    )
+                       AND isset($a_a_perfdata[1])) {
 
-                           //No value, no graph
-                           if ('' == $val) {
-                              if ($nb_val >=(count($a_perfdata_final) - 1)) {
-                                 continue;
-                              } else {
-                                 $val = 0;
-                              }
+                  $a_perfdata_final = explode(";", $a_a_perfdata[1]);
+                  // New perfdata row, no unit knew.
+                  $unity = '';
+                  foreach ($a_perfdata_final as $nb_val=>$val) {
+                     if (count($todisplay) == 0
+                             || isset($todisplay[$data['DS'][$nb_val]['dsname']])) {
+
+                        //No value, no graph
+                        if ('' == $val) {
+                           if ($nb_val >=(count($a_perfdata_final) - 1)) {
+                              continue;
+                           } else {
+                              $val = 0;
                            }
-                           $matches = array();
-                           preg_match("/^([\d-\.]*)(.*)/",$val,$matches);
-                           //Numeric part is data value
-                           $val = (float)$matches[1];
-                           //Maintain for a same perfdata row, unity data. If set it's normally a new perfdata row.
-                           if ($matches[2]) {
-                              $unity = $matches[2];
-                           }
+                        }
+                        $toreplace = array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
+                        $unity = str_replace($toreplace, '', $val);
+
+                        //Maintain for a same perfdata row, unity data. If set it's normally a new perfdata row.
+                        if ($unity == '') {
+                           $val = round(($val + 0), 2);
+                        } else {
+                           $val = str_replace($unity, '', $val);
+
                            switch ($unity) {                           
                               case 'ms':
                               case 'bps':
@@ -463,31 +464,29 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                                  }
                                  break;                              
                               default :
-                                 if (!is_numeric($val)) {
-                                    $val = 0;
-                                 } else {
-                                    $val = round($val, 2);
-                                 }
-                              
-                           }
+                                 $val = round(($val + 0), 2);
 
-                           $a_perfdata_name[$data['name']] = $data['DS'][$nb_val]['dsname'];
+                           }
+                        }
+                        $a_perfdata_name[$data['name']] = $data['DS'][$nb_val]['dsname'];
 
-                           if (!isset($mydatat[$data['DS'][$nb_val]['dsname']])) {
-                              $mydatat[$data['DS'][$nb_val]['dsname']] = array();
+                        if (!isset($mydatat[$data['DS'][$nb_val]['dsname']])) {
+                           $mydatat[$data['DS'][$nb_val]['dsname']] = array();
+                        }
+                        array_push($mydatat[$data['DS'][$nb_val]['dsname']], $val);
+                        if ($data['incremental'][$nb_val] == 1) {
+                           if (!isset($mydatat[$data['DS'][$nb_val]['dsname']." | diff"])) {
+                              $mydatat[$data['DS'][$nb_val]['dsname']." | diff"] = array();
                            }
-                           array_push($mydatat[$data['DS'][$nb_val]['dsname']], $val);
-                           if ($data['incremental'][$nb_val] == 1) {
-                              if (!isset($mydatat[$data['DS'][$nb_val]['dsname']." | diff"])) {
-                                 $mydatat[$data['DS'][$nb_val]['dsname']." | diff"] = array();
-                              }
-                              array_push($mydatat[$data['DS'][$nb_val]['dsname']." | diff"], $val);                           
-                           }
-   //                     }
+                           array_push($mydatat[$data['DS'][$nb_val]['dsname']." | diff"], $val);                           
+                        }
                      }
-                  } else {
-                     $nb_DS = count($data['DS']);
-                     for ($nb_val=0; $nb_val < $nb_DS; $nb_val++) {
+                  }
+               } else {
+                  $nb_DS = count($data['DS']);
+                  for ($nb_val=0; $nb_val < $nb_DS; $nb_val++) {
+                     if (count($todisplay) == 0
+                          || isset($todisplay[$data['DS'][$nb_val]['dsname']])) {
                         $a_perfdata_name[$data['name']] = $data['DS'][$nb_val]['dsname'];
 
                         if (!isset($mydatat[$data['DS'][$nb_val]['dsname']])) {
@@ -500,11 +499,15 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                            }
                            array_push($mydatat[$data['DS'][$nb_val]['dsname']." | diff"], 0);                           
                         }
-                     }                  
+                     }  
                   }
-               } else {
-                  $nb_DS = count($data['DS']);
-                  for ($nb_val=0; $nb_val < $nb_DS; $nb_val++) {
+               }
+            } else {
+               $nb_DS = count($data['DS']);
+               for ($nb_val=0; $nb_val < $nb_DS; $nb_val++) {
+                  if (count($todisplay) == 0
+                       || isset($todisplay[$data['DS'][$nb_val]['dsname']])) {
+
                      $a_perfdata_name[$data['name']] = $data['DS'][$nb_val]['dsname'];
 
                      if (!isset($mydatat[$data['DS'][$nb_val]['dsname']])) {
@@ -518,7 +521,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                         array_push($mydatat[$data['DS'][$nb_val]['dsname']." | diff"], 0);                           
                      }
                   } 
-               }    
+               }
             }
          }
       }
@@ -553,11 +556,10 @@ class PluginMonitoringServiceevent extends CommonDBTM {
             $old_val = 0;
             foreach ($data as $num=>$val) {
                if ($val == 0) {
-                  $val = $old_val;
+                  $data[$num] = $old_val;
                } else {
                   $old_val = $val;
                }
-               $data[$num] = $val;
             }
             $mydatat[$name] = $data;
          }

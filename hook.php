@@ -269,6 +269,7 @@ function plugin_monitoring_MassiveActionsProcess($data) {
          }
          break;
    }
+   return TRUE;
 }
 
 
