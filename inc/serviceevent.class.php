@@ -413,7 +413,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                               $val = 0;
                            }
                         }
-                        $toreplace = array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
+                        $toreplace = array("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", ".");
                         $unity = str_replace($toreplace, '', $val);
 
                         //Maintain for a same perfdata row, unity data. If set it's normally a new perfdata row.
