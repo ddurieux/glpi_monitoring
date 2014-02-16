@@ -336,6 +336,7 @@ function plugin_monitoring_addLeftJoin($itemtype,$ref_table,$new_table,$linkfiel
          }
          break;
       
+/*
       case 'PluginMonitoringServiceevent':
          // Join between service events and components catalogs
          if ($new_table.".".$linkfield == "glpi_plugin_monitoring_components.plugin_monitoring_components_id") {
@@ -354,7 +355,7 @@ function plugin_monitoring_addLeftJoin($itemtype,$ref_table,$new_table,$linkfiel
             ";
          }
          break;
-      
+*/     
       case 'PluginMonitoringHostdailycounter':
          // Join between daily counters and computers
          if ($new_table.".".$linkfield == "glpi_computers.computers_id") {
