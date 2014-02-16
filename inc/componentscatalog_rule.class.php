@@ -437,6 +437,19 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
 
       $itemtype = get_class($parm);
       $items_id = $parm->fields['id'];
+
+      $session_glpisearch = array();
+      if (isset($_SESSION['glpisearch'])) {
+         $session_glpisearch = $_SESSION['glpisearch'];
+      }
+      $session_glpisearchcount = array();
+      if (isset($_SESSION['glpisearchcount'])) {
+         $session_glpisearchcount = $_SESSION['glpisearchcount'];
+      }
+      $session_glpisearchcount2 = array();
+      if (isset($_SESSION['glpisearchcount2'])) {
+         $session_glpisearchcount2 = $_SESSION['glpisearchcount2'];
+      }
       
       $a_find = array();
       $pmComponentscatalog_rule = new PluginMonitoringComponentscatalog_rule();
@@ -556,6 +569,10 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
          //Get networkports
          $pmComponentscatalog_rule->isThisItemCheckRuleNetworkport($parm);
       }
+      
+      $_SESSION['glpisearch'] = $session_glpisearch;
+      $_SESSION['glpisearchcount'] = $session_glpisearchcount;
+      $_SESSION['glpisearchcount2'] = $session_glpisearchcount2;
    }
    
    
