@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: GLPI Project - plugin monitoring \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-02-17 11:38+0100\n"
-"PO-Revision-Date: 2014-02-17 10:39+0000\n"
-"Last-Translator: David Durieux <d.durieux@siprossii.com>\n"
+"PO-Revision-Date: 2014-02-17 11:39+0000\n"
+"Last-Translator: mohier <frederic.mohier@gmail.com>\n"
 "Language-Team: French (France) (http://www.transifex.com/projects/p/GLPI_monitoring/language/fr_FR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -288,7 +288,7 @@ msgstr "Monitoring - tableau de bord ressources"
 
 #: front/serviceevent.php:47
 msgid "Monitoring - resources events"
-msgstr ""
+msgstr "Monitoring - événements"
 
 #: front/servicescatalog.form.php:49
 msgid "Monitoring - services catalogs"
@@ -482,7 +482,7 @@ msgstr "Hôtes dynamiques"
 
 #: inc/businessrulegroup.class.php:297
 msgid "Dynamic hosts list will be defined during Shinken configuration build."
-msgstr ""
+msgstr "La liste des hôtes concernés sera déterminé lors de la configuration Shinken."
 
 #: inc/canvas.class.php:372 inc/display.class.php:276
 msgid "Dependencies;"
@@ -1260,7 +1260,7 @@ msgstr "Flexible ?"
 
 #: inc/downtime.class.php:671
 msgid "Update downtimes expiration"
-msgstr ""
+msgstr "Mise à jour des expirations des maintenances."
 
 #: inc/entity.class.php:132
 msgid "Set tag to link entity with a specific Shinken server"
@@ -1320,7 +1320,7 @@ msgstr "Première IP"
 
 #: inc/hostconfig.class.php:85
 msgid "Host configuration"
-msgstr ""
+msgstr "Configuration de l'hôte"
 
 #: inc/hostconfig.class.php:148
 msgid "Hosts configuration"
@@ -1332,11 +1332,11 @@ msgstr "Royaume (reaml)"
 
 #: inc/hostcounter.class.php:56
 msgid "Counter update"
-msgstr ""
+msgstr "Mise à jour d'un compteur"
 
 #: inc/hostcounter.class.php:56 inc/hostcounter.class.php:92
 msgid "Counter updates"
-msgstr ""
+msgstr "Mise à jour des compteurs"
 
 #: inc/hostdailycounter.class.php:206 inc/hostdailycounter.class.php:465
 msgid "Day"
@@ -1344,7 +1344,7 @@ msgstr "Jour"
 
 #: inc/hostdailycounter.class.php:543
 msgid "Update daily counters"
-msgstr ""
+msgstr "Mettre à jour les compteurs quotidiens"
 
 #: inc/log.class.php:57
 msgid "Logs"
@@ -1424,7 +1424,7 @@ msgstr "Maintenances programmées"
 
 #: inc/profile.class.php:261
 msgid "Manage counters"
-msgstr ""
+msgstr "Gérer les compteurs"
 
 #: inc/profile.class.php:275
 msgid "dashboard"
@@ -1560,27 +1560,27 @@ msgstr "Liaison de la commande (utilisé pour la génération des graphiques)"
 
 #: inc/serviceevent.class.php:61 inc/serviceevent.class.php:88
 msgid "Service events"
-msgstr ""
+msgstr "Evénement d'une ressource"
 
 #: inc/serviceevent.class.php:99
 msgid "Service instance"
-msgstr ""
+msgstr "Instance de service"
 
 #: inc/serviceevent.class.php:104
 msgid "Date"
-msgstr ""
+msgstr "Date"
 
 #: inc/serviceevent.class.php:110
 msgid "Event output"
-msgstr ""
+msgstr "Message"
 
 #: inc/serviceevent.class.php:115
 msgid "Event performance data"
-msgstr ""
+msgstr "Données de comptage"
 
 #: inc/serviceevent.class.php:120
 msgid "Service state"
-msgstr ""
+msgstr "Etat du service"
 
 #: inc/servicescatalog.class.php:304
 msgid "Interval between 2 notifications"
@@ -1592,7 +1592,7 @@ msgstr "Niveau de priorité"
 
 #: inc/servicescatalog.class.php:329
 msgid "Services catalog template ?"
-msgstr ""
+msgstr "Modèle de catalogue de services ?"
 
 #: inc/servicescatalog.class.php:665
 msgid "Degraded mode"
@@ -1608,7 +1608,7 @@ msgstr "La communication avec Shinken a échoué : "
 
 #: inc/slider.class.php:57 inc/slider.class.php:78
 msgid "Slider"
-msgstr ""
+msgstr "Slider"
 
 #: inc/tag.class.php:99 inc/tag.class.php:142
 msgid "Username (Shinken webservice)"
@@ -1644,7 +1644,7 @@ msgstr "Indisponibilité"
 
 #: inc/unavailability.class.php:58 inc/unavailability.class.php:65
 msgid "Unavailabilities"
-msgstr ""
+msgstr "Indisponibilités"
 
 #: inc/unavailability.class.php:75
 msgid "Ressource"
@@ -1652,11 +1652,11 @@ msgstr "Ressource"
 
 #: inc/unavailability.class.php:81
 msgid "Unavailability start"
-msgstr ""
+msgstr "Début d'indisponibilité"
 
 #: inc/unavailability.class.php:87
 msgid "Unavailability end"
-msgstr ""
+msgstr "Fin d'indisponibilité"
 
 #: inc/unavailability.class.php:100
 msgid "Unavailability details"
@@ -1672,7 +1672,7 @@ msgstr "Changer l'état"
 
 #: inc/unavailability.class.php:151
 msgid "Update unavailability periods"
-msgstr ""
+msgstr "Mettre à jour les périodes d'indisponibilité"
 
 #: inc/weathermap.class.php:87 inc/weathermap.class.php:396
 msgid "Nodes and links"
