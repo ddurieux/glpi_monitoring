@@ -533,7 +533,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
             echo  "<td class='left'><a href='".$link."'>".$hosts_ids[$hosts_id]['name']."</a></td>";
          } else {
-            echo  "<td class='left'>".$host."</td>";
+            echo  "<td class='left'>".$hosts_ids[$hosts_id]['name']."</td>";
          }
          for ($i = 0; $i < count($services); $i++) {
             if ($services[$i] == '_fake_') continue;
@@ -541,7 +541,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             if ($resources[$services[$i]]['state'] != 'OK') {
                $overallServicesState = $resources[$services[$i]]['state'];
             }
-            echo '<td>';
+            echo '<td class="vertical-service">';
             if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
                $link_service = $link;
                $link_service .= "&link[1]=AND&field[1]=2&searchtype[1]=equals&contains[1]=".
@@ -564,6 +564,12 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       }
       echo  '</table>';
       echo '</div>';
+      if ($overallServicesState != 'OK') {
+         echo "<script>
+            Ext.onReady(function(){ 
+               toggleEntity('entity-$id-$entityId');
+            });</script>";
+      }
    }
    
    

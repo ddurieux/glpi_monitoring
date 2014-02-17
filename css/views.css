@@ -317,6 +317,19 @@ td .vertical {
 	padding-right: 2px;
 }
 
+td .vertical-service {
+	height: auto;
+	width: 18px;
+	vertical-align: center;
+	text-align: center;
+	overflow: visible!important;
+	white-space: nowrap;
+	border-top: 0;
+	font-weight: normal;
+	padding-left: 2px;
+	padding-right: 2px;
+}
+
 /*
 .vertical-text {
 	width: 18px;
