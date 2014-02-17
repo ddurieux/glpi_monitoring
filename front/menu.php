@@ -56,8 +56,8 @@ if (PluginMonitoringProfile::haveRight("dashboard", 'r') && !PluginMonitoringPro
    Html::redirect($CFG_GLPI['root_doc']."/plugins/monitoring/front/dashboard.php");
 }
 
-$pmSlider = new PluginMonitoringSlider();
-$pmSlider->slideSlider();
+// $pmSlider = new PluginMonitoringSlider();
+// $pmSlider->slideSlider();
 
 if (PluginMonitoringProfile::haveRight("dashboard", 'r')
       && (

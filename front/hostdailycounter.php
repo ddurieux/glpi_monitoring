@@ -67,7 +67,7 @@ if (isset($_GET['check'])) {
    // Default date is up to now
    // Default limit is 1000 records
    // PluginMonitoringHostdailycounter::cronDailyCounters('2013-11-21 00:00:00', 'ek3k-cnam-0014');
-   PluginMonitoringHostdailycounter::runUpdateCounters('', '%', '1000');
+   PluginMonitoringHostdailycounter::runUpdateCounters('', '%', '6000');
 // }
 
 Search::show('PluginMonitoringHostdailycounter');
