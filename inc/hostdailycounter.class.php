@@ -213,7 +213,8 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          $tab[$i]['field']          = $key;
          $tab[$i]['name']           = __($value['name'], 'monitoring');
          // $tab[$i]['massiveaction']  = false;
-         $tab[$i]['datatype']       = 'specific';
+         // $tab[$i]['datatype']       = 'specific';
+         $tab[$i]['datatype']       = 'number';
          $i++;
       }
 
@@ -777,27 +778,44 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                                   "`updated`='0' AND `hostname` LIKE '$hostname' AND `date` < date('$date')");
    }
    
-   static function runCheckCounters($date='', $hostname='%', $interval=7) {
+   static function runCheckCounters($date='', $hostname='%', $interval=-1) {
       global $DB;
       
       if ($date == '') $date = date('Y-m-d H:i:s');
 
-      Toolbox::logInFile("pm", "Check daily counters for '$hostname' up to $date, interval : $interval days\n");
+      Toolbox::logInFile("pm-checkCounters", "Check daily counters for '$hostname' up to $date, interval : $interval days\n");
       
       $pmCounters          = new PluginMonitoringHostdailycounter();
       $pmCurrentCounter    = new PluginMonitoringHostdailycounter();
       $pmPreviousCounter   = new PluginMonitoringHostdailycounter();
       
-      $a_checkables = $pmCounters->find ("`hostname` LIKE '$hostname' AND `day` BETWEEN DATE_SUB('$date', INTERVAL $interval DAY) AND date('$date')", "`hostname` ASC, `day` ASC");
+      if ($interval == -1) {
+         $a_checkables = $pmCounters->find ("`hostname` LIKE '$hostname' AND `day` < date('$date')", "`hostname` ASC, `day` ASC");
+      } else {
+         $a_checkables = $pmCounters->find ("`hostname` LIKE '$hostname' AND `day` BETWEEN DATE_SUB('$date', INTERVAL $interval DAY) AND date('$date')", "`hostname` ASC, `day` ASC");
+      }
+      $negativeCountersHosts = array();
       foreach ($a_checkables as $checkable) {
-         Toolbox::logInFile("pm", "Daily counters for '".$checkable['hostname']."', day : ".$checkable['day']."\n");
-         continue;
+         // Toolbox::logInFile("pm", "Daily counters for '".$checkable['hostname']."', day : ".$checkable['day']."\n");
+         // continue;
          
          // What is checked ...
          foreach (self::$managedCounters as $key => $value) {
-            if ($this->fields[$key] < 0) {
-               Toolbox::logInFile("pm-counters", "Counter '$key' for '".$checkable['hostname']."', day : ".$checkable['day']." is negative !\n");
+            // Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname']."', day : ".$checkable['day']."\n");
+            if ($checkable[$key] < 0) {
+               if (! isset($negativeCountersHosts[$checkable['hostname']])) {
+                  $negativeCountersHosts[$checkable['hostname']] = array();
+               }
+               $negativeCountersHosts[$checkable['hostname']][$key] = $value;
+               // Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname']."', day : ".$checkable['day']." is negative !\n");
             }
+         }
+      }
+      foreach ($negativeCountersHosts as $hostname => $negativeCounters) {
+         foreach ($negativeCounters as $counter => $value) {
+            Toolbox::logInFile("pm-checkCounters", "Host should be checked for $hostname : $counter\n");
+            // Toolbox::logInFile("pm-checkCounters", "Host should be checked for $hostname : $counter = $value\n");
+            // Toolbox::logInFile("pm-checkCounters", "Host should be checked for $hostname : $counter = $value\n");
          }
       }
    }

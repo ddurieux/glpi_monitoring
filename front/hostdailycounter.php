@@ -57,8 +57,7 @@ if (isset($_GET['check'])) {
    // Default hostname is all hosts, else hostname is used in SQL LIKE query 
    // Default date is now
    // Default interval is 7 days
-   // PluginMonitoringHostdailycounter::cronDailyCounters('2013-11-21 00:00:00', 'ek3k-cnam-0014');
-   PluginMonitoringHostdailycounter::runCheckCounters(isset($_GET['date']) ? $_GET['date'] : '', isset($_GET['hostname']) ? $_GET['hostname'] : '%', isset($_GET['interval']) ? $_GET['interval'] : 7);
+   PluginMonitoringHostdailycounter::runCheckCounters(isset($_GET['date']) ? $_GET['date'] : '', isset($_GET['hostname']) ? $_GET['hostname'] : '%', isset($_GET['interval']) ? $_GET['interval'] : -1);
 }
 
 // if (isset($_GET['forceUpdate'])) {
@@ -66,7 +65,6 @@ if (isset($_GET['check'])) {
    // Default hostname is all hosts, else hostname is used in SQL LIKE query 
    // Default date is up to now
    // Default limit is 1000 records
-   // PluginMonitoringHostdailycounter::cronDailyCounters('2013-11-21 00:00:00', 'ek3k-cnam-0014');
    PluginMonitoringHostdailycounter::runUpdateCounters('', '%', '6000');
 // }
 

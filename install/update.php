@@ -3150,6 +3150,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                                  'updated', 
                                  "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addKey($newTable,
+                            array('hostname','date','updated'),
+                            'updated');
       $migration->migrationOneTable($newTable);
 
 

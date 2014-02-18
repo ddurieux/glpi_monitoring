@@ -907,5 +907,6 @@ CREATE TABLE `glpi_plugin_monitoring_hostcounters` (
 	`value` int(11) NOT NULL DEFAULT '0',
 	`updated` tinyint(1) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`id`),
-	KEY `hostname` (`hostname`)
+	KEY `hostname` (`hostname`),
+	KEY `updated` (`hostname`, `date`, `updated`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
