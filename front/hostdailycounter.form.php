@@ -42,9 +42,9 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("config","r");
+PluginMonitoringProfile::checkRight("counters","w");
 
-Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins", 
+Html::header(__('Monitoring - daily counters', 'monitoring'),$_SERVER["PHP_SELF"], "plugins", 
              "monitoring", "hostdailycounter");
 
 
