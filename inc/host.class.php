@@ -571,14 +571,10 @@ class PluginMonitoringHost extends CommonDBTM {
       $host_services_ids = array();
       $host_services_state_list = '';
       $host_services_state = 'OK';
-      $query = "SELECT
-                  `glpi_computers`.`name` as hostname
-                  , `glpi_plugin_monitoring_services`.*
+      $query = "SELECT `glpi_plugin_monitoring_services`.*
                FROM `glpi_plugin_monitoring_hosts`
                   INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts` 
                      ON (`glpi_plugin_monitoring_hosts`.`itemtype` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`) AND (`glpi_plugin_monitoring_hosts`.`items_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`)
-                  INNER JOIN `glpi_computers` 
-                     ON (`glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`)
                   INNER JOIN `glpi_plugin_monitoring_services` 
                      ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
                WHERE ($where )

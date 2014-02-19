@@ -1437,7 +1437,7 @@ LINK DEFAULT
      .attr("target", "_blank");
        
     nodes.append("circle")
-       .attr("r", 14);
+       .attr("r", 10);
 
     nodes.append("text")
        .attr("x", 18)
