@@ -60,10 +60,11 @@ if (!isset($_POST["id"])
 }
 
 $pmWeathermap = new PluginMonitoringWeathermap();
+if ($_POST['extra_infos'] < 100) {
+   echo "<a href='".$CFG_GLPI['root_doc'].
+           "/plugins/monitoring/front/weathermap_full.php?id=".$_POST["id"].
+           "' target='_blank'>".__('Open weathermap in new window at 100%', 'monitoring')."</a>";
+}
 $pmWeathermap->drawMap(2, $_POST['extra_infos']);
-
-//$pmWeathermap = new PluginMonitoringWeathermap();
-//$map = $pmWeathermap->showWidget($_POST["id"], $_POST['extra_infos']);
-//echo $map;
 
 ?>

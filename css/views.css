@@ -605,6 +605,30 @@ line.linkblack {
    stroke: #000;
 }
 
+.linklabel {
+   fill: #1192ff;
+   font-size: 12px;
+   font-weight:bold;
+}
+
+.linklabelgreen {
+   fill: #606060;
+   font-size: 12px;
+   font-weight:bold;
+}
+
+.linklabelorange {
+   fill: #ffc147;
+   font-size: 12px;
+   font-weight:bold;
+}
+
+.linklabelred {
+   fill: #ff4f35;
+   font-size: 12px;
+   font-weight:bold;
+}
+
 .node circle {
   fill: #ccc;
   stroke: #000;

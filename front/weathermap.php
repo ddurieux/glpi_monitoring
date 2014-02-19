@@ -48,6 +48,13 @@ Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "weathermap");
 
 
+PluginMonitoringToolbox::loadLib();
+
+$pmWeathermap = new PluginMonitoringWeathermap();
+
+$pmWeathermap->drawMap(2);
+
+
 Search::show('PluginMonitoringWeathermap');
 
 Html::footer();

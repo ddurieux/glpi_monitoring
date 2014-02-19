@@ -1328,12 +1328,14 @@ LINK DEFAULT
          ORDER BY `name`";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
-         $name = $data['name'];         
+         $name = $data['name']; 
+         $url = '';
          if ($name == '') {
             $itemtype = $data['itemtype'];
             $item = new $itemtype();
             $item->getFromDB($data['items_id']);
-            $name = $item->getName();    
+            $name = $item->getName(); 
+            $url = $item->getLinkURL();
          }
          $a_mapping[$data['id']] = $i;
          $i++;
@@ -1343,7 +1345,8 @@ LINK DEFAULT
              'x'     => ($widthw * $data['x']) / 100,
              'y'     => ($widthw * $data['y']) / 100,
              'fixed' => TRUE,
-             "group" => 3
+             "group" => 3,
+             "url"   => $url
          );
       }
       
@@ -1428,8 +1431,11 @@ LINK DEFAULT
         .data(force.nodes())
       .enter().append("g")
         .attr("class", "node")
-        .call(force.drag);
-     
+        .call(force.drag)
+   .append("a")
+     .attr("xlink:href", function (d) { return d.url; })
+     .attr("target", "_blank");
+       
     nodes.append("circle")
        .attr("r", 14);
 
@@ -1437,8 +1443,47 @@ LINK DEFAULT
        .attr("x", 18)
        .attr("dy", ".35em")
        .text(function(d) { return d.name; });
-        
-        
+
+
+   var rectdown = svg.selectAll("line.link")
+        .data(force.links())
+        .enter().append("rect")  
+    .attr("height", 18)
+    .attr("width", 40)
+    .style("fill", "#d9d9d9")
+    .attr("rx", 2)
+    .attr("ry", 2);
+
+   var textdown = svg.selectAll("line.link")
+        .data(force.links())
+    .enter().append("text")
+      .attr("dy", ".25em")
+      .attr("text-anchor", "middle")
+      .style("pointer-events", "none")
+      //.classed("linklabel", true)
+      .attr("class", function(d) { return "linklabel" + d.down;})
+      .text(function(d) { return d.downusage + " %";})
+
+   var rectup = svg.selectAll("line.link")
+        .data(force.links())
+        .enter().append("rect")  
+    .attr("height", 18)
+    .attr("width", 40)
+    .style("fill", "#d9d9d9")
+    .attr("rx", 2)
+    .attr("ry", 2);
+
+   var textup = svg.selectAll("line.link")
+        .data(force.links())
+    .enter().append("text")
+      .attr("dy", ".25em")
+      .attr("text-anchor", "middle")
+      .style("pointer-events", "none")
+      //.classed("linklabel", true)
+      .attr("class", function(d) { return "linklabel" + d.up;})
+      .text(function(d) { return d.upusage + " %";})
+
+
     force.on("tick", function() {
         linksupusage.attr("x1", function(d) { return d.source.x; })
             .attr("y1", function(d) { return d.source.y; })
@@ -1462,9 +1507,27 @@ LINK DEFAULT
 
         nodes
             .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-     });
+';
+      
+         echo '
+rectdown.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 150) - 20;})
+    .attr("y", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 150) - 10;});
 
-        </script>';
+   textdown.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 150); })
+      .attr("y", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 150); });
+
+
+
+   rectup.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 50) - 20;})
+    .attr("y", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 50) - 10;});
+            
+   textup.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 50); })
+      .attr("y", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 50); });
+
+     });
+';
+
+echo '        </script>';
 
       
    }
@@ -1472,6 +1535,7 @@ LINK DEFAULT
    
    
    function d3jsLink($updown, $type) {
+      global $CFG_GLPI;
 
       $linkcolor = '" + d.'.$updown;
       if ($type == 'notusage') {
@@ -1499,7 +1563,7 @@ LINK DEFAULT
             '<script>$.ajax({'.
 
                  'type: \'post\','.
-                 'url: \'/glpi084/plugins/monitoring/ajax/updateChart.php\','.
+                 'url: \''.$CFG_GLPI['root_doc'].'/plugins/monitoring/ajax/updateChart.php\','.
                  'data: { rrdtool_template:" + d.rrdtool_template + ",itemtype:\'PluginMonitoringService\',items_id:" + d.services_id + ",timezone:0,time:\'2h\',suffix:\''.$updown.$type.'\',customdate:\'\',customtime:\'\',components_id:" + d.components_id + ",sess_id:\''.session_id().'\',glpiID:\''.$_SESSION['glpiID'].'\',plugin_monitoring_securekey:\''.$_SESSION['plugin_monitoring_securekey'].'\' },'.
                  'success: function(data) {'.
                  '     $(\'#updategraph" + d.services_id + "2h'.$updown.$type.'\').html(data);'.

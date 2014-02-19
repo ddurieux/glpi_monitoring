@@ -51,6 +51,11 @@ if (!isset($_GET['id'])) {
 }
 $id = $_GET['id'];
 $pmWeathermap = new PluginMonitoringWeathermap();
+
+PluginMonitoringToolbox::loadLib();
+
+$pmWeathermap->drawMap($id);
+exit;
 $pmWeathermap->generateWeathermap($id);
 
 echo '<div id="custom_date" style="display:none"></div>';
