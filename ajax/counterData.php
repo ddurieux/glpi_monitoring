@@ -28,46 +28,33 @@
    ------------------------------------------------------------------------
 
    @package   Plugin Monitoring for GLPI
-   @author    Frédéric Mohier
+   @author    David Durieux
    @co-author 
    @comment   
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
-   @since     2011
+   @since     2014
  
    ------------------------------------------------------------------------
  */
 
-include ("../../../inc/includes.php");
-
-PluginMonitoringProfile::checkRight("counters","w");
-
-Html::header(__('Monitoring - daily counters', 'monitoring'),$_SERVER["PHP_SELF"], "plugins", 
-             "monitoring", "hostdailycounter");
-
-
-$pmHostdailycounter = new PluginMonitoringHostdailycounter();
-
-if (isset ($_POST["add"])) {
-   $pmHostdailycounter->add($_POST);
-   $pmHostdailycounter->redirectToList();
-} else if (isset ($_POST["update"])) {
-   $pmHostdailycounter->update($_POST);
-   $pmHostdailycounter->redirectToList();
-} else if (isset ($_POST["delete"])) {
-   $pmHostdailycounter->delete($_POST);
-   $pmHostdailycounter->redirectToList();
+// Direct access to file
+if (strpos($_SERVER['PHP_SELF'],"counterData.php")) {
+   include ("../../../inc/includes.php");
+   header("Content-Type: text/html; charset=UTF-8");
+   Html::header_nocache();
 }
 
-
-if (isset($_GET["id"])) {
-   $pmHostdailycounter->showForm($_GET["id"], array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
-} else {
-   $pmHostdailycounter->showForm(0, array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
+if (!defined('GLPI_ROOT')) {
+   die("Can not acces directly to this file");
 }
 
-Html::footer();
+Session::checkLoginUser();
+if (isset($_POST['id'])) {
+   $pmCustomitem_Counter = new PluginMonitoringCustomitem_Counter();
+   $pmCustomitem_Counter->showDefineDataOfCounter($_POST['id']);
+}
 
-?> 
+?>

@@ -492,7 +492,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
          $this->fields['notified'] = 1;
       } else {
          Session::addMessageAfterRedirect(__('Downtime deletion has not been accepted by the monitoring application:', 'monitoring'), false, ERROR);
-         return false;
+         // return false;
       }
 
       return true;

@@ -612,9 +612,9 @@ class PluginMonitoringService extends CommonDBTM {
          echo "</tr>";
          
          echo "<tr class='tab_bg_1'>";
-         echo "<th>";
-         echo __('Show counters', 'monitoring');
-         echo "</th>";
+         // echo "<th>";
+         // echo __('Show counters', 'monitoring');
+         // echo "</th>";
          echo "<th>";
          echo __('Show graphics', 'monitoring');
          echo "</th>";

@@ -55,62 +55,102 @@ class PluginMonitoringUnavailability extends CommonDBTM {
    
    
    static function getTypeName($nb=0) {
-      return _n(__('Unavailability', 'monitoring'),__('Unavailabilities', 'monitoring'),$nb);
+      return __CLASS__;
    }
    
    
+   static function canView() {
+      return PluginMonitoringProfile::haveRight("acknowledge", 'r');
+   }
+
    
+    /**
+    * Display tab
+    * 
+    * @param CommonGLPI $item
+    * @param integer $withtemplate
+    * 
+    * @return varchar name of the tab(s) to display
+    */
+   function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      if ($item->getType() == 'Computer'){
+         return __('Unavailabilities', 'monitoring');
+      }
+      
+      return '';
+   }
+   
+   
+   static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+
+      if ($item->getType()=='Computer') {
+         if (self::canView()) {
+            // Show list filtered on item, sorted on component ascending ...
+            Search::showList(PluginMonitoringUnavailability::getTypeName(), array(
+               'field' => array(22), 'searchtype' => array('equals'), 'contains' => array($item->getID()), 
+               'sort' => 21, 'order' => 'ASC'
+               ));
+            return true;
+         }
+      }
+      return true;
+   }
+
+
    function getSearchOptions() {
       $tab = array();
       $tab['common'] = _n(__('Unavailability', 'monitoring'),__('Unavailabilities', 'monitoring'), 2);
 
-      $tab[1]['table']         = $this->getTable();
-      $tab[1]['field']         = 'id';
-      $tab[1]['name']          = __('ID');
-      $tab[1]['massiveaction'] = false;
-      
-      $tab[2]['table']         = "glpi_plugin_monitoring_services";
-      $tab[2]['field']         = 'name';
-      // $tab[2]['linkfield']     = 'plugin_monitoring_services_id';
-      $tab[2]['name']          = __('Ressource', 'monitoring');
-      // $tab[2]['datatype']      = 'itemlink';
-      // $tab[2]['itemlink_type']  = 'PluginMonitoringService';
+      $tab[1]['table']          = $this->getTable();
+      $tab[1]['field']          = 'id';
+      $tab[1]['name']           = __('ID');
+      $tab[1]['massiveaction']  = false;
 
-      $tab[3]['table']         = $this->getTable();
-      $tab[3]['field']         = 'begin_date';
-      $tab[3]['name']          = __('Unavailability start', 'monitoring');
-      $tab[3]['datatype']      = 'datetime';
-      $tab[3]['massiveaction'] = false;
+      $tab[2]['table']          = "glpi_plugin_monitoring_services";
+      $tab[2]['field']          = 'id';
+      $tab[2]['name']           = __('Ressource', 'monitoring');
+
+      $tab[21]['table']         = 'glpi_plugin_monitoring_components';
+      $tab[21]['field']         = 'name';
+      $tab[21]['name']          = __('Component', 'monitoring');
+      $tab[21]['datatype']      = 'itemlink';
+      $tab[21]['itemlink_type'] = 'Component';
       
-      $tab[4]['table']         = $this->getTable();
-      $tab[4]['field']         = 'end_date';
-      $tab[4]['name']          = __('Unavailability end', 'monitoring');
-      $tab[4]['datatype']      = 'datetime';
-      $tab[4]['massiveaction'] = false;
+      $tab[22]['table']         = 'glpi_computers';
+      $tab[22]['field']         = 'name';
+      $tab[22]['name']          = __('Host', 'monitoring');
+      $tab[22]['datatype']      = 'itemlink';
+      $tab[22]['itemlink_type'] = 'Computer';
       
-      $tab[5]['table']         = $this->getTable();
-      $tab[5]['field']         = 'duration';
-      $tab[5]['name']          = __('Duration', 'monitoring');
-      $tab[5]['datatype']      = 'timestamp';
-      $tab[5]['withseconds']   = true;
-      $tab[5]['massiveaction'] = false;
+      $tab[3]['table']          = $this->getTable();
+      $tab[3]['field']          = 'begin_date';
+      $tab[3]['name']           = __('Unavailability start', 'monitoring');
+      $tab[3]['datatype']       = 'datetime';
       
-      $tab[6]['table']         = $this->getTable();
-      $tab[6]['field']         = 'details';
-      $tab[6]['name']          = __('Unavailability details', 'monitoring');
-      $tab[6]['datatype']      = 'text';
-      $tab[6]['massiveaction'] = false;
+      $tab[4]['table']          = $this->getTable();
+      $tab[4]['field']          = 'end_date';
+      $tab[4]['name']           = __('Unavailability end', 'monitoring');
+      $tab[4]['datatype']       = 'datetime';
       
-      $tab[7]['table']         = $this->getTable();
-      $tab[7]['field']         = 'scheduled';
-      $tab[7]['name']          = __('Scheduled unavailability', 'monitoring');
-      $tab[7]['datatype']      = 'bool';
+      $tab[5]['table']          = $this->getTable();
+      $tab[5]['field']          = 'duration';
+      $tab[5]['name']           = __('Duration', 'monitoring');
+      $tab[5]['datatype']       = 'timestamp';
+      $tab[5]['withseconds']    = true;
+      
+      $tab[6]['table']          = $this->getTable();
+      $tab[6]['field']          = 'details';
+      $tab[6]['name']           = __('Unavailability details', 'monitoring');
+      $tab[6]['datatype']       = 'text';
+      
+      $tab[7]['table']          = $this->getTable();
+      $tab[7]['field']          = 'scheduled';
+      $tab[7]['name']           = __('Scheduled unavailability', 'monitoring');
+      $tab[7]['datatype']       = 'bool';
       // $tab[7]['unit']          = '<a href="www.google.fr">Toggle</a>';
-      $tab[7]['massiveaction'] = false;
       
       return $tab;
    }
-   
    
    
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {
@@ -125,6 +165,11 @@ class PluginMonitoringUnavailability extends CommonDBTM {
             self::$currentItem = new PluginMonitoringUnavailability();
             self::$currentItem->getFromDB($values[$field]);
             break;
+            
+         case "name" :
+            return "test";
+            break;
+            
          case "scheduled" :
             $out = Dropdown::getValueWithUnit(Dropdown::getYesNo($values[$field]), '');
             if (PluginMonitoringProfile::haveRight("acknowledge", 'r')) {
@@ -142,7 +187,6 @@ class PluginMonitoringUnavailability extends CommonDBTM {
    }
    
    
-   
    static function cronInfo($name){
 
       switch ($name) {
@@ -154,6 +198,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
       return array();
    }
 
+   
    static function cronUnavailability() {
       
       ini_set("max_execution_time", "0");
@@ -165,11 +210,11 @@ class PluginMonitoringUnavailability extends CommonDBTM {
    }
    
    
-   
    static function runUnavailability($services_id = 0) {
       global $DB;
       
 
+      Toolbox::logInFile("pm", "runUnavailability : service identifier : $services_id\n");
       $pmUnavailability = new PluginMonitoringUnavailability();
       $pmServiceevent = new PluginMonitoringServiceevent();
       
@@ -188,6 +233,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
                AND `state_type`='HARD'
                AND `plugin_monitoring_services_id`='".$data['id']."'");
          
+         Toolbox::logInFile("pm", "runUnavailability : service ".$data['id'].", count : $nb\n");
          for ($i=0; $i < $nb; $i += 10000) {
             $query2 = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `unavailability`='0'
@@ -198,9 +244,9 @@ class PluginMonitoringUnavailability extends CommonDBTM {
             $result2 = $DB->query($query2);
             while ($data2=$DB->fetch_array($result2)) {
                $pmUnavailability->checkState($data2['state'], 
-                                           $data2['date'], 
-                                           $data['id'], 
-                                           $DB->escape($data2['event']));
+                                             $data2['date'], 
+                                             $data['id'], 
+                                             $DB->escape($data2['event']));
                $input = array();
                $input['id'] = $data2['id'];
                $input['unavailability'] = 1;
@@ -209,7 +255,6 @@ class PluginMonitoringUnavailability extends CommonDBTM {
          }
       }
    }
-   
    
    
    function getCurrentState($plugin_monitoring_services_id) {
@@ -234,11 +279,33 @@ class PluginMonitoringUnavailability extends CommonDBTM {
    
    function checkState($stateevent, $date, $services_id, $event) {
       
-      // Toolbox::logInFile("pm", "unavailability_details - ".$this->unavailability_details." : $event\n");
-      // Toolbox::logInFile("pm", "checkState - $services_id : $event\n");
-      $state = PluginMonitoringHost::getState($stateevent, "HARD", $event);
+      // $state = PluginMonitoringHost::getState($stateevent, "HARD", $event);
+      switch($stateevent) {
+         case 'UP':
+         case 'OK':
+            $shortstate = 'green';
+            break;
+
+         case 'DOWN':
+         case 'UNREACHABLE':
+         case 'CRITICAL':
+         case 'DOWNTIME':
+            $shortstate = 'red';
+            break;
+
+         case 'WARNING':
+         case 'RECOVERY':
+         case 'FLAPPING':
+            $shortstate = 'orange';
+            break;
+         
+         default:
+            $shortstate = 'yellow';
+            break;
+         
+      }
       
-      if ($state == 'red') { // Critical
+      if ($shortstate == 'red') { // Critical
          if ($this->currentstate == 'ok') {
             // Add 
             $input = array();

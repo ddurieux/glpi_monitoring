@@ -299,13 +299,14 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $a_table['oldname'] = array();
 
       $a_table['fields']  = array(
-         'id'          => array('type'    => 'autoincrement', 'value'   => ''),
-         'name'        => array('type'    => 'string',        'value'   => NULL),
-         'entities_id' => array('type'    => 'integer',       'value'   => NULL),
-         'is_recursive'=> array('type'    => 'bool',          'value'   => NULL),
-         'aggregate_items'=> array('type'    => 'text',          'value'   => NULL),
-         'time'           => array('type'    => 'string',        'value'   => NULL),
-         'time_specific'  => array('type'    => 'string',        'value'   => NULL)
+         'id'              => array('type'    => 'autoincrement', 'value'   => ''),
+         'name'            => array('type'    => 'string',        'value'   => NULL),
+         'entities_id'     => array('type'    => 'integer',       'value'   => NULL),
+         'is_recursive'    => array('type'    => 'bool',          'value'   => NULL),
+         'type'            => array('type'    => 'string',        'value'   => NULL),
+         'aggregate_items' => array('type'    => 'text',          'value'   => NULL),
+         'time'            => array('type'    => 'string',        'value'   => NULL),
+         'time_specific'   => array('type'    => 'string',        'value'   => NULL)
       );
       
       $a_table['oldfields']  = array();
@@ -327,17 +328,17 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $a_table['oldname'] = array();
 
       $a_table['fields']  = array(
-         'id'          => array('type'    => 'autoincrement', 'value'   => ''),
-         'name'        => array('type'    => 'string',        'value'   => NULL),
-         'entities_id' => array('type'    => 'integer',       'value'   => NULL),
-         'is_recursive'=> array('type'    => 'bool',          'value'   => NULL),
-         'type'        => array('type'    => 'string',        'value'   => NULL),
-         'aggregate_items'=> array('type'    => 'text',          'value'   => NULL),
-         'aggregate_warn'=> array('type'    => 'text',          'value'   => NULL),
-         'aggregate_crit'=> array('type'    => 'text',          'value'   => NULL),
-         'aggregate_limit'=> array('type'    => 'text',          'value'   => NULL),
-         'time'           => array('type'    => 'string',        'value'   => NULL),
-         'time_specific'  => array('type'    => 'string',        'value'   => NULL)
+         'id'              => array('type'    => 'autoincrement', 'value'   => ''),
+         'name'            => array('type'    => 'string',        'value'   => NULL),
+         'entities_id'     => array('type'    => 'integer',       'value'   => NULL),
+         'is_recursive'    => array('type'    => 'bool',          'value'   => NULL),
+         'type'            => array('type'    => 'string',        'value'   => NULL),
+         'aggregate_items' => array('type'    => 'text',          'value'   => NULL),
+         'aggregate_warn'  => array('type'    => 'text',          'value'   => NULL),
+         'aggregate_crit'  => array('type'    => 'text',          'value'   => NULL),
+         'aggregate_limit' => array('type'    => 'text',          'value'   => NULL),
+         'time'            => array('type'    => 'string',        'value'   => NULL),
+         'time_specific'   => array('type'    => 'string',        'value'   => NULL)
       );
       
       $a_table['oldfields']  = array();
@@ -3150,6 +3151,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                                  'updated', 
                                  "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addKey($newTable,
+                            array('hostname','date','updated'),
+                            'updated');
       $migration->migrationOneTable($newTable);
 
 

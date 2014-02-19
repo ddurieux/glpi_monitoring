@@ -44,13 +44,13 @@ include ("../../../inc/includes.php");
 
 Session::checkCentralAccess();
 
-Html::header(__('Monitoring', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
+Html::header(__('Monitoring - unavailabilities', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
              "monitoring", "unavailability");
 
-if (isset($_GET['contains'])) {
-   $pmUnavailability = new PluginMonitoringUnavailability();
-   $pmUnavailability->showList($_GET);
-}
+// if (isset($_GET['contains'])) {
+   // $pmUnavailability = new PluginMonitoringUnavailability();
+   // $pmUnavailability->showList($_GET);
+// }
 
 if (isset($_GET['component_catalog_id'])) {
    $pmUnavailability = new PluginMonitoringUnavailability();
@@ -63,6 +63,8 @@ if (isset($_GET['forceUpdate'])) {
    // Default services_id is 0 for all services 
    PluginMonitoringUnavailability::runUnavailability(isset($_GET['services_id']) ? $_GET['services_id'] : 0);
 }
+
+Search::show('PluginMonitoringUnavailability');
 
 Html::footer();
 ?>

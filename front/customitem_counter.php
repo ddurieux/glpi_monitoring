@@ -28,7 +28,7 @@
    ------------------------------------------------------------------------
 
    @package   Plugin Monitoring for GLPI
-   @author    Frédéric Mohier
+   @author    David Durieux
    @co-author 
    @comment   
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
@@ -42,32 +42,13 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("counters","w");
+PluginMonitoringProfile::checkRight("config","r");
 
-Html::header(__('Monitoring - daily counters', 'monitoring'),$_SERVER["PHP_SELF"], "plugins", 
-             "monitoring", "hostdailycounter");
-
-
-$pmHostdailycounter = new PluginMonitoringHostdailycounter();
-
-if (isset ($_POST["add"])) {
-   $pmHostdailycounter->add($_POST);
-   $pmHostdailycounter->redirectToList();
-} else if (isset ($_POST["update"])) {
-   $pmHostdailycounter->update($_POST);
-   $pmHostdailycounter->redirectToList();
-} else if (isset ($_POST["delete"])) {
-   $pmHostdailycounter->delete($_POST);
-   $pmHostdailycounter->redirectToList();
-}
+Html::header(__('Monitoring - counter', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
+             "monitoring", "customitem_counter");
 
 
-if (isset($_GET["id"])) {
-   $pmHostdailycounter->showForm($_GET["id"], array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
-} else {
-   $pmHostdailycounter->showForm(0, array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
-}
+Search::show('PluginMonitoringCustomitem_Counter');
 
 Html::footer();
-
-?> 
+?>

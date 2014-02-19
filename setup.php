@@ -78,7 +78,8 @@ function plugin_init_monitoring() {
          Plugin::registerClass('PluginMonitoringSecurity');
          Plugin::registerClass('PluginMonitoringServicescatalog',
               array('addtabon' => array('Central')));
-         Plugin::registerClass('PluginMonitoringUnavailability');
+         Plugin::registerClass('PluginMonitoringUnavailability',
+              array('addtabon' => array('Computer')));
          Plugin::registerClass('PluginMonitoringSystem',
               array('addtabon' => array('Central')));
          Plugin::registerClass('PluginMonitoringDowntime',
@@ -155,6 +156,9 @@ function plugin_init_monitoring() {
 
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['customitem_gauge'] = 'front/customitem_gauge.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['customitem_gauge'] = 'front/customitem_gauge.php';
+
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['customitem_counter'] = 'front/customitem_counter.form.php?add=1';
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['customitem_counter'] = 'front/customitem_counter.php';
          
          
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['service'] = 'front/display.php';
@@ -201,6 +205,9 @@ function plugin_init_monitoring() {
 
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['hostdailycounter']['title'] = __('Host daily counters', 'monitoring');
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['hostdailycounter']['page']  = '/plugins/monitoring/front/hostdailycounter.php';
+
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['unavailability']['title'] = __('Unavailabilities', 'monitoring');
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['unavailability']['page']  = '/plugins/monitoring/front/unavailability.php';
 
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['downtime']['title'] = __('Downtimes', 'monitoring');
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['downtime']['page']  = '/plugins/monitoring/front/downtime.php';

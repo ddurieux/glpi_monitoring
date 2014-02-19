@@ -516,7 +516,7 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
             $this->fields['notified'] = 1;
          } else {
             Session::addMessageAfterRedirect(__('Acknowledge deletion has not been accepted by the monitoring application:', 'monitoring'), false, ERROR);
-            return false;
+            // return false;
          }
       } else {
          // Send acknowledge command for a service to shinken via webservice   
@@ -535,7 +535,7 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
             $this->fields['notified'] = 1;
          } else {
             Session::addMessageAfterRedirect(__('Acknowledge deletion has not been accepted by the monitoring application:', 'monitoring'), false, ERROR);
-            return false;
+            // return false;
          }
       }
 

@@ -98,7 +98,23 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       $tab[2]['field']           = 'plugin_monitoring_services_id';
       $tab[2]['name']            = __('Service instance', 'monitoring');
       $tab[2]['datatype']        = 'specific';
+      // $tab[2]['table']          = "glpi_plugin_monitoring_services";
+      // $tab[2]['field']          = 'id';
+      // $tab[2]['name']           = __('Ressource', 'monitoring');
 
+
+      $tab[21]['table']         = 'glpi_plugin_monitoring_components';
+      $tab[21]['field']         = 'name';
+      $tab[21]['name']          = __('Component', 'monitoring');
+      $tab[21]['datatype']      = 'itemlink';
+      $tab[21]['itemlink_type'] = 'Component';
+      
+      $tab[22]['table']         = 'glpi_computers';
+      $tab[22]['field']         = 'name';
+      $tab[22]['name']          = __('Host', 'monitoring');
+      $tab[22]['datatype']      = 'itemlink';
+      $tab[22]['itemlink_type'] = 'Computer';
+      
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'date';
       $tab[3]['name']            = __('Date', 'monitoring');
@@ -221,7 +237,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
  
    
    
-   function getSpecificData($rrdtool_template, $items_id, $which='last', $state="AND `state` = 'OK'") { 
+   function getSpecificData($perfdatas_id, $items_id, $which='last', $state="AND `state` = 'OK'") { 
       global $DB;      
    
       // ** Get in table serviceevents
@@ -266,7 +282,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
 
       $ret = $this->getData(
               $result, 
-              $rrdtool_template,
+              $perfdatas_id,
               $dataevent['date'],
               $dataevent['date']);
 /*
@@ -292,11 +308,12 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       
       
       
-   function getData($result, $rrdtool_template, $start_date, $end_date, $ret=array(), $timecomplete=0, $todisplay=array()) {
+   function getData($result, $perfdatas_id, $start_date, $end_date, $ret=array(), $timecomplete=0, $todisplay=array()) {
       global $DB;
       
+      // Toolbox::logInFile("pm", "serviceevent, getData : $perfdatas_id, from $start_date to $end_date\n");
       if (empty($ret)) {
-         $ret = $this->getRef($rrdtool_template);
+         $ret = $this->getRef($perfdatas_id);
       }
       $a_ref = $ret[0];
       $a_convert = $ret[1];
@@ -305,7 +322,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       $a_labels = array();
       $a_perfdata_name = array();
 
-      $a_perf = PluginMonitoringPerfdata::getArrayPerfdata($rrdtool_template);
+      $a_perf = PluginMonitoringPerfdata::getArrayPerfdata($perfdatas_id);
       $previous_timestamp = strtotime($start_date);
       $query_data = array();
       $cnt = 0;
@@ -331,6 +348,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
          }
       } else {
          foreach ($result as $edata) {
+            // Toolbox::logInFile("pm", "serviceevent, getData : ".$edata['id']."\n");
 
             $current_timestamp = strtotime($edata['date']);
             $cnt++;
@@ -564,13 +582,13 @@ class PluginMonitoringServiceevent extends CommonDBTM {
    
    
    
-   function getRef($rrdtool_template) {
+   function getRef($perfdatas_id) {
       
       $a_convert = array();
       $a_ref = array();
       return array($a_ref, $a_convert);
       
-      $a_perfg = PluginMonitoringPerfdata::getArrayPerfdata($rrdtool_template);
+      $a_perfg = PluginMonitoringPerfdata::getArrayPerfdata($perfdatas_id);
       // Get data 
       $a_convert = array();
       $a_ref = array();

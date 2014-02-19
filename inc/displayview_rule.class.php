@@ -71,7 +71,19 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
    
    
    
- static function cronReplayallviewrules() {
+   static function cronInfo($name){
+
+      switch ($name) {
+         case 'replayallviewrules':
+            return array (
+               'description' => __('Replay all views rules','monitoring'));
+            break;
+      }
+      return array();
+   }
+
+   
+   static function cronReplayallviewrules() {
       ini_set("max_execution_time", "0");
       
       $pmDisplayview_rule = new PluginMonitoringDisplayview_rule();

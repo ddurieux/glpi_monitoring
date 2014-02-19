@@ -71,6 +71,18 @@ class PluginMonitoringLog extends CommonDBTM {
 
 
    
+   static function cronInfo($name){
+
+      switch ($name) {
+         case 'cleanlogs':
+            return array (
+               'description' => __('Clean monitoring logs','monitoring'));
+            break;
+      }
+      return array();
+   }
+
+   
    static function cronCleanlogs() {
       global $DB;
 
