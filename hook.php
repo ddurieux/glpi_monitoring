@@ -357,6 +357,9 @@ function plugin_monitoring_addLeftJoin($itemtype,$ref_table,$new_table,$linkfiel
          // Join between service events and components catalogs hosts
          if ($new_table.".".$linkfield == "glpi_plugin_monitoring_componentscatalogs_hosts.plugin_monitoring_componentscatalogs_hosts_id") {
             return "
+               INNER JOIN `glpi_plugin_monitoring_services` 
+                  ON (`glpi_plugin_monitoring_serviceevents`.`plugin_monitoring_services_id` 
+                  = `glpi_plugin_monitoring_services`.`id`)
                INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts` 
                   ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` 
                   = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
@@ -365,6 +368,9 @@ function plugin_monitoring_addLeftJoin($itemtype,$ref_table,$new_table,$linkfiel
          // Join between service events and computers
          if ($new_table.".".$linkfield == "glpi_computers.computers_id") {
             return "
+               INNER JOIN `glpi_plugin_monitoring_services` 
+                  ON (`glpi_plugin_monitoring_serviceevents`.`plugin_monitoring_services_id` 
+                  = `glpi_plugin_monitoring_services`.`id`)
                INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts` 
                   ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` 
                   = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)

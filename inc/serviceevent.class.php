@@ -98,7 +98,23 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       $tab[2]['field']           = 'plugin_monitoring_services_id';
       $tab[2]['name']            = __('Service instance', 'monitoring');
       $tab[2]['datatype']        = 'specific';
+      // $tab[2]['table']          = "glpi_plugin_monitoring_services";
+      // $tab[2]['field']          = 'id';
+      // $tab[2]['name']           = __('Ressource', 'monitoring');
 
+
+      $tab[21]['table']         = 'glpi_plugin_monitoring_components';
+      $tab[21]['field']         = 'name';
+      $tab[21]['name']          = __('Component', 'monitoring');
+      $tab[21]['datatype']      = 'itemlink';
+      $tab[21]['itemlink_type'] = 'Component';
+      
+      $tab[22]['table']         = 'glpi_computers';
+      $tab[22]['field']         = 'name';
+      $tab[22]['name']          = __('Host', 'monitoring');
+      $tab[22]['datatype']      = 'itemlink';
+      $tab[22]['itemlink_type'] = 'Computer';
+      
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'date';
       $tab[3]['name']            = __('Date', 'monitoring');
