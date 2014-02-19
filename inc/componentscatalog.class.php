@@ -258,8 +258,24 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          };
          function toggleEntity(idEntity) {
             Ext.select('#'+idEntity).each(function(el) {
+               var displayed = false;
                el.select('tr.services').each(function(elTr) {
                   elTr.setDisplayed(! elTr.isDisplayed());
+                  displayed = elTr.isDisplayed();
+               }); 
+               // if (! displayed) {
+                  // el.select('tr.header').each(function(elTr) {
+                     // elTr.applyStyles({'height':'10px'});
+                     // elTr.select('th').each(function(elTd) {
+                        // elTd.applyStyles({'height':'10px'});
+                     // }); 
+                  // }); 
+               // }
+               el.select('tr.header').each(function(elTr) {
+                  elTr.applyStyles(displayed ? {'height':'50px'} : {'height':'10px'});
+                  elTr.select('th').each(function(elTd) {
+                     elTd.applyStyles(displayed ? {'height':'50px'} : {'height':'10px'});
+                  }); 
                }); 
             }); 
          };
@@ -510,7 +526,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             echo "<tr class='tab_bg_1'>";
             echo "<table class='tab_cadrehov' style='height: auto;' id='entity-$id-$entityId' onClick='javascript: toggleEntity(\"entity-$id-$entityId\");'>";
             $overallServicesState = 'OK';
-            echo "<tr><th class='left' style='height:50px;' colspan='".(count($services))."'>".$pmEntity->fields['name']."</th></tr>";
+            echo "<tr class='header'><th class='left' style='height:50px;' colspan='".(count($services))."'>".$pmEntity->fields['name']."</th></tr>";
          }
          $field_id = 20;
          if ($hosts_ids[$hosts_id]['itemtype'] == 'Printer') {
