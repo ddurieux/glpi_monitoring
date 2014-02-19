@@ -44,6 +44,9 @@ include ("../../../inc/includes.php");
 
 PluginMonitoringProfile::checkRight("acknowledge","r");
 
+Html::header(__('Monitoring - unavailabilities', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
+             "monitoring", "unavailability");
+
 if (isset($_GET['id'])) {
    $pmUnavailability = new PluginMonitoringUnavailability();
    $pmUnavailability->getFromDB($_GET['id']);
