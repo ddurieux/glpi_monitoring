@@ -58,6 +58,13 @@ PluginMonitoringSecurity::deleteCheckSessionTime();
 
 Session::checkLoginUser();
 
+$itemtype = $_POST['itemtype'];
+$item = new $itemtype();
+if (!$item->getFromDB($_POST['items_id'])) {
+   echo __('Item not exist', 'monitoring');
+   exit;
+}
+
 $pmServicegraph = new PluginMonitoringServicegraph();
 
 $enddate = '';
@@ -83,7 +90,10 @@ if ($_POST['customdate'] == ''
 if (isset($_POST['components_id']) && !isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']])) {
    PluginMonitoringToolbox::loadPreferences($_POST['components_id']);
 }
-
+$time_start = microtime(true);
+if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']][''])) {
+   unset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']]['']);
+}
 $a_ret = $pmServicegraph->generateData($_POST['rrdtool_template'], 
                              $_POST['itemtype'], 
                              $_POST['items_id'], 
@@ -91,6 +101,10 @@ $a_ret = $pmServicegraph->generateData($_POST['rrdtool_template'],
                              $_POST['time'],
                              $enddate,
                              $_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']]);
+//$time_end = microtime(true);
+//$time = $time_end - $time_start;
+//echo "Did nothing in " . $time . " <strong>seconds</strong>\n";
+
 $mydatat = $a_ret[0];
 $a_labels = $a_ret[1];
 $format = $a_ret[2];

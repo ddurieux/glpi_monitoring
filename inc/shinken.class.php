@@ -426,7 +426,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_hosts[$i]['notification_interval'] = '86400';
                
                // For contacts, check if a component catalog contains the host associated component ...
-               $a_hosts[$i]['contacts'] = 'monitoring';
+               $a_hosts[$i]['contacts'] = '';
                
                if (($a_fields['passive_checks_enabled'] == '1') and ($a_fields['active_checks_enabled'] == '0')) {
                   // Specific query if host is only passively checked ...

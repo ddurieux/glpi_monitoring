@@ -60,7 +60,10 @@ if (!isset($_POST["id"])
 }
 
 $pmWeathermap = new PluginMonitoringWeathermap();
-$map = $pmWeathermap->showWidget($_POST["id"], $_POST['extra_infos']);
-echo $map;
+$pmWeathermap->drawMap(2, $_POST['extra_infos']);
+
+//$pmWeathermap = new PluginMonitoringWeathermap();
+//$map = $pmWeathermap->showWidget($_POST["id"], $_POST['extra_infos']);
+//echo $map;
 
 ?>

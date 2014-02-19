@@ -63,7 +63,9 @@ class PluginMonitoringToolbox {
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/models/scatter.js"></script>
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/models/line.js"></script>
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/models/lineChart.js"></script>
-      <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/gauge.js"></script>';
+      <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/gauge.js"></script>
+      <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/jqueryplugins/tooltipsy/tooltipsy.min.js"></script>
+      <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/jqueryplugins/tooltipsy/jquery.tipsy.js"></script>';
    }
 
    

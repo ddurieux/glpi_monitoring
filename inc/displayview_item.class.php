@@ -441,9 +441,9 @@ Ext.onReady(function(){
          }
          $width = "width: 475,";
       } else if ($itemtype == "PluginMonitoringWeathermap") {
-         $content = $item->showWidget($data['items_id'], $data['extra_infos']);
-         $content = '<div id="weathermap-'.$data['items_id'].'">'.$content."</div>";
-         $event = ", ".$item->widgetEvent($data['items_id']);
+//         $content = $item->showWidget($data['items_id'], $data['extra_infos']);
+         $content = '<div id="weathermap-'.$data['items_id'].'"></div>';
+//         $event = ", ".$item->widgetEvent($data['items_id']);
          $title .= " : ".Dropdown::getDropdownName(getTableForItemType('PluginMonitoringWeathermap'), $data['items_id']);
          $item->getFromDB($data['items_id']);
          $width = "width:".(($item->fields['width'] * $data['extra_infos']) / 100).",";

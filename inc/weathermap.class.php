@@ -243,7 +243,7 @@ LINK DEFAULT
             WHERE `plugin_monitoring_weathermapnodes_id_1`='".$data['id']."'";
          $resultl = $DB->query($queryl);
          while ($datal=$DB->fetch_array($resultl)) {
-             $bandwidth = $datal['bandwidth_in']." ".$datal['bandwidth_out'];
+            $bandwidth = $datal['bandwidth_in']." ".$datal['bandwidth_out'];
             if ($datal['bandwidth_in'] == $datal['bandwidth_out']) {
                $bandwidth = $datal['bandwidth_in'];
             }
@@ -1091,7 +1091,7 @@ LINK DEFAULT
    
    function showWidget($id, $pourcentage) {
       global $DB, $CFG_GLPI;
-
+      
       $this->generateWeathermap($id);
       $imgdisplay = $CFG_GLPI['root_doc'].'/plugins/monitoring/front/send.php?file=weathermap-'.$id.'.png&date='.date('U');
       $img = GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$id.".png";
@@ -1290,6 +1290,252 @@ LINK DEFAULT
                                        '2h');
          
       }
+   }
+   
+   
+   
+   // functions for d3 and draw net weathermap
+   
+   function drawMap($weathermaps_id, $widthw=100) {
+      global $DB;
+      
+      $this->getFromDB($weathermaps_id);
+      
+      PluginMonitoringSecurity::updateSession();
+
+      echo '<svg id="cloud" width="'.$this->fields['width'].'" '
+              . 'height="'.$this->fields['height'].'">
+        </svg>';
+
+      echo '<script>
+      var width = '.$this->fields['width'].';
+      var height = '.$this->fields['height'].';
+
+      var color = d3.scale.category10();
+
+      var force = d3.layout.force()
+          .charge(-180)
+          .linkDistance(20)
+          .size([width, height]);
+
+      var svg = d3.select("#cloud");';
+      
+      $a_data = array();
+      $a_mapping = array();
+      $i = 0;
+      $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringWeathermapnode")."`
+         WHERE `plugin_monitoring_weathermaps_id`='".$weathermaps_id."'
+         ORDER BY `name`";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         $name = $data['name'];         
+         if ($name == '') {
+            $itemtype = $data['itemtype'];
+            $item = new $itemtype();
+            $item->getFromDB($data['items_id']);
+            $name = $item->getName();    
+         }
+         $a_mapping[$data['id']] = $i;
+         $i++;
+         $a_data['nodes'][] = array(
+             'name'  => $name,
+             'id'    => (int)$data['id'],
+             'x'     => ($widthw * $data['x']) / 100,
+             'y'     => ($widthw * $data['y']) / 100,
+             'fixed' => TRUE,
+             "group" => 3
+         );
+      }
+      
+      $pmWeathermapnode = new PluginMonitoringWeathermapnode();
+      $pmService = new PluginMonitoringService();
+      $pmComponent = new PluginMonitoringComponent();
+      $a_data['links'] = array();      
+      $query = "SELECT `glpi_plugin_monitoring_weathermaplinks`.*
+            FROM `glpi_plugin_monitoring_weathermaplinks` 
+         LEFT JOIN `glpi_plugin_monitoring_weathermapnodes`
+            ON `plugin_monitoring_weathermapnodes_id_1` = `glpi_plugin_monitoring_weathermapnodes`.`id`
+         WHERE `plugin_monitoring_weathermaps_id`='".$weathermaps_id."'";
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+            $pmWeathermapnode->getFromDB($data['plugin_monitoring_weathermapnodes_id_2']);
+            
+            $queryevent = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
+               WHERE `plugin_monitoring_services_id`='".$data['plugin_monitoring_services_id']."'
+                  ORDER BY `date` DESC
+                  LIMIT 1";
+            $resultevent = $DB->query($queryevent);
+            $in = '';
+            $out = '';
+            $service_exist = 1;
+            while ($dataevent=$DB->fetch_array($resultevent)) {
+               if ($pmService->getFromDB($data['plugin_monitoring_services_id'])) {
+                  $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
+
+                  $matches1 = array();
+                  preg_match("/".$pmComponent->fields['weathermap_regex_in']."/m", $dataevent['perf_data'], $matches1);
+                  if (isset($matches1[1])) {
+                     $in = $matches1[1];
+                  }
+                  $matches1 = array();
+                  preg_match("/".$pmComponent->fields['weathermap_regex_out']."/m", $dataevent['perf_data'], $matches1);
+                  if (isset($matches1[1])) {
+                     $out = $matches1[1];
+                  }
+               } else {
+                  $service_exist = 0;
+               }
+            }
+         if ($service_exist) {
+            list($upusage, $upcolor) = $this->getWBandwidth($in, $data['bandwidth_in']);
+            list($downusage, $downcolor) = $this->getWBandwidth($out, $data['bandwidth_out']);
+         } else {
+            $upusage = 100;
+            $downusage = 100;
+            $upcolor = 'black';
+            $downcolor = 'black';
+         }   
+         $a_data['links'][] = array(
+             'source'    => $a_mapping[$data['plugin_monitoring_weathermapnodes_id_1']],
+             'target'    => $a_mapping[$data['plugin_monitoring_weathermapnodes_id_2']],
+             'up'        => $upcolor,
+             'down'      => $downcolor,
+             'upusage'   => $upusage,
+             'downusage' => $downusage,
+             'info'      => '',
+             'value'     => 1,
+             'services_id' => $data['plugin_monitoring_services_id'],
+             'components_id' => $pmService->fields['plugin_monitoring_components_id'],
+             'rrdtool_template' => $pmComponent->fields['graph_template']
+         );
+      }
+      
+      echo 'var jsontest = \''.json_encode($a_data).'\';';
+      echo 'var json = JSON.parse(jsontest);
+      force
+        .nodes(json.nodes)
+        .links(json.links)
+        .start();
+        
+     ';
+      
+      $this->d3jsLink('up', 'usage');
+      $this->d3jsLink('up', 'notusage');
+      $this->d3jsLink('down', 'usage');
+      $this->d3jsLink('down', 'notusage');
+      
+      echo '    var nodes = svg.selectAll(".node")
+        .data(force.nodes())
+      .enter().append("g")
+        .attr("class", "node")
+        .call(force.drag);
+     
+    nodes.append("circle")
+       .attr("r", 14);
+
+    nodes.append("text")
+       .attr("x", 18)
+       .attr("dy", ".35em")
+       .text(function(d) { return d.name; });
+        
+        
+    force.on("tick", function() {
+        linksupusage.attr("x1", function(d) { return d.source.x; })
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * d.upusage); })
+            .attr("y2", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * d.upusage); });
+
+        linksupnotusage.attr("x1", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * d.upusage); })
+            .attr("y1", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * d.upusage); })
+            .attr("x2", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 99); })
+            .attr("y2", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 99); });
+
+        linksdownusage.attr("x1", function(d) { return d.target.x; })
+            .attr("y1", function(d) { return d.target.y; })
+            .attr("x2", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * (200 - d.downusage)); })
+            .attr("y2", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * (200 - d.downusage)); });
+
+        linksdownnotusage.attr("x1", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * (200 - d.downusage)); })
+            .attr("y1", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * (200 - d.downusage)); })
+            .attr("x2", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 101); })
+            .attr("y2", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 101); });
+
+        nodes
+            .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+     });
+
+        </script>';
+
+      
+   }
+   
+   
+   
+   function d3jsLink($updown, $type) {
+
+      $linkcolor = '" + d.'.$updown;
+      if ($type == 'notusage') {
+         $linkcolor = 'grey"';
+      }
+      echo 'var links'.$updown.$type.' = svg.append("g").selectAll("line.link")
+        .data(force.links())
+        .enter().append("line")
+        .attr("class", function(d) { return "link'.$linkcolor.'; });
+
+         $("line").tipsy({
+         gravity: "w",
+         offset: 30,
+         opacity: 0.97,
+         delayIn: 1,
+        delayOut: 3,
+        fade: true,
+         hoverlock: true,
+         html: true, 
+         title: function () {
+           var d = this.__data__;
+           return "<div id=\'chart" + d.services_id + "2h'.$updown.$type.'\'>'.
+                      '<svg style=\'height: 300px; width: 450px;\'></"+"svg>'.
+                    '</"+"div><div id=\'updategraph" + d.services_id + "2h'.$updown.$type.'\'></"+"div>'.
+            '<script>$.ajax({'.
+
+                 'type: \'post\','.
+                 'url: \'/glpi084/plugins/monitoring/ajax/updateChart.php\','.
+                 'data: { rrdtool_template:" + d.rrdtool_template + ",itemtype:\'PluginMonitoringService\',items_id:" + d.services_id + ",timezone:0,time:\'2h\',suffix:\''.$updown.$type.'\',customdate:\'\',customtime:\'\',components_id:" + d.components_id + ",sess_id:\''.session_id().'\',glpiID:\''.$_SESSION['glpiID'].'\',plugin_monitoring_securekey:\''.$_SESSION['plugin_monitoring_securekey'].'\' },'.
+                 'success: function(data) {'.
+                 '     $(\'#updategraph" + d.services_id + "2h'.$updown.$type.'\').html(data);'.
+                 '}'.
+               '});</"+"script>";
+          },
+      });
+      ';
+   }
+   
+   
+   
+   function getWBandwidth($bp_current, $bp_max) {
+      
+      if (strstr($bp_max, "G")) {
+         $bp_max = $bp_max * 1000 * 1000 * 1000;
+      } else if (strstr($bp_max, "M")) {
+         $bp_max = $bp_max * 1000 * 1000;
+      } else if (strstr($bp_max, "K")) {
+         $bp_max = $bp_max * 1000;
+      }
+
+      $percent = 0;
+      if ($bp_max != 0) {
+         $percent = ceil(($bp_current * 100) / $bp_max);
+      }
+      $color = 'green';
+      if ($percent > 80) {
+      $color = 'red';
+      } else if ($percent > 60) {
+      $color = 'orange';
+      }
+      if ($percent > 100) {
+         $percent = 100;
+      }
+      return array($percent, $color);
    }
 }
 
