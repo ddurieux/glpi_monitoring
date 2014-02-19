@@ -44,21 +44,21 @@ include ("../../../inc/includes.php");
 
 PluginMonitoringProfile::checkRight("config","r");
 
-Html::header(__('Monitoring - gauge', 'monitoring'),$_SERVER["PHP_SELF"], "plugins", 
-             "monitoring", "customitem_gauge");
+Html::header(__('Monitoring - counter', 'monitoring'),$_SERVER["PHP_SELF"], "plugins", 
+             "monitoring", "customitem_counter");
 
-$pmCustomitem_Gauge = new PluginMonitoringCustomitem_Gauge();
+$pmCustomitem_Counter = new PluginMonitoringCustomitem_Counter();
 
 if (isset($_POST['add_item'])) {
    if (isset($_POST['item'])) {
-      $pmCustomitem_Gauge->getFromDB($_POST['id']);
+      $pmCustomitem_Counter->getFromDB($_POST['id']);
       $input = array();
       $input['id'] = $_POST['id'];
       
-      if ($pmCustomitem_Gauge->fields['aggregate_items'] == '') {
+      if ($pmCustomitem_Counter->fields['aggregate_items'] == '') {
          $aggregate_items = array();
       } else {
-         $aggregate_items = importArrayFromDB($pmCustomitem_Gauge->fields['aggregate_items']);
+         $aggregate_items = importArrayFromDB($pmCustomitem_Counter->fields['aggregate_items']);
       }
       if (isset($_POST['plugin_monitoring_componentscatalogs_id'])) {
          $aggregate_items_add = array();
@@ -78,6 +78,7 @@ if (isset($_POST['add_item'])) {
       }
       $input['aggregate_items'] = exportArrayToDB($aggregate_items);
       
+/*
       if (isset($_POST['warn_other_value'])) {
          $input['aggregate_warn'] = $_POST['warn_other_value'];
       } else {
@@ -98,30 +99,30 @@ if (isset($_POST['add_item'])) {
       } else {
          // It's an array
       }
-     
-      $pmCustomitem_Gauge->update($input);
+*/     
+      $pmCustomitem_Counter->update($input);
       Html::back();
    }
    Html::back();
 } else if (isset($_POST['delete_item'])) {
-   $pmCustomitem_Gauge->deleteGaugeItems($_POST);
+   $pmCustomitem_Counter->deleteCounterItems($_POST);
    Html::back();
 } else if (isset ($_POST["add"])) {
-   $pmCustomitem_Gauge->add($_POST);
+   $pmCustomitem_Counter->add($_POST);
    Html::back();
 } else if (isset ($_POST["update"])) {
-   $pmCustomitem_Gauge->update($_POST);
+   $pmCustomitem_Counter->update($_POST);
    Html::back();
 } else if (isset ($_POST["delete"])) {
-   $pmCustomitem_Gauge->delete($_POST);
-   $pmCustomitem_Gauge->redirectToList();
+   $pmCustomitem_Counter->delete($_POST);
+   $pmCustomitem_Counter->redirectToList();
 }
 
 
 if (isset($_GET["id"])) {
-   $pmCustomitem_Gauge->showForm($_GET["id"], array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
+   $pmCustomitem_Counter->showForm($_GET["id"], array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
 } else {
-   $pmCustomitem_Gauge->showForm("", array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
+   $pmCustomitem_Counter->showForm("", array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
 }
 
 Html::footer();

@@ -113,11 +113,17 @@ if (PluginMonitoringProfile::haveRight("config_services_catalogs", 'r')
       echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/weathermap.php'>".__('Weathermaps', 'monitoring')."</a>";
       echo "</th>";
    }
+   echo "</tr>";
 
+   echo "<tr class='tab_bg_1'>";
    if (PluginMonitoringProfile::haveRight("config_views", 'r')) {
       $toDisplayArea++;
       echo "<th align='center' height='30' width='34%'>";
       echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/customitem_gauge.php'>".PluginMonitoringCustomitem_Gauge::getTypeName()."</a>";
+      echo "</th>";
+      
+      echo "<th align='center' height='30' width='34%'>";
+      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/customitem_counter.php'>".PluginMonitoringCustomitem_Counter::getTypeName()."</a>";
       echo "</th>";
    }
    echo "</tr>";

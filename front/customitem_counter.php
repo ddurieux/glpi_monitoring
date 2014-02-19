@@ -44,11 +44,11 @@ include ("../../../inc/includes.php");
 
 PluginMonitoringProfile::checkRight("config","r");
 
-Html::header(__('Monitoring - gauge', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "customitem_gauge");
+Html::header(__('Monitoring - counter', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
+             "monitoring", "customitem_counter");
 
 
-Search::show('PluginMonitoringCustomitem_gauge');
+Search::show('PluginMonitoringCustomitem_Counter');
 
 Html::footer();
 ?>

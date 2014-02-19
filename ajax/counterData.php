@@ -35,20 +35,26 @@
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
-   @since     2011
+   @since     2014
  
    ------------------------------------------------------------------------
  */
 
-include ("../../../inc/includes.php");
+// Direct access to file
+if (strpos($_SERVER['PHP_SELF'],"counterData.php")) {
+   include ("../../../inc/includes.php");
+   header("Content-Type: text/html; charset=UTF-8");
+   Html::header_nocache();
+}
 
-PluginMonitoringProfile::checkRight("config","r");
+if (!defined('GLPI_ROOT')) {
+   die("Can not acces directly to this file");
+}
 
-Html::header(__('Monitoring - gauge', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "customitem_gauge");
+Session::checkLoginUser();
+if (isset($_POST['id'])) {
+   $pmCustomitem_Counter = new PluginMonitoringCustomitem_Counter();
+   $pmCustomitem_Counter->showDefineDataOfCounter($_POST['id']);
+}
 
-
-Search::show('PluginMonitoringCustomitem_gauge');
-
-Html::footer();
 ?>

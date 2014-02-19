@@ -256,12 +256,12 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
       echo "<table class='tab_cadre'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th>";
-      echo __("Preview");
+      echo __("Preview", 'monitoring');
       echo "</th>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>";
+      echo "<td align='center'>";
       $this->showWidget($items_id);
       $this->showWidgetFrame($items_id);
       echo "</td>";
@@ -665,7 +665,6 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
 		<span id='updatecustomitem_gauge".$id."GaugeContainer'></span>
 
       <script>createGauge('updatecustomitem_gauge".$id."', '".$this->fields['name']."');</script>";
-      
    }
 
    
