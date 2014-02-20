@@ -1375,34 +1375,33 @@ LINK DEFAULT
          WHERE `plugin_monitoring_weathermaps_id`='".$weathermaps_id."'";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
-            $pmWeathermapnode->getFromDB($data['plugin_monitoring_weathermapnodes_id_2']);
+         $pmWeathermapnode->getFromDB($data['plugin_monitoring_weathermapnodes_id_2']);
             
-            $queryevent = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
-               WHERE `plugin_monitoring_services_id`='".$data['plugin_monitoring_services_id']."'
-                  ORDER BY `date` DESC
-                  LIMIT 1";
-            $resultevent = $DB->query($queryevent);
-            $in = '';
-            $out = '';
-            $service_exist = 1;
-            while ($dataevent=$DB->fetch_array($resultevent)) {
-               if ($pmService->getFromDB($data['plugin_monitoring_services_id'])) {
-                  $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
-
-                  $matches1 = array();
-                  preg_match("/".$pmComponent->fields['weathermap_regex_in']."/m", $dataevent['perf_data'], $matches1);
-                  if (isset($matches1[1])) {
-                     $in = $matches1[1];
-                  }
-                  $matches1 = array();
-                  preg_match("/".$pmComponent->fields['weathermap_regex_out']."/m", $dataevent['perf_data'], $matches1);
-                  if (isset($matches1[1])) {
-                     $out = $matches1[1];
-                  }
-               } else {
-                  $service_exist = 0;
+         $queryevent = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
+            WHERE `plugin_monitoring_services_id`='".$data['plugin_monitoring_services_id']."'
+               ORDER BY `date` DESC
+               LIMIT 1";
+         $resultevent = $DB->query($queryevent);
+         $in = '';
+         $out = '';
+         $service_exist = 0;
+         while ($dataevent=$DB->fetch_array($resultevent)) {
+            if ($pmService->getFromDB($data['plugin_monitoring_services_id'])) {
+               $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
+               
+               $matches1 = array();
+               preg_match("/".$pmComponent->fields['weathermap_regex_in']."/m", $dataevent['perf_data'], $matches1);
+               if (isset($matches1[1])) {
+                  $in = $matches1[1];
                }
+               $matches1 = array();
+               preg_match("/".$pmComponent->fields['weathermap_regex_out']."/m", $dataevent['perf_data'], $matches1);
+               if (isset($matches1[1])) {
+                  $out = $matches1[1];
+               }
+               $service_exist = 1;
             }
+         }
          if ($service_exist) {
             list($upusage, $upcolor) = $this->getWBandwidth($in, $data['bandwidth_in']);
             list($downusage, $downcolor) = $this->getWBandwidth($out, $data['bandwidth_out']);
