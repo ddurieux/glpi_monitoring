@@ -1400,6 +1400,23 @@ LINK DEFAULT
                   $out = $matches1[1];
                }
                $service_exist = 1;
+            } else {
+               $pmWeathermapnode = new PluginMonitoringWeathermapnode();
+               $pmWeathermapnode->getFromDB($data['plugin_monitoring_weathermapnodes_id_1']);
+               $querytt = "SELECT glpi_plugin_monitoring_services.id FROM `glpi_plugin_monitoring_services`
+                  LEFT JOIN glpi_plugin_monitoring_componentscatalogs_hosts
+                     ON plugin_monitoring_componentscatalogs_hosts_id=glpi_plugin_monitoring_componentscatalogs_hosts.id
+                  WHERE `name` LIKE '%traf%'
+                     AND networkports_id>0
+                     AND itemtype='".$pmWeathermapnode->fields['itemtype']."'
+                     AND items_id='".$pmWeathermapnode->fields['items_id']."'
+                  LIMIT 1";
+               $resulttt = $DB->query($querytt);
+               $s_id = 0;
+               while ($datatt=$DB->fetch_array($resulttt)) {
+                  $s_id = $datatt['id'];
+               }               
+               
             }
          }
          if ($service_exist) {
@@ -1523,19 +1540,19 @@ LINK DEFAULT
 ';
       
          echo '
-rectdown.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 150) - 20;})
-    .attr("y", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 150) - 10;});
+rectdown.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 130) - 20;})
+    .attr("y", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 130) - 10;});
 
-   textdown.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 150); })
-      .attr("y", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 150); });
+   textdown.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 130); })
+      .attr("y", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 130); });
 
 
 
-   rectup.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 50) - 20;})
-    .attr("y", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 50) - 10;});
+   rectup.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 70) - 20;})
+    .attr("y", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 70) - 10;});
             
-   textup.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 50); })
-      .attr("y", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 50); });
+   textup.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 70); })
+      .attr("y", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 70); });
 
      });
 ';
