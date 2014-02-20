@@ -1578,7 +1578,7 @@ echo '        </script>';
          .attr("marker-end", function(d) { if (d.'.$updown.'usage < 100) {return "url(#arrowhead'.$rand.')";}})';
       } else {
         echo '
-         .attr("marker-end", function(d) { if (d.'.$updown.'usage == 100) {return "url(#arrowhead" + d.'.$updown.$rand.' + ")";}})';
+         .attr("marker-end", function(d) { if (d.'.$updown.'usage == 100) {return "url(#arrowhead" + d.'.$updown.' + "'.$rand.')";}})';
       }
          echo ';
             
