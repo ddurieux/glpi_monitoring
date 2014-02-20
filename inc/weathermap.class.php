@@ -1303,18 +1303,19 @@ LINK DEFAULT
       
       PluginMonitoringSecurity::updateSession();
 
-      echo '<svg id="cloud" width="'.$this->fields['width'].'" '
+      $rand = mt_rand();
+      echo '<svg id="cloud'.$rand.'" width="'.$this->fields['width'].'" '
               . 'height="'.$this->fields['height'].'">
   <defs>
-    <marker id="arrowhead" orient="auto" markerWidth="2" markerHeight="4"
+    <marker id="arrowhead'.$rand.'" orient="auto" markerWidth="2" markerHeight="4"
             refX="0.3" refY="0.8">
       <path d="M0,0 V1.6 L0.8,0.8 Z" fill="#f6f6f6" />
     </marker>
-    <marker id="arrowheadred" orient="auto" markerWidth="2" markerHeight="4"
+    <marker id="arrowheadred'.$rand.'" orient="auto" markerWidth="2" markerHeight="4"
             refX="0.3" refY="0.8">
       <path d="M0,0 V1.6 L0.8,0.8 Z" fill="red" />
     </marker>
-    <marker id="arrowheadblack" orient="auto" markerWidth="2" markerHeight="4"
+    <marker id="arrowheadblack'.$rand.'" orient="auto" markerWidth="2" markerHeight="4"
             refX="0.3" refY="0.8">
       <path d="M0,0 V1.6 L0.8,0.8 Z" fill="black" />
     </marker>
@@ -1327,12 +1328,12 @@ LINK DEFAULT
 
       var color = d3.scale.category10();
 
-      var force = d3.layout.force()
+      var force'.$rand.' = d3.layout.force()
           .charge(-180)
           .linkDistance(20)
           .size([width, height]);
 
-      var svg = d3.select("#cloud");';
+      var svg'.$rand.' = d3.select("#cloud'.$rand.'");';
       
       $a_data = array();
       $a_mapping = array();
@@ -1443,115 +1444,112 @@ LINK DEFAULT
          );
       }
       
-      echo 'var jsontest = \''.json_encode($a_data).'\';';
-      echo 'var json = JSON.parse(jsontest);
-      force
-        .nodes(json.nodes)
-        .links(json.links)
+      echo 'var jsonstr'.$rand.' = \''.json_encode($a_data).'\';';
+      echo 'var json'.$rand.' = JSON.parse(jsonstr'.$rand.');
+      force'.$rand.'
+        .nodes(json'.$rand.'.nodes)
+        .links(json'.$rand.'.links)
         .start();
         
      ';
       
-      $this->d3jsLink('up', 'usage');
-      $this->d3jsLink('up', 'notusage');
-      $this->d3jsLink('down', 'usage');
-      $this->d3jsLink('down', 'notusage');
+      $this->d3jsLink('up', 'usage', $rand);
+      $this->d3jsLink('up', 'notusage', $rand);
+      $this->d3jsLink('down', 'usage', $rand);
+      $this->d3jsLink('down', 'notusage', $rand);
       
-      echo '    var nodes = svg.selectAll(".node")
-        .data(force.nodes())
+      echo '    var nodes'.$rand.' = svg'.$rand.'.selectAll(".node")
+        .data(force'.$rand.'.nodes())
       .enter().append("g")
         .attr("class", "node")
-        .call(force.drag)
-   .append("a")
-     .attr("xlink:href", function (d) { return d.url; })
-     .attr("target", "_blank");
+        .call(force'.$rand.'.drag)
+      .append("a")
+        .attr("xlink:href", function (d) { return d.url; })
+        .attr("target", "_blank");
        
-    nodes.append("circle")
+    nodes'.$rand.'.append("circle")
        .attr("r", 10);
 
-    nodes.append("text")
+    nodes'.$rand.'.append("text")
        .attr("x", 12)
        .attr("dy", ".35em")
        .text(function(d) { return d.name; });
+       
+   var rectdown'.$rand.' = svg'.$rand.'.selectAll("line.link")
+       .data(force'.$rand.'.links())
+    .enter().append("rect")  
+       .attr("height", 18)
+       .attr("width", 40)
+       .style("fill", "#d9d9d9")
+       .attr("rx", 2)
+       .attr("ry", 2);
 
-
-   var rectdown = svg.selectAll("line.link")
-        .data(force.links())
-        .enter().append("rect")  
-    .attr("height", 18)
-    .attr("width", 40)
-    .style("fill", "#d9d9d9")
-    .attr("rx", 2)
-    .attr("ry", 2);
-
-   var textdown = svg.selectAll("line.link")
-        .data(force.links())
+   var textdown'.$rand.' = svg'.$rand.'.selectAll("line.link")
+       .data(force'.$rand.'.links())
     .enter().append("text")
-      .attr("dy", ".25em")
-      .attr("text-anchor", "middle")
-      .style("pointer-events", "none")
-      //.classed("linklabel", true)
-      .attr("class", function(d) { return "linklabel" + d.down;})
-      .text(function(d) { return d.downusage + " %";})
+       .attr("dy", ".25em")
+       .attr("text-anchor", "middle")
+       .style("pointer-events", "none")
+       .attr("class", function(d) { return "linklabel" + d.down;})
+       .text(function(d) { return d.downusage + " %";})
 
-   var rectup = svg.selectAll("line.link")
-        .data(force.links())
-        .enter().append("rect")  
-    .attr("height", 18)
-    .attr("width", 40)
-    .style("fill", "#d9d9d9")
-    .attr("rx", 2)
-    .attr("ry", 2);
+   var rectup'.$rand.' = svg'.$rand.'.selectAll("line.link")
+       .data(force'.$rand.'.links())
+    .enter().append("rect")  
+       .attr("height", 18)
+       .attr("width", 40)
+       .style("fill", "#d9d9d9")
+       .attr("rx", 2)
+       .attr("ry", 2);
 
-   var textup = svg.selectAll("line.link")
-        .data(force.links())
+   var textup'.$rand.' = svg'.$rand.'.selectAll("line.link")
+       .data(force'.$rand.'.links())
     .enter().append("text")
-      .attr("dy", ".25em")
-      .attr("text-anchor", "middle")
-      .style("pointer-events", "none")
-      //.classed("linklabel", true)
-      .attr("class", function(d) { return "linklabel" + d.up;})
-      .text(function(d) { return d.upusage + " %";})
+       .attr("dy", ".25em")
+       .attr("text-anchor", "middle")
+       .style("pointer-events", "none")
+       .attr("class", function(d) { return "linklabel" + d.up;})
+       .text(function(d) { return d.upusage + " %";})
 
 
-    force.on("tick", function() {
-        linksupusage.attr("x1", function(d) { return d.source.x; })
+    force'.$rand.'.on("tick", function() {
+        linksupusage'.$rand.'.attr("x1", function(d) { return d.source.x; })
             .attr("y1", function(d) { return d.source.y; })
             .attr("x2", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * ((d.upusage * 97) / 100)); })
             .attr("y2", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * ((d.upusage * 97) / 100)); });
 
-        linksupnotusage.attr("x1", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * ((d.upusage * 97) / 100)); })
+        linksupnotusage'.$rand.'.attr("x1", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * ((d.upusage * 97) / 100)); })
             .attr("y1", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * ((d.upusage * 97) / 100)); })
             .attr("x2", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 97); })
             .attr("y2", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 97); });
 
-        linksdownusage.attr("x1", function(d) { return d.target.x; })
+        linksdownusage'.$rand.'.attr("x1", function(d) { return d.target.x; })
             .attr("y1", function(d) { return d.target.y; })
             .attr("x2", function(d) { return d.source.x + Math.round(((d.target.x - d.source.x) / 200) * (200 - ((d.downusage * 97) / 100))); })
             .attr("y2", function(d) { return d.source.y + Math.round(((d.target.y - d.source.y) / 200) * (200 - ((d.downusage * 97) / 100))); });
 
-        linksdownnotusage.attr("x1", function(d) { return d.source.x + Math.round(((d.target.x - d.source.x) / 200) * (200 - ((d.downusage * 97) / 100))); })
+        linksdownnotusage'.$rand.'.attr("x1", function(d) { return d.source.x + Math.round(((d.target.x - d.source.x) / 200) * (200 - ((d.downusage * 97) / 100))); })
             .attr("y1", function(d) { return d.source.y + Math.round(((d.target.y - d.source.y) / 200) * (200 - ((d.downusage * 97) / 100))); })
             .attr("x2", function(d) { return d.source.x + Math.round(((d.target.x - d.source.x) / 200) * 103); })
             .attr("y2", function(d) { return d.source.y + Math.round(((d.target.y - d.source.y) / 200) * 103); });
 
-        nodes
+        nodes'.$rand.'
             .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 ';
       
          echo '
-rectdown.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 130) - 20;})
+rectdown'.$rand.'.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 130) - 20;})
     .attr("y", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 130) - 10;});
 
-   textdown.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 130); })
+   textdown'.$rand.'.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 130); })
       .attr("y", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 130); });
 
 
 
-   rectup.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 70) - 20;})
+   rectup'.$rand.'.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 70) - 20;})
     .attr("y", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 70) - 10;});
             
-   textup.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 70); })
+   textup'.$rand.'.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 70); })
       .attr("y", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 70); });
 
      });
@@ -1564,23 +1562,23 @@ echo '        </script>';
    
    
    
-   function d3jsLink($updown, $type) {
+   function d3jsLink($updown, $type, $rand) {
       global $CFG_GLPI;
 
       $linkcolor = '" + d.'.$updown;
       if ($type == 'notusage') {
          $linkcolor = 'grey"';
       }
-      echo 'var links'.$updown.$type.' = svg.append("g").selectAll("line.link")
-        .data(force.links())
+      echo 'var links'.$updown.$type.$rand.' = svg'.$rand.'.append("g").selectAll("line.link")
+        .data(force'.$rand.'.links())
         .enter().append("line")
         .attr("class", function(d) { return "link'.$linkcolor.'; })';
       if ($type == 'notusage') {
         echo '
-         .attr("marker-end", function(d) { if (d.'.$updown.'usage < 100) {return "url(#arrowhead)";}})';
+         .attr("marker-end", function(d) { if (d.'.$updown.'usage < 100) {return "url(#arrowhead'.$rand.')";}})';
       } else {
         echo '
-         .attr("marker-end", function(d) { if (d.'.$updown.'usage == 100) {return "url(#arrowhead" + d.'.$updown.' + ")";}})';
+         .attr("marker-end", function(d) { if (d.'.$updown.'usage == 100) {return "url(#arrowhead" + d.'.$updown.$rand.' + ")";}})';
       }
          echo ';
             
@@ -1595,16 +1593,16 @@ echo '        </script>';
          html: true, 
          title: function () {
            var d = this.__data__;
-           return "<div id=\'chart" + d.services_id + "2h'.$updown.$type.'\'>'.
+           return "<div id=\'chart" + d.services_id + "2h'.$updown.$type.$rand.'\'>'.
                       '<svg style=\'height: 300px; width: 450px;\'></"+"svg>'.
-                    '</"+"div><div id=\'updategraph" + d.services_id + "2h'.$updown.$type.'\'></"+"div>'.
+                    '</"+"div><div id=\'updategraph" + d.services_id + "2h'.$updown.$type.$rand.'\'></"+"div>'.
             '<script>$.ajax({'.
 
                  'type: \'post\','.
                  'url: \''.$CFG_GLPI['root_doc'].'/plugins/monitoring/ajax/updateChart.php\','.
-                 'data: { rrdtool_template:" + d.rrdtool_template + ",itemtype:\'PluginMonitoringService\',items_id:" + d.services_id + ",timezone:0,time:\'2h\',suffix:\''.$updown.$type.'\',customdate:\'\',customtime:\'\',components_id:" + d.components_id + ",sess_id:\''.session_id().'\',glpiID:\''.$_SESSION['glpiID'].'\',plugin_monitoring_securekey:\''.$_SESSION['plugin_monitoring_securekey'].'\' },'.
+                 'data: { rrdtool_template:" + d.rrdtool_template + ",itemtype:\'PluginMonitoringService\',items_id:" + d.services_id + ",timezone:0,time:\'2h\',suffix:\''.$updown.$type.$rand.'\',customdate:\'\',customtime:\'\',components_id:" + d.components_id + ",sess_id:\''.session_id().'\',glpiID:\''.$_SESSION['glpiID'].'\',plugin_monitoring_securekey:\''.$_SESSION['plugin_monitoring_securekey'].'\' },'.
                  'success: function(data) {'.
-                 '     $(\'#updategraph" + d.services_id + "2h'.$updown.$type.'\').html(data);'.
+                 '     $(\'#updategraph" + d.services_id + "2h'.$updown.$type.$rand.'\').html(data);'.
                  '}'.
                '});</"+"script>";
           },

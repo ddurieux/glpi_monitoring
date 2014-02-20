@@ -584,7 +584,7 @@ Ext.onReady(function(){
          
          $sess_id = session_id();
          PluginMonitoringSecurity::updateSession();
-
+         
          echo "<script type='text/javascript'>
          var mgr = new Ext.UpdateManager('weathermap-".$data['items_id']."');
          mgr.startAutoRefresh(50, \"".$CFG_GLPI["root_doc"].
