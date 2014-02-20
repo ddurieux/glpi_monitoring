@@ -1366,6 +1366,7 @@ LINK DEFAULT
       }
       
       $pmWeathermapnode = new PluginMonitoringWeathermapnode();
+      $pmWeathermaplink = new PluginMonitoringWeathermaplink();
       $pmService = new PluginMonitoringService();
       $pmComponent = new PluginMonitoringComponent();
       $a_data['links'] = array();      
@@ -1377,6 +1378,29 @@ LINK DEFAULT
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
          $pmWeathermapnode->getFromDB($data['plugin_monitoring_weathermapnodes_id_2']);
+
+         if (!$pmService->getFromDB($data['plugin_monitoring_services_id'])) {
+            $pmWeathermapnode = new PluginMonitoringWeathermapnode();
+            $pmWeathermapnode->getFromDB($data['plugin_monitoring_weathermapnodes_id_1']);
+            $querytt = "SELECT glpi_plugin_monitoring_services.id FROM `glpi_plugin_monitoring_services`
+               LEFT JOIN glpi_plugin_monitoring_componentscatalogs_hosts
+                  ON plugin_monitoring_componentscatalogs_hosts_id=glpi_plugin_monitoring_componentscatalogs_hosts.id
+               WHERE  networkports_id>0
+                  AND itemtype='".$pmWeathermapnode->fields['itemtype']."'
+                  AND items_id='".$pmWeathermapnode->fields['items_id']."'";
+            $resulttt = $DB->query($querytt);
+            $s_id = 0;
+            if ($DB->numrows($resulttt) == 1) {
+               $datatt = $DB->fetch_assoc($resulttt);
+               $input = array(
+                   'id'                            => $data['id'],
+                   'plugin_monitoring_services_id' => $datatt['id']
+               );
+               $pmWeathermaplink->update($input);
+               $pmWeathermaplink->getFromDB($data['id']);
+               $data = $pmWeathermaplink->fields;
+            }
+         }
             
          $queryevent = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
             WHERE `plugin_monitoring_services_id`='".$data['plugin_monitoring_services_id']."'
@@ -1402,22 +1426,8 @@ LINK DEFAULT
                }
                $service_exist = 1;
             } else {
-               $pmWeathermapnode = new PluginMonitoringWeathermapnode();
-               $pmWeathermapnode->getFromDB($data['plugin_monitoring_weathermapnodes_id_1']);
-               $querytt = "SELECT glpi_plugin_monitoring_services.id FROM `glpi_plugin_monitoring_services`
-                  LEFT JOIN glpi_plugin_monitoring_componentscatalogs_hosts
-                     ON plugin_monitoring_componentscatalogs_hosts_id=glpi_plugin_monitoring_componentscatalogs_hosts.id
-                  WHERE `name` LIKE '%traf%'
-                     AND networkports_id>0
-                     AND itemtype='".$pmWeathermapnode->fields['itemtype']."'
-                     AND items_id='".$pmWeathermapnode->fields['items_id']."'
-                  LIMIT 1";
-               $resulttt = $DB->query($querytt);
-               $s_id = 0;
-               while ($datatt=$DB->fetch_array($resulttt)) {
-                  $s_id = $datatt['id'];
-               }               
-               
+               $pmService->getEmpty();
+               $pmComponent->getEmpty();
             }
          }
          if ($service_exist) {
