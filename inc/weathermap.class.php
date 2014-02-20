@@ -1305,6 +1305,20 @@ LINK DEFAULT
 
       echo '<svg id="cloud" width="'.$this->fields['width'].'" '
               . 'height="'.$this->fields['height'].'">
+  <defs>
+    <marker id="arrowhead" orient="auto" markerWidth="2" markerHeight="4"
+            refX="0.3" refY="0.8">
+      <path d="M0,0 V1.6 L0.8,0.8 Z" fill="#f6f6f6" />
+    </marker>
+    <marker id="arrowheadred" orient="auto" markerWidth="2" markerHeight="4"
+            refX="0.3" refY="0.8">
+      <path d="M0,0 V1.6 L0.8,0.8 Z" fill="red" />
+    </marker>
+    <marker id="arrowheadblack" orient="auto" markerWidth="2" markerHeight="4"
+            refX="0.3" refY="0.8">
+      <path d="M0,0 V1.6 L0.8,0.8 Z" fill="black" />
+    </marker>
+  </defs> 
         </svg>';
 
       echo '<script>
@@ -1440,7 +1454,7 @@ LINK DEFAULT
        .attr("r", 10);
 
     nodes.append("text")
-       .attr("x", 18)
+       .attr("x", 12)
        .attr("dy", ".35em")
        .text(function(d) { return d.name; });
 
@@ -1487,23 +1501,23 @@ LINK DEFAULT
     force.on("tick", function() {
         linksupusage.attr("x1", function(d) { return d.source.x; })
             .attr("y1", function(d) { return d.source.y; })
-            .attr("x2", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * d.upusage); })
-            .attr("y2", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * d.upusage); });
+            .attr("x2", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * ((d.upusage * 97) / 100)); })
+            .attr("y2", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * ((d.upusage * 97) / 100)); });
 
-        linksupnotusage.attr("x1", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * d.upusage); })
-            .attr("y1", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * d.upusage); })
-            .attr("x2", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 99); })
-            .attr("y2", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 99); });
+        linksupnotusage.attr("x1", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * ((d.upusage * 97) / 100)); })
+            .attr("y1", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * ((d.upusage * 97) / 100)); })
+            .attr("x2", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 97); })
+            .attr("y2", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 97); });
 
         linksdownusage.attr("x1", function(d) { return d.target.x; })
             .attr("y1", function(d) { return d.target.y; })
-            .attr("x2", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * (200 - d.downusage)); })
-            .attr("y2", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * (200 - d.downusage)); });
+            .attr("x2", function(d) { return d.source.x + Math.round(((d.target.x - d.source.x) / 200) * (200 - ((d.downusage * 97) / 100))); })
+            .attr("y2", function(d) { return d.source.y + Math.round(((d.target.y - d.source.y) / 200) * (200 - ((d.downusage * 97) / 100))); });
 
-        linksdownnotusage.attr("x1", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * (200 - d.downusage)); })
-            .attr("y1", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * (200 - d.downusage)); })
-            .attr("x2", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 101); })
-            .attr("y2", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 101); });
+        linksdownnotusage.attr("x1", function(d) { return d.source.x + Math.round(((d.target.x - d.source.x) / 200) * (200 - ((d.downusage * 97) / 100))); })
+            .attr("y1", function(d) { return d.source.y + Math.round(((d.target.y - d.source.y) / 200) * (200 - ((d.downusage * 97) / 100))); })
+            .attr("x2", function(d) { return d.source.x + Math.round(((d.target.x - d.source.x) / 200) * 103); })
+            .attr("y2", function(d) { return d.source.y + Math.round(((d.target.y - d.source.y) / 200) * 103); });
 
         nodes
             .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
@@ -1544,8 +1558,16 @@ echo '        </script>';
       echo 'var links'.$updown.$type.' = svg.append("g").selectAll("line.link")
         .data(force.links())
         .enter().append("line")
-        .attr("class", function(d) { return "link'.$linkcolor.'; });
-
+        .attr("class", function(d) { return "link'.$linkcolor.'; })';
+      if ($type == 'notusage') {
+        echo '
+         .attr("marker-end", function(d) { if (d.'.$updown.'usage < 100) {return "url(#arrowhead)";}})';
+      } else {
+        echo '
+         .attr("marker-end", function(d) { if (d.'.$updown.'usage == 100) {return "url(#arrowhead" + d.'.$updown.' + ")";}})';
+      }
+         echo ';
+            
          $("line").tipsy({
          gravity: "w",
          offset: 30,
