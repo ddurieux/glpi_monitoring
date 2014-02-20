@@ -60,12 +60,17 @@ if (isset($_GET['check'])) {
    PluginMonitoringHostdailycounter::runCheckCounters(isset($_GET['date']) ? $_GET['date'] : '', isset($_GET['hostname']) ? $_GET['hostname'] : '%', isset($_GET['interval']) ? $_GET['interval'] : -1);
 }
 
+if (isset($_GET['bis'])) {
+   // Testing ...
+   PluginMonitoringHostdailycounter::runUpdateCountersBis(isset($_GET['services_id']) ? $_GET['services_id'] : 0);
+}
+
 // if (isset($_GET['forceUpdate'])) {
    // Hostname, up to date and limit may be specified as a parameter ... 
    // Default hostname is all hosts, else hostname is used in SQL LIKE query 
    // Default date is up to now
    // Default limit is 1000 records
-   PluginMonitoringHostdailycounter::runUpdateCounters('', '%', '6000');
+   PluginMonitoringHostdailycounter::runUpdateCounters('', '%', '10000');
 // }
 
 Search::show('PluginMonitoringHostdailycounter');
