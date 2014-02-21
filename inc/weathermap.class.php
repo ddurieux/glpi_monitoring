@@ -1323,7 +1323,7 @@ LINK DEFAULT
   <defs>
     <marker id="arrowhead'.$rand.'" orient="auto" markerWidth="2" markerHeight="4"
             refX="0.3" refY="0.8">
-      <path d="M0,0 V1.6 L0.8,0.8 Z" fill="#f6f6f6" />
+      <path d="M0,0 V1.6 L0.8,0.8 Z" fill="#d0d0d0" />
     </marker>
     <marker id="arrowheadred'.$rand.'" orient="auto" markerWidth="2" markerHeight="4"
             refX="0.3" refY="0.8">
@@ -1504,6 +1504,7 @@ LINK DEFAULT
        .attr("text-anchor", function(d) { return d.textposition; })
        .attr("x", function(d) { return d.textx; })
        .attr("dy", ".35em")
+       .attr("class", "linklabel")
       .text(function(d) { return d.name; });
        
    var textdown'.$rand.' = svg'.$rand.'.selectAll("line.link")

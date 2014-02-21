@@ -606,7 +606,7 @@ line.linkblack {
 }
 
 .linklabel {
-   fill: #1192ff;
+   fill: #000;
    font-size: 12px;
    font-weight:bold;
 }
