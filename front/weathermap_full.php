@@ -52,25 +52,13 @@ if (!isset($_GET['id'])) {
 $id = $_GET['id'];
 $pmWeathermap = new PluginMonitoringWeathermap();
 
+echo "<div id='page'>";
+
 PluginMonitoringToolbox::loadLib();
 
 $pmWeathermap->drawMap($id);
-exit;
-$pmWeathermap->generateWeathermap($id);
 
-echo '<div id="custom_date" style="display:none"></div>';
-echo '<div id="custom_time" style="display:none"></div>';
-
-//$pmWeathermap->generateAllGraphs($id);
-$html = file_get_contents(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$id.".html");
-
-$html = str_replace(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$id.".png", 
-         $CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=weathermap-".$id.".png", $html);
-
-
-PluginMonitoringToolbox::loadLib();
-echo $html;
-
+echo "</div>";
 echo '<meta http-equiv ="refresh" content="150">';
 
 ?>
