@@ -544,6 +544,20 @@ LINK DEFAULT
          echo "<input type='text' name='name' value='' />";     
          echo "</td>";
          echo "</tr>";
+
+         echo "<tr>";
+         echo "<td>";
+         echo __('Position of label', 'monitoring')." :";
+         echo "</td>";
+         echo "<td>";
+         $positions = array(
+             'middle' => __('Center', 'monitoring'),
+             'start' => __('Right', 'monitoring'),
+             'end' => __('Left', 'monitoring')
+         );
+         Dropdown::showFromArray('position', $positions);
+         echo "</td>";
+         echo "</tr>";
          
          echo "<tr>";
          echo "<td align='center' colspan='2'>";
@@ -1354,6 +1368,10 @@ LINK DEFAULT
          }
          $a_mapping[$data['id']] = $i;
          $i++;
+         $a_textx = array(
+             'middle' => 0, 
+             'start'  => '12', 
+             'end'    => '-12');
          $a_data['nodes'][] = array(
              'name'  => $name,
              'id'    => (int)$data['id'],
@@ -1361,7 +1379,9 @@ LINK DEFAULT
              'y'     => ($widthw * $data['y']) / 100,
              'fixed' => TRUE,
              "group" => 3,
-             "url"   => $url
+             "url"   => $url,
+             "textposition" => $data['position'],
+             "textx" => $a_textx[$data['position']]
          );
       }
       
@@ -1481,19 +1501,11 @@ LINK DEFAULT
        .attr("r", 10);
 
     nodes'.$rand.'.append("text")
-       .attr("x", 12)
+       .attr("text-anchor", function(d) { return d.textposition; })
+       .attr("x", function(d) { return d.textx; })
        .attr("dy", ".35em")
-       .text(function(d) { return d.name; });
+      .text(function(d) { return d.name; });
        
-   var rectdown'.$rand.' = svg'.$rand.'.selectAll("line.link")
-       .data(force'.$rand.'.links())
-    .enter().append("rect")  
-       .attr("height", 18)
-       .attr("width", 40)
-       .style("fill", "#d9d9d9")
-       .attr("rx", 2)
-       .attr("ry", 2);
-
    var textdown'.$rand.' = svg'.$rand.'.selectAll("line.link")
        .data(force'.$rand.'.links())
     .enter().append("text")
@@ -1501,16 +1513,7 @@ LINK DEFAULT
        .attr("text-anchor", "middle")
        .style("pointer-events", "none")
        .attr("class", function(d) { return "linklabel" + d.down;})
-       .text(function(d) { return d.downusage + " %";})
-
-   var rectup'.$rand.' = svg'.$rand.'.selectAll("line.link")
-       .data(force'.$rand.'.links())
-    .enter().append("rect")  
-       .attr("height", 18)
-       .attr("width", 40)
-       .style("fill", "#d9d9d9")
-       .attr("rx", 2)
-       .attr("ry", 2);
+       .text(function(d) { return d.downusage + "%";})
 
    var textup'.$rand.' = svg'.$rand.'.selectAll("line.link")
        .data(force'.$rand.'.links())
@@ -1519,7 +1522,7 @@ LINK DEFAULT
        .attr("text-anchor", "middle")
        .style("pointer-events", "none")
        .attr("class", function(d) { return "linklabel" + d.up;})
-       .text(function(d) { return d.upusage + " %";})
+       .text(function(d) { return d.upusage + "%";})
 
 
     force'.$rand.'.on("tick", function() {
@@ -1548,17 +1551,10 @@ LINK DEFAULT
 ';
       
          echo '
-rectdown'.$rand.'.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 130) - 20;})
-    .attr("y", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 130) - 10;});
-
    textdown'.$rand.'.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 130); })
       .attr("y", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 130); });
 
 
-
-   rectup'.$rand.'.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 70) - 20;})
-    .attr("y", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 70) - 10;});
-            
    textup'.$rand.'.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 70); })
       .attr("y", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 70); });
 

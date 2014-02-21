@@ -56,7 +56,15 @@ $item->getFromDB($pmWeathermapnode->fields['items_id']);
 echo $item->getLink(1);
 echo "<br/>";
 echo __('Name')."&nbsp;:&nbsp;";
-echo "<input type='text' name='nameupdate' value='".$pmWeathermapnode->fields['name']."' />";
+echo "<input type='text' name='nameupdate' value='".$pmWeathermapnode->fields['name']."' /><br/>";
+
+$positions = array(
+    'middle' => __('Center', 'monitoring'),
+    'start' => __('Right', 'monitoring'),
+    'end' => __('Left', 'monitoring')
+);
+echo __('Position of label', 'monitoring')." : ";
+Dropdown::showFromArray('position', $positions, array('value' => $pmWeathermapnode->fields['position']));
 
 echo "<script language='JavaScript'>
 document.pointform.x.value = ".$pmWeathermapnode->fields['x'].";

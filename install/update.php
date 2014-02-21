@@ -2902,6 +2902,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable, 
                               'y', 
                               "smallint(6) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable, 
+                              'position', 
+                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT 'middle'");
       $migration->migrationOneTable($newTable);
       
       

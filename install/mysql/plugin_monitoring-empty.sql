@@ -726,6 +726,7 @@ CREATE TABLE `glpi_plugin_monitoring_weathermapnodes` (
   `itemtype` varchar(100) DEFAULT NULL,
   `x` smallint(6) NOT NULL DEFAULT '0',
   `y` smallint(6) NOT NULL DEFAULT '0',
+  `position` varchar(255) COLLATE utf8_unicode_ci DEFAULT 'middle',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
