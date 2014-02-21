@@ -581,27 +581,27 @@ span.tagBox-item-content a.tagBox-remove:hover {
 
 
 line.linkred {
-   stroke-width: 12; 
+   stroke-width: 9; 
    stroke: red;
 }
 
 line.linkorange {
-   stroke-width: 12; 
+   stroke-width: 9; 
    stroke: orange;
 }
 
 line.linkgreen {
-   stroke-width: 12; 
+   stroke-width: 9; 
    stroke: green;
 }
 
 line.linkgrey {
-   stroke-width: 12; 
-   stroke: #f6f6f6;
+   stroke-width: 9; 
+   stroke: #d0d0d0;
 }
 
 line.linkblack {
-   stroke-width: 12; 
+   stroke-width: 9; 
    stroke: #000;
 }
 
@@ -630,10 +630,26 @@ line.linkblack {
 }
 
 .node circle {
-  fill: #dedede;
   stroke: #9f9f9f;
   stroke-width: 1.5px;
 }
+
+.circlered {
+   fill: red;
+}
+
+.circleorange {
+   fill: orange;
+}
+
+.circlegreen {
+   fill: green;
+}
+
+.circlegrey {
+  fill: #dedede;
+}
+
 
 .tipsy { font-size: 10px; position: absolute; padding: 5px; z-index: 100000; }
   .tipsy-inner { background-color: #f6f6f6; color: #000; width: 450px; padding: 5px 8px 4px 8px; text-align: center; }

@@ -1372,6 +1372,10 @@ LINK DEFAULT
              'middle' => 0, 
              'start'  => '12', 
              'end'    => '-12');
+         $texty = 0;
+         if ($data['position'] == 'middle') {
+            $texty = -13;
+         }
          $a_data['nodes'][] = array(
              'name'  => $name,
              'id'    => (int)$data['id'],
@@ -1381,9 +1385,12 @@ LINK DEFAULT
              "group" => 3,
              "url"   => $url,
              "textposition" => $data['position'],
-             "textx" => $a_textx[$data['position']]
+             "textx" => $a_textx[$data['position']],
+             "texty" => $texty,
+             "nodeusage" => 'grey'
          );
       }
+      $nodes_upusage = array();
       
       $pmWeathermapnode = new PluginMonitoringWeathermapnode();
       $pmWeathermaplink = new PluginMonitoringWeathermaplink();
@@ -1472,6 +1479,23 @@ LINK DEFAULT
              'components_id' => $pmService->fields['plugin_monitoring_components_id'],
              'rrdtool_template' => $pmComponent->fields['graph_template']
          );
+         if (!isset($nodes_upusage[$a_mapping[$data['plugin_monitoring_weathermapnodes_id_1']]])) {
+            $nodes_upusage[$a_mapping[$data['plugin_monitoring_weathermapnodes_id_1']]] = array();
+         }
+         if (!isset($nodes_upusage[$a_mapping[$data['plugin_monitoring_weathermapnodes_id_2']]])) {
+            $nodes_upusage[$a_mapping[$data['plugin_monitoring_weathermapnodes_id_2']]] = array();
+         }
+         array_push($nodes_upusage[$a_mapping[$data['plugin_monitoring_weathermapnodes_id_1']]], $upusage);
+         array_push($nodes_upusage[$a_mapping[$data['plugin_monitoring_weathermapnodes_id_2']]], $downusage);
+      }
+
+      foreach ($nodes_upusage as $nodes_num=>$datausage) {
+         $moyusage = array_sum($datausage)/count($datausage);
+         list($usage, $color) = $this->getWBandwidth(array_sum($datausage)/count($datausage), 100);
+         if ($moyusage == 0) {
+            $color = 'grey';
+         }
+         $a_data['nodes'][$nodes_num]['nodeusage'] = $color;
       }
       
       echo 'var jsonstr'.$rand.' = \''.json_encode($a_data).'\';';
@@ -1498,11 +1522,14 @@ LINK DEFAULT
         .attr("target", "_blank");
        
     nodes'.$rand.'.append("circle")
-       .attr("r", 10);
+       .attr("r", 5)
+       .attr("class", function(d) { return "circle" + d.nodeusage; });
+
 
     nodes'.$rand.'.append("text")
        .attr("text-anchor", function(d) { return d.textposition; })
        .attr("x", function(d) { return d.textx; })
+       .attr("y", function(d) { return d.texty; })
        .attr("dy", ".35em")
        .attr("class", "linklabel")
       .text(function(d) { return d.name; });
