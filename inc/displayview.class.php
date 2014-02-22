@@ -351,7 +351,8 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       Dropdown::showNumber("width", array(
                 'value' => $this->fields['width'], 
                 'min'   => 950, 
-                'max'   => 3000)
+                'max'   => 3000, 
+                'step'   => 5)
       );
       echo "</td>";
       echo "<td>";
