@@ -122,11 +122,15 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
          </script>";
       
       PluginMonitoringToolbox::loadLib();
-      
+
+      $style = '';
       if ($config == '1') {
          $this->addItem($id);
          $pmDisplayview_rule->showReplayRulesForm($id);
          echo "<div id='updatecoordonates'></div>";
+         if ($pmDisplayview->fields['width'] > 950) {
+            $style = ";position:relative;left:-".(($pmDisplayview->fields['width'] - 950) / 2)."px";
+         }
       } else {
          if (!is_null($pmDisplayview->fields['counter'])) {
             $pmDisplay = new PluginMonitoringDisplay();
@@ -134,7 +138,7 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
          }
       }
       
-      echo "<table class='tab_cadre_fixe' id='test' style='width:".$pmDisplayview->fields['width']."px'>";
+      echo "<table class='tab_cadre_fixe' id='test' style='width:".$pmDisplayview->fields['width']."px".$style."'>";
       
       echo "<tr class='tab_bg_1'>";
       echo "<th>";
