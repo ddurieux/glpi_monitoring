@@ -59,6 +59,40 @@ if (! isset($_SESSION['plugin_monitoring_reduced_interface'])) {
    $_SESSION['plugin_monitoring_reduced_interface'] = false;
 }
 
+      echo "
+      <script>
+         function toggleMinemap(idMinemap) {
+            Ext.select('#'+idMinemap).each(function(el) {
+               el.setDisplayed(! el.isDisplayed());
+            }); 
+         };
+         function toggleEntity(idEntity) {
+            Ext.select('#'+idEntity).each(function(el) {
+               var displayed = false;
+               el.select('tr.services').each(function(elTr) {
+                  elTr.setDisplayed(! elTr.isDisplayed());
+                  displayed = elTr.isDisplayed();
+               }); 
+               // if (! displayed) {
+                  // el.select('tr.header').each(function(elTr) {
+                     // elTr.applyStyles({'height':'10px'});
+                     // elTr.select('th').each(function(elTd) {
+                        // elTd.applyStyles({'height':'10px'});
+                     // }); 
+                  // }); 
+               // }
+               el.select('tr.header').each(function(elTr) {
+                  elTr.applyStyles(displayed ? {'height':'50px'} : {'height':'10px'});
+                  elTr.select('th').each(function(elTd) {
+                     elTd.applyStyles(displayed ? {'height':'50px'} : {'height':'10px'});
+                  }); 
+               }); 
+            }); 
+         };
+      </script>
+      ";
+
+
 $pmComponentscatalog = new PluginMonitoringComponentscatalog();
 $pmComponentscatalog->showWidgetFrame(
         $_POST['id'], 
