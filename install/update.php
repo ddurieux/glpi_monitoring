@@ -2687,7 +2687,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          'in_central'   => array('type'    => 'bool',          'value'   => NULL),
          'is_frontview' => array('type'    => 'bool',          'value'   => NULL),
          'comment'      => array('type'    => 'text',          'value'   => NULL),
-         'duration'     => array('type'    => 'integer',       'value'   => NULL),
+         'duration'     => array('type'    => 'integer',       'value'   => '2'),
       );
 
       $a_table['oldfields']  = array();
