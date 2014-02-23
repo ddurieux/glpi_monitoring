@@ -2471,133 +2471,63 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $migration->migrationOneTable($newTable);
 
       
-      
+
     /*
-    * Table glpi_plugin_monitoring_profiles
-    */
-      $newTable = "glpi_plugin_monitoring_profiles";
-      if (!TableExists($newTable)) {
-         $query = "CREATE TABLE `".$newTable."` (
-                        `profiles_id` int(11) NOT NULL DEFAULT '0'
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-         $DB->query($query);
-      }
-         $migration->changeField($newTable, 
-                                 'profiles_id', 
-                                 'profiles_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");
+     * glpi_plugin_monitoring_profiles
+     */
+      $a_table = array();
+      $a_table['name'] = 'glpi_plugin_monitoring_profiles';
+      $a_table['oldname'] = array();
 
-         // Remove old fields ...
-         // $migration->dropField($newTable, 'dashboard');
-         $migration->dropField($newTable, 'servicescatalog');
-         $migration->dropField($newTable, 'view');
-         $migration->dropField($newTable, 'componentscatalog');
-         $migration->dropField($newTable, 'viewshomepage');
-         $migration->dropField($newTable, 'weathermap');
-         $migration->dropField($newTable, 'component');
-         $migration->dropField($newTable, 'command');
-         // $migration->dropField($newTable, 'config');
-         $migration->dropField($newTable, 'check');
-         $migration->dropField($newTable, 'allressources');
-         // $migration->dropField($newTable, 'hosts_status');
-         // $migration->dropField($newTable, 'system_status');
-         // $migration->dropField($newTable, 'host_command');
+      $a_table['fields']  = array(
+         'id'              => array('type'    => 'autoincrement', 'value'   => ''),
+         'profiles_id'     => array('type'    => 'integer',       'value'   => NULL),
+         'config'             => array('type'    => 'char',          'value'   => NULL),
+         'config_views'       => array('type'    => 'char',          'value'   => NULL),
+         'config_services_catalogs'   => array('type'    => 'char',          'value'   => NULL),
+         'config_components_catalogs' => array('type'    => 'char',          'value'   => NULL),
+         'config_weathermap'  => array('type'    => 'char',          'value'   => NULL),
+         'dashboard'          => array('type'    => 'char',          'value'   => NULL),
+         'dashboard_system_status'    => array('type'    => 'char',          'value'   => NULL),
+         'dashboard_hosts_status'     => array('type'    => 'char',          'value'   => NULL),
+         'dashboard_all_ressources'   => array('type'    => 'char',          'value'   => NULL),
+         'dashboard_views'    => array('type'    => 'char',          'value'   => NULL),
+         'dashboard_services_catalogs'   => array('type'    => 'char',          'value'   => NULL),
+         'dashboard_components_catalogs' => array('type'    => 'char',          'value'   => NULL),
+         'dashboard_perfdatas'        => array('type'    => 'char',          'value'   => NULL),
+         'homepage'           => array('type'    => 'char',          'value'   => NULL),
+         'homepage_views'     => array('type'    => 'char',          'value'   => NULL),
+         'homepage_services_catalogs'   => array('type'    => 'char',          'value'   => NULL),
+         'homepage_components_catalogs' => array('type'    => 'char',          'value'   => NULL),
+         'homepage_system_status'       => array('type'    => 'char',          'value'   => NULL),
+         'homepage_hosts_status'        => array('type'    => 'char',          'value'   => NULL),
+         'homepage_perfdatas'           => array('type'    => 'char',          'value'   => NULL),
+         'homepage_all_ressources'      => array('type'    => 'char',          'value'   => NULL),
+         'acknowledge'        => array('type'    => 'char',          'value'   => NULL),
+         'downtime'           => array('type'    => 'char',          'value'   => NULL),
+         'counters'           => array('type'    => 'char',          'value'   => NULL),
+         'restartshinken'     => array('type'    => 'char',          'value'   => NULL),
+         'host_command'       => array('type'    => 'char',          'value'   => NULL),
+      );
+      
+      $a_table['oldfields']  = array(
+          'servicescatalog',
+          'view',
+          'componentscatalog',
+          'viewshomepage',
+          'weathermap',
+          'component',
+          'command',
+          'check',
+          'allressources');
 
-                                 
-      $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                              'profiles_id', 
-                              "int(11) NOT NULL DEFAULT '0'");
-                              
-         $migration->addField($newTable, 
-                              'config', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT 'r'");
-         $migration->addField($newTable, 
-                              'config_views', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'config_sliders', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'config_services_catalogs', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'config_components_catalogs', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'config_weathermap', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+      $a_table['renamefields'] = array();
 
-         $migration->addField($newTable, 
-                              'dashboard', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'dashboard_views', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'dashboard_sliders', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'dashboard_system_status', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'dashboard_hosts_status', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'dashboard_all_ressources', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'dashboard_services_catalogs', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'dashboard_components_catalogs', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'dashboard_perfdatas', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-                              
-         $migration->addField($newTable, 
-                              'restartshinken', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'acknowledge', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'downtime', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'host_command', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'counters', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-                              
-         $migration->addField($newTable, 
-                              'homepage', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'homepage_views', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'homepage_system_status', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'homepage_hosts_status', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'homepage_all_ressources', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'homepage_services_catalogs', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'homepage_components_catalogs', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'homepage_perfdatas', 
-                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
-                              
-      $migration->migrationOneTable($newTable);
+      $a_table['keys']   = array();
+
+      $a_table['oldkeys'] = array();
+
+      migrateTablesMonitoring($migration, $a_table);
       
 
       
