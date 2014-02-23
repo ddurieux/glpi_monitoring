@@ -2800,7 +2800,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       $a_table['keys'] = array(
           array(
-              'field' => 'pluginmonitoringsliders_id', 
+              'field' => 'plugin_monitoring_sliders_id', 
               'name' => '', 
               'type' => 'INDEX'));
 
