@@ -2479,15 +2479,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $a_table['name'] = 'glpi_plugin_monitoring_profiles';
       $a_table['oldname'] = array();
       
-      if (TableExists('glpi_plugin_monitoring_profiles')
-              && !FieldExists('glpi_plugin_monitoring_profiles', 'id')) {
-         $DB->query("ALTER TABLE `glpi_plugin_monitoring_profiles` 
-                 ADD `id` INT(11) NOT NULL AUTO_INCREMENT 
-                 PRIMARY KEY (id)");
-      }
-
       $a_table['fields']  = array(
-         'id'              => array('type'    => 'autoincrement', 'value'   => ''),
          'profiles_id'     => array('type'    => 'integer',       'value'   => NULL),
          'config'             => array('type'    => 'char',          'value'   => NULL),
          'config_views'       => array('type'    => 'char',          'value'   => NULL),
