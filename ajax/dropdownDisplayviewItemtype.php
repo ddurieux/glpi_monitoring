@@ -42,20 +42,25 @@ switch ($_POST['itemtype']) {
 
    case 'PluginMonitoringWeathermap':
       Dropdown::show('PluginMonitoringWeathermap', array('name'=>'items_id'));
-      echo "&nbsp;&nbsp;&nbsp;".__('% of the width of the frame', 'monitoring')."&nbsp: ".
-              Dropdown::showNumber("extra_infos", array(
-                               'value' => 100, 
-                               'min'   => 0, 
-                               'max'   => 100,
-                               'step'  => 5)
-              );
+      echo "&nbsp;&nbsp;&nbsp;".__('% of the width of the frame', 'monitoring')."&nbsp: ";
+      Dropdown::showNumber("extra_infos", array(
+                      'value' => 100, 
+                      'min'   => 0, 
+                      'max'   => 100,
+                      'step'  => 5)
+      );
       break;
    
    case 'PluginMonitoringDisplayview':
-      Dropdown::show('PluginMonitoringDisplayview', 
-                     array('name'      =>'items_id',
-                           'condition' => "`is_frontview`='0'",
-                           'used'      => array($_POST['displayviews_id'])));
+      if (isset($_POST['sliders_id'])) {
+         Dropdown::show('PluginMonitoringDisplayview', 
+                        array('name'      =>'items_id'));
+      } else {
+         Dropdown::show('PluginMonitoringDisplayview', 
+                        array('name'      =>'items_id',
+                              'condition' => "`is_frontview`='0'",
+                              'used'      => array($_POST['displayviews_id'])));
+      }
       break;
    
    case 'service':

@@ -81,6 +81,7 @@ class PluginMonitoringProfile extends CommonDBTM {
          $input['config_components_catalogs'] = 'w';
          $input['config_weathermap'] = 'w';
          $input['config_views'] = 'w';
+         $input['config_sliders'] = 'w';
 
          $input['homepage'] = 'r';
          $input['homepage_views'] = 'r';
@@ -93,6 +94,7 @@ class PluginMonitoringProfile extends CommonDBTM {
 
          $input['dashboard'] = 'r';
          $input['dashboard_views'] = 'r';
+         $input['dashboard_sliders'] = 'r';
          $input['dashboard_system_status'] = 'r';
          $input['dashboard_hosts_status'] = 'r';
          $input['dashboard_services_catalogs'] = 'r';
@@ -224,6 +226,20 @@ class PluginMonitoringProfile extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo __('Carrousel / slider', 'monitoring')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      Profile::dropdownNoneReadWrite("config_sliders", $this->fields["config_sliders"], 1, 1, 1);
+      echo "</td>";
+      echo "<td>";
+      echo "</td>";
+      echo "<td>";
+      echo "</td>";
+      echo "</tr>";
+
+      
       echo "<tr><td colspan='4'><hr/></td></tr>";
       
       echo "<tr class='tab_bg_1'>";
@@ -331,6 +347,12 @@ class PluginMonitoringProfile extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo __('View carrousel / slider', 'monitoring')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+      Profile::dropdownNoneReadWrite("dashboard_sliders", $this->fields["dashboard_sliders"], 1, 1, 0);
+      echo "</td>";
       echo "<td>";
       echo __('View performance data', 'monitoring')."&nbsp;:";
       echo "</td>";

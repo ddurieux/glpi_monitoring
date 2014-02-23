@@ -56,9 +56,6 @@ if (PluginMonitoringProfile::haveRight("dashboard", 'r') && !PluginMonitoringPro
    Html::redirect($CFG_GLPI['root_doc']."/plugins/monitoring/front/dashboard.php");
 }
 
-// $pmSlider = new PluginMonitoringSlider();
-// $pmSlider->slideSlider();
-
 if (PluginMonitoringProfile::haveRight("dashboard", 'r')
       && (
          PluginMonitoringProfile::haveRight("restartshinken", 'r')
@@ -81,14 +78,22 @@ if (PluginMonitoringProfile::haveRight("dashboard", 'r')
 
    echo "<br/>";
 }
+if (PluginMonitoringProfile::haveRight("config_views", 'r')
+        || PluginMonitoringProfile::haveRight("config_sliders", 'r')) {
 
-if (PluginMonitoringProfile::haveRight("config_views", 'r')) {
    echo "<table class='tab_cadre' width='950'>";
    echo "<tr class='tab_bg_1'>";
-   $toDisplayArea++;
-   echo "<th align='center' height='40' width='34%'>";
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/displayview.php'>".__('Views', 'monitoring')."</a>";
-   echo "</th>";
+   if (PluginMonitoringProfile::haveRight("config_views", 'r')) {
+      $toDisplayArea++;
+      echo "<th align='center' height='40' width='34%'>";
+      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/displayview.php'>".__('Views', 'monitoring')."</a>";
+      echo "</th>";
+   }
+   if (PluginMonitoringProfile::haveRight("config_sliders", 'r')) {
+      echo "<th align='center' height='40' width='34%'>";
+      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/slider.php'>".__('Carrousel / slider', 'monitoring')."</a>";
+      echo "</th>";
+   }
    echo "</tr>";
    echo "</table>";
    echo "<br/>";

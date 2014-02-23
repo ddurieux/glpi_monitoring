@@ -159,7 +159,9 @@ function plugin_init_monitoring() {
 
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['customitem_counter'] = 'front/customitem_counter.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['customitem_counter'] = 'front/customitem_counter.php';
-         
+        
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['slider'] = 'front/slider.form.php?add=1';
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['slider'] = 'front/slider.php';
          
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['service'] = 'front/display.php';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['service'] = 'front/host.php';
@@ -217,6 +219,9 @@ function plugin_init_monitoring() {
 
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['perfdata']['title'] = __('Graph templates', 'monitoring');
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['perfdata']['page']  = '/plugins/monitoring/front/perfdata.php';
+
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['slider']['title'] = __('Carrousel / slider', 'monitoring');
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['slider']['page']  = '/plugins/monitoring/front/slider.php';
 
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['dashboard']['title'] = __('Dashboard', 'monitoring');
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['dashboard']['page']  = '/plugins/monitoring/front/dashboard.php';

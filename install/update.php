@@ -2516,6 +2516,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               'config_views', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
+                              'config_sliders', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
                               'config_services_catalogs', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
@@ -2530,6 +2533,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
                               'dashboard_views', 
+                              "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable, 
+                              'dashboard_sliders', 
                               "char(1) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable, 
                               'dashboard_system_status', 
@@ -2731,6 +2737,146 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL"); 
       $migration->migrationOneTable($newTable);
       
+
+      
+    /*
+    * Table glpi_plugin_monitoring_sliders
+    */
+      $a_table = array();
+      $a_table['name'] = 'glpi_plugin_monitoring_sliders';
+      $a_table['oldname'] = array();
+
+      $a_table['fields']  = array(
+         'id'           => array('type'    => 'autoincrement', 'value'   => ''),
+         'name'         => array('type'    => 'string',        'value'   => NULL),
+         'entities_id'  => array('type'    => 'integer',       'value'   => NULL),
+         'is_recursive' => array('type'    => 'bool',          'value'   => NULL),
+         'is_active'    => array('type'    => 'bool',          'value'   => NULL),
+         'users_id'     => array('type'    => 'integer',       'value'   => NULL),
+         'in_central'   => array('type'    => 'bool',          'value'   => NULL),
+         'is_frontview' => array('type'    => 'bool',          'value'   => NULL),
+         'comment'      => array('type'    => 'text',          'value'   => NULL),
+         'duration'     => array('type'    => 'integer',       'value'   => NULL),
+      );
+
+      $a_table['oldfields']  = array();
+
+      $a_table['renamefields'] = array();
+
+      $a_table['keys'] = array();
+
+      $a_table['oldkeys'] = array();
+
+      migrateTablesMonitoring($migration, $a_table);
+
+      
+      
+    /*
+    * Table glpi_plugin_monitoring_sliders_groups
+    */
+      $a_table = array();
+      $a_table['name'] = 'glpi_plugin_monitoring_sliders_groups';
+      $a_table['oldname'] = array();
+
+      $a_table['fields']  = array(
+         'id'           => array('type'    => 'autoincrement', 'value'   => ''),
+         'pluginmonitoringsliders_id'  => array('type' => 'integer', 'value' => NULL),
+         'groups_id'    => array('type'    => 'integer',       'value'   => NULL),
+         'entities_id'  => array('type'    => 'integer',       'value'   => NULL),
+         'is_recursive' => array('type'    => 'bool',          'value'   => NULL),
+      );
+
+      $a_table['oldfields']  = array();
+
+      $a_table['renamefields'] = array();
+
+      $a_table['keys'] = array(
+          array(
+              'field' => 'pluginmonitoringsliders_id', 
+              'name' => '', 
+              'type' => 'INDEX'),
+          array(
+              'field' => 'groups_id', 
+              'name' => '', 
+              'type' => 'INDEX'),
+          array(
+              'field' => 'entities_id', 
+              'name' => '', 
+              'type' => 'INDEX'),
+          array(
+              'field' => 'is_recursive', 
+              'name' => '', 
+              'type' => 'INDEX'));
+
+      $a_table['oldkeys'] = array();
+
+      migrateTablesMonitoring($migration, $a_table);
+      
+
+      
+    /*
+    * Table glpi_plugin_monitoring_sliders_users
+    */
+      $a_table = array();
+      $a_table['name'] = 'glpi_plugin_monitoring_sliders_users';
+      $a_table['oldname'] = array();
+
+      $a_table['fields']  = array(
+         'id'           => array('type'    => 'autoincrement', 'value'   => ''),
+         'pluginmonitoringsliders_id'  => array('type' => 'integer', 'value' => NULL),
+         'users_id'    => array('type'    => 'integer',       'value'   => NULL),
+      );
+
+      $a_table['oldfields']  = array();
+
+      $a_table['renamefields'] = array();
+
+      $a_table['keys'] = array(
+          array(
+              'field' => 'pluginmonitoringsliders_id', 
+              'name' => '', 
+              'type' => 'INDEX'),
+          array(
+              'field' => 'users_id', 
+              'name' => '', 
+              'type' => 'INDEX'));
+
+      $a_table['oldkeys'] = array();
+
+      migrateTablesMonitoring($migration, $a_table);
+
+      
+      
+    /*
+    * Table glpi_plugin_monitoring_sliders_items
+    */
+      $a_table = array();
+      $a_table['name'] = 'glpi_plugin_monitoring_sliders_items';
+      $a_table['oldname'] = array();
+
+      $a_table['fields']  = array(
+         'id'          => array('type' => 'autoincrement', 'value'   => ''),
+         'pluginmonitoringsliders_id' => array('type' => 'integer', 'value' => NULL),
+         'items_id'    => array('type' => 'integer',       'value'   => NULL),
+         'itemtype'    => array('type' => 'string',        'value'   => NULL),
+         'extra_infos' => array('type' => 'varchar(100) DEFAULT NULL','value'   => NULL),
+         'is_minemap'  => array('type' => 'bool',          'value'   => NULL),
+      );
+
+      $a_table['oldfields']  = array();
+
+      $a_table['renamefields'] = array();
+
+      $a_table['keys'] = array(
+          array(
+              'field' => 'pluginmonitoringsliders_id', 
+              'name' => '', 
+              'type' => 'INDEX'));
+
+      $a_table['oldkeys'] = array();
+
+      migrateTablesMonitoring($migration, $a_table);
+
       
       
     /*

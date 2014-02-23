@@ -228,6 +228,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                   }
                }
                // Fred : what is it for ?
+               // It's to finish properly the table
                for ($i;$i < 6; $i++) {
                   echo "<td width='20%'>";
                   echo "</td>";
@@ -236,7 +237,43 @@ class PluginMonitoringDisplay extends CommonDBTM {
                echo "</table>";
             }
       }
-            
+
+      if (PluginMonitoringProfile::haveRight("dashboard_sliders", 'r')) {
+         $i = 1;
+            $pmSlider = new PluginMonitoringSlider();
+            $a_sliders = $pmSlider->getSliders();
+            if (count($a_sliders) > 0) {
+               echo "<table class='tab_cadre_fixe' width='950'>";
+               echo "<tr class='tab_bg_1'>";
+
+               foreach ($a_sliders as $sliders_id=>$name) {
+                  $pmSlider->getFromDB($sliders_id);
+                  if ($pmSlider->haveVisibilityAccess()) {
+                     if ($i == 6) {
+                        echo "</tr>";
+                        echo "<tr class='tab_bg_1'>";
+                        $i = 1;
+                     }
+                     echo "<th width='20%'>";
+                     $this->displayPuce('slider', $sliders_id);
+                     echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_slider.php?id=".$sliders_id."'>";
+                     echo htmlentities($name);
+                     echo "</a>";
+                     echo "</th>";
+                     $i++;
+                     $a_url[] = $CFG_GLPI['root_doc']."/plugins/monitoring/front/display_slider.php?id=".$sliders_id;
+                  }
+               }
+               for ($i;$i < 6; $i++) {
+                  echo "<td width='20%'>";
+                  echo "</td>";
+               }
+               echo "</tr>";
+               echo "</table>";
+            }
+      }
+
+      
       echo "</td>";
       echo "</tr>";
       echo "</table>";
