@@ -2787,10 +2787,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       $a_table['fields']  = array(
          'id'          => array('type' => 'autoincrement', 'value'   => ''),
-         'pluginmonitoringsliders_id' => array('type' => 'integer', 'value' => NULL),
+         'plugin_monitoring_sliders_id' => array('type' => 'integer', 'value' => NULL),
          'items_id'    => array('type' => 'integer',       'value'   => NULL),
-         'itemtype'    => array('type' => 'string',        'value'   => NULL),
-         'extra_infos' => array('type' => 'varchar(100) DEFAULT NULL','value'   => NULL),
+         'itemtype'    => array('type' => 'varchar(100) DEFAULT NULL','value'   => NULL),
+         'extra_infos'    => array('type' => 'string',        'value'   => NULL),
          'is_minemap'  => array('type' => 'bool',          'value'   => NULL),
       );
 
