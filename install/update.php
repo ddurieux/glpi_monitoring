@@ -2712,8 +2712,8 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $a_table['fields']  = array(
          'id'           => array('type'    => 'autoincrement', 'value'   => ''),
          'pluginmonitoringsliders_id'  => array('type' => 'integer', 'value' => NULL),
-         'groups_id'    => array('type'    => 'integer',       'value'   => '-1'),
-         'entities_id'  => array('type'    => 'integer',       'value'   => NULL),
+         'groups_id'    => array('type'    => 'integer',       'value'   => NULL),
+         'entities_id'  => array('type'    => 'integer',       'value'   => '-1'),
          'is_recursive' => array('type'    => 'bool',          'value'   => NULL),
       );
 
