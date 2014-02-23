@@ -685,6 +685,9 @@ CREATE TABLE `glpi_plugin_monitoring_sliders` (
   `is_active` tinyint(1) NOT NULL DEFAULT '0',
   `in_central` tinyint(1) NOT NULL DEFAULT '0',
   `is_frontview` tinyint(1) NOT NULL DEFAULT '0',
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  `is_frontview` tinyint(1) NOT NULL DEFAULT '0',
+  `comment` text DEFAULT NULL COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
