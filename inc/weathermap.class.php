@@ -101,219 +101,6 @@ class PluginMonitoringWeathermap extends CommonDBTM {
    
    
    
-   function generateConfig($weathermaps_id) {
-      global $DB,$CFG_GLPI;
-      
-      if ($weathermaps_id < 1) {
-         return;
-      }
-      
-      $conf = "\n";
-
-      $pmWeathermapnode = new PluginMonitoringWeathermapnode();
-      $pmComponent = new PluginMonitoringComponent();
-      $pmService = new PluginMonitoringService();
-      
-      $this->getFromDB($weathermaps_id);
-      
-      if ($this->fields['background'] != '') {
-         $conf .= "BACKGROUND ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermapbg/".$this->fields['background']."\n";
-         //$conf .= "BACKGROUND http://192.168.20.194".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=weathermapbg/".$this->fields['background']."\n";
-      }
-      // image file to generate
-      $conf .= "IMAGEOUTPUTFILE ".GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png\n";
-      $conf .= "\n";
-      
-      $conf .= "WIDTH ".$this->fields["width"]."
-HEIGHT ".$this->fields["height"]."
-HTMLSTYLE overlib
-TITLE ".$this->fields["name"]."
-TIMEPOS 10 20 Cree le : ".Html::convDateTime(date("Y-m-d H:i:s"))."
-
-KEYPOS DEFAULT 10 ".($this->fields["height"] - ($this->fields["width"] /16))."
-KEYSTYLE  DEFAULT horizontal ".($this->fields["width"] /4)."
-KEYTEXTCOLOR 0 0 0
-KEYOUTLINECOLOR 0 0 0
-KEYBGCOLOR 255 255 255
-BGCOLOR 255 255 255
-TITLECOLOR 0 0 0
-TIMECOLOR 0 0 0
-SCALE DEFAULT 0.0001 0.1   255 255 255   255 255 255  
-SCALE DEFAULT 0.1 50   0 255 0   255 215 0  
-SCALE DEFAULT 50 100   255 215 0   255 0 0  
-
-SET key_hidezero_DEFAULT 1
-
-# End of global section
-
-# TEMPLATE-only NODEs:
-NODE DEFAULT
-	MAXVALUE 100
-
-# TEMPLATE-only LINKs:
-LINK DEFAULT
-	WIDTH 4
-	BANDWIDTH 100M
-
-# regular NODEs:
-";
-      $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringWeathermapnode")."`
-         WHERE `plugin_monitoring_weathermaps_id`='".$weathermaps_id."'
-         ORDER BY `name`";
-      $result = $DB->query($query);
-      $link = '';
-      while ($data=$DB->fetch_array($result)) {
-         $name = $data['name'];         
-         if ($name == '') {
-            $itemtype = $data['itemtype'];
-            $item = new $itemtype();
-            $item->getFromDB($data['items_id']);
-            $name = $item->getName();    
-            $link = $item->getLinkURL();
-         }
-         
-         $conf .= "NODE ".preg_replace("/[^A-Za-z0-9_]/","",$data['name'])."_".$data['id']."\n".
-            "   LABEL ".$name."\n".
-            "   POSITION ".$data['x']." ".$data['y']."\n";
-         if ($link != '') {
-            $conf .= "   INFOURL ".$link."\n";
-         }
-         $conf .= "\n";
-      }
-      
-      $conf .= "\n\n# regular LINKs:\n";
-      
-      $bwlabelpos=array();
-      $bwlabelpos[0] = "BWLABELPOS 81 39";
-      $bwlabelpos[1] = "BWLABELPOS 71 29";
-      $i = 0;
-      $doublelink = array();
-      $doublelinkbegin = array();
-      $doublelinkdiff = array();
-      $doublelinknumber = array();
-      $query = "SELECT `".getTableForItemType("PluginMonitoringWeathermaplink")."`.*, 
-            count(`".getTableForItemType("PluginMonitoringWeathermaplink")."`.`id`) as `cnt` 
-            FROM `".getTableForItemType("PluginMonitoringWeathermaplink")."` 
-         LEFT JOIN `".getTableForItemType("PluginMonitoringWeathermapnode")."`
-            ON `plugin_monitoring_weathermapnodes_id_1` = `".getTableForItemType("PluginMonitoringWeathermapnode")."`.`id`
-
-         WHERE `plugin_monitoring_weathermaps_id`='".$weathermaps_id."'
-         group by `plugin_monitoring_weathermapnodes_id_1`, `plugin_monitoring_weathermapnodes_id_2`
-         HAVING cnt >1";
-      $result=$DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
-         $tlink = $data['plugin_monitoring_weathermapnodes_id_1']."-".$data['plugin_monitoring_weathermapnodes_id_2'];
-         $doublelink[$tlink] = $data['cnt'];
-         $doublelinknumber[$tlink] = 0;
-         $beg = 0;
-         $diff = 0;
-         switch($data['cnt']) {
-            
-            case 2:
-               $beg = -22;
-               $diff = 44;
-               break;
-            
-            case 3:
-               $beg = -33;
-               $diff = 33;               
-               break;
-            
-            case 4:
-               $beg = -39;
-               $diff = 26;
-               break;
-            
-            case 5:
-               $beg = -60;
-               $diff = 30;
-               break;
-            
-         }
-         $doublelinkbegin[$tlink] = $beg;
-         $doublelinkdiff[$tlink] = $diff;
-      }
-      
-      $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringWeathermapnode")."`
-         WHERE `plugin_monitoring_weathermaps_id`='".$weathermaps_id."'
-         ORDER BY `name`";
-      $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
-         $queryl = "SELECT * FROM `".getTableForItemType("PluginMonitoringWeathermaplink")."`
-            WHERE `plugin_monitoring_weathermapnodes_id_1`='".$data['id']."'";
-         $resultl = $DB->query($queryl);
-         while ($datal=$DB->fetch_array($resultl)) {
-            $bandwidth = $datal['bandwidth_in']." ".$datal['bandwidth_out'];
-            if ($datal['bandwidth_in'] == $datal['bandwidth_out']) {
-               $bandwidth = $datal['bandwidth_in'];
-            }
-            $pmWeathermapnode->getFromDB($datal['plugin_monitoring_weathermapnodes_id_2']);
-            
-            $queryevent = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
-               WHERE `plugin_monitoring_services_id`='".$datal['plugin_monitoring_services_id']."'
-                  ORDER BY `date` DESC
-                  LIMIT 1";
-            $resultevent = $DB->query($queryevent);
-            $in = '';
-            $out = '';
-            while ($dataevent=$DB->fetch_array($resultevent)) {
-               $pmService->getFromDB($datal['plugin_monitoring_services_id']);
-               $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
-               
-               $matches1 = array();
-               preg_match("/".$pmComponent->fields['weathermap_regex_in']."/m", $dataevent['perf_data'], $matches1);
-               if (isset($matches1[1])) {
-                  $in = $matches1[1];
-               }
-               $matches1 = array();
-               preg_match("/".$pmComponent->fields['weathermap_regex_out']."/m", $dataevent['perf_data'], $matches1);
-               if (isset($matches1[1])) {
-                  $out = $matches1[1];
-               }
-            }
-            $in = $this->checkBandwidth("in", $in, $bandwidth);
-            $out = $this->checkBandwidth("out", $out, $bandwidth);
-            $nodesuffix = '';
-            $tlink = $datal['plugin_monitoring_weathermapnodes_id_1']."-".$datal['plugin_monitoring_weathermapnodes_id_2'];
-            if (isset($doublelink[$tlink])) {               
-               $nodesuffix = ":".($doublelinkbegin[$tlink] + ($doublelinknumber[$tlink] * $doublelinkdiff[$tlink])).":0";
-               $doublelinknumber[$tlink]++;
-            }
-            $conf .= "LINK ".preg_replace("/[^A-Za-z0-9_]/","",$data['name'])."_".$data['id']."-".preg_replace("/[^A-Za-z0-9_]/","",$pmWeathermapnode->fields['name'])."_".$pmWeathermapnode->fields['id'].$nodesuffix."\n";
-            $timezone = '0';
-            if (isset($_SESSION['plugin_monitoring_timezone'])) {
-               $timezone = $_SESSION['plugin_monitoring_timezone'];
-            }
-            $timezone_file = str_replace("+", ".", $timezone);
-//            if (file_exists(GLPI_ROOT."/files/_plugins/monitoring/PluginMonitoringService-".$datal['plugin_monitoring_services_id']."-2h".$timezone_file.".gif")) {
-               $conf .= "   INFOURL ".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$datal['plugin_monitoring_services_id']."\n".
-                  "   OVERLIBGRAPH ".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=PluginMonitoringService-".$datal['plugin_monitoring_services_id']."-2h".$timezone_file.".png\n";
-//            }
-            $conf .= "   ".$bwlabelpos[$i]."\n";
-            // Manage for port down
-               $retflag = PluginMonitoringHost::getState($pmService->fields['state'], 
-                                                            $pmService->fields['state_type'], 
-                                                            '', 
-                                                            $pmService->fields['is_acknowledged']);
-               if ($retflag == 'red') {
-                  $conf .= "   TARGET static:".$datal['bandwidth_in'].":".$datal['bandwidth_out']."\n";
-               } else {
-                  $conf .= "   TARGET static:".$in.":".$out."\n";
-               }
-            
-            $conf .= "   NODES ".preg_replace("/[^A-Za-z0-9_]/","",$data['name'])."_".$data['id'].$nodesuffix." ".preg_replace("/[^A-Za-z0-9_]/","",$pmWeathermapnode->fields['name'])."_".$pmWeathermapnode->fields['id'].$nodesuffix."\n";
-            $conf .= "   BANDWIDTH ".$bandwidth."\n\n";
-            $i++;
-            if ($i == '2') {
-               $i = 0;
-            }
-         }         
-      }
-      return $conf;
-   }
-   
-   
-   
    function showForm($items_id, $options=array()) {
       global $DB,$CFG_GLPI;
 
@@ -374,6 +161,9 @@ LINK DEFAULT
       
       
       $this->showFormButtons($options);
+      
+      PluginMonitoringToolbox::loadLib();
+
       $this->addDivForTabs();
       
       return true;
@@ -387,7 +177,6 @@ LINK DEFAULT
       $networkPort = new NetworkPort();
       $pmWeathermapnode = new PluginMonitoringWeathermapnode();
       
-      
       $this->getFromDB($weathermaps_id);
       
       echo "<table class='tab_cadre_fixe'>";
@@ -396,96 +185,13 @@ LINK DEFAULT
       echo __('Nodes and links', 'monitoring');
       echo "</th>";
       echo "</tr>";
-      
-      $this->generateWeathermap($weathermaps_id, 1, 1);
-      $map = "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=weathermap-".$weathermaps_id.".png'/>";
-      
+  
       echo "<tr class='tab_bg_1'>";
-      echo "<td valign='top' width='10'>";      
-      if ($this->fields['background'] == '') {
-         echo '<script language="JavaScript" type="text/JavaScript">
-
-         function FindPosition(oElement) {
-            if(typeof( oElement.offsetParent ) != "undefined") {
-               for(var posX = 0, posY = 0; oElement; oElement = oElement.offsetParent) {
-                  posX += oElement.offsetLeft;
-                  posY += oElement.offsetTop;
-               }
-               return [ posX, posY ];
-            } else {
-               return [ oElement.x, oElement.y ];
-            }
-         }
-
-         function GetCoordinates(e) {
-            var PosX = 0;
-            var PosY = 0;
-            var ImgPos;
-            ImgPos = FindPosition(myImg);
-            if (!e) var e = window.event;
-            if (e.pageX || e.pageY) {
-               PosX = e.pageX;
-               PosY = e.pageY;
-            } else if (e.clientX || e.clientY) {
-               PosX = e.clientX + document.body.scrollLeft
-                 + document.documentElement.scrollLeft;
-               PosY = e.clientY + document.body.scrollTop
-                 + document.documentElement.scrollTop;
-            }
-            PosX = PosX - ImgPos[0];
-            PosY = PosY - ImgPos[1];
-
-            document.pointform.x.value = PosX;
-            document.pointform.y.value = PosY;
-         }
-
-         var myImg = document.getElementById("myImgId");
-         myImg.onmousedown = GetCoordinates;
-
-         </script>';
-         echo "<div><img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/send.php?file=weathermap-".$weathermaps_id.".png'/>";
-         echo "<div style='position: absolute; top:40px;' id='myImgId' >
-            <table class='gridweathermap' width='".$this->fields['width']."' 
-               height='".$this->fields['height']."'>";
-         $line = '';
-         $nbcol = ceil($this->fields['width'] / 15);
-         for ($num=0; $num < $nbcol; $num++) {
-            $line .= "<td></td>";
-         }
-         $line = '<tr>'.$line.'</tr>';
-         $nbline = ceil($this->fields['height'] / 15);
-         for ($num=0; $num < $nbline; $num++) {
-            echo $line;
-         }
-         echo "</table></div></div>";
-         
-      } else {
-         echo '<div id="pointer_div" onclick="point_it(event)" style = "background-image:url(\''.$this->fields['background'].'\');">
-            <img id="cross" style="position:relative;visibility:hidden;z-index:2;">
-            '.$map.'</div>';
-         echo '<script language="JavaScript">
-         function point_it(event){
-            pos_x = event.offsetX?(event.offsetX):event.pageX;
-            pos_y = event.offsetY?(event.offsetY):event.pageY;
-            document.getElementById("cross").style.left = (pos_x-1) ;
-            document.getElementById("cross").style.top = (pos_y-15) ;
-
-            var topValue= 0;
-            var leftValue= 0;
-            var obj = document.getElementById("pointer_div");
-            while(obj){
-               leftValue+= obj.offsetLeft;
-               topValue+= obj.offsetTop;
-               obj= obj.offsetParent;
-            }
-
-
-            document.pointform.x.value = pos_x-leftValue;
-            document.pointform.y.value = pos_y-topValue;
-
-         }
-         </script>';
-      }
+      echo "<td valign='top'>";  
+      echo "<div>";
+      PluginMonitoringToolbox::loadLib();
+      $this->drawMap($weathermaps_id, 100, 1);
+      echo "</div>";
       echo "</td>";
       echo "<td valign='top'>";
       
@@ -512,10 +218,10 @@ LINK DEFAULT
          echo "<tr>";
          echo "<th colspan='2'>";
          echo "x : ";
-         echo '<input type="text" name="x" size="4" />';
+         echo '<input type="text" name="x" size="4" value="50" />';
          echo " ";
          echo "y : ";
-         echo '<input type="text" name="y" size="4" />';
+         echo '<input type="text" name="y" size="4" value="50"/>';
          echo "</th>";
          echo "</tr>";
          
@@ -970,113 +676,6 @@ LINK DEFAULT
    
    
    
-   function generateWeathermap($weathermaps_id, $force=0, $makehtml=0) {
-      
-      if ($force == '0'
-              AND file_exists(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png")) {
-         $time_generate = filemtime(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png");
-         if (($time_generate + 150) > date('U')) {
-            return;
-         }
-      } 
-
-      require_once GLPI_ROOT."/plugins/monitoring/lib/weathermap/WeatherMap.functions.php";
-      require_once GLPI_ROOT."/plugins/monitoring/lib/weathermap/HTML_ImageMap.class.php";
-      require_once GLPI_ROOT."/plugins/monitoring/lib/weathermap/Weathermap.class.php";
-      require_once GLPI_ROOT."/plugins/monitoring/lib/weathermap/WeatherMapNode.class.php";
-      require_once GLPI_ROOT."/plugins/monitoring/lib/weathermap/WeatherMapLink.class.php";
-
-      $map=new WeatherMap();
-      if ($map->ReadConfig($this->generateConfig($weathermaps_id))) {
-
-         $imagefile=GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".png";
-
-         $map->ReadData();
-
-         if ($imagefile != '') {
-            $map->DrawMap($imagefile);
-            $map->imagefile=$imagefile;
-         }
-
-      } else { 
-         echo __('Problem to generate weathermap', 'monitoring'); 
-      }
-
-      if ($makehtml == '1') {
-         $map->htmlstyle = '';
-         $fd=fopen(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$weathermaps_id.".html", 'w');
-
-         $html = $map->MakeHTML();
-         
-         $lines = explode("\n",$html);
-         $objects_id = array();
-         $services_id = array();
-         foreach ($lines as $line) {
-            $match = array();
-            preg_match_all("/\<area id=\"([\w\d:]*)\"  href=\"(?:.*)items_id=(\d+)\" /", $line, $match);
-            if (isset($match[1][0])) {
-               $objects_id[$match[1][0]] = $match[1][0];
-               $services_id[$match[1][0]] = $match[2][0];
-            }
-         }
-         $pmService = new PluginMonitoringService();
-         $pmComponent = new PluginMonitoringComponent();
-         $pmServicegraph = new PluginMonitoringServicegraph();
-         $i = 0;
-         foreach ($objects_id as $o_id) {
-            $pmService->getFromDB($services_id[$o_id]);
-            $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
-            ob_start();
-            $pmServicegraph->displayGraph($pmComponent->fields['graph_template'], 
-                                          "PluginMonitoringService", 
-                                          $services_id[$o_id], 
-                                          "0", 
-                                          '2h', 
-                                          "div", 
-                                          "400");
-            $chart = '';
-            $chart = ob_get_contents();
-            ob_end_clean();
-            $chart = str_replace('<div id="chart'.$services_id[$o_id].'2h">', 
-                                 '<div id="chart'.$services_id[$o_id].'2h'.$i.'">', 
-                                 $chart);
-            $chart = str_replace('<div id="updategraph'.$services_id[$o_id].'2h">', 
-                                 '<div id="updategraph'.$services_id[$o_id].'2h'.$i.'">', 
-                                 $chart);         
-            $chart = "<table width='400' class='tab_cadre'><tr><td>".$chart."</td></tr></table>";
-             
-            $html .= "\n".$this->showToolTip($chart, 
-                           array('applyto'=>$o_id, 'display'=>false));
-            ob_start();
-            $pmServicegraph->displayGraph($pmComponent->fields['graph_template'], 
-                              "PluginMonitoringService", 
-                              $services_id[$o_id], 
-                              "0", 
-                              '2h', 
-                              "js");
-            $chart = '';
-            $chart = ob_get_contents();
-            ob_end_clean();
-            $chart = str_replace('"updategraph'.$services_id[$o_id].'2h"', 
-                                 '"updategraph'.$services_id[$o_id].'2h'.$i.'"', 
-                                 $chart);
-            $chart = str_replace('&time=2h&', 
-                                 '&time=2h&suffix='.$i.'&', 
-                                 $chart);
-            $html .= "\n".$chart;
-            $i++;
-         }
-         
-         fwrite($fd, $html);
-         fwrite($fd,
-            '<hr /><span id="byline">Network Map created with <a href="http://www.network-weathermap.com/?vs=
-            0.97a">PHP Network Weathermap v0.97a</a></span></body></html>');
-         fclose ($fd);
-      }
-   }
-   
-   
-   
    function prepareInputForUpdate($input) {
 
       $mime = '';
@@ -1310,13 +909,17 @@ LINK DEFAULT
    
    // functions for d3 and draw net weathermap
    
-   function drawMap($weathermaps_id, $widthw=100) {
-      global $DB;
+   function drawMap($weathermaps_id, $widthw=100, $config=0) {
+      global $DB, $CFG_GLPI;
       
       $this->getFromDB($weathermaps_id);
       
       PluginMonitoringSecurity::updateSession();
 
+      if (countElementsInTable('glpi_plugin_monitoring_weathermapnodes', "`plugin_monitoring_weathermaps_id`='".$weathermaps_id."'") == 0) {
+         return;
+      }
+      
       $rand = mt_rand();
       echo '<svg id="cloud'.$rand.'" width="'.$this->fields['width'].'" '
               . 'height="'.$this->fields['height'].'">
@@ -1347,7 +950,31 @@ LINK DEFAULT
           .linkDistance(20)
           .size([width, height]);
 
-      var svg'.$rand.' = d3.select("#cloud'.$rand.'");';
+      var svg'.$rand.' = d3.select("#cloud'.$rand.'");
+         
+      var drag_node = d3.behavior.drag()
+        .on("drag", dragmove)';
+      if ($config) {
+         echo '
+        .on("dragend", dragendconfig)';
+      }
+              
+              echo ';
+        
+
+      function dragmove(d, i) {
+        d.px += d3.event.dx;
+        d.py += d3.event.dy;
+        d.x += d3.event.dx;
+        d.y += d3.event.dy; 
+        tick'.$rand.'(); // this is the key to make it work together with updating both px,py,x,y on d !
+     }
+     
+     function dragendconfig(d, i) {
+        $.ajax({type: "POST",url: "'.$CFG_GLPI['root_doc'].'/plugins/monitoring/ajax/updateWeathermap.php",data: {id: d.id, x: d.x, y: d.y},success: function(msg) {}});
+     }
+              ';
+      
       
       $a_data = array();
       $a_mapping = array();
@@ -1516,11 +1143,15 @@ LINK DEFAULT
         .data(force'.$rand.'.nodes())
       .enter().append("g")
         .attr("class", "node")
-        .call(force'.$rand.'.drag)
+        .call(drag_node)
       .append("a")
         .attr("xlink:href", function (d) { return d.url; })
         .attr("target", "_blank");
-       
+        
+//      .on("dragend", function(d){$.ajax({url: "toto",success: function(data) {}})});
+//d3.select(this).style("fill", "white");}
+
+
     nodes'.$rand.'.append("circle")
        .attr("r", 5)
        .attr("class", function(d) { return "circle" + d.nodeusage; });
@@ -1552,8 +1183,9 @@ LINK DEFAULT
        .attr("class", function(d) { return "linklabel" + d.up;})
        .text(function(d) { return d.upusage + "%";})
 
+    force'.$rand.'.on("tick", tick'.$rand.');
 
-    force'.$rand.'.on("tick", function() {
+    function tick'.$rand.'() {
         linksupusage'.$rand.'.attr("x1", function(d) { return d.source.x; })
             .attr("y1", function(d) { return d.source.y; })
             .attr("x2", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * ((d.upusage * 97) / 100)); })
@@ -1586,7 +1218,7 @@ LINK DEFAULT
    textup'.$rand.'.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 70); })
       .attr("y", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 70); });
 
-     });
+     };
 ';
 
 echo '        </script>';
