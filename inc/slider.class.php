@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2014
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringSlider extends CommonDBTM {
-   
+
 
    /**
    * Get name of this type
@@ -64,13 +64,13 @@ class PluginMonitoringSlider extends CommonDBTM {
    }
 
 
-   
+
    static function canView() {
       return PluginMonitoringProfile::haveRight("config_sliders", 'r');
    }
 
-   
-   
+
+
    function post_getFromDB() {
 
       // Users
@@ -86,8 +86,8 @@ class PluginMonitoringSlider extends CommonDBTM {
 //      $this->profiles = Profile_Reminder::getProfiles($this->fields['id']);
    }
 
-   
-   
+
+
    /**
     * Is the login user have access to reminder based on visibility configuration
     *
@@ -169,12 +169,12 @@ class PluginMonitoringSlider extends CommonDBTM {
       return false;
    }
 
-   
-   
+
+
    function getSearchOptions() {
 
       $tab = array();
-    
+
       $tab['common'] = __('Slider', 'monitoring');
 
 		$tab[1]['table'] = $this->getTable();
@@ -195,8 +195,8 @@ class PluginMonitoringSlider extends CommonDBTM {
       $this->addStandardTab(__CLASS__, $ong, $options);
       return $ong;
    }
-   
-   
+
+
 
    /**
     * Display tab
@@ -209,11 +209,11 @@ class PluginMonitoringSlider extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       $ong = array();
-      
+
       if ($item->getType() == 'PluginMonitoringSlider') {
          if ($item->getID() > 0) {
             $ong[1] = 'items';
-            
+
             if ($item->canUpdate()) {
                $ong[2] = __('Targets');
             }
@@ -236,7 +236,7 @@ class PluginMonitoringSlider extends CommonDBTM {
 
       if ($item->getType() == 'PluginMonitoringSlider') {
          switch($tabnum) {
-            
+
             case 1:
                $pmSlider_item = new PluginMonitoringSlider_item();
                $pmSlider_item->view($item->getID(), 1);
@@ -245,7 +245,7 @@ class PluginMonitoringSlider extends CommonDBTM {
             case 2 :
                $item->showVisibility();
                break;
-            
+
          }
       } else if ($item->getType() == 'Central') {
          if (PluginMonitoringProfile::haveRight("homepage_sliders", 'r')) {
@@ -264,12 +264,12 @@ class PluginMonitoringSlider extends CommonDBTM {
       return true;
    }
 
-   
-   
+
+
    /**
    * Display form for agent configuration
    *
-   * @param $items_id integer ID 
+   * @param $items_id integer ID
    * @param $options array
    *
    *@return bool true if form is ok
@@ -300,7 +300,7 @@ class PluginMonitoringSlider extends CommonDBTM {
       Dropdown::showYesNo("is_frontview", $this->fields['is_frontview']);
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
       echo __('Duration (in seconds)', 'monitoring');
@@ -312,7 +312,7 @@ class PluginMonitoringSlider extends CommonDBTM {
           'max' => 999
       ));
       echo "</td>";
-      
+
       echo "<td>";
       echo __('Display in GLPI home page', 'monitoring');
       echo "</td>";
@@ -320,7 +320,7 @@ class PluginMonitoringSlider extends CommonDBTM {
       Dropdown::showYesNo("in_central", $this->fields['in_central']);
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
       echo "</td>";
@@ -333,7 +333,7 @@ class PluginMonitoringSlider extends CommonDBTM {
       Dropdown::showYesNo("is_active", $this->fields['is_active']);
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Comments')."</td>";
       echo "<td colspan='3' class='middle'>";
@@ -341,7 +341,7 @@ class PluginMonitoringSlider extends CommonDBTM {
       echo "</textarea>";
       echo "</td>";
       echo "</tr>";
-      
+
       $this->showFormButtons($options);
       $this->addDivForTabs();
 
@@ -377,7 +377,7 @@ class PluginMonitoringSlider extends CommonDBTM {
          }
       </script>";
       PluginMonitoringToolbox::loadLib();
-      
+
       $this->getFromDB($id);
       echo '<div id="custom_date" style="display:none"></div>';
       echo '<div id="custom_time" style="display:none"></div>';
@@ -387,10 +387,11 @@ class PluginMonitoringSlider extends CommonDBTM {
     jQuery(document).ready(function ($) {
         //Define an array of slideshow transition code
         var _SlideshowTransitions = [
-        {$Duration:'.$this->fields['duration'].'000,$Opacity:2}
+        {$Duration:0001,$Opacity:2}
         ];
         var options = {
             $AutoPlay: true,
+            $AutoPlayInterval: '.$this->fields['duration'].',
             $SlideshowOptions: {
                     $Class: $JssorSlideshowRunner$,
                     $Transitions: _SlideshowTransitions,
@@ -402,18 +403,18 @@ class PluginMonitoringSlider extends CommonDBTM {
     });
 </script>';
       echo "<table class='tab_cadre'>";
-      
+
       echo "<tr>";
       echo "<td>";
 
-      $query = "SELECT * FROM `glpi_plugin_monitoring_sliders_items` 
+      $query = "SELECT * FROM `glpi_plugin_monitoring_sliders_items`
               WHERE `plugin_monitoring_sliders_id`='".$id."'";
-      
+
       $result = $DB->query($query);
       $maxWidth = 0;
       $maxHeight = 0;
       $is_minemap = 0;
-      while ($data=$DB->fetch_array($result)) { 
+      while ($data=$DB->fetch_array($result)) {
          if ($data['itemtype'] == 'PluginMonitoringServicescatalog'
                  || $data['itemtype'] == 'PluginMonitoringComponentscatalog'
                  || $data['itemtype'] == 'PluginMonitoringCustomitem_Gauge'
@@ -446,21 +447,21 @@ class PluginMonitoringSlider extends CommonDBTM {
                   $maxHeight = $item->fields['height'];
                }
             }
-         }      
+         }
       }
       if ($is_minemap) {
          $maxHeight = '1500';
       }
-      
+
       $pm = new PluginMonitoringComponentscatalog();
       echo '<div id="slider1_container" style="position: relative;
 top: 0px; left: 0px; width: '.$maxWidth.'px; height: '.$maxHeight.'px;">
     <!-- Slides Container -->
     <div u="slides" style="cursor: move; position: absolute; overflow: hidden;
     left: 0px; top: 0px; width: '.$maxWidth.'px; height: '.$maxHeight.'px;">';
-      
+
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) { 
+      while ($data=$DB->fetch_array($result)) {
          $itemtype = $data['itemtype'];
          $item = new $itemtype();
          if ($itemtype == "PluginMonitoringService") {
@@ -481,12 +482,12 @@ top: 0px; left: 0px; width: '.$maxWidth.'px; height: '.$maxHeight.'px;">
             echo $item->showWidget($data['items_id']);
             echo '</div>';
          }
-      
+
       }
 echo '    </div>
 </div>';
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) { 
+      while ($data=$DB->fetch_array($result)) {
          $itemtype = $data['itemtype'];
          $item = new $itemtype();
          // Ajax
@@ -497,11 +498,11 @@ echo '    </div>
             $item->getFromDB($data['items_id']);
             $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
             $pmServicegraph = new PluginMonitoringServicegraph();
-            $pmServicegraph->displayGraph($pmComponent->fields['graph_template'], 
-                                          "PluginMonitoringService", 
-                                          $data['items_id'], 
-                                          "0", 
-                                          $data['extra_infos'], 
+            $pmServicegraph->displayGraph($pmComponent->fields['graph_template'],
+                                          "PluginMonitoringService",
+                                          $data['items_id'],
+                                          "0",
+                                          $data['extra_infos'],
                                           "js");
          } else if($itemtype == "PluginMonitoringComponentscatalog") {
             $pmComponentscatalog = new PluginMonitoringComponentscatalog();
@@ -510,7 +511,7 @@ echo '    </div>
             $pmServicescatalog = new PluginMonitoringServicescatalog();
             $pmServicescatalog->ajaxLoad($data['items_id']);
          } else if($itemtype == "PluginMonitoringDisplayview") {
-            
+
          } else if($itemtype == "PluginMonitoringCustomitem_Gauge") {
             $pmCustomitem_Gauge = new PluginMonitoringCustomitem_Gauge();
             $pmCustomitem_Gauge->ajaxLoad($data['items_id']);
@@ -539,18 +540,18 @@ echo '    </div>
       echo "</tr>";
       echo "</table>";
    }
-   
-   
+
+
    function getSliders($central='0') {
       global $DB;
-      
+
       $wcentral = '';
       if ($central == '1') {
          $wcentral = " AND `in_central`='1' ";
       }
-      
+
       $a_sliders = array();
-      $query = "SELECT * FROM `glpi_plugin_monitoring_sliders`      
+      $query = "SELECT * FROM `glpi_plugin_monitoring_sliders`
                 WHERE `is_active` = '1'
                   AND (`users_id`='0' OR `users_id`='".$_SESSION['glpiID']."')
                   AND `is_frontview`='1'
@@ -566,8 +567,8 @@ echo '    </div>
       return $a_sliders;
    }
 
-   
-   
+
+
    /**
     * Show visibility config for a slider
    **/
@@ -582,7 +583,7 @@ echo '    </div>
       $rand = mt_rand();
 
       $nb = count($this->users) + count($this->groups);
-      
+
       if ($canedit) {
          echo "<div class='firstbloc'>";
          echo "<form name='slidervisibility_form$rand' id='slidervisibility_form$rand' ";
