@@ -29,20 +29,20 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
 function pluginMonitoringGetCurrentVersion($version) {
    global $DB;
-   
+
    if ((!TableExists("glpi_plugin_monitoring_configs"))) {
       return '0';
    } else if (!FieldExists("glpi_plugin_monitoring_configs", "timezones")) {
@@ -77,7 +77,7 @@ function pluginMonitoringGetCurrentVersion($version) {
 
 function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    global $DB;
-  
+
    $migration = new $migrationname($current_version);
 
    if (!is_dir(GLPI_PLUGIN_DOC_DIR.'/monitoring')) {
@@ -89,18 +89,18 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    if (!is_dir(GLPI_PLUGIN_DOC_DIR.'/monitoring/weathermapbg')) {
       mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermapbg");
    }
-   
+
    $unavailability_recalculate = 0;
    if (!TableExists("glpi_plugin_monitoring_unavailabilities")
            || !FieldExists("glpi_plugin_monitoring_unavailabilities", "duration")) {
       $unavailability_recalculate = 1;
    }
-   
+
    $unavailability_reset = 0;
    if (!TableExists("glpi_plugin_monitoring_unavailabilities")) {
       $unavailability_reset = 1;
    }
-   
+
     /*
     * Table glpi_plugin_monitoring_servicescatalogs
     */
@@ -112,105 +112,105 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'name', 
-                                 'name', 
+         $migration->changeField($newTable,
+                                 'name',
+                                 'name',
                                  "varchar(255) DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'entities_id', 
-                                 'entities_id', 
+         $migration->changeField($newTable,
+                                 'entities_id',
+                                 'entities_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'is_recursive', 
-                                 'is_recursive', 
+         $migration->changeField($newTable,
+                                 'is_recursive',
+                                 'is_recursive',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'comment', 
-                                 'comment', 
+         $migration->changeField($newTable,
+                                 'comment',
+                                 'comment',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->changeField($newTable, 
-                                 'last_check', 
-                                 'last_check', 
+         $migration->changeField($newTable,
+                                 'last_check',
+                                 'last_check',
                                  "datetime DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'state', 
-                                 'state', 
+         $migration->changeField($newTable,
+                                 'state',
+                                 'state',
                                  "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'state_type', 
-                                 'state_type', 
+         $migration->changeField($newTable,
+                                 'state_type',
+                                 'state_type',
                                  "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_checks_id', 
-                                 'plugin_monitoring_checks_id', 
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_checks_id',
+                                 'plugin_monitoring_checks_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'calendars_id', 
-                                 'calendars_id', 
+         $migration->changeField($newTable,
+                                 'calendars_id',
+                                 'calendars_id',
                                  "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
-      
-         $migration->addField($newTable, 
-                              'name', 
+
+         $migration->addField($newTable,
+                              'name',
                               "varchar(255) DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'entities_id', 
+         $migration->addField($newTable,
+                              'entities_id',
                               "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'is_recursive', 
+         $migration->addField($newTable,
+                              'is_recursive',
                               "tinyint(1) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'last_check', 
+         $migration->addField($newTable,
+                              'last_check',
                               "datetime DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'event', 
+         $migration->addField($newTable,
+                              'event',
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'state', 
-                              "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'state_type', 
-                              "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'plugin_monitoring_checks_id', 
-                              "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'calendars_id', 
-                              "int(11) NOT NULL DEFAULT '0'");        
          $migration->addField($newTable,
-                              'is_acknowledged', 
-                              "tinyint(1) NOT NULL DEFAULT '0'");         
+                              'state',
+                              "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
-                              'is_acknowledgeconfirmed', 
-                              "tinyint(1) NOT NULL DEFAULT '0'");   
-         $migration->addField($newTable, 
-                              'acknowledge_comment', 
-                              "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->addField($newTable, 
-                              'acknowledge_users_id', 
+                              'state_type',
+                              "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'plugin_monitoring_checks_id',
                               "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'notification_interval', 
-                              "int(4) NOT NULL DEFAULT '30'");
-         $migration->addField($newTable, 
-                              'business_priority', 
-                              "tinyint(1) NOT NULL DEFAULT '1'");
-         $migration->addField($newTable, 
-                              'is_generic', 
+         $migration->addField($newTable,
+                              'calendars_id',
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'is_acknowledged',
                               "tinyint(1) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'plugin_monitoring_servicescatalogs_id', 
+         $migration->addField($newTable,
+                              'is_acknowledgeconfirmed',
+                              "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'acknowledge_comment',
+                              "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->addField($newTable,
+                              'acknowledge_users_id',
                               "int(11) NOT NULL DEFAULT '0'");
-         $migration->addKey($newTable, 
+         $migration->addField($newTable,
+                              'notification_interval',
+                              "int(4) NOT NULL DEFAULT '30'");
+         $migration->addField($newTable,
+                              'business_priority',
+                              "tinyint(1) NOT NULL DEFAULT '1'");
+         $migration->addField($newTable,
+                              'is_generic',
+                              "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'plugin_monitoring_servicescatalogs_id',
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addKey($newTable,
                             "name");
       $migration->migrationOneTable($newTable);
 
-      
-      
+
+
     /*
     * Table glpi_plugin_monitoring_componentscatalogs
     */
@@ -222,51 +222,51 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'name', 
-                                 'name', 
+         $migration->changeField($newTable,
+                                 'name',
+                                 'name',
                                  "varchar(255) DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'entities_id', 
-                                 'entities_id', 
+         $migration->changeField($newTable,
+                                 'entities_id',
+                                 'entities_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'is_recursive', 
-                                 'is_recursive', 
+         $migration->changeField($newTable,
+                                 'is_recursive',
+                                 'is_recursive',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'comment', 
-                                 'comment', 
+         $migration->changeField($newTable,
+                                 'comment',
+                                 'comment',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->changeField($newTable, 
-                                 'notification_interval', 
-                                 'notification_interval', 
+         $migration->changeField($newTable,
+                                 'notification_interval',
+                                 'notification_interval',
                                  "int(4) NOT NULL DEFAULT '30'");
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                              'name', 
+         $migration->addField($newTable,
+                              'name',
                               "varchar(255) DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'entities_id', 
+         $migration->addField($newTable,
+                              'entities_id',
                               "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'is_recursive', 
+         $migration->addField($newTable,
+                              'is_recursive',
                               "tinyint(1) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'comment', 
+         $migration->addField($newTable,
+                              'comment',
                               "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->addField($newTable, 
-                              'notification_interval', 
+         $migration->addField($newTable,
+                              'notification_interval',
                               "int(4) NOT NULL DEFAULT '30'");
-         $migration->addKey($newTable, 
+         $migration->addKey($newTable,
                             "name");
       $migration->migrationOneTable($newTable);
 
-      
+
     /*
      * glpi_plugin_monitoring_perfdatas
      */
@@ -289,8 +289,8 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $a_table['oldkeys'] = array();
 
       migrateTablesMonitoring($migration, $a_table);
-      
-      
+
+
     /*
      * glpi_plugin_monitoring_customitems_counters
      */
@@ -308,7 +308,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          'time'            => array('type'    => 'string',        'value'   => NULL),
          'time_specific'   => array('type'    => 'string',        'value'   => NULL)
       );
-      
+
       $a_table['oldfields']  = array();
 
       $a_table['renamefields'] = array();
@@ -319,7 +319,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       migrateTablesMonitoring($migration, $a_table);
 
-      
+
     /*
      * glpi_plugin_monitoring_customitems_gauges
      */
@@ -340,7 +340,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          'time'            => array('type'    => 'string',        'value'   => NULL),
          'time_specific'   => array('type'    => 'string',        'value'   => NULL)
       );
-      
+
       $a_table['oldfields']  = array();
 
       $a_table['renamefields'] = array();
@@ -350,8 +350,8 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $a_table['oldkeys'] = array();
 
       migrateTablesMonitoring($migration, $a_table);
-      
-      
+
+
     /*
      * glpi_plugin_monitoring_perfdatadetails
      */
@@ -413,8 +413,8 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          include (GLPI_ROOT . "/plugins/monitoring/inc/perfdatadetail.class.php");
          PluginMonitoringPerfdata::initDB();
       }
-      
-      
+
+
     /*
     * Table glpi_plugin_monitoring_components
     */
@@ -422,22 +422,22 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $a_data = getAllDatasFromTable('glpi_plugin_monitoring_components');
          foreach ($a_data as $data) {
             if (!is_numeric($data['graph_template'])) {
-               $a_perfs = getAllDatasFromTable('glpi_plugin_monitoring_perfdatas', 
+               $a_perfs = getAllDatasFromTable('glpi_plugin_monitoring_perfdatas',
                        '`name`="'.$data['graph_template'].'"');
                if (count($a_perfs) == 0) {
                   $DB->query("UPDATE `glpi_plugin_monitoring_components`
-                     SET `graph_template`='0' 
+                     SET `graph_template`='0'
                      WHERE `id`='".$data['id']."'");
                } else {
                   $a_perf = current($a_perfs);
                   $DB->query("UPDATE `glpi_plugin_monitoring_components`
-                     SET `graph_template`='".$a_perf['id']."' 
+                     SET `graph_template`='".$a_perf['id']."'
                      WHERE `id`='".$data['id']."'");
                }
             }
          }
       }
-      
+
       $newTable = "glpi_plugin_monitoring_components";
       if (!TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
@@ -446,161 +446,161 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'name', 
-                                 'name', 
+         $migration->changeField($newTable,
+                                 'name',
+                                 'name',
                                  "varchar(255) DEFAULT NULL");
          // 0.84+1.3
-         $migration->changeField($newTable, 
-                                 'description', 
-                                 'description', 
+         $migration->changeField($newTable,
+                                 'description',
+                                 'description',
                                  "varchar(255) DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_commands_id', 
-                                 'plugin_monitoring_commands_id', 
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_commands_id',
+                                 'plugin_monitoring_commands_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'arguments', 
-                                 'arguments', 
+         $migration->changeField($newTable,
+                                 'arguments',
+                                 'arguments',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_checks_id', 
-                                 'plugin_monitoring_checks_id', 
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_checks_id',
+                                 'plugin_monitoring_checks_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'active_checks_enabled', 
-                                 'active_checks_enabled', 
+         $migration->changeField($newTable,
+                                 'active_checks_enabled',
+                                 'active_checks_enabled',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
-         $migration->changeField($newTable, 
-                                 'passive_checks_enabled', 
-                                 'passive_checks_enabled', 
+         $migration->changeField($newTable,
+                                 'passive_checks_enabled',
+                                 'passive_checks_enabled',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
-         $migration->changeField($newTable, 
-                                 'calendars_id', 
-                                 'calendars_id', 
+         $migration->changeField($newTable,
+                                 'calendars_id',
+                                 'calendars_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'remotesystem', 
-                                 'remotesystem', 
+         $migration->changeField($newTable,
+                                 'remotesystem',
+                                 'remotesystem',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'is_arguments', 
-                                 'is_arguments', 
+         $migration->changeField($newTable,
+                                 'is_arguments',
+                                 'is_arguments',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'alias_command', 
-                                 'alias_command', 
+         $migration->changeField($newTable,
+                                 'alias_command',
+                                 'alias_command',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->changeField($newTable, 
-                                 'graph_template', 
-                                 'graph_template', 
+         $migration->changeField($newTable,
+                                 'graph_template',
+                                 'graph_template',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'link', 
-                                 'link', 
+         $migration->changeField($newTable,
+                                 'link',
+                                 'link',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'is_weathermap', 
-                                 'is_weathermap', 
+         $migration->changeField($newTable,
+                                 'is_weathermap',
+                                 'is_weathermap',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'weathermap_regex', 
-                                 'weathermap_regex_in', 
+         $migration->changeField($newTable,
+                                 'weathermap_regex',
+                                 'weathermap_regex_in',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->changeField($newTable, 
-                                 'perfname', 
-                                 'perfname', 
+         $migration->changeField($newTable,
+                                 'perfname',
+                                 'perfname',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->changeField($newTable, 
-                                 'perfnameinvert', 
-                                 'perfnameinvert', 
+         $migration->changeField($newTable,
+                                 'perfnameinvert',
+                                 'perfnameinvert',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->changeField($newTable, 
-                                 'perfnamecolor', 
-                                 'perfnamecolor', 
+         $migration->changeField($newTable,
+                                 'perfnamecolor',
+                                 'perfnamecolor',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                                 'id', 
+         $migration->addField($newTable,
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->addField($newTable, 
-                                 'name', 
+         $migration->addField($newTable,
+                                 'name',
                                  "varchar(255) DEFAULT NULL");
          // 0.84+1.3
-         $migration->addField($newTable, 
-                                 'description', 
+         $migration->addField($newTable,
+                                 'description',
                                  "varchar(255) DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'plugin_monitoring_commands_id', 
+         $migration->addField($newTable,
+                                 'plugin_monitoring_commands_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'arguments', 
+         $migration->addField($newTable,
+                                 'arguments',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->addField($newTable, 
-                                 'plugin_monitoring_checks_id', 
+         $migration->addField($newTable,
+                                 'plugin_monitoring_checks_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'active_checks_enabled', 
+         $migration->addField($newTable,
+                                 'active_checks_enabled',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
-         $migration->addField($newTable, 
-                                 'passive_checks_enabled', 
+         $migration->addField($newTable,
+                                 'passive_checks_enabled',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
-         $migration->addField($newTable, 
-                                 'calendars_id', 
+         $migration->addField($newTable,
+                                 'calendars_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'remotesystem', 
+         $migration->addField($newTable,
+                                 'remotesystem',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'is_arguments', 
+         $migration->addField($newTable,
+                                 'is_arguments',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'alias_command', 
+         $migration->addField($newTable,
+                                 'alias_command',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->addField($newTable, 
-                                 'graph_template', 
+         $migration->addField($newTable,
+                                 'graph_template',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'link', 
+         $migration->addField($newTable,
+                                 'link',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'is_weathermap', 
+         $migration->addField($newTable,
+                                 'is_weathermap',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'weathermap_regex_in', 
+         $migration->addField($newTable,
+                                 'weathermap_regex_in',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->addField($newTable, 
-                                 'weathermap_regex_out', 
+         $migration->addField($newTable,
+                                 'weathermap_regex_out',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->addField($newTable, 
-                              'perfname', 
+         $migration->addField($newTable,
+                              'perfname',
                               "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->addField($newTable, 
-                              'perfnameinvert', 
+         $migration->addField($newTable,
+                              'perfnameinvert',
                               "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->addField($newTable, 
-                              'perfnamecolor', 
+         $migration->addField($newTable,
+                              'perfnamecolor',
                               "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->addField($newTable, 
-                              'plugin_monitoring_eventhandlers_id', 
+         $migration->addField($newTable,
+                              'plugin_monitoring_eventhandlers_id',
                               "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'freshness_count', 
+         $migration->addField($newTable,
+                              'freshness_count',
                               "int(6) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'freshness_type', 
+         $migration->addField($newTable,
+                              'freshness_type',
                               "varchar(255) DEFAULT 'seconds'");
-         
-         $migration->addKey($newTable, 
+
+         $migration->addKey($newTable,
                             "plugin_monitoring_commands_id");
       $migration->migrationOneTable($newTable);
-   
 
-      
+
+
     /*
     * Table glpi_plugin_monitoring_componentscatalogs_components
     */
@@ -612,24 +612,24 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_componentscalalog_id', 
-                                 'plugin_monitoring_componentscalalog_id', 
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_componentscalalog_id',
+                                 'plugin_monitoring_componentscalalog_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_components_id', 
-                                 'plugin_monitoring_components_id', 
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_components_id',
+                                 'plugin_monitoring_components_id',
                                  "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                                 'plugin_monitoring_componentscalalog_id', 
+         $migration->addField($newTable,
+                                 'plugin_monitoring_componentscalalog_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'plugin_monitoring_components_id', 
+         $migration->addField($newTable,
+                                 'plugin_monitoring_components_id',
                                  "int(11) NOT NULL DEFAULT '0'");
          $migration->addKey($newTable,
                             array('plugin_monitoring_componentscalalog_id',
@@ -637,11 +637,11 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                             "unicity",
                             "UNIQUE");
          $migration->addKey($newTable,
-                            "plugin_monitoring_componentscalalog_id");         
+                            "plugin_monitoring_componentscalalog_id");
       $migration->migrationOneTable($newTable);
 
-      
-      
+
+
     /*
     * Table glpi_plugin_monitoring_componentscatalogs_hosts
     */
@@ -653,47 +653,47 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_componentscalalog_id', 
-                                 'plugin_monitoring_componentscalalog_id', 
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_componentscalalog_id',
+                                 'plugin_monitoring_componentscalalog_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'is_static', 
-                                 'is_static', 
+         $migration->changeField($newTable,
+                                 'is_static',
+                                 'is_static',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
-         $migration->changeField($newTable, 
-                                 'items_id', 
-                                 'items_id', 
+         $migration->changeField($newTable,
+                                 'items_id',
+                                 'items_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'itemtype', 
-                                 'itemtype', 
+         $migration->changeField($newTable,
+                                 'itemtype',
+                                 'itemtype',
                                  "varchar(100) DEFAULT NULL");
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                                 'plugin_monitoring_componentscalalog_id', 
+         $migration->addField($newTable,
+                                 'plugin_monitoring_componentscalalog_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'is_static', 
+         $migration->addField($newTable,
+                                 'is_static',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
-         $migration->addField($newTable, 
-                                 'items_id', 
+         $migration->addField($newTable,
+                                 'items_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'itemtype', 
+         $migration->addField($newTable,
+                                 'itemtype',
                                  "varchar(100) DEFAULT NULL");
          $migration->addKey($newTable,
                             array('itemtype','items_id'),
-                            'itemtype');     
+                            'itemtype');
          $migration->addKey($newTable,
                             'plugin_monitoring_componentscalalog_id');
       $migration->migrationOneTable($newTable);
 
-      
+
 
     /*
     * Table glpi_plugin_monitoring_componentscatalogs_rules
@@ -706,49 +706,51 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_componentscalalog_id', 
-                                 'plugin_monitoring_componentscalalog_id', 
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_componentscalalog_id',
+                                 'plugin_monitoring_componentscalalog_id',
                                  "int(11) NOT NULL DEFAULT '0'");
          $migration->changeField($newTable,
-                                 'name', 
-                                 'name', 
+                                 'name',
+                                 'name',
                                  "varchar(255) DEFAULT NULL");
          $migration->changeField($newTable,
-                                 'itemtype', 
-                                 'itemtype', 
+                                 'itemtype',
+                                 'itemtype',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->changeField($newTable,
-                                 'condition', 
-                                 'condition', 
+                                 'condition',
+                                 'condition',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->dropField($newTable, 
+         $migration->dropField($newTable,
                                'entities_id');
-         $migration->dropField($newTable, 
+         $migration->dropField($newTable,
                                'is_recursive');
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                                 'plugin_monitoring_componentscalalog_id', 
+         $migration->addField($newTable,
+                                 'plugin_monitoring_componentscalalog_id',
                                  "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
-                                 'name', 
+                                 'name',
                                  "varchar(255) DEFAULT NULL");
          $migration->addField($newTable,
-                                 'itemtype', 
+                                 'itemtype',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable,
-                                 'condition', 
+                                 'condition',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
          $migration->addKey($newTable,
                             'plugin_monitoring_componentscalalog_id');
       $migration->migrationOneTable($newTable);
 
-      
-      
+      $DB->query("UPDATE `glpi_plugin_monitoring_componentscatalogs_rules`
+              SET `itemtype`='Computer' WHERE `itemtype`='PluginMonitoringComputer'");
+
+
     /*
     * Table glpi_plugin_monitoring_services
     */
@@ -760,100 +762,100 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'entities_id', 
-                                 'entities_id', 
+         $migration->changeField($newTable,
+                                 'entities_id',
+                                 'entities_id',
                                  "int(11) NOT NULL DEFAULT '0'");
          $migration->changeField($newTable,
-                                 'name', 
-                                 'name', 
-                                 "varchar(255) DEFAULT NULL");         
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_components_id', 
-                                 'plugin_monitoring_components_id', 
+                                 'name',
+                                 'name',
+                                 "varchar(255) DEFAULT NULL");
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_components_id',
+                                 'plugin_monitoring_components_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_componentscatalogs_hosts_id', 
-                                 'plugin_monitoring_componentscatalogs_hosts_id', 
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_componentscatalogs_hosts_id',
+                                 'plugin_monitoring_componentscatalogs_hosts_id',
                                  "int(11) NOT NULL DEFAULT '0'");
          // Event should contain up to 4096 bytes (Nagios plugin specification)
-         $migration->changeField($newTable, 
-                                 'event', 
-                                 'event', 
+         $migration->changeField($newTable,
+                                 'event',
+                                 'event',
                                  "varchar(4096) COLLATE utf8_unicode_ci DEFAULT NULL");
-         // $migration->changeField($newTable, 
-                                 // 'event', 
-                                 // 'event', 
+         // $migration->changeField($newTable,
+                                 // 'event',
+                                 // 'event',
                                  // "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'state', 
-                                 'state', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");                 
-         $migration->changeField($newTable, 
-                                 'state_type', 
-                                 'state_type', 
+         $migration->changeField($newTable,
+                                 'state',
+                                 'state',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'last_check', 
-                                 'last_check', 
-                                 "datetime DEFAULT NULL"); 
-         $migration->changeField($newTable, 
-                                 'arguments', 
-                                 'arguments', 
-                                 "text DEFAULT NULL COLLATE utf8_unicode_ci"); 
-         $migration->changeField($newTable, 
-                                 'networkports_id', 
-                                 'networkports_id', 
+         $migration->changeField($newTable,
+                                 'state_type',
+                                 'state_type',
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->changeField($newTable,
+                                 'last_check',
+                                 'last_check',
+                                 "datetime DEFAULT NULL");
+         $migration->changeField($newTable,
+                                 'arguments',
+                                 'arguments',
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->changeField($newTable,
+                                 'networkports_id',
+                                 'networkports_id',
                                  "int(11) NOT NULL DEFAULT '0'");
          $migration->dropField($newTable,
                                'alias_command');
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
+         $migration->addField($newTable,
                               'entities_id',
                               "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
-                                 'name', 
-                                 "varchar(255) DEFAULT NULL");         
-         $migration->addField($newTable, 
-                                 'plugin_monitoring_components_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'plugin_monitoring_componentscatalogs_hosts_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'event', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'state', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");                 
-         $migration->addField($newTable, 
-                                 'state_type', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'last_check', 
-                                 "datetime DEFAULT NULL"); 
-         $migration->addField($newTable, 
-                                 'arguments', 
-                                 "text DEFAULT NULL COLLATE utf8_unicode_ci"); 
-         $migration->addField($newTable, 
-                              'networkports_id', 
-                              "int(11) NOT NULL DEFAULT '0'");         
+                                 'name',
+                                 "varchar(255) DEFAULT NULL");
          $migration->addField($newTable,
-                              'is_acknowledged', 
-                              "tinyint(1) NOT NULL DEFAULT '0'");         
+                                 'plugin_monitoring_components_id',
+                                 "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
-                              'is_acknowledgeconfirmed', 
-                              "tinyint(1) NOT NULL DEFAULT '0'");   
-         $migration->addField($newTable, 
-                              'acknowledge_comment', 
+                                 'plugin_monitoring_componentscatalogs_hosts_id',
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                                 'event',
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable,
+                                 'state',
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable,
+                                 'state_type',
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable,
+                                 'last_check',
+                                 "datetime DEFAULT NULL");
+         $migration->addField($newTable,
+                                 'arguments',
+                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->addField($newTable,
+                              'networkports_id',
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'is_acknowledged',
+                              "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'is_acknowledgeconfirmed',
+                              "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'acknowledge_comment',
                               "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->addField($newTable, 
-                              'acknowledge_users_id', 
-                              "int(11) NOT NULL DEFAULT '0'");  
+         $migration->addField($newTable,
+                              'acknowledge_users_id',
+                              "int(11) NOT NULL DEFAULT '0'");
          $migration->addKey($newTable,
                             array('state',
                                   'state_type'),
@@ -863,7 +865,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $migration->migrationOneTable($newTable);
 
 
-      
+
     /*
     * Table glpi_plugin_monitoring_contacttemplates
     */
@@ -875,155 +877,155 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
          $migration->changeField($newTable,
-                                 'name', 
-                                 'name', 
+                                 'name',
+                                 'name',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->changeField($newTable,
-                                 'is_default', 
-                                 'is_default', 
+                                 'is_default',
+                                 'is_default',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->changeField($newTable,
-                                 'host_notifications_enabled', 
-                                 'host_notifications_enabled', 
+                                 'host_notifications_enabled',
+                                 'host_notifications_enabled',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
          $migration->changeField($newTable,
-                                 'service_notifications_enabled', 
-                                 'service_notifications_enabled', 
+                                 'service_notifications_enabled',
+                                 'service_notifications_enabled',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
          $migration->changeField($newTable,
-                                 'service_notification_period', 
-                                 'service_notification_period', 
+                                 'service_notification_period',
+                                 'service_notification_period',
                                  "int(11) NOT NULL DEFAULT '0'");
          $migration->changeField($newTable,
-                                 'host_notification_period', 
-                                 'host_notification_period', 
+                                 'host_notification_period',
+                                 'host_notification_period',
                                  "int(11) NOT NULL DEFAULT '0'");
          $migration->changeField($newTable,
-                                 'service_notification_options_w', 
-                                 'service_notification_options_w', 
+                                 'service_notification_options_w',
+                                 'service_notification_options_w',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
          $migration->changeField($newTable,
-                                 'service_notification_options_u', 
-                                 'service_notification_options_u', 
+                                 'service_notification_options_u',
+                                 'service_notification_options_u',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
          $migration->changeField($newTable,
-                                 'service_notification_options_c', 
-                                 'service_notification_options_c', 
+                                 'service_notification_options_c',
+                                 'service_notification_options_c',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
          $migration->changeField($newTable,
-                                 'service_notification_options_r', 
-                                 'service_notification_options_r', 
+                                 'service_notification_options_r',
+                                 'service_notification_options_r',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
          $migration->changeField($newTable,
-                                 'service_notification_options_f', 
-                                 'service_notification_options_f', 
+                                 'service_notification_options_f',
+                                 'service_notification_options_f',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->changeField($newTable,
-                                 'service_notification_options_n', 
-                                 'service_notification_options_n', 
+                                 'service_notification_options_n',
+                                 'service_notification_options_n',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->changeField($newTable,
-                                 'host_notification_options_d', 
-                                 'host_notification_options_d', 
+                                 'host_notification_options_d',
+                                 'host_notification_options_d',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
          $migration->changeField($newTable,
-                                 'host_notification_options_u', 
-                                 'host_notification_options_u', 
+                                 'host_notification_options_u',
+                                 'host_notification_options_u',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
          $migration->changeField($newTable,
-                                 'host_notification_options_r', 
-                                 'host_notification_options_r', 
+                                 'host_notification_options_r',
+                                 'host_notification_options_r',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
          $migration->changeField($newTable,
-                                 'host_notification_options_f', 
-                                 'host_notification_options_f', 
+                                 'host_notification_options_f',
+                                 'host_notification_options_f',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->changeField($newTable,
-                                 'host_notification_options_s', 
-                                 'host_notification_options_s', 
+                                 'host_notification_options_s',
+                                 'host_notification_options_s',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->changeField($newTable,
-                                 'host_notification_options_n', 
-                                 'host_notification_options_n', 
+                                 'host_notification_options_n',
+                                 'host_notification_options_n',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->changeField($newTable,
-                                 'service_notification_commands', 
-                                 'service_notification_commands', 
+                                 'service_notification_commands',
+                                 'service_notification_commands',
                                  "int(11) NOT NULL DEFAULT '0'");
          $migration->changeField($newTable,
-                                 'host_notification_commands', 
-                                 'host_notification_commands', 
+                                 'host_notification_commands',
+                                 'host_notification_commands',
                                  "int(11) NOT NULL DEFAULT '0'");
        $migration->migrationOneTable($newTable);
          $migration->addField($newTable,
-                                 'name', 
+                                 'name',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable,
-                                 'is_default', 
+                                 'is_default',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
-                                 'host_notifications_enabled', 
+                                 'host_notifications_enabled',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
          $migration->addField($newTable,
-                                 'service_notifications_enabled', 
+                                 'service_notifications_enabled',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
          $migration->addField($newTable,
-                                 'service_notification_period', 
+                                 'service_notification_period',
                                  "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
-                                 'host_notification_period', 
+                                 'host_notification_period',
                                  "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
-                                 'service_notification_options_w', 
+                                 'service_notification_options_w',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
          $migration->addField($newTable,
-                                 'service_notification_options_u', 
+                                 'service_notification_options_u',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
          $migration->addField($newTable,
-                                 'service_notification_options_c', 
+                                 'service_notification_options_c',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
          $migration->addField($newTable,
-                                 'service_notification_options_r', 
+                                 'service_notification_options_r',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
          $migration->addField($newTable,
-                                 'service_notification_options_f', 
+                                 'service_notification_options_f',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
-                                 'service_notification_options_n', 
+                                 'service_notification_options_n',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
-                                 'host_notification_options_d', 
+                                 'host_notification_options_d',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
          $migration->addField($newTable,
-                                 'host_notification_options_u', 
+                                 'host_notification_options_u',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
          $migration->addField($newTable,
-                                 'host_notification_options_r', 
+                                 'host_notification_options_r',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
          $migration->addField($newTable,
-                                 'host_notification_options_f', 
+                                 'host_notification_options_f',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
-                                 'host_notification_options_s', 
+                                 'host_notification_options_s',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
-                                 'host_notification_options_n', 
+                                 'host_notification_options_n',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
-                                 'service_notification_commands', 
+                                 'service_notification_commands',
                                  "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
-                                 'host_notification_commands', 
+                                 'host_notification_commands',
                                  "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
 
 
-      
+
     /*
     * Table glpi_plugin_monitoring_contacts
     */
@@ -1035,29 +1037,29 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'users_id', 
-                                 'users_id', 
+         $migration->changeField($newTable,
+                                 'users_id',
+                                 'users_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_contacttemplates_id', 
-                                 'plugin_monitoring_contacttemplates_id', 
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_contacttemplates_id',
+                                 'plugin_monitoring_contacttemplates_id',
                                  "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                                 'users_id', 
+         $migration->addField($newTable,
+                                 'users_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'plugin_monitoring_contacttemplates_id', 
-                                 "int(11) NOT NULL DEFAULT '0'"); 
+         $migration->addField($newTable,
+                                 'plugin_monitoring_contacttemplates_id',
+                                 "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
 
-      
-      
+
+
     /*
     * Table glpi_plugin_monitoring_contacts_items
     */
@@ -1069,50 +1071,50 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'users_id', 
-                                 'users_id', 
+         $migration->changeField($newTable,
+                                 'users_id',
+                                 'users_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'groups_id', 
-                                 'groups_id', 
+         $migration->changeField($newTable,
+                                 'groups_id',
+                                 'groups_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'items_id', 
-                                 'items_id', 
+         $migration->changeField($newTable,
+                                 'items_id',
+                                 'items_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'itemtype', 
-                                 'itemtype', 
+         $migration->changeField($newTable,
+                                 'itemtype',
+                                 'itemtype',
                                  "varchar(100) DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'entities_id', 
-                                 'entities_id', 
+         $migration->changeField($newTable,
+                                 'entities_id',
+                                 'entities_id',
                                  "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                                 'users_id', 
+         $migration->addField($newTable,
+                                 'users_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'groups_id', 
+         $migration->addField($newTable,
+                                 'groups_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'items_id', 
+         $migration->addField($newTable,
+                                 'items_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'itemtype', 
+         $migration->addField($newTable,
+                                 'itemtype',
                                  "varchar(100) DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'entities_id', 
+         $migration->addField($newTable,
+                              'entities_id',
                               "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
 
 
-      
+
     /*
     * Table glpi_plugin_monitoring_commandtemplates
     */
@@ -1124,35 +1126,35 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_commands_id', 
-                                 'plugin_monitoring_commands_id', 
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_commands_id',
+                                 'plugin_monitoring_commands_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'name', 
-                                 'name', 
+         $migration->changeField($newTable,
+                                 'name',
+                                 'name',
                                  "varchar(255) DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'key', 
-                                 'key', 
+         $migration->changeField($newTable,
+                                 'key',
+                                 'key',
                                  "varchar(255) DEFAULT NULL");
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                                 'plugin_monitoring_commands_id', 
+         $migration->addField($newTable,
+                                 'plugin_monitoring_commands_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'name', 
+         $migration->addField($newTable,
+                                 'name',
                                  "varchar(255) DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'key', 
+         $migration->addField($newTable,
+                                 'key',
                                  "varchar(255) DEFAULT NULL");
       $migration->migrationOneTable($newTable);
-      
-      
+
+
 
     /*
     * Table glpi_plugin_monitoring_rrdtooltemplates
@@ -1165,35 +1167,35 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_commands_id', 
-                                 'plugin_monitoring_commands_id', 
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_commands_id',
+                                 'plugin_monitoring_commands_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'name', 
-                                 'name', 
+         $migration->changeField($newTable,
+                                 'name',
+                                 'name',
                                  "varchar(255) DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'key', 
-                                 'key', 
+         $migration->changeField($newTable,
+                                 'key',
+                                 'key',
                                  "varchar(255) DEFAULT NULL");
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                                 'plugin_monitoring_commands_id', 
+         $migration->addField($newTable,
+                                 'plugin_monitoring_commands_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'name', 
+         $migration->addField($newTable,
+                                 'name',
                                  "varchar(255) DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'key', 
+         $migration->addField($newTable,
+                                 'key',
                                  "varchar(255) DEFAULT NULL");
       $migration->migrationOneTable($newTable);
 
-      
+
 
     /*
     * Table glpi_plugin_monitoring_configs
@@ -1206,40 +1208,40 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'timezones', 
-                                 'timezones', 
+         $migration->changeField($newTable,
+                                 'timezones',
+                                 'timezones',
                                  "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '[\"0\"]'");
-         $migration->changeField($newTable, 
-                                 'version', 
-                                 'version', 
+         $migration->changeField($newTable,
+                                 'version',
+                                 'version',
                                  "varchar(255) DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'logretention', 
-                                 'logretention', 
-                                 "int(5) NOT NULL DEFAULT '30'");         
-         $migration->dropField($newTable, 
+         $migration->changeField($newTable,
+                                 'logretention',
+                                 'logretention',
+                                 "int(5) NOT NULL DEFAULT '30'");
+         $migration->dropField($newTable,
                               'phppath');
-         $migration->dropField($newTable, 
+         $migration->dropField($newTable,
                               'rrdtoolpath');
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                              'timezones', 
+         $migration->addField($newTable,
+                              'timezones',
                               "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '[\"0\"]'");
-         $migration->addField($newTable, 
-                              'version', 
+         $migration->addField($newTable,
+                              'version',
                               "varchar(255) DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'logretention', 
+         $migration->addField($newTable,
+                              'logretention',
                               "int(5) NOT NULL DEFAULT '30'");
       $migration->migrationOneTable($newTable);
 
-      
-      
+
+
 
     /*
     * Table glpi_plugin_monitoring_displayviews
@@ -1252,77 +1254,77 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'name', 
-                                 'name', 
-                                 "varchar(255) DEFAULT NULL");         
-         $migration->changeField($newTable, 
-                                 'entities_id', 
-                                 'entities_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");         
-         $migration->changeField($newTable, 
-                                 'is_recursive', 
-                                 'is_recursive', 
-                                 "tinyint(1) NOT NULL DEFAULT '0'");         
-         $migration->changeField($newTable, 
-                                 'is_active', 
-                                 'is_active', 
-                                 "tinyint(1) NOT NULL DEFAULT '0'");        
-         $migration->changeField($newTable, 
-                                 'users_id', 
-                                 'users_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");         
-         $migration->changeField($newTable, 
-                                 'counter', 
-                                 'counter', 
-                                 "varchar(255) DEFAULT NULL");         
-         $migration->changeField($newTable, 
-                                 'in_central', 
-                                 'in_central', 
-                                 "tinyint(1) NOT NULL DEFAULT '0'");         
-         $migration->changeField($newTable, 
-                                 'width', 
-                                 'width', 
-                                 "int(5) NOT NULL DEFAULT '950'");         
+         $migration->changeField($newTable,
+                                 'name',
+                                 'name',
+                                 "varchar(255) DEFAULT NULL");
+         $migration->changeField($newTable,
+                                 'entities_id',
+                                 'entities_id',
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable,
+                                 'is_recursive',
+                                 'is_recursive',
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable,
+                                 'is_active',
+                                 'is_active',
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable,
+                                 'users_id',
+                                 'users_id',
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable,
+                                 'counter',
+                                 'counter',
+                                 "varchar(255) DEFAULT NULL");
+         $migration->changeField($newTable,
+                                 'in_central',
+                                 'in_central',
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable,
+                                 'width',
+                                 'width',
+                                 "int(5) NOT NULL DEFAULT '950'");
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                              'name', 
-                              "varchar(255) DEFAULT NULL");         
-         $migration->addField($newTable, 
-                              'entities_id', 
-                              "int(11) NOT NULL DEFAULT '0'");         
-         $migration->addField($newTable, 
-                              'is_recursive', 
-                              "tinyint(1) NOT NULL DEFAULT '0'");          
-         $migration->addField($newTable, 
-                              'is_active', 
-                              "tinyint(1) NOT NULL DEFAULT '0'");        
-         $migration->addField($newTable, 
-                              'users_id', 
-                              "int(11) NOT NULL DEFAULT '0'");         
-         $migration->addField($newTable, 
-                              'counter', 
-                              "varchar(255) DEFAULT NULL");         
-         $migration->addField($newTable, 
-                              'in_central', 
-                              "tinyint(1) NOT NULL DEFAULT '0'");         
-         $migration->addField($newTable, 
-                              'width', 
-                              "int(5) NOT NULL DEFAULT '950'");          
-         $migration->addField($newTable, 
-                              'is_frontview', 
-                              "tinyint(1) NOT NULL DEFAULT '0'"); 
-         $migration->addField($newTable, 
-                              'comment', 
+         $migration->addField($newTable,
+                              'name',
+                              "varchar(255) DEFAULT NULL");
+         $migration->addField($newTable,
+                              'entities_id',
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'is_recursive',
+                              "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'is_active',
+                              "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'users_id',
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'counter',
+                              "varchar(255) DEFAULT NULL");
+         $migration->addField($newTable,
+                              'in_central',
+                              "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'width',
+                              "int(5) NOT NULL DEFAULT '950'");
+         $migration->addField($newTable,
+                              'is_frontview',
+                              "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'comment',
                               "text DEFAULT NULL COLLATE utf8_unicode_ci");
       $migration->migrationOneTable($newTable);
-      
-      
-      
+
+
+
     /*
     * Table glpi_plugin_monitoring_displayviews_groups
     */
@@ -1333,31 +1335,31 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                         PRIMARY KEY (`id`)
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
-      }             
-         $migration->addField($newTable, 
-                              'pluginmonitoringdisplayviews_id', 
-                              "int(11) NOT NULL DEFAULT '0'");      
-         $migration->addField($newTable, 
-                              'groups_id', 
-                              "int(11) NOT NULL DEFAULT '0'");   
-         $migration->addField($newTable, 
-                              'entities_id', 
-                              "int(11) NOT NULL DEFAULT '0'");   
-         $migration->addField($newTable, 
-                              'is_recursive', 
-                              "tinyint(1) NOT NULL DEFAULT '0'");   
-         $migration->addKey($newTable, 
-                            "pluginmonitoringdisplayviews_id");  
-         $migration->addKey($newTable, 
-                            "groups_id");  
-         $migration->addKey($newTable, 
-                            "entities_id");  
-         $migration->addKey($newTable, 
+      }
+         $migration->addField($newTable,
+                              'pluginmonitoringdisplayviews_id',
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'groups_id',
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'entities_id',
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'is_recursive',
+                              "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addKey($newTable,
+                            "pluginmonitoringdisplayviews_id");
+         $migration->addKey($newTable,
+                            "groups_id");
+         $migration->addKey($newTable,
+                            "entities_id");
+         $migration->addKey($newTable,
                             "is_recursive");
       $migration->migrationOneTable($newTable);
-      
-      
-      
+
+
+
     /*
     * Table glpi_plugin_monitoring_displayviews_users
     */
@@ -1368,21 +1370,21 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                         PRIMARY KEY (`id`)
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
-      }             
-         $migration->addField($newTable, 
-                              'pluginmonitoringdisplayviews_id', 
-                              "int(11) NOT NULL DEFAULT '0'");      
-         $migration->addField($newTable, 
-                              'users_id', 
-                              "int(11) NOT NULL DEFAULT '0'");   
-         $migration->addKey($newTable, 
-                            "pluginmonitoringdisplayviews_id");  
-         $migration->addKey($newTable, 
+      }
+         $migration->addField($newTable,
+                              'pluginmonitoringdisplayviews_id',
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'users_id',
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addKey($newTable,
+                            "pluginmonitoringdisplayviews_id");
+         $migration->addKey($newTable,
                             "users_id");
       $migration->migrationOneTable($newTable);
-      
-      
-      
+
+
+
     /*
     * Table glpi_plugin_monitoring_displayviews_items
     */
@@ -1394,62 +1396,62 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_displayviews_id', 
-                                 'plugin_monitoring_displayviews_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");      
-         $migration->changeField($newTable, 
-                                 'x', 
-                                 'x', 
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_displayviews_id',
+                                 'plugin_monitoring_displayviews_id',
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable,
+                                 'x',
+                                 'x',
                                  "int(5) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'y', 
-                                 'y', 
-                                 "int(5) NOT NULL DEFAULT '0'");   
-         $migration->changeField($newTable, 
-                                 'items_id', 
-                                 'items_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");   
-         $migration->changeField($newTable, 
-                                 'itemtype', 
-                                 'itemtype', 
-                                 "varchar(100) DEFAULT NULL");   
-         $migration->changeField($newTable, 
-                                 'extra_infos', 
-                                 'extra_infos', 
-                                 "varchar(255) DEFAULT NULL");              
+         $migration->changeField($newTable,
+                                 'y',
+                                 'y',
+                                 "int(5) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable,
+                                 'items_id',
+                                 'items_id',
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable,
+                                 'itemtype',
+                                 'itemtype',
+                                 "varchar(100) DEFAULT NULL");
+         $migration->changeField($newTable,
+                                 'extra_infos',
+                                 'extra_infos',
+                                 "varchar(255) DEFAULT NULL");
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                              'plugin_monitoring_displayviews_id', 
-                              "int(11) NOT NULL DEFAULT '0'");      
-         $migration->addField($newTable, 
-                              'x', 
+         $migration->addField($newTable,
+                              'plugin_monitoring_displayviews_id',
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'x',
                               "int(5) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'y', 
+         $migration->addField($newTable,
+                              'y',
                               "int(5) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'items_id', 
-                              "int(11) NOT NULL DEFAULT '0'");   
-         $migration->addField($newTable, 
-                              'itemtype', 
-                              "varchar(100) DEFAULT NULL");   
-         $migration->addField($newTable, 
-                              'extra_infos', 
-                              "varchar(255) DEFAULT NULL"); 
-         $migration->addField($newTable, 
-                              'is_minemap', 
-                              "tinyint(1) NOT NULL DEFAULT '0'"); 
-         $migration->addKey($newTable, 
+         $migration->addField($newTable,
+                              'items_id',
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'itemtype',
+                              "varchar(100) DEFAULT NULL");
+         $migration->addField($newTable,
+                              'extra_infos',
+                              "varchar(255) DEFAULT NULL");
+         $migration->addField($newTable,
+                              'is_minemap',
+                              "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addKey($newTable,
                             "plugin_monitoring_displayviews_id");
       $migration->migrationOneTable($newTable);
-      
-      
-      
+
+
+
     /*
     * Table glpi_plugin_monitoring_displayviews_rules
     */
@@ -1462,27 +1464,27 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $DB->query($query);
       }
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                              'plugin_monitoring_displayviews_id', 
+         $migration->addField($newTable,
+                              'plugin_monitoring_displayviews_id',
                               "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
-                              'name', 
+                              'name',
                               "varchar(255) DEFAULT NULL");
          $migration->addField($newTable,
-                              'itemtype', 
+                              'itemtype',
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable,
-                              'type', 
+                              'type',
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable,
-                              'condition', 
+                              'condition',
                               "text DEFAULT NULL COLLATE utf8_unicode_ci");
          $migration->addKey($newTable,
                             'plugin_monitoring_displayviews_id');
       $migration->migrationOneTable($newTable);
-      
-      
-      
+
+
+
    /*
     * Table glpi_plugin_monitoring_entities
     */
@@ -1494,32 +1496,32 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'entities_id', 
-                                 'entities_id', 
+         $migration->changeField($newTable,
+                                 'entities_id',
+                                 'entities_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'tag', 
-                                 'tag', 
+         $migration->changeField($newTable,
+                                 'tag',
+                                 'tag',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                              'entities_id', 
+         $migration->addField($newTable,
+                              'entities_id',
                               "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'tag', 
+         $migration->addField($newTable,
+                              'tag',
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addKey($newTable, 
+         $migration->addKey($newTable,
                             "entities_id");
-         $migration->addKey($newTable, 
+         $migration->addKey($newTable,
                             "tag");
       $migration->migrationOneTable($newTable);
-         
-      
+
+
     /*
     * Table glpi_plugin_monitoring_hostaddresses
     */
@@ -1531,43 +1533,43 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'items_id', 
-                                 'items_id', 
+         $migration->changeField($newTable,
+                                 'items_id',
+                                 'items_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'itemtype', 
-                                 'itemtype', 
+         $migration->changeField($newTable,
+                                 'itemtype',
+                                 'itemtype',
                                  "varchar(100) DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'networkports_id', 
-                                 'networkports_id', 
+         $migration->changeField($newTable,
+                                 'networkports_id',
+                                 'networkports_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'ipaddresses_id', 
-                                 'ipaddresses_id', 
+         $migration->changeField($newTable,
+                                 'ipaddresses_id',
+                                 'ipaddresses_id',
                                  "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                                 'items_id', 
+         $migration->addField($newTable,
+                                 'items_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'itemtype', 
+         $migration->addField($newTable,
+                                 'itemtype',
                                  "varchar(100) DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'networkports_id', 
+         $migration->addField($newTable,
+                                 'networkports_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'ipaddresses_id', 
+         $migration->addField($newTable,
+                              'ipaddresses_id',
                               "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
 
-      
-      
+
+
     /*
     * Table glpi_plugin_monitoring_hostconfigs
     */
@@ -1576,7 +1578,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
               && (FieldExists('glpi_plugin_monitoring_hostconfigs', 'plugin_monitoring_commands_id'))) {
          $a_hostsconfig = getAllDatasFromTable('glpi_plugin_monitoring_hostconfigs');
       }
-      
+
       $a_table = array();
       $a_table['name'] = 'glpi_plugin_monitoring_hostconfigs';
       $a_table['oldname'] = array();
@@ -1586,9 +1588,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          'items_id'     => array('type' => 'integer',       'value'   => NULL),
          'itemtype'     => array('type' => 'varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL',
                                  'value'   => NULL),
-         'plugin_monitoring_components_id' => 
+         'plugin_monitoring_components_id' =>
                            array('type' => 'integer',       'value'   => NULL),
-         'plugin_monitoring_realms_id' => 
+         'plugin_monitoring_realms_id' =>
                            array('type' => 'integer',       'value'   => NULL),
          'computers_id' => array('type' => 'integer',       'value'   => NULL)
       );
@@ -1606,12 +1608,12 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $a_table['oldkeys'] = array();
 
       migrateTablesMonitoring($migration, $a_table);
-      
+
       if (count($a_hostsconfig) > 0) {
          // Convert commands by components
          foreach ($a_hostsconfig as $data) {
             $a_components = getAllDatasFromTable(
-                    'glpi_plugin_monitoring_components', 
+                    'glpi_plugin_monitoring_components',
                     "`plugin_monitoring_commands_id`='".$data['plugin_monitoring_commands_id']."'"
                     );
             if (count($a_components) > 0) {
@@ -1622,9 +1624,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
             }
          }
       }
-      
-      
-      
+
+
+
     /*
     * Table glpi_plugin_monitoring_hosts
     */
@@ -1641,122 +1643,122 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                     "`itemtype`='Computer'");
       }
          // Duplicate field with event
-         $migration->dropField($newTable, 
+         $migration->dropField($newTable,
                                  'ouput');
       $migration->migrationOneTable($newTable);
-      
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'entities_id', 
-                                 'entities_id', 
+         $migration->changeField($newTable,
+                                 'entities_id',
+                                 'entities_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'items_id', 
-                                 'items_id', 
+         $migration->changeField($newTable,
+                                 'items_id',
+                                 'items_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'itemtype', 
-                                 'itemtype', 
+         $migration->changeField($newTable,
+                                 'itemtype',
+                                 'itemtype',
                                  "varchar(100) DEFAULT NULL");
          // Event should contain up to 4096 bytes (Nagios plugin specification)
-         $migration->changeField($newTable, 
-                                 'event', 
-                                 'event', 
+         $migration->changeField($newTable,
+                                 'event',
+                                 'event',
                                  "varchar(4096) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'state', 
-                                 'state', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");                 
-         $migration->changeField($newTable, 
-                                 'state_type', 
-                                 'state_type', 
+         $migration->changeField($newTable,
+                                 'state',
+                                 'state',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'last_check', 
-                                 'last_check', 
-                                 "datetime DEFAULT NULL"); 
-         $migration->changeField($newTable, 
-                                 'dependencies', 
-                                 'dependencies', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL"); 
-         $migration->changeField($newTable, 
-                                 'perf_data', 
-                                 'perf_data', 
+         $migration->changeField($newTable,
+                                 'state_type',
+                                 'state_type',
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->changeField($newTable,
+                                 'last_check',
+                                 'last_check',
+                                 "datetime DEFAULT NULL");
+         $migration->changeField($newTable,
+                                 'dependencies',
+                                 'dependencies',
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->changeField($newTable,
+                                 'perf_data',
+                                 'perf_data',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
          // Duplicate field with event
-         // $migration->changeField($newTable, 
-                                 // 'output', 
-                                 // 'output', 
+         // $migration->changeField($newTable,
+                                 // 'output',
+                                 // 'output',
                                  // "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'latency', 
-                                 'latency', 
+         $migration->changeField($newTable,
+                                 'latency',
+                                 'latency',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'execution_time', 
-                                 'execution_time', 
+         $migration->changeField($newTable,
+                                 'execution_time',
+                                 'execution_time',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-                                 
+
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                                 'entities_id', 
+         $migration->addField($newTable,
+                                 'entities_id',
                                  "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
-                              'is_acknowledged', 
-                              "tinyint(1) NOT NULL DEFAULT '0'");         
+                              'is_acknowledged',
+                              "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
-                              'is_acknowledgeconfirmed', 
-                              "tinyint(1) NOT NULL DEFAULT '0'");   
-         $migration->addField($newTable, 
-                              'acknowledge_comment', 
+                              'is_acknowledgeconfirmed',
+                              "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'acknowledge_comment',
                               "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->addField($newTable, 
-                              'acknowledge_users_id', 
+         $migration->addField($newTable,
+                              'acknowledge_users_id',
                               "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'items_id', 
+         $migration->addField($newTable,
+                              'items_id',
                               "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'itemtype', 
+         $migration->addField($newTable,
+                              'itemtype',
                               "varchar(100) DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'event', 
+         $migration->addField($newTable,
+                              'event',
                               "varchar(512) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'state', 
-                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");                 
-         $migration->addField($newTable, 
-                              'state_type', 
+         $migration->addField($newTable,
+                              'state',
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'last_check', 
-                              "datetime DEFAULT NULL"); 
-         $migration->addField($newTable, 
-                              'dependencies', 
+         $migration->addField($newTable,
+                              'state_type',
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'perf_data', 
+         $migration->addField($newTable,
+                              'last_check',
+                              "datetime DEFAULT NULL");
+         $migration->addField($newTable,
+                              'dependencies',
+                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable,
+                              'perf_data',
                               "text COLLATE utf8_unicode_ci DEFAULT NULL");
          // Duplicate field with event
-         // $migration->addField($newTable, 
-                              // 'output', 
+         // $migration->addField($newTable,
+                              // 'output',
                               // "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'latency', 
+         $migration->addField($newTable,
+                              'latency',
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'execution_time', 
+         $migration->addField($newTable,
+                              'execution_time',
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
       $migration->migrationOneTable($newTable);
-      
+
       if (count($a_hosts) > 0) {
          // Convert commands by components
          foreach ($a_hosts as $data) {
             $a_computers = getAllDatasFromTable(
-                    'glpi_computers', 
+                    'glpi_computers',
                     "`id`='".$data['items_id']."'"
                     );
             if (count($a_computers) > 0) {
@@ -1768,8 +1770,8 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          }
       }
 
-      
-      
+
+
     /*
     * Table glpi_plugin_monitoring_logs
     */
@@ -1781,57 +1783,57 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "bigint(30) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'date_mod', 
-                                 'date_mod', 
+         $migration->changeField($newTable,
+                                 'date_mod',
+                                 'date_mod',
                                  "datetime DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'user_name', 
-                                 'user_name', 
+         $migration->changeField($newTable,
+                                 'user_name',
+                                 'user_name',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'itemtype', 
-                                 'itemtype', 
-                                 "varchar(100) DEFAULT NULL");         
-         $migration->changeField($newTable, 
-                                 'items_id', 
-                                 'items_id', 
+         $migration->changeField($newTable,
+                                 'itemtype',
+                                 'itemtype',
+                                 "varchar(100) DEFAULT NULL");
+         $migration->changeField($newTable,
+                                 'items_id',
+                                 'items_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'action', 
-                                 'action', 
-                                 "varchar(100) DEFAULT NULL");         
-         $migration->changeField($newTable, 
-                                 'value', 
-                                 'value', 
+         $migration->changeField($newTable,
+                                 'action',
+                                 'action',
+                                 "varchar(100) DEFAULT NULL");
+         $migration->changeField($newTable,
+                                 'value',
+                                 'value',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                              'date_mod', 
+         $migration->addField($newTable,
+                              'date_mod',
                               "datetime DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'user_name', 
+         $migration->addField($newTable,
+                              'user_name',
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'itemtype', 
-                              "varchar(100) DEFAULT NULL");         
-         $migration->addField($newTable, 
-                              'items_id', 
+         $migration->addField($newTable,
+                              'itemtype',
+                              "varchar(100) DEFAULT NULL");
+         $migration->addField($newTable,
+                              'items_id',
                               "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'action', 
-                              "varchar(100) DEFAULT NULL");         
-         $migration->addField($newTable, 
-                              'value', 
+         $migration->addField($newTable,
+                              'action',
+                              "varchar(100) DEFAULT NULL");
+         $migration->addField($newTable,
+                              'value',
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
       $migration->migrationOneTable($newTable);
- 
 
-      
+
+
     /*
     * Table glpi_plugin_monitoring_networkports
     */
@@ -1843,36 +1845,36 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'items_id', 
-                                 'items_id', 
+         $migration->changeField($newTable,
+                                 'items_id',
+                                 'items_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'itemtype', 
-                                 'itemtype', 
+         $migration->changeField($newTable,
+                                 'itemtype',
+                                 'itemtype',
                                  "varchar(100) DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'networkports_id', 
-                                 'networkports_id', 
+         $migration->changeField($newTable,
+                                 'networkports_id',
+                                 'networkports_id',
                                  "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                              'items_id', 
+         $migration->addField($newTable,
+                              'items_id',
                               "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'itemtype', 
+         $migration->addField($newTable,
+                              'itemtype',
                               "varchar(100) DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'networkports_id', 
+         $migration->addField($newTable,
+                              'networkports_id',
                               "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
 
-      
-      
+
+
     /*
     * Table glpi_plugin_monitoring_realms
     */
@@ -1886,41 +1888,41 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $DB->query($query);
          $insertrealm = 1;
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'name', 
-                                 'name', 
+         $migration->changeField($newTable,
+                                 'name',
+                                 'name',
                                  "varchar(255) DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'comment', 
-                                 'comment', 
+         $migration->changeField($newTable,
+                                 'comment',
+                                 'comment',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->changeField($newTable, 
-                                 'date_mod', 
-                                 'date_mod', 
+         $migration->changeField($newTable,
+                                 'date_mod',
+                                 'date_mod',
                                  "datetime DEFAULT NULL");
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                              'name', 
+         $migration->addField($newTable,
+                              'name',
                               "varchar(255) DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'comment', 
+         $migration->addField($newTable,
+                              'comment',
                               "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->addField($newTable, 
-                              'date_mod', 
+         $migration->addField($newTable,
+                              'date_mod',
                               "datetime DEFAULT NULL");
       $migration->migrationOneTable($newTable);
       if ($insertrealm == '1') {
-         $query = "INSERT INTO `glpi_plugin_monitoring_realms` 
+         $query = "INSERT INTO `glpi_plugin_monitoring_realms`
             (`id` ,`name` ,`comment` ,`date_mod`) VALUES (NULL , 'All', NULL , NULL)";
          $DB->query($query);
       }
-         
-      
-      
+
+
+
     /*
     * Table glpi_plugin_monitoring_serviceevents
     */
@@ -1933,89 +1935,89 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $DB->query($query);
       }
          // Duplicate field with event
-         $migration->dropField($newTable, 
+         $migration->dropField($newTable,
                                  'ouput');
       $migration->migrationOneTable($newTable);
-      
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "bigint(30) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_services_id', 
-                                 'plugin_monitoring_services_id', 
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_services_id',
+                                 'plugin_monitoring_services_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'date', 
-                                 'date', 
+         $migration->changeField($newTable,
+                                 'date',
+                                 'date',
                                  "datetime DEFAULT NULL");
          // Event should contain up to 4096 bytes (Nagios plugin specification)
-         $migration->changeField($newTable, 
-                                 'event', 
-                                 'event', 
+         $migration->changeField($newTable,
+                                 'event',
+                                 'event',
                                  "varchar(4096) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'perf_data', 
-                                 'perf_data', 
+         $migration->changeField($newTable,
+                                 'perf_data',
+                                 'perf_data',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
          // Duplicate field with event
-         // $migration->changeField($newTable, 
-                                 // 'output', 
-                                 // 'output', 
+         // $migration->changeField($newTable,
+                                 // 'output',
+                                 // 'output',
                                  // "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'state', 
-                                 'state', 
+         $migration->changeField($newTable,
+                                 'state',
+                                 'state',
                                  "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'state_type', 
-                                 'state_type', 
+         $migration->changeField($newTable,
+                                 'state_type',
+                                 'state_type',
                                  "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'latency', 
-                                 'latency', 
+         $migration->changeField($newTable,
+                                 'latency',
+                                 'latency',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'execution_time', 
-                                 'execution_time', 
+         $migration->changeField($newTable,
+                                 'execution_time',
+                                 'execution_time',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'unavailability', 
-                                 'unavailability', 
+         $migration->changeField($newTable,
+                                 'unavailability',
+                                 'unavailability',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                                 'plugin_monitoring_services_id', 
+         $migration->addField($newTable,
+                                 'plugin_monitoring_services_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'date', 
+         $migration->addField($newTable,
+                                 'date',
                                  "datetime DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'event', 
+         $migration->addField($newTable,
+                                 'event',
                                  "varchar(512) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'perf_data', 
+         $migration->addField($newTable,
+                                 'perf_data',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
          // Duplicate field with event
-         // $migration->addField($newTable, 
-                                 // 'output', 
+         // $migration->addField($newTable,
+                                 // 'output',
                                  // "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'state', 
+         $migration->addField($newTable,
+                                 'state',
                                  "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'state_type', 
+         $migration->addField($newTable,
+                                 'state_type',
                                  "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'latency', 
+         $migration->addField($newTable,
+                                 'latency',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'execution_time', 
+         $migration->addField($newTable,
+                                 'execution_time',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'unavailability', 
+         $migration->addField($newTable,
+                              'unavailability',
                               "tinyint(1) NOT NULL DEFAULT '0'");
-         $migration->addKey($newTable, 
+         $migration->addKey($newTable,
                             "plugin_monitoring_services_id");
          $migration->addKey($newTable,
                             array('plugin_monitoring_services_id',
@@ -2032,8 +2034,8 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                             "plugin_monitoring_services_id_3");
       $migration->migrationOneTable($newTable);
 
-      
-      
+
+
     /*
     * Table glpi_plugin_monitoring_commands
     */
@@ -2045,74 +2047,74 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'is_active', 
-                                 'is_active', 
+         $migration->changeField($newTable,
+                                 'is_active',
+                                 'is_active',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
-         $migration->changeField($newTable, 
-                                 'name', 
-                                 'name', 
+         $migration->changeField($newTable,
+                                 'name',
+                                 'name',
                                  "varchar(255) DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'command_name', 
-                                 'command_name', 
+         $migration->changeField($newTable,
+                                 'command_name',
+                                 'command_name',
                                  "varchar(255) DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'command_line', 
-                                 'command_line', 
+         $migration->changeField($newTable,
+                                 'command_line',
+                                 'command_line',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->changeField($newTable, 
-                                 'poller_tag', 
-                                 'poller_tag', 
+         $migration->changeField($newTable,
+                                 'poller_tag',
+                                 'poller_tag',
                                  "varchar(255) DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'module_type', 
-                                 'module_type', 
+         $migration->changeField($newTable,
+                                 'module_type',
+                                 'module_type',
                                  "varchar(255) DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'arguments', 
-                                 'arguments', 
+         $migration->changeField($newTable,
+                                 'arguments',
+                                 'arguments',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->dropField($newTable, 
+         $migration->dropField($newTable,
                                  'regex');
-         $migration->dropField($newTable, 
+         $migration->dropField($newTable,
                                  'legend');
-         $migration->dropField($newTable, 
+         $migration->dropField($newTable,
                                  'unit');
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                                 'is_active', 
+         $migration->addField($newTable,
+                                 'is_active',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
-         $migration->addField($newTable, 
-                                 'name', 
+         $migration->addField($newTable,
+                                 'name',
                                  "varchar(255) DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'command_name', 
+         $migration->addField($newTable,
+                                 'command_name',
                                  "varchar(255) DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'command_line', 
+         $migration->addField($newTable,
+                                 'command_line',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->addField($newTable, 
-                                 'poller_tag', 
+         $migration->addField($newTable,
+                                 'poller_tag',
                                  "varchar(255) DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'module_type', 
+         $migration->addField($newTable,
+                                 'module_type',
                                  "varchar(255) DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'arguments', 
+         $migration->addField($newTable,
+                                 'arguments',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->addKey($newTable, 
+         $migration->addKey($newTable,
                             "name");
-         $migration->addKey($newTable, 
+         $migration->addKey($newTable,
                             "command_name");
       $migration->migrationOneTable($newTable);
 
-      
-      
+
+
     /*
     * Table glpi_plugin_monitoring_checks
     */
@@ -2124,42 +2126,42 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'name', 
-                                 'name', 
+         $migration->changeField($newTable,
+                                 'name',
+                                 'name',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'max_check_attempts', 
-                                 'max_check_attempts', 
+         $migration->changeField($newTable,
+                                 'max_check_attempts',
+                                 'max_check_attempts',
                                  "int(2) NOT NULL DEFAULT '1'");
-         $migration->changeField($newTable, 
-                                 'check_interval', 
-                                 'check_interval', 
+         $migration->changeField($newTable,
+                                 'check_interval',
+                                 'check_interval',
                                  "int(5) NOT NULL DEFAULT '1'");
-         $migration->changeField($newTable, 
-                                 'retry_interval', 
-                                 'retry_interval', 
+         $migration->changeField($newTable,
+                                 'retry_interval',
+                                 'retry_interval',
                                  "int(5) NOT NULL DEFAULT '1'");
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                                 'name', 
+         $migration->addField($newTable,
+                                 'name',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'max_check_attempts', 
+         $migration->addField($newTable,
+                                 'max_check_attempts',
                                  "int(2) NOT NULL DEFAULT '1'");
-         $migration->addField($newTable, 
-                                 'check_interval', 
+         $migration->addField($newTable,
+                                 'check_interval',
                                  "int(5) NOT NULL DEFAULT '1'");
-         $migration->addField($newTable, 
-                                 'retry_interval', 
+         $migration->addField($newTable,
+                                 'retry_interval',
                                  "int(5) NOT NULL DEFAULT '1'");
       $migration->migrationOneTable($newTable);
 
-      
+
 
     /*
     * Table glpi_plugin_monitoring_businessrules
@@ -2170,13 +2172,13 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       $a_table['fields']  = array(
          'id'           => array('type'    => 'autoincrement',  'value'   => ''),
-         'plugin_monitoring_businessrulegroups_id' 
+         'plugin_monitoring_businessrulegroups_id'
                         => array('type'    => 'integer',        'value'   => 0),
-         'plugin_monitoring_services_id' 
+         'plugin_monitoring_services_id'
                         => array('type'    => 'integer',        'value'   => 0),
-         'is_dynamic' 
+         'is_dynamic'
                         => array('type'    => 'bool',           'value'   => 0),
-         'is_generic' 
+         'is_generic'
                         => array('type'    => 'bool',           'value'   => 0),
       );
 
@@ -2190,8 +2192,8 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       migrateTablesMonitoring($migration, $a_table);
 
-      
-      
+
+
     /*
      * glpi_plugin_monitoring_businessrules_components
      */
@@ -2201,9 +2203,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       $a_table['fields']  = array(
          'id'           => array('type'    => 'autoincrement',  'value'   => ''),
-         'plugin_monitoring_businessrulegroups_id' 
+         'plugin_monitoring_businessrulegroups_id'
                         => array('type'    => 'integer',        'value'   => 0),
-         'plugin_monitoring_componentscatalogs_components_id' 
+         'plugin_monitoring_componentscatalogs_components_id'
                         => array('type'    => 'integer',        'value'   => 0),
       );
 
@@ -2217,7 +2219,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       migrateTablesMonitoring($migration, $a_table);
 
-      
+
     /*
     * Table glpi_plugin_monitoring_businessrulegroups
     */
@@ -2229,36 +2231,36 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'name', 
-                                 'name', 
+         $migration->changeField($newTable,
+                                 'name',
+                                 'name',
                                  "varchar(255) DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_servicescatalogs_id', 
-                                 'plugin_monitoring_servicescatalogs_id', 
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_servicescatalogs_id',
+                                 'plugin_monitoring_servicescatalogs_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'operator', 
-                                 'operator', 
+         $migration->changeField($newTable,
+                                 'operator',
+                                 'operator',
                                  "varchar(255) DEFAULT NULL");
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                                 'name', 
+         $migration->addField($newTable,
+                                 'name',
                                  "varchar(255) DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'plugin_monitoring_servicescatalogs_id', 
+         $migration->addField($newTable,
+                                 'plugin_monitoring_servicescatalogs_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'operator', 
+         $migration->addField($newTable,
+                                 'operator',
                                  "varchar(255) DEFAULT NULL");
       $migration->migrationOneTable($newTable);
 
 
-      
+
     /*
     * Table glpi_plugin_monitoring_eventhandlers
     */
@@ -2270,47 +2272,47 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'is_active', 
-                                 'is_active', 
+         $migration->changeField($newTable,
+                                 'is_active',
+                                 'is_active',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
-         $migration->changeField($newTable, 
-                                 'name', 
-                                 'name', 
+         $migration->changeField($newTable,
+                                 'name',
+                                 'name',
                                  "varchar(255) DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'command_name', 
-                                 'command_name', 
+         $migration->changeField($newTable,
+                                 'command_name',
+                                 'command_name',
                                  "varchar(255) DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'command_line', 
-                                 'command_line', 
+         $migration->changeField($newTable,
+                                 'command_line',
+                                 'command_line',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                                 'is_active', 
+         $migration->addField($newTable,
+                                 'is_active',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
-         $migration->addField($newTable, 
-                                 'name', 
+         $migration->addField($newTable,
+                                 'name',
                                  "varchar(255) DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'command_name', 
+         $migration->addField($newTable,
+                                 'command_name',
                                  "varchar(255) DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'command_line', 
+         $migration->addField($newTable,
+                                 'command_line',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->addKey($newTable, 
+         $migration->addKey($newTable,
                             "name");
-         $migration->addKey($newTable, 
+         $migration->addKey($newTable,
                             "command_name");
-      $migration->migrationOneTable($newTable);      
-      
-      
-      
+      $migration->migrationOneTable($newTable);
+
+
+
     /*
     * Table glpi_plugin_monitoring_notificationcommands
     */
@@ -2322,44 +2324,44 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'is_active', 
-                                 'is_active', 
+         $migration->changeField($newTable,
+                                 'is_active',
+                                 'is_active',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
-         $migration->changeField($newTable, 
-                                 'name', 
-                                 'name', 
+         $migration->changeField($newTable,
+                                 'name',
+                                 'name',
                                  "varchar(255) DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'command_name', 
-                                 'command_name', 
+         $migration->changeField($newTable,
+                                 'command_name',
+                                 'command_name',
                                  "varchar(255) DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'command_line', 
-                                 'command_line', 
+         $migration->changeField($newTable,
+                                 'command_line',
+                                 'command_line',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                                 'is_active', 
+         $migration->addField($newTable,
+                                 'is_active',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
-         $migration->addField($newTable, 
-                                 'name', 
+         $migration->addField($newTable,
+                                 'name',
                                  "varchar(255) DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'command_name', 
+         $migration->addField($newTable,
+                                 'command_name',
                                  "varchar(255) DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'command_line', 
+         $migration->addField($newTable,
+                                 'command_line',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->addKey($newTable, 
+         $migration->addKey($newTable,
                             "name");
       $migration->migrationOneTable($newTable);
-      
-      
+
+
 
     /*
     * Table glpi_plugin_monitoring_contactgroups
@@ -2372,22 +2374,22 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'name', 
-                                 'name', 
+         $migration->changeField($newTable,
+                                 'name',
+                                 'name',
                                  "varchar(255) DEFAULT NULL");
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                                 'name', 
+         $migration->addField($newTable,
+                                 'name',
                                  "varchar(255) DEFAULT NULL");
       $migration->migrationOneTable($newTable);
 
 
-      
+
     /*
     * Table glpi_plugin_monitoring_contacts_contactgroups
     */
@@ -2399,37 +2401,37 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_contacts_id', 
-                                 'plugin_monitoring_contacts_id', 
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_contacts_id',
+                                 'plugin_monitoring_contacts_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_contactgroups_id', 
-                                 'plugin_monitoring_contactgroups_id', 
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_contactgroups_id',
+                                 'plugin_monitoring_contactgroups_id',
                                  "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
 
-         $migration->addField($newTable, 
-                                 'plugin_monitoring_contacts_id', 
+         $migration->addField($newTable,
+                                 'plugin_monitoring_contacts_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'plugin_monitoring_contactgroups_id', 
-                                 "int(11) NOT NULL DEFAULT '0'");         
+         $migration->addField($newTable,
+                                 'plugin_monitoring_contactgroups_id',
+                                 "int(11) NOT NULL DEFAULT '0'");
          $migration->addKey($newTable,
                             array('plugin_monitoring_contacts_id',
                                   'plugin_monitoring_contactgroups_id'),
                             "unicity",
                             "UNIQUE");
          $migration->addKey($newTable,
-                            "plugin_monitoring_contactgroups_id"); 
+                            "plugin_monitoring_contactgroups_id");
       $migration->migrationOneTable($newTable);
 
-      
-      
+
+
     /*
     * Table glpi_plugin_monitoring_contactgroups_contactgroups
     */
@@ -2441,36 +2443,36 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_contactgroups_id_1', 
-                                 'plugin_monitoring_contactgroups_id_1', 
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_contactgroups_id_1',
+                                 'plugin_monitoring_contactgroups_id_1',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_contactgroups_id_2', 
-                                 'plugin_monitoring_contactgroups_id_2', 
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_contactgroups_id_2',
+                                 'plugin_monitoring_contactgroups_id_2',
                                  "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
 
-         $migration->addField($newTable, 
-                                 'plugin_monitoring_contactgroups_id_1', 
+         $migration->addField($newTable,
+                                 'plugin_monitoring_contactgroups_id_1',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'plugin_monitoring_contactgroups_id_2', 
-                                 "int(11) NOT NULL DEFAULT '0'");         
+         $migration->addField($newTable,
+                                 'plugin_monitoring_contactgroups_id_2',
+                                 "int(11) NOT NULL DEFAULT '0'");
          $migration->addKey($newTable,
                             array('plugin_monitoring_contactgroups_id_1',
                                   'plugin_monitoring_contactgroups_id_2'),
                             "unicity",
                             "UNIQUE");
          $migration->addKey($newTable,
-                            "plugin_monitoring_contactgroups_id_2"); 
+                            "plugin_monitoring_contactgroups_id_2");
       $migration->migrationOneTable($newTable);
 
-      
+
 
     /*
      * glpi_plugin_monitoring_profiles
@@ -2478,7 +2480,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $a_table = array();
       $a_table['name'] = 'glpi_plugin_monitoring_profiles';
       $a_table['oldname'] = array();
-      
+
       $a_table['fields']  = array(
          'profiles_id'     => array('type'    => 'integer',       'value'   => NULL),
          'config'             => array('type'    => 'char',          'value'   => NULL),
@@ -2510,7 +2512,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          'restartshinken'     => array('type'    => 'char',          'value'   => NULL),
          'host_command'       => array('type'    => 'char',          'value'   => NULL),
       );
-      
+
       $a_table['oldfields']  = array(
           'servicescatalog',
           'view',
@@ -2529,9 +2531,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $a_table['oldkeys'] = array();
 
       migrateTablesMonitoring($migration, $a_table);
-      
 
-      
+
+
     /*
     * Table glpi_plugin_monitoring_securities
     */
@@ -2541,15 +2543,15 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       $a_table['fields']  = array(
          'id'           => array('type'    => 'autoincrement', 'value'   => ''),
-         'users_id' 
+         'users_id'
                         => array('type'    => 'integer',       'value'   => 0),
-         'key' 
+         'key'
                         => array('type'    => 'string',        'value'   => NULL),
-         'session_id' 
+         'session_id'
                         => array('type'    => 'string',        'value'   => NULL),
-         'last_session_start' 
+         'last_session_start'
                         => array('type'    => 'datetime',      'value'   => NULL),
-         'session' 
+         'session'
                         => array('type'    => 'text',          'value'   => NULL),
       );
 
@@ -2563,9 +2565,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       migrateTablesMonitoring($migration, $a_table);
 
-      
-      
-      
+
+
+
     /*
     * Table glpi_plugin_monitoring_servicedefs
     */
@@ -2577,99 +2579,99 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'name', 
-                                 'name', 
+         $migration->changeField($newTable,
+                                 'name',
+                                 'name',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_commands_id', 
-                                 'plugin_monitoring_commands_id', 
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_commands_id',
+                                 'plugin_monitoring_commands_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'arguments', 
-                                 'arguments', 
+         $migration->changeField($newTable,
+                                 'arguments',
+                                 'arguments',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_checks_id', 
-                                 'plugin_monitoring_checks_id', 
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_checks_id',
+                                 'plugin_monitoring_checks_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'active_checks_enabled', 
-                                 'active_checks_enabled', 
+         $migration->changeField($newTable,
+                                 'active_checks_enabled',
+                                 'active_checks_enabled',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
-         $migration->changeField($newTable, 
-                                 'passive_checks_enabled', 
-                                 'passive_checks_enabled', 
+         $migration->changeField($newTable,
+                                 'passive_checks_enabled',
+                                 'passive_checks_enabled',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
-         $migration->changeField($newTable, 
-                                 'calendars_id', 
-                                 'calendars_id', 
+         $migration->changeField($newTable,
+                                 'calendars_id',
+                                 'calendars_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'remotesystem', 
-                                 'remotesystem', 
+         $migration->changeField($newTable,
+                                 'remotesystem',
+                                 'remotesystem',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'is_arguments', 
-                                 'is_arguments', 
+         $migration->changeField($newTable,
+                                 'is_arguments',
+                                 'is_arguments',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'alias_command', 
-                                 'alias_command', 
+         $migration->changeField($newTable,
+                                 'alias_command',
+                                 'alias_command',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->changeField($newTable, 
-                                 'aliasperfdata_commands_id', 
-                                 'aliasperfdata_commands_id', 
+         $migration->changeField($newTable,
+                                 'aliasperfdata_commands_id',
+                                 'aliasperfdata_commands_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'link', 
-                                 'link', 
+         $migration->changeField($newTable,
+                                 'link',
+                                 'link',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                                 'name', 
+         $migration->addField($newTable,
+                                 'name',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'plugin_monitoring_commands_id', 
+         $migration->addField($newTable,
+                                 'plugin_monitoring_commands_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'arguments', 
+         $migration->addField($newTable,
+                                 'arguments',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->addField($newTable, 
-                                 'plugin_monitoring_checks_id', 
+         $migration->addField($newTable,
+                                 'plugin_monitoring_checks_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'active_checks_enabled', 
+         $migration->addField($newTable,
+                                 'active_checks_enabled',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
-         $migration->addField($newTable, 
-                                 'passive_checks_enabled', 
+         $migration->addField($newTable,
+                                 'passive_checks_enabled',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
-         $migration->addField($newTable, 
-                                 'calendars_id', 
+         $migration->addField($newTable,
+                                 'calendars_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'remotesystem', 
+         $migration->addField($newTable,
+                                 'remotesystem',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'is_arguments', 
+         $migration->addField($newTable,
+                                 'is_arguments',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'alias_command', 
+         $migration->addField($newTable,
+                                 'alias_command',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         $migration->addField($newTable, 
-                                 'aliasperfdata_commands_id', 
+         $migration->addField($newTable,
+                                 'aliasperfdata_commands_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'link', 
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL"); 
+         $migration->addField($newTable,
+                                 'link',
+                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
       $migration->migrationOneTable($newTable);
-      
 
-      
+
+
     /*
     * Table glpi_plugin_monitoring_sliders
     */
@@ -2700,8 +2702,8 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       migrateTablesMonitoring($migration, $a_table);
 
-      
-      
+
+
     /*
     * Table glpi_plugin_monitoring_sliders_groups
     */
@@ -2723,28 +2725,28 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       $a_table['keys'] = array(
           array(
-              'field' => 'pluginmonitoringsliders_id', 
-              'name' => '', 
+              'field' => 'pluginmonitoringsliders_id',
+              'name' => '',
               'type' => 'INDEX'),
           array(
-              'field' => 'groups_id', 
-              'name' => '', 
+              'field' => 'groups_id',
+              'name' => '',
               'type' => 'INDEX'),
           array(
-              'field' => 'entities_id', 
-              'name' => '', 
+              'field' => 'entities_id',
+              'name' => '',
               'type' => 'INDEX'),
           array(
-              'field' => 'is_recursive', 
-              'name' => '', 
+              'field' => 'is_recursive',
+              'name' => '',
               'type' => 'INDEX'));
 
       $a_table['oldkeys'] = array();
 
       migrateTablesMonitoring($migration, $a_table);
-      
 
-      
+
+
     /*
     * Table glpi_plugin_monitoring_sliders_users
     */
@@ -2764,20 +2766,20 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       $a_table['keys'] = array(
           array(
-              'field' => 'pluginmonitoringsliders_id', 
-              'name' => '', 
+              'field' => 'pluginmonitoringsliders_id',
+              'name' => '',
               'type' => 'INDEX'),
           array(
-              'field' => 'users_id', 
-              'name' => '', 
+              'field' => 'users_id',
+              'name' => '',
               'type' => 'INDEX'));
 
       $a_table['oldkeys'] = array();
 
       migrateTablesMonitoring($migration, $a_table);
 
-      
-      
+
+
     /*
     * Table glpi_plugin_monitoring_sliders_items
     */
@@ -2800,16 +2802,16 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       $a_table['keys'] = array(
           array(
-              'field' => 'plugin_monitoring_sliders_id', 
-              'name' => '', 
+              'field' => 'plugin_monitoring_sliders_id',
+              'name' => '',
               'type' => 'INDEX'));
 
       $a_table['oldkeys'] = array();
 
       migrateTablesMonitoring($migration, $a_table);
 
-      
-      
+
+
     /*
     * Table glpi_plugin_monitoring_unavaibilities
     */
@@ -2820,59 +2822,59 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                         PRIMARY KEY (`id`)
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
-         
-         $migration->addField($newTable, 
-                              'plugin_monitoring_services_id', 
+
+         $migration->addField($newTable,
+                              'plugin_monitoring_services_id',
                               "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'begin_date', 
+         $migration->addField($newTable,
+                              'begin_date',
                               "datetime DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'end_date', 
+         $migration->addField($newTable,
+                              'end_date',
                               "datetime DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'duration', 
+         $migration->addField($newTable,
+                              'duration',
                               "int(15) NOT NULL DEFAULT '0'");
          // Scheduled unavailability
-         $migration->addField($newTable, 
-                              'scheduled', 
+         $migration->addField($newTable,
+                              'scheduled',
                               "tinyint(1) NOT NULL DEFAULT '0'");
          // Unavailability details
-         $migration->addField($newTable, 
-                              'details', 
+         $migration->addField($newTable,
+                              'details',
                               "text DEFAULT NULL COLLATE utf8_unicode_ci");
          $migration->migrationOneTable($newTable);
       }
 /*
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
          if (!FieldExists($newTable, "plugin_monitoring_services_id")) {
-            $migration->changeField($newTable, 
-                                    'items_id', 
-                                    'plugin_monitoring_services_id', 
+            $migration->changeField($newTable,
+                                    'items_id',
+                                    'plugin_monitoring_services_id',
                                     "int(11) NOT NULL DEFAULT '0'");
          }
       $migration->migrationOneTable($newTable);
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_services_id', 
-                                 'plugin_monitoring_services_id', 
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_services_id',
+                                 'plugin_monitoring_services_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'begin_date', 
-                                 'begin_date', 
+         $migration->changeField($newTable,
+                                 'begin_date',
+                                 'begin_date',
                                  "datetime DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'end_date', 
-                                 'end_date', 
+         $migration->changeField($newTable,
+                                 'end_date',
+                                 'end_date',
                                  "datetime DEFAULT NULL");
-         $migration->dropField($newTable, 
+         $migration->dropField($newTable,
                                  'itemtype');
       $migration->migrationOneTable($newTable);
-*/      
-      
-      
+*/
+
+
     /*
     * Table glpi_plugin_monitoring_weathermaps
     */
@@ -2884,43 +2886,43 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'name', 
-                                 'name', 
+         $migration->changeField($newTable,
+                                 'name',
+                                 'name',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'width', 
-                                 'width', 
+         $migration->changeField($newTable,
+                                 'width',
+                                 'width',
                                  "smallint(6) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'height', 
-                                 'height', 
+         $migration->changeField($newTable,
+                                 'height',
+                                 'height',
                                  "smallint(6) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'background', 
-                                 'background', 
+         $migration->changeField($newTable,
+                                 'background',
+                                 'background',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                              'name', 
+         $migration->addField($newTable,
+                              'name',
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'width', 
+         $migration->addField($newTable,
+                              'width',
                               "smallint(6) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'height', 
+         $migration->addField($newTable,
+                              'height',
                               "smallint(6) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'background', 
+         $migration->addField($newTable,
+                              'background',
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
       $migration->migrationOneTable($newTable);
-      
-      
-      
+
+
+
     /*
     * Table glpi_plugin_monitoring_weathermapnodes
     */
@@ -2932,59 +2934,59 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'name', 
-                                 'name', 
+         $migration->changeField($newTable,
+                                 'name',
+                                 'name',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_weathermaps_id', 
-                                 'plugin_monitoring_weathermaps_id', 
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_weathermaps_id',
+                                 'plugin_monitoring_weathermaps_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'items_id', 
-                                 'items_id', 
+         $migration->changeField($newTable,
+                                 'items_id',
+                                 'items_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'itemtype', 
-                                 'itemtype', 
+         $migration->changeField($newTable,
+                                 'itemtype',
+                                 'itemtype',
                                  "varchar(100) DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'x', 
-                                 'x', 
+         $migration->changeField($newTable,
+                                 'x',
+                                 'x',
                                  "smallint(6) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'y', 
-                                 'y', 
+         $migration->changeField($newTable,
+                                 'y',
+                                 'y',
                                  "smallint(6) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                              'name', 
+         $migration->addField($newTable,
+                              'name',
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'plugin_monitoring_weathermaps_id', 
+         $migration->addField($newTable,
+                              'plugin_monitoring_weathermaps_id',
                               "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'items_id', 
+         $migration->addField($newTable,
+                              'items_id',
                               "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'itemtype', 
+         $migration->addField($newTable,
+                              'itemtype',
                               "varchar(100) DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'x', 
+         $migration->addField($newTable,
+                              'x',
                               "smallint(6) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'y', 
+         $migration->addField($newTable,
+                              'y',
                               "smallint(6) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'position', 
+         $migration->addField($newTable,
+                              'position',
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT 'middle'");
       $migration->migrationOneTable($newTable);
-      
-      
+
+
 
     /*
     * Table glpi_plugin_monitoring_weathermaplinks
@@ -2997,50 +2999,50 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->changeField($newTable, 
-                                 'id', 
-                                 'id', 
+         $migration->changeField($newTable,
+                                 'id',
+                                 'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_weathermapnodes_id_1', 
-                                 'plugin_monitoring_weathermapnodes_id_1', 
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_weathermapnodes_id_1',
+                                 'plugin_monitoring_weathermapnodes_id_1',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_weathermapnodes_id_2', 
-                                 'plugin_monitoring_weathermapnodes_id_2', 
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_weathermapnodes_id_2',
+                                 'plugin_monitoring_weathermapnodes_id_2',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'plugin_monitoring_services_id', 
-                                 'plugin_monitoring_services_id', 
+         $migration->changeField($newTable,
+                                 'plugin_monitoring_services_id',
+                                 'plugin_monitoring_services_id',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'bandwidth_in', 
-                                 'bandwidth_in', 
+         $migration->changeField($newTable,
+                                 'bandwidth_in',
+                                 'bandwidth_in',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable, 
-                                 'bandwidth_out', 
-                                 'bandwidth_out', 
+         $migration->changeField($newTable,
+                                 'bandwidth_out',
+                                 'bandwidth_out',
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
       $migration->migrationOneTable($newTable);
-         $migration->addField($newTable, 
-                              'plugin_monitoring_weathermapnodes_id_1', 
+         $migration->addField($newTable,
+                              'plugin_monitoring_weathermapnodes_id_1',
                               "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'plugin_monitoring_weathermapnodes_id_2', 
+         $migration->addField($newTable,
+                              'plugin_monitoring_weathermapnodes_id_2',
                               "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'plugin_monitoring_services_id', 
+         $migration->addField($newTable,
+                              'plugin_monitoring_services_id',
                               "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'bandwidth_in', 
+         $migration->addField($newTable,
+                              'bandwidth_in',
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'bandwidth_out', 
+         $migration->addField($newTable,
+                              'bandwidth_out',
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
       $migration->migrationOneTable($newTable);
-      
-      
-      
+
+
+
     /*
     * Table glpi_plugin_monitoring_shinkenwebservices
     */
@@ -3052,22 +3054,22 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->addField($newTable, 
-                              'url', 
+         $migration->addField($newTable,
+                              'url',
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'action', 
+         $migration->addField($newTable,
+                              'action',
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'cnt', 
+         $migration->addField($newTable,
+                              'cnt',
                               "tinyint(2) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                              'fields_string', 
+         $migration->addField($newTable,
+                              'fields_string',
                               "text DEFAULT NULL COLLATE utf8_unicode_ci");
-      $migration->migrationOneTable($newTable);  
-      
-      
-      
+      $migration->migrationOneTable($newTable);
+
+
+
     /*
     * Table glpi_plugin_monitoring_tags
     */
@@ -3079,24 +3081,24 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-         $migration->addField($newTable, 
-                              'tag', 
+         $migration->addField($newTable,
+                              'tag',
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'ip', 
+         $migration->addField($newTable,
+                              'ip',
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'iplock', 
+         $migration->addField($newTable,
+                              'iplock',
                               "bool");
-         $migration->addField($newTable, 
-                              'username', 
+         $migration->addField($newTable,
+                              'username',
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable, 
-                              'password', 
+         $migration->addField($newTable,
+                              'password',
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-      $migration->migrationOneTable($newTable);      
-      
-      
+      $migration->migrationOneTable($newTable);
+
+
     /*
     * Table glpi_plugin_monitoring_downtimes
     */
@@ -3110,53 +3112,53 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query);
       }
-         $migration->addField($newTable, 
-                                 'start_time', 
+         $migration->addField($newTable,
+                                 'start_time',
                                  "datetime NOT NULL DEFAULT '2014-01-01 00:00:00'");
-         $migration->addField($newTable, 
-                                 'end_time', 
+         $migration->addField($newTable,
+                                 'end_time',
                                  "datetime NOT NULL DEFAULT '2014-01-01 00:00:00'");
-         $migration->addField($newTable, 
-                                 'flexible', 
+         $migration->addField($newTable,
+                                 'flexible',
                                  "tinyint(1) DEFAULT '1'");
-         $migration->addField($newTable, 
-                                 'duration', 
+         $migration->addField($newTable,
+                                 'duration',
                                  "int(1) DEFAULT '24'");
-         $migration->addField($newTable, 
-                                 'duration_type', 
+         $migration->addField($newTable,
+                                 'duration_type',
                                  "varchar(64) DEFAULT 'days'");
-         $migration->addField($newTable, 
-                                 'comment', 
+         $migration->addField($newTable,
+                                 'comment',
                                  "varchar(1024) DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'users_id', 
+         $migration->addField($newTable,
+                                 'users_id',
                                  "int(11) DEFAULT '-1'");
-         $migration->addField($newTable, 
-                                 'services', 
+         $migration->addField($newTable,
+                                 'services',
                                  "tinyint(1) DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'notified', 
+         $migration->addField($newTable,
+                                 'notified',
                                  "tinyint(1) DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'expired', 
-                                 "tinyint(1) DEFAULT '0'");
-      $migration->migrationOneTable($newTable);
-      
-         $migration->changeField($newTable, 
-                                 'flexible', 
-                                 'flexible', 
-                                 "tinyint(1) DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'notified', 
-                                 'notified', 
-                                 "tinyint(1) DEFAULT '0'");
-         $migration->changeField($newTable, 
-                                 'expired', 
-                                 'expired', 
+         $migration->addField($newTable,
+                                 'expired',
                                  "tinyint(1) DEFAULT '0'");
       $migration->migrationOneTable($newTable);
-      
-      
+
+         $migration->changeField($newTable,
+                                 'flexible',
+                                 'flexible',
+                                 "tinyint(1) DEFAULT '0'");
+         $migration->changeField($newTable,
+                                 'notified',
+                                 'notified',
+                                 "tinyint(1) DEFAULT '0'");
+         $migration->changeField($newTable,
+                                 'expired',
+                                 'expired',
+                                 "tinyint(1) DEFAULT '0'");
+      $migration->migrationOneTable($newTable);
+
+
     /*
     * Table glpi_plugin_monitoring_acknowledges
     */
@@ -3171,38 +3173,38 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query);
       }
-         $migration->addField($newTable, 
-                                 'start_time', 
+         $migration->addField($newTable,
+                                 'start_time',
                                  "datetime NOT NULL DEFAULT '2014-01-01 00:00:00'");
-         $migration->addField($newTable, 
-                                 'end_time', 
+         $migration->addField($newTable,
+                                 'end_time',
                                  "datetime NOT NULL DEFAULT '2014-01-01 00:00:00'");
-         $migration->addField($newTable, 
-                                 'sticky', 
+         $migration->addField($newTable,
+                                 'sticky',
                                  "tinyint(1) DEFAULT '1'");
-         $migration->addField($newTable, 
-                                 'persistent', 
+         $migration->addField($newTable,
+                                 'persistent',
                                  "tinyint(1) DEFAULT '1'");
-         $migration->addField($newTable, 
-                                 'notify', 
+         $migration->addField($newTable,
+                                 'notify',
                                  "tinyint(1) DEFAULT '1'");
-         $migration->addField($newTable, 
-                                 'comment', 
+         $migration->addField($newTable,
+                                 'comment',
                                  "varchar(1024) DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'users_id', 
+         $migration->addField($newTable,
+                                 'users_id',
                                  "int(11) DEFAULT '-1'");
-         $migration->addField($newTable, 
-                                 'notified', 
+         $migration->addField($newTable,
+                                 'notified',
                                  "tinyint(1) DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'expired', 
+         $migration->addField($newTable,
+                                 'expired',
                                  "tinyint(1) DEFAULT '0'");
       $migration->migrationOneTable($newTable);
-      
-         $migration->changeField($newTable, 
-                                 'expired', 
-                                 'expired', 
+
+         $migration->changeField($newTable,
+                                 'expired',
+                                 'expired',
                                  "tinyint(1) DEFAULT '0'");
       $migration->migrationOneTable($newTable);
 
@@ -3219,17 +3221,17 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query);
       }
-         $migration->addField($newTable, 
-                                 'date', 
+         $migration->addField($newTable,
+                                 'date',
                                  "datetime DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'counter', 
+         $migration->addField($newTable,
+                                 'counter',
                                  "varchar(255) DEFAULT NULL");
-         $migration->addField($newTable, 
-                                 'value', 
+         $migration->addField($newTable,
+                                 'value',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'updated', 
+         $migration->addField($newTable,
+                                 'updated',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->addKey($newTable,
                             array('hostname','date','updated'),
@@ -3251,50 +3253,50 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query);
       }
-         $migration->addField($newTable, 
-                                 'cPaperChanged', 
+         $migration->addField($newTable,
+                                 'cPaperChanged',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'cPrinterChanged', 
+         $migration->addField($newTable,
+                                 'cPrinterChanged',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'cBinEmptied', 
+         $migration->addField($newTable,
+                                 'cBinEmptied',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'cPagesInitial', 
+         $migration->addField($newTable,
+                                 'cPagesInitial',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'cPagesTotal', 
+         $migration->addField($newTable,
+                                 'cPagesTotal',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'cPagesToday', 
+         $migration->addField($newTable,
+                                 'cPagesToday',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'cPagesRemaining', 
+         $migration->addField($newTable,
+                                 'cPagesRemaining',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'cRetractedInitial', 
+         $migration->addField($newTable,
+                                 'cRetractedInitial',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'cRetractedTotal', 
+         $migration->addField($newTable,
+                                 'cRetractedTotal',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'cRetractedToday', 
+         $migration->addField($newTable,
+                                 'cRetractedToday',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'cRetractedRemaining', 
+         $migration->addField($newTable,
+                                 'cRetractedRemaining',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'cPaperLoad', 
+         $migration->addField($newTable,
+                                 'cPaperLoad',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'cCardsInsertedOk', 
+         $migration->addField($newTable,
+                                 'cCardsInsertedOk',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'cCardsInsertedKo', 
+         $migration->addField($newTable,
+                                 'cCardsInsertedKo',
                                  "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable, 
-                                 'cCardsRemoved', 
+         $migration->addField($newTable,
+                                 'cCardsRemoved',
                                  "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
 
@@ -3307,16 +3309,16 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       }
       if (TableExists("glpi_plugin_monitoring_servicegraphs")) {
          $DB->query("DROP TABLE `glpi_plugin_monitoring_servicegraphs`");
-      }   
-      
-      
+      }
+
+
    if (!is_dir(GLPI_PLUGIN_DOC_DIR.'/monitoring')) {
       mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring");
    }
    if (!is_dir(GLPI_PLUGIN_DOC_DIR.'/monitoring/templates')) {
       mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring/templates");
    }
-   
+
    // Update calendars
    $query = "SELECT * FROM `glpi_calendars`
       WHERE `name`='24x7'
@@ -3328,7 +3330,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $input['name'] = '24x7';
       $input['is_recursive'] = 1;
       $calendars_id = $calendar->add($input);
-      
+
       $calendarSegment = new CalendarSegment();
       $input = array();
       $input['calendars_id'] = $calendars_id;
@@ -3356,23 +3358,23 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    // Update crontasks
    $crontask = new CronTask();
    if (!$crontask->getFromDBbyName('PluginMonitoringHostdailycounter', 'DailyCounters')) {
-      CronTask::Register('PluginMonitoringHostdailycounter', 'DailyCounters', '3600', 
+      CronTask::Register('PluginMonitoringHostdailycounter', 'DailyCounters', '3600',
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
    }
    if (!$crontask->getFromDBbyName('PluginMonitoringDowntime', 'DowntimesExpired')) {
-      CronTask::Register('PluginMonitoringDowntime', 'DowntimesExpired', '3600', 
+      CronTask::Register('PluginMonitoringDowntime', 'DowntimesExpired', '3600',
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
    }
    if (!$crontask->getFromDBbyName('PluginMonitoringLog', 'cleanlogs')) {
-      CronTask::Register('PluginMonitoringLog', 'cleanlogs', '96400', 
+      CronTask::Register('PluginMonitoringLog', 'cleanlogs', '96400',
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
    }
    if (!$crontask->getFromDBbyName('PluginMonitoringUnavailability', 'unavailability')) {
-      CronTask::Register('PluginMonitoringUnavailability', 'Unavailability', '300', 
+      CronTask::Register('PluginMonitoringUnavailability', 'Unavailability', '300',
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
    }
    if (!$crontask->getFromDBbyName('PluginMonitoringDisplayview_rule', 'replayallviewrules')) {
-      CronTask::Register('PluginMonitoringDisplayview_rule', 'replayallviewrules', '1200', 
+      CronTask::Register('PluginMonitoringDisplayview_rule', 'replayallviewrules', '1200',
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
    }
    if ($crontask->getFromDBbyName('PluginMonitoringUnavaibility', 'unavaibility')) {
@@ -3383,7 +3385,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $crontask->getFromDBbyName('PluginMonitoringServiceevent', 'updaterrd');
       $crontask->delete($crontask->fields);
    }
-   
+
    include (GLPI_ROOT . "/plugins/monitoring/inc/command.class.php");
    $pmCommand = new PluginMonitoringCommand();
    $a_list = $pmCommand->find();
@@ -3432,7 +3434,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $input['arguments'] = exportArrayToDB($arg);
       $pmCommand->add($input);
    }
-   
+
    /*
     * Clean services not having hosts
     */
@@ -3446,13 +3448,13 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          WHERE `id`='".$data['id']."'";
       $DB->query($queryd);
    }
-   
+
    /*
     * Clean components catalog not having hosts
     */
    $query = "SELECT `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
       FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
-      LEFT JOIN `glpi_computers` 
+      LEFT JOIN `glpi_computers`
          ON (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_computers`.`id`)
       WHERE (`glpi_computers`.`name` IS NULL);";
    $result = $DB->query($query);
@@ -3461,38 +3463,38 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          WHERE `id`='".$data['id']."'";
       $DB->query($queryd);
    }
-   
+
    // Update hosts config
    include (GLPI_ROOT . "/plugins/monitoring/inc/hostconfig.class.php");
    $pmHostconfig = new PluginMonitoringHostconfig();
    $pmHostconfig->initConfig();
-   
+
    // Verify hosts
    include (GLPI_ROOT . "/plugins/monitoring/inc/host.class.php");
    $pmHost = new PluginMonitoringHost();
    $pmHost->verifyHosts();
-   
-   
+
+
    if ($insertrealm == '1') {
       // Insert into hostconfigs
-      $query = "UPDATE `glpi_plugin_monitoring_hostconfigs` 
+      $query = "UPDATE `glpi_plugin_monitoring_hostconfigs`
          SET `plugin_monitoring_realms_id` = '1'
          WHERE `items_id` = '0'
             AND `itemtype` = 'Entity'";
-      $DB->query($query);         
+      $DB->query($query);
    }
-   
+
    include (GLPI_ROOT . "/plugins/monitoring/inc/config.class.php");
    $pmConfig = new PluginMonitoringConfig();
    $pmConfig->initConfig();
-   
-   
+
+
    // * Calculate unavailability
    if ($unavailability_reset == 1) {
       // Delete unavailability periods
       $query = "DELETE FROM `glpi_plugin_monitoring_unavailabilities`";
       $DB->query($query) or die('Unable to delete table `glpi_plugin_monitoring_unavailabilities`');
-      
+
       // Reset service events unavailability
       $DB->query("ALTER TABLE glpi_plugin_monitoring_serviceevents DISABLE KEYS");
       $query = "UPDATE `glpi_plugin_monitoring_serviceevents`
@@ -3501,10 +3503,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $DB->query("ALTER TABLE glpi_plugin_monitoring_serviceevents ENABLE KEYS");
       include (GLPI_ROOT . "/plugins/monitoring/inc/display.class.php");
       include (GLPI_ROOT . "/plugins/monitoring/inc/serviceevent.class.php");
-      include (GLPI_ROOT . "/plugins/monitoring/inc/unavailability.class.php"); 
+      include (GLPI_ROOT . "/plugins/monitoring/inc/unavailability.class.php");
       PluginMonitoringUnavailability::runUnavailability();
    }
-   
+
    // * Recalculate unavailability
    if ($unavailability_recalculate == 1) {
       $query = "SELECT * FROM `glpi_plugin_monitoring_unavailabilities`
@@ -3519,7 +3521,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       }
    }
 
-   
+
    $query = "UPDATE `glpi_plugin_monitoring_configs`
       SET `version`='".PLUGIN_MONITORING_VERSION."'
          WHERE `id`='1'";
