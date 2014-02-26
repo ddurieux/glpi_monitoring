@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringComponentscatalog extends CommonDropdown {
-   
+
    /**
    * Get name of this type
    *
@@ -63,22 +63,22 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    }
 
 
-   
+
    static function canView() {
       return PluginMonitoringProfile::haveRight("config_components_catalogs", 'r');
    }
 
-   
-   
+
+
    function defineTabs($options=array()){
 
       $ong = array();
       $this->addStandardTab("PluginMonitoringComponentscatalog", $ong, $options);
       return $ong;
    }
-   
-   
-   
+
+
+
    /**
     * Display tab
     *
@@ -115,9 +115,9 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       }
       return '';
    }
-   
-   
-   
+
+
+
    /**
     * @param $item PluginMonitoringComponentscatalog object
    **/
@@ -129,8 +129,8 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       return countElementsInTable('glpi_plugin_monitoring_componentscatalogs_hosts', $restrict);
    }
 
-   
-   
+
+
    /**
     * @param $item PluginMonitoringComponentscatalog object
    **/
@@ -141,9 +141,9 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
 
       return countElementsInTable('glpi_plugin_monitoring_componentscatalogs_hosts', $restrict);
    }
-   
-   
-   
+
+
+
    /**
     * Display content of tab
     *
@@ -154,7 +154,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
     * @return boolean true
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
-      
+
       switch ($item->getType()) {
          case 'Central' :
             $pmDisplay = new PluginMonitoringDisplay();
@@ -169,7 +169,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
 
             case 1:
                $pmComponentscatalog_Component = new PluginMonitoringComponentscatalog_Component();
-               $pmComponentscatalog_Component->showComponents($item->getID());         
+               $pmComponentscatalog_Component->showComponents($item->getID());
                break;
 
             case 2 :
@@ -187,7 +187,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                $pmComponentscatalog_Host->showHosts($item->getID(), 0);
                break;
 
-            case 5 : 
+            case 5 :
                $pmContact_Item = new PluginMonitoringContact_Item();
                $pmContact_Item->showContacts("PluginMonitoringComponentscatalog", $item->getID());
                break;
@@ -196,7 +196,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                $pmUnavailability = new PluginMonitoringUnavailability();
                $pmUnavailability->displayComponentscatalog($item->getID());
                break;
-            
+
             case 7:
                $pmPluginMonitoringComponentscatalog = new PluginMonitoringComponentscatalog();
                $pmPluginMonitoringComponentscatalog->showSimpleReport($item->getID());
@@ -207,28 +207,28 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                $pmPluginMonitoringComponentscatalog->showSyntheseReport($item->getID());
                break;
 
-            
+
             default :
 
          }
-         
+
       }
       return true;
    }
-   
-   
-   
+
+
+
    function getAdditionalFields() {
       return array(array('name'  => 'notification_interval',
                          'label' => __('Interval between 2 notifications (in minutes)', 'monitoring'),
                          'type'  => 'notificationinterval'));
    }
-   
-   
-   
+
+
+
    function displaySpecificTypeField($ID, $field=array()) {
-      
-      
+
+
       switch ($field['type']) {
          case 'notificationinterval' :
             if ($ID > 0) {
@@ -237,24 +237,24 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                $this->fields['notification_interval'] = 30;
             }
             Dropdown::showNumber('notification_interval', array(
-                'value' => $this->fields['notification_interval'], 
-                'min'   => 1, 
+                'value' => $this->fields['notification_interval'],
+                'min'   => 1,
                 'max'   => 1000)
             );
             break;
       }
    }
-   
-   
-   
-   function showChecks() {      
+
+
+
+   function showChecks() {
 
       echo "
       <script>
          function toggleMinemap(idMinemap) {
             Ext.select('#'+idMinemap).each(function(el) {
                el.setDisplayed(! el.isDisplayed());
-            }); 
+            });
          };
          function toggleEntity(idEntity) {
             Ext.select('#'+idEntity).each(function(el) {
@@ -262,29 +262,29 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                el.select('tr.services').each(function(elTr) {
                   elTr.setDisplayed(! elTr.isDisplayed());
                   displayed = elTr.isDisplayed();
-               }); 
+               });
                // if (! displayed) {
                   // el.select('tr.header').each(function(elTr) {
                      // elTr.applyStyles({'height':'10px'});
                      // elTr.select('th').each(function(elTd) {
                         // elTd.applyStyles({'height':'10px'});
-                     // }); 
-                  // }); 
+                     // });
+                  // });
                // }
                el.select('tr.header').each(function(elTr) {
                   elTr.applyStyles(displayed ? {'height':'50px'} : {'height':'10px'});
                   elTr.select('th').each(function(elTd) {
                      elTd.applyStyles(displayed ? {'height':'50px'} : {'height':'10px'});
-                  }); 
-               }); 
-            }); 
+                  });
+               });
+            });
          };
       </script>
       ";
-      
+
       echo "<table class='tab_cadre' width='100%'>";
       echo "<tr class='tab_bg_4' style='background: #cececc;'>";
-      
+
       $a_componentscatalogs = $this->find();
       $i = 0;
       foreach ($a_componentscatalogs as $data) {
@@ -308,17 +308,17 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                $i = 0;
             }
          }
-      } 
-      
+      }
+
       echo "</tr>";
-      echo "</table>";      
+      echo "</table>";
    }
-   
-   
-   
+
+
+
    static function replayRulesCatalog($item) {
-      
-      $datas = getAllDatasFromTable("glpi_plugin_monitoring_componentscatalogs_rules", 
+
+      $datas = getAllDatasFromTable("glpi_plugin_monitoring_componentscatalogs_rules",
               "`plugin_monitoring_componentscalalog_id`='".$item->getID()."'");
       $pmComponentscatalog_rule = new PluginMonitoringComponentscatalog_rule();
       foreach($datas as $data) {
@@ -326,15 +326,15 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          PluginMonitoringComponentscatalog_rule::getItemsDynamicly($pmComponentscatalog_rule);
       }
    }
-  
-   
-   
+
+
+
    static function removeCatalog($item) {
       global $DB;
-      
+
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
-      $pmComponentscatalog_rule = new PluginMonitoringComponentscatalog_rule(); 
-      
+      $pmComponentscatalog_rule = new PluginMonitoringComponentscatalog_rule();
+
       $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
          WHERE `plugin_monitoring_componentscalalog_id`='".$item->fields["id"]."'
             AND `is_static`='1'";
@@ -342,7 +342,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       while ($data=$DB->fetch_array($result)) {
          $pmComponentscatalog_Host->delete($data);
       }
-      
+
       $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_rules`
          WHERE `plugin_monitoring_componentscalalog_id`='".$item->fields["id"]."'";
       $result = $DB->query($query);
@@ -350,21 +350,21 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          $pmComponentscatalog_rule->delete($data);
       }
    }
-   
-   
-   
+
+
+
    function showWidget($id) {
       return "<div id=\"updatecomponentscatalog".$id."\"></div>";
    }
-   
-   
-   
+
+
+
    function showWidgetFrame($id, $reduced_interface=false, $is_minemap=FALSE) {
       global $DB, $CFG_GLPI;
-      
+
       $this->getFromDB($id);
       $data = $this->fields;
-      
+
       $ret = $this->getInfoOfCatalog($id);
       $nb_ressources = $ret[0];
       if ($nb_ressources == 0) {
@@ -376,16 +376,16 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
 
          return;
       }
-      
+
       $stateg = $ret[1];
       $hosts_ids = $ret[2];
       $services_ids = $ret[3];
       $hosts_ressources = $ret[4];
       $hosts_states = $ret[5];
-      
+
       $colorclass = 'ok';
       $count = 0;
-            
+
       $link = '';
       // Toolbox::logInFile("pm", "stateg $id - ".serialize($stateg)."\n");
       if ($stateg['CRITICAL'] > 0) {
@@ -463,7 +463,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          break;
       }
       sort($services);
-      
+
       echo "<div class='minemapdiv' align='center'>"
             ."<a onclick='javascript: toggleMinemap(\"minemapCC-".$id."\");'>"
             .__('Minemap', 'monitoring')."</a></div>";
@@ -474,7 +474,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       }
 
       echo '<table class="tab_cadrehov" >';
-      
+
       // Header with services name and link to services list ...
       echo "<tr>";
       echo "<th colspan='2'>";
@@ -483,7 +483,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       for ($i = 0; $i < count($services); $i++) {
          // Do not display fake host service ...
          if ($services[$i] == '_fake_') continue;
-         
+
          if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
             $link = $CFG_GLPI['root_doc'].
                "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
@@ -499,21 +499,21 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          }
       }
       echo '</tr>';
-      
+
       $pmHost = new PluginMonitoringHost();
       $entityId = -1;
       $overallServicesState = 'OK';
       foreach ($hosts_ressources as $hosts_id=>$resources) {
          // Reduced array or not ?
          if ($reduced_interface and $hosts_states[$hosts_id]) continue;
-         
+
          $pmHost->getFromDB($hosts_ids[$hosts_id]['id']);
          if ($entityId != $pmHost->fields['entities_id']) {
             if ($entityId != -1) {
                echo "</table>";
                if ($overallServicesState != 'OK') {
                   echo "<script>
-                     Ext.onReady(function(){ 
+                     Ext.onReady(function(){
                         toggleEntity('entity-$id-$entityId');
                      });</script>";
                   $overallServicesState = 'OK';
@@ -534,12 +534,12 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          } else if ($hosts_ids[$hosts_id]['itemtype'] == 'NetworkEquipment') {
             $field_id = 22;
          }
-         
+
          $link = $CFG_GLPI['root_doc'].
             "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
                "&field[0]=".$field_id."&searchtype[0]=equals&contains[0]=".$hosts_ids[$hosts_id]['items_id'].
                "&itemtype=PluginMonitoringService&start=0'";
-            
+
          if ($hosts_states[$hosts_id]) {
             echo  "<tr class='services tab_bg_2' style='height: 50px; display:none;'>";
          } else {
@@ -553,7 +553,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          }
          for ($i = 0; $i < count($services); $i++) {
             if ($services[$i] == '_fake_') continue;
-            
+
             if ($resources[$services[$i]]['state'] != 'OK') {
                $overallServicesState = $resources[$services[$i]]['state'];
             }
@@ -582,20 +582,20 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       echo '</div>';
       if ($overallServicesState != 'OK') {
          echo "<script>
-            Ext.onReady(function(){ 
+            Ext.onReady(function(){
                toggleEntity('entity-$id-$entityId');
             });</script>";
       }
    }
-   
-   
-   
+
+
+
    function ajaxLoad($id, $is_minemap=false) {
       global $CFG_GLPI;
-      
+
       $sess_id = session_id();
       PluginMonitoringSecurity::updateSession();
-      
+
       echo "<script type=\"text/javascript\">
 
       var elcc".$id." = Ext.get(\"updatecomponentscatalog".$id."\");
@@ -610,15 +610,15 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
               "\", \"\", true);
       </script>";
    }
-   
-   
-   
+
+
+
    function getInfoOfCatalog($componentscatalogs_id) {
       global $DB;
-      
+
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
       $pmService = new PluginMonitoringService();
-      
+
       $stateg = array();
       $stateg['OK']          = 0;
       $stateg['WARNING']     = 0;
@@ -632,13 +632,13 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $services_ids = array();
       $hosts_ressources = array();
       $a_componentscatalogs_hosts = array();
-      
+
       $query = "
-         SELECT 
+         SELECT
             CONCAT_WS('', `glpi_computers`.`name`, `glpi_printers`.`name`, `glpi_networkequipments`.`name`) AS name,
             CONCAT_WS('', `glpi_computers`.`entities_id`, `glpi_printers`.`entities_id`, `glpi_networkequipments`.`entities_id`) AS entities_id,
-            `glpi_plugin_monitoring_componentscatalogs_hosts`.`id` AS catalog_id, 
-            `glpi_plugin_monitoring_hosts`.* 
+            `glpi_plugin_monitoring_componentscatalogs_hosts`.`id` AS catalog_id,
+            `glpi_plugin_monitoring_hosts`.*
          FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
          LEFT JOIN `glpi_computers`
             ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_computers`.`id`
@@ -650,20 +650,20 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_networkequipments`.`id`
                AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`='NetworkEquipment'
 
-         INNER JOIN `glpi_plugin_monitoring_hosts` 
+         INNER JOIN `glpi_plugin_monitoring_hosts`
             ON (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_plugin_monitoring_hosts`.`items_id`
             AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype` = `glpi_plugin_monitoring_hosts`.`itemtype`)
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'
-            AND CONCAT_WS('', `glpi_computers`.`entities_id`, `glpi_printers`.`entities_id`, `glpi_networkequipments`.`entities_id`) IN (".$_SESSION['glpiactiveentities_string'].") 
+            AND CONCAT_WS('', `glpi_computers`.`entities_id`, `glpi_printers`.`entities_id`, `glpi_networkequipments`.`entities_id`) IN (".$_SESSION['glpiactiveentities_string'].")
          ORDER BY entities_id ASC, name ASC";
       // Toolbox::logInFile("pm", "query : $query\n");
-      
+
       $result = $DB->query($query);
       while ($dataComponentscatalog_Host=$DB->fetch_array($result)) {
          $ressources = array();
          $fakeService = array();
          $host_overall_state_ok = false;
-         
+
          // Dummy service id ...
          $fakeService['name'] = '_fake_';
          $fakeService['id'] = $dataComponentscatalog_Host['id'] + 1000000;
@@ -694,26 +694,26 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             case 'FLAPPING':
                $fakeService['state'] = 'WARNING';
                break;
-            
+
             default:
                $fakeService['state'] = 'UNKNOWN';
                break;
          }
-         
-         $queryService = "SELECT *, `glpi_plugin_monitoring_services`.`id` as serviceId, `glpi_plugin_monitoring_components`.`name`, 
+
+         $queryService = "SELECT *, `glpi_plugin_monitoring_services`.`id` as serviceId, `glpi_plugin_monitoring_components`.`name`,
                  `glpi_plugin_monitoring_components`.`description` FROM `".$pmService->getTable()."`
-            INNER JOIN `glpi_plugin_monitoring_components` 
+            INNER JOIN `glpi_plugin_monitoring_components`
                ON (`plugin_monitoring_components_id` = `glpi_plugin_monitoring_components`.`id`)
             WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['catalog_id']."'
-               AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].") 
+               AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
             ORDER BY `glpi_plugin_monitoring_services`.`name` ASC;";
          // Toolbox::logInFile("pm", "query services - $queryService\n");
          $resultService = $DB->query($queryService);
          while ($dataService=$DB->fetch_array($resultService)) {
             $nb_ressources++;
-            
+
             $pmService->getFromDB($dataService["serviceId"]);
-            
+
             if ($dataService['is_acknowledged'] == '1') {
                $dataService['state'] = 'ACKNOWLEDGE';
             }
@@ -722,7 +722,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                $a_gstate[$dataService['id']] = "UNKNOWN";
                if ($host_overall_state_ok) $host_overall_state_ok = false;
             } else {
-               // $statecurrent = PluginMonitoringHost::getState($dataService['state'], 
+               // $statecurrent = PluginMonitoringHost::getState($dataService['state'],
                                                               // $dataService['state_type'],
                                                               // $dataService['event'],
                                                               // $dataService['is_acknowledged']);
@@ -745,13 +745,13 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             }
             $ressources[$dataService['name']] = $dataService;
             $services_ids[$dataService['name']] = $dataService['plugin_monitoring_components_id'];
-            
-            if (isset($dataService['id']) 
+
+            if (isset($dataService['id'])
                     && isset($a_gstate[$dataService['id']])) {
                $stateg[$a_gstate[$dataService['id']]]++;
             }
          }
-         
+
          if ($host_overall_state_ok) {
             $fakeService['state'] = 'OK';
          } else {
@@ -761,7 +761,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          $services_ids[$fakeService['name']] = '';
          $a_gstate[$fakeService['id']] = $fakeService['state'];
          // $stateg[$a_gstate[$fakeService['id']]]++;
-         
+
          $hosts_ids[$dataComponentscatalog_Host['id']] = $dataComponentscatalog_Host;
          $hosts_states[$dataComponentscatalog_Host['id']] = $host_overall_state_ok;
          $a_componentscatalogs_hosts[$dataComponentscatalog_Host['catalog_id']] = $dataComponentscatalog_Host['catalog_id'];
@@ -769,7 +769,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       }
 
       return array($nb_ressources,
-                   $stateg, 
+                   $stateg,
                    $hosts_ids,
                    $services_ids,
                    $hosts_ressources,
@@ -777,16 +777,16 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                    $a_componentscatalogs_hosts);
    }
 
-   
-   
+
+
    function getRessources($componentscatalogs_id, $state, $state_type='HARD') {
       global $DB;
-      
+
       $a_services = array();
-      
+
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
       $pmService = new PluginMonitoringService();
-      
+
       $query = "SELECT * FROM `glpi_plugin_monitoring_services`
          LEFT JOIN `".$pmComponentscatalog_Host->getTable()."`
             ON `plugin_monitoring_componentscatalogs_hosts_id`=
@@ -798,17 +798,17 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       while ($data=$DB->fetch_array($result)) {
          $pmService->getFromDB($dataService["id"]);
          if ($pmService->getShortState()) {
-         // if (PluginMonitoringHost::getState($data['state'], 
+         // if (PluginMonitoringHost::getState($data['state'],
                                                // $data['state_type'],
                                                // '',
                                                // $data['is_acknowledged']) == $state) {
             $a_services[] = $data;
          }
       }
-      return $a_services;      
+      return $a_services;
    }
-   
-   
+
+
 
    function showSimpleReport($componentscatalogs_id) {
       global $CFG_GLPI;
@@ -816,12 +816,12 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $pmComponentscatalog_Component = new PluginMonitoringComponentscatalog_Component();
       $pmComponent = new PluginMonitoringComponent();
       $a_options = array();
-      
+
       $this->getFromDB($componentscatalogs_id);
-      
-      echo "<form name='form' method='post' 
+
+      echo "<form name='form' method='post'
          action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/report_componentscatalog.form.php'>";
-      
+
       echo "<table class='tab_cadre_fixe'>";
       echo '<tr class="tab_bg_1">';
       echo '<th colspan="5">';
@@ -835,13 +835,13 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       echo '<tr class="tab_bg_1">';
       echo '<tr class="tab_bg_1">';
       echo '<td>';
-      echo '<input type="radio" name="reporttype" value="simplereport" checked />'; 
+      echo '<input type="radio" name="reporttype" value="simplereport" checked />';
       echo '</td>';
       echo '<td colspan="4">';
       echo '<strong>'.__('Simple report', "monitoring").'</strong>';
       echo '</td>';
       echo '</tr>';
-      
+
       echo '<tr class="tab_bg_1">';
       echo '<td>';
       echo '</td>';
@@ -859,8 +859,8 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       echo "</td>";
       echo "</tr>";
       echo "</table>";
-      
-      echo "<table class='tab_cadre_fixe'>";      
+
+      echo "<table class='tab_cadre_fixe'>";
       $a_composants = $pmComponentscatalog_Component->find("`plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'");
       foreach ($a_composants as $comp_data) {
          $pmComponent->getFromDB($comp_data['plugin_monitoring_components_id']);
@@ -872,16 +872,16 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          echo "</td>";
          echo "<td>";
          echo $pmComponent->getLink();
-         echo "</td>";      
+         echo "</td>";
          echo "</tr>";
-         
+
          echo "<tr class='tab_bg_1'>";
          echo "<td width='10'>";
          echo "</td>";
          echo "<td>";
          PluginMonitoringToolbox::preferences($pmComponent->getID(), 1, 1);
          echo "</td>";
-      
+
          echo "</tr>";
       }
       echo "<tr class='tab_bg_1'>";
@@ -890,17 +890,17 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       echo "</td>";
       echo "</tr>";
       echo "</table>";
-      
+
       Html::closeForm();
-      
+
       $this->generateReport($a_options, FALSE);
    }
 
-   
-   
+
+
    function showSyntheseReport($componentscatalogs_id) {
       global $CFG_GLPI;
-      
+
       if (!isset($_SESSION['glpi_plugin_monitoring']['synthese'])) {
          $_SESSION['glpi_plugin_monitoring']['synthese'] = array();
       }
@@ -911,12 +911,12 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $pmComponentscatalog_Component = new PluginMonitoringComponentscatalog_Component();
       $pmComponent = new PluginMonitoringComponent();
       $a_options = array();
-      
+
       $this->getFromDB($componentscatalogs_id);
-      
-      echo "<form name='form' method='post' 
+
+      echo "<form name='form' method='post'
          action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/report_componentscatalog.form.php'>";
-      
+
       echo "<table class='tab_cadre_fixe'>";
       echo '<tr class="tab_bg_1">';
       echo '<th colspan="5">';
@@ -926,7 +926,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $a_options['componentscatalogs_id'] = $componentscatalogs_id;
       echo '</th>';
       echo '</tr>';
-      
+
       echo '<tr class="tab_bg_1">';
       echo '<td>';
       echo '</td>';
@@ -936,8 +936,8 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          $default_value = $sess['synthesenumber'];
       }
       Dropdown::showNumber("synthesenumber", array(
-                'value' => $default_value, 
-                'min'   => 2, 
+                'value' => $default_value,
+                'min'   => 2,
                 'max'   => 30)
       );
       $a_options['synthesenumber'] = $default_value;
@@ -962,10 +962,10 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $a_options['synthesedate_end'] = $default_value;
       echo "</td>";
       echo '</tr>';
-      
+
       echo "</table>";
-            
-      echo "<table class='tab_cadre_fixe'>";      
+
+      echo "<table class='tab_cadre_fixe'>";
       $a_composants = $pmComponentscatalog_Component->find("`plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'");
       foreach ($a_composants as $comp_data) {
          $pmComponent->getFromDB($comp_data['plugin_monitoring_components_id']);
@@ -978,18 +978,18 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          echo "</td>";
          echo "<td>";
          echo $pmComponent->getLink();
-         echo "</td>";      
+         echo "</td>";
          echo "</tr>";
-         
+
          echo "<tr class='tab_bg_1'>";
          echo "<td width='10'>";
          echo "</td>";
          echo "<td>";
-         
+
          PluginMonitoringToolbox::loadPreferences($pmComponent->getID());
-         
+
          $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($pmComponent->fields['graph_template']);
-         echo "<table class='tab_cadre_fixe'>";      
+         echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_3'>";
          echo "<td rowspan='".count($a_perfnames)."' width='90'>";
          echo __('Use for report', 'monitoring')."&nbsp;:";
@@ -1002,7 +1002,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                $_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->getID()][$name] = 'checked';
             }
          }
-         
+
          foreach ($a_perfnames as $name) {
             if ($i > 0) {
                echo "<tr class='tab_bg_3'>";
@@ -1011,7 +1011,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             $checked = "checked";
             if (isset($sess['perfname'])
                  && isset($sess['perfname'][$pmComponent->getID()])) {
-               
+
                if (isset($sess['perfname'][$pmComponent->getID()])) {
                   $checked = "";
                }
@@ -1038,11 +1038,11 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             $default_value = 1;
             if (isset($sess['perfname_val'])
                  && isset($sess['perfname_val'][$pmComponent->getID()])) {
-               
+
                if (isset($sess['perfname_val'][$pmComponent->getID()][$name])) {
                   $default_value = $sess['perfname_val'][$pmComponent->getID()][$name];
                }
-            }            
+            }
             Dropdown::showYesNo('perfname_val['.$pmComponent->getID().']['.$name.']', $default_value);
             if ($checked == 'checked') {
                $a_options['perfname_val'][$pmComponent->getID()][$name] = $default_value;
@@ -1053,9 +1053,9 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          }
 
          echo "</table>";
-         
+
          echo "</td>";
-      
+
          echo "</tr>";
       }
       echo "<tr class='tab_bg_1'>";
@@ -1067,53 +1067,53 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       echo "</td>";
       echo "</tr>";
       echo "</table>";
-            
+
       Html::closeForm();
-      
+
       if (isset($_SESSION['plugin_monitoring_report'])) {
 //         $a_options = $_SESSION['plugin_monitoring_report'];
-      }      
+      }
       $this->generateSyntheseReport(
-              $_SESSION['glpi_plugin_monitoring']['synthese'][$componentscatalogs_id], 
+              $_SESSION['glpi_plugin_monitoring']['synthese'][$componentscatalogs_id],
               FALSE);
    }
-   
-   
-   
+
+
+
    function generateReport($array, $pdf=TRUE) {
       global $DB,$CFG_GLPI;
-      
+
       $componentscatalogs_id = $array['componentscatalogs_id'];
-      
+
       // define time for the report:
       // Week, week -1, week -2, month, month -1, month -2, year, year -1
-      
+
       $pmUnavailability = new PluginMonitoringUnavailability();
       $pmComponent = new PluginMonitoringComponent();
       $pmServiceevent = new PluginMonitoringServiceevent();
-      
+
       if ($pdf) {
          PluginMonitoringReport::beginCapture();
       }
-      
+
       $this->getFromDB($componentscatalogs_id);
       echo '<h1>'.$this->getTypeName().' : '.$this->getName().'<br/>
          Mois de Novembre</h1>';
-      
+
       echo '<br/>';
-      
+
       foreach ($array['components_id'] as $components_id) {
          $pmComponent->getFromDB($components_id);
 
          $a_name = $array['perfname'];
-         
+
          echo "<table class='tab_cadre_fixe'>";
          echo '<tr class="tab_bg_1">';
          echo '<th colspan="'.(6 + (count($a_name) * 3)).'">';
          echo $pmComponent->getName();
          echo '</th>';
          echo '</tr>';
-         
+
          echo '<tr class="tab_bg_1">';
          echo '<th rowspan="2">';
          echo __('Name');
@@ -1136,7 +1136,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             echo '</th>';
          }
          echo '</tr>';
-         
+
          echo '<tr class="tab_bg_1">';
          echo '<th>';
          echo __('%', 'monitoring');
@@ -1156,9 +1156,9 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             echo '</th>';
          }
          echo '</tr>';
-         
 
-         $query = "SELECT `glpi_plugin_monitoring_componentscatalogs_hosts`.*, 
+
+         $query = "SELECT `glpi_plugin_monitoring_componentscatalogs_hosts`.*,
                `glpi_plugin_monitoring_services`.`id` as sid FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
             LEFT JOIN `glpi_plugin_monitoring_services`
                ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`=`plugin_monitoring_componentscatalogs_hosts_id`
@@ -1170,7 +1170,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             $itemtype = $data['itemtype'];
             $item = new $itemtype();
             $item->getFromDB($data['items_id']);
-            
+
             $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks($pmComponent->fields['id']);
 
             $ret = array();
@@ -1199,8 +1199,8 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             // previous unavailability
             $str_start = strtotime($array['date_start']);
             $str_end   = strtotime($array['date_end']);
-            $a_times_previous = $pmUnavailability->parseEvents($data['id'], '', 
-                                 date('Y-m-d', $str_start - ($str_end - $str_start)), 
+            $a_times_previous = $pmUnavailability->parseEvents($data['id'], '',
+                                 date('Y-m-d', $str_start - ($str_end - $str_start)),
                                  $array['date_start']);
             $previous_percentage = round(((($a_times_previous[1] - $a_times_previous[0]) / $a_times_previous[1]) * 100), 3);
             $percentage = round(((($a_times[1] - $a_times[0]) / $a_times[1]) * 100), 3);
@@ -1242,9 +1242,9 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          PluginMonitoringReport::generatePDF($content);
       }
    }
-   
-   
-   
+
+
+
    function generateSyntheseReport($array, $pdf=TRUE) {
       global $DB;
 
@@ -1255,9 +1255,9 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $end_date_timestamp = strtotime($end_date);
       $number   = $array['synthesenumber'];
       $period   = $array['syntheseperiod'];
-      
+
       $componentscatalogs_id = $array['componentscatalogs_id'];
-      
+
       $pmComponent    = new PluginMonitoringComponent();
       $pmUnavailability = new PluginMonitoringUnavailability();
       $pmServiceevent = new PluginMonitoringServiceevent();
@@ -1309,21 +1309,21 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             foreach ($a_year as $year=>$colspan) {
                echo '<th colspan="'.$colspan.'">';
                echo $year;
-               echo '</th>';           
+               echo '</th>';
             }
             echo '</tr>';
-            
+
             echo '<tr class="tab_bg_1">';
             for ($i = $number; $i >= 1;$i--) {
                echo '<th colspan="2">';
                echo Html::convDate(date('m-d', strtotime("-".$i." ".$period, $end_date_timestamp)));
                echo "<br/>";
                echo Html::convDate(date('m-d', strtotime("-".($i-1)." ".$period, $end_date_timestamp)));
-               echo '</th>';           
+               echo '</th>';
             }
             echo '</tr>';
 
-            $query = "SELECT `glpi_plugin_monitoring_componentscatalogs_hosts`.*, 
+            $query = "SELECT `glpi_plugin_monitoring_componentscatalogs_hosts`.*,
                   `glpi_plugin_monitoring_services`.`id` as sid FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
                LEFT JOIN `glpi_plugin_monitoring_services`
                   ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`=`plugin_monitoring_componentscatalogs_hosts_id`
@@ -1337,7 +1337,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                $item->getFromDB($data['items_id']);
 
                if ($groupname == 'avaibility') {
-                  $a_times = $pmUnavailability->parseEvents($data['id'], '', 
+                  $a_times = $pmUnavailability->parseEvents($data['id'], '',
                                                           date('Y-m-d', strtotime("-".($number + 1)." ".$period, $end_date_timestamp)),
                                                           date('Y-m-d', strtotime("-".$number." ".$period, $end_date_timestamp)));
                   $previous_value = round(((($a_times[1] - $a_times[0]) / $a_times[1]) * 100), 3);
@@ -1390,7 +1390,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                         $bgcolor = 'style="background-color:#d1ffc3"';
                      }
                   }
-                  
+
                   echo '<td '.$bgcolor.'>';
                   if ($groupname == 'avaibility') {
                      echo $value."%";
@@ -1428,7 +1428,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                   echo '</td>';
                }
                echo "</tr>";
-               
+
             }
          }
          echo '<tr class="tab_bg_1" height="50">';

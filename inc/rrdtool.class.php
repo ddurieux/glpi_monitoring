@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -49,14 +49,14 @@ class PluginMonitoringRrdtool extends CommonDBTM {
    function createGraph($rrdtool_template, $items_id, $timestamp) {
 
       $fname = GLPI_PLUGIN_DOC_DIR."/monitoring/PluginMonitoringService-".$items_id.".rrd";
-      
+
       $a_filename = explode("-", $rrdtool_template);
       $filename = GLPI_PLUGIN_DOC_DIR."/monitoring/templates/".$a_filename[0]."-perfdata.json";
       if (!file_exists($filename)) {
          return;
       }
       $a_json = json_decode(file_get_contents($filename));
-      
+
       $opts = '';
       $opts .= ' --start '.($timestamp - 300);
       $opts .= ' --step 300';
@@ -66,26 +66,26 @@ class PluginMonitoringRrdtool extends CommonDBTM {
             $opts .= ' DS:'.$data_DS->dsname.':'.$data_DS->format.':'.$data_DS->heartbeat.':'.$data_DS->min.':'.$data_DS->max;
          }
       }
-      
+
       $opts .= " RRA:LAST:0.5:1:1400";
       $opts .= " RRA:AVERAGE:0.5:5:1016";
 
       system(PluginMonitoringConfig::getRRDPath().'/rrdtool create '.$fname.$opts, $ret);
-      if (isset($ret) 
+      if (isset($ret)
               AND $ret != '0' ) {
          echo "Create error: $ret for ".PluginMonitoringConfig::getRRDPath()."/rrdtool create ".$fname.$opts."\n";
       }
    }
 
-   
-   
+
+
    function addData($rrdtool_template, $items_id, $timestamp, $perf_data) {
 
       $fname = GLPI_PLUGIN_DOC_DIR."/monitoring/PluginMonitoringService-".$items_id.".rrd";
       if (!file_exists($fname)) {
          $this->createGraph($rrdtool_template, $items_id, $timestamp);
       }
-      
+
       $a_filename = explode("-", $rrdtool_template);
       $filename = GLPI_PLUGIN_DOC_DIR."/monitoring/templates/".$a_filename[0]."-perfdata.json";
       if (!file_exists($filename)) {
@@ -124,25 +124,25 @@ class PluginMonitoringRrdtool extends CommonDBTM {
             foreach ($data->DS as $nb_DS) {
                $rrdtool_value .= ':U';
             }
-         }         
-      }      
+         }
+      }
       //$ret = rrd_update($fname, $value);
 
       system(PluginMonitoringConfig::getRRDPath()."/rrdtool update ".$fname." ".$rrdtool_value, $ret);
-      if (isset($ret) 
+      if (isset($ret)
               AND $ret != '0' ) {
          echo "Create error: $ret for ".PluginMonitoringConfig::getRRDPath()."/rrdtool update ".$fname." ".$rrdtool_value."\n";
       }
    }
-   
-   
-   
+
+
+
    /**
     * Function used to generate gif of rrdtool graph
-    * 
+    *
     * @param type $itemtype
     * @param type $items_id
-    * @param type $time 
+    * @param type $time
     */
    function displayGLPIGraph($rrdtool_template, $itemtype, $items_id, $timezone, $time='1d', $width='470') {
 
@@ -164,8 +164,8 @@ class PluginMonitoringRrdtool extends CommonDBTM {
          $converttimezone = ($timezone_temp * 3600);
          $timezone = str_replace("+", "-", $timezone);
       }
-      
-      
+
+
       $opts = "";
 
       $opts .= ' --start -'.$time;
@@ -182,21 +182,21 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       if ($a_json->data[0]->limits[0]->{"lower-limit"} != "") {
          $opts .= " --lower-limit ".$a_json->data[0]->limits[0]->{"lower-limit"};
       }
-      
+
       foreach ($a_json->data[0]->data as $data) {
-         $data = str_replace("[[RRDFILE]]", 
-                             GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id.".rrd", 
+         $data = str_replace("[[RRDFILE]]",
+                             GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id.".rrd",
                              $data);
          if (strstr($time, "d") OR  strstr($time, "h")) {
             $data = str_replace("AVERAGE", "LAST", $data);
          }
-         if (strstr($data, "DEF") 
+         if (strstr($data, "DEF")
                  AND !strstr($data, "CDEF")
                  AND $converttimezone != '0') {
-            $data = $data.':start=-'.$time.$timezone.'h:end='.$timezone.'h';            
+            $data = $data.':start=-'.$time.$timezone.'h:end='.$timezone.'h';
          }
          $opts .= " ".$data;
-         if (strstr($data, "DEF") 
+         if (strstr($data, "DEF")
                  AND !strstr($data, "CDEF")
                  AND $converttimezone != '0') {
             $a_explode = explode(":", $data);
@@ -210,7 +210,7 @@ class PluginMonitoringRrdtool extends CommonDBTM {
          ob_start();
          system(PluginMonitoringConfig::getRRDPath()."/rrdtool graph ".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.$timezonefile.".gif ".$opts, $ret);
          ob_end_clean();
-         if (isset($ret) 
+         if (isset($ret)
                  AND $ret != '0' ) {
             echo "Create error: $ret for ".PluginMonitoringConfig::getRRDPath()."/rrdtool graph ".GLPI_PLUGIN_DOC_DIR."/monitoring/".$itemtype."-".$items_id."-".$time.$timezonefile.".gif ".
                      $opts."\n";
@@ -218,9 +218,9 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       }
       return true;
    }
-   
-   
-   
+
+
+
    function showRRDTemplates() {
       $a_templates = array();
       $a_perfdata= array();
@@ -248,15 +248,15 @@ class PluginMonitoringRrdtool extends CommonDBTM {
           }
           closedir($handle);
       }
-      
+
       echo "<table class='tab_cadre_fixe'>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2'>";
       echo __('RRDtool templates', 'monitoring');
       echo "</th>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<th>";
       echo "perfdata";
@@ -265,17 +265,17 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       echo "Graphs";
       echo "</th>";
       echo "</tr>";
-      
-      foreach ($a_templates as $name=>$data) {         
+
+      foreach ($a_templates as $name=>$data) {
          echo "<tr class='tab_bg_3'>";
          echo "<td rowspan='".count($data)."'>";
          echo $name;
-         
+
          if (!isset($a_perfdata[$name])) {
             echo "*";
          }
          echo "</td>";
-         
+
          $i = 0;
          foreach ($data as $graphname) {
             if ($i > 0) {
@@ -286,28 +286,28 @@ class PluginMonitoringRrdtool extends CommonDBTM {
             echo "</td>";
             echo "</tr>";
             $i++;
-         }         
+         }
       }
       echo "</table>";
    }
 
-   
-   
+
+
    function addTemplate() {
       global $CFG_GLPI;
-      
+
       echo "<form name='form' method='post' enctype='multipart/form-data'
          action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/rrdtemplate.form.php'>";
-     
+
       echo "<table class='tab_cadre_fixe'>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2'>";
       echo __('RRDtool templates', 'monitoring')." (".__('Find files on', 'monitoring')."
           <a href='https://github.com/rrdtooltemplates/rrdtool_templates'>github</a>)";
       echo "</th>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
       echo __('Upload perfdata and graph files', 'monitoring')."&nbsp;:";
@@ -322,7 +322,7 @@ class PluginMonitoringRrdtool extends CommonDBTM {
       echo "<input type='submit' name='add' value=\"".__('Add')."\" class='submit'>";
       echo "</td>";
       echo "</tr>";
-      
+
       echo "</table>";
       echo "</form>";
    }

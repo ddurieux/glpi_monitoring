@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2012
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringPerfdata extends CommonDBTM {
 
-   
+
    /**
    * Get name of this type
    *
@@ -57,19 +57,19 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       return __('Graph template', 'monitoring');
    }
 
-   
 
-   static function canCreate() {      
+
+   static function canCreate() {
       return PluginMonitoringProfile::haveRight("config", 'w');
    }
 
 
-   
+
    static function canView() {
       return PluginMonitoringProfile::haveRight("config", 'r');
    }
 
-   
+
 
    static function initDB() {
       $pmPerfdata       = new PluginMonitoringPerfdata();
@@ -81,7 +81,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'perfdata' => 'rta=7.306000ms;1.000000;2.000000;0.000000 pl=0%;1;30;0'
       );
       $id = $pmPerfdata->add($input);
-      
+
       $inputd = array(
           'name'                           => 'rta',
           'dynamic_name'                   => 0,
@@ -94,7 +94,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname4'                        => 'other_rta'
       );
       $pmPerfdataDetail->add($inputd);
-      
+
       $inputd = array(
           'name'                           => 'pl',
           'dynamic_name'                   => 0,
@@ -107,14 +107,14 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname4'                        => 'other_pl'
       );
       $pmPerfdataDetail->add($inputd);
-      
+
       // * check_cpu_usage
       $input = array(
           'name'     => 'check_cpu_usage',
           'perfdata' => 'cpu_usage=6%;80;100; cpu_user=3%; cpu_system=3%;'
       );
       $id = $pmPerfdata->add($input);
-      
+
       $inputd = array(
           'name'                           => 'cpu_usage',
           'dynamic_name'                   => 0,
@@ -153,7 +153,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'perfdata' => 'load1=0.090;1.000;2.000;0; load5=0.090;1.000;2.000;0; load15=0.074;1.000;2.000;0;'
       );
       $id = $pmPerfdata->add($input);
-      
+
       $inputd = array(
           'name'                           => 'load1',
           'dynamic_name'                   => 0,
@@ -199,7 +199,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'perfdata' => ''
       );
       $id = $pmPerfdata->add($input);
-      
+
       $inputd = array(
           'name'                           => 'pct',
           'dynamic_name'                   => 0,
@@ -216,7 +216,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'perfdata' => 'users=1;2;5;0'
       );
       $id = $pmPerfdata->add($input);
-      
+
       $inputd = array(
           'name'                           => 'users',
           'dynamic_name'                   => 0,
@@ -236,7 +236,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'perfdata' => ''
       );
       $id = $pmPerfdata->add($input);
-      
+
       $inputd = array(
           'name'                           => 'inUsage',
           'dynamic_name'                   => 0,
@@ -307,7 +307,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'perfdata' => ''
       );
       $id = $pmPerfdata->add($input);
-      
+
       $inputd = array(
           'name'                           => 'inUse',
           'dynamic_name'                   => 0,
@@ -317,7 +317,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname1'                        => 'inUse'
       );
       $pmPerfdataDetail->add($inputd);
-      
+
       $inputd = array(
           'name'                           => 'outUse',
           'dynamic_name'                   => 0,
@@ -327,7 +327,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname1'                        => 'outUse'
       );
       $pmPerfdataDetail->add($inputd);
-      
+
       $inputd = array(
           'name'                           => 'Warn',
           'dynamic_name'                   => 0,
@@ -337,7 +337,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname1'                        => 'Warn'
       );
       $pmPerfdataDetail->add($inputd);
-      
+
       $inputd = array(
           'name'                           => 'Crit',
           'dynamic_name'                   => 0,
@@ -347,7 +347,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname1'                        => 'Crit'
       );
       $pmPerfdataDetail->add($inputd);
-      
+
       $inputd = array(
           'name'                           => 'inBW',
           'dynamic_name'                   => 0,
@@ -357,7 +357,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname1'                        => 'inBW'
       );
       $pmPerfdataDetail->add($inputd);
-      
+
       $inputd = array(
           'name'                           => 'outBW',
           'dynamic_name'                   => 0,
@@ -367,7 +367,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname1'                        => 'outBW'
       );
       $pmPerfdataDetail->add($inputd);
-      
+
       $inputd = array(
           'name'                           => 'inUcast',
           'dynamic_name'                   => 0,
@@ -377,7 +377,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname1'                        => 'inUcast'
       );
       $pmPerfdataDetail->add($inputd);
-      
+
       $inputd = array(
           'name'                           => 'inMcast',
           'dynamic_name'                   => 0,
@@ -387,7 +387,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname1'                        => 'inMcast'
       );
       $pmPerfdataDetail->add($inputd);
-      
+
       $inputd = array(
           'name'                           => 'inBcast',
           'dynamic_name'                   => 0,
@@ -397,7 +397,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname1'                        => 'inBcast'
       );
       $pmPerfdataDetail->add($inputd);
-      
+
       $inputd = array(
           'name'                           => 'outUcast',
           'dynamic_name'                   => 0,
@@ -407,7 +407,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname1'                        => 'outUcast'
       );
       $pmPerfdataDetail->add($inputd);
-      
+
       $inputd = array(
           'name'                           => 'outMcast',
           'dynamic_name'                   => 0,
@@ -417,7 +417,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname1'                        => 'outMcast'
       );
       $pmPerfdataDetail->add($inputd);
-      
+
       $inputd = array(
           'name'                           => 'outBcast',
           'dynamic_name'                   => 0,
@@ -427,7 +427,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname1'                        => 'outBcast'
       );
       $pmPerfdataDetail->add($inputd);
-      
+
       $inputd = array(
           'name'                           => 'inDis',
           'dynamic_name'                   => 0,
@@ -437,7 +437,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname1'                        => 'inDis'
       );
       $pmPerfdataDetail->add($inputd);
-      
+
       $inputd = array(
           'name'                           => 'inErr',
           'dynamic_name'                   => 0,
@@ -447,7 +447,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname1'                        => 'inErr'
       );
       $pmPerfdataDetail->add($inputd);
-      
+
       $inputd = array(
           'name'                           => 'outDis',
           'dynamic_name'                   => 0,
@@ -457,7 +457,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname1'                        => 'outDis'
       );
       $pmPerfdataDetail->add($inputd);
-      
+
       $inputd = array(
           'name'                           => 'outErr',
           'dynamic_name'                   => 0,
@@ -474,7 +474,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'perfdata' => ''
       );
       $id = $pmPerfdata->add($input);
-      
+
       $inputd = array(
           'name'                           => 'current',
           'dynamic_name'                   => 0,
@@ -486,7 +486,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname3'                        => 'states_critical'
       );
       $pmPerfdataDetail->add($inputd);
-      
+
       $inputd = array(
           'name'                           => 'percent',
           'dynamic_name'                   => 0,
@@ -496,7 +496,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname1'                        => 'percent'
       );
       $pmPerfdataDetail->add($inputd);
-      
+
       $inputd = array(
           'name'                           => 'limit',
           'dynamic_name'                   => 0,
@@ -513,7 +513,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'perfdata' => ''
       );
       $id = $pmPerfdata->add($input);
-      
+
       $inputd = array(
           'name'                           => 'time',
           'dynamic_name'                   => 0,
@@ -533,7 +533,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'perfdata' => ''
       );
       $id = $pmPerfdata->add($input);
-      
+
       $inputd = array(
           'name'                           => '',
           'dynamic_name'                   => 0,
@@ -554,7 +554,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'perfdata' => ''
       );
       $id = $pmPerfdata->add($input);
-      
+
       $inputd = array(
           'name'                           => 'time',
           'dynamic_name'                   => 0,
@@ -574,7 +574,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'perfdata' => ''
       );
       $id = $pmPerfdata->add($input);
-      
+
       $inputd = array(
           'name'                           => 'time',
           'dynamic_name'                   => 0,
@@ -587,7 +587,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname4'                        => 'time_other'
       );
       $pmPerfdataDetail->add($inputd);
-      
+
       $inputd = array(
           'name'                           => 'size',
           'dynamic_name'                   => 0,
@@ -607,7 +607,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'perfdata' => ''
       );
       $id = $pmPerfdata->add($input);
-      
+
       $inputd = array(
           'name'                           => 'time',
           'dynamic_name'                   => 0,
@@ -628,7 +628,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'perfdata' => ''
       );
       $id = $pmPerfdata->add($input);
-      
+
       $inputd = array(
           'name'                           => 'time',
           'dynamic_name'                   => 0,
@@ -648,7 +648,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'perfdata' => ''
       );
       $id = $pmPerfdata->add($input);
-      
+
       $inputd = array(
           'name'                           => 'connection-time',
           'dynamic_name'                   => 0,
@@ -667,7 +667,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'perfdata' => ''
       );
       $id = $pmPerfdata->add($input);
-      
+
       $inputd = array(
           'name'                           => 'pct_tmp_table_on_disk',
           'dynamic_name'                   => 0,
@@ -679,7 +679,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname3'                        => 'tmp_table_on_disk_critical'
       );
       $pmPerfdataDetail->add($inputd);
-      
+
       $inputd = array(
           'name'                           => 'pct_tmp_table_on_disk_now',
           'dynamic_name'                   => 0,
@@ -698,7 +698,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'perfdata' => ''
       );
       $id = $pmPerfdata->add($input);
-      
+
       $inputd = array(
           'name'                           => 'threads_connected',
           'dynamic_name'                   => 0,
@@ -717,7 +717,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'perfdata' => ''
       );
       $id = $pmPerfdata->add($input);
-      
+
       $inputd = array(
           'name'                           => 'total',
           'dynamic_name'                   => 0,
@@ -730,7 +730,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname4'                        => 'memory_other'
       );
       $pmPerfdataDetail->add($inputd);
-      
+
       $inputd = array(
           'name'                           => 'used',
           'dynamic_name'                   => 0,
@@ -743,7 +743,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname4'                        => 'memory_other3'
       );
       $pmPerfdataDetail->add($inputd);
-      
+
       $inputd = array(
           'name'                           => 'swap',
           'dynamic_name'                   => 0,
@@ -756,7 +756,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname4'                        => 'swap_other3'
       );
       $pmPerfdataDetail->add($inputd);
-      
+
       $inputd = array(
           'name'                           => 'buffer',
           'dynamic_name'                   => 0,
@@ -769,7 +769,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname4'                        => 'buffer_other3'
       );
       $pmPerfdataDetail->add($inputd);
-      
+
       $inputd = array(
           'name'                           => 'cache',
           'dynamic_name'                   => 0,
@@ -789,7 +789,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'perfdata' => ''
       );
       $id = $pmPerfdata->add($input);
-      
+
       $inputd = array(
           'name'                           => 'cpu_used',
           'dynamic_name'                   => 0,
@@ -808,7 +808,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'perfdata' => ''
       );
       $id = $pmPerfdata->add($input);
-      
+
       $inputd = array(
           'name'                           => '',
           'dynamic_name'                   => 1,
@@ -829,7 +829,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'perfdata' => 'time=0.064284s;;;0.000000;10.000000'
       );
       $id = $pmPerfdata->add($input);
-      
+
       $inputd = array(
           'name'                           => 'time',
           'dynamic_name'                   => 0,
@@ -850,7 +850,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'perfdata' => 'tps=7.325;;; tpsr=3.175;;; tpsw=4.15;;; reads=55.95KB;;; writes=78.7KB;;; svc_t=0.85;;;'
       );
       $id = $pmPerfdata->add($input);
-      
+
       $inputd = array(
           'name'                           => 'tps',
           'dynamic_name'                   => 0,
@@ -929,7 +929,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'perfdata' => ''
       );
       $id = $pmPerfdata->add($input);
-      
+
       $inputd = array(
           'name'                           => 'passed',
           'dynamic_name'                   => 0,
@@ -986,7 +986,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'perfdata' => ''
       );
       $id = $pmPerfdata->add($input);
-      
+
       $inputd = array(
           'name'                           => 'time',
           'dynamic_name'                   => 0,
@@ -1007,7 +1007,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'perfdata' => 'Writing=1;;;; Reading=0;;;; Waiting=9;;;; Active=10;;;; ReqPerSec=1.964401;;;; ConnPerSec=0.190939;;;; ReqPerConn=8.167504;;;;'
       );
       $id = $pmPerfdata->add($input);
-      
+
       $inputd = array(
           'name'                           => 'Writing',
           'dynamic_name'                   => 0,
@@ -1098,15 +1098,15 @@ class PluginMonitoringPerfdata extends CommonDBTM {
           'dsname4'                        => 'value7.4'
       );
       $pmPerfdataDetail->add($inputd);
-    
+
    }
-   
-   
-   
+
+
+
    /**
    * Display form for perfdata
    *
-   * @param $items_id integer ID 
+   * @param $items_id integer ID
    * @param $options array
    *
    *@return bool true if form is ok
@@ -1119,7 +1119,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       } else {
          $this->getFromDB($items_id);
       }
-     
+
       $this->showTabs();
       $this->showFormHeader($options);
 
@@ -1130,7 +1130,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name", 1,
                              $this->getType());
-      Html::autocompletionTextField($this, 'name', array('value' => $objectName));      
+      Html::autocompletionTextField($this, 'name', array('value' => $objectName));
       echo "</td>";
       // * perfdata
       echo "<td>".__('A perfdata for this check', 'monitoring')."&nbsp;:</td>";
@@ -1138,23 +1138,23 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       echo "<input type='name' name='perfdata' value=\"".$this->fields['perfdata']."\" size='80'/>";
       echo "</td>";
       echo "</tr>";
-      
+
       $this->showFormButtons($options);
 
       if ($this->fields['id'] > 0) {
          $pmPerfdataDetail = new PluginMonitoringPerfdataDetail();
          $pmPerfdataDetail->showDetails($this->fields['id']);
-         
+
          $pmPerfdataDetail->updateDetailForPerfdata($this->fields['perfdata'], $this->fields['id']);
       }
-      
+
       return true;
    }
 
-   
-   
+
+
    function post_addItem() {
-      
+
       if ($this->fields['perfdata'] != ''
               && !isset($_SESSION['plugin_monitoring_installation'])) {
        PluginMonitoringPerfdataDetail::updateDetailForPerfdata(
@@ -1162,8 +1162,8 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       }
    }
 
-   
-   
+
+
    function post_updateItem($history=1) {
       if ($this->fields['perfdata'] != ''
               && !isset($_SESSION['plugin_monitoring_installation'])) {
@@ -1171,9 +1171,9 @@ class PluginMonitoringPerfdata extends CommonDBTM {
                  $this->fields['perfdata'], $this->fields['id']);
       }
    }
-   
-   
-   
+
+
+
    function post_purgeItem() {
       $pmPerfdataDetail = new PluginMonitoringPerfdataDetail();
       $a_perfdatas = $pmPerfdataDetail->find("`plugin_monitoring_perfdatas_id`='".$this->fields['id']."'");
@@ -1181,16 +1181,16 @@ class PluginMonitoringPerfdata extends CommonDBTM {
          $pmPerfdataDetail->delete($data);
       }
    }
-   
-   
-   
+
+
+
    static function getArrayPerfdata($perfdatas_id) {
-      
+
       $pmPerfdata       = new PluginMonitoringPerfdata();
       $pmPerfdataDetail = new PluginMonitoringPerfdataDetail();
- 
+
       $pmPerfdata->getFromDB($perfdatas_id);
-      
+
       $data = array();
       $data['command'] = $pmPerfdata->fields['name'];
       $data['parseperfdata'] = array();
@@ -1211,17 +1211,17 @@ class PluginMonitoringPerfdata extends CommonDBTM {
                                           'DS'          => $ds,
                                           'incremental' => $a_incremental);
       }
-      return $data;  
+      return $data;
    }
-   
-   
-   
+
+
+
    static function splitPerfdata($perfdata) {
-      
+
       $a_perfdata = array();
       if (strstr($perfdata, "'")
               || (strstr($perfdata, '"'))) {
-         
+
          preg_match_all("/[^ ?]([^\=]*\=[^ ]*)/", trim($perfdata), $a_perfdata);
          return $a_perfdata[0];
       } else {

@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2014
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringSecurity extends CommonDBTM {
-   
+
 
    /**
    * Get name of this type
@@ -64,13 +64,13 @@ class PluginMonitoringSecurity extends CommonDBTM {
    }
 
 
-   
+
    static function canView() {
       return true;
    }
 
 
-   
+
    function generateKey($length=250) {
      $random = '';
      for ($i = 0; $i < $length; $i++) {
@@ -87,7 +87,7 @@ class PluginMonitoringSecurity extends CommonDBTM {
    }
 
 
-   
+
    /**
     * Check if security key in ajax page is same than kay of DB
     */
@@ -117,12 +117,12 @@ class PluginMonitoringSecurity extends CommonDBTM {
       echo "Error, security key not valid!";
       exit;
    }
-   
-   
-   
+
+
+
    function updateSecurity() {
       global $DB, $CFG_GLPI;
-      
+
       if (isset($_SESSION['glpiID'])
               && is_numeric($_SESSION['glpiID'])
               && $_SESSION['glpiID'] > 0) {
@@ -175,7 +175,7 @@ class PluginMonitoringSecurity extends CommonDBTM {
                      $this->delete($a_clean);
                   }
                }
-            
+
             $a_data = $this->find("`users_id`='".$_SESSION['glpiID']."'"
                     . " AND `session_id`='".session_id()."'", '', 1);
 //            Toolbox::logInFile('REGENERATE', '\n');
@@ -234,26 +234,26 @@ class PluginMonitoringSecurity extends CommonDBTM {
          }
       }
    }
-   
-   
+
+
 
    static function setCheckSessionTime() {
       $_SESSION['plugin_monitoring_checktime'] = 1;
    }
-   
-   
-   
+
+
+
    static function deleteCheckSessionTime() {
       if (isset($_SESSION['plugin_monitoring_checktime'])) {
          unset($_SESSION['plugin_monitoring_checktime']);
       }
    }
 
-   
-   
+
+
    static function updateSession() {
       global $CFG_GLPI;
-      
+
       $pmSecurity = new self();
       $a_data = $pmSecurity->find("`users_id`='".$_SESSION['glpiID']."' "
               . " AND `session_id`='".session_id()."'", '', 1);

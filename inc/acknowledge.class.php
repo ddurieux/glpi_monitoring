@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    Frédéric Mohier
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,13 +45,13 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringAcknowledge extends CommonDBTM {
-   
+
    static function getTypeName($nb=0) {
       return _n(__('Host acknowledge', 'monitoring'),__('Host acknowledges', 'monitoring'),$nb);
    }
-   
-   
-   static function canCreate() {      
+
+
+   static function canCreate() {
       return PluginMonitoringProfile::haveRight("acknowledge", 'w');
    }
 
@@ -71,22 +71,22 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
    }
 
 
-   
+
    function defineTabs($options=array()){
 
       $ong = array();
 
       return $ong;
    }
-   
-   
-   
+
+
+
    function getComments() {
       global $CFG_GLPI;
 
       // Toolbox::logInFile("pm", "getComments ".$this->getID()." \n");
       $this->isExpired();
-      
+
       // echo $this->fields["start_time"];
       // echo $this->fields["end_time"];
       // echo "<textarea cols='80' rows='4' name='comment' readonly='1' disabled='1' >".$this->getField('comment')."</textarea>";
@@ -101,29 +101,29 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
       }
    }
 
-   
-    
+
+
     /**
     * Display tab
-    * 
+    *
     * @param CommonGLPI $item
     * @param integer $withtemplate
-    * 
+    *
     * @return varchar name of the tab(s) to display
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       return '';
    }
-   
-   
- 
+
+
+
    /**
     * Display content of tab
-    * 
+    *
     * @param CommonGLPI $item
     * @param integer $tabnum
     * @param interger $withtemplate
-    * 
+    *
     * @return boolean true
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
@@ -131,7 +131,7 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
       return true;
    }
 
-   
+
 
    function getSearchOptions() {
 
@@ -237,7 +237,7 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
                return $item->getLink();
             }
             break;
-            
+
          case 'users_id':
             $user = new User();
             $user->getFromDB($values[$field]);
@@ -246,7 +246,7 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
-   
+
 
    /**
     * Get entity
@@ -254,7 +254,7 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
    function getEntityID($options = array()) {
       return $this->fields["entities_id"];
    }
-   
+
 
    /**
     * Set default content
@@ -276,7 +276,7 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
       $this->fields["notified"]        = 0;
       $this->fields["expired"]         = 0;
    }
-   
+
 
    /**
     * Get host identifier for an acknowledge
@@ -284,8 +284,8 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
    function getHostID() {
       return $this->fields["items_id"];
    }
-   
-   
+
+
    /**
     * Get current acknowledge for an host/service
     */
@@ -303,32 +303,32 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
     */
    function getUsername() {
       $user = new User();
-      $user->getFromDB($this->getField('users_id'));    
+      $user->getFromDB($this->getField('users_id'));
       return $user->getName(1);
    }
-   
-   
+
+
    /**
     * In acknowledge time ?
     */
    function isInAcknowledge() {
       if ($this->getID() == -1) return false;
-      
+
       if ($this->isExpired()) return false;
-      
+
       // Now ...
       $now = strtotime(date('Y-m-d H:i:s'));
       // Start time ...
       $start_time = strtotime($this->fields["start_time"]);
       // End time ...
       $end_time = strtotime($this->fields["end_time"]);
-      
+
       // Toolbox::logInFile("pm", "isInacknowledge, now : $now, start : $start_time, end : $end_time\n");
       if (($start_time <= $now) && ($now <= $end_time)) {
          // Toolbox::logInFile("pm", "isInacknowledge, yes, id : ".$this->getID()."\n");
          return true;
       }
-      
+
       return false;
    }
 
@@ -338,7 +338,7 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
     */
    function isExpired() {
       if ($this->getID() == -1) return false;
-      
+
       return ($this->fields["expired"] == 1);
    }
 
@@ -350,18 +350,18 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
          Session::addMessageAfterRedirect(__('Acknowledge period has already expired!', 'monitoring'), false, ERROR);
          return false;
       }
-      
+
       // Check user ...
       if ($input["users_id"] == NOT_AVAILABLE) {;
          $input["users_id"] = $_SESSION['glpiID'];
       }
 
       $user = new User();
-      $user->getFromDB($input['users_id']);    
-      
+      $user->getFromDB($input['users_id']);
+
       $item = new $input['itemtype']();
       $item->getFromDB($input['items_id']);
-      
+
       $host_id = -1;
       $service_id = -1;
       if ($input['itemtype'] == 'PluginMonitoringHost') {
@@ -369,39 +369,39 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
       } else {
          $service_id = $input['items_id'];
       }
-      
+
       if ($host_id != -1) {
          // Acknowledge is to be created ...
-         // ... send information to shinken via webservice   
+         // ... send information to shinken via webservice
          $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
          if ($pmShinkenwebservice->sendAcknowledge($host_id,
-                                                   -1, 
-                                                   $user->getName(1), 
+                                                   -1,
+                                                   $user->getName(1),
                                                    $input['comment'],
                                                    $input['sticky'],
                                                    $input['notify'],
                                                    $input['persistent'],
                                                    'add')) {
-            // Set host as acknowledged 
+            // Set host as acknowledged
             // $pmHost = new PluginMonitoringHost();
             // $pmHost->getFromDB($input['plugin_monitoring_hosts_id']);
             $item->setAcknowledged($input['comment']);
-               
+
             $a_services = $item->getServicesID();
             if (is_array($a_services)) {
                foreach ($a_services as $service_id) {
-                  // Send acknowledge command for a service to shinken via webservice   
+                  // Send acknowledge command for a service to shinken via webservice
                   // $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
-                  // if ($pmShinkenwebservice->sendAcknowledge(-1, 
-                                                            // $service_id, 
-                                                            // $user->getName(1), 
+                  // if ($pmShinkenwebservice->sendAcknowledge(-1,
+                                                            // $service_id,
+                                                            // $user->getName(1),
                                                             // $input['comment'],
                                                             // $input['sticky'],
                                                             // $input['notify'],
                                                             // $input['persistent'],
                                                             // 'add'
                                                             // )) {
-                     // Set service as acknowledged 
+                     // Set service as acknowledged
                      $pmService = new PluginMonitoringService();
                      $pmService->getFromDB($service_id);
                      // Will force to create a new acknowledgement for a service ... beware of infinite loop in this function !
@@ -409,7 +409,7 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
                   // }
                }
             }
-            
+
             Session::addMessageAfterRedirect(__('Acknowledge notified to the monitoring application for the host', 'monitoring'));
             $input['notified'] = 1;
          } else {
@@ -417,23 +417,23 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
             return false;
          }
       } else {
-         // Send acknowledge command for a service to shinken via webservice   
+         // Send acknowledge command for a service to shinken via webservice
          $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
-         if ($pmShinkenwebservice->sendAcknowledge(-1, 
-                                                   $service_id, 
-                                                   $user->getName(1), 
+         if ($pmShinkenwebservice->sendAcknowledge(-1,
+                                                   $service_id,
+                                                   $user->getName(1),
                                                    $input['comment'],
                                                    $input['sticky'],
                                                    $input['notify'],
                                                    $input['persistent'],
                                                    'add'
                                                    )) {
-            // Set service as acknowledged 
+            // Set service as acknowledged
             $pmService = new PluginMonitoringService();
             $pmService->getFromDB($service_id);
             // Do not create a new acknowledgement for a service ... false will simply update PMService table !
             $pmService->setAcknowledged($input['comment'], false);
-            
+
             Session::addMessageAfterRedirect(__('Acknowledge notified to the monitoring application:', 'monitoring'));
             $input['notified'] = 1;
          } else {
@@ -441,7 +441,7 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
             return false;
          }
       }
-      
+
       return $input;
    }
 
@@ -453,7 +453,7 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
    **/
    function post_addItem() {
       // Toolbox::logInFile("pm", "acknowledge, post_add\n");
-      
+
    }
 
 
@@ -467,11 +467,11 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
       Toolbox::logInFile("pm", "acknowledge, pre_deleteItem : ".$this->fields['id']."\n");
 
       $user = new User();
-      $user->getFromDB($this->fields['users_id']);    
-      
+      $user->getFromDB($this->fields['users_id']);
+
       $item = new $this->fields['itemtype']();
       $item->getFromDB($this->fields['items_id']);
-      
+
       $host_id = -1;
       $service_id = -1;
       if ($this->fields['itemtype'] == 'PluginMonitoringHost') {
@@ -479,39 +479,39 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
       } else {
          $service_id = $this->fields['items_id'];
       }
-      
+
       if ($host_id != -1) {
          // Acknowledge is to be deleted ...
-         // ... send information to shinken via webservice   
+         // ... send information to shinken via webservice
          $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
          if ($pmShinkenwebservice->sendAcknowledge($host_id,
-                                                   -1, 
-                                                   $user->getName(1), 
+                                                   -1,
+                                                   $user->getName(1),
                                                    '', '', '', '', 'delete'
                                                    )) {
-            // Set host as acknowledged 
+            // Set host as acknowledged
             // $pmHost = new PluginMonitoringHost();
             // $pmHost->getFromDB($this->fields['plugin_monitoring_hosts_id']);
             // $item->setAcknowledged($this->fields['comment']);
-               
+
             $a_services = $item->getServicesID();
             if (is_array($a_services)) {
                foreach ($a_services as $service_id) {
-                  // Send acknowledge command for a service to shinken via webservice   
+                  // Send acknowledge command for a service to shinken via webservice
                   $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
-                  if ($pmShinkenwebservice->sendAcknowledge(-1, 
-                                                            $service_id, 
-                                                            $user->getName(1), 
+                  if ($pmShinkenwebservice->sendAcknowledge(-1,
+                                                            $service_id,
+                                                            $user->getName(1),
                                                             '', '', '', '', 'delete'
                                                             )) {
-                     // Set service as acknowledged 
+                     // Set service as acknowledged
                      // $pmService = new PluginMonitoringService();
                      // $pmService->getFromDB($service_id);
                      // $pmService->setAcknowledged($this->fields['comment']);
                   }
                }
             }
-            
+
             Session::addMessageAfterRedirect(__('Acknowledge deletion notified to the monitoring application:', 'monitoring'));
             $this->fields['notified'] = 1;
          } else {
@@ -519,18 +519,18 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
             // return false;
          }
       } else {
-         // Send acknowledge command for a service to shinken via webservice   
+         // Send acknowledge command for a service to shinken via webservice
          $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
-         if ($pmShinkenwebservice->sendAcknowledge(-1, 
-                                                   $service_id, 
-                                                   $user->getName(1), 
+         if ($pmShinkenwebservice->sendAcknowledge(-1,
+                                                   $service_id,
+                                                   $user->getName(1),
                                                    '', '', '', '', 'delete'
                                                    )) {
-            // Set service as acknowledged 
+            // Set service as acknowledged
             // $pmService = new PluginMonitoringService();
             // $pmService->getFromDB($service_id);
             // $pmService->setAcknowledged($this->fields['comment']);
-            
+
             Session::addMessageAfterRedirect(__('Acknowledge deletion notified to the monitoring application:', 'monitoring'));
             $this->fields['notified'] = 1;
          } else {
@@ -542,11 +542,11 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
       return true;
    }
 
-   
+
    /**
-   * 
    *
-   * @param $items_id integer ID 
+   *
+   * @param $items_id integer ID
    *
    * @param $host_id integer associated host ID
    * @param $options array
@@ -559,7 +559,7 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
       Toolbox::logInFile("pm", "acknowledge, showForm, id : $id, item type : $itemtype / $items_id\n");
 
       $createAcknowledge = false;
-      
+
       if ($id == -1) {
          // if ($itemtype == 'N/A') $itemtype = 'Computer';
          // if ($itemtype == '') $itemtype = 'Computer';
@@ -583,16 +583,16 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
       // Now ...
       $nowDate = date('Y-m-d');
       $nowTime = date('H:i:s');
-      
+
       $this->showFormHeader($options);
 
       $this->isExpired();
-      
+
       $itemtype = $this->getField('itemtype');
       if ($itemtype == 'N/A') $itemtype = 'Computer';
       if ($itemtype == '') $itemtype = 'Computer';
       $item = new $itemtype();
-      
+
       $item->getFromDB($this->getField("items_id"));
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$item->getTypeName()."</td>";
@@ -601,7 +601,7 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
       echo "<input type='hidden' name='items_id' value='".$this->fields['items_id']."' />";
       echo $item->getLink()."&nbsp;".$item->getComments();
       echo "</td>";
-      
+
       echo "<td>".__('Sticky ?', 'monitoring')."</td>";
       echo "<td>";
       if ($createAcknowledge) {
@@ -611,8 +611,8 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
       }
       echo "</td>";
       echo "</tr>";
-      
-      
+
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Start time', 'monitoring')."</td>";
       echo "<td>";
@@ -635,8 +635,8 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
       }
       echo "</td>";
       echo "</tr>";
-      
-      
+
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('End time', 'monitoring')."</td>";
       echo "<td>";
@@ -659,8 +659,8 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
       }
       echo "</td>";
       echo "</tr>";
-      
-      
+
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Comment', 'monitoring')."</td>";
       echo "<td >";
@@ -670,10 +670,10 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
          echo "<textarea cols='80' rows='4' name='comment' readonly='1' disabled='1' >".$this->fields['comment']."</textarea>";
       }
       echo "</td>";
-      
+
       echo "</tr>";
-      
-      
+
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('User', 'monitoring')."</td>";
       echo "<td>";
@@ -686,9 +686,9 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
       echo Dropdown::getYesNo($this->fields['expired']);
       echo "</td>";
       echo "</tr>";
-         
+
       $this->showFormButtons();
-      
+
       return true;
    }
 }

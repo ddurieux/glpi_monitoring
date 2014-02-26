@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,25 +45,25 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringBusinessrulegroup extends CommonDBTM {
-   
-   
+
+
    static function getTypeName($nb=0) {
       return _n('Group', 'Groups', $nb, 'monitoring');
    }
-   
+
 
    static function canCreate() {
       return PluginMonitoringProfile::haveRight("config_services_catalogs", 'w');
    }
 
 
-   
+
    static function canView() {
       return PluginMonitoringProfile::haveRight("config_services_catalogs", 'r');
    }
 
-   
-   
+
+
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       // can exists for template
@@ -87,9 +87,9 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
       $pmBusinessrule->showForm($item->fields['id']);
       return true;
    }
-   
-   
-   
+
+
+
    function showForm($items_id, $servicescatalogs_id, $options=array()) {
       global $CFG_GLPI;
 
@@ -105,9 +105,9 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
       $pmBusinessrule_component->replayDynamicServices($items_id);
       $pmSC = new PluginMonitoringServicescatalog();
       $pmSC->getFromDB($servicescatalogs_id);
-      
+
       $rand = mt_rand();
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
       echo "<input type='hidden' name='plugin_monitoring_servicescatalogs_id' value='".$servicescatalogs_id."'/>";
@@ -118,17 +118,17 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
       echo "</td>";
       if ($items_id!='') {
          if (PluginMonitoringProfile::haveRight("config_services_catalogs", 'w')) {
-            echo "<th colspan='2' width='60%'>"; 
-            echo __('Resources', 'monitoring');      
+            echo "<th colspan='2' width='60%'>";
+            echo __('Resources', 'monitoring');
             echo "&nbsp;";
             echo "<img onClick=\"Ext.get('ressources".$rand."').setDisplayed('block')\"
                        title=\"".__('add')."\" alt=\"".__('add')."\"
                        class='pointer'  src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
-         
+
             echo "</th>";
          }
       }
-      echo "</tr>";  
+      echo "</tr>";
 
       echo "<tr>";
       echo "<td valign='top'>";
@@ -161,7 +161,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
             echo "<form name='form' method='post' action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/businessrule.form.php'>";
             echo "<input type='hidden' name='plugin_monitoring_businessrulegroups_id' value='".$items_id."' />";
             echo "<input type='hidden' name='is_generic' value='".$pmSC->getField('is_generic')."' />";
-            PluginMonitoringBusinessrule::dropdownService(0, array('name' => 'type'));         
+            PluginMonitoringBusinessrule::dropdownService(0, array('name' => 'type'));
             echo "<input type='submit' name='add' value=\"".__('Add')."\" class='submit'>";
             Html::closeForm();
             echo "</td>";
@@ -192,14 +192,14 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
             );
             Dropdown::show('PluginMonitoringComponentscatalog', $options);
             echo '<div id="componentdropdown'.$rand.'"></div>';
-            //PluginMonitoringBusinessrule::dropdownService(0, array('name' => 'type'));         
+            //PluginMonitoringBusinessrule::dropdownService(0, array('name' => 'type'));
             echo "<input type='submit' name='add' value=\"".__('Add')."\" class='submit'>";
             Html::closeForm();
             echo "</td>";
             echo "</tr>";
             echo "</table>";
             echo "<hr>";
-            
+
             echo "</div>";
          }
 
@@ -240,7 +240,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
             echo "</table>";
             echo "<hr/>";
          }
-         
+
          $a_br_components = $pmBusinessrule_component->find(
                  "`plugin_monitoring_businessrulegroups_id`='".$items_id."'"
                  );
@@ -250,7 +250,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
          if (count($a_br_components) > 0) {
             echo "<strong>".__('Dynamic hosts', 'monitoring')." :</strong>";
             echo "<table width='100%'>";
-            
+
             foreach ($a_br_components as $a_br_component) {
                echo "<tr class='tab_bg_1'>";
                echo "<td>";
@@ -267,10 +267,10 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
                echo "<input type='submit' name='deletebrcomponents-".$a_br_component['id']."' value=\""._sx('button', 'Delete permanently')."\" class='submit'>";
                echo "</td>";
                echo "</tr>";
-            }         
+            }
             echo "</table>";
          }
-         
+
          if (! ($pmSC->fields['is_generic'] && $pmSC->fields['is_recursive'])) {
             echo "<table width='100%'>";
             $a_services = $pmBusinessrule->find(
@@ -296,10 +296,10 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
          } else {
             echo "<strong>".__('Dynamic hosts list will be defined during Shinken configuration build.', 'monitoring')."</strong>";
          }
-      }  
-      
-      echo "</td>";      
-      echo "</tr>";  
+      }
+
+      echo "</td>";
+      echo "</tr>";
 
       $this->showFormButtons($options);
 

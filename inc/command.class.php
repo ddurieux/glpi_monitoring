@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringCommand extends CommonDBTM {
-   
+
 
    function initCommands() {
       global $DB;
@@ -90,7 +90,7 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['command_name'] = 'check_https';
       $input['command_line'] = "\$PLUGINSDIR\$/check_http -H \$HOSTADDRESS\$ -S";
       $this->add($input);
-      
+
       $input = array();
       $input['name'] = 'Check a DNS entry';
       $input['command_name'] = 'check_dig';
@@ -126,7 +126,7 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['command_name'] = 'check_ssh';
       $input['command_line'] = "\$PLUGINSDIR\$/check_ssh -H \$HOSTADDRESS\$";
       $this->add($input);
-      
+
       $input = array();
       $input['name'] = 'Look for good SMTP connexion';
       $input['command_name'] = 'check_smtp';
@@ -229,13 +229,13 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['command_name'] = 'check-host-alive';
       $input['command_line'] = "\$PLUGINSDIR\$/check.sh \$HOSTADDRESS\$ -c \$ARG1\$ SERVICE \$USER1\$";
       $this->add($input);
-   
+
       $input = array();
       $input['name'] = 'Business rules';
       $input['command_name'] = 'bp_rule';
       $input['command_line'] = "";
       $this->add($input);
-      
+
       $input = array();
       $input['name'] = 'Check local cpu';
       $input['command_name'] = 'check_cpu_usage';
@@ -245,7 +245,7 @@ class PluginMonitoringCommand extends CommonDBTM {
       $arg['ARG2'] = 'Percentage of CPU for critical';
       $input['arguments'] = exportArrayToDB($arg);
       $this->add($input);
-      
+
       $input = array();
       $input['name'] = 'Check load';
       $input['command_name'] = 'check_load';
@@ -255,7 +255,7 @@ class PluginMonitoringCommand extends CommonDBTM {
       $arg['ARG2'] = 'CRITICAL status if load average exceed CLOADn (CLOAD1,CLOAD5,CLOAD15)';
       $input['arguments'] = exportArrayToDB($arg);
       $this->add($input);
-      
+
       $input = array();
       $input['name'] = 'Check snmp';
       $input['command_name'] = 'check_snmp';
@@ -273,7 +273,7 @@ class PluginMonitoringCommand extends CommonDBTM {
       $arg['ARG10'] = 'oid';
       $input['arguments'] = exportArrayToDB($arg);
       $this->add($input);
-      
+
       $input = array();
       $input['name'] = 'Check users connected';
       $input['command_name'] = 'check_users';
@@ -303,17 +303,17 @@ class PluginMonitoringCommand extends CommonDBTM {
    }
 
 
-   
+
    static function canView() {
       return PluginMonitoringProfile::haveRight("config", 'r');
    }
 
-   
+
 
    function getSearchOptions() {
 
       $tab = array();
-    
+
       $tab['common'] = __('Commands', 'monitoring');
 
 		$tab[1]['table'] = $this->getTable();
@@ -343,7 +343,7 @@ class PluginMonitoringCommand extends CommonDBTM {
    /**
    * Display form for agent configuration
    *
-   * @param $items_id integer ID 
+   * @param $items_id integer ID
    * @param $options array
    *
    *@return bool true if form is ok
@@ -357,7 +357,7 @@ class PluginMonitoringCommand extends CommonDBTM {
       } else {
          $this->getEmpty();
       }
-      
+
       if (count($copy) > 0) {
          foreach ($copy as $key=>$value) {
             $this->fields[$key] = stripslashes($value);
@@ -377,7 +377,7 @@ class PluginMonitoringCommand extends CommonDBTM {
       echo "<input type='text' name='command_name' value='".$this->fields["command_name"]."' size='30'/>";
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Command line', 'monitoring')."&nbsp;:</td>";
       echo "<td colspan='3'>";
@@ -407,17 +407,17 @@ class PluginMonitoringCommand extends CommonDBTM {
             echo "</tr>";
          }
          echo "</table>";
-      
+
       echo "</td>";
       echo "</tr>";
-      
+
       $this->showFormButtons($options);
-      
+
       // Add form for copy item
       if ($items_id!='' && PluginMonitoringProfile::haveRight("config","w")) {
          $this->fields['id'] = 0;
          $this->showFormHeader($options);
-         
+
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='4' class='center'>";
          foreach ($this->fields as $key=>$value) {
@@ -428,7 +428,7 @@ class PluginMonitoringCommand extends CommonDBTM {
          echo "<input type='submit' name='copy' value=\"".__('copy', 'monitoring')."\" class='submit'>";
          echo "</td>";
          echo "</tr>";
-         
+
          echo "</table>";
          Html::closeForm();
       }
@@ -438,18 +438,18 @@ class PluginMonitoringCommand extends CommonDBTM {
 
 
    function convertPostdata($data) {
-      
+
       // Convert arguments descriptions
       $a_arguments = array();
       foreach ($data as $name=>$value) {
          if (strstr($name, "argument_")) {
             $name = str_replace("argument_", "", $name);
-            $a_arguments[$name] = $value;            
+            $a_arguments[$name] = $value;
          }
       }
-      $data['arguments'] = exportArrayToDB($a_arguments);      
-      
-      
+      $data['arguments'] = exportArrayToDB($a_arguments);
+
+
       $where = "`command_name`='".$data['command_name']."'";
       if (isset($data['id'])) {
          $where .= " AND `id` != '".$data['id']."'";
@@ -461,7 +461,7 @@ class PluginMonitoringCommand extends CommonDBTM {
 
       return $data;
    }
-   
+
 }
 
 ?>

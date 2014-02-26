@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2013
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringEventhandler extends CommonDBTM {
-   
+
 
    /**
    * Get name of this type
@@ -64,17 +64,17 @@ class PluginMonitoringEventhandler extends CommonDBTM {
    }
 
 
-   
+
    static function canView() {
       return PluginMonitoringProfile::haveRight("config", 'r');
    }
 
-   
+
 
    function getSearchOptions() {
 
       $tab = array();
-    
+
       $tab['common'] = __('Commands', 'monitoring');
 
 		$tab[1]['table'] = $this->getTable();
@@ -104,7 +104,7 @@ class PluginMonitoringEventhandler extends CommonDBTM {
    /**
    * Display form for agent configuration
    *
-   * @param $items_id integer ID 
+   * @param $items_id integer ID
    * @param $options array
    *
    *@return bool true if form is ok
@@ -120,7 +120,7 @@ class PluginMonitoringEventhandler extends CommonDBTM {
          $this->fields['command_line'] = '/usr/local/eventhandler/command.sh $SERVICESTATE$ '
                  .'$SERVICESTATETYPE$ $SERVICEATTEMPT$ $HOSTADDRESS$';
       }
-      
+
       if (count($copy) > 0) {
          foreach ($copy as $key=>$value) {
             $this->fields[$key] = stripslashes($value);
@@ -140,16 +140,16 @@ class PluginMonitoringEventhandler extends CommonDBTM {
       echo "<input type='text' name='command_name' value='".$this->fields["command_name"]."' size='30'/>";
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Command line', 'monitoring')."&nbsp;:</td>";
       echo "<td colspan='3'>";
       echo "<input type='text' name='command_line' value='".$this->fields["command_line"]."' size='97'/>";
       echo "</td>";
       echo "</tr>";
-      
+
       $this->showFormButtons($options);
-      
+
       return true;
    }
 }

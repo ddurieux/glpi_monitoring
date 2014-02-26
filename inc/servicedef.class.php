@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringServicedef extends CommonDBTM {
-   
+
    /**
    * Get name of this type
    *
@@ -56,16 +56,16 @@ class PluginMonitoringServicedef extends CommonDBTM {
 
       return "Service template";
    }
-   
-   
+
+
    /*
     * Add some services templates at install
-    * 
+    *
     */
    function initTemplates() {
-      
-      
-      
+
+
+
    }
 
 
@@ -75,16 +75,16 @@ class PluginMonitoringServicedef extends CommonDBTM {
    }
 
 
-   
+
    static function canView() {
       return Session::haveRight('computer', 'r');
    }
 
-   
+
 
    function getSearchOptions() {
       $tab = array();
-    
+
       $tab['common'] = __('Resources', 'monitoring');
 
 		$tab[1]['table'] = $this->getTable();
@@ -97,22 +97,22 @@ class PluginMonitoringServicedef extends CommonDBTM {
       $tab[2]['field']         = 'id';
       $tab[2]['name']          = __('ID');
       $tab[2]['massiveaction'] = false; // implicit field is id
-     
+
       return $tab;
    }
 
-   
+
 
    function defineTabs($options=array()){
       $ong = array();
 
-      $ong[2] = __('Business rules', 'monitoring'); 
-      
+      $ong[2] = __('Business rules', 'monitoring');
+
       return $ong;
    }
 
-   
-   
+
+
    function maybeTemplate() {
 
       if (!isset($this->fields['id'])) {
@@ -125,12 +125,12 @@ class PluginMonitoringServicedef extends CommonDBTM {
       }
    }
 
-   
-   
+
+
    /**
    * Display form for service configuration
    *
-   * @param $items_id integer ID 
+   * @param $items_id integer ID
    * @param $options array
    *
    *@return bool true if form is ok
@@ -138,7 +138,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
    **/
    function showForm($items_id, $options=array()) {
       $pMonitoringCommand = new PluginMonitoringCommand();
-      
+
 
       if ($items_id == '0') {
          $this->getEmpty();
@@ -147,7 +147,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
       }
 
       $this->showFormHeader($options);
-      
+
       echo "<tr>";
       echo "<td>";
       echo __('Template name')."&nbsp;:";
@@ -156,7 +156,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
       echo "<input type='hidden' name='is_template' value='1' />";
       $objectName = autoName($this->fields["name"], "name", 1,
                              $this->getType());
-      Html::autocompletionTextField($this, 'name', array('value' => $objectName));      
+      Html::autocompletionTextField($this, 'name', array('value' => $objectName));
       echo "</td>";
 
       // * commande
@@ -166,7 +166,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
       echo "<td align='center'>";
       if ($this->fields['is_template'] == '1') {
          $pMonitoringCommand->getFromDB($this->fields['plugin_monitoring_commands_id']);
-         echo $pMonitoringCommand->getLink(1);         
+         echo $pMonitoringCommand->getLink(1);
       } else {
          $pMonitoringCommand->getFromDB($this->fields['plugin_monitoring_commands_id']);
          Dropdown::show("PluginMonitoringCommand", array(
@@ -176,7 +176,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
       }
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr>";
       // * checks
       echo "<td>".__('Check definition', 'monitoring')."&nbsp;:</td>";
@@ -186,7 +186,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
          $pMonitoringCheck->getFromDB($this->fields['plugin_monitoring_checks_id']);
          echo $pMonitoringCheck->getLink(1);
       } else {
-         Dropdown::show("PluginMonitoringCheck", 
+         Dropdown::show("PluginMonitoringCheck",
                         array('name'=>'plugin_monitoring_checks_id',
                               'value'=>$this->fields['plugin_monitoring_checks_id']));
       }
@@ -203,7 +203,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
       }
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr>";
       // * passive check
       echo "<td>";
@@ -229,11 +229,11 @@ class PluginMonitoringServicedef extends CommonDBTM {
       }
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr>";
       echo "<th colspan='4'>".__('Remote check', 'monitoring')."</th>";
       echo "</tr>";
-      
+
       echo "<tr>";
       // * remotesystem
       echo "<td>";
@@ -248,11 +248,11 @@ class PluginMonitoringServicedef extends CommonDBTM {
       if ($this->fields['is_template'] == '1') {
          echo $input[$this->fields['remotesystem']];
       } else {
-         Dropdown::showFromArray("remotesystem", 
-                              $input, 
+         Dropdown::showFromArray("remotesystem",
+                              $input,
                               array('value'=>$this->fields['remotesystem']));
       }
-      echo "</td>";      
+      echo "</td>";
       // * is_argument
       echo "<td>";
       echo __('Use arguments (Only for NRPE)', 'monitoring')."&nbsp;:";
@@ -263,9 +263,9 @@ class PluginMonitoringServicedef extends CommonDBTM {
       } else {
          Dropdown::showYesNo("is_arguments", $this->fields['is_arguments']);
       }
-      echo "</td>"; 
+      echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr>";
       // alias command
       echo "<td>";
@@ -277,14 +277,14 @@ class PluginMonitoringServicedef extends CommonDBTM {
       } else {
          echo "<input type='text' name='alias_command' value='".$this->fields['alias_command']."' />";
       }
-      echo "</td>"; 
+      echo "</td>";
       echo "<td>";
       echo __('Command link (used for graphs generation)', 'monitoring')."&nbsp;:";
       echo "</td>";
       echo "<td>";
       if ($this->fields['is_template'] == '1') {
          $pMonitoringCommand->getFromDB($this->fields['aliasperfdata_commands_id']);
-         echo $pMonitoringCommand->getLink(1);         
+         echo $pMonitoringCommand->getLink(1);
       } else {
          $pMonitoringCommand->getFromDB($this->fields['aliasperfdata_commands_id']);
          Dropdown::show("PluginMonitoringCommand", array(
@@ -292,10 +292,10 @@ class PluginMonitoringServicedef extends CommonDBTM {
                               'value'=>$this->fields['aliasperfdata_commands_id']
                               ));
       }
-      echo "</td>"; 
+      echo "</td>";
       echo "</tr>";
-      
-      
+
+
       // * Manage arguments
       $array = array();
       $a_displayarg = array();
@@ -309,7 +309,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
                   $a_arguments[$arg] = '';
                }
                $a_displayarg[$arg] = $a_arguments[$arg];
-               
+
             }
          }
       }
@@ -318,7 +318,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
          echo "<tr>";
          echo "<th colspan='4'>".__('Arguments', 'monitoring')."&nbsp;</th>";
          echo "</tr>";
-          
+
          foreach ($a_displayarg as $key=>$value) {
          echo "<tr>";
          echo "<th>".$key."</th>";
@@ -335,7 +335,7 @@ class PluginMonitoringServicedef extends CommonDBTM {
             echo "</tr>";
          }
       }
-      
+
       $this->showFormButtons($options);
       return true;
    }

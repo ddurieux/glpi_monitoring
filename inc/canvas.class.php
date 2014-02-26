@@ -30,14 +30,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2012
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -49,23 +49,23 @@ class PluginMonitoringCanvas {
    private $a_points             = array();
    private $a_devices            = array();
    private $a_devices_link       = array();
-   
-   
+
+
    static function onload() {
       return 'canvas();';
    }
 
-   
-   
+
+
    function show() {
       global $DB;
 
       $networkPort = new NetworkPort();
       $computer = new Computer();
       $pmHostconfig = new PluginMonitoringHostconfig();
-      
+
       // Shinken server
-      
+
       $source_id = $pmHostconfig->getValueAncestor('computers_id', '0');
       $switches_id = 0;
       $this->a_devices['Computer-'.$source_id] = "SHINKEN";
@@ -86,12 +86,12 @@ class PluginMonitoringCanvas {
       $this->addPoint('NetworkEquipment-'.$switches_id);
       $computer->getFromDB($source_id);
       $this->drawCanvas($computer, array(), array());
-   } 
-      
-      
+   }
+
+
    function getNetworkEquipments($networkequipments_id) {
       $networkPort = new NetworkPort();
-      
+
       $a_networkports = $networkPort->find("`itemtype`='NetworkEquipment'
          AND `items_id`='".$networkequipments_id."'");
       foreach ($a_networkports as $data_n) {
@@ -99,7 +99,7 @@ class PluginMonitoringCanvas {
          if ($networkports_id) {
             $networkPort->getFromDB($networkports_id);
             switch ($networkPort->fields['itemtype']) {
-               
+
                case 'NetworkEquipment':
                   $this->a_devices_link['NetworkEquipment-'.$networkPort->fields['items_id']]['NetworkEquipment-'.$networkequipments_id]=1;
                   if (!isset($this->a_devices['NetworkEquipment-'.$networkPort->fields['items_id']])) {
@@ -107,7 +107,7 @@ class PluginMonitoringCanvas {
                      $this->getNetworkEquipments($networkPort->fields['items_id']);
                   }
                   break;
-               
+
                case 'Computer':
                case 'Printer':
                   $this->a_devices_link['NetworkEquipment-'.$networkequipments_id][$networkPort->fields['itemtype'].'-'.$networkPort->fields['items_id']]=1;
@@ -119,13 +119,13 @@ class PluginMonitoringCanvas {
             }
          }
       }
-   }   
+   }
 
-   
-   
+
+
    function getState($itemtype, $items_id) {
       global $DB;
-      
+
       $critical = 0;
       $warning = 0;
       $ok = 0;
@@ -134,17 +134,17 @@ class PluginMonitoringCanvas {
             AND `items_id`='".$items_id."'";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
-         $critical += countElementsInTable("glpi_plugin_monitoring_services", 
+         $critical += countElementsInTable("glpi_plugin_monitoring_services",
            "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
               AND `state_type`='HARD'
               AND `plugin_monitoring_componentscatalogs_hosts_id`='".$data['id']."'");
 
-         $warning += countElementsInTable("glpi_plugin_monitoring_services", 
+         $warning += countElementsInTable("glpi_plugin_monitoring_services",
            "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
            AND `state_type`='HARD'
               AND `plugin_monitoring_componentscatalogs_hosts_id`='".$data['id']."'");
 
-         $ok += countElementsInTable("glpi_plugin_monitoring_services", 
+         $ok += countElementsInTable("glpi_plugin_monitoring_services",
            "(`state`='OK' OR `state`='UP')
            AND `state_type`='HARD'
               AND `plugin_monitoring_componentscatalogs_hosts_id`='".$data['id']."'");
@@ -155,12 +155,12 @@ class PluginMonitoringCanvas {
       $output['critical'] = $critical;
       return $output;
    }
-   
-   
+
+
 
    function getHostState($itemtype, $items_id) {
       global $DB;
-      
+
       $query = "SELECT * FROM `glpi_plugin_monitoring_hosts`
          WHERE `itemtype`='".$itemtype."'
             AND `items_id`='".$items_id."'
@@ -184,7 +184,7 @@ class PluginMonitoringCanvas {
             case 'FLAPPING':
                return 'warning';
                break;
-            
+
             case 'OK':
             case 'UP':
                return 'ok';
@@ -195,9 +195,9 @@ class PluginMonitoringCanvas {
       }
       return '';
    }
-   
 
-   
+
+
    function addPoint($itemdata, $ancestor = 0,$state = 'no') {
       $split = explode("-", $itemdata);
       $itemtype = $split[0];
@@ -236,8 +236,8 @@ class PluginMonitoringCanvas {
       }
    }
 
-   
-   
+
+
    private function drawCanvas($root, $ancestors, $params) {
       global $CFG_GLPI;
 
@@ -253,20 +253,20 @@ class PluginMonitoringCanvas {
             $input['width'] = 3;
             $input['type'] = 'line';
             $link['edges'][] = $input;
-            
+
             $in_link[] = $id2;
          }
          $in_link[] = $id1;
       }
-      
+
       foreach ($this->a_devices as $itemdata => $state) {
          $networkroot = '';
-         
+
          $split = explode("-", $itemdata);
          $itemtype = $split[0];
          $item = new $itemtype();
          $item->getFromDB($split[1]);
-         
+
          $input = array();
          $input['id'] = "i".$itemdata;
          $input['name'] = $item->getName();
@@ -292,7 +292,7 @@ class PluginMonitoringCanvas {
             $input['imagePath']  = 'http://'.$_SERVER['SERVER_ADDR'].$CFG_GLPI['root_doc'].'/plugins/monitoring/pics/shinken.png';
             $input['width']      = '120';
             $input['height']     = '27';
-          
+
             $networkroot = "i".$itemdata;
             $statesh = $this->getState($split[0], $split[1]);
             $input['critical']   = $statesh['critical'];
@@ -314,12 +314,12 @@ class PluginMonitoringCanvas {
          }
 
          $input['items_id'] = $split[1];
-         
+
          if (in_array($itemdata, $in_link)) {
             $link['nodes'][] = $input;
          }
       }
-      
+
       $link['legend']['pos']['decorations'] = array('x' => 0, 'y' => 0);
 //    echo "<pre>";print_r($link);exit;
       if (count($link['nodes']) > 0) {
@@ -340,12 +340,12 @@ class PluginMonitoringCanvas {
                                  'showDecorations' => true,
                                  'decorations' => array('critical', 'warning', 'ok'),
                                  'decorationsColors' => array('rgb(255,0,0)', 'rgb(255,187,0)', 'rgb(0,255,0)')
-             
+
              );
 
          $link_to_form = $root->getFormURL();
          $link_to_form .= (strpos($link_to_form,'?') ? '&amp;':'?').'id=';
-         
+
          echo "<script>
 var showcanvas = function () {
 new CanvasXpress(
@@ -366,13 +366,13 @@ new CanvasXpress(
 </script>";
 
          echo "<table class='tab_cadre_fixe'>";
-         
+
          echo "<tr class='tab_bg_1'>";
          echo "<th>";
          echo __('Dependencies;', 'monitoring');
          echo "</th>";
          echo "</tr>";
-         
+
          echo "<tr class='tab_bg_1'>";
          echo "<td>";
          echo "<canvas id='canvas' width='950' height='500'></canvas>";

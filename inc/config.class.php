@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringConfig extends CommonDBTM {
-   
+
 
    /**
    * Get name of this type
@@ -64,34 +64,34 @@ class PluginMonitoringConfig extends CommonDBTM {
    }
 
 
-   
+
    static function canView() {
       return PluginMonitoringProfile::haveRight("config", 'r');
    }
 
-   
-   
+
+
    function initConfig() {
       global $DB;
-      
+
       $query = "SELECT * FROM `".$this->getTable()."`
          LIMIT 1";
-      
+
       $result = $DB->query($query);
       if ($DB->numrows($result) == '0') {
          $input = array();
          $input['timezones'] = '["0"]';
          $input['logretention'] = 30;
-         $this->add($input);         
+         $this->add($input);
       }
    }
-   
 
-   
+
+
    /**
    * Display form for configuration
    *
-   * @param $items_id integer ID 
+   * @param $items_id integer ID
    * @param $options array
    *
    *@return bool true if form is ok
@@ -103,7 +103,7 @@ class PluginMonitoringConfig extends CommonDBTM {
       $options['candel'] = false;
 
       if ($this->getFromDB("1")) {
-         
+
       } else {
          $input = array();
          $this->add($input);
@@ -118,8 +118,8 @@ class PluginMonitoringConfig extends CommonDBTM {
       echo "<td>".__('Logs retention (in days)', 'monitoring')."&nbsp;:</td>";
       echo "<td align='center'>";
       Dropdown::showNumber("logretention", array(
-                'value' => $this->fields['logretention'], 
-                'min'   => 0, 
+                'value' => $this->fields['logretention'],
+                'min'   => 0,
                 'max'   => 1000)
       );
       echo "</td>";
@@ -128,7 +128,7 @@ class PluginMonitoringConfig extends CommonDBTM {
       echo "</td>";
       echo "<td>";
          $a_timezones = $this->getTimezones();
-      
+
          $a_timezones_selected = importArrayFromDB($this->fields['timezones']);
          $a_timezones_selected2 = array();
          foreach ($a_timezones_selected as $timezone) {
@@ -136,7 +136,7 @@ class PluginMonitoringConfig extends CommonDBTM {
             unset($a_timezones[$timezone]);
          }
          ksort($a_timezones_selected2);
-            
+
             echo "<table>";
             echo "<tr>";
             echo "<td class='right'>";
@@ -184,18 +184,18 @@ class PluginMonitoringConfig extends CommonDBTM {
 
       return true;
    }
-   
-   
-   
+
+
+
    static function getPHPPath() {
-      
+
       $pmConfig = new PluginMonitoringConfig();
       $pmConfig->getFromDB("1");
       return $pmConfig->getField("phppath");
    }
-   
-   
-   
+
+
+
    static function getTimezones() {
       $a_timezones = array();
       $a_timezones['0'] = "GMT";
@@ -222,13 +222,13 @@ class PluginMonitoringConfig extends CommonDBTM {
       $a_timezones['-9'] = "GMT-9";
       $a_timezones['-10'] = "GMT-10";
       $a_timezones['-11'] = "GMT-11";
-      
+
       ksort($a_timezones);
       return $a_timezones;
-      
+
    }
-   
-   
+
+
    function rrmdir($dir) {
 
       if (is_dir($dir)) {

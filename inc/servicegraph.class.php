@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -48,7 +48,7 @@ class PluginMonitoringServicegraph {
    private $jsongraph_a_ref = array();
    private $jsongraph_a_convert = array();
 
-   
+
    function displayCounter($rrdtool_template, $items_id, $json=0, $counter_id='', $counter_name='') {
       global $CFG_GLPI;
 
@@ -59,10 +59,10 @@ class PluginMonitoringServicegraph {
 
       $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
       $ret = '<div class="counter" id="counters_'.$counter_id.'_'.$items_id.'">'.$counter_id.'</div>';
-      
+
       $sess_id = session_id();
       PluginMonitoringSecurity::updateSession();
-      
+
       $ret .= "<script>
          // window.setInterval(function () {
             Ext.Ajax.request({
@@ -87,11 +87,11 @@ class PluginMonitoringServicegraph {
             });
          // } , 5000);
       </script>";
-      
+
       return $ret;
    }
 
-   
+
    function displayGraph($rrdtool_template, $itemtype, $items_id, $timezone, $time='1d', $part='', $width='900') {
       global $CFG_GLPI;
 
@@ -127,12 +127,12 @@ class PluginMonitoringServicegraph {
       }
       return;
    }
-   
-   
-   
+
+
+
    function startAutoRefresh($rrdtool_template, $itemtype, $items_id, $timezone, $time, $pmComponents_id) {
       global $CFG_GLPI;
-      
+
       $sess_id = session_id();
       PluginMonitoringSecurity::updateSession();
       $refresh = "50"; // all 50 seconds
@@ -143,8 +143,8 @@ class PluginMonitoringServicegraph {
               || $time == '0y6m'
               || $time == '1y') {
          $refresh = "1000";
-      }      
-      
+      }
+
       echo "mgr".$items_id.$time.".startAutoRefresh(".$refresh.", \"".$CFG_GLPI["root_doc"].
                  "/plugins/monitoring/ajax/updateChart.php\", ".
                  "\"rrdtool_template=".$rrdtool_template.
@@ -160,16 +160,16 @@ class PluginMonitoringServicegraph {
                  "\", \"\", true);
                     ";
    }
-      
-      
-      
-   function generateData($rrdtool_template, $itemtype, $items_id, $timezone, $time, $enddate='', $todisplay=array()) { 
-      global $DB;      
+
+
+
+   function generateData($rrdtool_template, $itemtype, $items_id, $timezone, $time, $enddate='', $todisplay=array()) {
+      global $DB;
 
       if ($enddate == '') {
          $enddate = date('U');
       }
-   
+
       // Manage timezones
       $converttimezone = '0';
       if (strstr($timezone, '-')) {
@@ -189,14 +189,14 @@ class PluginMonitoringServicegraph {
       $pmServiceevent = new PluginMonitoringServiceevent();
       $pmService = new PluginMonitoringService();
       $pmService->getFromDB($items_id);
-      
+
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks($pmService->fields['plugin_monitoring_components_id']);
-      
+
       $dateformat = "%Y-%m-%d %Hh";
-      
+
       $begin = '';
       switch ($time) {
-         
+
          case '2h':
             $begin = date('Y-m-d H:i:s', $enddate - (2 * 3600));
             $timecomplete = 0;
@@ -205,7 +205,7 @@ class PluginMonitoringServicegraph {
                $timecomplete = 2;
                $dateformat = "%m-%d %H:%M";
             }
-            
+
             $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
                   AND `date` > '".$begin."'
@@ -215,17 +215,17 @@ class PluginMonitoringServicegraph {
             $ret = array();
             if (isset($this->jsongraph_a_ref[$rrdtool_template])) {
                $ret = $pmServiceevent->getData(
-                       $result, 
+                       $result,
                        $rrdtool_template,
                        $begin,
                        date('Y-m-d H:i:s', $enddate),
-                       array($this->jsongraph_a_ref[$rrdtool_template], 
+                       array($this->jsongraph_a_ref[$rrdtool_template],
                              $this->jsongraph_a_convert[$rrdtool_template]),
                        $timecomplete,
                        $todisplay);
             } else {
                $ret = $pmServiceevent->getData(
-                       $result, 
+                       $result,
                        $rrdtool_template,
                        $begin,
                        date('Y-m-d H:i:s', $enddate),
@@ -243,7 +243,7 @@ class PluginMonitoringServicegraph {
                }
             }
             break;
-         
+
          case '12h':
             $begin = date('Y-m-d H:i:s', $enddate - (12 * 3600));
             $timecomplete = 0;
@@ -252,7 +252,7 @@ class PluginMonitoringServicegraph {
                $timecomplete = 2;
                $dateformat = "%m-%d %H:%M";
             }
-            
+
             $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
                   AND `date` > '".$begin."'
@@ -260,7 +260,7 @@ class PluginMonitoringServicegraph {
                ORDER BY `date`";
             $result = $DB->query($query);
             $ret = $pmServiceevent->getData(
-                    $result, 
+                    $result,
                     $rrdtool_template,
                     $begin,
                     date('Y-m-d H:i:s', $enddate),
@@ -273,7 +273,7 @@ class PluginMonitoringServicegraph {
                $a_ref    = $ret[2];
             }
             break;
-         
+
          case '1d':
             $begin = date('Y-m-d H:i:s', $enddate - (24 * 3600));
             $timecomplete = 0;
@@ -282,7 +282,7 @@ class PluginMonitoringServicegraph {
                $timecomplete = 2;
                $dateformat = "%m-%d %H:%M";
             }
-            
+
             $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
                   AND `date` > '".$begin."'
@@ -290,7 +290,7 @@ class PluginMonitoringServicegraph {
                ORDER BY `date`";
             $result = $DB->query($query);
             $ret = $pmServiceevent->getData(
-                    $result, 
+                    $result,
                     $rrdtool_template,
                     $begin,
                     date('Y-m-d H:i:s', $enddate),
@@ -303,11 +303,11 @@ class PluginMonitoringServicegraph {
                $a_ref    = $ret[2];
             }
             break;
-         
+
          case '1w':
             $begin = date('Y-m-d H:i:s', $enddate - (7 * 24 * 3600));
             $dateformat = "%Y-%m-%d %H:%M";
-            
+
             $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
                   AND `date` > '".$begin."'
@@ -315,7 +315,7 @@ class PluginMonitoringServicegraph {
                ORDER BY `date`";
             $result = $DB->query($query);
             $ret = $pmServiceevent->getData(
-                    $result, 
+                    $result,
                     $rrdtool_template,
                     $begin,
                     date('Y-m-d H:i:s', $enddate),
@@ -326,7 +326,7 @@ class PluginMonitoringServicegraph {
                $mydatat  = $ret[0];
                $a_labels = $ret[1];
                $a_ref    = $ret[2];
-               
+
                $nb_val = count($a_labels);
                // May have 22 points in the graph
                $nb_val_period = $nb_val / 75;
@@ -345,7 +345,7 @@ class PluginMonitoringServicegraph {
                   }
                   if ($nb > 1
                           && $nb <= $nb_val_period) {
-                     
+
                         $mydatatNew[$name][] = round($val / ($nb - 1), 2);
                   }
                }
@@ -377,7 +377,7 @@ class PluginMonitoringServicegraph {
                ORDER BY `date`";
             $result = $DB->query($query);
             $ret = $pmServiceevent->getData(
-                    $result, 
+                    $result,
                     $rrdtool_template,
                     $begin,
                     date('Y-m-d H:i:s', $enddate),
@@ -388,7 +388,7 @@ class PluginMonitoringServicegraph {
                $mydatat  = $ret[0];
                $a_labels = $ret[1];
                $a_ref    = $ret[2];
-               
+
                $nb_val = count($a_labels);
                // May have 22 points in the graph
                $nb_val_period = $nb_val / 75;
@@ -407,12 +407,12 @@ class PluginMonitoringServicegraph {
                   }
                   if ($nb > 1
                           && $nb <= $nb_val_period) {
-                     
+
                         $mydatatNew[$name][] = ceil($val / ($nb - 1));
                   }
                }
                $mydatat = $mydatatNew;
-               
+
                $a_labelsNew = array();
                $nb = 1;
                $val = 0;
@@ -428,7 +428,7 @@ class PluginMonitoringServicegraph {
                $a_labels = $a_labelsNew;
             }
             break;
-         
+
          case '0y6m':
             $begin = date('Y-m-d H:i:s', date('U') - ((364 / 2) * 24 * 3600));
             $dateformat = "%Y-%m-%d %H:%M";
@@ -440,7 +440,7 @@ class PluginMonitoringServicegraph {
                ORDER BY `date`";
             $result = $DB->query($query);
             $ret = $pmServiceevent->getData(
-                    $result, 
+                    $result,
                     $rrdtool_template,
                     $begin,
                     date('Y-m-d H:i:s', $enddate),
@@ -451,7 +451,7 @@ class PluginMonitoringServicegraph {
                $mydatat  = $ret[0];
                $a_labels = $ret[1];
                $a_ref    = $ret[2];
-               
+
                $nb_val = count($a_labels);
                // May have 22 points in the graph
                $nb_val_period = $nb_val / 75;
@@ -470,12 +470,12 @@ class PluginMonitoringServicegraph {
                   }
                   if ($nb > 1
                           && $nb <= $nb_val_period) {
-                     
+
                         $mydatatNew[$name][] = ceil($val / ($nb - 1));
                   }
                }
                $mydatat = $mydatatNew;
-               
+
                $a_labelsNew = array();
                $nb = 1;
                $val = 0;
@@ -491,11 +491,11 @@ class PluginMonitoringServicegraph {
                $a_labels = $a_labelsNew;
             }
             break;
-         
+
          case '1y':
             $begin = date('Y-m-d H:i:s', date('U') - (365 * 24 * 3600));
             $dateformat = "%Y-%m-%d %H:%M";
-            
+
             $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
                   AND `date` > '".$begin."'
@@ -503,7 +503,7 @@ class PluginMonitoringServicegraph {
                ORDER BY `date`";
             $result = $DB->query($query);
             $ret = $pmServiceevent->getData(
-                    $result, 
+                    $result,
                     $rrdtool_template,
                     $begin,
                     date('Y-m-d H:i:s', $enddate),
@@ -514,7 +514,7 @@ class PluginMonitoringServicegraph {
                $mydatat  = $ret[0];
                $a_labels = $ret[1];
                $a_ref    = $ret[2];
-               
+
                $nb_val = count($a_labels);
                // May have 22 points in the graph
                $nb_val_period = $nb_val / 75;
@@ -533,12 +533,12 @@ class PluginMonitoringServicegraph {
                   }
                   if ($nb > 1
                           && $nb <= $nb_val_period) {
-                     
+
                         $mydatatNew[$name][] = ceil($val / ($nb - 1));
                   }
                }
                $mydatat = $mydatatNew;
-               
+
                $a_labelsNew = array();
                $nb = 1;
                $val = 0;
@@ -555,13 +555,13 @@ class PluginMonitoringServicegraph {
             }
             break;
       }
-      return array($mydatat, $a_labels, $dateformat);      
+      return array($mydatat, $a_labels, $dateformat);
    }
-   
-   
-   
+
+
+
    static function getperfdataNames($rrdtool_template,$keepwarcrit=1) {
-      
+
       $a_name = array();
       if ($rrdtool_template == 0) {
          return $a_name;
@@ -583,9 +583,9 @@ class PluginMonitoringServicegraph {
       }
       return $a_name;
    }
-   
-   
-   
+
+
+
    static function colors($type='normal') {
       $a_colors = array();
       switch ($type) {
@@ -599,7 +599,7 @@ class PluginMonitoringServicegraph {
             $a_colors["0066cb"] = "0066cb";
             $a_colors["0099ff"] = "0099ff";
             $a_colors["99cdff"] = "99cdff";
-            
+
             $a_colors["6c6024"] = "6c6024";
             $a_colors["a39136"] = "a39136";
             $a_colors["d3c57e"] = "d3c57e";
@@ -617,7 +617,7 @@ class PluginMonitoringServicegraph {
             $a_colors["ea991a"] = "ea991a";
 
             break;
-         
+
          case 'crit':
             $a_colors["ff0000"] = "ff0000";
             $a_colors["a00000"] = "a00000";
@@ -625,7 +625,7 @@ class PluginMonitoringServicegraph {
 
             break;
       }
-      return $a_colors;      
+      return $a_colors;
    }
 
 }

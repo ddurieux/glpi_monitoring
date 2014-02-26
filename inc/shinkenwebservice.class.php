@@ -30,13 +30,13 @@
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
    @co-author Frédéric Mohier
-   @comment   
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2013
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,12 +45,12 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringShinkenwebservice extends CommonDBTM {
-   
+
    function sendAcknowledge($host_id=-1, $service_id=-1, $author= '', $comment='', $sticky='1', $notify='1', $persistent='1', $operation='') {
       global $DB;
-      
+
       if (($host_id == -1) && ($service_id == -1)) return false;
-      
+
 //      Toolbox::logInFile("pm", "acknowledge, sendAcknowledge, host : $host_id / $service_id\n");
 
       $pmTag = new PluginMonitoringTag();
@@ -60,13 +60,13 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       $pmHost = new PluginMonitoringHost();
       $pmHost->getFromDB(($host_id == -1) ? $pmService->getHostID() : $host_id);
       $hostname = $pmHost->getName(true);
-      
+
 //      Toolbox::logInFile("pm", "acknowledge, sendAcknowledge, host : $hostname\n");
 
       // Acknowledge an host ...
       $acknowledgeServiceOnly = true;
       $a_fields = array();
-      
+
       if ($host_id == -1) {
          $tag = PluginMonitoringEntity::getTagByEntities($pmService->getEntityID());
       } else {
@@ -75,8 +75,8 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       }
       $ip = $pmTag->getIP($tag);
       $auth = $pmTag->getAuth($tag);
-      
-      
+
+
       $url = 'http://'.$ip.':7760/';
       $action = 'acknowledge';
       $a_fields = array(
@@ -90,16 +90,16 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
           'notify'               => $notify,
           'persistent'           => $persistent
       );
-      
+
       return $this->sendCommand($url, $action, $a_fields, '', $auth);
    }
-   
-   
+
+
    function sendDowntime($host_id=-1, $service_id=-1, $author= '', $comment='', $flexible='0', $start_time='0', $end_time='0', $duration='3600', $operation='') {
       global $DB;
-      
+
       if (($host_id == -1) && ($service_id == -1)) return false;
-      
+
       $pmTag = new PluginMonitoringTag();
       $pmService = new PluginMonitoringService();
       $pmService->getFromDB($service_id);
@@ -107,11 +107,11 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       $pmHost = new PluginMonitoringHost();
       $pmHost->getFromDB(($host_id == -1) ? $pmService->getHostID() : $host_id);
       $hostname = $pmHost->getName(true);
-      
+
       // Downtime an host ...
       $acknowledgeServiceOnly = true;
       $a_fields = array();
-      
+
       if ($host_id == -1) {
          $tag = PluginMonitoringEntity::getTagByEntities($pmService->getEntityID());
       } else {
@@ -120,7 +120,7 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       }
       $ip = $pmTag->getIP($tag);
       $auth = $pmTag->getAuth($tag);
-      
+
       $url = 'http://'.$ip.':7760/';
       $action = 'downtime';
       $a_fields = array(
@@ -135,21 +135,21 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
           'trigger_id'           => '0',
           'duration'             => $duration
       );
-      
+
       // Send downtime command ...
       return $this->sendCommand($url, $action, $a_fields, '', $auth);
    }
-   
-   
+
+
    function sendRestartArbiter($force=0) {
-      
+
       $pmTag = new PluginMonitoringTag();
       $pmLog = new PluginMonitoringLog();
-      
+
       $a_tags = $pmTag->find();
       foreach ($a_tags as $data) {
          if (!$pmLog->isRestartLessThanFiveMinutes()
-                 || $force) {         
+                 || $force) {
             $url = 'http://'.$data['ip'].':7760/';
             $action = 'restart';
             $a_fields = array();
@@ -168,19 +168,19 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
          }
       }
    }
-   
-   
+
+
    function sendCommand($url, $action, $a_fields, $fields_string='', $auth='') {
 
       if ($fields_string == '') {
-         foreach($a_fields as $key=>$value) { 
-            $fields_string .= $key.'='.$value.'&'; 
+         foreach($a_fields as $key=>$value) {
+            $fields_string .= $key.'='.$value.'&';
          }
          rtrim($fields_string, '&');
       }
-      
+
       $ch = curl_init();
-      
+
       curl_setopt($ch,CURLOPT_URL, $url.$action);
       curl_setopt($ch,CURLOPT_POST, count($a_fields));
       curl_setopt($ch,CURLOPT_POSTFIELDS, $fields_string);
@@ -188,26 +188,26 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       if ($auth != '') {
          curl_setopt($ch,CURLOPT_USERPWD, $auth);
       }
-      
+
       $ret = curl_exec($ch);
       $return = true;
       if ($ret === false) {
          Session::addMessageAfterRedirect(
-                 __('Shinken communication failed:', 'monitoring').' '.curl_error($ch), 
-                 false, 
+                 __('Shinken communication failed:', 'monitoring').' '.curl_error($ch),
+                 false,
                  ERROR);
          $return = false;
       } else if (strstr($ret, 'error')) {
          Session::addMessageAfterRedirect(
-                 __('Shinken communication failed:', 'monitoring').' '.$ret, 
-                 false, 
+                 __('Shinken communication failed:', 'monitoring').' '.$ret,
+                 false,
                  ERROR);
          $return = false;
       }
       curl_close($ch);
       return $return;
-   }   
-   
+   }
+
 }
 
 ?>

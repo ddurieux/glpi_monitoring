@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2014
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringSlider_item extends CommonDBTM {
-   
+
 
    /**
    * Get name of this type
@@ -64,20 +64,20 @@ class PluginMonitoringSlider_item extends CommonDBTM {
    }
 
 
-   
+
    static function canView() {
       return PluginMonitoringProfile::haveRight("config_sliders", 'r');
    }
-   
-   
-   
+
+
+
    function view($id, $config=0) {
       global $DB, $CFG_GLPI;
 
       $pmSlider = new PluginMonitoringSlider();
-      
+
       $pmSlider->getFromDB($id);
-      
+
       $style = '';
       if ($config == '1') {
          $this->addItem($id);
@@ -85,15 +85,15 @@ class PluginMonitoringSlider_item extends CommonDBTM {
 
       // Display items
    }
-   
-   
-   
+
+
+
    function reloadView($id, $config) {
       global $DB;
-      
+
       $pmSlider = new PluginMonitoringSlider();
       $pmSlider->getFromDB($id);
-      
+
       $query = "SELECT * FROM `glpi_plugin_monitoring_sliders_items`
          WHERE `plugin_monitoring_sliders_id`='".$id."'";
       $result = $DB->query($query);
@@ -104,25 +104,25 @@ class PluginMonitoringSlider_item extends CommonDBTM {
          }
       }
    }
-   
-   
-   
+
+
+
    function displayItem($data, $config) {
       global $CFG_GLPI;
 
       return true;
    }
 
-   
-   
+
+
    function addItem($sliders_id) {
       global $DB,$CFG_GLPI;
 
       $this->getEmpty();
-      
+
       $pmSlider = new PluginMonitoringSlider();
       $pmSlider->getFromDB($sliders_id);
-      
+
       // Manage entity_sons
       $a_entities = array();
       if (!($pmSlider->fields['entities_id']<0)) {
@@ -132,7 +132,7 @@ class PluginMonitoringSlider_item extends CommonDBTM {
             $a_entities = getSonsOf('glpi_entities', $pmSlider->fields['entities_id']);
          }
       }
-      
+
       $options = array();
       $this->showFormHeader($options);
 
@@ -150,9 +150,9 @@ class PluginMonitoringSlider_item extends CommonDBTM {
       $elements['PluginMonitoringWeathermap']         = __('Weathermap', 'monitoring');
       $elements['PluginMonitoringCustomitem_Gauge']   = PluginMonitoringCustomitem_Gauge::getTypeName();
       $elements['PluginMonitoringCustomitem_Counter'] = PluginMonitoringCustomitem_Counter::getTypeName();
-      
+
       $rand = Dropdown::showFromArray('itemtype', $elements, array('value'=>$this->fields['itemtype']));
-      
+
       $params = array('itemtype'        => '__VALUE__',
                 'sliders_id' => $sliders_id,
                 'myname'          => "items_id",
@@ -168,13 +168,13 @@ class PluginMonitoringSlider_item extends CommonDBTM {
 
       echo "<td colspan='2'></td>";
       echo "</tr>";
-      
+
       $this->showFormButtons($options);
 
       // Show items
-      $query = "SELECT * FROM `glpi_plugin_monitoring_sliders_items` 
+      $query = "SELECT * FROM `glpi_plugin_monitoring_sliders_items`
               WHERE `plugin_monitoring_sliders_id`='".$sliders_id."'";
-      
+
       $result = $DB->query($query);
       echo "<table class='tab_cadre' width='600'>";
       echo "<tr class='tab_bg_1'>";
@@ -182,7 +182,7 @@ class PluginMonitoringSlider_item extends CommonDBTM {
       echo _n('Associated item', 'Associated items', 2);
       echo "</th>";
       echo "</tr>";
-      while ($data=$DB->fetch_array($result)) { 
+      while ($data=$DB->fetch_array($result)) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>";
          $itemtype = $data['itemtype'];
@@ -205,7 +205,7 @@ class PluginMonitoringSlider_item extends CommonDBTM {
          echo "</tr>";
       }
       echo "</table>";
-      
+
       return true;
    }
 }

@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2012
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -53,27 +53,27 @@ class PluginMonitoringRealm extends CommonDropdown {
       return __('Reamls', 'monitoring');
    }
 
-   
-   
+
+
    static function canCreate() {
       return PluginMonitoringProfile::haveRight("config", 'w');
    }
 
-   
-   
+
+
    static function canView() {
       return PluginMonitoringProfile::haveRight("config", 'r');
    }
-   
-   
-   
+
+
+
    function prepareInputForAdd($input) {
       $input['name'] = preg_replace("/[^A-Za-z0-9]/","",$input['name']);
       return $input;
    }
 
 
-   
+
    function prepareInputForUpdate($input) {
       $input['name'] = preg_replace("/[^A-Za-z0-9]/","",$input['name']);
       return $input;

@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringNetworkport extends CommonDBTM {
-   
+
    /**
    * Get name of this type
    *
@@ -55,23 +55,23 @@ class PluginMonitoringNetworkport extends CommonDBTM {
    static function getTypeName($nb=0) {
       return __('Network ports of networking devices', 'monitoring');
    }
-   
-   
+
+
    static function canCreate() {
       return PluginMonitoringProfile::haveRight("config_components_catalogs", 'w');
    }
 
 
-   
+
    static function canView() {
       return PluginMonitoringProfile::haveRight("config_components_catalogs", 'r');
    }
 
-   
+
 
    function getSearchOptions() {
       $tab = array();
-    
+
       $tab['common'] = __('Network ports of networking devices', 'monitoring');
 
       $tab[1]['table']         = $this->getTable();
@@ -82,9 +82,9 @@ class PluginMonitoringNetworkport extends CommonDBTM {
       $tab[2]['table'] = 'glpi_networkports';
       $tab[2]['field'] = 'name';
       $tab[2]['name']  = __('Network port');
-      
+
       $tab['networkequipment'] = __('Networking device');
-      
+
       $tab[3]['table']         = 'glpi_networkequipments';
       $tab[3]['field']         = 'name';
       $tab[3]['name']          = __('Name');
@@ -94,16 +94,16 @@ class PluginMonitoringNetworkport extends CommonDBTM {
       $tab[4]['field']         = 'name';
       $tab[4]['name']          = __('Status');
       $tab[4]['forcegroupby']  = true;
-      
+
       return $tab;
    }
 
-   
-   
+
+
    static function isMonitoredNetworkport($networkports_id) {
       global $DB;
-      
-      $nb = countElementsInTable("glpi_plugin_monitoring_networkports", 
+
+      $nb = countElementsInTable("glpi_plugin_monitoring_networkports",
               "`networkports_id` = '".$networkports_id."'");
       if ($nb > 0) {
          return true;
@@ -111,11 +111,11 @@ class PluginMonitoringNetworkport extends CommonDBTM {
       return false;
    }
 
-   
-   
+
+
    function updateNetworkports() {
       global $DB;
-      
+
       // Get all networkports in DB
       $networkportInDB = array();
       $query = "SELECT * FROM `".$this->getTable()."`
@@ -143,13 +143,13 @@ class PluginMonitoringNetworkport extends CommonDBTM {
       foreach ($networkportInDB as $id) {
          $this->delete(array('id'=>$id));
       }
-   }   
-   
-   
-   
+   }
+
+
+
    static function deleteNetworkPort($parm) {
       global $DB;
-      
+
       if ($parm->fields['itemtype'] == 'NetworkEquipment') {
          $query = "SELECT * FROM `glpi_plugin_monitoring_networkports`
             WHERE `networkports_id`='".$parm->fields['id']."'";

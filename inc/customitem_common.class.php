@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2014
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringCustomitem_Common {
 
-   
+
    static function getTimes() {
       $a_times = array(
           'lastday24h'      => __('Last day (last 24 hours)', 'monitoring'),
@@ -62,49 +62,49 @@ class PluginMonitoringCustomitem_Common {
       return $a_times;
    }
 
-   
-   
+
+
    static function getTimeRange($data) {
-      
+
       $begin = '';
       switch ($data['time']) {
-         
+
          case 'lastday24h':
             $begin = date('Y-m-d H:i:s', strtotime("-1 day"));
             break;
-        
+
          case 'lastdaymidnight':
             $begin = date('Y-m-d H:i:s', strtotime("today"));
             break;
-        
+
          case 'week7d':
             $begin = date('Y-m-d H:i:s', strtotime("-1 week"));
             break;
-        
+
          case 'weekmonday':
             $begin = date('Y-m-d H:i:s', strtotime("last Monday"));
             break;
-        
+
          case 'weeksunday':
             $begin = date('Y-m-d H:i:s', strtotime("last Sunday"));
             break;
-        
+
          case 'month30d':
             $begin = date('Y-m-d H:i:s', strtotime("-1 month"));
             break;
-        
+
          case 'monthfirstday':
             $begin = date('Y-m-d H:i:s', strtotime("first day of this month"));
             break;
-        
+
          case 'year365day':
             $begin = date('Y-m-d H:i:s', strtotime("-1 year"));
             break;
-        
+
          case 'yearjanuary':
             $begin = date('Y-m-d H:i:s', strtotime("first day of this year"));
             break;
-        
+
       }
       return array(
           'begin' => $begin,

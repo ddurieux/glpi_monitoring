@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2012
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringDisplayview extends CommonDBTM {
-      
+
    // For visibility checks
    protected $users     = array();
    protected $groups    = array();
@@ -69,7 +69,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
    }
 
 
-   
+
    static function canView() {
       return PluginMonitoringProfile::haveRight("config_views", 'r');
    }
@@ -90,8 +90,8 @@ class PluginMonitoringDisplayview extends CommonDBTM {
 //      $this->profiles = Profile_Reminder::getProfiles($this->fields['id']);
    }
 
-   
-   
+
+
    /**
     * Is the login user have access to reminder based on visibility configuration
     *
@@ -177,12 +177,12 @@ class PluginMonitoringDisplayview extends CommonDBTM {
 
       return false;
    }
-   
-   
+
+
 
    function getSearchOptions() {
       $tab = array();
-    
+
       $tab['common'] = __('Views', 'monitoring');
 
 		$tab[1]['table'] = $this->getTable();
@@ -212,8 +212,8 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       $this->addStandardTab(__CLASS__, $ong, $options);
       return $ong;
    }
-   
-   
+
+
 
    /**
     * Display tab
@@ -226,11 +226,11 @@ class PluginMonitoringDisplayview extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       $ong = array();
-      
+
       if ($item->getType() == 'PluginMonitoringDisplayview') {
          if ($item->getID() > 0) {
             $ong[1] = 'items';
-            
+
             if ($item->canUpdate()) {
                $ong[2] = __('Targets');
             }
@@ -255,7 +255,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
 
       if ($item->getType() == 'PluginMonitoringDisplayview') {
          switch($tabnum) {
-            
+
             case 1:
                $pmDisplayview_item = new PluginMonitoringDisplayview_item();
                $pmDisplayview_item->view($item->getID(), 1);
@@ -264,7 +264,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
             case 2 :
                $item->showVisibility();
                break;
-            
+
          }
          if ($tabnum >= 20) {
             $pmDisplayview_rule = new PluginMonitoringDisplayview_rule();
@@ -286,13 +286,13 @@ class PluginMonitoringDisplayview extends CommonDBTM {
 
       return true;
    }
-   
+
 
 
    /**
    * Display form for agent configuration
    *
-   * @param $items_id integer ID 
+   * @param $items_id integer ID
    * @param $options array
    *
    *@return bool true if form is ok
@@ -323,7 +323,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       Dropdown::showYesNo("is_frontview", $this->fields['is_frontview']);
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Header counter (critical/warning/ok)', 'monitoring')."&nbsp;:</td>";
       echo "<td>";
@@ -334,7 +334,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       $elements['Ressources'] = __('Resources', 'monitoring');
       Dropdown::showFromArray('counter', $elements, array('value'=>$this->fields['counter']));
       echo "</td>";
-      
+
       echo "<td>";
       echo __('Display in GLPI home page', 'monitoring');
       echo "</td>";
@@ -342,16 +342,16 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       Dropdown::showYesNo("in_central", $this->fields['in_central']);
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
       echo __('Width', 'monitoring')." (px) :";
       echo "</td>";
       echo "<td>";
       Dropdown::showNumber("width", array(
-                'value' => $this->fields['width'], 
-                'min'   => 950, 
-                'max'   => 3000, 
+                'value' => $this->fields['width'],
+                'min'   => 950,
+                'max'   => 3000,
                 'step'   => 5)
       );
       echo "</td>";
@@ -362,7 +362,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       Dropdown::showYesNo("is_active", $this->fields['is_active']);
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Comments')."</td>";
       echo "<td colspan='3' class='middle'>";
@@ -370,25 +370,25 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       echo "</textarea>";
       echo "</td>";
       echo "</tr>";
-      
+
       $this->showFormButtons($options);
       $this->addDivForTabs();
 
       return true;
    }
-   
-   
-   
+
+
+
    function getViews($central='0') {
       global $DB;
-      
+
       $wcentral = '';
       if ($central == '1') {
          $wcentral = " AND `in_central`='1' ";
       }
-      
+
       $a_views = array();
-      $query = "SELECT * FROM `glpi_plugin_monitoring_displayviews`      
+      $query = "SELECT * FROM `glpi_plugin_monitoring_displayviews`
                 WHERE `is_active` = '1'
                   AND (`users_id`='0' OR `users_id`='".$_SESSION['glpiID']."')
                   AND `is_frontview`='1'
@@ -404,8 +404,8 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       return $a_views;
    }
 
-   
-   
+
+
    /**
     * Show visibility config for a view
    **/
@@ -588,9 +588,9 @@ class PluginMonitoringDisplayview extends CommonDBTM {
 
       return true;
    }
-   
-   
-   
+
+
+
    function doSpecificMassiveActions($input=array()) {
 
       $res = array('ok'      => 0,
@@ -624,27 +624,27 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       }
       return $res;
    }
-   
-   
-   
+
+
+
    function showWidget($id) {
       return "<div id=\"updatedisplayview".$id."\"></div>";
    }
-   
-   
-   
+
+
+
   function showWidget2($id) {
       return "<div id=\"updatedisplayview2-".$id."\"></div>";
    }
-   
-   
-   
+
+
+
    function ajaxLoad($id) {
       global $CFG_GLPI;
-      
+
       $sess_id = session_id();
       PluginMonitoringSecurity::updateSession();
-      
+
       echo "<script type=\"text/javascript\">
 
       var elcc".$id." = Ext.get(\"updatedisplayview".$id."\");
@@ -659,15 +659,15 @@ class PluginMonitoringDisplayview extends CommonDBTM {
               "\", \"\", true);
       </script>";
    }
-   
-   
-   
+
+
+
    function ajaxLoad2($id, $is_minemap) {
       global $CFG_GLPI;
-      
+
       $sess_id = session_id();
       PluginMonitoringSecurity::updateSession();
-      
+
       echo "<script type=\"text/javascript\">
 
       var elcc".$id." = Ext.get(\"updatedisplayview2-".$id."\");
@@ -682,25 +682,25 @@ class PluginMonitoringDisplayview extends CommonDBTM {
               "\", \"\", true);
       </script>";
    }
-   
-   
-   
+
+
+
    /**
     * Display info of a views
-    * 
+    *
     * @param type $id
     */
    function showWidgetFrame($id) {
-      
+
       $this->getFromDB($id);
       $data = $this->fields;
-      
+
       $pmDisplayview_item = new PluginMonitoringDisplayview_item();
-      $a_counter = $pmDisplayview_item->getCounterOfViews($id, array('ok'          => 0, 
-                                                                     'warning'     => 0, 
+      $a_counter = $pmDisplayview_item->getCounterOfViews($id, array('ok'          => 0,
+                                                                     'warning'     => 0,
                                                                      'critical'    => 0,
                                                                      'acknowledge' => 0));
-      $nb_ressources = 0;      
+      $nb_ressources = 0;
       $class = 'ok';
       if ($a_counter['critical'] > 0) {
          $nb_ressources = $a_counter['critical'];
@@ -726,30 +726,30 @@ class PluginMonitoringDisplayview extends CommonDBTM {
          fittext('viewa-".$id."');
       </script>";
    }
-   
-   
-   
+
+
+
    /**
     * Display info of device
-    * 
+    *
     * @global type $DB
     * @param type $id
     */
    function showWidget2Frame($id, $is_minemap=FALSE) {
       global $DB, $CFG_GLPI;
-      
+
       $pmDisplayview_item = new PluginMonitoringDisplayview_item();
       $pmDisplayview_item->getFromDB($id);
-      
+
       $itemtype = $pmDisplayview_item->fields['extra_infos'];
       $item = new $itemtype();
       $item->getFromDB($pmDisplayview_item->fields['items_id']);
-      
+
       $critical = 0;
       $warning = 0;
       $ok = 0;
       $acknowledge = 0;
-      
+
       $query = "SELECT * FROM `glpi_plugin_monitoring_services`"
               . " LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`"
               . "    ON `plugin_monitoring_componentscatalogs_hosts_id`="
@@ -764,9 +764,9 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       $resources = array();
       $i = 0;
       while ($data=$DB->fetch_array($result)) {
-         $ret = PluginMonitoringHost::getState($data['state'], 
-                                                  $data['state_type'], 
-                                                  '', 
+         $ret = PluginMonitoringHost::getState($data['state'],
+                                                  $data['state_type'],
+                                                  '',
                                                   $data['is_acknowledged']);
          if (strstr($ret, '_soft')) {
             $ok++;
@@ -790,9 +790,9 @@ class PluginMonitoringDisplayview extends CommonDBTM {
          $resources[$data['id']]['event'] = $data['event'];
          $resources[$data['id']]['name'] = $data['name'];
          $resources[$data['id']]['plugin_monitoring_components_id'] = $data['plugin_monitoring_components_id'];
-         
+
       }
-      
+
       $class = 'ok';
       if ($critical > 0) {
          $nb_ressources = $critical;
@@ -822,7 +822,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       echo "<script>
          fittext('devicea-".$id."');
       </script>";
-      
+
       echo "<div class='minemapdiv' align='center'>"
       ."<a onclick='Ext.get(\"minemapdisplayview2-".$id."\").toggle()'>"
               ."Minemap</a></div>";
@@ -836,14 +836,14 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       // Get services list ...
       echo '<div class="minemapdiv">';
       echo '<table class="tab_cadrehov">';
-      
+
       // Header with services name and link to services list ...
       echo '<tr class="tab_bg_2">';
       echo '<th colspan="2">';
       echo __('Services', 'monitoring');
       echo '</th>';
       echo '</tr>';
-      
+
       // Content with host/service status and link to services list ...
       foreach ($services as $services_id) {
          $field_id = 20;
@@ -856,7 +856,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
          $link = $CFG_GLPI['root_doc'].
             "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
                "&field[0]=".$field_id."&searchtype[0]=equals&contains[0]=".$item->getID().
-               "&link[1]=AND&field[1]=2&searchtype[1]=equals&contains[1]=".$resources[$services_id]['plugin_monitoring_components_id'].  
+               "&link[1]=AND&field[1]=2&searchtype[1]=equals&contains[1]=".$resources[$services_id]['plugin_monitoring_components_id'].
                "&itemtype=PluginMonitoringService&start=0'";
 
          echo "<tr class='tab_bg_2'>";

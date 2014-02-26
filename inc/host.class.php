@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -46,17 +46,17 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringHost extends CommonDBTM {
 
-   
+
    static function getTypeName($nb=0) {
       return __('Host', 'monitoring');
    }
-   
-   
+
+
    static function canCreate() {
       return Session::haveRight('computer', 'w');
    }
 
-   
+
    function getSearchOptions() {
       $tab = array();
       $tab['common'] = _n('Host characteristic', 'Host characteristics', 2);
@@ -65,7 +65,7 @@ class PluginMonitoringHost extends CommonDBTM {
       $tab[0]['field']           = 'name';
       $tab[0]['name']            = __('Entity');
       $tab[0]['datatype']        = 'string';
-      
+
       $tab[1]['table']           = $this->getTable();
       $tab[1]['field']           = 'name';
       $tab[1]['name']            = __('Host name', 'monitoring');
@@ -73,7 +73,7 @@ class PluginMonitoringHost extends CommonDBTM {
       $tab[1]['searchtype']      = 'contains';
       $tab[1]['itemlink_type']   = $this->getType();
       $tab[1]['massiveaction']   = false;
-      
+
       $tab[2]['table']           = $this->getTable();
       $tab[2]['field']           = 'state';
       $tab[2]['name']            = __('Host state', 'monitoring');
@@ -81,7 +81,7 @@ class PluginMonitoringHost extends CommonDBTM {
       // $tab[3]['searchtype']      = 'equals';
       // $tab[3]['datatype']        = 'itemlink';
       // $tab[3]['itemlink_type']   = 'PluginMonitoringService';
-      
+
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'state_type';
       $tab[3]['name']            = __('Host state type', 'monitoring');
@@ -89,7 +89,7 @@ class PluginMonitoringHost extends CommonDBTM {
       // $tab[3]['searchtype']      = 'equals';
       // $tab[3]['datatype']        = 'itemlink';
       // $tab[3]['itemlink_type']   = 'PluginMonitoringService';
-      
+
       // $tab[4]['table']           = $this->getTable();
       // $tab[4]['field']           = 'state';
       // $tab[4]['name']            = __('Host resources state', 'monitoring');
@@ -97,7 +97,7 @@ class PluginMonitoringHost extends CommonDBTM {
       // $tab[4]['searchtype']      = 'equals';
       // $tab[4]['datatype']        = 'itemlink';
       // $tab[4]['itemlink_type']   = 'PluginMonitoringService';
-      
+
       // $tab[5]['table']           = $this->getTable();
       // $tab[5]['field']           = 'ip_address';
       // $tab[5]['name']            = __('IP address', 'monitoring');
@@ -118,26 +118,26 @@ class PluginMonitoringHost extends CommonDBTM {
       $tab[8]['field']          = 'perf_data';
       $tab[8]['name']           = __('Performance data', 'monitoring');
       $tab[8]['datatype']       = 'string';
-     
+
       $tab[9]['table']          = $this->getTable();
       $tab[9]['field']          = 'is_acknowledged';
       $tab[9]['name']           = __('Acknowledge', 'monitoring');
       $tab[9]['datatype']       = 'bool';
-     
+
       $tab[20]['table']          = 'glpi_computers';
       $tab[20]['field']          = 'name';
       $tab[20]['name']           = __('Item')." > ".__('Computer');
       $tab[20]['searchtype']     = 'equals';
       $tab[20]['datatype']       = 'itemlink';
       $tab[20]['itemlink_type']  = 'Computer';
-      
+
       $tab[21]['table']          = 'glpi_printers';
       $tab[21]['field']          = 'name';
       $tab[21]['name']           = __('Item')." > ".__('Printer');
       $tab[21]['searchtype']     = 'equals';
       $tab[21]['datatype']       = 'itemlink';
       $tab[21]['itemlink_type']  = 'Printer';
-      
+
       $tab[22]['table']          = 'glpi_networkequipments';
       $tab[22]['field']          = 'name';
       $tab[22]['name']           = __('Item')." > ".__('Network device');
@@ -145,11 +145,11 @@ class PluginMonitoringHost extends CommonDBTM {
       $tab[22]['datatype']       = 'itemlink';
       $tab[22]['itemlink_type']  = 'NetworkEquipment';
 
-      
+
       return $tab;
    }
 
-   
+
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       PluginMonitoringToolbox::loadLib();
 
@@ -174,15 +174,15 @@ class PluginMonitoringHost extends CommonDBTM {
       }
       return '';
    }
-   
-   
-   
+
+
+
    /**
     * @param CommonDBTM $item
    **/
    static function countForItem(CommonDBTM $item) {
       global $DB;
-      
+
       $query = "SELECT COUNT(*) AS cpt FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
          LEFT JOIN `glpi_plugin_monitoring_services`
             ON `glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` =
@@ -190,7 +190,7 @@ class PluginMonitoringHost extends CommonDBTM {
          WHERE `itemtype` = '".$item->getType()."'
             AND `items_id` ='".$item->getField('id')."'
             AND `glpi_plugin_monitoring_services`.`id` IS NOT NULL";
-      
+
       $result = $DB->query($query);
       $ligne  = $DB->fetch_assoc($result);
       return $ligne['cpt'];
@@ -222,12 +222,12 @@ class PluginMonitoringHost extends CommonDBTM {
       }
       return true;
    }
-   
-   
+
+
    // Only used when plugin is updated ... should be static ?
    function verifyHosts() {
       global $DB;
-      
+
       $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
          GROUP BY `itemtype`, `items_id`";
       $result = $DB->query($query);
@@ -243,19 +243,19 @@ class PluginMonitoringHost extends CommonDBTM {
             $input['items_id'] = $data['items_id'];
             $this->add($input);
          }
-      }      
+      }
    }
-   
-   
+
+
    /**
-    * If host does not exist add it 
-    * 
+    * If host does not exist add it
+    *
     */
    static function addHost($item) {
       global $DB;
-      
+
       $pmHost = new self();
-      
+
       $query = "SELECT * FROM `".$pmHost->getTable()."`
          WHERE `itemtype`='".$item->fields['itemtype']."'
            AND `items_id`='".$item->fields['items_id']."'
@@ -266,14 +266,14 @@ class PluginMonitoringHost extends CommonDBTM {
          $input['itemtype'] = $item->fields['itemtype'];
          $input['items_id'] = $item->fields['items_id'];
          $pmHost->add($input);
-      }      
+      }
    }
-   
-   
-   
+
+
+
    function updateDependencies($itemtype, $items_id, $parent) {
       global $DB;
-      
+
       $query = "UPDATE `glpi_plugin_monitoring_hosts`
          SET `dependencies`='".$parent."'
          WHERE `itemtype`='".$itemtype."'
@@ -281,13 +281,13 @@ class PluginMonitoringHost extends CommonDBTM {
       $DB->query($query);
    }
 
-   
+
    /**
     * Get host name
     */
    function getName($shinken = false) {
       if ($this->getID() == -1) return '';
-      
+
       $itemtype = $this->getField("itemtype");
       $item = new $itemtype();
       $item->getFromDB($this->getField("items_id"));
@@ -296,19 +296,19 @@ class PluginMonitoringHost extends CommonDBTM {
       if ($shinken) {
          $hostname = preg_replace("/[^A-Za-z0-9\-_]/","",$hostname);
       }
-      
+
       return $hostname;
    }
 
-   
+
     /**
     * Get host identifier for a service
     */
    function getServicesID() {
       if ($this->getID() == -1) return -1;
-      
+
       global $DB;
-      
+
       $query = "SELECT
                   `glpi_plugin_monitoring_services`.`id` as service_id
                   , `glpi_plugin_monitoring_services`.`name` as service_name
@@ -316,11 +316,11 @@ class PluginMonitoringHost extends CommonDBTM {
                   , `glpi_computers`.`name` as host_name
                FROM
                   `glpi_plugin_monitoring_hosts`
-               INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts` 
+               INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
                     ON (`glpi_plugin_monitoring_hosts`.`itemtype` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`) AND (`glpi_plugin_monitoring_hosts`.`items_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`)
-               INNER JOIN `glpi_computers` 
+               INNER JOIN `glpi_computers`
                     ON (`glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`)
-               INNER JOIN `glpi_plugin_monitoring_services` 
+               INNER JOIN `glpi_plugin_monitoring_services`
                     ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
                WHERE (`glpi_plugin_monitoring_hosts`.`id` = '".$this->getID()."');";
       $result = $DB->query($query);
@@ -341,7 +341,7 @@ class PluginMonitoringHost extends CommonDBTM {
     */
    function isInScheduledDowntime() {
       if ($this->getID() == -1) return false;
-      
+
       $pmDowntime = new PluginMonitoringDowntime();
       if ($pmDowntime->getFromHost($this->getID()) != -1) {
          return $pmDowntime->isInDowntime();
@@ -353,35 +353,35 @@ class PluginMonitoringHost extends CommonDBTM {
       // if ($pmDowntime->getID() != -1) {
          // return $pmDowntime->isInDowntime();
       // }
-      
+
       return false;
    }
 
-   
+
   /**
     * Is host currently acknowledged ?
     */
    function isCurrentlyAcknowledged() {
       if ($this->getID() == -1) return false;
-      
+
       $pmAcknowledge = new PluginMonitoringAcknowledge();
       if ($pmAcknowledge->getFromHost($this->getID(), 'Host') != -1) {
          Toolbox::logInFile("pm", "isCurrentlyAcknowledged ? ".$this->getID()." : ".(! $pmAcknowledge->isExpired())." \n");
          return (! $pmAcknowledge->isExpired());
       }
-      
+
       return false;
    }
 
 
    function getAcknowledge() {
       if ($this->getID() == -1) return false;
-      
+
       $pmAcknowledge = new PluginMonitoringAcknowledge();
       if ($pmAcknowledge->getFromHost($this->getID(), 'Service') != -1) {
          return ($pmAcknowledge->getComments());
       }
-      
+
       return '';
    }
 
@@ -391,7 +391,7 @@ class PluginMonitoringHost extends CommonDBTM {
     */
    function setAcknowledged($comment='') {
       if ($this->getID() == -1) return false;
-      
+
       // Do not create a new acknoledge because this function is called from acknoledge creation function !
       // $ackData = array();
       // $ackData['itemtype']       = 'PluginMonitoringHost';
@@ -415,20 +415,20 @@ class PluginMonitoringHost extends CommonDBTM {
    }
    function setUnacknowledged($comment='') {
       if ($this->getID() == -1) return false;
-      
+
       $hostData = array();
       $hostData['id'] = $this->getID();
       $hostData['is_acknowledged'] = '0';
       $this->update($hostData);
    }
 
-   
+
    /**
     * Get host entity
     */
    function getEntityID($options = array()) {
       if ($this->getID() == -1) return -1;
-      
+
       $itemtype = $this->getField("itemtype");
       $item = new $itemtype();
       $item->getFromDB($this->getField("items_id"));
@@ -438,7 +438,7 @@ class PluginMonitoringHost extends CommonDBTM {
 
    /**
     * Get host link to display
-    * options : 
+    * options :
     *    'monitoring' to return a link to the monitoring hosts view filtered with the host
     *    else, a link to GLPI computer form
     */
@@ -446,7 +446,7 @@ class PluginMonitoringHost extends CommonDBTM {
       global $CFG_GLPI;
 
       if ($this->getID() == -1) return '';
-      
+
       if (isset($options['monitoring']) && $options['monitoring']) {
          $itemtype = $this->getField("itemtype");
          $item = new $itemtype();
@@ -459,8 +459,8 @@ class PluginMonitoringHost extends CommonDBTM {
          } else if ($itemtype == 'NetworkEquipment') {
             $search_id = 22;
          }
-         
-         
+
+
          $link = $CFG_GLPI['root_doc'].
             "/plugins/monitoring/front/host.php?field[0]=".$search_id."&searchtype[0]=equals&contains[0]=".$item->getID()."&itemtype=PluginMonitoringHost&start=0";
          return "<a href='$link'>".$this->getName($options)."</a>"."&nbsp;".$this->getComments();
@@ -475,8 +475,8 @@ class PluginMonitoringHost extends CommonDBTM {
 
    /**
     * Get host short state (state + acknowledgement)
-    * 
-    * Return : 
+    *
+    * Return :
     * - green if host is UP
     * - red if host is DOWN, UNREACHABLE or DOWNTIME
     * - redblue if red and acknowledged
@@ -514,8 +514,8 @@ class PluginMonitoringHost extends CommonDBTM {
                $shortstate = 'orange';
             }
             break;
-         
-         
+
+
          // case 'UNKNOWN':
          // case '':
          default:
@@ -525,7 +525,7 @@ class PluginMonitoringHost extends CommonDBTM {
                $shortstate = 'yellow';
             }
             break;
-         
+
       }
       if ($state == 'WARNING'
               && $event == '') {
@@ -540,8 +540,8 @@ class PluginMonitoringHost extends CommonDBTM {
       }
       return $shortstate;
    }
-   
-   
+
+
    /**
     * Get summarized state for all host services
     * $id, host id
@@ -550,7 +550,7 @@ class PluginMonitoringHost extends CommonDBTM {
     * $where, services search criteria
     *    default is not acknowledged faulty services
     *
-    * Returns an array containing : 
+    * Returns an array containing :
     * 0 : overall services state
     * 1 : text string including date, state, event for each service
     * 2 : array of services id
@@ -558,24 +558,24 @@ class PluginMonitoringHost extends CommonDBTM {
     */
    static function getServicesState($id=-1, $where="`glpi_plugin_monitoring_services`.`state` != 'OK' AND `glpi_plugin_monitoring_services`.`is_acknowledged` = '0'") {
       global $DB;
-      
+
       if ($id == 0) {
          $id = $this->getID();
       }
-      
+
       if ($id == -1) {
          return;
       }
-      
+
       // Get all host services except if state is ok or is already acknowledged ...
       $host_services_ids = array();
       $host_services_state_list = '';
       $host_services_state = 'OK';
       $query = "SELECT `glpi_plugin_monitoring_services`.*
                FROM `glpi_plugin_monitoring_hosts`
-                  INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts` 
+                  INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
                      ON (`glpi_plugin_monitoring_hosts`.`itemtype` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`) AND (`glpi_plugin_monitoring_hosts`.`items_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`)
-                  INNER JOIN `glpi_plugin_monitoring_services` 
+                  INNER JOIN `glpi_plugin_monitoring_services`
                      ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
                WHERE ($where )
                   AND (`glpi_plugin_monitoring_hosts`.`id` = '$id')
@@ -589,12 +589,12 @@ class PluginMonitoringHost extends CommonDBTM {
             if (! empty($host_services_state_list)) $host_services_state_list .= "\n";
             $host_services_state_list .= $data['last_check']." - ".$data['name']." : ".$data['state'].", event : ".$data['event'];
             $host_services_ids[] = $data['id'];
-            
+
             switch ($data['state']) {
                case 'CRITICAL':
                   if ($host_services_state != 'CRITICAL') $host_services_state = $data['state'];
                   break;
-                  
+
                case 'DOWNTIME':
                   if ($host_services_state != 'DOWNTIME') $host_services_state = $data['state'];
                   break;
@@ -604,17 +604,17 @@ class PluginMonitoringHost extends CommonDBTM {
                case 'UNKNOWN':
                   if ($host_services_state == 'OK') $host_services_state = $data['state'];
                   break;
-                  
+
                case 'FLAPPING':
                   break;
             }
          }
       }
-      
+
       return (array($host_services_state, $host_services_state_list, $host_services_ids));
    }
-   
-   
+
+
    /**
     * Get comments for host
     * $id, host id
@@ -630,26 +630,26 @@ class PluginMonitoringHost extends CommonDBTM {
          $pm_Host = new PluginMonitoringHost();
          $pm_Host->getFromDB($id);
       }
-      
+
       // Toolbox::logInFile("pm", "Host getcomments : $id : ".$pm_Host->getID()."\n");
       $comment = "";
       $toadd   = array();
-      
+
       // associated computer ...
       $item = new $pm_Host->fields['itemtype'];
       $item->getFromDB($pm_Host->fields['items_id']);
-      
+
       if ($pm_Host->getField('itemtype') == 'Computer') {
          if ($item->isField('completename')) {
             $toadd[] = array('name'  => __('Complete name'),
                              'value' => nl2br($item->getField('completename')));
          }
-         
+
          $type = new ComputerType();
          if ($item->getField("computertypes_id")) {
             $type->getFromDB($item->getField("computertypes_id"));
             $type = $type->getName();
-            if (! empty($type)) { 
+            if (! empty($type)) {
                $toadd[] = array('name'  => __('Type'),
                                 'value' => nl2br($type));
             }
@@ -661,7 +661,7 @@ class PluginMonitoringHost extends CommonDBTM {
          if ($item->getField("computermodels_id")) {
             $model->getFromDB($item->getField("computermodels_id"));
             $model = $model->getName();
-            if (! empty($model)) { 
+            if (! empty($model)) {
                $toadd[] = array('name'  => __('Model'),
                                 'value' => nl2br($model));
             }
@@ -670,7 +670,7 @@ class PluginMonitoringHost extends CommonDBTM {
          $state = new State();
          $state->getFromDB($item->fields["states_id"]);
          $state = $state->getName();
-         if (! empty($state)) { 
+         if (! empty($state)) {
             $toadd[] = array('name'  => __('State'),
                              'value' => nl2br($state));
          }
@@ -678,7 +678,7 @@ class PluginMonitoringHost extends CommonDBTM {
          $entity = new Entity();
          $entity->getFromDB($item->fields["entities_id"]);
          $entity = $entity->getName();
-         if (! empty($entity)) { 
+         if (! empty($entity)) {
             $toadd[] = array('name'  => __('Entity'),
                              'value' => nl2br($entity));
          }
@@ -686,16 +686,16 @@ class PluginMonitoringHost extends CommonDBTM {
          $location = new Location();
          $location->getFromDB($item->fields["locations_id"]);
          $location = $location->getName(array('complete'  => true));
-         if (! empty($location)) { 
+         if (! empty($location)) {
             $toadd[] = array('name'  => __('Location'),
                              'value' => nl2br($location));
          }
-         
-         if (! empty($item->fields["serial"])) { 
+
+         if (! empty($item->fields["serial"])) {
             $toadd[] = array('name'  => __('Serial'),
                              'value' => nl2br($item->fields["serial"]));
          }
-         if (! empty($item->fields["otherserial"])) { 
+         if (! empty($item->fields["otherserial"])) {
             $toadd[] = array('name'  => __('Inventory number'),
                              'value' => nl2br($item->fields["otherserial"]));
          }
@@ -715,7 +715,7 @@ class PluginMonitoringHost extends CommonDBTM {
       } else {
          $toadd[] = array('name'  => __('Host type'),
                           'value' => nl2br($item->getTypeName()));
-                          
+
          if ($item->isField('completename')) {
             $toadd[] = array('name'  => __('Complete name'),
                              'value' => nl2br($item->getField('completename')));
@@ -733,7 +733,7 @@ class PluginMonitoringHost extends CommonDBTM {
     */
    function showAddAcknowledgeForm($id, $allServices=false) {
       global $CFG_GLPI,$DB;
-      
+
       if ($id == -1) {
          $pm_Host = $this;
       } else {
@@ -742,13 +742,13 @@ class PluginMonitoringHost extends CommonDBTM {
       }
       $hostname = $pm_Host->getName();
       $id = $pm_Host->fields['id'];
-      
+
       if (empty($hostname)) return false;
 
       // Acknowledge an host ...
-      echo "<form name='form' method='post' 
+      echo "<form name='form' method='post'
             action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php'>";
-      
+
       echo "<input type='hidden' name='host_id' value='$id' />";
       echo "<input type='hidden' name='hostname' value='$hostname' />";
 
@@ -762,13 +762,13 @@ class PluginMonitoringHost extends CommonDBTM {
       }
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr><td colspan='3'><hr/></td></tr>";
-      
+
       // Acknowledge host AND all faulty services ...
       // Get all host services except if state is ok or is already acknowledged ...
-      $a_ret = PluginMonitoringHost::getServicesState($id, 
-                                                      "`glpi_plugin_monitoring_services`.`state` != 'OK' 
+      $a_ret = PluginMonitoringHost::getServicesState($id,
+                                                      "`glpi_plugin_monitoring_services`.`state` != 'OK'
                                                       AND `glpi_plugin_monitoring_services`.`is_acknowledged` = '0'");
       $host_services_state = $a_ret[0];
       $host_services_state_list = $a_ret[1];
@@ -805,44 +805,44 @@ class PluginMonitoringHost extends CommonDBTM {
       echo "<textarea cols='80' rows='4' name='acknowledge_comment' ></textarea>";
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='3' align='center'>";
       echo "<input type='hidden' name='id' value='$id' />";
       echo "<input type='hidden' name='is_acknowledged' value='1' />";
       echo "<input type='hidden' name='acknowledge_users_id' value='".$_SESSION['glpiID']."' />";
       echo "<input type='hidden' name='referer' value='".$_SERVER['HTTP_REFERER']."' />";
-      
-      echo "<input type='submit' name='add' value=\"".__('Add an acknowledge for host', 'monitoring')."\" class='submit'>";            
+
+      echo "<input type='submit' name='add' value=\"".__('Add an acknowledge for host', 'monitoring')."\" class='submit'>";
       echo "</td>";
       echo "</tr>";
-      
+
       if (Session::haveRight('create_ticket', 1)) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='3' align='center'>";
          echo "<input type='hidden' name='name' value='".__('Host is down', 'monitoring')."' />";
          echo "<input type='hidden' name='redirect' value='".$CFG_GLPI["root_doc"]."/front/ticket.form.php' />";
-         echo "<input type='submit' name='add_and_ticket' value=\"".__('Add an acknowledge for host and create a ticket', 'monitoring')."\" class='submit'>";            
+         echo "<input type='submit' name='add_and_ticket' value=\"".__('Add an acknowledge for host and create a ticket', 'monitoring')."\" class='submit'>";
          echo "</td>";
          echo "</tr>";
       }
-      
+
       echo "</table>";
       Html::closeForm();
-      
+
       return true;
    }
-   
-   
-   
+
+
+
    /**
     * Form to modify acknowledge of an host
     */
    function showUpdateAcknowledgeForm($id=-1) {
       global $CFG_GLPI;
-      
+
       PluginMonitoringProfile::checkRight("acknowledge", 'w');
-      
+
       if ($id == -1) {
          $pm_Host = $this;
       } else {
@@ -850,21 +850,21 @@ class PluginMonitoringHost extends CommonDBTM {
          $pm_Host->getFromDB($id);
       }
       $hostname = $pm_Host->getName();
-      
-      echo "<form name='form' method='post' 
+
+      echo "<form name='form' method='post'
          action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php'>";
-   
+
       echo "<input type='hidden' name='host_id' value='$id' />";
       echo "<input type='hidden' name='hostname' value='$hostname' />";
       echo "<input type='hidden' name='hostAcknowledge' value='$hostname' />";
-      
+
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2'>";
       echo __('Modify acknowledge for the host', 'monitoring').' : '.$pm_Host->getLink();
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
       echo __('Acknowledge comment', 'monitoring');
@@ -886,11 +886,11 @@ class PluginMonitoringHost extends CommonDBTM {
       echo "</td>";
       echo "<td>";
       $user = new User();
-      $user->getFromDB($pm_Host->fields['acknowledge_users_id']);    
+      $user->getFromDB($pm_Host->fields['acknowledge_users_id']);
       echo $user->getName(1);
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='3' align='center'>";
       echo "<input type='submit' name='update' value=\"".__('Update acknowledge comment', 'monitoring')."\" class='submit'>";
@@ -916,10 +916,10 @@ class PluginMonitoringHost extends CommonDBTM {
       global $CFG_GLPI;
 
       $ret = '<div class="counter" id="dcHost_'.$location.'">'.$location.'</div>';
-      
+
       $sess_id = session_id();
       PluginMonitoringSecurity::updateSession();
-      
+
       $ret .= "<script>
             Ext.Ajax.request({
                url: '". $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateDailyCounters.php" ."',
@@ -943,7 +943,7 @@ class PluginMonitoringHost extends CommonDBTM {
                 }
             });
       </script>";
-      
+
       return $ret;
    }
 }

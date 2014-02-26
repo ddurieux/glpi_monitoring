@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,17 +45,17 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringSearch extends CommonDBTM {
-   
-   
-   
+
+
+
    /*
     * ************************************************************************ *
     * ************** Functions derived from Search of GLPI core ************** *
     * ************************************************************************ *
     */
-   
-   
-   
+
+
+
    /*
     * Cloned Core function to display with our require.
     */
@@ -104,7 +104,7 @@ if (strstr($_SERVER['REQUEST_URI'], 'displayview_rule.form.php')) {
    echo "<form name='searchform$itemtype' method='get' action=\"".
               $CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog_rule.form.php\">";
 }
-      
+
       $item->showFormHeader();
 
 //      echo "<form name='searchform$itemtype' method='get' action=\"".
@@ -126,7 +126,7 @@ if (strstr($_SERVER['REQUEST_URI'], 'displayview_rule.form.php')) {
       echo "</tr>";
       if (isset($_GET['itemtype'])) {
       echo "<tr class='tab_bg_1'>";
-      echo "<td colspan='3'>";      
+      echo "<td colspan='3'>";
       echo "<table>";
 
       // Display normal search parameters
@@ -430,12 +430,12 @@ if (strstr($_SERVER['REQUEST_URI'], 'displayview_rule.form.php')) {
             $CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
 
       echo "</td></tr>";
-      
+
       echo "</table>\n";
 
       echo "</td></tr>";
       echo "<tr>";
-      }     
+      }
 
       if (isset($_GET['id'])) {
          echo "<td colspan='2' class='center'>";
@@ -464,12 +464,12 @@ if (strstr($_SERVER['REQUEST_URI'], 'displayview_rule.form.php')) {
 
       // Reset to start when submit new search
       echo "<input type='hidden' name='start' value='0'>";
-      
+
       Html::closeForm();
    }
 
-   
-   
+
+
    /*
     * Clone of Search::showList but only to have SQL query
     */
@@ -568,7 +568,7 @@ $p = array();
       /* =========== Add for plugin Monitoring ============ */
          $toview = array();
          array_push($toview, 1);
-         
+
 
       // Add searched items
       if (count($p['field'])>0) {
@@ -1180,9 +1180,9 @@ $p = array();
          return $result;
       } else {
          return false;
-      }      
+      }
    }
-   
+
 }
 
 ?>

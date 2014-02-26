@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2013
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,8 +45,8 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringTag extends CommonDBTM {
-   
-   
+
+
    /**
    * Get name of this type
    *
@@ -63,23 +63,23 @@ class PluginMonitoringTag extends CommonDBTM {
       return PluginMonitoringProfile::haveRight("config", 'w');
    }
 
-   
-   
+
+
    static function canView() {
       return PluginMonitoringProfile::haveRight("config", 'r');
    }
-   
-   
-   
+
+
+
    static function canDelete() {
       return FALSE;
    }
-   
 
-   
+
+
    function getSearchOptions() {
       $tab = array();
-    
+
       $tab['common'] = __('Commands', 'monitoring');
 
 		$tab[1]['table']     = $this->getTable();
@@ -107,16 +107,16 @@ class PluginMonitoringTag extends CommonDBTM {
 		$tab[5]['field']     = 'iplock';
 		$tab[5]['linkfield'] = 'iplock';
 		$tab[5]['name']      = __('Lock shinken IP', 'monitoring');
-   
+
       return $tab;
    }
-   
-   
-   
+
+
+
    /**
    * Display form for agent configuration
    *
-   * @param $items_id integer ID 
+   * @param $items_id integer ID
    * @param $options array
    *
    *@return bool true if form is ok
@@ -130,7 +130,7 @@ class PluginMonitoringTag extends CommonDBTM {
       } else {
          $this->getEmpty();
       }
-      
+
       $this->showTabs($options);
       $this->showFormHeader($options);
 
@@ -154,7 +154,7 @@ class PluginMonitoringTag extends CommonDBTM {
       echo "<td>";
       echo "<input type='text' name='password' value='".$this->fields["password"]."' size='30'/>";
       echo "</td>";
-      echo "</tr>";      
+      echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Lock shinken IP', 'monitoring')." :</td>";
@@ -165,28 +165,28 @@ class PluginMonitoringTag extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
-      
+
       $this->showFormButtons($options);
-      
+
       return true;
    }
-   
-   
-   
+
+
+
    function setIP($tag, $ip) {
       if (!$this->isIPLocked($tag)) {
          $id = $this->getTagID($tag);
          $input= array();
          $input['id'] = $id;
          $input['ip'] = $ip;
-         $this->update($input);      
+         $this->update($input);
       }
    }
-   
-   
-   
+
+
+
    function getIP($tag) {
-      
+
       $a_tags = $this->find("`tag`='".$tag."'", '', 1);
       if (count($a_tags) == 1) {
          $a_tag = current($a_tags);
@@ -194,11 +194,11 @@ class PluginMonitoringTag extends CommonDBTM {
       }
       return '';
    }
-   
-   
-   
+
+
+
    function getAuth($tag) {
-      
+
       $a_tags = $this->find("`tag`='".$tag."'", '', 1);
       if (count($a_tags) == 1) {
          $a_tag = current($a_tags);
@@ -206,22 +206,22 @@ class PluginMonitoringTag extends CommonDBTM {
       }
       return '';
    }
-   
-   
-   
+
+
+
    function getTagID($tag) {
-      
+
       $a_tags = $this->find("`tag`='".$tag."'", '', 1);
       if (count($a_tags) == 1) {
          $a_tag = current($a_tags);
          return $a_tag['id'];
       }
-      
+
       return $this->add(array('tag' => $tag));
    }
 
-   
-   
+
+
    function isIPLocked($tag) {
       $a_tags = $this->find("`tag`='".$tag."'", '', 1);
       if (count($a_tags) == 1) {

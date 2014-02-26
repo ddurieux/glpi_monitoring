@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    Frédéric Mohier
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,13 +45,13 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringDowntime extends CommonDBTM {
-   
+
    static function getTypeName($nb=0) {
       return __CLASS__;
    }
 
 
-   static function canCreate() {      
+   static function canCreate() {
       return PluginMonitoringProfile::haveRight("downtime", 'w');
    }
 
@@ -71,38 +71,38 @@ class PluginMonitoringDowntime extends CommonDBTM {
    }
 
 
-   
+
    function defineTabs($options=array()){
 
       $ong = array();
 
       return $ong;
    }
-   
-   
-   
+
+
+
    function getComments() {
    }
 
-   
-    
+
+
     /**
     * Display tab
-    * 
+    *
     * @param CommonGLPI $item
     * @param integer $withtemplate
-    * 
+    *
     * @return varchar name of the tab(s) to display
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       if ($item->getType() == 'Ticket'){
          return __('Downtimes', 'monitoring');
       }
-      
+
       if ($item->getType() == 'Computer'){
          return __('Downtimes', 'monitoring');
       }
-      
+
       return '';
    }
 
@@ -110,11 +110,11 @@ class PluginMonitoringDowntime extends CommonDBTM {
 
    /**
     * Display content of tab
-    * 
+    *
     * @param CommonGLPI $item
     * @param integer $tabnum
     * @param interger $withtemplate
-    * 
+    *
     * @return boolean true
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
@@ -129,18 +129,18 @@ class PluginMonitoringDowntime extends CommonDBTM {
             foreach ($a_list as $data) {
                $host_id=$data['id'];
             }
-            
+
             $pmDowntime = new PluginMonitoringDowntime();
             $pmDowntime->showForm(-1, $host_id);
             return true;
          }
       }
-      
+
       if ($item->getType()=='Computer') {
          if (self::canView()) {
             // Show list filtered on item, sorted on day descending ...
             Search::showList(PluginMonitoringDowntime::getTypeName(), array(
-               'field' => array(2), 'searchtype' => array('equals'), 'contains' => array($item->getID()), 
+               'field' => array(2), 'searchtype' => array('equals'), 'contains' => array($item->getID()),
                'sort' => 4, 'order' => 'DESC'
                ));
             return true;
@@ -149,7 +149,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
       return true;
    }
 
-   
+
 
    function getSearchOptions() {
 
@@ -242,7 +242,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
             $pmHost->getFromDB($values[$field]);
             return $pmHost->getLink(array ("monitoring" => "1"));
             break;
-            
+
          case 'duration_type':
             $a_duration_type = array();
             $a_duration_type['seconds'] = __('Second(s)', 'monitoring');
@@ -251,16 +251,16 @@ class PluginMonitoringDowntime extends CommonDBTM {
             $a_duration_type['days']    = __('Day(s)', 'monitoring');
             return $a_duration_type[$values[$field]];
             break;
-            
+
          case 'users_id':
             $user = new User();
-            $user->getFromDB($values[$field]);    
+            $user->getFromDB($values[$field]);
             return $user->getName(1);
             break;
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
-   
+
 
    /**
     * Get entity
@@ -268,7 +268,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
    function getEntityID($options = array()) {
       return $this->fields["entities_id"];
    }
-   
+
 
    /**
     * Set default content
@@ -289,7 +289,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
       $this->fields["notified"]                    = 0;
       $this->fields["expired"]                     = 0;
    }
-   
+
 
    /**
     * Get host identifier for a downtime
@@ -297,8 +297,8 @@ class PluginMonitoringDowntime extends CommonDBTM {
    function getHostID() {
       return $this->fields["plugin_monitoring_hosts_id"];
    }
-   
-   
+
+
    /**
     * Get current downtime for an host
     */
@@ -307,39 +307,39 @@ class PluginMonitoringDowntime extends CommonDBTM {
       $this->getFromDBByQuery("WHERE `" . $this->getTable() . "`.`plugin_monitoring_hosts_id` = '" . $this->getID() . "' AND `expired` = '0' ORDER BY end_time DESC LIMIT 1");
       return $this->getID();
    }
-   
-   
+
+
    /**
     * Get user name for a downtime
     */
    function getUsername() {
       $user = new User();
-      $user->getFromDB($this->fields['users_id']);    
+      $user->getFromDB($this->fields['users_id']);
       return $user->getName(1);
    }
-   
-   
+
+
    /**
     * In scheduled downtime ?
     */
    function isInDowntime() {
       if ($this->getID() == -1) return false;
-      
+
       if ($this->isExpired()) return false;
-      
+
       // Now ...
       $now = strtotime(date('Y-m-d H:i:s'));
       // Start time ...
       $start_time = strtotime($this->fields["start_time"]);
       // End time ...
       $end_time = strtotime($this->fields["end_time"]);
-      
+
       // Toolbox::logInFile("pm", "isInDowntime, now : $now, start : $start_time, end : $end_time\n");
       if (($start_time <= $now) && ($now <= $end_time)) {
          // Toolbox::logInFile("pm", "isInDowntime, yes, id : ".$this->getID()."\n");
          return true;
       }
-      
+
       return false;
    }
 
@@ -349,14 +349,14 @@ class PluginMonitoringDowntime extends CommonDBTM {
     */
    function isExpired() {
       if ($this->getID() == -1) return false;
-      
+
       // Now ...
       $now = strtotime(date('Y-m-d H:i:s'));
       // Start time ...
       $start_time = strtotime($this->fields["start_time"]);
       // End time ...
       $end_time = strtotime($this->fields["end_time"]);
-      
+
       $this->fields["expired"] = ($now > $end_time);
       $this->update($this->fields);
       // Toolbox::logInFile("pm", "isExpired, ".$this->fields["expired"]."\n");
@@ -371,7 +371,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
          Session::addMessageAfterRedirect(__('Downtime period has already expired!', 'monitoring'), false, ERROR);
          return false;
       }
-      
+
       // Check user ...
       if ($input["users_id"] == NOT_AVAILABLE) {;
          $input["users_id"] = $_SESSION['glpiID'];
@@ -395,14 +395,14 @@ class PluginMonitoringDowntime extends CommonDBTM {
       }
 
       $user = new User();
-      $user->getFromDB($input['users_id']);    
-      
+      $user->getFromDB($input['users_id']);
+
       // Downtime is to be created ...
-      // ... send information to shinken via webservice   
+      // ... send information to shinken via webservice
       $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
       if ($pmShinkenwebservice->sendDowntime($input['plugin_monitoring_hosts_id'],
-                                             -1, 
-                                             $user->getName(1), 
+                                             -1,
+                                             $user->getName(1),
                                              $input['comment'],
                                              $input['flexible'],
                                              $input['start_time'],
@@ -411,27 +411,27 @@ class PluginMonitoringDowntime extends CommonDBTM {
                                              'add'
                                              )) {
          // ... and then send an acknowledge for the host
-         if ($pmShinkenwebservice->sendAcknowledge($input['plugin_monitoring_hosts_id'], 
-                                                   -1, 
-                                                   $user->getName(1), 
+         if ($pmShinkenwebservice->sendAcknowledge($input['plugin_monitoring_hosts_id'],
+                                                   -1,
+                                                   $user->getName(1),
                                                    $input['comment'],
                                                    '1', '1', '1')) {
-            // Set host as acknowledged 
+            // Set host as acknowledged
             $pmHost = new PluginMonitoringHost();
             $pmHost->getFromDB($input['plugin_monitoring_hosts_id']);
             $pmHost->setAcknowledged($input['comment']);
-            
+
             $a_services = $pmHost->getServicesID();
             if (is_array($a_services)) {
                foreach ($a_services as $service_id) {
-                  // Send acknowledge command for a service to shinken via webservice   
+                  // Send acknowledge command for a service to shinken via webservice
                   $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
-                  if ($pmShinkenwebservice->sendAcknowledge(-1, 
-                                                            $service_id, 
-                                                            $user->getName(1), 
+                  if ($pmShinkenwebservice->sendAcknowledge(-1,
+                                                            $service_id,
+                                                            $user->getName(1),
                                                             $input['comment'],
                                                             '1', '1', '1')) {
-                     // Set service as acknowledged 
+                     // Set service as acknowledged
                      $pmService = new PluginMonitoringService();
                      $pmService->getFromDB($service_id);
                      $pmService->setAcknowledged($input['comment']);
@@ -439,7 +439,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
                }
             }
          }
-         
+
          Session::addMessageAfterRedirect(__('Downtime notified to the monitoring application:', 'monitoring'));
          $input['notified'] = 1;
       } else {
@@ -458,7 +458,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
    **/
    function post_addItem() {
       // Toolbox::logInFile("pm", "Downtime, post_add\n");
-      
+
    }
 
 
@@ -472,15 +472,15 @@ class PluginMonitoringDowntime extends CommonDBTM {
       // Toolbox::logInFile("pm", "Downtime, pre_deleteItem\n");
 
       $user = new User();
-      $user->getFromDB($this->fields['users_id']);    
-      
+      $user->getFromDB($this->fields['users_id']);
+
       // Downtime is to be created ...
-      // ... send information to shinken via webservice   
+      // ... send information to shinken via webservice
       $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
       // sendDowntime($host_id=-1, $service_id=-1, $author= '', $comment='', $start_time='0', $fixed='0', $duration='1') {
       if ($pmShinkenwebservice->sendDowntime($this->fields['plugin_monitoring_hosts_id'],
-                                             -1, 
-                                             $user->getName(1), 
+                                             -1,
+                                             $user->getName(1),
                                              $this->fields['comment'],
                                              $this->fields['flexible'],
                                              $this->fields['start_time'],
@@ -498,11 +498,11 @@ class PluginMonitoringDowntime extends CommonDBTM {
       return true;
    }
 
-   
+
    /**
-   * 
    *
-   * @param $items_id integer ID 
+   *
+   * @param $items_id integer ID
    *
    * @param $host_id integer associated host ID
    * @param $options array
@@ -516,7 +516,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
       if (($host_id == -1) && ($items_id == -1)) return false;
 
       $createDowntime = false;
-      
+
       $pmHost = new PluginMonitoringHost();
       if ($host_id != -1) {
          $pmHost->getFromDB($host_id);
@@ -544,11 +544,11 @@ class PluginMonitoringDowntime extends CommonDBTM {
       // Now ...
       $nowDate = date('Y-m-d');
       $nowTime = date('H:i:s');
-      
+
       $this->showFormHeader($options);
 
       $this->isExpired();
-      
+
       $pmHost = new PluginMonitoringHost();
       $pmHost->getFromDB($this->fields["plugin_monitoring_hosts_id"]);
       $itemtype = $pmHost->getField("itemtype");
@@ -560,12 +560,12 @@ class PluginMonitoringDowntime extends CommonDBTM {
       echo "<input type='hidden' name='plugin_monitoring_hosts_id' value='".$this->fields['plugin_monitoring_hosts_id']."' />";
       echo $item->getLink()."&nbsp;".$pmHost->getComments();
       echo "</td>";
-      
+
       echo "<td></td>";
       echo "<td></td>";
       echo "</tr>";
-      
-      
+
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Start time', 'monitoring')."</td>";
       echo "<td>";
@@ -588,8 +588,8 @@ class PluginMonitoringDowntime extends CommonDBTM {
       }
       echo "</td>";
       echo "</tr>";
-      
-      
+
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('End time', 'monitoring')."</td>";
       echo "<td>";
@@ -607,7 +607,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
       echo "<td>";
       if ($createDowntime) {
          Dropdown::showNumber("duration", array(
-                   'value' => $this->fields['duration'], 
+                   'value' => $this->fields['duration'],
                    'min'   => 1,
                    'max'   => 300)
          );
@@ -629,8 +629,8 @@ class PluginMonitoringDowntime extends CommonDBTM {
       }
       echo "</td>";
       echo "</tr>";
-      
-      
+
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Comment', 'monitoring')."</td>";
       echo "<td >";
@@ -640,10 +640,10 @@ class PluginMonitoringDowntime extends CommonDBTM {
          echo "<textarea cols='80' rows='4' name='comment' readonly='1' disabled='1' >".$this->fields['comment']."</textarea>";
       }
       echo "</td>";
-      
+
       echo "</tr>";
-      
-      
+
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('User', 'monitoring')."</td>";
       echo "<td>";
@@ -656,9 +656,9 @@ class PluginMonitoringDowntime extends CommonDBTM {
       echo Dropdown::getYesNo($this->fields['expired']);
       echo "</td>";
       echo "</tr>";
-         
+
       $this->showFormButtons();
-      
+
       return true;
    }
 
@@ -680,7 +680,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
       $query = "UPDATE `glpi_plugin_monitoring_downtimes` SET `expired` = '1' WHERE `expired` = '0' AND `end_time` < NOW();";
       // Toolbox::logInFile("pm", "cronDowntimesExpired, query : $query\n");
       $DB->query($query);
-      
+
       return true;
    }
 }

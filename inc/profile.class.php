@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -55,8 +55,8 @@ class PluginMonitoringProfile extends CommonDBTM {
       return Session::haveRight('profile','w');
    }
 
-   
-   
+
+
    /**
     * Get the name of the index field
     *
@@ -76,7 +76,7 @@ class PluginMonitoringProfile extends CommonDBTM {
          $input = array();
          $input['profiles_id'] = $_SESSION['glpiactiveprofile']['id'];
          $input['config'] = 'w';
-         
+
          $input['config_services_catalogs'] = 'w';
          $input['config_components_catalogs'] = 'w';
          $input['config_weathermap'] = 'w';
@@ -111,8 +111,8 @@ class PluginMonitoringProfile extends CommonDBTM {
          $pmProfile->add($input);
       }
    }
-   
-   
+
+
 
    static function changeprofile() {
       if (isset($_SESSION['glpiactiveprofile']['id'])) {
@@ -125,8 +125,8 @@ class PluginMonitoringProfile extends CommonDBTM {
       }
    }
 
-   
-   
+
+
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (Session::haveRight('profile', "r")) {
@@ -149,8 +149,8 @@ class PluginMonitoringProfile extends CommonDBTM {
       return true;
    }
 
-   
-   
+
+
 
     /**
     * Show profile form
@@ -162,14 +162,14 @@ class PluginMonitoringProfile extends CommonDBTM {
     **/
    function showForm($items_id) {
       global $CFG_GLPI;
-      
-      if ($items_id > 0 
+
+      if ($items_id > 0
               AND $this->getFromDB($items_id)) {
-        
+
       } else {
          $this->getEmpty();
       }
-      
+
       if (!Session::haveRight("profile","r")) {
          return false;
       }
@@ -239,9 +239,9 @@ class PluginMonitoringProfile extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
-      
+
       echo "<tr><td colspan='4'><hr/></td></tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
       echo __('Restart shinken', 'monitoring')."&nbsp;:";
@@ -256,7 +256,7 @@ class PluginMonitoringProfile extends CommonDBTM {
       Profile::dropdownNoneReadWrite("host_command", $this->fields["host_command"], 1, 1, 0);
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
       echo __('Acknowledge problems', 'monitoring')."&nbsp;:";
@@ -271,7 +271,7 @@ class PluginMonitoringProfile extends CommonDBTM {
       Profile::dropdownNoneReadWrite("downtime", $this->fields["downtime"], 1, 1, 1);
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
       echo __('Manage counters', 'monitoring')."&nbsp;:";
@@ -284,7 +284,7 @@ class PluginMonitoringProfile extends CommonDBTM {
       echo "<td>";
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr><td colspan='4'><br/></td></tr>";
 
       echo "<tr>";
@@ -300,7 +300,7 @@ class PluginMonitoringProfile extends CommonDBTM {
       Profile::dropdownNoneReadWrite("dashboard", $this->fields["dashboard"], 1, 1, 0);
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
       echo __('View system status', 'monitoring')."&nbsp;:";
@@ -360,7 +360,7 @@ class PluginMonitoringProfile extends CommonDBTM {
       Profile::dropdownNoneReadWrite("dashboard_perfdatas", $this->fields["dashboard_perfdatas"], 1, 1, 0);
       echo "</td>";
       echo "</tr>";
-      
+
 
 
       echo "<tr><td colspan='4'><br/></td></tr>";
@@ -379,7 +379,7 @@ class PluginMonitoringProfile extends CommonDBTM {
       echo "</td>";
       echo "<td>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
       echo __('View system status', 'monitoring')."&nbsp;:";
@@ -427,7 +427,7 @@ class PluginMonitoringProfile extends CommonDBTM {
       Profile::dropdownNoneReadWrite("homepage_perfdatas", $this->fields["homepage_perfdatas"], 1, 1, 0);
       echo "</td>";
       echo "</tr>";
-      
+
       if ($canedit) {
          echo "<tr>";
          echo "<th colspan='4'>";
@@ -445,7 +445,7 @@ class PluginMonitoringProfile extends CommonDBTM {
       Html::closeForm();
    }
 
-   
+
 
    static function checkRight($module, $right) {
       global $CFG_GLPI;
@@ -483,8 +483,8 @@ class PluginMonitoringProfile extends CommonDBTM {
       return false;
    }
 
-      
-   
+
+
    /**
     * Update the item in the database
     *
@@ -531,8 +531,8 @@ class PluginMonitoringProfile extends CommonDBTM {
       return true;
    }
 
-   
-   
+
+
    /**
     * Add a message on update action
    **/

@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringLog extends CommonDBTM {
-   
+
 
    /**
    * Get name of this type
@@ -64,13 +64,13 @@ class PluginMonitoringLog extends CommonDBTM {
    }
 
 
-   
+
    static function canView() {
       return Session::haveRight('config', 'r');
    }
 
 
-   
+
    static function cronInfo($name){
 
       switch ($name) {
@@ -82,13 +82,13 @@ class PluginMonitoringLog extends CommonDBTM {
       return array();
    }
 
-   
+
    static function cronCleanlogs() {
       global $DB;
 
       $pmLog      = new PluginMonitoringLog();
       $pmConfig   = new PluginMonitoringConfig();
-      
+
       $id_restart = 0;
       $a_restarts = $pmLog->find("`action`='restart'", "`id` DESC", 1);
       if (count($a_restarts) > 0) {
@@ -103,27 +103,27 @@ class PluginMonitoringLog extends CommonDBTM {
          $query .= " AND `id` < '".$id_restart."'";
       }
       $DB->query($query);
-      
+
       // Clean too events
       // PluginMonitoringServiceevent::cronUpdaterrd();
-      
+
       $pmUnavailability = new PluginMonitoringUnavailability();
-      $pmUnavailability->runUnavailability();      
-      
+      $pmUnavailability->runUnavailability();
+
       $query = "DELETE FROM `glpi_plugin_monitoring_serviceevents`
          WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
       $DB->query($query);
-      
+
       return true;
    }
-   
-   
-   
-   function isRestartLessThanFiveMinutes() {     
+
+
+
+   function isRestartLessThanFiveMinutes() {
       $a_restarts = $this->find("`action` LIKE 'restart%' AND `date_mod` > date_add(now(), interval - 5 MINUTE)", "`id` DESC", 1);
       if (count($a_restarts) > 0) {
          return true;
-      }      
+      }
       return false;
    }
 

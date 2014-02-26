@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2012
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringDisplayview_item extends CommonDBTM {
-   
+
 
    /**
    * Get name of this type
@@ -64,39 +64,39 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
    }
 
 
-   
+
    static function canView() {
       return PluginMonitoringProfile::haveRight("config_views", 'r');
    }
 
 
-   
+
    function canCancel() {
       return PluginMonitoringProfile::haveRight("config_views", 'w');
    }
 
 
-   
+
    function canUndo() {
       return PluginMonitoringProfile::haveRight("config_views", 'w');
    }
 
 
-   
+
    function canValidate() {
       return true;
    }
 
-   
-   
+
+
    function view($id, $config=0) {
       global $DB, $CFG_GLPI;
 
       $pmDisplayview       = new PluginMonitoringDisplayview();
       $pmDisplayview_rule  = new PluginMonitoringDisplayview_rule();
-      
+
       $pmDisplayview->getFromDB($id);
-      
+
          echo "<script type='text/javascript'>
             function fittext(itemid) {
                document.getElementById(itemid).style.fontSize = '50px';
@@ -120,7 +120,7 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
                }
             }
          </script>";
-      
+
       PluginMonitoringToolbox::loadLib();
 
       $style = '';
@@ -137,12 +137,12 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
             $pmDisplay->showCounters($pmDisplayview->fields['counter']);
          }
       }
-      
+
       echo "<table class='tab_cadre_fixe' id='test' style='width:".$pmDisplayview->fields['width']."px".$style."'>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<th>";
-      
+
       echo $pmDisplayview->fields['name'];
       echo "</th>";
       echo "</tr>";
@@ -162,7 +162,7 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
       echo __('Select date', 'monitoring');
       echo "</th>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1' id='date_select' style='display: none;'>";
       echo "<td>";
 
@@ -181,7 +181,7 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
          $item->getFromDB($data['items_id']);
          if (isset($item->fields['plugin_monitoring_components_id'])) {
             $oldvalue = current(getAllDatasFromTable(
-                    'glpi_plugin_monitoring_serviceevents', 
+                    'glpi_plugin_monitoring_serviceevents',
                     "`plugin_monitoring_services_id`='".$data['items_id']."'",
                     false,
                     'date ASC LIMIT 1'));
@@ -190,7 +190,7 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
                $start = $date->getTimestamp();
             }
             $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
-         
+
             $a_items["item".$data['id']] = array(
                 'rrdtool_template'  => $pmComponent->fields['graph_template'],
                 'itemtype'          => $data['itemtype'],
@@ -244,17 +244,17 @@ Ext.onReady(function(){
 </script>";
       echo '<center><div id="custom-tip-slider"></div></center>';
       echo "</td>";
-      echo "</tr>";   
+      echo "</tr>";
 
      echo "<tr class='tab_bg_1' id='time_text' style='display: none;'>";
       echo "<th>";
       echo __('Select time', 'monitoring');
       echo "</th>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1' id='time_select' style='display: none;'>";
       echo "<td>";
-      
+
       $start = 0 + 86400 - 3600;
       $end = 86400 + 86400 - 3600 - 300;
       $current = mktime(date('H'), date('i'), 0, 1, 2, 1970);
@@ -301,23 +301,23 @@ Ext.onReady(function(){
 </script>";
       echo '<center><div id="custom-tip-slider-time"></div></center>';
       echo "</td>";
-      echo "</tr>";   
+      echo "</tr>";
 
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<th>";
       echo __('View', 'monitoring');
       echo "</th>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
       echo "<input type='hidden' name='updateviewid' id='updateviewid' value='".$id."' />";
       if ($config == 0) {
          echo "<div id='filariane'>&nbsp;</div>";
          echo "<input type='hidden' name='updatefil' id='updatefil' value='".$id."!' />";
-         
-      
+
+
          echo "<script type=\"text/javascript\">
             function reloadfil() {
                Ext.get('filariane').load({
@@ -333,16 +333,16 @@ Ext.onReady(function(){
       echo "</td>";
       echo "</tr>";
 
-         
+
       echo "<tr class='tab_bg_1'>";
       echo "<td height='1200' id='panel'>";
 
       echo '<div id="custom_date" style="display:none"></div>';
       echo '<div id="custom_time" style="display:none"></div>';
-      
+
       echo "<div id='viewform'>";
       echo "<script type='text/javascript'>
-        
+
         //Simple 'border layout' panel to house both grids
         var displayPanel = new Ext.Panel({
           id       : 'viewpanel',
@@ -354,7 +354,7 @@ Ext.onReady(function(){
         });
 
       </script>";
-      
+
       echo "</div>";
       echo "<script type=\"text/javascript\">
          function reloadview() {
@@ -366,22 +366,22 @@ Ext.onReady(function(){
          }
          reloadview();
       </script>";
-      
+
       echo "</td>";
       echo "</tr>";
       echo "</table>";
       echo "<br/>";
-      
+
    }
-   
-   
-   
+
+
+
    function reloadView($id, $config) {
       global $DB;
-      
+
       $pmDisplayview = new PluginMonitoringDisplayview();
       $pmDisplayview->getFromDB($id);
-      
+
       $query = "SELECT * FROM `glpi_plugin_monitoring_displayviews_items`
          WHERE `plugin_monitoring_displayviews_id`='".$id."'";
       $result = $DB->query($query);
@@ -391,11 +391,11 @@ Ext.onReady(function(){
             $a_items[] = "item".$data['id'];
          }
       }
-      
+
 
 
       echo "<script type='text/javascript'>
-        
+
         Ext.getCmp('viewpanel').items.each(function(c){Ext.getCmp('viewpanel').remove(c);});
         Ext.getCmp('viewpanel').setWidth('".$pmDisplayview->fields['width']."');
         ";
@@ -406,9 +406,9 @@ Ext.onReady(function(){
       }
       echo "</script>";
    }
-   
-   
-   
+
+
+
    function displayItem($data, $config) {
       global $CFG_GLPI;
 
@@ -430,18 +430,18 @@ Ext.onReady(function(){
             return false;
          }
          $title .= " : <a href=\"".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$data['items_id']."\">".
-            Dropdown::getDropdownName(getTableForItemType('PluginMonitoringComponent'), 
+            Dropdown::getDropdownName(getTableForItemType('PluginMonitoringComponent'),
                                       $item->fields['plugin_monitoring_components_id']);
          $title .= '</a> '.__('on', 'monitoring').' ';
          $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
          $pmComponentscatalog_Host->getFromDB($item->fields["plugin_monitoring_componentscatalogs_hosts_id"]);
-         if (isset($pmComponentscatalog_Host->fields['itemtype']) 
+         if (isset($pmComponentscatalog_Host->fields['itemtype'])
                  AND $pmComponentscatalog_Host->fields['itemtype'] != '') {
 
             $itemtype2 = $pmComponentscatalog_Host->fields['itemtype'];
             $item2 = new $itemtype2();
             $item2->getFromDB($pmComponentscatalog_Host->fields['items_id']);
-            $title .= str_replace("'", "\"", $item2->getLink()." (".$item2->getTypeName()." / ".$data['extra_infos'].")");            
+            $title .= str_replace("'", "\"", $item2->getLink()." (".$item2->getTypeName()." / ".$data['extra_infos'].")");
          }
          $width = "width: 475,";
       } else if ($itemtype == "PluginMonitoringWeathermap") {
@@ -479,7 +479,7 @@ Ext.onReady(function(){
          }
 
         var item".$data['id']." = new Ext.Panel({
-             closable: true,           
+             closable: true,
              title: '".$title."',
              x: ".$data['x'].",
              y: ".$data['y'].",
@@ -534,7 +534,7 @@ Ext.onReady(function(){
                      if (this.y < 0) {
                         this.panel.destroy();
                      }
-            
+
             ";
       }
       echo "      }
@@ -546,15 +546,15 @@ Ext.onReady(function(){
       if ($itemtype == "PluginMonitoringService") {
          $pmComponent = new PluginMonitoringComponent();
          $item = new $itemtype();
-         
+
          $item->getFromDB($data['items_id']);
          $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
          $pmServicegraph = new PluginMonitoringServicegraph();
-         $pmServicegraph->displayGraph($pmComponent->fields['graph_template'], 
-                                       "PluginMonitoringService", 
-                                       $data['items_id'], 
-                                       "0", 
-                                       $data['extra_infos'], 
+         $pmServicegraph->displayGraph($pmComponent->fields['graph_template'],
+                                       "PluginMonitoringService",
+                                       $data['items_id'],
+                                       "0",
+                                       $data['extra_infos'],
                                        "js");
       } else if($itemtype == "PluginMonitoringComponentscatalog") {
          $pmComponentscatalog = new PluginMonitoringComponentscatalog();
@@ -575,7 +575,7 @@ Ext.onReady(function(){
          $pmCustomitem_Counter = new PluginMonitoringCustomitem_Counter();
          $pmCustomitem_Counter->ajaxLoad($data['items_id']);
       }
-      
+
       if ($itemtype == "PluginMonitoringWeathermap") {
 //         echo "<script type='text/javascript'>
 //            function updateimagew".$data['items_id']."() {
@@ -585,10 +585,10 @@ Ext.onReady(function(){
 //            setInterval(updateimagew".$data['items_id'].", 50000);
 //         </script>";
 //      }
-         
+
          $sess_id = session_id();
          PluginMonitoringSecurity::updateSession();
-         
+
          echo "<script type='text/javascript'>
          var mgr = new Ext.UpdateManager('weathermap-".$data['items_id']."');
          mgr.startAutoRefresh(50, \"".$CFG_GLPI["root_doc"].
@@ -603,16 +603,16 @@ Ext.onReady(function(){
       return true;
    }
 
-   
-   
+
+
    function addItem($displayviews_id) {
       global $DB,$CFG_GLPI;
 
       $this->getEmpty();
-      
+
       $pmDisplayview = new PluginMonitoringDisplayview();
       $pmDisplayview->getFromDB($displayviews_id);
-      
+
       // Manage entity_sons
       $a_entities = array();
       if (!($pmDisplayview->fields['entities_id']<0)) {
@@ -622,7 +622,7 @@ Ext.onReady(function(){
             $a_entities = getSonsOf('glpi_entities', $pmDisplayview->fields['entities_id']);
          }
       }
-      
+
       $options = array();
       $this->showFormHeader($options);
 
@@ -642,9 +642,9 @@ Ext.onReady(function(){
       $elements['PluginMonitoringWeathermap']         = __('Weathermap', 'monitoring');
       $elements['PluginMonitoringCustomitem_Gauge']   = PluginMonitoringCustomitem_Gauge::getTypeName();
       $elements['PluginMonitoringCustomitem_Counter'] = PluginMonitoringCustomitem_Counter::getTypeName();
-      
+
       $rand = Dropdown::showFromArray('itemtype', $elements, array('value'=>$this->fields['itemtype']));
-      
+
       $params = array('itemtype'        => '__VALUE__',
                 'displayviews_id' => $displayviews_id,
                 'myname'          => "items_id",
@@ -660,14 +660,14 @@ Ext.onReady(function(){
 
       echo "<td colspan='2'></td>";
       echo "</tr>";
-      
+
       $this->showFormButtons($options);
 
       return true;
    }
-   
-   
-   
+
+
+
    function getCounterOfViews($id, $a_counter) {
       $a_views = $this->find("`itemtype`='PluginMonitoringDisplayview'"
               ." AND `plugin_monitoring_displayviews_id`='".$id."'");
@@ -677,9 +677,9 @@ Ext.onReady(function(){
       $a_counter = $this->getCounterOfView($id, $a_counter);
       return $a_counter;
    }
-   
-   
-   
+
+
+
    function getCounterOfView($id, $a_counter) {
       global $DB;
 
@@ -696,14 +696,14 @@ Ext.onReady(function(){
                           . " WHERE `items_id`='".$data['items_id']."'"
                           . "    AND `itemtype`='".$data['extra_infos']."'"
                           . "    AND `glpi_plugin_monitoring_services`.`id` IS NOT NULL";
-         
+
          $result = $DB->query($query);
          while ($data2=$DB->fetch_array($result)) {
             $pmService->getFromDB($dataService["id"]);
             $ret = $pmService->getShortState();
-            // $ret = PluginMonitoringHost::getState($data2['state'], 
-                                                     // $data2['state_type'], 
-                                                     // '', 
+            // $ret = PluginMonitoringHost::getState($data2['state'],
+                                                     // $data2['state_type'],
+                                                     // '',
                                                      // $data2['is_acknowledged']);
             if (strstr($ret, '_soft')) {
                $a_counter['ok']++;

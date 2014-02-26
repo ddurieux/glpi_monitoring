@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -55,12 +55,12 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       return PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r') || PluginMonitoringProfile::haveRight("homepage_all_ressources", 'r');
    }
 
-   
+
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       if ($item->getType() == 'Computer'){
          return __('Service events', 'monitoring');
       }
-      
+
       return '';
    }
 
@@ -71,7 +71,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
          if (self::canView()) {
             // Show list filtered on item, sorted on day descending ...
             Search::showList(PluginMonitoringServiceevent::getTypeName(), array(
-               'field' => array(2), 'searchtype' => array('equals'), 'contains' => array($item->getID()), 
+               'field' => array(2), 'searchtype' => array('equals'), 'contains' => array($item->getID()),
                'sort' => 3, 'order' => 'DESC'
                ));
             return true;
@@ -108,13 +108,13 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       $tab[21]['name']          = __('Component', 'monitoring');
       $tab[21]['datatype']      = 'itemlink';
       $tab[21]['itemlink_type'] = 'Component';
-      
+
       $tab[22]['table']         = 'glpi_computers';
       $tab[22]['field']         = 'name';
       $tab[22]['name']          = __('Host', 'monitoring');
       $tab[22]['datatype']      = 'itemlink';
       $tab[22]['itemlink_type'] = 'Computer';
-      
+
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'date';
       $tab[3]['name']            = __('Date', 'monitoring');
@@ -159,7 +159,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
-   
+
 
    static function convert_datetime_timestamp($str) {
 
@@ -171,8 +171,8 @@ class PluginMonitoringServiceevent extends CommonDBTM {
 
       return $timestamp;
    }
-   
-   
+
+
 
    function calculateUptime($hosts_id, $startDate, $endDate) {
       $a_list = $this->find("`plugin_monitoring_hosts_id`='".$hosts_id."'
@@ -232,28 +232,28 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                    'critical_t'=> $count['critical']." seconds",
                    'ok_p'      => round(($count['ok'] * 100) / $total, 3),
                    'critical_p'=> round(($count['critical'] * 100) / $total, 3));
-      
+
    }
- 
-   
-   
-   function getSpecificData($perfdatas_id, $items_id, $which='last', $state="AND `state` = 'OK'") { 
-      global $DB;      
-   
+
+
+
+   function getSpecificData($perfdatas_id, $items_id, $which='last', $state="AND `state` = 'OK'") {
+      global $DB;
+
       // ** Get in table serviceevents
       $mydatat = array();
       $a_labels = array();
       $a_ref = array();
       $pmService = new PluginMonitoringService();
       $pmService->getFromDB($items_id);
-      
+
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks($pmService->fields['plugin_monitoring_components_id']);
-      
+
       $enddate = date('U');
       $counters = array();
-      
+
       switch ($which) {
-         case 'first': 
+         case 'first':
             $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
                   AND `perf_data` != ''
@@ -262,7 +262,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                LIMIT 1";
             break;
 
-         case 'last': 
+         case 'last':
             $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `plugin_monitoring_services_id`='".$items_id."'
                   AND `perf_data` != ''
@@ -271,17 +271,17 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                LIMIT 1";
             break;
 
-         default: 
+         default:
             return $counters;
             break;
       }
-      
+
       $resultevent = $DB->query($query);
       $dataevent = $DB->fetch_assoc($resultevent);
       $result = $DB->query($query);
 
       $ret = $this->getData(
-              $result, 
+              $result,
               $perfdatas_id,
               $dataevent['date'],
               $dataevent['date']);
@@ -302,22 +302,22 @@ class PluginMonitoringServiceevent extends CommonDBTM {
             $counters[] = $counter;
          }
       }
-   
+
       return $counters;
    }
-      
-      
-      
+
+
+
    function getData($result, $perfdatas_id, $start_date, $end_date, $ret=array(), $timecomplete=0, $todisplay=array()) {
       global $DB;
-      
+
       // Toolbox::logInFile("pm", "serviceevent, getData : $perfdatas_id, from $start_date to $end_date\n");
       if (empty($ret)) {
          $ret = $this->getRef($perfdatas_id);
       }
       $a_ref = $ret[0];
       $a_convert = $ret[1];
-      
+
       $mydatat = array();
       $a_labels = array();
       $a_perfdata_name = array();
@@ -436,14 +436,14 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                         if ($not_number) {
                            $unity = $not_number;
                         }
-                        
+
                         //Maintain for a same perfdata row, unity data. If set it's normally a new perfdata row.
                         if ($unity == '') {
                            $val = round(($val + 0), 2);
                         } else {
                            $val = str_replace($unity, '', $val);
 
-                           switch ($unity) {                           
+                           switch ($unity) {
                               case 'ms':
                               case 'bps':
                               case 'B' :
@@ -455,23 +455,23 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                                  break;
                               case 'KB' :
                                  $val = $val * 1000; // Have in B
-                                 break;                              
+                                 break;
                               case 'MB' :
                                  $val = $val * 1000000; // Have in B
-                                 break;                              
+                                 break;
                               case 'TB':
                                  $val = $val * 1000000000; // Have in B
-                                 break;                              
+                                 break;
                               case 's' :
                                  $val = round($val * 1000, 0);
-                                 break;                             
-                              case 'timeout' :  
+                                 break;
+                              case 'timeout' :
                                  if ($val > 2) {
                                     $val = round($val);
                                  } else {
                                     $val = round($val, 2);
                                  }
-                                 break;                              
+                                 break;
                               default :
                                  $val = round(($val + 0), 2);
 
@@ -487,7 +487,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                            if (!isset($mydatat[$data['DS'][$nb_val]['dsname']." | diff"])) {
                               $mydatat[$data['DS'][$nb_val]['dsname']." | diff"] = array();
                            }
-                           array_push($mydatat[$data['DS'][$nb_val]['dsname']." | diff"], $val);                           
+                           array_push($mydatat[$data['DS'][$nb_val]['dsname']." | diff"], $val);
                         }
                      }
                   }
@@ -501,14 +501,14 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                         if (!isset($mydatat[$data['DS'][$nb_val]['dsname']])) {
                            $mydatat[$data['DS'][$nb_val]['dsname']] = array();
                         }
-                        array_push($mydatat[$data['DS'][$nb_val]['dsname']], 0);                     
+                        array_push($mydatat[$data['DS'][$nb_val]['dsname']], 0);
                         if ($data['incremental'][$nb_val] == 1) {
                            if (!isset($mydatat[$data['DS'][$nb_val]['dsname']." | diff"])) {
                               $mydatat[$data['DS'][$nb_val]['dsname']." | diff"] = array();
                            }
-                           array_push($mydatat[$data['DS'][$nb_val]['dsname']." | diff"], 0);                           
+                           array_push($mydatat[$data['DS'][$nb_val]['dsname']." | diff"], 0);
                         }
-                     }  
+                     }
                   }
                }
             } else {
@@ -522,14 +522,14 @@ class PluginMonitoringServiceevent extends CommonDBTM {
                      if (!isset($mydatat[$data['DS'][$nb_val]['dsname']])) {
                         $mydatat[$data['DS'][$nb_val]['dsname']] = array();
                      }
-                     array_push($mydatat[$data['DS'][$nb_val]['dsname']], 0);                     
+                     array_push($mydatat[$data['DS'][$nb_val]['dsname']], 0);
                      if ($data['incremental'][$nb_val] == 1) {
                         if (!isset($mydatat[$data['DS'][$nb_val]['dsname']." | diff"])) {
                            $mydatat[$data['DS'][$nb_val]['dsname']." | diff"] = array();
                         }
-                        array_push($mydatat[$data['DS'][$nb_val]['dsname']." | diff"], 0);                           
+                        array_push($mydatat[$data['DS'][$nb_val]['dsname']." | diff"], 0);
                      }
-                  } 
+                  }
                }
             }
          }
@@ -543,7 +543,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
             }
          }
       }
-      
+
       foreach ($mydatat as $name=>$data) {
          if (strstr($name, " | diff")) {
             $old_val = -1;
@@ -573,23 +573,23 @@ class PluginMonitoringServiceevent extends CommonDBTM {
             $mydatat[$name] = $data;
          }
       }
-      
+
       $a_perfdata_name = array_unique($a_perfdata_name);
       // Toolbox::logInFile("pm", "a_perfdata_name : ".serialize($a_perfdata_name)."\n");
       // Toolbox::logInFile("pm", "mydatat : ".serialize($mydatat)."\n");
       return array($mydatat, $a_labels, $a_ref, $a_convert, $a_perfdata_name);
    }
-   
-   
-   
+
+
+
    function getRef($perfdatas_id) {
-      
+
       $a_convert = array();
       $a_ref = array();
       return array($a_ref, $a_convert);
-      
+
       $a_perfg = PluginMonitoringPerfdata::getArrayPerfdata($perfdatas_id);
-      // Get data 
+      // Get data
       $a_convert = array();
       $a_ref = array();
       foreach ($a_perfg['data'][0]['data'] as $data) {
@@ -607,7 +607,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
             $a_explode = explode(":", $data);
             $a_split = explode("#", $a_explode[1]);
             $a_ref[$a_convert[$a_split[0]]] = $a_split[1];
-         } 
+         }
       }
       return array($a_ref, $a_convert);
    }

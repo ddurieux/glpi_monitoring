@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -46,21 +46,21 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringHostconfig extends CommonDBTM {
 
-   
+
    function initConfig() {
       global $DB;
-      
+
       $query = "SELECT * FROM `".$this->getTable()."`
          WHERE `items_id`='0'
             AND `itemtype`='Entity'
          LIMIT 1";
-      
+
       $result = $DB->query($query);
       if ($DB->numrows($result) == '0') {
          $input = array();
          $input['itemtype'] = 'Entity';
          $input['items_id'] = 0;
-         
+
          $query2 = "SELECT * FROM `glpi_plugin_monitoring_realms`
             LIMIT 1";
          $result2 = $DB->query($query2);
@@ -68,12 +68,12 @@ class PluginMonitoringHostconfig extends CommonDBTM {
             $data = $DB->fetch_assoc($result2);
             $input['plugin_monitoring_realms_id'] = $data['id'];
          }
-         
-         $this->add($input);         
+
+         $this->add($input);
       }
    }
-   
-   
+
+
 
    /**
    * Get name of this type
@@ -96,10 +96,10 @@ class PluginMonitoringHostconfig extends CommonDBTM {
    }
 
 
-   
+
    /**
    *
-   * @param $items_id integer ID 
+   * @param $items_id integer ID
    * @param $options array
    *
    *@return bool true if form is ok
@@ -107,10 +107,10 @@ class PluginMonitoringHostconfig extends CommonDBTM {
    **/
    function showForm($items_id, $itemtype, $options=array()) {
       global $DB,$CFG_GLPI;
-      
+
       $pmComponent = new PluginMonitoringComponent();
       $pmRealm     = new PluginMonitoringRealm();
-      
+
       $entities_id = 0;
       if ($itemtype == "Entity") {
          $entities_id = $items_id;
@@ -118,13 +118,13 @@ class PluginMonitoringHostconfig extends CommonDBTM {
          $item = new $itemtype();
          $item->getFromDB($items_id);
          $entities_id = $item->fields['entities_id'];
-      }      
+      }
 
       $query = "SELECT * FROM `".$this->getTable()."`
          WHERE `items_id`='".$items_id."'
             AND `itemtype`='".$itemtype."'
          LIMIT 1";
-      
+
       $result = $DB->query($query);
       if ($DB->numrows($result) == '0') {
          $this->getEmpty();
@@ -138,11 +138,11 @@ class PluginMonitoringHostconfig extends CommonDBTM {
          $this->getFromDB($data['id']);
       }
 
-      echo "<form name='form' method='post' 
+      echo "<form name='form' method='post'
          action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/hostconfig.form.php'>";
-      
+
       echo "<table class='tab_cadre_fixe'";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='4'>";
       echo __('Hosts configuration', 'monitoring');
@@ -161,7 +161,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
          $toadd["-1"] = __('Inheritance of the parent entity');
       }
 
-      Dropdown::show('PluginMonitoringComponent', 
+      Dropdown::show('PluginMonitoringComponent',
                      array(
                          'name'  => 'plugin_monitoring_components_id',
                          'value' => $this->fields['plugin_monitoring_components_id'],
@@ -176,7 +176,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
               OR $itemtype != 'Entity') {
          $toadd["-1"] = __('Inheritance of the parent entity');
       }
-      Dropdown::show('PluginMonitoringRealm', 
+      Dropdown::show('PluginMonitoringRealm',
                      array(
                          'name'  => 'plugin_monitoring_realms_id',
                          'value' => $this->fields['plugin_monitoring_realms_id'],
@@ -184,13 +184,13 @@ class PluginMonitoringHostconfig extends CommonDBTM {
                          'display_emptychoice' => FALSE
                      ));
 
-      
+
       echo "</td>";
       echo "</tr>";
-      
+
       // Inheritance
       if ($this->fields['plugin_monitoring_components_id'] == '-1') {
-         
+
          echo "<tr class='tab_bg_1'>";
          if ($this->fields['plugin_monitoring_components_id'] == '-1') {
             echo "<td colspan='2' class='green center'>";
@@ -214,7 +214,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
          }
          echo "</tr>";
       }
-      
+
 /*
       if ($itemtype == 'Entity'
               AND $items_id == '0') {
@@ -232,7 +232,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
          echo "</tr>";
       }
 */
-      
+
       if ($this->canCreate()) {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='4' align='center'>";
@@ -245,21 +245,21 @@ class PluginMonitoringHostconfig extends CommonDBTM {
          echo "</td>";
          echo "</tr>";
       }
-      
+
       echo "</table>";
       Html::closeForm();
 
       return true;
    }
-   
-   
-   
+
+
+
    function getValueAncestor($fieldname, $entities_id, $itemtype='', $items_id='') {
       global $DB;
-      
+
       if ($itemtype != ''
               AND $items_id != '') {
-         
+
          $query = "SELECT * FROM `".$this->getTable()."`
             WHERE `items_id`='".$items_id."'
                AND `itemtype`='".$itemtype."'
@@ -269,21 +269,21 @@ class PluginMonitoringHostconfig extends CommonDBTM {
             $data = $DB->fetch_assoc($result);
             if ($data[$fieldname] != '-1') {
                return $data[$fieldname];
-            } 
+            }
          }
       }
-      
-      
-      
+
+
+
       $query = "SELECT * FROM `".$this->getTable()."`
          WHERE `items_id`='".$entities_id."'
             AND `itemtype`='Entity'
          LIMIT 1";
-      
+
       $result = $DB->query($query);
       if ($DB->numrows($result) == '0') {
          $entities_ancestors = getAncestorsOf("glpi_entities", $entities_id);
-         
+
          $nbentities = count($entities_ancestors);
          for ($i=0; $i<$nbentities; $i++) {
             $entity = array_pop($entities_ancestors);
@@ -298,7 +298,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
                   return $data[$fieldname];
                }
             }
-         }         
+         }
       } else {
          $data = $DB->fetch_assoc($result);
          if ($data[$fieldname] != '-1') {
@@ -320,12 +320,12 @@ class PluginMonitoringHostconfig extends CommonDBTM {
                      return $data[$fieldname];
                   }
                }
-            } 
+            }
          }
       }
 
    }
-   
+
 }
 
 ?>

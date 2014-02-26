@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2014
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,20 +45,20 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringBusinessrule_component extends CommonDBTM {
-   
+
 
    static function canCreate() {
       return PluginMonitoringProfile::haveRight("servicescatalog", 'w');
    }
 
 
-   
+
    static function canView() {
       return PluginMonitoringProfile::haveRight("servicescatalog", 'r');
    }
-   
-   
-   
+
+
+
    function replayDynamicServices($plugin_monitoring_businessrulegroups_id) {
       global $DB;
 
@@ -68,7 +68,7 @@ class PluginMonitoringBusinessrule_component extends CommonDBTM {
       // Get entity and if recursif
       $pmBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
       $pmServicescatalog = new PluginMonitoringServicescatalog();
-      
+
       $pmBusinessrulegroup->getFromDB($plugin_monitoring_businessrulegroups_id);
       $pmServicescatalog->getFromDB($pmBusinessrulegroup->fields['plugin_monitoring_servicescatalogs_id']);
 
@@ -79,11 +79,11 @@ class PluginMonitoringBusinessrule_component extends CommonDBTM {
          $restrict_entities = "AND ( `glpi_plugin_monitoring_services`.`entities_id` = '".
                  $pmServicescatalog->fields['entities_id']."' )";
       }
-      
+
       $a_brcomponents = $this->find("`plugin_monitoring_businessrulegroups_id`='".$plugin_monitoring_businessrulegroups_id."'");
-      
+
       $a_services = array();
-      
+
       foreach ($a_brcomponents as $a_brcomponent) {
 
          $pmComponentscatalog_Component = new PluginMonitoringComponentscatalog_Component();
@@ -102,7 +102,7 @@ class PluginMonitoringBusinessrule_component extends CommonDBTM {
             $a_services[$data['id']] = $data['id'];
          }
       }
-      
+
       // get static services of the group (so not add dynamic if yet in static)
       $pmBusinessrule_component = new PluginMonitoringBusinessrule_component;
       $pmBusinessrule = new PluginMonitoringBusinessrule();
@@ -112,7 +112,7 @@ class PluginMonitoringBusinessrule_component extends CommonDBTM {
       foreach ($a_static as $data) {
          if (isset($a_services[$data['plugin_monitoring_services_id']])) {
             unset($a_services[$data['plugin_monitoring_services_id']]);
-            
+
             // Update generic status
             $pmBusinessrule->getFromDB($data['id']);
             $input = array(
@@ -122,7 +122,7 @@ class PluginMonitoringBusinessrule_component extends CommonDBTM {
             $pmBusinessrule->update($input);
          }
       }
-      
+
       // update services + is_dynamic=1
       $query = "SELECT * FROM `glpi_plugin_monitoring_businessrules`"
               . " WHERE `plugin_monitoring_businessrulegroups_id`='".$plugin_monitoring_businessrulegroups_id."'"
@@ -132,7 +132,7 @@ class PluginMonitoringBusinessrule_component extends CommonDBTM {
          // Update if yet in DB
          if (isset($a_services[$data['plugin_monitoring_services_id']])) {
             unset($a_services[$data['plugin_monitoring_services_id']]);
-            
+
             // Update generic status
             $pmBusinessrule->getFromDB($data['id']);
             $input = array(
@@ -145,7 +145,7 @@ class PluginMonitoringBusinessrule_component extends CommonDBTM {
             $pmBusinessrule->delete($data);
          }
       }
-      
+
       // Add new
       foreach ($a_services as $services_id) {
          $input = array(

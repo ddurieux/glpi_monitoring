@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -50,22 +50,22 @@ class PluginMonitoringReport {
 
       $this->obj = ($obj ? $obj : new Computer());
    }
-   
-   
+
+
    static function beginCapture() {
       ob_start();
    }
-   
-   
-   
+
+
+
    static function endCapture() {
       $content = ob_get_contents();
       ob_end_clean();
       return $content;
    }
-   
-   
-   
+
+
+
    static function generatePDF($content, $orientation='P') {
 
       include(GLPI_ROOT . "/plugins/monitoring/lib/mpdf/mpdf.php");

@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,11 +45,11 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringNotification {
-   
-   
+
+
    static function test() {
       echo "<script language='Javascript'>
-         
+
 Ext.ux.NotificationMgr = {
     positions: []
 };
@@ -63,7 +63,7 @@ Ext.ux.Notification = Ext.extend(Ext.Window, {
             closable: false,
             plain: false,
             draggable: false,
-            bodyStyle: 'text-align:center;padding:1em;'            
+            bodyStyle: 'text-align:center;padding:1em;'
           });
           if(this.autoDestroy) {
             this.task = new Ext.util.DelayedTask(this.hide, this);
@@ -119,13 +119,13 @@ Ext.ux.Notification = Ext.extend(Ext.Window, {
         });
     },
     focus: Ext.emptyFn
-});   
+});
 
-  
+
 function toastAlert( the_title, the_message ) {
     // Set defaults for the toast window title and icon
     the_title = typeof(the_title) != 'undefined' ? the_title : 'Notice';
-    
+
     // Create the toast window
 new Ext.ux.Notification({
                 iconCls:    'x-icon-error',
@@ -133,7 +133,7 @@ new Ext.ux.Notification({
                 html:       the_message,
                 autoDestroy: true,
                 hideDelay:  5000
-            }).show(document); 
+            }).show(document);
 } // eo function toastAlert
 
 toastAlert('Critical!', 'Apache on server xxx is down...');

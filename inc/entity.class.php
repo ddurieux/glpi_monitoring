@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringEntity extends CommonDBTM {
-   
+
 
 
    /**
@@ -65,13 +65,13 @@ class PluginMonitoringEntity extends CommonDBTM {
    }
 
 
-   
+
    static function canView() {
       return PluginMonitoringProfile::haveRight("config", 'r');
    }
-   
-   
-   
+
+
+
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       $array_ret = array();
@@ -102,7 +102,7 @@ class PluginMonitoringEntity extends CommonDBTM {
    /**
    * Display form for entity tag
    *
-   * @param $items_id integer ID of the entity 
+   * @param $items_id integer ID of the entity
    * @param $options array
    *
    *@return bool true if form is ok
@@ -122,11 +122,11 @@ class PluginMonitoringEntity extends CommonDBTM {
          $this->getFromDB($a_entity['id']);
       }
 
-      echo "<form name='form' method='post' 
+      echo "<form name='form' method='post'
          action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/entity.form.php'>";
-      
+
       echo "<table class='tab_cadre_fixe'";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2'>";
       echo __('Set tag to link entity with a specific Shinken server', 'monitoring');
@@ -137,28 +137,28 @@ class PluginMonitoringEntity extends CommonDBTM {
       echo "<td>".__('Tag', 'monitoring')." :</td>";
       echo "<td>";
       echo "<input type='text' name='tag' value='".$this->fields["tag"]."' size='30'/>";
-      
+
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td colspan='2' align='center'>";
       echo "<input type='hidden' name='id' value='".$this->fields['id']."'/>";
       echo "<input type='submit' name='update' value=\"".__('Save')."\" class='submit'>";
       echo "</td>";
       echo "</tr>";
-      
+
       echo "</table>";
       Html::closeForm();
 
       return true;
    }
-   
-   
-   
+
+
+
    function getEntitiesByTag($tag = '') {
       global $DB;
-      
+
       if ($tag == '') {
          return array('-1' => "-1");
       } else {
@@ -172,12 +172,12 @@ class PluginMonitoringEntity extends CommonDBTM {
          return $output;
       }
    }
-   
-   
-   
+
+
+
    static function getTagByEntities($entities_id) {
       global $DB;
-      
+
       $query = "SELECT * FROM `glpi_plugin_monitoring_entities`
          WHERE `entities_id`='".$entities_id."'
             LIMIT 1";
@@ -186,7 +186,7 @@ class PluginMonitoringEntity extends CommonDBTM {
          return $data['tag'];
       }
    }
-   
+
 }
 
 ?>

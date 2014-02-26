@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2013
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -46,10 +46,10 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringPerfdataDetail extends CommonDBTM {
 
-   
+
    function showDetails($perfdatas_id) {
       global $CFG_GLPI;
-      
+
       $a_details = $this->find("`plugin_monitoring_perfdatas_id`='".$perfdatas_id."'", "position");
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
@@ -71,17 +71,17 @@ class PluginMonitoringPerfdataDetail extends CommonDBTM {
       echo "</th>";
       echo "</tr>";
       foreach ($a_details as $a_detail) {
-         echo "<form name='form' method='post' 
+         echo "<form name='form' method='post'
             action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/perfdatadetail.form.php'>";
 
             $this->showDetail($a_detail['id']);
          Html::closeForm();
       }
       echo "</table>";
-   }  
-   
-   
-   
+   }
+
+
+
    function showDetail($perfdatadetails_id) {
       $this->getFromDB($perfdatadetails_id);
       echo "<tr class='tab_bg_1'>";
@@ -107,7 +107,7 @@ class PluginMonitoringPerfdataDetail extends CommonDBTM {
          }
          echo "</td>";
       }
-      
+
       if (PluginMonitoringProfile::haveRight("config","w")) {
          echo "<td>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'/>";
@@ -116,15 +116,15 @@ class PluginMonitoringPerfdataDetail extends CommonDBTM {
       }
       echo "</tr>";
    }
-   
-   
-   
+
+
+
    static function updateDetailForPerfdata($perfdata, $perfdatas_id) {
 
       $a_lines = array();
-      
+
       $a_perfdata = PluginMonitoringPerfdata::splitPerfdata($perfdata);
-      
+
       $i = 1;
       foreach ($a_perfdata as $data) {
          $data = trim($data, ", ");
@@ -149,11 +149,11 @@ class PluginMonitoringPerfdataDetail extends CommonDBTM {
          }
          $i++;
       }
-      
+
       // Add/update perfdatadetails in DB
       $pmPerfdataDetail = new PluginMonitoringPerfdataDetail();
       $a_perfdatadetails = $pmPerfdataDetail->find("`plugin_monitoring_perfdatas_id`='".$perfdatas_id."'", "position");
-      
+
       foreach ($a_perfdatadetails as $data) {
          $find = 0;
          foreach ($a_lines as $key=>$a_line) {
@@ -163,13 +163,13 @@ class PluginMonitoringPerfdataDetail extends CommonDBTM {
                $find = 1;
                $countfind = count($a_line['values']);
                $data['dsname_num'] = $countfind;
-               for ($i=1; $i<=$countfind; $i++) { 
+               for ($i=1; $i<=$countfind; $i++) {
                   if ($data['dsname'.$i] == '') {
                      $data['dsname'.$i] = 'value'.$data['position'].'.'.$i;
                   }
                }
-               
-               for ($i=($countfind+1); $i<9; $i++) { 
+
+               for ($i=($countfind+1); $i<9; $i++) {
                   $data['dsname'.$i] = '';
                }
                $pmPerfdataDetail->update($data);
@@ -180,18 +180,18 @@ class PluginMonitoringPerfdataDetail extends CommonDBTM {
             $pmPerfdataDetail->delete($data);
          }
       }
-      
+
       foreach ($a_lines as $position=>$data) {
          $input = array();
          $input['name'] = $data['name'];
          $input['plugin_monitoring_perfdatas_id'] = $perfdatas_id;
          $input['position'] = $position;
          $input['dsname_num'] = count($data['values']);
-         for ($i=1; $i<=$input['dsname_num']; $i++) { 
+         for ($i=1; $i<=$input['dsname_num']; $i++) {
             $input['dsname'.$i] = 'value'.$position.'.'.$i;
          }
          $pmPerfdataDetail->add($input);
       }
-   }      
+   }
 }
 ?>

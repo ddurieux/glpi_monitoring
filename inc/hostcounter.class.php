@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    Frédéric Mohier
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringHostCounter extends CommonDBTM {
-   
+
    /**
    * Get name of this type
    *
@@ -55,54 +55,54 @@ class PluginMonitoringHostCounter extends CommonDBTM {
    static function getTypeName($nb=0) {
       return _n(__('Counter update', 'monitoring'),__('Counter updates', 'monitoring'),$nb);
    }
-   
-   
+
+
    static function canCreate() {
       return PluginMonitoringProfile::haveRight("config", 'w');
    }
 
-   
+
    static function canView() {
       return PluginMonitoringProfile::haveRight("config", 'r');
    }
 
-   
+
    function defineTabs($options=array()){
 
       $ong = array();
 
       return $ong;
    }
-   
-   
+
+
    function getComments() {
    }
 
-   
+
    /**
     * Display tab
-    * 
+    *
     * @param CommonGLPI $item
     * @param integer $withtemplate
-    * 
+    *
     * @return varchar name of the tab(s) to display
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       if ($item->getType() == 'Computer'){
          return __('Counter updates', 'monitoring');
       }
-      
+
       return '';
    }
-   
-    
+
+
    /**
     * Display content of tab
-    * 
+    *
     * @param CommonGLPI $item
     * @param integer $tabnum
     * @param interger $withtemplate
-    * 
+    *
     * @return boolean true
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
@@ -123,9 +123,9 @@ class PluginMonitoringHostCounter extends CommonDBTM {
 
 
    /**
-   * 
    *
-   * @param $items_id integer ID 
+   *
+   * @param $items_id integer ID
    * @param $options array
    *
    *@return bool true if form is ok

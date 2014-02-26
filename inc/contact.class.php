@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringContact extends CommonDBTM {
-   
+
 
    /**
    * Get name of this type
@@ -64,12 +64,12 @@ class PluginMonitoringContact extends CommonDBTM {
    }
 
 
-   
+
    static function canView() {
       return PluginMonitoringProfile::haveRight("config", 'r');
    }
 
-   
+
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       $array_ret = array();
@@ -90,12 +90,12 @@ class PluginMonitoringContact extends CommonDBTM {
       }
       return true;
    }
-   
-   
+
+
    /**
    * Display form for agent configuration
    *
-   * @param $items_id integer ID 
+   * @param $items_id integer ID
    * @param $options array
    *
    *@return bool true if form is ok
@@ -126,7 +126,7 @@ class PluginMonitoringContact extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td>".__('Template name')."&nbsp;:</td>";
          echo "<td align='center'>";
-         Dropdown::show("PluginMonitoringContacttemplate", 
+         Dropdown::show("PluginMonitoringContacttemplate",
                  array('name' => 'plugin_monitoring_contacttemplates_id',
                        'value'=> $this->fields['plugin_monitoring_contacttemplates_id']));
          echo "</td>";

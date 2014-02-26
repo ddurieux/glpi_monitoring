@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,16 +45,16 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringMessage extends CommonDBTM {
-   
-   
+
+
    static function getMessages() {
       global $CFG_GLPI;
-      
+
       $pmMessage = new self();
 
       $sess_id = session_id();
       PluginMonitoringSecurity::updateSession();
-      
+
       // Display if shinken is in restart or if restarted less than 5 minutes
       echo "<div id='shikenrestart'></div>";
       echo "<script type=\"text/javascript\">
@@ -70,10 +70,10 @@ class PluginMonitoringMessage extends CommonDBTM {
               "\", \"\", true);";
       echo "</script>";
 
-      
+
       $servicecatalog = '';
       $confchanges = '';
-      
+
       if (PluginMonitoringProfile::haveRight("config_services_catalogs", 'r')) {
          $servicecatalog = $pmMessage->servicescatalogMessage();
       }
@@ -106,24 +106,24 @@ class PluginMonitoringMessage extends CommonDBTM {
          echo "</div>";
       }
    }
-   
-   
-   
+
+
+
    /**
     * This fonction search if a services catalog has a resource deleted
-    * 
+    *
     */
    function servicescatalogMessage() {
       global $DB;
-      
+
       $pmServicescatalog = new PluginMonitoringServicescatalog();
       $input = '';
       $a_catalogs = array();
-      
+
       $query = "SELECT `plugin_monitoring_servicescatalogs_id` FROM `glpi_plugin_monitoring_businessrulegroups`
-         
+
          LEFT JOIN `glpi_plugin_monitoring_businessrules` ON `glpi_plugin_monitoring_businessrulegroups`.`id` = `plugin_monitoring_businessrulegroups_id`
-         
+
          LEFT JOIN `glpi_plugin_monitoring_services` ON `plugin_monitoring_services_id` = `glpi_plugin_monitoring_services`.`id`
 
          WHERE `glpi_plugin_monitoring_services`.`id` IS NULL";
@@ -139,14 +139,14 @@ class PluginMonitoringMessage extends CommonDBTM {
       return $input;
    }
 
-   
-   
+
+
    /**
     * Get modifications of resources (if have modifications);
     */
    function configurationchangesMessage() {
       global $DB;
-      
+
       $input = '';
       $pmLog = new PluginMonitoringLog();
       // Get id of last Shinken restart
@@ -167,7 +167,7 @@ class PluginMonitoringMessage extends CommonDBTM {
          $input .= __('The configuration has changed', 'monitoring')."<br/>";
          if ($nb_add > 0) {
             $input .= "<a onClick='Ext.get(\"addelements\").toggle();'>".$nb_add."</a> ".__('resources added', 'monitoring');
-            echo "<div style='position:absolute;z-index:10;left: 50%; 
+            echo "<div style='position:absolute;z-index:10;left: 50%;
                margin-left: -350px;margin-top:40px;display:none'
                class='msgboxmonit msgboxmonit-grey' id='addelements'>";
             $query = "SELECT * FROM `".getTableForItemType('PluginMonitoringLog')."`
@@ -176,7 +176,7 @@ class PluginMonitoringMessage extends CommonDBTM {
             $result = $DB->query($query);
             while ($data=$DB->fetch_array($result)) {
                echo "[".Html::convDateTime($data['date_mod'])."] Add ".$data['value']."<br/>";
-            }            
+            }
             echo "</div>";
          }
          if ($nb_delete > 0) {
@@ -184,7 +184,7 @@ class PluginMonitoringMessage extends CommonDBTM {
                $input .= " / ";
             }
             $input .= "<a onClick='Ext.get(\"deleteelements\").toggle();'>".$nb_delete."</a> ".__('resources deleted', 'monitoring');
-            echo "<div style='position:absolute;z-index:10;left: 50%; 
+            echo "<div style='position:absolute;z-index:10;left: 50%;
                margin-left: -350px;margin-top:40px;display:none'
                class='msgboxmonit msgboxmonit-grey' id='deleteelements'>";
             $query = "SELECT * FROM `".getTableForItemType('PluginMonitoringLog')."`
@@ -193,11 +193,11 @@ class PluginMonitoringMessage extends CommonDBTM {
             $result = $DB->query($query);
             while ($data=$DB->fetch_array($result)) {
                echo "[".Html::convDateTime($data['date_mod'])."] Delete ".$data['value']."<br/>";
-            }            
+            }
             echo "</div>";
          }
          $input .= "<br/>";
-         
+
          // Try to restart Shinken via webservice
          $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
          $pmShinkenwebservice->sendRestartArbiter();
@@ -206,22 +206,22 @@ class PluginMonitoringMessage extends CommonDBTM {
       }
       return $input;
    }
-   
-   
+
+
    /**
     * Get maximum time between 2 checks and see if have one event in this period
-    * 
+    *
     */
    function ShinkennotrunMessage() {
       global $DB;
 
       $input = '';
       $query = "SELECT * FROM `glpi_plugin_monitoring_checks` ORDER BY `check_interval` DESC LIMIT 1";
-      
+
       $result = $DB->query($query);
       $data = $DB->fetch_assoc($result);
       $time_s = $data['check_interval'] * 60;
-      
+
       $query = "SELECT count(id) as cnt FROM `glpi_plugin_monitoring_services`";
       $result = $DB->query($query);
       $data = $DB->fetch_assoc($result);
@@ -233,18 +233,18 @@ class PluginMonitoringMessage extends CommonDBTM {
          $result = $DB->query($query);
          if ($DB->numrows($result) == '0') {
             $input = __('No events found in last minutes, so Shinken seems stopped', 'monitoring');
-         }      
+         }
       }
       return $input;
    }
-   
-   
-   
+
+
+
    function displayShinkenRestart() {
       global $CFG_GLPI;
-      
+
       $pmLog = new PluginMonitoringLog();
-      
+
       $a_restart_planned = $pmLog->find("`action` LIKE 'restart%' AND "
               ."`date_mod` > date_add(now(), interval - 10 MINUTE)", "`id` DESC", 1);
       if (count($a_restart_planned) == 1) {

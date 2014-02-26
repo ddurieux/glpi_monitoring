@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -46,7 +46,7 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringHostaddress extends CommonDBTM {
    public $table = "glpi_plugin_monitoring_hostaddresses";
-   
+
 
    /**
    * Get name of this type
@@ -65,17 +65,17 @@ class PluginMonitoringHostaddress extends CommonDBTM {
    }
 
 
-   
+
    static function canView() {
       return Session::haveRight('computer', 'r');
    }
 
-   
-   
+
+
    /**
-   * 
    *
-   * @param $items_id integer ID 
+   *
+   * @param $items_id integer ID
    * @param $options array
    *
    *@return bool true if form is ok
@@ -88,7 +88,7 @@ class PluginMonitoringHostaddress extends CommonDBTM {
          WHERE `items_id`='".$items_id."'
             AND `itemtype`='".$itemtype."'
          LIMIT 1";
-      
+
       $result = $DB->query($query);
       if ($DB->numrows($result) == '0') {
          $this->getEmpty();
@@ -107,7 +107,7 @@ class PluginMonitoringHostaddress extends CommonDBTM {
       if ($this->fields['networkports_id'] == '') {
          $this->fields['networkports_id'] = 0;
       }
-      
+
       $a_networkport = array();
       $a_networkport['0'] = Dropdown::EMPTY_VALUE;
       $query = "SELECT `glpi_networkports`.* FROM `glpi_networkports`
@@ -117,7 +117,7 @@ class PluginMonitoringHostaddress extends CommonDBTM {
          LEFT JOIN `glpi_ipaddresses`
             ON `glpi_ipaddresses`.`items_id`=`glpi_networknames`.`id`
                AND `glpi_ipaddresses`.`itemtype`='NetworkName'
-         WHERE `glpi_networkports`.`items_id`='".$items_id."' 
+         WHERE `glpi_networkports`.`items_id`='".$items_id."'
             AND `glpi_networkports`.`itemtype`='".$itemtype."'
             AND `glpi_ipaddresses`.`name` IS NOT NULL
             AND `glpi_ipaddresses`.`name` != '127.0.0.1'
@@ -128,7 +128,7 @@ class PluginMonitoringHostaddress extends CommonDBTM {
       while ($data=$DB->fetch_array($result)) {
          $a_networkport[$data['id']] = $data['name'];
       }
-      $rand = Dropdown::showFromArray("networkports_id", $a_networkport, 
+      $rand = Dropdown::showFromArray("networkports_id", $a_networkport,
                                       array('value'=>$this->fields['networkports_id']));
       echo "</td>";
       echo "<td colspan='2'>";
@@ -145,16 +145,16 @@ class PluginMonitoringHostaddress extends CommonDBTM {
       echo "</div>";
       echo "</td>";
       echo "</tr>";
-      
+
       $this->showFormButtons($options);
 
       return true;
    }
-   
-   
+
+
    static function dropdownIP($ipaddresses_id, $netwokports_id) {
       global $DB;
-      
+
       $elements = array(0 => __('First IP', 'monitoring'));
       if (isset($netwokports_id)
               && is_numeric($netwokports_id)) {
@@ -176,36 +176,36 @@ class PluginMonitoringHostaddress extends CommonDBTM {
       }
       Dropdown::showFromArray("ipaddresses_id", $elements, array('value'=>$ipaddresses_id));
    }
-   
-   
+
+
    static function getIp($items_id, $itemtype, $hostname) {
       global $DB;
-      
+
       $networkPort   = new NetworkPort();
       $networkName   = new NetworkName();
       $iPAddress     = new IPAddress();
       $pmHostaddress = new PluginMonitoringHostaddress();
-      
+
       $ip = '';
       $networkports_id = 0;
 
       $query = "SELECT * FROM `".$pmHostaddress->getTable()."`
       WHERE `items_id`='".$items_id."'
          AND `itemtype`='".$itemtype."'
-      LIMIT 1";      
+      LIMIT 1";
       $result = $DB->query($query);
       if ($DB->numrows($result) == '1') {
          $data = $DB->fetch_assoc($result);
-         
+
          if ($data['ipaddresses_id'] > 0) {
             $iPAddress->getFromDB($data['ipaddresses_id']);
             return $iPAddress->fields['name'];
          } else {
             $networkports_id = $data['networkports_id'];
          }
-      } 
+      }
       if ($ip == '') {
-         if ($networkports_id > 0) {            
+         if ($networkports_id > 0) {
             $a_listnetwork = $networkPort->find("`id`='".$networkports_id."'");
          } else {
             $a_listnetwork = $networkPort->find("`itemtype`='".$itemtype."'
@@ -219,7 +219,7 @@ class PluginMonitoringHostaddress extends CommonDBTM {
                $a_ips_fromDB = $iPAddress->find("`itemtype`='NetworkName'
                                                  AND `items_id`='".$networknames_id."'");
                foreach ($a_ips_fromDB as $data) {
-                  if ($data['name'] != '' 
+                  if ($data['name'] != ''
                           && $data['name'] != '127.0.0.1'
                           && $data['name'] != '::1') {
                      return $data['name'];

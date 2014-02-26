@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,24 +45,24 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringBusinessrule extends CommonDBTM {
-   
+
 
    static function canCreate() {
       return PluginMonitoringProfile::haveRight("config_services_catalogs", 'w');
    }
 
 
-   
+
    static function canView() {
       return PluginMonitoringProfile::haveRight("config_services_catalogs", 'r');
    }
 
-   
-   
+
+
    /**
    * Display form for agent configuration
    *
-   * @param $items_id integer ID 
+   * @param $items_id integer ID
    * @param $options array
    *
    *@return bool true if form is ok
@@ -74,7 +74,7 @@ class PluginMonitoringBusinessrule extends CommonDBTM {
       //$this->showFormTest($servicescatalogs_id, $options);
 return;
 //      $this->showFormHeader($options);
-      
+
       $first_operator = array();
       $first_operator['or'] = "------";
       $first_operator['2 of:'] = __('2 of', 'monitoring');
@@ -86,16 +86,16 @@ return;
       $first_operator['8 of:'] = __('8 of', 'monitoring');
       $first_operator['9 of:'] = __('9 of', 'monitoring');
       $first_operator['10 of:'] = __('10 of', 'monitoring');
-      
+
       $operator = array();
       $operator['and'] = __('and');
       $operator['or']= __('or');
-      
-      echo "<form name='form' method='post' 
+
+      echo "<form name='form' method='post'
          action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/businessrule.form.php'>";
       echo "<input type='hidden' name='servicescatalogs_id' value='".$servicescatalogs_id."'/>";
 
-      $a_list = $this->find("`plugin_monitoring_servicescatalogs_id`='".$servicescatalogs_id."'", 
+      $a_list = $this->find("`plugin_monitoring_servicescatalogs_id`='".$servicescatalogs_id."'",
               "`group`, `position`");
 
       $groupnum = 0;
@@ -110,7 +110,7 @@ return;
             echo "</th>";
             echo "</tr>";
          } else if ($groupnum != $data['group']) {
-            
+
             $position++;
             echo "<tr class='tab_bg_1'>";
             echo "<td>";
@@ -122,7 +122,7 @@ return;
             echo "</td>";
             echo "</tr>";
             echo "</table><br/>";
-            
+
             echo "<table class='tab_cadre'>";
             echo "<tr class='tab_bg_1'>";
             echo "<th>";
@@ -156,7 +156,7 @@ return;
          echo "</tr>";
          $i++;
       }
-      
+
       if ($i > 0) {
          $position++;
          echo "<tr class='tab_bg_1'>";
@@ -178,7 +178,7 @@ return;
          echo "</tr>";
          echo "</table><br/>";
       }
-      
+
       // New group
       $groupnum++;
       echo "<table class='tab_cadre' width='400'>";
@@ -187,7 +187,7 @@ return;
       echo "Group N°".$groupnum;
       echo "</th>";
       echo "</tr>";
-      
+
       $position = 0;
       echo "<tr class='tab_bg_1'>";
       echo "<td>";
@@ -198,26 +198,26 @@ return;
       $this->showService(0, '');
       echo "</td>";
       echo "</tr>";
-      echo "</table>"; 
+      echo "</table>";
 
       echo "<br/><input type='submit' class='submit' name='update' value='update'/>";
-      
+
       Html::closeForm();
       echo "<br/>";
-      
+
       return true;
    }
-   
-   
-   
+
+
+
    function showForm($servicescatalogs_id, $options=array()) {
       global $DB;
 
       $pMonitoringBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
-      
+
 //      // Add group
       $pMonitoringBusinessrulegroup->showForm(0, $servicescatalogs_id);
-      
+
       // Display each group
       $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringBusinessrulegroup")."`
          WHERE `plugin_monitoring_servicescatalogs_id`='".$servicescatalogs_id."'
@@ -227,8 +227,8 @@ return;
          $pMonitoringBusinessrulegroup->showForm($data['id'], $servicescatalogs_id);
       }
       return;
-      
-      
+
+
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th>";
@@ -243,7 +243,7 @@ return;
       echo __('Resource', 'monitoring');
       echo "</th>";
       echo "</tr>";
-      
+
       $query = "SELECT * FROM `".getTableForItemType($this->getType())."`
          WHERE `plugin_monitoring_servicescatalogs_id`='".$servicescatalogs_id."'
          ORDER BY `group`";
@@ -261,21 +261,21 @@ return;
          echo "</td>";
          echo "<td>";
 
-         
-         echo "</td>";         
+
+         echo "</td>";
          echo "</tr>";
       }
       echo "</table>";
-      
+
    }
-   
-   
-   
+
+
+
    static function showService($items_id, $itemtype, $businessrules_id=0) {
 
       if (!empty($items_id)) {
          $item = new $itemtype();
-         
+
          $item->getFromDB($items_id);
          echo "\n<table width='100%'><tr>";
          echo "<td>";
@@ -305,8 +305,8 @@ return;
       }
    }
 
-   
-   
+
+
    static function dropdownService($ID,$options=array()) {
       global $CFG_GLPI;
 
@@ -355,13 +355,13 @@ return;
 
       return $rand;
    }
-   
-   
-   
+
+
+
 
    static function removeBusinessruleonDeletegroup($item) {
       global $DB;
-      
+
       $pmBusinessrule = new PluginMonitoringBusinessrule();
 
       $query = "SELECT * FROM `glpi_plugin_monitoring_businessrules`
@@ -370,7 +370,7 @@ return;
       while ($data=$DB->fetch_array($result)) {
          $pmBusinessrule->delete($data);
       }
-   }   
+   }
 }
 
 ?>

@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringNotificationcommand extends CommonDBTM {
-   
+
 
    function initCommands() {
 
@@ -60,16 +60,16 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
       $input['command_name'] = 'notify-service-by-email-perl';
       $input['command_line'] = "\$PLUGINSDIR\$/sendmailservices.pl \"\$NOTIFICATIONTYPE\$\" \"\$SERVICEDESC\$\" \"\$HOSTALIAS\$\" \"\$HOSTADDRESS\$\" \"\$SERVICESTATE\$\" \"\$SHORTDATETIME\$\" \"\$SERVICEOUTPUT\$\" \"\$CONTACTEMAIL\$\" \"\$SERVICENOTESURL\$\"";
       $this->add($input);
-      
+
       $input = array();
       $input['name'] = 'Service : notify by mail (python)';
       $input['command_name'] = 'notify-service-by-email-py';
       $input['command_line'] = "\$PLUGINSDIR\$/sendmailservice.py -s \"\$SERVICEDESC\$\" -n \"\$SERVICESTATE\$\" -H \"\$HOSTALIAS\$\" -a \"\$HOSTADDRESS\$\" -i \"\$SHORTDATETIME\$\" -o \"\$SERVICEOUTPUT\$\" -t \"\$CONTACTEMAIL\$\" -r \"\$SERVICESTATE\$\"";
       $this->add($input);
-      
+
    }
 
-   
+
 
    /**
    * Get name of this type
@@ -88,16 +88,16 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
    }
 
 
-   
+
    static function canView() {
       return PluginMonitoringProfile::haveRight("config", 'r');
    }
 
-   
+
 
    function getSearchOptions() {
       $tab = array();
-    
+
       $tab['common'] = "notification commands";
 
 		$tab[1]['table'] = $this->getTable();
@@ -127,7 +127,7 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
    /**
    * Display form for agent configuration
    *
-   * @param $items_id integer ID 
+   * @param $items_id integer ID
    * @param $options array
    *
    *@return bool true if form is ok
@@ -155,14 +155,14 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
       echo "<input type='text' name='command_name' value='".$this->fields["command_name"]."' size='30'/>";
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Command line', 'monitoring')."&nbsp;:</td>";
       echo "<td colspan='3'>";
       echo "<input type='text' name='command_line' value='".$this->fields["command_line"]."' size='130'/>";
       echo "</td>";
       echo "</tr>";
-      
+
       $this->showFormButtons($options);
       $this->addDivForTabs();
 
