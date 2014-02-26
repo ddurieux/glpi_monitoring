@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,32 +45,32 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringWeathermap extends CommonDBTM {
-   
+
 
    static function getTypeName($nb=0) {
       return __('Weathermap', 'monitoring');
    }
-   
+
    static function canCreate() {
       return PluginMonitoringProfile::haveRight("config_weathermap", 'w');
    }
 
 
-   
+
    static function canView() {
       return PluginMonitoringProfile::haveRight("config_weathermap", 'r');
    }
 
-   
-   
+
+
    function defineTabs($options=array()){
       $ong = array();
       $this->addStandardTab(__CLASS__, $ong, $options);
       return $ong;
    }
-   
-   
-   
+
+
+
    /**
     * Display tab
     *
@@ -88,9 +88,9 @@ class PluginMonitoringWeathermap extends CommonDBTM {
       }
       return $ong;
    }
-   
-   
-   
+
+
+
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
       if ($tabnum == 2) {
@@ -98,9 +98,9 @@ class PluginMonitoringWeathermap extends CommonDBTM {
       }
       return TRUE;
    }
-   
-   
-   
+
+
+
    function showForm($items_id, $options=array()) {
       global $DB,$CFG_GLPI;
 
@@ -109,7 +109,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
       } else {
          $this->getFromDB($items_id);
       }
-     
+
       $this->showTabs($options);
       $options['formoptions'] = " enctype='multipart/form-data'";
       $this->showFormHeader($options);
@@ -121,19 +121,19 @@ class PluginMonitoringWeathermap extends CommonDBTM {
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name", 1,
                              $this->getType());
-      Html::autocompletionTextField($this, 'name', array('value' => $objectName));      
+      Html::autocompletionTextField($this, 'name', array('value' => $objectName));
       echo "</td>";
       echo "<td>".__('Width', 'monitoring')."&nbsp;:</td>";
       echo "<td>";
       Dropdown::showNumber("width", array(
-                'value' => $this->fields['width'], 
-                'min'   => 100, 
+                'value' => $this->fields['width'],
+                'min'   => 100,
                 'max'   => 3000,
                 'step'  => 20)
       );
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr>";
       echo "<td>";
       echo __('Background image', 'monitoring')."&nbsp;:";
@@ -151,50 +151,57 @@ class PluginMonitoringWeathermap extends CommonDBTM {
       echo "<td>".__('Height', 'monitoring')."&nbsp;:</td>";
       echo "<td>";
       Dropdown::showNumber("height", array(
-                'value' => $this->fields['height'], 
-                'min'   => 100, 
+                'value' => $this->fields['height'],
+                'min'   => 100,
                 'max'   => 3000,
                 'step'  => 20)
       );
       echo "</td>";
       echo "</tr>";
-      
-      
+
+
       $this->showFormButtons($options);
-      
+
       PluginMonitoringToolbox::loadLib();
 
       $this->addDivForTabs();
-      
+
       return true;
    }
-   
-   
-   
+
+
+
    function configureNodesLinks($weathermaps_id) {
       global $DB,$CFG_GLPI;
-      
+
       $networkPort = new NetworkPort();
-      $pmWeathermapnode = new PluginMonitoringWeathermapnode();
-      
+
       $this->getFromDB($weathermaps_id);
-      
-      echo "<table class='tab_cadre_fixe'>";
+
+      $style = '';
+      if ($this->fields['width'] > 950) {
+         $style = ";position:relative;left:-".(($this->fields['width'] - 950) / 2)."px";
+      }
+
+
+      echo "<table class='tab_cadre' style='width:".
+              $this->fields['width']."px;height:".$this->fields['height']."px".
+              $style."'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2'>";
       echo __('Nodes and links', 'monitoring');
       echo "</th>";
       echo "</tr>";
-  
+
       echo "<tr class='tab_bg_1'>";
-      echo "<td valign='top'>";  
+      echo "<td valign='top'>";
       echo "<div>";
       PluginMonitoringToolbox::loadLib();
       $this->drawMap($weathermaps_id, 100, 1);
       echo "</div>";
       echo "</td>";
       echo "<td valign='top'>";
-      
+
       echo "<div style='position: fixed;top: 30px;right: 0;z-index:999;' >";
       echo "<table class='tab_cadre' width='100%'>";
       echo "<tr>";
@@ -207,13 +214,13 @@ class PluginMonitoringWeathermap extends CommonDBTM {
       echo "</tr>";
       echo"</table>";
       echo "</div>";
-      
+
       echo "<div style='position: fixed;top: 50px;right: 0;z-index:1000;' id='weathermapform' >";
       echo '<form name="pointform" method="post" action="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/weathermapnode.form.php">';
       echo "<table>";
       echo "<tr>";
       echo "<td>";
-      
+
          echo "<table class='tab_cadre' width='100%'>";
          echo "<tr>";
          echo "<th colspan='2'>";
@@ -224,7 +231,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          echo '<input type="text" name="y" size="4" value="50"/>';
          echo "</th>";
          echo "</tr>";
-         
+
          // * Add node
          echo "<tr>";
          echo "<th colspan='2'>";
@@ -232,22 +239,22 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          echo __('Add a node', 'monitoring');
          echo "</th>";
          echo "</tr>";
-         
+
          echo "<tr>";
          echo "<td>";
          echo __('Node', 'monitoring')."&nbsp;:";
          echo "</td>";
          echo "<td>";
-         Dropdown::showAllItems("items_id");         
+         Dropdown::showAllItems("items_id");
          echo "</td>";
          echo "</tr>";
-         
+
          echo "<tr>";
          echo "<td>";
          echo __('Name')."&nbsp;:";
          echo "</td>";
          echo "<td>";
-         echo "<input type='text' name='name' value='' />";     
+         echo "<input type='text' name='name' value='' />";
          echo "</td>";
          echo "</tr>";
 
@@ -264,13 +271,13 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          Dropdown::showFromArray('position', $positions);
          echo "</td>";
          echo "</tr>";
-         
+
          echo "<tr>";
          echo "<td align='center' colspan='2'>";
          echo "<input type='submit' name='add' value=\"".__('Add')."\" class='submit'>";
          echo "</td>";
          echo "</tr>";
-            
+
 
          // * Change node position
          echo "<tr>";
@@ -278,7 +285,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          echo __('Edit a node', 'monitoring');
          echo "</th>";
          echo "</tr>";
-        
+
          echo "<tr>";
          echo "<td colspan='2' align='center'>";
 
@@ -300,11 +307,11 @@ class PluginMonitoringWeathermap extends CommonDBTM {
                if ($name == '') {
                   $name = $item->getName();
                }
-               $elements[$data['id']] = $name;  
+               $elements[$data['id']] = $name;
             }
          }
-         $rand = Dropdown::showFromArray('id_update', $elements);         
-         
+         $rand = Dropdown::showFromArray('id_update', $elements);
+
          $params = array('items_id'        => '__VALUE__',
                          'rand'            => $rand);
 
@@ -313,16 +320,16 @@ class PluginMonitoringWeathermap extends CommonDBTM {
                                      $params, TRUE);
 
          echo "<span id='show_updatenode$rand'></span>\n";
-         
+
          echo "</td>";
          echo "</tr>";
-         
+
          echo "<tr>";
          echo "<td align='center' colspan='2'>";
          echo "<input type='submit' name='update' value=\"".__('Save')."\" class='submit'>";
          echo "</td>";
          echo "</tr>";
-         
+
 
          // * Delete node
          echo "<tr>";
@@ -350,26 +357,26 @@ class PluginMonitoringWeathermap extends CommonDBTM {
             if ($name == '') {
                $name = $item->getName();
             }
-            $elements[$data['id']] = $name;            
+            $elements[$data['id']] = $name;
          }
          Dropdown::showFromArray('id', $elements);
          echo "</td>";
-         echo "</tr>";         
-         
+         echo "</tr>";
+
          echo "<tr>";
          echo "<td align='center' colspan='2'>";
          echo "<input type='submit' name='purge' value=\"".__('Delete permanently')."\" class='submit'>";
          echo "</td>";
          echo "</tr>";
-         
+
          echo "</table>";
          Html::closeForm();
-         
+
       echo "</td>";
       echo "</tr>";
       echo "<tr>";
       echo "<td>";
-         
+
          echo '<form name="formlink" method="post" action="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/weathermaplink.form.php">';
          echo "<table class='tab_cadre' width='100%'>";
          // *Add Link
@@ -378,7 +385,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          echo __('Add a link', 'monitoring');
          echo "</th>";
          echo "</tr>";
-         
+
          echo "<tr>";
          echo "<td>";
          echo __('Source', 'monitoring')."*&nbsp;:";
@@ -387,24 +394,24 @@ class PluginMonitoringWeathermap extends CommonDBTM {
 
          $query = "SELECT `glpi_plugin_monitoring_weathermapnodes`.`id` as `id`,
                `glpi_plugin_monitoring_weathermapnodes`.`name` as `name`,
-               `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`, 
+               `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`,
                `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`,
                `glpi_plugin_monitoring_services`.`id` as `services_id`,
                `glpi_plugin_monitoring_components`.`name` as `components_name`,
                `plugin_monitoring_commands_id`, `glpi_plugin_monitoring_components`.`arguments`,
                `glpi_plugin_monitoring_services`.`networkports_id`
             FROM `glpi_plugin_monitoring_weathermapnodes`
-            
+
             LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
                ON (`glpi_plugin_monitoring_weathermapnodes`.`items_id`=`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`
                   AND `glpi_plugin_monitoring_weathermapnodes`.`itemtype`=`glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`)
-            
-            LEFT JOIN `glpi_plugin_monitoring_services` 
+
+            LEFT JOIN `glpi_plugin_monitoring_services`
                ON `plugin_monitoring_componentscatalogs_hosts_id`= `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
 
-            LEFT JOIN `glpi_plugin_monitoring_components` 
+            LEFT JOIN `glpi_plugin_monitoring_components`
                ON `plugin_monitoring_components_id` = `glpi_plugin_monitoring_components`.`id`
-            
+
 
             WHERE `is_weathermap` = '1'
                AND `plugin_monitoring_weathermaps_id`='".$weathermaps_id."'
@@ -442,8 +449,8 @@ class PluginMonitoringWeathermap extends CommonDBTM {
                         $networkPort->getFromDB($data['networkports_id']);
                         $argument = $pfNetworkPort->fields['name'];
                      }
-                     
-                     
+
+
                      // Search networkport have this name or description
                      $a_ports = $networkPort->find("`itemtype`='".$itemtype."'
                         AND `items_id`='".$data['items_id']."'
@@ -462,15 +469,15 @@ class PluginMonitoringWeathermap extends CommonDBTM {
                                  $device_connected = $pmWeathermapnode->getNodeName($a_node['id']);
                               }
                            }
-                        }                        
+                        }
                      }
                      if ($device_connected == ''
                              AND class_exists("PluginFusinvsnmpNetworkPort")) {
                         $queryn = "SELECT `glpi_networkports`.`id` FROM `glpi_plugin_fusinvsnmp_networkports`
-                           
+
                            LEFT JOIN `glpi_networkports`
                               ON `glpi_networkports`.`id`=`networkports_id`
-                              
+
                            WHERE `itemtype`='".$itemtype."'
                            AND `items_id`='".$data['items_id']."'
                            AND `ifdescr`='".$argument."'";
@@ -486,7 +493,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
                                     AND `items_id`='".$networkPort->fields['items_id']."'", "", 1);
                                  if (count($a_nodes) > 0) {
                                     $a_node = current($a_nodes);
-                                    
+
                                     $queryl = "SELECT `plugin_monitoring_weathermapnodes_id_1`
                                        FROM `glpi_plugin_monitoring_weathermaplinks`
 
@@ -504,11 +511,11 @@ class PluginMonitoringWeathermap extends CommonDBTM {
                                     }
                                  }
                               }
-                           }                        
-                        }                        
+                           }
+                        }
                      }
                   }
-               }               
+               }
             }
             if ($device_connected == '') {
                $networkPort->getFromDB($data['networkports_id']);
@@ -520,10 +527,10 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          }
          if (count($elements) > 1
                  AND count($elements2) > 0) {
-            
+
             $elements = array_merge($elements,array('0'=>Dropdown::EMPTY_VALUE));
             $elements = array_merge($elements, $elements2);
-            
+
          } else {
             $elements = array_merge($elements, $elements2);
          }
@@ -532,7 +539,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
 
          echo "</td>";
          echo "</tr>";
-         
+
          echo "<tr>";
          echo "<td>";
          echo __('Destination', 'monitoring')."&nbsp;:";
@@ -540,7 +547,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          echo "<td>";
 
          echo "<div id='nodedestination'>";
-         
+
          $query = "SELECT * FROM `".getTableForItemType("PluginMonitoringWeathermapnode")."`
             WHERE `plugin_monitoring_weathermaps_id`='".$weathermaps_id."'
             ORDER BY `name`";
@@ -556,13 +563,13 @@ class PluginMonitoringWeathermap extends CommonDBTM {
             if ($name == '') {
                $name = $item->getName();
             }
-            $elements[$data['id']] = $name;            
+            $elements[$data['id']] = $name;
          }
          Dropdown::showFromArray('plugin_monitoring_weathermapnodes_id_2', $elements);
          echo "</div>";
          echo "</td>";
          echo "</tr>";
-         
+
          echo "<tr>";
          echo "<td>";
          echo __('Max bandwidth input', 'monitoring')."&nbsp;:";
@@ -571,7 +578,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          echo "<input type='text' name='bandwidth_in' value=''/>";
          echo "</td>";
          echo "</tr>";
-         
+
          echo "<tr>";
          echo "<td>";
          echo __('Max bandwidth output', 'monitoring')."&nbsp;:";
@@ -580,13 +587,13 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          echo "<input type='text' name='bandwidth_out' value=''/>";
          echo "</td>";
          echo "</tr>";
-         
+
          echo "<tr>";
          echo "<td align='center' colspan='2'>";
          echo "<input type='submit' name='add' value=\"".__('Add')."\" class='submit'>";
          echo "</td>";
          echo "</tr>";
-         
+
          // * Edit link
          echo "<tr>";
          echo "<th colspan='2'>";
@@ -599,7 +606,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          $query = "SELECT `glpi_plugin_monitoring_weathermaplinks`.`id` as `id`,
                `itemtype`, `items_id`, `name`, `plugin_monitoring_weathermapnodes_id_2`
             FROM `glpi_plugin_monitoring_weathermaplinks`
-            
+
             LEFT JOIN `glpi_plugin_monitoring_weathermapnodes`
                ON `glpi_plugin_monitoring_weathermapnodes`.`id` = `plugin_monitoring_weathermapnodes_id_1`
 
@@ -623,11 +630,11 @@ class PluginMonitoringWeathermap extends CommonDBTM {
             if ($name2 == '') {
                $name2 = $item->getName();
             }
-            
-            $elements[$data['id']] = $name1." - ".$name2;            
+
+            $elements[$data['id']] = $name1." - ".$name2;
          }
          $rand = Dropdown::showFromArray('id_update', $elements);
-         
+
          $params = array('items_id'        => '__VALUE__',
                          'rand'            => $rand);
 
@@ -637,15 +644,15 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          echo "<span id='show_updatelink$rand'></span>\n";
          echo "</td>";
          echo "</tr>";
-         
-         
+
+
          // * Delete link
          echo "<tr>";
          echo "<th colspan='2'>";
          echo __('Delete a link', 'monitoring');
          echo "</th>";
          echo "</tr>";
-         
+
          echo "<tr>";
          echo "<td>";
          echo __('Link', 'monitoring')." :";
@@ -654,28 +661,29 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          Dropdown::showFromArray('id', $elements);
          echo "</td>";
          echo "</tr>";
-         
+
          echo "<tr>";
          echo "<td align='center' colspan='2'>";
          echo "<input type='submit' name='purge' value=\"".__('Delete permanently')."\" class='submit'>";
          echo "</td>";
          echo "</tr>";
-      
+
          echo "</table>";
          Html::closeForm();
-         
+
       echo "</td>";
       echo "</tr>";
       echo "</table>";
       echo "</div>";
-      
+
       echo "</td>";
       echo "</tr>";
-      
+
+      echo "</table>";
    }
-   
-   
-   
+
+
+
    function prepareInputForUpdate($input) {
 
       $mime = '';
@@ -687,9 +695,9 @@ class PluginMonitoringWeathermap extends CommonDBTM {
                  OR $mime == 'image/x-png'
                  OR $mime == 'image/jpg'
                  OR $mime == 'image/jpeg') {
-            
+
             // Upload file
-            copy($_FILES['background']['tmp_name'], GLPI_PLUGIN_DOC_DIR."/monitoring/weathermapbg/".$_FILES['background']['name']);            
+            copy($_FILES['background']['tmp_name'], GLPI_PLUGIN_DOC_DIR."/monitoring/weathermapbg/".$_FILES['background']['name']);
             $input['background'] = $_FILES['background']['name'];
             unlink($_FILES['background']['tmp_name']);
          } else if (isset($input['background'])){
@@ -699,12 +707,12 @@ class PluginMonitoringWeathermap extends CommonDBTM {
 
       return $input;
    }
-   
-   
-   
+
+
+
    function showWidget($id, $pourcentage) {
       global $DB, $CFG_GLPI;
-      
+
       $this->generateWeathermap($id);
       $imgdisplay = $CFG_GLPI['root_doc'].'/plugins/monitoring/front/send.php?file=weathermap-'.$id.'.png&date='.date('U');
       $img = GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$id.".png";
@@ -718,23 +726,23 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          return '<img src="'.$imgdisplay.'" width="'.$withreduced.'" />';
       }
    }
-   
-   
-   
+
+
+
    function widgetEvent($id) {
       global $CFG_GLPI;
-      
+
       $img = GLPI_PLUGIN_DOC_DIR."/monitoring/weathermap-".$id.".png";
       if (file_exists($img)) {
-         list($width, $height, $type, $attr) = getimagesize($img);      
+         list($width, $height, $type, $attr) = getimagesize($img);
          return "listeners: {render: function(c) {c.body.on('click', function() { window.open('".$CFG_GLPI["root_doc"]."/plugins/monitoring/front/weathermap_full.php?id=".
                                          $id."', 'weathermap', 'height=".($height + 100).", ".
                                          "width=".($width + 50).", top=100, left=100, scrollbars=yes') });}}";
       }
    }
-   
-   
-   
+
+
+
    /**
     *
     * @param type $type ("in" or "out")
@@ -744,7 +752,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
       if ($bandwidth == '') {
          return 0;
       }
-      
+
       $bdmax = $bandwidthmax;
       if (strstr($bandwidthmax, ":")) {
          $split = explode(":", $bandwidthmax);
@@ -752,9 +760,9 @@ class PluginMonitoringWeathermap extends CommonDBTM {
             $bdmax= $split[0];
          } else if ($type == 'out') {
             $bdmax= $split[1];
-         }         
+         }
       }
-      
+
       if (strstr($bdmax, "G")) {
          $bdmax = $bdmax * 1000 * 1000 * 1000;
       } else if (strstr($bdmax, "M")) {
@@ -762,15 +770,15 @@ class PluginMonitoringWeathermap extends CommonDBTM {
       } else if (strstr($bdmax, "K")) {
          $bdmax = $bdmax * 1000;
       }
-      
+
       if ($bandwidth > ($bdmax * 1000)) {
          return "0";
       } else {
          return $bandwidth;
       }
-   }   
-   
-   
+   }
+
+
    function showToolTip($content, $options=array()) {
       global $CFG_GLPI;
 
@@ -867,21 +875,21 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          return $out;
       }
    }
-   
-   
-   
+
+
+
    function generateAllGraphs($weathermaps_id) {
       global $DB;
-      
+
       $pmServicegraph = new PluginMonitoringServicegraph();
       $pmComponent = new PluginMonitoringComponent();
-      
+
       $cache = array();
-      
+
       $query = "SELECT * FROM `glpi_plugin_monitoring_weathermaplinks`
-         LEFT JOIN `glpi_plugin_monitoring_weathermapnodes` 
+         LEFT JOIN `glpi_plugin_monitoring_weathermapnodes`
             ON `glpi_plugin_monitoring_weathermapnodes`.`id`=`plugin_monitoring_weathermapnodes_id_1`
-         LEFT JOIN `glpi_plugin_monitoring_services` 
+         LEFT JOIN `glpi_plugin_monitoring_services`
             ON `glpi_plugin_monitoring_services`.`id`=`plugin_monitoring_services_id`
          WHERE `plugin_monitoring_weathermaps_id`='".$weathermaps_id."'";
       $result = $DB->query($query);
@@ -896,30 +904,30 @@ class PluginMonitoringWeathermap extends CommonDBTM {
             $graph_template = $pmComponent->fields['graph_template'];
          }
 
-         $pmServicegraph->displayGraph($graph_template, 
-                                       "PluginMonitoringService", 
-                                       $data['plugin_monitoring_services_id'], 
-                                       0, 
+         $pmServicegraph->displayGraph($graph_template,
+                                       "PluginMonitoringService",
+                                       $data['plugin_monitoring_services_id'],
+                                       0,
                                        '2h');
-         
+
       }
    }
-   
-   
-   
+
+
+
    // functions for d3 and draw net weathermap
-   
+
    function drawMap($weathermaps_id, $widthw=100, $config=0) {
       global $DB, $CFG_GLPI;
-      
+
       $this->getFromDB($weathermaps_id);
-      
+
       PluginMonitoringSecurity::updateSession();
 
       if (countElementsInTable('glpi_plugin_monitoring_weathermapnodes', "`plugin_monitoring_weathermaps_id`='".$weathermaps_id."'") == 0) {
          return;
       }
-      
+
       $rand = mt_rand();
       echo '<svg id="cloud'.$rand.'" width="'.$this->fields['width'].'" '
               . 'height="'.$this->fields['height'].'">
@@ -936,7 +944,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
             refX="0.3" refY="0.8">
       <path d="M0,0 V1.6 L0.8,0.8 Z" fill="black" />
     </marker>
-  </defs> 
+  </defs>
         </svg>';
 
       echo '<script>
@@ -951,31 +959,31 @@ class PluginMonitoringWeathermap extends CommonDBTM {
           .size([width, height]);
 
       var svg'.$rand.' = d3.select("#cloud'.$rand.'");
-         
+
       var drag_node = d3.behavior.drag()
         .on("drag", dragmove)';
       if ($config) {
          echo '
         .on("dragend", dragendconfig)';
       }
-              
+
               echo ';
-        
+
 
       function dragmove(d, i) {
         d.px += d3.event.dx;
         d.py += d3.event.dy;
         d.x += d3.event.dx;
-        d.y += d3.event.dy; 
+        d.y += d3.event.dy;
         tick'.$rand.'(); // this is the key to make it work together with updating both px,py,x,y on d !
      }
-     
+
      function dragendconfig(d, i) {
         $.ajax({type: "POST",url: "'.$CFG_GLPI['root_doc'].'/plugins/monitoring/ajax/updateWeathermap.php",data: {id: d.id, x: d.x, y: d.y},success: function(msg) {}});
      }
               ';
-      
-      
+
+
       $a_data = array();
       $a_mapping = array();
       $i = 0;
@@ -984,20 +992,20 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          ORDER BY `name`";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
-         $name = $data['name']; 
+         $name = $data['name'];
          $url = '';
          if ($name == '') {
             $itemtype = $data['itemtype'];
             $item = new $itemtype();
             $item->getFromDB($data['items_id']);
-            $name = $item->getName(); 
+            $name = $item->getName();
             $url = $item->getLinkURL();
          }
          $a_mapping[$data['id']] = $i;
          $i++;
          $a_textx = array(
-             'middle' => 0, 
-             'start'  => '12', 
+             'middle' => 0,
+             'start'  => '12',
              'end'    => '-12');
          $texty = 0;
          if ($data['position'] == 'middle') {
@@ -1018,14 +1026,14 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          );
       }
       $nodes_upusage = array();
-      
+
       $pmWeathermapnode = new PluginMonitoringWeathermapnode();
       $pmWeathermaplink = new PluginMonitoringWeathermaplink();
       $pmService = new PluginMonitoringService();
       $pmComponent = new PluginMonitoringComponent();
-      $a_data['links'] = array();      
+      $a_data['links'] = array();
       $query = "SELECT `glpi_plugin_monitoring_weathermaplinks`.*
-            FROM `glpi_plugin_monitoring_weathermaplinks` 
+            FROM `glpi_plugin_monitoring_weathermaplinks`
          LEFT JOIN `glpi_plugin_monitoring_weathermapnodes`
             ON `plugin_monitoring_weathermapnodes_id_1` = `glpi_plugin_monitoring_weathermapnodes`.`id`
          WHERE `plugin_monitoring_weathermaps_id`='".$weathermaps_id."'";
@@ -1055,7 +1063,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
                $data = $pmWeathermaplink->fields;
             }
          }
-            
+
          $queryevent = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
             WHERE `plugin_monitoring_services_id`='".$data['plugin_monitoring_services_id']."'
                ORDER BY `date` DESC
@@ -1067,7 +1075,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          while ($dataevent=$DB->fetch_array($resultevent)) {
             if ($pmService->getFromDB($data['plugin_monitoring_services_id'])) {
                $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
-               
+
                $matches1 = array();
                preg_match("/".$pmComponent->fields['weathermap_regex_in']."/m", $dataevent['perf_data'], $matches1);
                if (isset($matches1[1])) {
@@ -1092,7 +1100,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
             $downusage = 100;
             $upcolor = 'black';
             $downcolor = 'black';
-         }   
+         }
          $a_data['links'][] = array(
              'source'    => $a_mapping[$data['plugin_monitoring_weathermapnodes_id_1']],
              'target'    => $a_mapping[$data['plugin_monitoring_weathermapnodes_id_2']],
@@ -1124,21 +1132,21 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          }
          $a_data['nodes'][$nodes_num]['nodeusage'] = $color;
       }
-      
+
       echo 'var jsonstr'.$rand.' = \''.json_encode($a_data).'\';';
       echo 'var json'.$rand.' = JSON.parse(jsonstr'.$rand.');
       force'.$rand.'
         .nodes(json'.$rand.'.nodes)
         .links(json'.$rand.'.links)
         .start();
-        
+
      ';
-      
+
       $this->d3jsLink('up', 'usage', $rand);
       $this->d3jsLink('up', 'notusage', $rand);
       $this->d3jsLink('down', 'usage', $rand);
       $this->d3jsLink('down', 'notusage', $rand);
-      
+
       echo '    var nodes'.$rand.' = svg'.$rand.'.selectAll(".node")
         .data(force'.$rand.'.nodes())
       .enter().append("g")
@@ -1147,7 +1155,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
       .append("a")
         .attr("xlink:href", function (d) { return d.url; })
         .attr("target", "_blank");
-        
+
 //      .on("dragend", function(d){$.ajax({url: "toto",success: function(data) {}})});
 //d3.select(this).style("fill", "white");}
 
@@ -1164,7 +1172,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
        .attr("dy", ".35em")
        .attr("class", "linklabel")
       .text(function(d) { return d.name; });
-       
+
    var textdown'.$rand.' = svg'.$rand.'.selectAll("line.link")
        .data(force'.$rand.'.links())
     .enter().append("text")
@@ -1209,7 +1217,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
         nodes'.$rand.'
             .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 ';
-      
+
          echo '
    textdown'.$rand.'.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 130); })
       .attr("y", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 130); });
@@ -1223,11 +1231,11 @@ class PluginMonitoringWeathermap extends CommonDBTM {
 
 echo '        </script>';
 
-      
+
    }
-   
-   
-   
+
+
+
    function d3jsLink($updown, $type, $rand) {
       global $CFG_GLPI;
 
@@ -1247,7 +1255,7 @@ echo '        </script>';
          .attr("marker-end", function(d) { if (d.'.$updown.'usage == 100) {return "url(#arrowhead" + d.'.$updown.' + "'.$rand.')";}})';
       }
          echo ';
-            
+
          $("line").tipsy({
          gravity: "w",
          offset: 30,
@@ -1256,7 +1264,7 @@ echo '        </script>';
         delayOut: 3,
         fade: true,
          hoverlock: true,
-         html: true, 
+         html: true,
          title: function () {
            var d = this.__data__;
            return "<div id=\'chart" + d.services_id + "2h'.$updown.$type.$rand.'\'>'.
@@ -1275,11 +1283,11 @@ echo '        </script>';
       });
       ';
    }
-   
-   
-   
+
+
+
    function getWBandwidth($bp_current, $bp_max) {
-      
+
       if (strstr($bp_max, "G")) {
          $bp_max = $bp_max * 1000 * 1000 * 1000;
       } else if (strstr($bp_max, "M")) {
