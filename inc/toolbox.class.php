@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2014
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -52,8 +52,8 @@ class PluginMonitoringToolbox {
 
    static function loadLib() {
       global $CFG_GLPI;
-      
-      echo '<link href="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/nv.d3.css" rel="stylesheet" type="text/css">   
+
+      echo '<link href="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/nv.d3.css" rel="stylesheet" type="text/css">
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/lib/d3.v2.min.js"></script>
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/nv.d3.min.js"></script>
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/tooltip.js"></script>
@@ -68,17 +68,17 @@ class PluginMonitoringToolbox {
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/jqueryplugins/tooltipsy/jquery.tipsy.js"></script>';
    }
 
-   
-   
+
+
    static function loadPreferences($components_id) {
-      
+
       $pmComponent = new PluginMonitoringComponent();
       $pmComponent->getFromDB($components_id);
-      
+
       $_SESSION['glpi_plugin_monitoring']['perfname'][$components_id] = array();
       // $a_perfname = importArrayFromDB($pmComponent->fields['perfname']);
       $a_perfname = @unserialize($pmComponent->fields['perfname']);
-      
+
       if ($a_perfname === FALSE) {
          // Val not serialized
          $input = array(
@@ -91,51 +91,52 @@ class PluginMonitoringToolbox {
             unset($_SESSION['glpi_plugin_monitoring']['perfname'][$components_id]);
          }
       }
-      
+
       // No perfdata for this service ...
       if (!is_array($a_perfname)) return false;
-      
+
       foreach ($a_perfname as $perfname=>$active) {
          $_SESSION['glpi_plugin_monitoring']['perfname'][$components_id][$perfname] = 'checked';
       }
-      
+
       $_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$components_id] = array();
       // $a_perfnameinvert = importArrayFromDB($pmComponent->fields['perfnameinvert']);
-      $a_perfnameinvert = unserialize($pmComponent->fields['perfnameinvert']);
-      foreach ($a_perfnameinvert as $perfname=>$active) {
-         $_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$components_id][$perfname] = 'checked';
+      $a_perfnameinvert = @unserialize($pmComponent->fields['perfnameinvert']);
+      if ($a_perfnameinvert !== false) {
+         foreach ($a_perfnameinvert as $perfname=>$active) {
+            $_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$components_id][$perfname] = 'checked';
+         }
+
+         $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$components_id] = array();
+         // $a_perfnamecolor = importArrayFromDB($pmComponent->fields['perfnamecolor']);
+         $a_perfnamecolor = unserialize($pmComponent->fields['perfnamecolor']);
+         foreach ($a_perfnamecolor as $perfname=>$color) {
+            $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$components_id][$perfname] = $color;
+         }
       }
-      
-      $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$components_id] = array();
-      // $a_perfnamecolor = importArrayFromDB($pmComponent->fields['perfnamecolor']);
-      $a_perfnamecolor = unserialize($pmComponent->fields['perfnamecolor']);
-      foreach ($a_perfnamecolor as $perfname=>$color) {
-         $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$components_id][$perfname] = $color;
-      }
-      
       return true;
    }
-   
-   
-   
+
+
+
    static function preferences($components_id, $loadpreferences=1, $displayonly=0) {
       global $CFG_GLPI;
-      
+
       if ($loadpreferences == 1) {
          if (! PluginMonitoringToolbox::loadPreferences($components_id)) return false;
       }
-      
+
       $pmComponent = new PluginMonitoringComponent();
       $pmComponent->getFromDB($components_id);
-      
+
       echo "<form method='post'>";
       $a_perfnames = array();
       $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($pmComponent->fields['graph_template']);
-      echo "<table class='tab_cadre_fixe'>";      
+      echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_3'>";
       echo "<td rowspan='".ceil(count($a_perfnames) / 7)."' width='90'>";
       echo __('Display', 'monitoring')."&nbsp;:";
-      
+
       echo "</td>";
       $i = 0;
       $j = 0;
@@ -144,12 +145,12 @@ class PluginMonitoringToolbox {
             $_SESSION['glpi_plugin_monitoring']['perfname'][$components_id][$name] = 'checked';
          }
       }
-      
+
       echo "<td>";
       echo '<select id="jquery-tagbox-select-options">';
-      
+
       $a_incremental = array();
-      $a_perfdatadetails = getAllDatasFromTable('glpi_plugin_monitoring_perfdatadetails', 
+      $a_perfdatadetails = getAllDatasFromTable('glpi_plugin_monitoring_perfdatadetails',
                            "plugin_monitoring_perfdatas_id='".$pmComponent->fields['graph_template']."'");
       foreach ($a_perfdatadetails as $data) {
          for ($nb=1; $nb <= 15; $nb++) {
@@ -167,7 +168,7 @@ class PluginMonitoringToolbox {
          }
          echo '<option value="'.$name.'" '.$disabled.'>'.$name.'</option>';
          if (isset($a_incremental[$name])) {
-            $name .= ' | diff'; 
+            $name .= ' | diff';
             $disabled = '';
             if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$components_id][$name])) {
                $a_list_val[] = $name;
@@ -178,10 +179,10 @@ class PluginMonitoringToolbox {
       }
       echo '</select>
       <input name="perfname" id="jquery-tagbox-select" type="text" value="'.implode('####', $a_list_val).'" />';
-      
+
       echo "</td>";
       echo "</tr>";
-      
+
 //      foreach ($a_perfnames as $name) {
 //         if ($i == 'O'
 //                 AND $j == '1') {
@@ -224,19 +225,19 @@ class PluginMonitoringToolbox {
 
       $a_perfnames = array();
       $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($pmComponent->fields['graph_template']);
-      echo "<table class='tab_cadre_fixe'>";      
+      echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_3'>";
       echo "<td rowspan='".ceil(count($a_perfnames) / 7)."' width='90'>";
       echo __('Invert values', 'monitoring')."&nbsp;:";
-      
+
       echo "</td>";
       $i = 0;
       $j = 0;
       echo "<td>";
       echo '<select id="jquery-tagbox-select2-options">';
-      
+
       $a_incremental = array();
-      $a_perfdatadetails = getAllDatasFromTable('glpi_plugin_monitoring_perfdatadetails', 
+      $a_perfdatadetails = getAllDatasFromTable('glpi_plugin_monitoring_perfdatadetails',
                            "plugin_monitoring_perfdatas_id='".$pmComponent->fields['graph_template']."'");
       foreach ($a_perfdatadetails as $data) {
          for ($nb=1; $nb <= 15; $nb++) {
@@ -254,7 +255,7 @@ class PluginMonitoringToolbox {
          }
          echo '<option value="'.$name.'" '.$disabled.'>'.$name.'</option>';
          if (isset($a_incremental[$name])) {
-            $name .= ' | diff'; 
+            $name .= ' | diff';
             $disabled = '';
             if (isset($_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$components_id][$name])) {
                $a_list_val[] = $name;
@@ -266,7 +267,7 @@ class PluginMonitoringToolbox {
       echo '</select>
       <input name="perfnameinvert" id="jquery-tagbox-select2" type="text" value="'.implode('####', $a_list_val2).'" />';
       echo "</td>";
-      
+
 //      foreach ($a_perfnames as $name) {
 //         if ($i == 'O'
 //                 AND $j == '1') {
@@ -298,8 +299,8 @@ class PluginMonitoringToolbox {
       echo "</tr>";
 
       echo "</table>";
-     
-      
+
+
       // * Define color of perfname
 
 
@@ -310,19 +311,19 @@ class PluginMonitoringToolbox {
             unset($a_perfnames[$key]);
          }
       }
-      echo "<table class='tab_cadre_fixe'>";      
+      echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<td rowspan='".ceil(count($a_perfnames) / 4)."' width='90'>";
       echo __('Colors', 'monitoring')."&nbsp;:";
-      
+
       echo "</td>";
       $i = 0;
       $j = 0;
-      
+
       $a_colors_warn = PluginMonitoringServicegraph::colors("warn");
       $a_colors_crit = PluginMonitoringServicegraph::colors("crit");
       $a_colors = PluginMonitoringServicegraph::colors();
-      
+
       foreach ($a_list_val as $name) {
          if ($i == 'O'
                  AND $j == '1') {
@@ -332,7 +333,7 @@ class PluginMonitoringToolbox {
          echo $name."&nbsp;:";
          echo "</td>";
          echo "<td>";
-         
+
          $color = 'ffffff';
          if (isset($_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$components_id][$name])) {
             $color = $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$components_id][$name];
@@ -345,7 +346,7 @@ class PluginMonitoringToolbox {
                $color = array_shift($a_colors);
             }
          }
-         
+
          echo ' <input class="color" id="color'.$name.'" name="perfnamecolor['.$name.']" value="'.$color.'" size="6" />';
 
          echo '<script type="text/javascript">
@@ -353,7 +354,7 @@ var myPicker = new jscolor.color(document.getElementById(\'color'.$name.'\'), {}
 myPicker.fromString(\''.$color.'\')
 </script>
 ';
-         
+
 //         echo " <select name='perfnamecolor[".$name."]' id='color".$name."'>";
 //         echo "<option value=''>".Dropdown::EMPTY_VALUE."</option>";
 //         foreach ($a_colors as $color) {
@@ -387,7 +388,7 @@ myPicker.fromString(\''.$color.'\')
       echo "</table>";
 
       Html::closeForm();
-      
+
       return true;
    }
 
