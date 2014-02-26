@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2013
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringDisplayview_rule extends CommonDBTM {
-   
+
 
    /**
    * Get name of this type
@@ -64,13 +64,13 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
    }
 
 
-   
+
    static function canView() {
       return PluginMonitoringProfile::haveRight("config_views", 'r');
    }
-   
-   
-   
+
+
+
    static function cronInfo($name){
 
       switch ($name) {
@@ -82,10 +82,10 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
       return array();
    }
 
-   
+
    static function cronReplayallviewrules() {
       ini_set("max_execution_time", "0");
-      
+
       $pmDisplayview_rule = new PluginMonitoringDisplayview_rule();
       $a_rules = $pmDisplayview_rule->find();
       foreach ($a_rules as $data) {
@@ -96,62 +96,62 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
    }
 
 
-   
+
    function addRulesTabs($displayviews_id, $tab) {
       $i = 20;
       $a_hosts = $this->find("`plugin_monitoring_displayviews_id`='".$displayviews_id."'"
               . " AND `type`='host'");
-      
+
       foreach ($a_hosts as $data) {
          $tab[$i] = __('Host rule', 'monitoring').': '.__($data['itemtype']);
          $i++;
       }
-      
+
       $a_resources = $this->find("`plugin_monitoring_displayviews_id`='".$displayviews_id."'"
               . " AND `type`='service'");
-      
+
       foreach ($a_resources as $data) {
          $tab[$i] = __('Resource rule', 'monitoring').': '.__($data['itemtype']);
          $i++;
       }
-      
+
       return $tab;
    }
-   
-   
-   
+
+
+
    function ShowRulesTabs($displayviews_id, $tabnum) { // Verified
       global $CFG_GLPI;
-      
+
       $i = 20;
       $id = 0;
       $a_hosts = $this->find("`plugin_monitoring_displayviews_id`='".$displayviews_id."'"
               . " AND `type`='host'");
-      
+
       foreach ($a_hosts as $data) {
          if ($i == $tabnum) {
             $id = $data['id'];
          }
          $i++;
       }
-      
+
       $a_resources = $this->find("`plugin_monitoring_displayviews_id`='".$displayviews_id."'"
               . " AND `type`='service'");
-      
+
       foreach ($a_resources as $data) {
          if ($i == $tabnum) {
             $id = $data['id'];
          }
          $i++;
       }
-      
+
       echo "<table class='tab_cadre_fixe' width='600'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th align='center'>";
       echo __('Host rule', 'monitoring');
       echo "</th>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_2'>";
       echo "<td class='center'>";
       echo "<br/><a href='".$CFG_GLPI['root_doc'].
@@ -159,7 +159,7 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
               __('Edit rule', 'monitoring')."</a><br/><br/>";
       echo "</td>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<td class='right'>";
       echo "<form method='post' action='".Toolbox::getItemTypeFormURL('PluginMonitoringDisplayview_rule')."'>";
@@ -172,15 +172,15 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
       echo "</tr>";
       echo "</table>";
    }
-   
-   
-   
+
+
+
    function addRule() { // Verified
-      
+
       Search::manageGetValues($_GET['itemtype']);
       $pmSearch = new PluginMonitoringSearch();
       $pmSearch->showGenericSearch($_GET['itemtype'], $_GET);
-      
+
       echo "<br/><br/>";
       echo "<table class='tab_cadre_fixe'>";
 
@@ -189,13 +189,13 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
       echo __('Preview', 'monitoring');
       echo "</th>";
       echo "</tr>";
-      
+
       echo "<tr>";
       echo "<td>";
-      
+
       $pmDisplayview = new PluginMonitoringDisplayview();
       $pmDisplayview->getFromDB($_GET['plugin_monitoring_displayviews_id']);
-     
+
       $default_entity = 0;
       if (isset($_SESSION['glpiactive_entity'])) {
          $default_entity = $_SESSION['glpiactive_entity'];
@@ -205,10 +205,10 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
               AND count($_SESSION['glpiactiveentities']) > 1) {
          $entities_isrecursive = 1;
       }
-      
-      Session::changeActiveEntities($pmDisplayview->fields['entities_id'], 
+
+      Session::changeActiveEntities($pmDisplayview->fields['entities_id'],
                            $pmDisplayview->fields['is_recursive']);
-      
+
       Search::showList($_GET['itemtype'], $_GET);
 
       Session::changeActiveEntities($default_entity,
@@ -216,12 +216,12 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
       echo "</table>";
-      
+
 
    }
-   
 
-   
+
+
    /*
     * Use when add a rule, calculate for all items in GLPI DB
     */
@@ -233,7 +233,7 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
       $pmDisplayview             = new PluginMonitoringDisplayview();
       $pmSearch                  = new PluginMonitoringSearch();
       $pmService                 = new PluginMonitoringService();
-      
+
       $devices_present = array();
       if ($pmDisplayview_rule->getFromDB($parm->fields['id'])) {
          if ($pmDisplayview->getFromDB($pmDisplayview_rule->fields['plugin_monitoring_displayviews_id'])) {
@@ -248,14 +248,14 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
                        AND count($_SESSION['glpiactiveentities']) > 1) {
                   $entities_isrecursive = 1;
                }
-               Session::changeActiveEntities($pmDisplayview->fields['entities_id'], 
+               Session::changeActiveEntities($pmDisplayview->fields['entities_id'],
                                              $pmDisplayview->fields['is_recursive']);
 
 
             $get_tmp = '';
             $itemtype = $pmDisplayview_rule->fields['itemtype'];
             if (isset($_GET)) {
-                $get_tmp = $_GET;  
+                $get_tmp = $_GET;
             }
             if (isset($_SESSION["glpisearchcount"][$pmDisplayview_rule->fields['itemtype']])) {
                unset($_SESSION["glpisearchcount"][$pmDisplayview_rule->fields['itemtype']]);
@@ -284,7 +284,7 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
 
             $glpilist_limit = $_SESSION['glpilist_limit'];
             $_SESSION['glpilist_limit'] = 500000;
-            $result = $pmSearch->constructSQL($itemtype, 
+            $result = $pmSearch->constructSQL($itemtype,
                                            $_GET);
             $_SESSION['glpilist_limit'] = $glpilist_limit;
 
@@ -338,26 +338,27 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
          $pmDisplayview_item->delete(array('id'=>$id));
       }
       return true;
-   }   
-   
-   
+   }
+
+
+
    function showReplayRulesForm($displayviews_id, $options=array()) {
-      
+
       echo "<form method='post' action='".Toolbox::getItemTypeFormURL('PluginMonitoringDisplayview_rule')."'>";
       echo "<table class='tab_cadre_fixe'>";
-      
+
       echo "<tr class='tab_bg_1'>";
       echo "<th>";
       echo __('Replay all rules', 'monitoring');
       echo "</th>";
       echo "</tr>";
-      
+
       echo "<tr class='tab_bg_1'>";
-      echo "<td class='center'>"; 
+      echo "<td class='center'>";
       echo "<input type='hidden' name='displayviews_id' value='".$displayviews_id."' />";
       echo "<input type='submit' name='replayrules' value=\""._sx('button', 'Replay all rules', 'monitoring')."\"
                          class='submit'>";
-      
+
       echo "</table>";
       Html::closeForm();
    }

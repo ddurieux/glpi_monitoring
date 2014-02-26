@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
-   
+
 
    static function getTypeName($nb=0) {
       return __('Hosts', 'monitoring');
@@ -57,30 +57,30 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
    }
 
 
-   
+
    static function canView() {
       return PluginMonitoringProfile::haveRight("config_components_catalogs", 'r');
    }
 
-   
-   
+
+
    function showHosts($componentscatalogs_id, $static) {
       global $DB,$CFG_GLPI;
-      
+
       if ($static == '1') {
          $this->addHost($componentscatalogs_id);
       }
-      
+
       $rand = mt_rand();
 
       $query = "SELECT * FROM `".$this->getTable()."`
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'
             AND `is_static`='".$static."'";
       $result = $DB->query($query);
-      
+
       echo "<form method='post' name='componentscatalog_host_form$rand' id='componentscatalog_host_form$rand' action=\"".
                 $CFG_GLPI["root_doc"]."/plugins/monitoring/front/componentscatalog_host.form.php\">";
-      
+
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr>";
       echo "<th colspan='5'>";
@@ -92,10 +92,10 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
       echo "</th>";
       echo "</tr>";
       echo "</table>";
-      
-      
-      echo "<table class='tab_cadre_fixe'>";     
-      
+
+
+      echo "<table class='tab_cadre_fixe'>";
+
       echo "<tr>";
       echo "<th width='10'>&nbsp;</th>";
       echo "<th>".__('Type')."</th>";
@@ -104,11 +104,11 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
       echo "<th>".__('Serial number')."</th>";
       echo "<th>".__('Inventory number')."</th>";
       echo "</tr>";
-      
+
       while ($data=$DB->fetch_array($result)) {
          $itemtype = $data['itemtype'];
          $item = new $itemtype();
-           
+
          $display_normal = 1;
          $networkports = false;
          if ($itemtype == 'NetworkEquipment') {
@@ -119,7 +119,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
             if ($DB->numrows($results) == 0) {
                $display_normal = 0;
             }
-            
+
             $querys = "SELECT * FROM `glpi_plugin_monitoring_services`
                WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$data['id']."'
                   AND `networkports_id`!='0'";
@@ -149,7 +149,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
 
             echo "</tr>";
          }
-         
+
          if ($networkports) {
             $itemport = new NetworkPort();
             while ($datas = $DB->fetch_array($results)) {
@@ -170,27 +170,27 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
             }
          }
       }
-      
+
       if ($static == '1') {
          Html::openArrowMassives("componentscatalog_host_form$rand", true);
          Html::closeArrowMassives(array('deleteitem' => _sx('button', 'Delete permanently')));
          Html::closeForm();
       }
-      
+
       echo "</table>";
    }
-   
-   
-   
+
+
+
    function addHost($componentscatalogs_id) {
       global $DB;
-      
+
       if (! PluginMonitoringProfile::haveRight("config_components_catalogs", 'w')) return;
-      
+
       $this->getEmpty();
-      
-      $this->showFormHeader();      
-     
+
+      $this->showFormHeader();
+
       echo "<tr>";
       echo "<td colspan='2'>";
       echo __('Add a new component', 'monitoring')."&nbsp;:";
@@ -201,30 +201,30 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
       Dropdown::showAllItems('items_id');
       echo "</td>";
       echo "</tr>";
-      
+
       $this->showFormButtons();
    }
-   
-   
-   
+
+
+
    function linkComponentsToItem($componentscatalogs_id, $componentscatalogs_hosts_id, $networkports_id=0) {
       global $DB;
-      
+
       $pmService                 = new PluginMonitoringService();
       $pmComponentscatalog_Host  = new PluginMonitoringComponentscatalog_Host();
-      
+
       $pmComponentscatalog_Host->getFromDB($componentscatalogs_hosts_id);
-     
+
       $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_components`
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
-         
-         $input = array();         
+
+         $input = array();
          $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
          $item = new $itemtype();
          $item->getFromDB($pmComponentscatalog_Host->fields['items_id']);
-         
+
          if ($networkports_id == 0) {
             $input['entities_id'] =  $item->fields['entities_id'];
             $input['plugin_monitoring_componentscatalogs_hosts_id'] = $componentscatalogs_hosts_id;
@@ -250,62 +250,62 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
                $input['state_type'] = 'HARD';
                $pmService->add($input);
             } else {
-               $a_service = current($a_services);               
+               $a_service = current($a_services);
                $queryu = "UPDATE `glpi_plugin_monitoring_services`
                   SET `entities_id`='".$item->fields['entities_id']."'
                      WHERE `id`='".$a_service['id']."'";
                $DB->query($queryu);
             }
          }
-      }      
+      }
    }
-   
-   
-   
+
+
+
    static function unlinkComponentsToItem($parm) {
       global $DB;
-      
+
       $pmService  = new PluginMonitoringService();
-      
+
       $query = "SELECT * FROM `glpi_plugin_monitoring_services`
          WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$parm->fields['id']."'";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
          $_SESSION['plugin_monitoring_hosts'] = $parm->fields;
          $pmService->delete(array('id'=>$data['id']));
-      }      
+      }
    }
-   
-   
-   
+
+
+
    /**
     * Put in session informations for add in log what change in config
-    * 
-    * @return type 
+    *
+    * @return type
     */
    function pre_deleteItem() {
       $_SESSION['plugin_monitoring_hosts'] = $this->fields;
-      
+
       return true;
    }
-   
-   
-   
+
+
+
    function post_addItem() {
       if (isset($_SESSION['plugin_monitoring_nohook_addcomponentscatalog_host'])) {
          unset($_SESSION['plugin_monitoring_nohook_addcomponentscatalog_host']);
       } else {
          $this->linkComponentsToItem(
-                 $this->fields['plugin_monitoring_componentscalalog_id'], 
+                 $this->fields['plugin_monitoring_componentscalalog_id'],
                  $this->fields['id']);
       }
    }
 
-   
-   
+
+
    function post_purgeItem() {
       global $DB;
-      
+
       $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
          WHERE `itemtype`='".$this->fields['itemtype']."'
             AND `items_id`='".$this->fields['items_id']."'
