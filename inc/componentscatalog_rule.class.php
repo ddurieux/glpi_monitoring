@@ -342,10 +342,8 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                      $input['is_static'] = '0';
                      $input['items_id'] = $items_id_device;
                      $input['itemtype'] = $itemtype_device;
+                     $input['networkports_id'] = $networkports_id;
                      $componentscatalogs_hosts_id = $pmComponentscatalog_Host->add($input);
-                     $pmComponentscatalog_Host->linkComponentsToItem($pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"],
-                                                                     $componentscatalogs_hosts_id,
-                                                                     $networkports_id);
                   } else {
                      $data2 = $DB->fetch_assoc($resultnet);
                      // modify entity of services (if entity of device is changed)
@@ -381,9 +379,6 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                   $input['items_id'] = $items_id_device;
                   $input['itemtype'] = $itemtype_device;
                   $componentscatalogs_hosts_id = $pmComponentscatalog_Host->add($input);
-//                  $pmComponentscatalog_Host->linkComponentsToItem($pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"],
-//                                                                  $componentscatalogs_hosts_id,
-//                                                                  $networkports_id);
                } else {
                   $data2 = $DB->fetch_assoc($resulth);
                   // modify entity of services (if entity of device is changed)

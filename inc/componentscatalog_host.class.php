@@ -295,9 +295,17 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
       if (isset($_SESSION['plugin_monitoring_nohook_addcomponentscatalog_host'])) {
          unset($_SESSION['plugin_monitoring_nohook_addcomponentscatalog_host']);
       } else {
-         $this->linkComponentsToItem(
-                 $this->fields['plugin_monitoring_componentscalalog_id'],
-                 $this->fields['id']);
+         if (isset($this->input['networkports_id'])
+                 && $this->input['networkports_id'] > 0) {
+            $this->linkComponentsToItem(
+                    $this->fields['plugin_monitoring_componentscalalog_id'],
+                    $this->fields['id'],
+                    $this->input['networkports_id']);
+         } else {
+            $this->linkComponentsToItem(
+                    $this->fields['plugin_monitoring_componentscalalog_id'],
+                    $this->fields['id']);
+         }
       }
    }
 
