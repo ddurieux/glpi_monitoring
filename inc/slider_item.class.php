@@ -150,7 +150,9 @@ class PluginMonitoringSlider_item extends CommonDBTM {
       $elements['PluginMonitoringWeathermap']         = __('Weathermap', 'monitoring');
       $elements['PluginMonitoringCustomitem_Gauge']   = PluginMonitoringCustomitem_Gauge::getTypeName();
       $elements['PluginMonitoringCustomitem_Counter'] = PluginMonitoringCustomitem_Counter::getTypeName();
-
+      if (in_array('maps', $_SESSION['glpi_plugins'])) {
+         $elements['PluginMapsMap']                      = 'Maps';
+      }
       $rand = Dropdown::showFromArray('itemtype', $elements, array('value'=>$this->fields['itemtype']));
 
       $params = array('itemtype'        => '__VALUE__',

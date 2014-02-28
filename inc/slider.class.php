@@ -435,6 +435,13 @@ class PluginMonitoringSlider extends CommonDBTM {
             if ($maxHeight < 330) {
                $maxHeight = 330;
             }
+         } else if ($data['itemtype'] == "PluginMapsMap") {
+            if ($maxWidth < 950) {
+               $maxWidth = 950;
+            }
+            if ($maxHeight < 800) {
+               $maxHeight = 800;
+            }
          } else {
             $itemtype = $data['itemtype'];
             $item = new $itemtype();
@@ -476,6 +483,10 @@ top: 0px; left: 0px; width: '.$maxWidth.'px; height: '.$maxHeight.'px;">
             echo '<div>';
             $pmDisplayview_item = new PluginMonitoringDisplayview_item();
             echo $pmDisplayview_item->view($data['items_id']);
+            echo '</div>';
+         } else if ($itemtype == "PluginMapsMap") {
+            echo '<div>';
+            echo '<div id="pluginmap"></div>';
             echo '</div>';
          } else {
             echo '<div>';
@@ -534,8 +545,22 @@ echo '    </div>
                     "\", \"\", true);
             </script>";
          }
-      }
+         if ($itemtype == "PluginMapsMap") {
+            $sess_id = session_id();
+            PluginMonitoringSecurity::updateSession();
 
+            echo "<script type='text/javascript'>
+            var mgr = new Ext.UpdateManager('pluginmap');
+            mgr.startAutoRefresh(50, \"".$CFG_GLPI["root_doc"].
+                    "/plugins/monitoring/ajax/widgetPluginmap.php\","
+                    . " \"extra_infos=".
+                    $data['extra_infos']."&sess_id=".$sess_id.
+                    "&glpiID=".$_SESSION['glpiID'].
+                    "&plugin_monitoring_securekey=".$_SESSION['plugin_monitoring_securekey'].
+                    "\", \"\", true);
+            </script>";
+         }
+      }
       echo "</td>";
       echo "</tr>";
       echo "</table>";
