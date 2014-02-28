@@ -391,7 +391,7 @@ class PluginMonitoringSlider extends CommonDBTM {
         ];
         var options = {
             $AutoPlay: true,
-            $AutoPlayInterval: '.$this->fields['duration'].',
+            $AutoPlayInterval: '.$this->fields['duration'].'000,
             $SlideshowOptions: {
                     $Class: $JssorSlideshowRunner$,
                     $Transitions: _SlideshowTransitions,
