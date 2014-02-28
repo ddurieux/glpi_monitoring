@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2012
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -63,21 +63,52 @@ $pmWeathermap = new PluginMonitoringWeathermap();
 $pmWeathermap->getFromDB($_POST['id']);
 
 echo "<center>";
-echo "<table width='100%'>";
+if ($_POST["id"] == -1) {
+   echo "<table width='100%' class='tab_cadre'>";
+} else {
+   echo "<table width='100%'>";
+}
 echo "<tr>";
 echo "<th>";
-echo $pmWeathermap->getName();
-if ($_POST['extra_infos'] < 100) {
-   echo " <a href='".$CFG_GLPI['root_doc'].
-           "/plugins/monitoring/front/weathermap_full.php?id=".$_POST["id"].
-           "' target='_blank'>(".__('full 100%', 'monitoring').")</a>";
+if ($_POST["id"] == -1) {
+   echo __('Weathermap legend', 'monitoring');
+} else {
+   echo $pmWeathermap->getName();
+   if ($_POST['extra_infos'] < 100) {
+      echo " <a href='".$CFG_GLPI['root_doc'].
+              "/plugins/monitoring/front/weathermap_full.php?id=".$_POST["id"].
+              "' target='_blank'>(".__('full 100%', 'monitoring').")</a>";
+   }
 }
 echo "</th>";
 echo "</tr>";
+
+if ($_POST["id"] == -1) {
+   echo "<tr class='tab_bg_1'>";
+   echo "<td>";
+
+   echo "<table width='100%' style='border-collapse:collapse'>";
+   echo "<tr>";
+   echo "<td width='60%' style='background-color: green;' align='right'>";
+   echo "<= 60%";
+   echo "</td>";
+   echo "<td width='20%' style='background-color: orange;' align='right'>";
+   echo "<= 80%";
+   echo "</td>";
+   echo "<td width='20%' style='background-color: red;' align='right'>";
+   echo "<= 100%";
+   echo "</td>";
+   echo "</tr>";
+   echo "</table>";
+
+   echo "</td>";
+   echo "</tr>";
+}
+
 echo "</table>";
 
 
-
-$pmWeathermap->drawMap($_POST["id"], $_POST['extra_infos']);
-
+if ($_POST["id"] > 0) {
+   $pmWeathermap->drawMap($_POST["id"], $_POST['extra_infos']);
+}
 ?>

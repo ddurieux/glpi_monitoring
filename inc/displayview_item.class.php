@@ -448,9 +448,14 @@ Ext.onReady(function(){
 //         $content = $item->showWidget($data['items_id'], $data['extra_infos']);
          $content = '<div id="weathermap-'.$data['items_id'].'"></div>';
 //         $event = ", ".$item->widgetEvent($data['items_id']);
-         $title .= " : ".Dropdown::getDropdownName(getTableForItemType('PluginMonitoringWeathermap'), $data['items_id']);
-         $item->getFromDB($data['items_id']);
-         $width = "width:".(($item->fields['width'] * $data['extra_infos']) / 100).",";
+         if ($data['items_id'] == -1) {
+            $title .= " : ".__('Legend', 'monitoring');
+            $width = "width:400,";
+         } else {
+            $title .= " : ".Dropdown::getDropdownName(getTableForItemType('PluginMonitoringWeathermap'), $data['items_id']);
+            $item->getFromDB($data['items_id']);
+            $width = "width:".(($item->fields['width'] * $data['extra_infos']) / 100).",";
+         }
       } else {
          if ($itemtype2 != '') {
             $content = $item->showWidget2($data['id']);

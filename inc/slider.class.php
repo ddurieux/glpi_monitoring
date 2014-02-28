@@ -397,7 +397,7 @@ class PluginMonitoringSlider extends CommonDBTM {
                     $Transitions: _SlideshowTransitions,
                     $TransitionsOrder: 1,
                     $ShowLink: true
-                }
+        }
         };
         var jssor_slider1 = new $JssorSlider$(\'slider1_container\', options);
     });
