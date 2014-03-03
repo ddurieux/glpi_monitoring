@@ -1014,7 +1014,8 @@ echo "
       }
 
       if ($displayGraphs) {
-         if (! $_SESSION['plugin_monitoring_reduced_interface']) {
+         if (!isset($_SESSION['plugin_monitoring_reduced_interface'])
+                 || !$_SESSION['plugin_monitoring_reduced_interface']) {
             // echo "<td class='center'>";
             // if ($pMonitoringComponent->hasCounters()) {
                // $pmServicegraph = new PluginMonitoringServicegraph();
