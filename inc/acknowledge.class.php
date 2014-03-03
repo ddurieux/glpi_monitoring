@@ -141,9 +141,8 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
 
       $tab[1]['table']           = $this->getTable();
       $tab[1]['field']           = 'id';
-      $tab[1]['linkfield']       = 'id';
       $tab[1]['name']            = __('ID');
-      $tab[1]['datatype']        = 'itemlink';
+      $tab[1]['datatype']        = 'number';
       $tab[1]['massiveaction']   = false; // implicit field is id
 
       $tab[2]['table']              = $this->getTable();
