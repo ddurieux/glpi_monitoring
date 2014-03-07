@@ -582,6 +582,9 @@ class PluginMonitoringService extends CommonDBTM {
             AND `itemtype`='".$itemtype."'";
       $result = $DB->query($query);
 
+      echo '<div id="custom_date" style="display:none"></div>';
+      echo '<div id="custom_time" style="display:none"></div>';
+
 //      echo "<form name='form' method='post'
 //         action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/service.form.php'>";
 

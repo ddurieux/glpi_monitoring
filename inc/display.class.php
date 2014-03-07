@@ -1016,16 +1016,6 @@ echo "
       if ($displayGraphs) {
          if (!isset($_SESSION['plugin_monitoring_reduced_interface'])
                  || !$_SESSION['plugin_monitoring_reduced_interface']) {
-            // echo "<td class='center'>";
-            // if ($pMonitoringComponent->hasCounters()) {
-               // $pmServicegraph = new PluginMonitoringServicegraph();
-               // $html = $pmServicegraph->displayCounter($pMonitoringComponent->fields['graph_template'], $data['id']);
-               // $counters = "<table width='600' class='tab_cadre'><tr><td>".$html."</td></tr></table>";
-               // Html::showToolTip($counters, array(
-                  // 'img'    => $CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"
-               // ));
-            // }
-            // echo "</td>";
 
             echo "<td class='center'>";
             // Even if not exist incremental perfdata ...
