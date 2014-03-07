@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -53,7 +53,7 @@ $pMonitoringService = new PluginMonitoringService();
 //echo "<pre>";print_r($_POST);exit;
 
 if (isset($_POST['add'])) {
-   
+
    $pMonitoringServicedef = new PluginMonitoringServicedef();
    $_POST['plugin_monitoring_servicedefs_id'] = $pMonitoringServicedef->add($_POST);
    if (isset($_POST['arg'])) {

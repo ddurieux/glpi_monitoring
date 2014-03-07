@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -62,10 +62,10 @@ if (isset($_GET['file'])) {
       $pmService->getFromDB($match[1]);
       $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
 
-      $pmServicegraph->displayGraph($pmComponent->fields['graph_template'], 
-                                    "PluginMonitoringService", 
-                                    $match[1], 
-                                    $match[2], 
+      $pmServicegraph->displayGraph($pmComponent->fields['graph_template'],
+                                    "PluginMonitoringService",
+                                    $match[1],
+                                    $match[2],
                                     '2h');
    }
    Toolbox::sendFile($file, $filename);

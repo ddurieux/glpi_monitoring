@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -69,18 +69,18 @@ if (isset($_POST['update'])) {
    $pMonitoringBusinessrulegroup->update($_POST);
 } else if (isset($_POST['add'])
         AND isset($_POST['id'])) {
-   
+
    if (isset($_POST['plugin_monitoring_services_id'])) {
       $pmBusinessrule = new PluginMonitoringBusinessrule();
       $pmBusinessrule->add(array('plugin_monitoring_businessrulegroups_id'=>$_POST['plugin_monitoring_businessrulegroups_id'],
                                  'is_generic'=>$_POST['is_generic'],
                                  'plugin_monitoring_services_id'=>$_POST['plugin_monitoring_services_id']));
-      
-   }   
+
+   }
 } else if (isset($_POST['add'])) {
    $pMonitoringBusinessrulegroup->add($_POST);
 } else if (isset($_POST['delete'])) {
-   $pMonitoringBusinessrulegroup->delete($_POST);   
+   $pMonitoringBusinessrulegroup->delete($_POST);
 }
 Html::back();
 

@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2013
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -44,7 +44,7 @@ include ("../../../inc/includes.php");
 
 PluginMonitoringProfile::checkRight("config_views","w");
 
-Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins", 
+Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "views");
 
 
@@ -76,7 +76,7 @@ if (isset($_GET['updaterule'])) {
       $pmDisplayview_rule->update($input);
       unset($_SESSION['plugin_monitoring_rules']);
       unset($_SESSION["glpisearch"][$input['itemtype']]);
-      
+
       $pmDisplayview_rule->getItemsDynamicly($pmDisplayview_rule);
       Html::redirect($CFG_GLPI['root_doc']."/plugins/monitoring/front/displayview.form.php?id=".$input['plugin_monitoring_displayviews_id']);
 
@@ -106,7 +106,7 @@ if (isset($_GET['updaterule'])) {
 } else if (isset($_GET['id'])
         AND !isset($_GET['itemtype'])) {
    $pmDisplayview_rule->getFromDB($_GET['id']);
-   
+
    $val = importArrayFromDB($pmDisplayview_rule->fields['condition']);
    $nbfields = 1;
    $nbfields = count($val['field']);
@@ -127,13 +127,13 @@ if (isset($_GET['updaterule'])) {
    $_POST['plugin_monitoring_displayviews_id'] = $pmDisplayview_rule->fields['plugin_monitoring_displayviews_id'];
    $_SERVER['REQUEST_URI'] = str_replace("?id=".$_GET['id'], "", $_SERVER['REQUEST_URI']);
    $_GET = $_POST;
-   
-   
+
+
    unset($_SESSION["glpisearchcount"][$_POST['itemtype']]);
    unset($_SESSION["glpisearch"]);
 }
 
-if (isset($_POST['name'])) {      
+if (isset($_POST['name'])) {
    $a_construct = array();
    foreach ($_POST as $key=>$value) {
       $a_construct[] = $key."=".$value;

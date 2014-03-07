@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -44,7 +44,7 @@ include ("../../../inc/includes.php");
 
 PluginMonitoringProfile::checkRight("config","r");
 
-Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins", 
+Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "components");
 
 
@@ -62,12 +62,12 @@ if (isset($_POST["copy"])) {
            OR empty($_POST['plugin_monitoring_checks_id'])
            OR empty($_POST['plugin_monitoring_commands_id'])
            OR empty($_POST['calendars_id'])) {
-      
+
       $_SESSION['plugin_monitoring_components'] = $_POST;
-    
+
       Session::addMessageAfterRedirect("<font class='red'>".__('Fields with asterisk are required', 'monitoring')."</font>");
       Html::back();
-   }  
+   }
    if ($_POST['graph_template'] != 0) {
       $a_perfnames = array();
       $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($_POST['graph_template']);
@@ -76,20 +76,20 @@ if (isset($_POST["copy"])) {
       }
       $_POST['perfname'] = exportArrayToDB($a_perfnames);
    }
-   
+
    $pMonitoringComponent->add($_POST);
    Html::back();
 } else if (isset ($_POST["update"])) {
    if (isset($_POST['arg'])) {
       $_POST['arguments'] = exportArrayToDB($_POST['arg']);
-   }   
+   }
    if (empty($_POST['name'])
            OR empty($_POST['plugin_monitoring_checks_id'])
            OR empty($_POST['plugin_monitoring_commands_id'])
            OR empty($_POST['calendars_id'])) {
-    
+
       $_SESSION['plugin_monitoring_components'] = $_POST;
-    
+
       Session::addMessageAfterRedirect("<font class='red'>".__('Fields with asterisk are required', 'monitoring')."</font>");
       Html::back();
    }
@@ -119,20 +119,20 @@ if (isset($_POST["copy"])) {
 } else if(isset($_POST['updateperfdata'])) {
    $a_perfname = array();
    if (isset($_POST['perfname'])) {
-      $_POST['perfname'] = explode("####", $_POST['perfname']);      
+      $_POST['perfname'] = explode("####", $_POST['perfname']);
       foreach ($_POST['perfname'] as $perfname) {
          $a_perfname[$perfname] = '1';
       }
    }
-   
+
    $a_perfnameinvert = array();
    if (isset($_POST['perfnameinvert'])) {
-      $_POST['perfnameinvert'] = explode("####", $_POST['perfnameinvert']);      
+      $_POST['perfnameinvert'] = explode("####", $_POST['perfnameinvert']);
       foreach ($_POST['perfnameinvert'] as $perfname) {
          $a_perfnameinvert[$perfname] = '1';
       }
-   }   
-   
+   }
+
    $a_perfnamecolor = array();
    if (isset($_POST['perfnamecolor'])) {
       foreach ($_POST['perfnamecolor'] as $perfname=>$color) {
@@ -149,9 +149,9 @@ if (isset($_POST["copy"])) {
    $input['perfnameinvert'] = serialize($a_perfnameinvert);
    // $input['perfnamecolor'] = exportArrayToDB($a_perfnamecolor);
    $input['perfnamecolor'] = serialize($a_perfnamecolor);
-   
+
    $pMonitoringComponent->update($input);
-   Html::back(); 
+   Html::back();
 }
 
 

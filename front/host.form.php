@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -83,7 +83,7 @@ if (isset($_POST["add"])) {
             $input['plugin_monitoring_hosts_id'] = $hosts_id;
             $input['plugin_monitoring_contacts_id'] = $data['plugin_monitoring_contacts_id'];
             $pmHost_Contact->add($input);
-         }         
+         }
       }
       if (isset($_POST['is_template']) AND ($_POST['is_template'] == "1")) {
          Html::redirect($_SERVER['HTTP_REFERER']."&id=".$hosts_id);

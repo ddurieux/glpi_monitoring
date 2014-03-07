@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -126,7 +126,7 @@ if (PluginMonitoringProfile::haveRight("config_services_catalogs", 'r')
       echo "<th align='center' height='30' width='34%'>";
       echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/customitem_gauge.php'>".PluginMonitoringCustomitem_Gauge::getTypeName()."</a>";
       echo "</th>";
-      
+
       echo "<th align='center' height='30' width='34%'>";
       echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/customitem_counter.php'>".PluginMonitoringCustomitem_Counter::getTypeName()."</a>";
       echo "</th>";
@@ -193,11 +193,11 @@ if (PluginMonitoringProfile::haveRight("config", 'r')) {
    echo "<th width='11%'>";
    echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/eventhandler.php'>".__('Event handler', 'monitoring')."</a>";
    echo "</th>";
-   
+
    echo "<th width='11%'>";
    echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/perfdata.php'>".__('Graph templates', 'monitoring')."</a>";
    echo "</th>";
-   echo "</tr>";  
+   echo "</tr>";
 
    echo "</table>";
 }

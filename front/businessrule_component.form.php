@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2014
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -55,11 +55,11 @@ if (isset($_POST['add'])) {
            || $_POST['plugin_monitoring_components_id'] < 1) {
       Html::back();
    }
-   
+
    $a_data = current($pmComponentscatalog_Component->find(
-           "`plugin_monitoring_componentscalalog_id`='".$_POST['plugin_monitoring_componentscatalogs_id']."' 
-            AND `plugin_monitoring_components_id`='".$_POST['plugin_monitoring_components_id']."'", 
-           '', 
+           "`plugin_monitoring_componentscalalog_id`='".$_POST['plugin_monitoring_componentscatalogs_id']."'
+            AND `plugin_monitoring_components_id`='".$_POST['plugin_monitoring_components_id']."'",
+           '',
            1));
    $_POST['plugin_monitoring_componentscatalogs_components_id'] = $a_data['id'];
    $pmBusinessrule_component->add($_POST);

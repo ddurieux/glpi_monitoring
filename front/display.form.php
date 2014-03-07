@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -60,7 +60,7 @@ if (isset($_POST['sessionupdate'])) {
 if (isset($_POST["plugin_monitoring_timezone"])) {
    $_SESSION['plugin_monitoring_timezone'] = $_POST["plugin_monitoring_timezone"];
    Html::back();
-} 
+}
 
 if(isset($_POST['updateperfdata'])) {
    $pmComponent = new PluginMonitoringComponent();
@@ -68,10 +68,10 @@ if(isset($_POST['updateperfdata'])) {
       $itemtype = $_GET['itemtype'];
       $items_id = $_GET['items_id'];
       $item = new $itemtype();
-      $item->getFromDB($items_id); 
+      $item->getFromDB($items_id);
       $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
       $_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->fields['id']] = array();
-      $_POST['perfname'] = explode("####", $_POST['perfname']);      
+      $_POST['perfname'] = explode("####", $_POST['perfname']);
       foreach ($_POST["perfname"] as $perfname) {
          $_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->fields['id']][$perfname] = "checked";
       }
@@ -81,10 +81,10 @@ if(isset($_POST['updateperfdata'])) {
       $itemtype = $_GET['itemtype'];
       $items_id = $_GET['items_id'];
       $item = new $itemtype();
-      $item->getFromDB($items_id); 
+      $item->getFromDB($items_id);
       $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
       $_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$pmComponent->fields['id']] = array();
-      $_POST['perfnameinvert'] = explode("####", $_POST['perfnameinvert']);      
+      $_POST['perfnameinvert'] = explode("####", $_POST['perfnameinvert']);
       foreach ($_POST["perfnameinvert"] as $perfname) {
          $_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$pmComponent->fields['id']][$perfname] = "checked";
       }
@@ -94,7 +94,7 @@ if(isset($_POST['updateperfdata'])) {
       $itemtype = $_GET['itemtype'];
       $items_id = $_GET['items_id'];
       $item = new $itemtype();
-      $item->getFromDB($items_id); 
+      $item->getFromDB($items_id);
       $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
       $_SESSION['glpi_plugin_monitoring']['perfnamecolor'][$pmComponent->fields['id']] = array();
       foreach ($_POST["perfnamecolor"] as $perfname=>$color) {
@@ -103,7 +103,7 @@ if(isset($_POST['updateperfdata'])) {
          }
       }
    }
-   Html::back();   
+   Html::back();
 }
 
 $pMonitoringDisplay = new PluginMonitoringDisplay();
@@ -111,7 +111,7 @@ $pMonitoringDisplay = new PluginMonitoringDisplay();
 if (isset($_GET['itemtype']) AND isset($_GET['items_id'])) {
 
    PluginMonitoringToolbox::loadLib();
-   
+
    $pmServicegraph = new PluginMonitoringServicegraph();
    $pMonitoringDisplay->displayGraphs($_GET['itemtype'], $_GET['items_id']);
 }

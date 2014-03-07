@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2013
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -59,8 +59,8 @@ if (isset($_GET['component_catalog_id'])) {
 
 // forceUpdate request parameter is to force an update ...
 if (isset($_GET['forceUpdate'])) {
-   // A services_id may be specified as a parameter ... 
-   // Default services_id is 0 for all services 
+   // A services_id may be specified as a parameter ...
+   // Default services_id is 0 for all services
    PluginMonitoringUnavailability::runUnavailability(isset($_GET['services_id']) ? $_GET['services_id'] : 0);
 }
 

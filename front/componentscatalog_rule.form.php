@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -44,7 +44,7 @@ include ("../../../inc/includes.php");
 
 PluginMonitoringProfile::checkRight("config_components_catalogs","r");
 
-Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins", 
+Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "checks");
 
 if (isset($_POST['itemtypen'])) {
@@ -124,7 +124,7 @@ if (isset($_GET['addrule'])) {
 } else if (isset($_GET['id'])
         AND !isset($_GET['itemtype'])) {
    $pmComponentscatalog_rule->getFromDB($_GET['id']);
-   
+
    $val = importArrayFromDB($pmComponentscatalog_rule->fields['condition']);
    $nbfields = 1;
    $nbfields = count($val['field']);
@@ -144,13 +144,13 @@ if (isset($_GET['addrule'])) {
    $_POST['itemtype'] = $pmComponentscatalog_rule->fields['itemtype'];
    $_POST['plugin_monitoring_componentscalalog_id'] = $pmComponentscatalog_rule->fields['plugin_monitoring_componentscalalog_id'];
    $_SERVER['REQUEST_URI'] = str_replace("?id=".$_GET['id'], "", $_SERVER['REQUEST_URI']);
-   
-   
+
+
    unset($_SESSION["glpisearchcount"][$_POST['itemtype']]);
    unset($_SESSION["glpisearch"]);
 }
 
-if (isset($_POST['name'])) {      
+if (isset($_POST['name'])) {
    $a_construct = array();
    foreach ($_POST as $key=>$value) {
       $a_construct[] = $key."=".$value;

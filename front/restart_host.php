@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    Frédéric Mohier
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2013
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -92,21 +92,21 @@ $definition = importArrayFromDB($a_list['definition']);
 
 /*
  Pour les valeurs :
- $query = "INSERT INTO `glpi_plugin_fusioninventory_taskjobstates` 
-      (`plugin_fusioninventory_taskjobs_id`, `items_id`, `itemtype`, `state`, 
-       `plugin_fusioninventory_agents_id`, `uniqid`) 
+ $query = "INSERT INTO `glpi_plugin_fusioninventory_taskjobstates`
+      (`plugin_fusioninventory_taskjobs_id`, `items_id`, `itemtype`, `state`,
+       `plugin_fusioninventory_agents_id`, `uniqid`)
       VALUES ('0', '0', 'PluginFusioninventoryDeployPackage', '0', '0', '".uniqid()."')";
- '0', => l'id du job dans glpi_plugin_fusioninventory_taskjobs (fixe a chaque exécution) 
- '0', => l'id du package 'PluginFusioninventoryDeployPackage', 
- 'PluginFusioninventoryDeployPackage' => c'est l'itemtype, donc on ne touche pas 
- '0', => c'est le statut donc toujours 0 (=préparé) 
- '0', => c'est l'id de l'agent de l'ordinateur, que tu peux récupérer l'id via la fonction PluginFusioninventoryAgent::getAgentWithComputerid('idducomputer') 
+ '0', => l'id du job dans glpi_plugin_fusioninventory_taskjobs (fixe a chaque exécution)
+ '0', => l'id du package 'PluginFusioninventoryDeployPackage',
+ 'PluginFusioninventoryDeployPackage' => c'est l'itemtype, donc on ne touche pas
+ '0', => c'est le statut donc toujours 0 (=préparé)
+ '0', => c'est l'id de l'agent de l'ordinateur, que tu peux récupérer l'id via la fonction PluginFusioninventoryAgent::getAgentWithComputerid('idducomputer')
  */
-$query = "INSERT INTO `glpi_plugin_fusioninventory_taskjobstates` 
-   (`plugin_fusioninventory_taskjobs_id`, `items_id`, `itemtype`, `state`, 
-    `plugin_fusioninventory_agents_id`, `uniqid`) 
-   VALUES 
-   ('".$taskjob_id."', '".$definition[0]['PluginFusioninventoryDeployPackage']."', 
+$query = "INSERT INTO `glpi_plugin_fusioninventory_taskjobstates`
+   (`plugin_fusioninventory_taskjobs_id`, `items_id`, `itemtype`, `state`,
+    `plugin_fusioninventory_agents_id`, `uniqid`)
+   VALUES
+   ('".$taskjob_id."', '".$definition[0]['PluginFusioninventoryDeployPackage']."',
     'PluginFusioninventoryDeployPackage', '0',
     '".$fusionAgentId."', '".uniqid()."')";
 

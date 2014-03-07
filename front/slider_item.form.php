@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2014
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -44,7 +44,7 @@ include ("../../../inc/includes.php");
 
 PluginMonitoringProfile::checkRight("config_sliders","r");
 
-Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins", 
+Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "slider");
 
 $pmSlider_item = new PluginMonitoringSlider_item();
@@ -53,8 +53,8 @@ if (isset($_POST['plugin_monitoring_services_id'])
         AND $_POST['plugin_monitoring_services_id'] > 0) {
    $_POST['items_id'] = $_POST['plugin_monitoring_services_id'];
    $_POST['itemtype'] = "PluginMonitoringService";
-   
-}   
+
+}
 if (isset ($_POST["add"])) {
    $pmSlider_item->add($_POST);
    Html::back();

@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,7 +45,7 @@ include ("../../../inc/includes.php");
 
 Session::checkCentralAccess();
 
-Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins", 
+Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "hostconfig");
 
 
@@ -54,12 +54,12 @@ $pmHostconfig = new PluginMonitoringHostconfig();
 if (isset($_POST["update"])) {
    if ($_POST['plugin_monitoring_components_id'] != '-1'
            OR $_POST['plugin_monitoring_realms_id'] != '-1') {
-   
+
       if (isset($_POST['id'])) {
          $pmHostconfig->update($_POST);
       } else {
          $pmHostconfig->add($_POST);
-      }      
+      }
    } else if (isset($_POST['id'])) {
       $pmHostconfig->delete($_POST);
    }

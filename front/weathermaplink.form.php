@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -44,7 +44,7 @@ include ("../../../inc/includes.php");
 
 PluginMonitoringProfile::checkRight("config_weathermap","r");
 
-Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins", 
+Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "weathermaplink");
 
 
@@ -61,7 +61,7 @@ if (isset ($_POST["add"])) {
    unset($_POST['plugin_monitoring_weathermapnodes_id_1']);
    unset($_POST['plugin_monitoring_weathermapnodes_id_2']);
    $_POST['bandwidth_in'] = $_POST['up_bandwidth_in'];
-   $_POST['bandwidth_out'] = $_POST['up_bandwidth_out'];   
+   $_POST['bandwidth_out'] = $_POST['up_bandwidth_out'];
    $pmWeathermaplink->update($_POST);
    Html::back();
 } else if (isset ($_POST["purge"])) {

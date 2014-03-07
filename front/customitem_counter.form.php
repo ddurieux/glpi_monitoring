@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -44,7 +44,7 @@ include ("../../../inc/includes.php");
 
 PluginMonitoringProfile::checkRight("config","r");
 
-Html::header(__('Monitoring - counter', 'monitoring'),$_SERVER["PHP_SELF"], "plugins", 
+Html::header(__('Monitoring - counter', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "customitem_counter");
 
 $pmCustomitem_Counter = new PluginMonitoringCustomitem_Counter();
@@ -54,7 +54,7 @@ if (isset($_POST['add_item'])) {
       $pmCustomitem_Counter->getFromDB($_POST['id']);
       $input = array();
       $input['id'] = $_POST['id'];
-      
+
       if ($pmCustomitem_Counter->fields['aggregate_items'] == '') {
          $aggregate_items = array();
       } else {
@@ -67,23 +67,23 @@ if (isset($_POST['add_item'])) {
          $c = 'PluginMonitoringComponent';
          $d = $_POST['PluginMonitoringComponent'];
          $item_split = explode('/', $_POST['item']);
-         
+
          $aggregate_items_add[$a]["id".$b][$c]["id".$d] = array(
              array(
                  'perfdatadetails_id' => $item_split[0],
-                 'perfdatadetails_dsname' => $item_split[1]    
+                 'perfdatadetails_dsname' => $item_split[1]
              )
          );
          $aggregate_items = array_merge_recursive($aggregate_items, $aggregate_items_add);
       }
       $input['aggregate_items'] = exportArrayToDB($aggregate_items);
-      
+
 /*
       if (isset($_POST['warn_other_value'])) {
          $input['aggregate_warn'] = $_POST['warn_other_value'];
       } else {
          if (is_numeric($input['aggregate_warn'])) {
-            
+
          }
          // It's an array
       }
@@ -99,7 +99,7 @@ if (isset($_POST['add_item'])) {
       } else {
          // It's an array
       }
-*/     
+*/
       $pmCustomitem_Counter->update($input);
       Html::back();
    }
