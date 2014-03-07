@@ -1438,6 +1438,7 @@ echo "
       $pmComponent              = new PluginMonitoringComponent();
       $pmConfig                 = new PluginMonitoringConfig();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+      $networkPort              = new NetworkPort();
 
       $item = new $itemtype();
       $item->getFromDB($items_id);
@@ -1456,6 +1457,11 @@ echo "
       echo "<tr class='tab_bg_1'>";
       echo "<th>";
       $title = Dropdown::getDropdownName(getTableForItemType('PluginMonitoringComponent'), $item->fields['plugin_monitoring_components_id']);
+      if (!is_null($item->fields['networkports_id'])
+              && $item->fields['networkports_id'] > 0) {
+         $networkPort->getFromDB($item->fields['networkports_id']);
+         $title .=  " [".$networkPort->getLink()."]";
+      }
       $title .= ' '.__('on', 'monitoring').' ';
       $pmComponentscatalog_Host->getFromDB($item->fields["plugin_monitoring_componentscatalogs_hosts_id"]);
       if (isset($pmComponentscatalog_Host->fields['itemtype'])

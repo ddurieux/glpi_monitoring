@@ -682,6 +682,7 @@ class PluginMonitoringService extends CommonDBTM {
       $pmComponentscatalog = new PluginMonitoringComponentscatalog();
       $pmComponent = new PluginMonitoringComponent();
       $pmServicegraph = new PluginMonitoringServicegraph();
+      $networkPort = new NetworkPort();
 
       $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
          WHERE `items_id`='".$items_id."'
@@ -715,6 +716,11 @@ class PluginMonitoringService extends CommonDBTM {
                echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$datas['id']."'>";
                echo $pmComponent->fields['name'];
                echo "</a>";
+               if (!is_null($datas['networkports_id'])
+                       && $datas['networkports_id'] > 0) {
+                  $networkPort->getFromDB($datas['networkports_id']);
+                  echo " [".$networkPort->getLink()."]";
+               }
                echo "</th>";
                echo "</tr>";
                echo "<tr class='tab_bg_1'>";
