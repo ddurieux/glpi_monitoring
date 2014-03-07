@@ -163,7 +163,7 @@ function getOverallState($session, $view="Hosts") {
    */
    $args['view'] = $view;
    if ($counters = call_glpi($args)) {
-      echo "+ Response : $counters !!!!!!!!!!!!!!!!!!!\n";
+      // echo "+ Response : $counters !!!!!!!!!!!!!!!!!!!\n";
       print_r($counters);
       return $counters;
    }
