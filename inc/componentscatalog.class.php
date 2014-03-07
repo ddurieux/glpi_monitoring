@@ -541,9 +541,9 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                "&itemtype=PluginMonitoringService&start=0'";
 
          if ($hosts_states[$hosts_id]) {
-            echo  "<tr class='services tab_bg_2' style='height: 50px; display:none;'>";
+            echo  "<tr class='services tab_bg_2' style='display:none;'>";
          } else {
-            echo  "<tr class='services tab_bg_3' style='height: 50px; display:none;'>";
+            echo  "<tr class='services tab_bg_3' style='display:none;'>";
          }
          // echo "<td><div style='width: 5px !important;'>&nbsp;</div></td>";
          if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
@@ -557,7 +557,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             if ($resources[$services[$i]]['state'] != 'OK') {
                $overallServicesState = $resources[$services[$i]]['state'];
             }
-            echo '<td class="vertical-service">';
+            echo '<td class="serviceState">';
             if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
                $link_service = $link;
                $link_service .= "&link[1]=AND&field[1]=2&searchtype[1]=equals&contains[1]=".
