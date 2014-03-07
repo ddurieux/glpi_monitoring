@@ -1093,8 +1093,8 @@ class PluginMonitoringWeathermap extends CommonDBTM {
             }
          }
          if ($service_exist) {
-            list($upusage, $upcolor) = $this->getWBandwidth($in, $data['bandwidth_in']);
-            list($downusage, $downcolor) = $this->getWBandwidth($out, $data['bandwidth_out']);
+            list($downusage, $downcolor) = $this->getWBandwidth($in, $data['bandwidth_in']);
+            list($upusage, $upcolor) = $this->getWBandwidth($out, $data['bandwidth_out']);
          } else {
             $upusage = 100;
             $downusage = 100;
