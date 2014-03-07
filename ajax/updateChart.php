@@ -71,19 +71,19 @@ $enddate = '';
 if ($_POST['customdate'] == ''
         && $_POST['customtime'] == '') {
    $enddate = '';
-} else if ($_POST['customdate'] == '') {  
-   $enddate =  mktime(date('H', $_POST['customtime']), 
-                      date('i', $_POST['customtime']), 
+} else if ($_POST['customdate'] == '') {
+   $enddate =  mktime(date('H', $_POST['customtime']),
+                      date('i', $_POST['customtime']),
                       date('s', $_POST['customtime']));
 } else if ($_POST['customtime'] == '') {
    $enddate = $_POST['customdate'];
 } else {
-   // have the 2 defined   
-   $enddate =  mktime(date('H', $_POST['customtime']), 
-                      date('i', $_POST['customtime']), 
+   // have the 2 defined
+   $enddate =  mktime(date('H', $_POST['customtime']),
+                      date('i', $_POST['customtime']),
                       date('s', $_POST['customtime']),
-                      date('n', $_POST['customdate']), 
-                      date('d', $_POST['customdate']), 
+                      date('n', $_POST['customdate']),
+                      date('d', $_POST['customdate']),
                       date('Y', $_POST['customdate']));
 }
 
@@ -94,10 +94,10 @@ $time_start = microtime(true);
 if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']][''])) {
    unset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']]['']);
 }
-$a_ret = $pmServicegraph->generateData($_POST['rrdtool_template'], 
-                             $_POST['itemtype'], 
-                             $_POST['items_id'], 
-                             $_POST['timezone'], 
+$a_ret = $pmServicegraph->generateData($_POST['rrdtool_template'],
+                             $_POST['itemtype'],
+                             $_POST['items_id'],
+                             $_POST['timezone'],
                              $_POST['time'],
                              $enddate,
                              $_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']]);
@@ -121,7 +121,7 @@ if (isset($_POST['suffix'])) {
 //   AND $_POST['time'] != "1d") {
 //   if (isset($_SESSION['glpi_plugin_monitoring']['dateformat'])) {
 //      $format = $_SESSION['glpi_plugin_monitoring']['dateformat'];
-//   } else {  
+//   } else {
 //      $format = "%Y-%m-%d %Hh";
 //   }
 //} else {
@@ -142,7 +142,7 @@ foreach ($mydatat as $name=>$data) {
    if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']][$name])) {
       $display = $_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']][$name];
    }
-   if ($display == "checked") {   
+   if ($display == "checked") {
       if ($max < max($data)) {
          $max = max($data);
       }
@@ -185,7 +185,7 @@ echo 'function updategraph'.$_POST['items_id'].$_POST['time'].$suffix.'() {
      .datum(data)
      .transition().duration(50)
      .call(chart);
-    
+
 }
 
 
@@ -287,10 +287,10 @@ foreach ($mydatat as $name=>$data) {
          } else if (strstr(strtolower($name), "crit")) {
             $colordisplay = array_shift($colorcrit);
          } else {
-            $colordisplay = array_shift($color);     
+            $colordisplay = array_shift($color);
          }
       }
-      
+
       if (strstr(strtolower($name), "warn")) {
          $area = 'false';
       } else if (strstr(strtolower($name), "crit")) {

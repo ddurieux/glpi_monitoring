@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -51,8 +51,8 @@ if (class_exists($_POST["itemtype"]) && isset($_POST["hosts"])) {
    $a_services[] = Dropdown::EMPTY_VALUE;
    $query = "SELECT `".getTableForItemType("PluginMonitoringService")."`.*
              FROM `".getTableForItemType("PluginMonitoringService")."`
-             LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts` 
-                  ON `plugin_monitoring_componentscatalogs_hosts_id` 
+             LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
+                  ON `plugin_monitoring_componentscatalogs_hosts_id`
                       = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
              WHERE `itemtype` = '".$_POST["itemtype"]."'
                 AND `items_id`='".$_POST['hosts']."'
@@ -61,7 +61,7 @@ if (class_exists($_POST["itemtype"]) && isset($_POST["hosts"])) {
    while ($data = $DB->fetch_array($result)) {
       $a_services[$data['id']] = $data['name'];
    }
-   
+
    $rand = Dropdown::showFromArray("plugin_monitoring_services_id", $a_services);
 
    if ($_POST['selectgraph'] == '1') {

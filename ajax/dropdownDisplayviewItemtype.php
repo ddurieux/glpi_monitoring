@@ -106,7 +106,7 @@ switch ($_POST['itemtype']) {
 
 if (strstr($_SERVER['HTTP_REFERER'], 'slider.form')) {
    if ($_POST['itemtype'] == 'PluginMapsMap') {
-      
+
    }
 }
 ?>

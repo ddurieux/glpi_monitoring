@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -48,14 +48,14 @@ Html::header_nocache();
 if (class_exists($_POST["itemtype"])) {
    $table = getTableForItemType($_POST["itemtype"]);
 
-   $query = "SELECT `$table`.`name`, 
+   $query = "SELECT `$table`.`name`,
                     `".$table."`.`id`
-                        
+
              FROM `".getTableForItemType("PluginMonitoringService")."`
-             LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts` 
-                  ON `plugin_monitoring_componentscatalogs_hosts_id` 
+             LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
+                  ON `plugin_monitoring_componentscatalogs_hosts_id`
                       = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
-             LEFT JOIN `$table` ON `$table`.`id` = `items_id`          
+             LEFT JOIN `$table` ON `$table`.`id` = `items_id`
              WHERE `itemtype` = '".$_POST["itemtype"]."'
              ORDER BY `$table`.`name`";
    $result = $DB->query($query);
@@ -70,7 +70,7 @@ if (class_exists($_POST["itemtype"])) {
    if (isset($_POST['selectgraph'])) {
       $selectgraph = $_POST['selectgraph'];
    }
-   
+
    $params = array('hosts'           => '__VALUE__',
                    'entity_restrict' => $_POST["entity_restrict"],
                    'itemtype'        => $_POST['itemtype'],

@@ -16,6 +16,6 @@ $elements['0y6m'] = "0y6m";
 $elements['1y'] = "1y";
 
 Dropdown::showFromArray("extra_infos", $elements);
-   
-   
+
+
 ?>

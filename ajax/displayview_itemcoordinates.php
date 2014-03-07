@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -52,7 +52,7 @@ Session::checkCentralAccess();
 if (isset($_POST['id'])
         AND isset($_POST['x'])
         AND isset($_POST['y'])) {
-   
+
    $pmDisplayview_item = new PluginMonitoringDisplayview_item();
    if ($pmDisplayview_item->getFromDB($_POST['id'])) {
       if ($_POST['x'] < 1
@@ -63,10 +63,10 @@ if (isset($_POST['id'])
          $input['id'] = $_POST['id'];
          $input['x'] = $_POST['x'];
          $input['y'] = $_POST['y'];
-         $pmDisplayview_item->update($input);  
+         $pmDisplayview_item->update($input);
       }
    }
-   
+
 }
 
 

@@ -61,7 +61,7 @@ if (! isset($_SESSION['plugin_monitoring_reduced_interface'])) {
 
 $pmServicescatalog = new PluginMonitoringServicescatalog();
 $pmServicescatalog->showWidgetFrame(
-        $_POST['id'], 
+        $_POST['id'],
         $_SESSION['plugin_monitoring_reduced_interface'],
         isset($_POST['is_minemap']) ? $_POST['is_minemap'] : false);
 

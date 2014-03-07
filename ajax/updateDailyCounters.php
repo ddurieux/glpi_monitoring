@@ -61,7 +61,7 @@ $pmDailyCounters = new PluginMonitoringHostdailycounter();
 $counters = array();
 
 $counter_types = array (
-   // 'first'        => __('First value', 'monitoring'), 
+   // 'first'        => __('First value', 'monitoring'),
    'last'         => __('Last value', 'monitoring')
 );
 
@@ -71,7 +71,7 @@ $counter_operations = array (
 
 foreach ($counter_types as $type => $type_title) {
    if (isset($_POST['debug'])) echo "<pre>Type : $type</pre>";
-   
+
    $counters[$type] = array();
    $a_ret = $pmDailyCounters->getSpecificData($_POST['hostname'], $type);
    // if (isset($_POST['debug'])) echo "<pre>".print_r($a_ret)."</pre>";
@@ -84,9 +84,9 @@ foreach ($counter_types as $type => $type_title) {
 
 foreach ($counter_operations as $type => $type_title) {
    if (isset($_POST['debug'])) echo "<br/><pre>Operation : $type</pre>";
-   
+
    $counters[$type] = array();
-   
+
    switch ($type) {
       case 'difference':
          foreach ($counters['first'] as $id => $data) {
@@ -99,8 +99,8 @@ foreach ($counter_operations as $type => $type_title) {
          }
          break;
       default :
-         break;                                                   
-   }                                                
+         break;
+   }
 }
 
 
@@ -110,18 +110,18 @@ if (isset($_POST['counters']) && (! empty($_POST['counters']))) {
    $hdr_types = "<tr class='tab_bg_1'>";
    $hdr_counters = "<tr class='tab_bg_1'>";
    $row_counter = "<tr class='tab_bg_2'>";
-   
+
    foreach ($_POST['counters'] as $requestedCounter) {
       if (isset($_POST['debug'])) echo "<pre>Requested counter : ".$requestedCounter."</pre>";
       $header=false;
-   
+
       foreach ($counters as $type => $typeCounters) {
          if (isset($_POST['debug'])) echo "<pre>Counter type '$type'</pre>";
 
          foreach ($typeCounters as $id => $data) {
             if ($id != $requestedCounter) continue;
             if (isset($_POST['debug'])) echo "<pre>Counter : $id - ".$data['name']." = ".$data['value']."</pre>";
-            
+
             if (! $header) {
                $hdr_counters .= "<th colspan='".count($counters)."' counterId='$requestedCounter' counterName='".$data['name']."' class='counterId center'>".$data['name']."</th>";
                $header=true;
@@ -129,7 +129,7 @@ if (isset($_POST['counters']) && (! empty($_POST['counters']))) {
 
             if (array_key_exists($type, $counter_types)) $hdr_types .= "<th class='center'>".$counter_types[$type]."</th>";
             if (array_key_exists($type, $counter_operations)) $hdr_types .= "<th class='center'>".$counter_operations[$type]."</th>";
-            
+
             $row_counter .= "<td counter='$id' counterType='$type' class='localCounter center'>".$data['value']."</th>";
          }
       }
@@ -148,15 +148,15 @@ if (isset($_POST['counters']) && (! empty($_POST['counters']))) {
       echo "<tr class='tab_bg_1'><th colspan='2'>".__('Counters : registered values', 'monitoring')."</th></tr>";
       foreach ($counters as $type => $typeCounters) {
          if (isset($_POST['debug'])) echo "<pre>Counter type '$type' : ".print_r($typeCounters)."</pre>";
-         
-         if (array_key_exists($type, $counter_types)) 
+
+         if (array_key_exists($type, $counter_types))
             echo "<tr class='tab_bg_1'><th colspan='2' class='left'>".$counter_types[$type]."</th></tr>";
-         if (array_key_exists($type, $counter_operations)) 
+         if (array_key_exists($type, $counter_operations))
             echo "<tr class='tab_bg_1'><th colspan='2' class='left'>".$counter_operations[$type]."</th></tr>";
 
          foreach ($typeCounters as $id => $data) {
             if (isset($_POST['debug'])) echo "<pre>Id : $id - ".$data['name']." = ".$data['value']."</pre>";;
-         
+
             echo "<tr class='tab_bg_3'><td class='left'>".$data['name']."</td><td class='center'>".$data['value']."</td></tr>";
          }
       }
