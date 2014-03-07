@@ -2,7 +2,7 @@
 
 class PerfdataForGraph extends PHPUnit_Framework_TestCase {
 
-   
+
    public function testTcp() {
       global $DB;
 
@@ -14,9 +14,9 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
              'name' => 'check',
              'plugin_monitoring_checks_id' => '2'
          ));
-      
+
       $pmServiceevent = new PluginMonitoringServiceevent();
-      
+
       $begin_date = date('Y-m-d H:i:s');
       $end_date = Date('Y-m-d H:i:s', strtotime("+2 minutes"));
       $input = array(
@@ -28,7 +28,7 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
-      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas", 
+      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas",
                                           "`name`='check_tcp'");
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
@@ -42,19 +42,19 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
           'warning'        => array('0'),
           'critical'        => array('0')
       );
-      
+
       $this->assertEquals($a_reference, $ret[0], "Data of check_tcp");
    }
 
-   
-  
+
+
    public function testLoad() {
       global $DB;
 
       $DB->connect();
 
       $DB->query('TRUNCATE TABLE `glpi_plugin_monitoring_serviceevents`');
-      
+
       $pmServiceevent = new PluginMonitoringServiceevent();
 
       $begin_date = date('Y-m-d H:i:s');
@@ -68,7 +68,7 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
-      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas", 
+      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas",
                                           "`name`='check_load'");
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
@@ -89,19 +89,19 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
           'load15min_critical'   => array('4.0'),
           'load15min_other'      => array('0')
       );
-      
+
       $this->assertEquals($a_reference, $ret[0], "data of check_load");
    }
 
-   
-   
+
+
    public function testPf() {
       global $DB;
 
       $DB->connect();
 
       $DB->query('TRUNCATE TABLE `glpi_plugin_monitoring_serviceevents`');
-      
+
       $pmServiceevent = new PluginMonitoringServiceevent();
 
       $begin_date = date('Y-m-d H:i:s');
@@ -115,7 +115,7 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
-      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas", 
+      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas",
                                           "`name`='check_pf'");
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
@@ -129,19 +129,19 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
           'percent'           => array('4.4'),
           'limit'             => array('10000')
       );
-      
+
       $this->assertEquals($a_reference, $ret[0], "data of check_pf");
    }
 
 
-   
+
    public function testDisk() {
       global $DB;
 
       $DB->connect();
 
       $DB->query('TRUNCATE TABLE `glpi_plugin_monitoring_serviceevents`');
-      
+
       $pmServiceevent = new PluginMonitoringServiceevent();
 
       $begin_date = date('Y-m-d H:i:s');
@@ -155,7 +155,7 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
-      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas", 
+      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas",
                                           "`name`='check_disk'");
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
@@ -169,19 +169,19 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
           'used_other'     => array('0'),
           'totalcapacity'  => array('1447000000')
       );
-      
+
       $this->assertEquals($a_reference, $ret[0], "data of check_disk");
    }
 
-   
-   
+
+
    public function testMySQLTmpdisktable() {
       global $DB;
 
       $DB->connect();
 
       $DB->query('TRUNCATE TABLE `glpi_plugin_monitoring_serviceevents`');
-      
+
       $pmServiceevent = new PluginMonitoringServiceevent();
 
       $begin_date = date('Y-m-d H:i:s');
@@ -195,7 +195,7 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
-      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas", 
+      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas",
                                           "`name`='check_mysql_health tmp_disk_tables'");
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
@@ -208,19 +208,19 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
           'tmp_table_on_disk_critical'       => array('50'),
           'tmp_table_on_disk_now_current'    => array('4.25')
       );
-      
+
       $this->assertEquals($a_reference, $ret[0], "data of check_mysql_health__tmp_disk_tables");
    }
 
 
-   
+
    public function testCpuusage() {
       global $DB;
 
       $DB->connect();
 
       $DB->query('TRUNCATE TABLE `glpi_plugin_monitoring_serviceevents`');
-      
+
       $pmServiceevent = new PluginMonitoringServiceevent();
 
       $begin_date = date('Y-m-d H:i:s');
@@ -234,7 +234,7 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
-      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas", 
+      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas",
                                           "`name`='check_cpu_usage'");
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
@@ -248,19 +248,19 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
           'user'           => array('0'),
           'system'     => array('4')
       );
-      
+
       $this->assertEquals($a_reference, $ret[0], "data of check_cpu_usage");
    }
 
-   
-  
+
+
    public function testHTTP() {
       global $DB;
 
       $DB->connect();
 
       $DB->query('TRUNCATE TABLE `glpi_plugin_monitoring_serviceevents`');
-      
+
       $pmServiceevent = new PluginMonitoringServiceevent();
 
       $begin_date = date('Y-m-d H:i:s');
@@ -274,7 +274,7 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
-      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas", 
+      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas",
                                           "`name`='check_http'");
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
@@ -291,19 +291,19 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
           'size_warning'    => array('0'),
           'size_critical'    => array('0')
       );
-      
+
       $this->assertEquals($a_reference, $ret[0], "data of check_http");
    }
 
-   
-   
+
+
    public function testIostatBSD() {
       global $DB;
 
       $DB->connect();
 
       $DB->query('TRUNCATE TABLE `glpi_plugin_monitoring_serviceevents`');
-      
+
       $pmServiceevent = new PluginMonitoringServiceevent();
 
       $begin_date = date('Y-m-d H:i:s');
@@ -317,7 +317,7 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
-      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas", 
+      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas",
                                           "`name`='check_iostat_bsd'");
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
@@ -344,19 +344,19 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
           'value6.2'          => Array('0'),
           'value6.3'          => Array('0')
       );
-      
+
       $this->assertEquals($a_reference, $ret[0], "data of check_iostat_bsd");
    }
 
-   
-   
+
+
    public function testNginxstatus() {
       global $DB;
 
       $DB->connect();
 
       $DB->query('TRUNCATE TABLE `glpi_plugin_monitoring_serviceevents`');
-      
+
       $pmServiceevent = new PluginMonitoringServiceevent();
 
       $begin_date = date('Y-m-d H:i:s');
@@ -370,7 +370,7 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
-      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas", 
+      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas",
                                           "`name`='check_nginx_status'");
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
@@ -407,19 +407,19 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
           'value7.3'    => array('0'),
           'value7.4'    => array('0')
       );
-      
+
       $this->assertEquals($a_reference, $ret[0], "data of check_nginx_status");
    }
 
-   
-   
+
+
    public function testIftraffic41() {
       global $DB;
 
       $DB->connect();
 
       $DB->query('TRUNCATE TABLE `glpi_plugin_monitoring_serviceevents`');
-      
+
       $pmServiceevent = new PluginMonitoringServiceevent();
 
       $begin_date = date('Y-m-d H:i:s');
@@ -432,8 +432,8 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
 
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
-      
-      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas", 
+
+      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas",
                                           "`name`='check_iftraffic41'");
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
@@ -451,12 +451,12 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
           'inbound'           => array('58697810111'),
           'outbound'          => array('125801495656')
       );
-      
+
       $this->assertEquals($a_reference, $ret[0], "data of check_iftraffic41");
    }
 
-   
-   
+
+
    public function testNoData() {
       global $DB;
 
@@ -465,14 +465,14 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
       $DB->query('TRUNCATE TABLE `glpi_plugin_monitoring_serviceevents`');
 
       $pmServiceevent = new PluginMonitoringServiceevent();
-      
+
       $begin_date = date('Y-m-d H:i:s');
       $end_date = Date('Y-m-d H:i:s', strtotime("+22 minutes"));
-      
+
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
-      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas", 
+      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas",
                                           "`name`='check_tcp'");
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
@@ -486,11 +486,11 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
           'warning'        => array('0', '0', '0', '0'),
           'critical'        => array('0', '0', '0', '0')
       );
-      
+
       $this->assertEquals($a_reference, $ret[0], "Data of check_tcp");
    }
 
-   
+
 
    public function testMissNewData() {
       global $DB;
@@ -500,7 +500,7 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
       $DB->query('TRUNCATE TABLE `glpi_plugin_monitoring_serviceevents`');
 
       $pmServiceevent = new PluginMonitoringServiceevent();
-      
+
       $begin_date = date('Y-m-d H:i:s');
       $end_date = Date('Y-m-d H:i:s', strtotime("+22 minutes"));
       $input = array(
@@ -508,11 +508,11 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
           'date'      => $begin_date
       );
       $pmServiceevent->add($input);
-      
+
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
-      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas", 
+      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas",
                                           "`name`='check_tcp'");
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
@@ -526,18 +526,18 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
           'warning'        => array('0', '0', '0', '0', '0'),
           'critical'        => array('0', '0', '0', '0', '0')
       );
-      
+
       $this->assertEquals($a_reference, $ret[0], "Data of check_tcp");
    }
-   
+
 // inUsage=0.06%;85;98 outUsage=0.50%;85;98 inBandwidth=580585.00bps outBandwidth=5010017.19bps inAbsolut=58697810111 outAbsolut=125801495656
 
-   
+
    public function testSplitPerfdataNbSessions() {
       global $DB;
 
       $DB->connect();
-      
+
       $perfdata = "'Nb de sessions actives'=2;15;20;";
 
       $a_perfdata = PluginMonitoringPerfdata::splitPerfdata($perfdata);
@@ -545,17 +545,17 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
       $a_reference = array(
           "'Nb de sessions actives'=2;15;20;"
       );
-      
+
       $this->assertEquals($a_reference, $a_perfdata);
    }
-   
-   
-   
+
+
+
    public function testSplitPerfdataDisk() {
       global $DB;
 
       $DB->connect();
-      
+
       $perfdata = "'C: %'=3%;25;75 'C:'=14.32G;116.416;349.247;0;465.662";
 
       $a_perfdata = PluginMonitoringPerfdata::splitPerfdata($perfdata);
@@ -564,17 +564,17 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
           "'C: %'=3%;25;75",
           "'C:'=14.32G;116.416;349.247;0;465.662"
       );
-      
+
       $this->assertEquals($a_reference, $a_perfdata);
    }
-   
-   
-   
+
+
+
    public function testSplitPerfdataPrinter() {
       global $DB;
 
       $DB->connect();
-      
+
       $perfdata = "'Cut pages'=15c 'Retracted pages'=3c";
 
       $a_perfdata = PluginMonitoringPerfdata::splitPerfdata($perfdata);
@@ -583,7 +583,7 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
           "'Cut pages'=15c",
           "'Retracted pages'=3c"
       );
-      
+
       $this->assertEquals($a_reference, $a_perfdata);
    }
 

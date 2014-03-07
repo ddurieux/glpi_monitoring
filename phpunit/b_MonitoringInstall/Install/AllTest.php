@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -57,16 +57,16 @@ class Install extends PHPUnit_Framework_TestCase {
 
       $_SESSION['glpi_use_mode'] = 2;
       $_SESSION["glpiID"] = 2;
-      
+
       Plugin::load("monitoring");
-      
+
       Session::loadLanguage("en_GB");
-      
+
       if ($verify == '1') {
          $MonitoringInstall = new b_MonitoringInstall();
-         $MonitoringInstall->testDB("monitoring");         
+         $MonitoringInstall->testDB("monitoring");
       }
-      
+
       $GLPIlog = new d_GLPIlogs();
       $GLPIlog->testSQLlogs();
       $GLPIlog->testPHPlogs();

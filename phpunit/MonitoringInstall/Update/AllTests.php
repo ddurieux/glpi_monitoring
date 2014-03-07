@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -44,18 +44,18 @@ class Update extends PHPUnit_Framework_TestCase {
 
    public function testUpdate08410() {
       global $PF_CONFIG;
-      
+
       $PF_CONFIG = array();
-      
+
       $Update = new Update();
       $Update->update("0.84+1.0");
    }
-   
-   
+
+
    function update($version = '') {
       global $DB;
       $DB->connect();
-      
+
       if ($version == '') {
          return;
       }
@@ -85,21 +85,21 @@ class Update extends PHPUnit_Framework_TestCase {
       $GLPIlog = new GLPIlogs();
       $GLPIlog->testSQLlogs();
       $GLPIlog->testPHPlogs();
-      
+
       $MonitoringInstall = new MonitoringInstall();
       $MonitoringInstall->testDB("monitoring", "upgrade from ".$version);
    }
-   
-   
-   
+
+
+
    public function testInstallCleanVersion() {
       global $DB;
-      
+
       $DB->connect();
-      
+
       $Install = new Install();
       $Install->testInstall(0);
-      
+
    }
 }
 

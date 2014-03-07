@@ -6,7 +6,7 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
     * We test add service and so add a host
     * We test too when remove all services of a host, je host may be deleted
     */
-   
+
    public function testAddNetworkport() {
       global $DB;
 
@@ -16,7 +16,7 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
       Plugin::load('monitoring');
 
       Plugin::loadLang('monitoring');
-      
+
       $networkEquipment             = new NetworkEquipment();
       $networkPort                  = new NetworkPort();
       $pmNetworkport                = new PluginMonitoringNetworkport();
@@ -24,8 +24,8 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
       $pmComponentscatalog          = new PluginMonitoringComponentscatalog();
       $pmComponentscatalog_Component= new PluginMonitoringComponentscatalog_Component();
       $pmComponentscatalog_rule     = new PluginMonitoringComponentscatalog_rule();
-      
-      
+
+
       // Add component
          $input = array(
              'name'                          => 'traffic',
@@ -33,7 +33,7 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
          );
          $id = $pmComponent->add($input);
          $this->assertGreaterThan(0, $id, 'Components not created');
-         
+
       // add component catalog
          $input = array(
              'name'        => 'traffic',
@@ -49,7 +49,7 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
          );
          $id = $pmComponentscatalog_Component->add($input);
          $this->assertEquals(1, $id, 'Componentscatalog_component not created');
-      
+
       // Add components catalog rule
          $input = array(
              'plugin_monitoring_componentscalalog_id' => 1,
@@ -59,7 +59,7 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
          );
          $id = $pmComponentscatalog_rule->add($input);
          $this->assertEquals(1, $id, 'Componentscatalog_rule not created');
-      
+
       // Add a new switch
          $input = array(
              'entities_id' => 0,
@@ -79,7 +79,7 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
          );
          $id = $networkPort->add($input);
          $this->assertEquals(1, $id, 'NetworkPort not created');
-         
+
          $input = array(
              'name'               => 'Fa1',
              'entities_id'        => 0,
@@ -90,7 +90,7 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
          );
          $id = $networkPort->add($input);
          $this->assertEquals(2, $id, 'NetworkPort not created');
-      
+
       // Add the port in monitoring
          $_POST = array(
              'itemtype'        => 'NetworkEquipment',
@@ -99,24 +99,24 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
          );
          $pmNetworkport->updateNetworkports();
          $this->assertEquals(
-                 2, 
-                 countElementsInTable('glpi_plugin_monitoring_networkports'), 
+                 2,
+                 countElementsInTable('glpi_plugin_monitoring_networkports'),
                  "May have 2 networkports in glpi_plugin_monitoring_networkports");
 
-         
+
       // Check glpi_plugin_monitoring_componentscatalogs_hosts have 1 entry
          $this->assertEquals(
-                 1, 
-                 countElementsInTable('glpi_plugin_monitoring_componentscatalogs_hosts'), 
+                 1,
+                 countElementsInTable('glpi_plugin_monitoring_componentscatalogs_hosts'),
                  "May have one entrie in glpi_plugin_monitoring_componentscatalogs_hosts");
-         
+
       // Check have services created
          $a_services = getAllDatasFromTable('glpi_plugin_monitoring_services');
          $this->assertEquals(2, count($a_services), "May have one service");
    }
-   
-   
-   
+
+
+
    public function testUncheckNetworkport() {
       global $DB;
 
@@ -136,20 +136,20 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
              'networkports_id' => array(2)
          );
          $pmNetworkport->updateNetworkports();
-         
+
       // Check have services deleted
          $a_services = getAllDatasFromTable('glpi_plugin_monitoring_services');
          $this->assertEquals(1, count($a_services), "May have one service");
 
       // Check glpi_plugin_monitoring_componentscatalogs_hosts have 1 entry
          $this->assertEquals(
-                 1, 
-                 countElementsInTable('glpi_plugin_monitoring_componentscatalogs_hosts'), 
+                 1,
+                 countElementsInTable('glpi_plugin_monitoring_componentscatalogs_hosts'),
                  "May have one entrie in glpi_plugin_monitoring_componentscatalogs_hosts");
    }
-   
-   
-   
+
+
+
    public function testDeleteNetworkport() {
       global $DB;
 
@@ -168,11 +168,11 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
       // Check have services deleted
          $a_services = getAllDatasFromTable('glpi_plugin_monitoring_services');
          $this->assertEquals(0, count($a_services), "May have no service");
-         
+
       // Check glpi_plugin_monitoring_componentscatalogs_hosts have 0 entry
          $this->assertEquals(
-                 0, 
-                 countElementsInTable('glpi_plugin_monitoring_componentscatalogs_hosts'), 
+                 0,
+                 countElementsInTable('glpi_plugin_monitoring_componentscatalogs_hosts'),
                  "May have one entrie in glpi_plugin_monitoring_componentscatalogs_hosts");
    }
 

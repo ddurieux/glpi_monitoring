@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -69,11 +69,11 @@ function pluginMonitoringInstall($version) {
    include (GLPI_ROOT . "/plugins/monitoring/inc/perfdata.class.php");
    include (GLPI_ROOT . "/plugins/monitoring/inc/perfdatadetail.class.php");
    PluginMonitoringPerfdata::initDB();
-   
+
    include (GLPI_ROOT . "/plugins/monitoring/inc/hostconfig.class.php");
    $pmHostconfig = new PluginMonitoringHostconfig();
    $pmHostconfig->initConfig();
-   
+
    include (GLPI_ROOT . "/plugins/monitoring/inc/config.class.php");
    $pmConfig = new PluginMonitoringConfig();
    $pmConfig->initConfig();
@@ -81,7 +81,7 @@ function pluginMonitoringInstall($version) {
       SET `version`='".PLUGIN_MONITORING_VERSION."'
          WHERE `id`='1'";
    $DB->query($query);
-   
+
    $query = "SELECT * FROM `glpi_calendars`
       WHERE `name`='24x7'
       LIMIT 1";
@@ -92,7 +92,7 @@ function pluginMonitoringInstall($version) {
       $input['name'] = '24x7';
       $input['is_recursive'] = 1;
       $calendars_id = $calendar->add($input);
-      
+
       $calendarSegment = new CalendarSegment();
       $input = array();
       $input['calendars_id'] = $calendars_id;
@@ -114,7 +114,7 @@ function pluginMonitoringInstall($version) {
       $input['day'] = '6';
       $calendarSegment->add($input);
    }
-   
+
    // Fred
    $query = "SELECT * FROM `glpi_calendars`
       WHERE `name`='WorkingDays'
@@ -126,7 +126,7 @@ function pluginMonitoringInstall($version) {
       $input['name'] = 'WorkingDays';
       $input['is_recursive'] = 1;
       $calendars_id = $calendar->add($input);
-      
+
       $calendarSegment = new CalendarSegment();
       $input = array();
       $input['calendars_id'] = $calendars_id;
@@ -148,7 +148,7 @@ function pluginMonitoringInstall($version) {
       $input['day'] = '6';
       $calendarSegment->add($input);
    }
-   
+
    if (!is_dir(GLPI_PLUGIN_DOC_DIR.'/monitoring')) {
       mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring");
    }
@@ -158,16 +158,16 @@ function pluginMonitoringInstall($version) {
    if (!is_dir(GLPI_PLUGIN_DOC_DIR.'/monitoring/weathermapbg')) {
       mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring/weathermapbg");
    }
-   
-   CronTask::Register('PluginMonitoringHostdailycounter', 'DailyCounters', '3600', 
+
+   CronTask::Register('PluginMonitoringHostdailycounter', 'DailyCounters', '3600',
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
-   CronTask::Register('PluginMonitoringDowntime', 'cronDowntimesExpired', '3600', 
+   CronTask::Register('PluginMonitoringDowntime', 'cronDowntimesExpired', '3600',
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
-   CronTask::Register('PluginMonitoringLog', 'cleanlogs', '96400', 
+   CronTask::Register('PluginMonitoringLog', 'cleanlogs', '96400',
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
-   CronTask::Register('PluginMonitoringUnavailability', 'unavailability', '300', 
+   CronTask::Register('PluginMonitoringUnavailability', 'unavailability', '300',
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
-   CronTask::Register('PluginMonitoringDisplayview_rule', 'replayallviewrules', '1200', 
+   CronTask::Register('PluginMonitoringDisplayview_rule', 'replayallviewrules', '1200',
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
 
 }
@@ -181,7 +181,7 @@ function pluginMonitoringUninstall() {
       $pmConfig = new PluginMonitoringConfig();
       $pmConfig->rrmdir(GLPI_PLUGIN_DOC_DIR.'/monitoring');
    }
-   
+
    $query = "SHOW TABLES;";
    $result=$DB->query($query);
    while ($data=$DB->fetch_array($result)) {

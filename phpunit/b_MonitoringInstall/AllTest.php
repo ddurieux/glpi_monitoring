@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -45,17 +45,17 @@ class b_MonitoringInstall extends PHPUnit_Framework_TestCase {
 
    public function testDB($pluginname='') {
       global $DB;
-       
+
       if ($pluginname == '') {
          return;
       }
-      
+
        $comparaisonSQLFile = "plugin_".$pluginname."-empty.sql";
        // See http://joefreeman.co.uk/blog/2009/07/php-script-to-compare-mysql-database-schemas/
-       
+
        $file_content = file_get_contents("../../".$pluginname."/install/mysql/".$comparaisonSQLFile);
        $a_lines = explode("\n", $file_content);
-       
+
        $a_tables_ref = array();
        $current_table = '';
        foreach ($a_lines as $line) {
@@ -74,7 +74,7 @@ class b_MonitoringInstall extends PHPUnit_Framework_TestCase {
              }
           }
        }
-       
+
       // * Get tables from MySQL
       $a_tables_db = array();
       $a_tables = array();
@@ -89,7 +89,7 @@ class b_MonitoringInstall extends PHPUnit_Framework_TestCase {
             $a_tables[] = $data[0];
          }
       }
-      
+
       foreach($a_tables as $table) {
          $query = "SHOW COLUMNS FROM ".$table;
          $result = $DB->query($query);
@@ -117,7 +117,7 @@ class b_MonitoringInstall extends PHPUnit_Framework_TestCase {
                        AND $data['Null'] == 'YES'
                        AND $data['Default'] == '') {
                   $construct .= ' DEFAULT NULL';
-               } else {               
+               } else {
                   if ($data['Null'] == 'YES') {
                      $construct .= ' NULL';
                   } else {
@@ -133,46 +133,46 @@ class b_MonitoringInstall extends PHPUnit_Framework_TestCase {
                }
             }
             $a_tables_db[$table][$data['Field']] = $construct;
-         }         
+         }
       }
-      
+
        // Compare
       $tables_toremove = array_diff_assoc($a_tables_db, $a_tables_ref);
       $tables_toadd = array_diff_assoc($a_tables_ref, $a_tables_db);
-       
+
       // See tables missing or to delete
       $this->assertEquals(count($tables_toadd), 0, 'Tables missing '.print_r($tables_toadd));
       $this->assertEquals(count($tables_toremove), 0, 'Tables to delete '.print_r($tables_toremove));
-      
+
       // See if fields are same
       foreach ($a_tables_db as $table=>$data) {
          if (isset($a_tables_ref[$table])) {
             $fields_toremove = array_diff_assoc($data, $a_tables_ref[$table]);
             $fields_toadd = array_diff_assoc($a_tables_ref[$table], $data);
-            if (count($fields_toadd) > 0 
+            if (count($fields_toadd) > 0
                     && count($fields_toremove) > 0) {
                echo "======= DB ============== Ref =======> ".$table."\n";
 
                print_r($data);
                print_r($a_tables_ref[$table]);
             }
-            
+
             // See tables missing or to delete
             $this->assertEquals(count($fields_toadd), 0, 'Fields missing/not good in '.$table.' '.print_r($fields_toadd));
             $this->assertEquals(count($fields_toremove), 0, 'Fields to delete in '.$table.' '.print_r($fields_toremove));
-            
-         }         
+
+         }
       }
- 
+
       /*
        * Verify cron created
        */
       $crontask = new CronTask();
-      $this->assertFalse($crontask->getFromDBbyName('PluginMonitoringServiceevent', 'updaterrd'), 
+      $this->assertFalse($crontask->getFromDBbyName('PluginMonitoringServiceevent', 'updaterrd'),
               'Cron updaterrd may be deleted');
-      
+
       // TODO : test glpi_displaypreferences, rules, bookmark...
-      
+
    }
 }
 

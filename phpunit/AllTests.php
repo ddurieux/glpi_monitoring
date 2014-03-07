@@ -92,7 +92,7 @@ if (!defined('GLPI_ROOT')) {
    }
 
    spl_autoload_register('glpiautoload');
-   
+
    $_SESSION["glpiname"] = 'glpi';
 
    include (GLPI_ROOT . "/config/based_config.php");
@@ -136,11 +136,11 @@ class AllTests {
       }
       $suite->addTest(GLPIInstall_AllTests::suite());
       $suite->addTest(MonitoringInstall_AllTests::suite());
-     
+
       $suite->addTest(PerfdataForGraph_AllTests::suite());
       $suite->addTest(LinkItems_AllTests::suite());
       $suite->addTest(NetworkPorts_AllTests::suite());
-      
+
       return $suite;
    }
 }

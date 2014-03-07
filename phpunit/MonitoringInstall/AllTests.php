@@ -5,7 +5,7 @@ class MonitoringInstall extends PHPUnit_Framework_TestCase {
 
    public function testDB($pluginname='', $when='') {
       global $DB;
-      
+
       if ($pluginname == '') {
          return;
       }
@@ -43,7 +43,7 @@ class MonitoringInstall extends PHPUnit_Framework_TestCase {
      $result = $DB->query($query);
      while ($data=$DB->fetch_array($result)) {
         if (strstr($data[0], "monitoring")) {
-           
+
             $data[0] = str_replace(" COLLATE utf8_unicode_ci", "", $data[0]);
             $data[0] = str_replace("( ", "(", $data[0]);
             $data[0] = str_replace(" )", ")", $data[0]);
@@ -56,7 +56,7 @@ class MonitoringInstall extends PHPUnit_Framework_TestCase {
          $result = $DB->query($query);
          while ($data=$DB->fetch_array($result)) {
             $a_lines = explode("\n", $data['Create Table']);
-            
+
             foreach ($a_lines as $line) {
                if (strstr($line, "CREATE TABLE ")) {
                   $matches = array();
@@ -89,7 +89,7 @@ class MonitoringInstall extends PHPUnit_Framework_TestCase {
       foreach ($a_tables_db as $table=>$data) {
          $a_tables_db_tableonly[] = $table;
       }
-      
+
        // Compare
       $tables_toremove = array_diff($a_tables_db_tableonly, $a_tables_ref_tableonly);
       $tables_toadd = array_diff($a_tables_ref_tableonly, $a_tables_db_tableonly);
@@ -138,7 +138,7 @@ class MonitoringInstall_AllTests  {
 
       $suite = new PHPUnit_Framework_TestSuite('MonitoringInstall');
       $suite->addTest(Install_AllTests::suite());
-      if (!(isset($_SERVER['argv']) 
+      if (!(isset($_SERVER['argv'])
               && isset($_SERVER['argv'][2])
               && !isset($_SERVER['argv'][3]))) {
          $suite->addTest(Update_AllTests::suite());
