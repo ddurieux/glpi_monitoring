@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author
-   @comment
+   @co-author 
+   @comment   
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
-	      http://www.gnu.org/licenses/agpl-3.0-standalone.html
+              http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
-
+ 
    ------------------------------------------------------------------------
  */
 
@@ -51,7 +51,6 @@ chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
 chdir("../../..");
 $url = "/" . basename(getcwd()) . "/plugins/webservices/xmlrpc.php";
 
-$url = "/glpi/plugins/webservices/xmlrpc.php";
 $host = 'localhost';
 $glpi_user  = "glpi";
 $glpi_pass  = "glpi";
@@ -63,19 +62,19 @@ $glpi_pass  = "glpi";
 */
 function login() {
    global $glpi_user, $glpi_pass, $ws_user, $ws_pass;
-
+   
     $args['method']          = "glpi.doLogin";
     $args['login_name']      = $glpi_user;
     $args['login_password']  = $glpi_pass;
-
+    
     if (isset($ws_user)){
        $args['username'] = $ws_user;
     }
-
+    
     if (isset($ws_pass)){
        $args['password'] = $ws_pass;
     }
-
+    
     if($result = call_glpi($args)) {
        return $result['session'];
     }
@@ -86,7 +85,7 @@ function login() {
 */
 function logout() {
     $args['method'] = "glpi.doLogout";
-
+    
     if($result = call_glpi($args)) {
        return true;
     }
@@ -111,12 +110,12 @@ function call_glpi($args) {
    if (isset($deflate)) {
       $header .= "\nAccept-Encoding: deflate";
    }
-
+   
 
    $request = xmlrpc_encode_request($args['method'], $args);
    $context = stream_context_create(array('http' => array('method'  => "POST",
-							  'header'  => $header,
-							  'content' => $request)));
+                                                          'header'  => $header,
+                                                          'content' => $request)));
 
    $file = file_get_contents("http://$host/$url_session", false, $context);
    if (!$file) {
@@ -130,21 +129,108 @@ function call_glpi($args) {
       $lend=strlen($file);
       echo "+ Uncompressed response : $lend (".round(100.0*$lenc/$lend)."%)\n";
    }
-
+   
+   // echo "+ Content : $file\n";
    $response = xmlrpc_decode($file);
    // echo "+ Response : $response\n";
    if (!is_array($response)) {
-      echo "+ Response : $response\n";
-      // echo $file;
-      die ("+ Bad response\n");
+      echo "+ Content : $file\n";
+      // echo "+ Response : $response\n";
+      echo "+ Bad response, not an array !\n";
    }
-
-   if (xmlrpc_is_fault($response)) {
+   
+   if (is_array($response) && xmlrpc_is_fault($response)) {
        echo(" -> xmlrpc error(".$response['faultCode']."): ".$response['faultString']."\n");
        return null;
-   } else {
-      return $response;
    }
+   return $response;
+}
+
+/*
+* getOverallState
+*/
+function getOverallState($session, $view="Hosts") {
+   /*
+   * Get overall status
+   */
+   $args['session'] = $session;
+   $args['method'] = "monitoring.dashboard";
+   /* Requested view : 
+      'Hosts', counters for all monitored hosts
+      'Ressources', counters for all monitored services
+      'Componentscatalog', counters for components catalogs
+      'Businessrules', counters for business rules
+   */
+   $args['view'] = $view;
+   if ($counters = call_glpi($args)) {
+      echo "+ Response : $counters !!!!!!!!!!!!!!!!!!!\n";
+      print_r($counters);
+      return $counters;
+   }
+
+   return null;
+}
+
+/*
+* getHostsStates
+*/
+function getHostsStates($session, $filter="") {
+   /*
+   * Get hosts states
+   */
+   $args['session'] = $session;
+   $args['method'] = "monitoring.getHostsStates";
+   /* Filter used in DB query; you may use : 
+      `glpi_entities`.`name`, for entity name, or any column name from glpi_entities table
+      `glpi_computers`.`name`, for computer name, or any column name from glpi_computers table
+      any column name from glpi_plugin_monitoring_hosts table
+   */
+   // $args['filter'] = "`glpi_computers`.`name` LIKE 'ek3k%'";
+   $args['filter'] = $filter;
+
+   if ($hostsStates = call_glpi($args)) {
+      echo "Host states : \n";
+      foreach ($hostsStates as $computer) {
+         echo " - ".$computer['host_name']." is ".$computer['state']." (".$computer['state_type'].")\n";
+      }
+      
+      return $hostsStates;
+   }
+
+   return null;
+}
+
+/*
+* getServicesStates
+*/
+function getServicesStates($session, $filter="") {
+   /*
+   * Get hosts states
+   */
+   $args['session'] = $session;
+   $args['method'] = "monitoring.getServicesStates";
+   /* Filter used in DB query; you may use : 
+      `glpi_entities`.`name`, for entity name, or any column name from glpi_entities table
+      `glpi_computers`.`name`, for computer name, or any column name from glpi_computers table
+      `glpi_computers`.*,
+      `glpi_plugin_monitoring_hosts`.*,
+      `glpi_plugin_monitoring_services`.*,
+      `glpi_plugin_monitoring_componentscatalogs_hosts`.*,
+      `glpi_plugin_monitoring_components`.*
+   */
+   // $args['filter'] = "`glpi_computers`.`name` LIKE 'ek3k%'";
+   $args['filter'] = $filter;
+
+   if ($servicesStates = call_glpi($args)) {
+      echo "Services states : \n";
+      foreach ($servicesStates as $service) {
+         echo " - ".$service['host_name']." / ".$service['name']." is ".$service['state']." (".$service['state_type'].")\n";
+      }
+      
+      return $servicesStates;
+   }
+
+   return null;
 }
 
 /*
@@ -152,98 +238,17 @@ function call_glpi($args) {
 */
 
 // Init sessions
-$session = login();
-
-/*
-* Get overall status
-*/
-$args['session'] = $session;
-$args['method'] = "monitoring.dashboard";
-/* Requested view :
-   'Hosts', counters for all monitored hosts
-   'Ressources', counters for all monitored services
-   'Componentscatalog', counters for components catalogs
-   'Businessrules', counters for business rules
-*/
-$args['view'] = "Hosts";
-$counters = call_glpi($args);
-print_r($counters);
-// $args['view'] = "Ressources";
-// $counters = call_glpi($args);
-// print_r($counters);
-// $args['view'] = "Componentscatalog";
-// $counters = call_glpi($args);
-// print_r($counters);
-// $args['view'] = "Businessrules";
-// $counters = call_glpi($args);
-// print_r($counters);
-
-/*
-* Get hosts states
-*/
-$args['session'] = $session;
-$args['method'] = "monitoring.getHostsStates";
-/* Filter used in DB query; you may use :
-   `glpi_entities`.`name`, for entity name, or any column name from glpi_entities table
-   `glpi_computers`.`name`, for computer name, or any column name from glpi_computers table
-   any column name from glpi_plugin_monitoring_hosts table
-*/
-// $args['filter'] = "`glpi_computers`.`name` LIKE 'ek3k%'";
-$args['filter'] = "";
-
-$hostsStates = call_glpi($args);
-// print_r($hostsStates);
-// foreach ($hostsStates as $computer) {
-   // echo "---\n";
-   // foreach ($computer as $key=>$value) {
-      // echo "$key = $value\n";
-   // }
-// }
-echo "Host states : \n";
-foreach ($hostsStates as $computer) {
-   echo " - ".$computer['host_name']." is ".$computer['state']." (".$computer['state_type'].")\n";
+if (! $session = login()) {
+   die ("Connexion refused !\n");
 }
 
-/*
-* Get services states
-*/
-$args['session'] = $session;
-$args['method'] = "monitoring.getServicesStates";
-/* Filter used in DB query; you may use :
-   `glpi_entities`.`name`, for entity name, or any column name from glpi_entities table
-   `glpi_computers`.`name`, for computer name, or any column name from glpi_computers table
-   `glpi_computers`.*,
-   `glpi_plugin_monitoring_hosts`.*,
-   `glpi_plugin_monitoring_services`.*,
-   `glpi_plugin_monitoring_componentscatalogs_hosts`.*,
-   `glpi_plugin_monitoring_components`.*
-*/
-// $args['filter'] = "`glpi_computers`.`name` LIKE 'ek3k%'";
-$args['filter'] = "";
-
-$servicesStates = call_glpi($args);
-// print_r($servicesStates);
-// foreach ($servicesStates as $service) {
-   // echo "---\n";
-   // foreach ($service as $key=>$value) {
-      // echo "$key = $value\n";
-   // }
-// }
-echo "Services states : \n";
-foreach ($servicesStates as $service) {
-   echo " - ".$service['host_name']." / ".$service['name']." is ".$service['state']." (".$service['state_type'].")\n";
+if (getOverallState($session)) {
+}
+if (getHostsStates($session)) {
+}
+if (getServicesStates($session)) {
 }
 
-/*
-* Get services list
-*/
-$args['session'] = $session;
-$args['method'] = "monitoring.getServicesList";
-$args['statetype'] = "critical";
-$args['view'] = "Ressources";
-
-$servicesList = call_glpi($args);
-print_r($servicesList);
 
 /*
 * Get Shinken configuration objects
@@ -263,15 +268,13 @@ foreach ($configfiles as $filename=>$filecontent) {
    $handle = fopen($filename,"w+");
    if (is_writable($filename)) {
        if (fwrite($handle, $filecontent) === FALSE) {
-	 echo "Impossible to write file ".$filename."\n";
+         echo "Impossible to write file ".$filename."\n";
        }
-       echo "File ".$filename." writen successful\n";
+       echo " -> File ".$filename." written successfully\n";
        fclose($handle);
    }
 }
 
-// Reset login after create entity
+// Logout
 logout();
-$session = login();
-
 ?>

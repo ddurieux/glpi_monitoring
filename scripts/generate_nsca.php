@@ -51,7 +51,6 @@ chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
 chdir("../../..");
 $url = "/" . basename(getcwd()) . "/plugins/webservices/xmlrpc.php";
 
-$url = "glpi083/plugins/webservices/xmlrpc.php";
 $host = 'localhost';
 $glpi_user  = "glpi";
 $glpi_pass  = "glpi";
