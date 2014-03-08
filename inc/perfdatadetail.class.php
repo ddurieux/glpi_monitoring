@@ -47,6 +47,18 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringPerfdataDetail extends CommonDBTM {
 
 
+   static function canCreate() {
+      return PluginMonitoringProfile::haveRight("config", 'w');
+   }
+
+
+
+   static function canView() {
+      return PluginMonitoringProfile::haveRight("config", 'r');
+   }
+
+
+
    function showDetails($perfdatas_id) {
       global $CFG_GLPI;
 
@@ -162,17 +174,19 @@ class PluginMonitoringPerfdataDetail extends CommonDBTM {
                     && !$find) {
                $find = 1;
                $countfind = count($a_line['values']);
-               $data['dsname_num'] = $countfind;
+               $input = array();
+               $input['id'] = $data['id'];
+               $input['dsname_num'] = $countfind;
                for ($i=1; $i<=$countfind; $i++) {
                   if ($data['dsname'.$i] == '') {
-                     $data['dsname'.$i] = 'value'.$data['position'].'.'.$i;
+                     $input['dsname'.$i] = 'value'.$data['position'].'.'.$i;
                   }
                }
 
                for ($i=($countfind+1); $i<9; $i++) {
-                  $data['dsname'.$i] = '';
+                  $input['dsname'.$i] = '';
                }
-               $pmPerfdataDetail->update($data);
+               $pmPerfdataDetail->update($input);
                unset($a_lines[$key]);
             }
          }
@@ -183,7 +197,7 @@ class PluginMonitoringPerfdataDetail extends CommonDBTM {
 
       foreach ($a_lines as $position=>$data) {
          $input = array();
-         $input['name'] = $data['name'];
+         $input['name'] = Toolbox::clean_cross_side_scripting_deep(Toolbox::addslashes_deep($data['name']));
          $input['plugin_monitoring_perfdatas_id'] = $perfdatas_id;
          $input['position'] = $position;
          $input['dsname_num'] = count($data['values']);
