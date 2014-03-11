@@ -727,7 +727,7 @@ class PluginMonitoringService extends CommonDBTM {
                echo "</th>";
                echo "</tr>";
                echo "<tr class='tab_bg_1'>";
-               echo "<td>";
+               echo "<td style='position: relative'>";
                $pmServicegraph->displayGraph($pmComponent->fields['graph_template'],
                                              "PluginMonitoringService",
                                              $datas['id'],

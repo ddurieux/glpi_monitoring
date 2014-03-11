@@ -1666,7 +1666,7 @@ Ext.onReady(function(){
          echo "</tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td align='center' colspan='2'>";
+         echo "<td align='center' colspan='2' style='position: relative'>";
 
          $pmServicegraph = new PluginMonitoringServicegraph();
          $part = '';
