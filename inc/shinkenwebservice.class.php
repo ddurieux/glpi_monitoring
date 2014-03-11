@@ -56,7 +56,7 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       $pmTag = new PluginMonitoringTag();
       $pmService = new PluginMonitoringService();
       $pmService->getFromDB($service_id);
-      $service_description = $pmService->getName(true);
+      $service_description = $pmService->getName(array('shinken'=>'1'));
       $pmHost = new PluginMonitoringHost();
       $pmHost->getFromDB(($host_id == -1) ? $pmService->getHostID() : $host_id);
       $hostname = $pmHost->getName(true);
@@ -103,7 +103,7 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       $pmTag = new PluginMonitoringTag();
       $pmService = new PluginMonitoringService();
       $pmService->getFromDB($service_id);
-      $service_description = $pmService->getName(true);
+      $service_description = $pmService->getName(array('shinken'=>'1'));
       $pmHost = new PluginMonitoringHost();
       $pmHost->getFromDB(($host_id == -1) ? $pmService->getHostID() : $host_id);
       $hostname = $pmHost->getName(true);
