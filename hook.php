@@ -330,127 +330,133 @@ function plugin_monitoring_addLeftJoin($itemtype,$ref_table,$new_table,$linkfiel
 	 break;
 
       case 'Computer':
-	 if ($new_table.".".$linkfield == "glpi_plugin_monitoring_computers_deviceprocessors.plugin_monitoring_computers_deviceprocessors_id") {
-	    return " LEFT JOIN `glpi_items_deviceprocessors` AS `processormonit` "
-	    . " ON (`glpi_computers`.`id` = `processormonit`.`items_id`"
-		    . " AND `processormonit`.`itemtype` = 'Computer') ";
-	 }
-	 break;
+          if ($new_table.".".$linkfield == "glpi_plugin_monitoring_computers_deviceprocessors.plugin_monitoring_computers_deviceprocessors_id") {
+             return " LEFT JOIN `glpi_items_deviceprocessors` AS `processormonit` "
+             . " ON (`glpi_computers`.`id` = `processormonit`.`items_id`"
+                . " AND `processormonit`.`itemtype` = 'Computer') ";
+          }
+          break;
 
       case 'PluginMonitoringServiceevent':
-	 // Join between service events and services
-	 if ($new_table.".".$linkfield == "glpi_plugin_monitoring_services.id") {
-	    return "
-	       INNER JOIN `glpi_plugin_monitoring_services`
-		  ON (`glpi_plugin_monitoring_serviceevents`.`plugin_monitoring_services_id`
-		  = `glpi_plugin_monitoring_services`.`id`)
-	    ";
-	 }
-	 // Join between service events and components catalogs
-	 if ($new_table.".".$linkfield == "glpi_plugin_monitoring_components.plugin_monitoring_components_id") {
-	    return "
-	       INNER JOIN `glpi_plugin_monitoring_components`
-		  ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_components_id`
-		  = `glpi_plugin_monitoring_components`.`id`)
-	    ";
-	 }
-	 // Join between service events and components catalogs hosts
-	 if ($new_table.".".$linkfield == "glpi_plugin_monitoring_componentscatalogs_hosts.plugin_monitoring_componentscatalogs_hosts_id") {
-	    return "
-	       INNER JOIN `glpi_plugin_monitoring_services`
-		  ON (`glpi_plugin_monitoring_serviceevents`.`plugin_monitoring_services_id`
-		  = `glpi_plugin_monitoring_services`.`id`)
-	       INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
-		  ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id`
-		  = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
-	    ";
-	 }
-	 // Join between service events and computers
-	 if ($new_table.".".$linkfield == "glpi_computers.computers_id") {
-	    return "
-	       INNER JOIN `glpi_plugin_monitoring_services`
-		  ON (`glpi_plugin_monitoring_serviceevents`.`plugin_monitoring_services_id`
-		  = `glpi_plugin_monitoring_services`.`id`)
-	       INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
-		  ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id`
-		  = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
-	       INNER JOIN `glpi_computers`
-		  ON (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_computers`.`id`
-		     AND
-		     `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype` = 'Computer')
-	    ";
-	 }
-	 break;
+         // Join between service events and services
+         if ($new_table.".".$linkfield == "glpi_plugin_monitoring_services.id") {
+            return "
+               INNER JOIN `glpi_plugin_monitoring_services`
+             ON (`glpi_plugin_monitoring_serviceevents`.`plugin_monitoring_services_id`
+             = `glpi_plugin_monitoring_services`.`id`)
+            ";
+         }
+         // Join between service events and components catalogs
+         if ($new_table.".".$linkfield == "glpi_plugin_monitoring_components.plugin_monitoring_components_id") {
+            return "
+               INNER JOIN `glpi_plugin_monitoring_components`
+             ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_components_id`
+             = `glpi_plugin_monitoring_components`.`id`)
+            ";
+         }
+         // Join between service events and components catalogs hosts
+         if ($new_table.".".$linkfield == "glpi_plugin_monitoring_componentscatalogs_hosts.plugin_monitoring_componentscatalogs_hosts_id") {
+            return "
+               INNER JOIN `glpi_plugin_monitoring_services`
+             ON (`glpi_plugin_monitoring_serviceevents`.`plugin_monitoring_services_id`
+             = `glpi_plugin_monitoring_services`.`id`)
+               INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
+             ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id`
+             = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
+            ";
+         }
+         // Join between service events and computers
+         if ($new_table.".".$linkfield == "glpi_computers.computers_id") {
+            return "
+               INNER JOIN `glpi_plugin_monitoring_services`
+             ON (`glpi_plugin_monitoring_serviceevents`.`plugin_monitoring_services_id`
+             = `glpi_plugin_monitoring_services`.`id`)
+               INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
+             ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id`
+             = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
+               INNER JOIN `glpi_computers`
+             ON (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_computers`.`id`
+                AND
+                `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype` = 'Computer')
+            ";
+         }
+       break;
 
 	 case 'PluginMonitoringHostdailycounter':
-	 // Join between daily counters and computers
-	 if ($new_table.".".$linkfield == "glpi_computers.computers_id") {
-	    return "
-	       INNER JOIN `glpi_computers`
-		  ON (`glpi_plugin_monitoring_hostdailycounters`.`hostname` = `glpi_computers`.`name`)
-	    ";
-	 }
-	 break;
-
-      case 'PluginMonitoringUnavailability':
-	 // Join between unavailabilities and services
-	 if ($new_table.".".$linkfield == "glpi_plugin_monitoring_services.id") {
-	    return "
-	       INNER JOIN `glpi_plugin_monitoring_services`
-		  ON (`glpi_plugin_monitoring_unavailabilities`.`plugin_monitoring_services_id`
-		  = `glpi_plugin_monitoring_services`.`id`)
-	    ";
-	 }
-	 // Join between unavailabilities and components catalogs
-	 if ($new_table.".".$linkfield == "glpi_plugin_monitoring_components.plugin_monitoring_components_id") {
-	    return "
-	       INNER JOIN `glpi_plugin_monitoring_components`
-		  ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_components_id`
-		  = `glpi_plugin_monitoring_components`.`id`)
-	    ";
-	 }
-	 // Join between unavailabilities and components catalogs hosts
-	 if ($new_table.".".$linkfield == "glpi_plugin_monitoring_componentscatalogs_hosts.plugin_monitoring_componentscatalogs_hosts_id") {
-	    return "
-	       INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
-		  ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id`
-		  = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
-	    ";
-	 }
-	 // Join between unavailabilities and computers
-	 if ($new_table.".".$linkfield == "glpi_computers.computers_id") {
-       $ret = '';
-       if (!in_array('glpi_plugin_monitoring_services', $already_link_tables)) {
-          $ret .= "
-             LEFT JOIN `glpi_plugin_monitoring_services`
-               ON (`glpi_plugin_monitoring_unavailabilities`.`plugin_monitoring_services_id`
-                     = `glpi_plugin_monitoring_services`.`id`)
+       // Join between daily counters and computers
+       if ($new_table.".".$linkfield == "glpi_computers.computers_id") {
+          return "
+             INNER JOIN `glpi_computers`
+           ON (`glpi_plugin_monitoring_hostdailycounters`.`hostname` = `glpi_computers`.`name`)
           ";
        }
-	    $ret .= "
-	       LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
-            ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id`
-               = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
-	       LEFT JOIN `glpi_computers`
-            ON (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_computers`.`id`
-               AND
-            `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype` = 'Computer')
-	    ";
-       return $ret;
-	 }
-	 break;
+       break;
+
+      case 'PluginMonitoringUnavailability':
+          // Join between unavailabilities and services
+          if ($new_table.".".$linkfield == "glpi_plugin_monitoring_services.id") {
+             return "
+                INNER JOIN `glpi_plugin_monitoring_services`
+              ON (`glpi_plugin_monitoring_unavailabilities`.`plugin_monitoring_services_id`
+              = `glpi_plugin_monitoring_services`.`id`)
+             ";
+          }
+          // Join between unavailabilities and components catalogs
+          if ($new_table.".".$linkfield == "glpi_plugin_monitoring_components.plugin_monitoring_components_id") {
+             return "
+                INNER JOIN `glpi_plugin_monitoring_components`
+              ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_components_id`
+              = `glpi_plugin_monitoring_components`.`id`)
+             ";
+          }
+          // Join between unavailabilities and components catalogs hosts
+          if ($new_table.".".$linkfield == "glpi_plugin_monitoring_componentscatalogs_hosts.plugin_monitoring_componentscatalogs_hosts_id") {
+             return "
+                INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
+              ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id`
+              = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
+             ";
+          }
+          // Join between unavailabilities and computers
+          if ($new_table.".".$linkfield == "glpi_computers.computers_id") {
+             $ret = '';
+             if (!in_array('glpi_plugin_monitoring_services', $already_link_tables)) {
+                $ret .= "
+                   LEFT JOIN `glpi_plugin_monitoring_services`
+                     ON (`glpi_plugin_monitoring_unavailabilities`.`plugin_monitoring_services_id`
+                           = `glpi_plugin_monitoring_services`.`id`)
+                ";
+             }
+             $ret .= "
+                LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
+                  ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id`
+                     = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
+                LEFT JOIN `glpi_computers`
+                  ON (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_computers`.`id`
+                     AND
+                  `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype` = 'Computer')
+             ";
+             return $ret;
+          }
+          if ($new_table.".".$linkfield == "glpi_networkequipments.networkequipments_id") {
+             return "LEFT JOIN `glpi_networkequipments`
+                  ON (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_networkequipments`.`id`
+                     AND
+                  `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype` = 'NetworkEquipment')";
+          }
+          break;
 
       case 'PluginMonitoringDowntime':
-	 // Join between daily counters and computers
-	 if ($new_table.".".$linkfield == "glpi_computers.computers_id") {
-	    return "
-	       INNER JOIN `glpi_plugin_monitoring_hosts`
-		 ON (`glpi_plugin_monitoring_downtimes`.`plugin_monitoring_hosts_id` = `glpi_plugin_monitoring_hosts`.`id`)
-	       INNER JOIN `glpi_computers`
-            ON (`glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`)
-	    ";
-	 }
-	 break;
+          // Join between daily counters and computers
+          if ($new_table.".".$linkfield == "glpi_computers.computers_id") {
+             return "
+                INNER JOIN `glpi_plugin_monitoring_hosts`
+             ON (`glpi_plugin_monitoring_downtimes`.`plugin_monitoring_hosts_id` = `glpi_plugin_monitoring_hosts`.`id`)
+                INNER JOIN `glpi_computers`
+                  ON (`glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`)
+             ";
+          }
+          break;
 
    }
    return "";

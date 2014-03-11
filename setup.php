@@ -79,7 +79,7 @@ function plugin_init_monitoring() {
          Plugin::registerClass('PluginMonitoringServicescatalog',
               array('addtabon' => array('Central')));
          Plugin::registerClass('PluginMonitoringUnavailability',
-              array('addtabon' => array('Computer')));
+              array('addtabon' => array('Computer', 'NetworkEquipment')));
          Plugin::registerClass('PluginMonitoringSystem',
               array('addtabon' => array('Central')));
          Plugin::registerClass('PluginMonitoringDowntime',

@@ -73,7 +73,8 @@ class PluginMonitoringUnavailability extends CommonDBTM {
     * @return varchar name of the tab(s) to display
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      if ($item->getType() == 'Computer'){
+      if ($item->getType() == 'Computer'
+              || $item->getType() == 'NetworkEquipment'){
          return __('Unavailabilities', 'monitoring');
       }
 
@@ -93,7 +94,18 @@ class PluginMonitoringUnavailability extends CommonDBTM {
                ));
             return true;
          }
+      } else if ($item->getType()=='NetworkEquipment') {
+         if (self::canView()) {
+            // Show list filtered on item, sorted on component ascending ...
+            Search::manageGetValues(PluginMonitoringUnavailability::getTypeName());
+            Search::showList(PluginMonitoringUnavailability::getTypeName(), array(
+               'field' => array(23), 'searchtype' => array('equals'), 'contains' => array($item->getID()),
+               'sort' => 21, 'order' => 'ASC'
+               ));
+            return true;
+         }
       }
+
       return true;
    }
 
@@ -119,9 +131,15 @@ class PluginMonitoringUnavailability extends CommonDBTM {
 
       $tab[22]['table']         = 'glpi_computers';
       $tab[22]['field']         = 'name';
-      $tab[22]['name']          = __('Host', 'monitoring');
+      $tab[22]['name']          = __('Computer');
       $tab[22]['datatype']      = 'itemlink';
       $tab[22]['itemlink_type'] = 'Computer';
+
+      $tab[23]['table']         = 'glpi_networkequipments';
+      $tab[23]['field']         = 'name';
+      $tab[23]['name']          = __('Network equipment');
+      $tab[23]['datatype']      = 'itemlink';
+      $tab[23]['itemlink_type'] = 'NetworkEquipment';
 
       $tab[3]['table']          = $this->getTable();
       $tab[3]['field']          = 'begin_date';
