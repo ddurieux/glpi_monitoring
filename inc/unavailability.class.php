@@ -86,6 +86,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
       if ($item->getType()=='Computer') {
          if (self::canView()) {
             // Show list filtered on item, sorted on component ascending ...
+            Search::manageGetValues(PluginMonitoringUnavailability::getTypeName());
             Search::showList(PluginMonitoringUnavailability::getTypeName(), array(
                'field' => array(22), 'searchtype' => array('equals'), 'contains' => array($item->getID()),
                'sort' => 21, 'order' => 'ASC'

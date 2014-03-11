@@ -419,15 +419,24 @@ function plugin_monitoring_addLeftJoin($itemtype,$ref_table,$new_table,$linkfiel
 	 }
 	 // Join between unavailabilities and computers
 	 if ($new_table.".".$linkfield == "glpi_computers.computers_id") {
-	    return "
-	       INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
-		  ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id`
-		  = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
-	       INNER JOIN `glpi_computers`
-		  ON (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_computers`.`id`
-		     AND
-		     `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype` = 'Computer')
+       $ret = '';
+       if (!in_array('glpi_plugin_monitoring_services', $already_link_tables)) {
+          $ret .= "
+             LEFT JOIN `glpi_plugin_monitoring_services`
+               ON (`glpi_plugin_monitoring_unavailabilities`.`plugin_monitoring_services_id`
+                     = `glpi_plugin_monitoring_services`.`id`)
+          ";
+       }
+	    $ret .= "
+	       LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
+            ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id`
+               = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
+	       LEFT JOIN `glpi_computers`
+            ON (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_computers`.`id`
+               AND
+            `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype` = 'Computer')
 	    ";
+       return $ret;
 	 }
 	 break;
 
@@ -438,7 +447,7 @@ function plugin_monitoring_addLeftJoin($itemtype,$ref_table,$new_table,$linkfiel
 	       INNER JOIN `glpi_plugin_monitoring_hosts`
 		 ON (`glpi_plugin_monitoring_downtimes`.`plugin_monitoring_hosts_id` = `glpi_plugin_monitoring_hosts`.`id`)
 	       INNER JOIN `glpi_computers`
-		 ON (`glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`)
+            ON (`glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`)
 	    ";
 	 }
 	 break;
