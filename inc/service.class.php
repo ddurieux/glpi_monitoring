@@ -245,12 +245,22 @@ class PluginMonitoringService extends CommonDBTM {
 
       $query = "SELECT
                   `glpi_plugin_monitoring_hosts`.`id`
-                  , `glpi_computers`.`name`
+                  , CONCAT_WS('', `glpi_computers`.`name`, `glpi_printers`.`name`, `glpi_networkequipments`.`name`) AS name
                FROM `glpi_plugin_monitoring_hosts`
                   INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
                      ON (`glpi_plugin_monitoring_hosts`.`itemtype` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`) AND (`glpi_plugin_monitoring_hosts`.`items_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`)
-                  INNER JOIN `glpi_computers`
-                     ON (`glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`)
+
+                  LEFT JOIN `glpi_computers`
+                     ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`
+                        AND `glpi_plugin_monitoring_hosts`.`itemtype`='Computer'
+                  LEFT JOIN `glpi_printers`
+                     ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_printers`.`id`
+                        AND `glpi_plugin_monitoring_hosts`.`itemtype`='Printer'
+                  LEFT JOIN `glpi_networkequipments`
+                     ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_networkequipments`.`id`
+                        AND `glpi_plugin_monitoring_hosts`.`itemtype`='NetworkEquipment'
+
+
                   INNER JOIN `glpi_plugin_monitoring_services`
                      ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
                WHERE (`glpi_plugin_monitoring_services`.`id` = '".$this->getID()."');";

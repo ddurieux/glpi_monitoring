@@ -1062,7 +1062,7 @@ echo "
             if (!is_null($pMonitoringService->fields['networkports_id'])
                     AND $pMonitoringService->fields['networkports_id'] > 0) {
                $networkPort->getFromDB($pMonitoringService->fields['networkports_id']);
-               echo " [".$networkPort->getLink()."]";
+               echo "[".$networkPort->getLink()."] ";
             }
             $pm_Host = new PluginMonitoringHost();
             $pm_Host->getFromDB($pMonitoringService->getHostID());
