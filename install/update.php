@@ -3247,6 +3247,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $query = "CREATE TABLE `$newTable` (
                     `id` INT(11) NOT NULL AUTO_INCREMENT,
                     `hostname` VARCHAR(255) NOT NULL DEFAULT '',
+                    `plugin_monitoring_services_id` int(11) NOT NULL DEFAULT '0',
                     `day` DATE NOT NULL DEFAULT '2013-01-01',
                     PRIMARY KEY (`id`),
                     KEY (`hostname`,`day`)

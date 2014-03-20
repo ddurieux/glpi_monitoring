@@ -942,6 +942,7 @@ DROP TABLE IF EXISTS `glpi_plugin_monitoring_hostdailycounters`;
 CREATE TABLE `glpi_plugin_monitoring_hostdailycounters` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
 	`hostname` varchar(255) NOT NULL DEFAULT '',
+   `plugin_monitoring_services_id` int(11) NOT NULL DEFAULT '0',
 	`day` date NOT NULL DEFAULT '2013-01-01',
 	`cPaperChanged` int(11) NOT NULL DEFAULT '0',
 	`cPrinterChanged` int(11) NOT NULL DEFAULT '0',

@@ -48,79 +48,79 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
    static $managedCounters = array(
       'cPagesInitial' => array(
-         'name' => 'Initial counter for printed pages',
-         'default' => 'previous',
+         'name'     => 'Initial counter for printed pages',
+         'default'  => 'previous',
          'editable' => 0,
       ),
-      'cPagesTotal' => array(
-         'name' => 'Cumulative total for printed pages',
-         'default' => 'previous',
+      'cPagesTotal'   => array(
+         'name'     => 'Cumulative total for printed pages',
+         'default'  => 'previous',
          'editable' => 0,
       ),
-      'cPagesToday' => array(
-         'name' => 'Daily printed pages',
-         'default' => 'reset',
+      'cPagesToday'   => array(
+         'name'     => 'Daily printed pages',
+         'default'  => 'reset',
          'editable' => 0,
       ),
       'cPagesRemaining' => array(
-         'name' => 'Remaining pages',
-         'default' => 'previous',
-         'editable' => 0,
+         'name'         => 'Remaining pages',
+         'default'      => 'previous',
+         'editable'     => 0,
          'lowThreshold' => 100,
       ),
       'cRetractedInitial' => array(
-         'name' => 'Initial counter for retracted pages',
-         'default' => 'previous',
+         'name'     => 'Initial counter for retracted pages',
+         'default'  => 'previous',
          'editable' => 0,
       ),
       'cRetractedTotal' => array(
-         'name' => 'Cumulative total for retracted pages',
-         'default' => 'previous',
+         'name'     => 'Cumulative total for retracted pages',
+         'default'  => 'previous',
          'editable' => 0,
       ),
       'cRetractedToday' => array(
-         'name' => 'Daily retracted pages',
-         'default' => 'reset',
+         'name'     => 'Daily retracted pages',
+         'default'  => 'reset',
          'editable' => 0,
       ),
       'cRetractedRemaining' => array(
-         'name' => 'Stored retracted pages',
-         'default' => 'previous',
+         'name'     => 'Stored retracted pages',
+         'default'  => 'previous',
          'editable' => 0,
       ),
       'cPrinterChanged' => array(
-         'name' => 'Cumulative total for printer changed',
-         'default' => 'previous',
+         'name'     => 'Cumulative total for printer changed',
+         'default'  => 'previous',
          'editable' => 1,
       ),
       'cPaperChanged' => array(
-         'name' => 'Cumulative total for paper changed',
-         'default' => 'previous',
+         'name'     => 'Cumulative total for paper changed',
+         'default'  => 'previous',
          'editable' => 1,
       ),
-      'cBinEmptied' => array(
-         'name' => 'Cumulative total for bin emptied',
-         'default' => 'previous',
+      'cBinEmptied'   => array(
+         'name'     => 'Cumulative total for bin emptied',
+         'default'  => 'previous',
          'editable' => 1,
       ),
-      'cPaperLoad' => array(
-         'name' => 'Paper load',
-         'default' => 'previous',
+      'cPaperLoad'    => array(
+         'name'     => 'Paper load',
+         'default'  => 'previous',
          'editable' => 0,
       ),
       'cCardsInsertedOk' => array(
-         'name' => 'Cards inserted Ok',
-         'default' => 'previous',
+         'name'     => 'Cards inserted Ok',
+         'default'  => 'previous',
          'editable' => 0,
       ),
       'cCardsInsertedKo' => array(
-         'name' => 'Cards inserted Ko',
-         'default' => 'previous',
+         'name'     => 'Cards inserted Ko',
+         'default'  => 'previous',
          'editable' => 0,
       ),
       'cCardsRemoved' => array(
-         'name' => 'Cards removed',
-         'default' => 'previous',
+         'name'     => 'Cards removed',
+         'default'  => 'previous',
          'editable' => 0,
       ),
    );
@@ -980,6 +980,132 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          }
       }
    }
-}
 
+
+
+   // ************** update function David ************//
+   static function runAddDays() {
+
+      $pmServices = new PluginMonitoringService();
+      $computer = new Computer();
+      $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+      $a_services = $pmServices->find("`name`='nsca_printer' OR `name`='Imprimante'");
+      foreach ($a_services as $a_service) {
+
+         $services_id = $a_service['id'];
+         $self = new self();
+         $a_counters = current($self->find('`plugin_monitoring_services_id`="'.$services_id.'"', '`id` DESC', 1));
+         $hostname = '';
+         $pmComponentscatalog_Host->getFromDB($a_service['plugin_monitoring_componentscatalogs_hosts_id']);
+         $computer->getFromDB($pmComponentscatalog_Host->fields['items_id']);
+         $hostname = $computer->fields['name'];
+         if (!isset($a_counters['id'])) {
+            $input = array();
+            $input['plugin_monitoring_services_id'] = $services_id;
+            $input['day']         = '2013-12-01';
+            $input['hostname']    = $hostname;
+            $input['cRetractedInitial'] = 0;
+            $input['cRetractedTotal']   = 0;
+            $input['cRetractedToday']   = 0;
+            $input['cPagesInitial']   = 0;
+            $input['cPagesTotal']     = 0;
+            $input['cPagesToday']     = 0;
+            $input['cPagesRemaining'] = 2000;
+            $tmpid = $self->add($input);
+            $a_counters = $input;
+         }
+
+         $prev = $a_counters;
+         $a_cntprev = array();
+         for ($i = strtotime($a_counters['day']); $i < strtotime(date('Y-m-d').' 00:00:00'); $i += 86400) {
+            $a_cnt = $self->getLastValues($services_id, date('Y-m-d', $i));
+            if (count($a_cnt) == 0) {
+               $input = $prev;
+               $a_cnt = $a_cntprev;
+               $input['cRetractedToday'] = 0;
+               $input['cPagesToday'] = 0;
+               $input['day']         = date('Y-m-d', $i);
+            } else {
+               $input = array();
+               $input['plugin_monitoring_services_id'] = $services_id;
+               $input['day']         = date('Y-m-d', $i);
+               $input['hostname']    = $hostname;
+               $input['cRetractedInitial'] = $prev['cRetractedInitial'];
+               $input['cRetractedTotal']   = $a_cnt['Retracted Pages'];
+               $input['cRetractedToday']   = $a_cnt['Retracted Pages'] - $prev['cRetractedTotal'];
+      //         $input['cRetractedRemaining'] = '';  David: What is this? not really understand!
+               $input['cPagesInitial']   = $prev['cPagesInitial'];
+               $input['cPagesTotal']     = $a_cnt['Cut Pages'];
+               $input['cPagesToday']     = $a_cnt['Cut Pages'] - $prev['cPagesToday'];
+               $input['cPagesRemaining'] = $prev['cPagesRemaining'] - $input['cPagesToday'];
+
+               // Detect printer has changed
+               if ($a_cnt['Cut Pages'] < $prev['cPagesTotal']
+                       || $a_cnt['Retracted Pages'] < $prev['cRetractedTotal']) {
+
+                  $input['cPagesRemaining'] = 2000;
+                  $input['cPagesToday'] = 0;
+                  $input['cRetractedToday'] = 0;
+                  $input['cPagesTotal'] = $a_cnt['Cut Pages'];
+                  $input['cRetractedTotal'] = $a_cnt['Retracted Pages'];
+                  $input['cPrinterChanged'] = 1;
+               }
+            }
+            $self->add($input);
+            $input['cPrinterChanged'] = 0;
+
+   // [Cut Pages] => 583 [Retracted Pages] => 7 [Paper Reams] => 0 [Trash Empty] => 0 [Printer Replace] => 0 )
+            $prev = $input;
+            $a_cntprev = $a_cnt;
+         }
+      }
+   }
+
+
+
+   function getLastValues($services_id, $date) {
+      global $DB;
+
+      $pmService        = new PluginMonitoringService();
+      $pmServiceevent   = new PluginMonitoringServiceevent();
+      $pmComponent      = new PluginMonitoringComponent();
+
+      $data2 = array();
+
+      $pmService->getFromDB($services_id);
+      $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks($pmService->fields['plugin_monitoring_components_id']);
+      $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
+
+      $query = "SELECT
+           id,
+           perf_data,
+           date
+         FROM
+           glpi_plugin_monitoring_serviceevents
+             JOIN
+               (SELECT MAX(glpi_plugin_monitoring_serviceevents.id) AS max
+                FROM glpi_plugin_monitoring_serviceevents
+                WHERE `plugin_monitoring_services_id` = '".$services_id."'
+                   AND `glpi_plugin_monitoring_serviceevents`.`state` = 'OK'
+                   AND `glpi_plugin_monitoring_serviceevents`.`perf_data` != ''
+                   AND `glpi_plugin_monitoring_serviceevents`.`date` >= '".$date." 00:00:00'
+                   AND `glpi_plugin_monitoring_serviceevents`.`date` <= '".$date." 23:59:59'
+
+                ORDER BY glpi_plugin_monitoring_serviceevents.`date` DESC) max_id ON
+              (max_id.max = id)";
+
+      $resultevent = $DB->query($query);
+      while ($dataevent=$DB->fetch_array($resultevent)) {
+         $ret = $pmServiceevent->getData(
+                 array($dataevent),
+                 $pmComponent->fields['graph_template'],
+                 $dataevent['date'],
+                 $dataevent['date']);
+         foreach ($ret[4] as $perfname=>$legendname) {
+            $data2[$perfname] = $ret[0][$legendname][0];
+         }
+      }
+      return $data2;
+   }
+}
 ?>
