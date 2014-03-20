@@ -94,20 +94,16 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       $tab[1]['datatype']        = 'itemlink';
       $tab[1]['massiveaction']   = false; // implicit field is id
 
-      $tab[2]['table']           = $this->getTable();
-      $tab[2]['field']           = 'plugin_monitoring_services_id';
+      $tab[2]['table']           = 'glpi_plugin_monitoring_services';
+      $tab[2]['field']           = 'name';
+      $tab[2]['linkfield']       = 'plugin_monitoring_services_id';
       $tab[2]['name']            = __('Service instance', 'monitoring');
-      $tab[2]['datatype']        = 'specific';
-      // $tab[2]['table']          = "glpi_plugin_monitoring_services";
-      // $tab[2]['field']          = 'id';
-      // $tab[2]['name']           = __('Ressource', 'monitoring');
-
+      $tab[2]['datatype']        = 'itemlink';
 
       $tab[21]['table']         = 'glpi_plugin_monitoring_components';
       $tab[21]['field']         = 'name';
       $tab[21]['name']          = __('Component', 'monitoring');
       $tab[21]['datatype']      = 'itemlink';
-      $tab[21]['itemlink_type'] = 'Component';
 
       $tab[22]['table']         = 'glpi_computers';
       $tab[22]['field']         = 'name';
