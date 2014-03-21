@@ -986,9 +986,11 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
    // ************** update function David ************//
    static function runAddDays() {
 
-      $pmServices = new PluginMonitoringService();
-      $computer = new Computer();
+      $pmServices               = new PluginMonitoringService();
+      $computer                 = new Computer();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+      $pmServiceevent           = new PluginMonitoringServiceevent();
+
       $a_services = $pmServices->find("`name`='nsca_printer' OR `name`='Imprimante'");
       foreach ($a_services as $a_service) {
 
@@ -1002,7 +1004,14 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          if (!isset($a_counters['id'])) {
             $input = array();
             $input['plugin_monitoring_services_id'] = $services_id;
-            $input['day']         = '2013-12-01';
+            // get first serviceevents
+            $first = current($pmServiceevent->find("`plugin_monitoring_services_id`='".$services_id."'", '`id` ASC', 1));
+            if (!isset($first['id'])) {
+               break;
+            } else {
+               $splitdate = explode(' ', $first['date']);
+               $input['day']         = $splitdate[0];
+            }
             $input['hostname']    = $hostname;
             $input['cRetractedInitial'] = 0;
             $input['cRetractedTotal']   = 0;
@@ -1018,7 +1027,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          $prev = $a_counters;
          unset($prev['id']);
          $a_cntprev = array();
-         for ($i = strtotime($a_counters['day']); $i < strtotime(date('Y-m-d').' 00:00:00'); $i += 86400) {
+         for ($i = (strtotime($a_counters['day']) + 86400); $i < strtotime(date('Y-m-d').' 00:00:00'); $i += 86400) {
             $a_cnt = $self->getLastValues($services_id, date('Y-m-d', $i));
             if (count($a_cnt) == 0) {
                $input = $prev;
@@ -1051,10 +1060,15 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                   $input['cPagesTotal'] = $a_cnt['Cut Pages'];
                   $input['cRetractedTotal'] = $a_cnt['Retracted Pages'];
                   $input['cPrinterChanged'] = 1;
+               } else if ($a_cnt['Paper Reams'] == 1) {
+                  $input['cPagesRemaining'] = (2000 - $input['cPagesToday']);
+                  $input['cPaperChanged']   = 1;
+
                }
             }
             $self->add($input);
             $input['cPrinterChanged'] = 0;
+            $input['cPaperChanged']   = 0;
 
    // [Cut Pages] => 583 [Retracted Pages] => 7 [Paper Reams] => 0 [Trash Empty] => 0 [Printer Replace] => 0 )
             $prev = $input;
