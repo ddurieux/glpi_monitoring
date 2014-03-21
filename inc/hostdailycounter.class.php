@@ -1016,12 +1016,14 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          }
 
          $prev = $a_counters;
+         unset($prev['id']);
          $a_cntprev = array();
          for ($i = strtotime($a_counters['day']); $i < strtotime(date('Y-m-d').' 00:00:00'); $i += 86400) {
             $a_cnt = $self->getLastValues($services_id, date('Y-m-d', $i));
             if (count($a_cnt) == 0) {
                $input = $prev;
                $a_cnt = $a_cntprev;
+               $input['day']         = date('Y-m-d', $i);
                $input['cRetractedToday'] = 0;
                $input['cPagesToday'] = 0;
                $input['day']         = date('Y-m-d', $i);
