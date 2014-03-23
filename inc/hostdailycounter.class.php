@@ -1020,6 +1020,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $input['cPagesTotal']     = 0;
             $input['cPagesToday']     = 0;
             $input['cPagesRemaining'] = 2000;
+            $input['cPaperChanged']   = 0;
             $tmpid = $self->add($input);
             $a_counters = $input;
          }
@@ -1049,6 +1050,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                $input['cPagesTotal']     = $a_cnt['Cut Pages'];
                $input['cPagesToday']     = $a_cnt['Cut Pages'] - $prev['cPagesToday'];
                $input['cPagesRemaining'] = $prev['cPagesRemaining'] - $input['cPagesToday'];
+               $input['cPaperChanged']   = $a_cnt['Paper Reams'];
 
                // Detect printer has changed
                if ($a_cnt['Cut Pages'] < $prev['cPagesTotal']
@@ -1060,15 +1062,13 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                   $input['cPagesTotal'] = $a_cnt['Cut Pages'];
                   $input['cRetractedTotal'] = $a_cnt['Retracted Pages'];
                   $input['cPrinterChanged'] = 1;
-               } else if ($a_cnt['Paper Reams'] == 1) {
-                  $input['cPagesRemaining'] = (2000 - $input['cPagesToday']);
-                  $input['cPaperChanged']   = 1;
-
+               } else if ($a_cnt['Paper Reams'] > $prev['cPaperChanged']) {
+//                  $input['cPagesRemaining'] = (2000 - $input['cPagesToday']);
+                  $input['cPagesRemaining'] = 2000;
                }
             }
             $self->add($input);
             $input['cPrinterChanged'] = 0;
-            $input['cPaperChanged']   = 0;
 
    // [Cut Pages] => 583 [Retracted Pages] => 7 [Paper Reams] => 0 [Trash Empty] => 0 [Printer Replace] => 0 )
             $prev = $input;
@@ -1106,11 +1106,35 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                    AND `glpi_plugin_monitoring_serviceevents`.`perf_data` != ''
                    AND `glpi_plugin_monitoring_serviceevents`.`date` >= '".$date." 00:00:00'
                    AND `glpi_plugin_monitoring_serviceevents`.`date` <= '".$date." 23:59:59'
+                   AND `event` LIKE 'Online%'
 
                 ORDER BY glpi_plugin_monitoring_serviceevents.`date` DESC) max_id ON
               (max_id.max = id)";
 
       $resultevent = $DB->query($query);
+      if ($DB->numrows($resultevent) == 0) {
+         $query = "SELECT
+              id,
+              perf_data,
+              date
+            FROM
+              glpi_plugin_monitoring_serviceevents
+                JOIN
+                  (SELECT MAX(glpi_plugin_monitoring_serviceevents.id) AS max
+                   FROM glpi_plugin_monitoring_serviceevents
+                   WHERE `plugin_monitoring_services_id` = '".$services_id."'
+                      AND `glpi_plugin_monitoring_serviceevents`.`state` = 'OK'
+                      AND `glpi_plugin_monitoring_serviceevents`.`perf_data` != ''
+                      AND `glpi_plugin_monitoring_serviceevents`.`date` >= '".$date." 00:00:00'
+                      AND `glpi_plugin_monitoring_serviceevents`.`date` <= '".$date." 23:59:59'
+
+                   ORDER BY glpi_plugin_monitoring_serviceevents.`date` DESC) max_id ON
+                 (max_id.max = id)";
+
+         $resultevent = $DB->query($query);
+      }
+
+
       while ($dataevent=$DB->fetch_array($resultevent)) {
          $ret = $pmServiceevent->getData(
                  array($dataevent),
