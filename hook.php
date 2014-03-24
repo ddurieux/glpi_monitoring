@@ -341,7 +341,7 @@ function plugin_monitoring_addLeftJoin($itemtype,$ref_table,$new_table,$linkfiel
          // Join between service events and services
          if ($new_table.".".$linkfield == "glpi_plugin_monitoring_services.id") {
             return "
-               INNER JOIN `glpi_plugin_monitoring_services`
+               LEFT JOIN `glpi_plugin_monitoring_services`
              ON (`glpi_plugin_monitoring_serviceevents`.`plugin_monitoring_services_id`
              = `glpi_plugin_monitoring_services`.`id`)
             ";
@@ -349,7 +349,7 @@ function plugin_monitoring_addLeftJoin($itemtype,$ref_table,$new_table,$linkfiel
          // Join between service events and components catalogs
          if ($new_table.".".$linkfield == "glpi_plugin_monitoring_components.plugin_monitoring_components_id") {
             return "
-               INNER JOIN `glpi_plugin_monitoring_components`
+               LEFT JOIN `glpi_plugin_monitoring_components`
              ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_components_id`
              = `glpi_plugin_monitoring_components`.`id`)
             ";
@@ -357,24 +357,18 @@ function plugin_monitoring_addLeftJoin($itemtype,$ref_table,$new_table,$linkfiel
          // Join between service events and components catalogs hosts
          if ($new_table.".".$linkfield == "glpi_plugin_monitoring_componentscatalogs_hosts.plugin_monitoring_componentscatalogs_hosts_id") {
             return "
-               INNER JOIN `glpi_plugin_monitoring_services` as servicess
+               LEFT JOIN `glpi_plugin_monitoring_services` as servicess
              ON (`glpi_plugin_monitoring_serviceevents`.`plugin_monitoring_services_id`
              = servicess.`id`)
-               INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
-             ON (servicess.`plugin_monitoring_componentscatalogs_hosts_id`
-             = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
             ";
          }
          // Join between service events and computers
          if ($new_table.".".$linkfield == "glpi_computers.computers_id") {
             return "
-               INNER JOIN `glpi_plugin_monitoring_services` as servicesss
-             ON (`glpi_plugin_monitoring_serviceevents`.`plugin_monitoring_services_id`
-             = servicesss.`id`)
-               INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
-             ON (servicesss.`plugin_monitoring_componentscatalogs_hosts_id`
+               LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
+             ON (glpi_plugin_monitoring_services.`plugin_monitoring_componentscatalogs_hosts_id`
              = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
-               INNER JOIN `glpi_computers`
+               LEFT JOIN `glpi_computers`
              ON (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_computers`.`id`
                 AND
                 `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype` = 'Computer')
