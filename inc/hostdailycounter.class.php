@@ -702,6 +702,8 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
    static function cronDailyCounters($task=NULL) {
 
+      // Fred : currently do not run update ...
+      return false;
       ini_set("max_execution_time", "0");
 
       if ($task) {
@@ -1012,6 +1014,8 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                $splitdate = explode(' ', $first['date']);
                $input['day']         = $splitdate[0];
             }
+            // Fred : should fetch perfdata of 1st event to update cPagesInitial and cRetractedInitial ...
+            // TODO
             $input['hostname']    = $hostname;
             $input['cRetractedInitial'] = 0;
             $input['cRetractedTotal']   = 0;
@@ -1020,7 +1024,12 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $input['cPagesTotal']     = 0;
             $input['cPagesToday']     = 0;
             $input['cPagesRemaining'] = 2000;
+	    // Fred : set up initial paper load ...
+            $input['cPaperLoad'] = 2000;
             $input['cPaperChanged']   = 0;
+	    // Fred : set up printer changed and bin emptied counters ...
+            $input['cPrinterChanged']   = 0;
+            $input['cBinEmptied']   = 0;
             $tmpid = $self->add($input);
             $a_counters = $input;
          }
@@ -1036,7 +1045,8 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                $input['day']         = date('Y-m-d', $i);
                $input['cRetractedToday'] = 0;
                $input['cPagesToday'] = 0;
-               $input['day']         = date('Y-m-d', $i);
+               // Fred : twice ...
+               // $input['day']         = date('Y-m-d', $i);
             } else {
                $input = array();
                $input['plugin_monitoring_services_id'] = $services_id;
@@ -1046,6 +1056,8 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                $input['cRetractedTotal']   = $a_cnt['Retracted Pages'];
                $input['cRetractedToday']   = $a_cnt['Retracted Pages'] - $prev['cRetractedTotal'];
       //         $input['cRetractedRemaining'] = '';  David: What is this? not really understand!
+               // Fred : remaining retracted pages since last bin emptied ...
+               $input['cRetractedRemaining'] = $input['cRetractedTotal'] - $input['cRetractedToday'];
                $input['cPagesInitial']   = $prev['cPagesInitial'];
                $input['cPagesTotal']     = $a_cnt['Cut Pages'];
                $input['cPagesToday']     = $a_cnt['Cut Pages'] - $prev['cPagesToday'];
@@ -1062,9 +1074,13 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                   $input['cPagesTotal'] = $a_cnt['Cut Pages'];
                   $input['cRetractedTotal'] = $a_cnt['Retracted Pages'];
                   $input['cPrinterChanged'] = 1;
-               } else if ($a_cnt['Paper Reams'] > $prev['cPaperChanged']) {
+               }
+	       // Fred : not else if ...
+               if ($a_cnt['Paper Reams'] > $prev['cPaperChanged']) {
 //                  $input['cPagesRemaining'] = (2000 - $input['cPagesToday']);
                   $input['cPagesRemaining'] = 2000;
+		  // Fred  : paper load increases ...
+                  $input['cPaperLoad'] = ($a_cnt['Paper Reams'] + 1) * 2000;
                }
             }
             $self->add($input);
