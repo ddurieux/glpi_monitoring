@@ -997,7 +997,6 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       foreach ($a_services as $a_service) {
 
          $services_id = $a_service['id'];
-         Toolbox::logInFile("pm-counters", "Service '$services_id'\n");
          $self = new self();
          $a_counters = current($self->find('`plugin_monitoring_services_id`="'.$services_id.'"', '`id` DESC', 1));
          $hostname = '';
@@ -1006,13 +1005,12 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          $hostname = $computer->fields['name'];
          if (!isset($a_counters['id'])) {
             // Fred : first host daily counters ...
-            Toolbox::logInFile("pm-counters", "First host daily counters for $hostname\n");
             $input = array();
             $input['plugin_monitoring_services_id'] = $services_id;
             // get first serviceevents
             $first = current($pmServiceevent->find("`plugin_monitoring_services_id`='".$services_id."'", '`id` ASC', 1));
             if (!isset($first['id'])) {
-               break;
+               continue;
             } else {
                $splitdate = explode(' ', $first['date']);
                $input['day'] = $splitdate[0];
@@ -1020,16 +1018,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             // Fred : fetch perfdata of 1st event in day to update cPagesInitial and cRetractedInitial ...
             $a_first = $self->getFirstValues($services_id, $input['day']);
             if (count($a_first) == 0) {
-               break;
+               continue;
             }
-            Toolbox::logInFile("pm-counters", "First event : ".$input['day'].
-               ", Cut pages = ".$a_first['Cut Pages'].
-               ", retracted pages = ".$a_first['Retracted Pages'].
-               ", printer changed = ".$a_first['Printer Replace'].
-               ", paper changed = ".$a_first['Paper Reams'].
-               ", bin emptied = ".$a_first['Trash Empty'].
-               "\n");
-            $input['hostname']    = $hostname;
+            $input['hostname']            = $hostname;
             $input['cRetractedInitial']   = $a_first['Retracted Pages'];
             $input['cPagesInitial']       = $a_first['Cut Pages'];
             // Fred : set up initial paper load ...
@@ -1038,20 +1029,10 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             // Fred : set up printer changed and bin emptied counters ...
             $input['cPrinterChanged']     = 0;
             $input['cBinEmptied']         = 0;
-            
+
             // Fred : fetch perfdata of last event in day to update cPagesInitial and cRetractedInitial ...
             $a_last = $self->getLastValues($services_id, $input['day']);
-            if (count($a_last) == 0) {
-               break;
-            }
-            Toolbox::logInFile("pm-counters", "Last event : ".$input['day'].
-               ", Cut pages = ".$a_last['Cut Pages'].
-               ", retracted pages = ".$a_last['Retracted Pages'].
-               ", printer changed = ".$a_last['Printer Replace'].
-               ", paper changed = ".$a_last['Paper Reams'].
-               ", bin emptied = ".$a_last['Trash Empty'].
-               "\n");
-            
+
             // Fred: compute daily values thanks to first and last day values.
             $input['cRetractedTotal']     = $a_last['Retracted Pages'];
             $input['cRetractedToday']     = $input['cRetractedTotal'] - $input['cRetractedInitial'];
@@ -1059,7 +1040,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $input['cPagesToday']         = $input['cPagesTotal'] - $input['cPagesInitial'];
             $input['cPagesRemaining']     = $input['cPaperLoad'] - $input['cPagesToday'];
             $input['cRetractedRemaining'] = $input['cRetractedToday'];
-            
+
             $tmpid = $self->add($input);
             $a_counters = $input;
          }
@@ -1069,57 +1050,26 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          unset($prev['id']);
          $a_cntprev = array();
          for ($i = (strtotime($a_counters['day']) + 86400); $i < strtotime(date('Y-m-d').' 00:00:00'); $i += 86400) {
-            Toolbox::logInFile("pm-counters", "Day : ".date('Y-m-d', $i)."\n");
             // Fred : fetch perfdata of 1st event in day to update cPagesInitial and cRetractedInitial ...
             $a_first = $self->getFirstValues($services_id, date('Y-m-d', $i));
             if (count($a_first) == 0) {
-               Toolbox::logInFile("pm-counters", "No data for day : ".date('Y-m-d', $i).", exit!\n");
-               break;
+               continue;
             }
-            Toolbox::logInFile("pm-counters", "First event : ".date('Y-m-d', $i).
-               ", Cut pages = ".$a_first['Cut Pages'].
-               ", retracted pages = ".$a_first['Retracted Pages'].
-               ", printer changed = ".$a_first['Printer Replace'].
-               ", paper changed = ".$a_first['Paper Reams'].
-               ", bin emptied = ".$a_first['Trash Empty'].
-               "\n");
 
             // Fetch perfdata of last event in day to update cPagesInitial and cRetractedInitial ...
             $a_cnt = $self->getLastValues($services_id, date('Y-m-d', $i));
-            Toolbox::logInFile("pm-counters", "Last event : ".date('Y-m-d', $i).
-               ", Cut pages = ".$a_cnt['Cut Pages'].
-               ", retracted pages = ".$a_cnt['Retracted Pages'].
-               ", printer changed = ".$a_cnt['Printer Replace'].
-               ", paper changed = ".$a_cnt['Paper Reams'].
-               ", bin emptied = ".$a_cnt['Trash Empty'].
-               "\n");
-            // break;
-            
-            if (count($a_cnt) == 0) {
-               break;
-            }
-            
+
             $input = array();
             $input['plugin_monitoring_services_id'] = $services_id;
             $input['day']                 = date('Y-m-d', $i);
             $input['hostname']            = $hostname;
 
             $input['cPagesInitial'] = $prev['cPagesInitial'];
-            
-            // Detect if paper was changed today
-            $paperChangedToday = false;
+
             // Keep previous day values
             $input['cPaperLoad'] = $prev['cPaperLoad'];
             $input['cPaperChanged'] = $prev['cPaperChanged'];
-            if ($a_cnt['Paper Reams'] > $prev['cPaperChanged']) {
-               // Reset remaining pages with default paper ream load
-               $input['cPagesRemaining'] = 2000;
-               // Compute total paper load
-               $input['cPaperLoad'] = ($a_cnt['Paper Reams'] + 1) * 2000;
-               $input['cPaperChanged'] = $a_cnt['Paper Reams'];
-               $paperChangedToday = true;
-            }
-            
+
             // Detect if bin was emptied today
             $binEmptiedToday = false;
             // Keep previous day values
@@ -1131,12 +1081,12 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                $input['cBinEmptied'] = $a_cnt['Trash Empty'];
                $binEmptiedToday = true;
             }
-            
+
             // Detect if printer was changed today
             $printerChangedToday = false;
             // Keep previous day values
             $input['cPrinterChanged'] = $prev['cPrinterChanged'];
-            /* Detection : 
+            /* Detection :
                - changed printer counter increased
                - cut pages lower then previous value
                - retracted pages lower then previous value
@@ -1147,33 +1097,33 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
                // When printer has been changed we should check all the data received during the day ...
                // TODO
-               
+
                // *** Before printer changed ...
                // 1/ Compute daily values thanks to first and last day values before printer changed.
                $input['cPagesToday']         = $a_cnt['Cut Pages'] - $a_first['Cut Pages'];
                $input['cRetractedToday']     = $a_cnt['Retracted Pages'] - $a_first['Retracted Pages'];
-               
+
                // *** When printer changes ...
-               
+
                // *** After printer changed ...
                // 1/ Compute daily values thanks to first and last day values after printer changed.
                // Fred -> David : Increase previous computed values !
                $input['cPagesToday']         = $a_cnt['Cut Pages'] - $a_first['Cut Pages'];
                $input['cRetractedToday']     = $a_cnt['Retracted Pages'] - $a_first['Retracted Pages'];
-               
+
                // 2/ Increase total values from previous day with daily values
                $input['cRetractedTotal']     = $prev['cRetractedTotal'] + $input['cRetractedToday'];
                $input['cPagesTotal']         = $prev['cPagesTotal'] + $input['cPagesToday'];
-               
+
                // 3/ Compute remaining pages as total paper load - total printed pages
                $input['cPagesRemaining']     = $input['cPaperLoad'] - $input['cPagesTotal'];
                // 4/ Compute remaining pages as total paper load - total printed pages
                $input['cRetractedRemaining'] += $input['cRetractedToday'];
-               
+
                $input['cPrinterChanged'] = $a_cnt['Printer Replace'];
                $printerChangedToday = true;
             } else {
-               // When printer has not been changed : 
+               // When printer has not been changed :
                // 1/ Compute daily values thanks to first and last day values.
                $input['cPagesToday']         = $a_cnt['Cut Pages'] - $a_first['Cut Pages'];
                $input['cRetractedToday']     = $a_cnt['Retracted Pages'] - $a_first['Retracted Pages'];
@@ -1181,11 +1131,23 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                $input['cRetractedTotal']     = $prev['cRetractedTotal'] + $input['cRetractedToday'];
                $input['cPagesTotal']         = $prev['cPagesTotal'] + $input['cPagesToday'];
                // 3/ Compute remaining pages as total paper load - total printed pages
-               $input['cPagesRemaining']     = $input['cPaperLoad'] - $input['cPagesTotal'];
+               $input['cPagesRemaining']     = $prev['cPagesRemaining'] - $input['cPagesToday'] - $input['cRetractedToday'];
                // 4/ Compute remaining pages as total paper load - total printed pages
                $input['cRetractedRemaining'] += $input['cRetractedToday'];
+               // Detect if paper was changed today
+               if ($a_cnt['Paper Reams'] > $prev['cPaperChanged']) {
+
+                  // getPaperChanged
+                  $retpages = $self->getPaperChanged($services_id, date('Y-m-d', $i).' 00:00:00', date('Y-m-d', $i).' 23:59:59', $prev['cPaperChanged']);
+                  $input['cPagesToday'] = $retpages[0] + $retpages[1];
+                  // Reset remaining pages with default paper ream load
+                  $input['cPagesRemaining'] = 2000 - $retpages[1];
+                  // Compute total paper load
+                  $input['cPaperLoad'] = ($a_cnt['Paper Reams'] + 1) * 2000;
+                  $input['cPaperChanged'] = $a_cnt['Paper Reams'];
+               }
             }
-            
+
             $self->add($input);
 
             $prev = $input;
@@ -1206,13 +1168,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       $data2 = array();
 
       $pmService->getFromDB($services_id);
-      $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks($pmService->fields['plugin_monitoring_components_id']);
+      $_SESSION['plugin_monitoring_checkinterval'] = 86400;
       $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
 
-      // Fred : Why only when state is OK and Online ... we should have perfdata in any other case.
-      // Should test if perfdata exists ... it is enough.
-      // ?
-/*
       $query = "SELECT
            id,
            perf_data,
@@ -1234,7 +1192,6 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
       $resultevent = $DB->query($query);
       if ($DB->numrows($resultevent) == 0) {
-*/
          $query = "SELECT
               id,
               perf_data,
@@ -1254,7 +1211,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                  (min_id.min = id)";
 
          $resultevent = $DB->query($query);
-//      }
+      }
 
 
       while ($dataevent=$DB->fetch_array($resultevent)) {
@@ -1282,13 +1239,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       $data2 = array();
 
       $pmService->getFromDB($services_id);
-      $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks($pmService->fields['plugin_monitoring_components_id']);
+      $_SESSION['plugin_monitoring_checkinterval'] = 86400;
       $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
 
-      // Fred : Why only when state is OK and Online ... we should have perfdata in any other case.
-      // Should test if perfdata exists ... it is enough.
-      // ?
-/*
       $query = "SELECT
            id,
            perf_data,
@@ -1310,7 +1263,6 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
       $resultevent = $DB->query($query);
       if ($DB->numrows($resultevent) == 0) {
-*/
          $query = "SELECT
               id,
               perf_data,
@@ -1330,7 +1282,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                  (max_id.max = id)";
 
          $resultevent = $DB->query($query);
-//      }
+      }
 
 
       while ($dataevent=$DB->fetch_array($resultevent)) {
@@ -1344,6 +1296,69 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          }
       }
       return $data2;
+   }
+
+
+
+   function getPaperChanged($services_id, $date_start, $date_end, $cnt_paperchanged) {
+      global $DB;
+
+      // get all data of this day
+      $pmService        = new PluginMonitoringService();
+      $pmServiceevent   = new PluginMonitoringServiceevent();
+      $pmComponent      = new PluginMonitoringComponent();
+
+      $pmService->getFromDB($services_id);
+      $_SESSION['plugin_monitoring_checkinterval'] = 86400;
+      $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
+      $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
+         WHERE `plugin_monitoring_services_id`='".$services_id."'
+            AND `date` >= '".$date_start."'
+            AND `date` <= '".$date_end."'
+            AND `glpi_plugin_monitoring_serviceevents`.`state` = 'OK'
+            AND `glpi_plugin_monitoring_serviceevents`.`perf_data` != ''
+            AND `event` LIKE 'Online%'
+         ORDER BY `date`";
+
+      $resultevent = $DB->query($query);
+
+      $ret = $pmServiceevent->getData(
+              $resultevent,
+              $pmComponent->fields['graph_template'],
+              $date_start,
+              $date_end);
+
+      $word = '';
+      foreach ($ret[4] as $perfname=>$legendname) {
+         if ($perfname == 'Paper Reams') {
+            $word = $legendname;
+            break;
+         }
+      }
+      $cnt_first    = -1;
+      $val_atchange = 0;
+      $cnt_atchange = 0;
+      $val_end      = 0;
+      $cnt_end      = 0;
+      foreach ($ret[0][$word] as $num=>$val) {
+         if ($cnt_first < 0) {
+            $cnt_first = $num;
+         }
+         if ($val > $cnt_paperchanged) {
+            if ($val_atchange == 0) {
+               $val_atchange = $val;
+               $cnt_atchange = $num;
+            } else {
+               $val_end = $val;
+               $cnt_end = $num;
+            }
+         }
+      }
+
+      $pagesBefore = $ret[0][$ret[4]['Cut Pages']][$cnt_atchange] - $ret[0][$ret[4]['Cut Pages']][$cnt_first];
+      $pagesAfter  = $ret[0][$ret[4]['Cut Pages']][$cnt_end] - $ret[0][$ret[4]['Cut Pages']][$cnt_atchange];
+
+      return array($pagesBefore, $pagesAfter);
    }
 }
 ?>
