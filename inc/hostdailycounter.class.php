@@ -993,6 +993,8 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
       $pmServiceevent           = new PluginMonitoringServiceevent();
 
+      $daysnameidx = Toolbox::getDaysOfWeekArray();
+
       $a_services = $pmServices->find("`name`='nsca_printer' OR `name`='Imprimante'");
       foreach ($a_services as $a_service) {
 
@@ -1062,6 +1064,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $input = array();
             $input['plugin_monitoring_services_id'] = $services_id;
             $input['day']                 = date('Y-m-d', $i);
+            $input['dayname']             = $daysnameidx[date('w', $i)];
             $input['hostname']            = $hostname;
 
             $input['cPagesInitial'] = $prev['cPagesInitial'];

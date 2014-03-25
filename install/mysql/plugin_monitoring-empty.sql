@@ -944,6 +944,7 @@ CREATE TABLE `glpi_plugin_monitoring_hostdailycounters` (
 	`hostname` varchar(255) NOT NULL DEFAULT '',
    `plugin_monitoring_services_id` int(11) NOT NULL DEFAULT '0',
 	`day` date NOT NULL DEFAULT '2013-01-01',
+	`dayname` varchar(255) NOT NULL DEFAULT '',
 	`cPaperChanged` int(11) NOT NULL DEFAULT '0',
 	`cPrinterChanged` int(11) NOT NULL DEFAULT '0',
 	`cBinEmptied` int(11) NOT NULL DEFAULT '0',
