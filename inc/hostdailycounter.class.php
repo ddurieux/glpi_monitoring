@@ -1038,7 +1038,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             // Fred: compute daily values thanks to first and last day values.
             $input['cRetractedTotal']     = $a_last['Retracted Pages'];
             $input['cRetractedToday']     = $input['cRetractedTotal'] - $input['cRetractedInitial'];
-            $input['cPagesTotal']         = $a_last['Cut Pages'];
+            $input['cPagesTotal']         = $a_last['Cut Pages'] - $a_first['Cut Pages'];
             $input['cPagesToday']         = $input['cPagesTotal'] - $input['cPagesInitial'];
             $input['cPagesRemaining']     = $input['cPaperLoad'] - $input['cPagesToday'];
             $input['cRetractedRemaining'] = $input['cRetractedToday'];
@@ -1136,7 +1136,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                $input['cRetractedTotal']     = $prev['cRetractedTotal'] + $input['cRetractedToday'];
                $input['cPagesTotal']         = $prev['cPagesTotal'] + $input['cPagesToday'];
                // 3/ Compute remaining pages as total paper load - total printed pages
-               $input['cPagesRemaining']     = $prev['cPagesRemaining'] - $input['cPagesToday'] - $input['cRetractedToday'];
+               $input['cPagesRemaining']     = $prev['cPagesRemaining'] - $input['cPagesToday'];
                // 4/ Compute remaining pages as total paper load - total printed pages
                $input['cRetractedRemaining'] += $input['cRetractedToday'];
                // Detect if paper was changed today
@@ -1364,6 +1364,77 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       $pagesAfter  = $ret[0][$ret[4]['Cut Pages']][$cnt_end] - $ret[0][$ret[4]['Cut Pages']][$cnt_atchange];
 
       return array($pagesBefore, $pagesAfter);
+   }
+
+
+
+   function predictionEndPaper() {
+      global $DB;
+
+      $pmServices     = new PluginMonitoringService();
+
+      $a_services = $pmServices->find("`name`='nsca_printer' OR `name`='Imprimante'");
+      $daysnameidx = Toolbox::getDaysOfWeekArray();
+
+      $currentday = date('w', date('U'));
+      $a_bornes = array();
+      $nbweeks = 3; // check with last 14 days
+      foreach ($a_services as $a_service) {
+         $last = current($this->find("`plugin_monitoring_services_id`='".$a_service['id']."'", '`id` DESC', 1));
+
+         $a_daynext    = array();
+         $a_cntdaynext = array();
+         $nbdays = 3;
+         for ($i=1; $i <= $nbdays; $i++) {
+            if (!isset($a_daynext[($i - 1)])) {
+               $a_daynext[$i] = $currentday + 1;
+            } else {
+               $a_daynext[$i] = $a_daynext[($i - 1)] + 1;
+            }
+            if ($a_daynext[$i] == 7) {
+               $a_daynext[$i] = 0;
+            }
+            $sql = 'SELECT SUM(`cPagesToday`) as cnt FROM `glpi_plugin_monitoring_hostdailycounters`
+                    WHERE `dayname`="'.$daysnameidx[$a_daynext[$i]].'"
+                       AND `plugin_monitoring_services_id`="'.$a_service['id'].'"
+                    ORDER BY id DESC
+                    LIMIT '.$nbweeks;
+            $result = $DB->query($sql);
+            $data = $DB->fetch_assoc($result);
+            $a_cntdaynext[$i] = ceil($data['cnt'] / $nbweeks);
+
+            // Extend for week end
+            if ($a_daynext[$i] == 6
+                    || $a_daynext[$i] == 0) {
+               $nbdays++;
+            }
+         }
+
+         if ($last['cPagesRemaining'] - (array_sum($a_cntdaynext)) < 0) {
+            $a_bornes[$last['hostname']] = $last['cPagesRemaining'] - (array_sum($a_cntdaynext));
+         }
+      }
+      ksort($a_bornes);
+      echo "<table class='tab_cadre_fixe'>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<th colspan='2'>";
+      echo count($a_bornes)." bornes qui ne vont plus avoir de papier dans les 3 jours ouvrés";
+      echo "</th>";
+      echo "</tr>";
+
+      foreach ($a_bornes as $host=>$cnt) {
+         echo "<tr class='tab_bg_3'>";
+         echo "<td>";
+         echo $host;
+         echo "</td>";
+         echo "<td>";
+         echo $cnt;
+         echo "</td>";
+         echo "</tr>";
+      }
+      echo "</table>";
+
    }
 }
 ?>

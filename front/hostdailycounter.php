@@ -52,6 +52,13 @@ $pmMessage->getMessages();
 $pmDisplay = new PluginMonitoringDisplay();
 $pmDisplay->menu();
 
+if (isset($_POST['paperprediction'])) {
+   $pmHostdailycounter = new PluginMonitoringHostdailycounter();
+   $pmHostdailycounter->predictionEndPaper();
+   Html::footer();
+   exit;
+}
+
 if (isset($_GET['check'])) {
    // Hostname, up to date and limit may be specified as a parameter ...
    // Default hostname is all hosts, else hostname is used in SQL LIKE query
@@ -72,6 +79,12 @@ if (isset($_GET['forceUpdate'])) {
    // Default limit is 1000 records
    PluginMonitoringHostdailycounter::runUpdateCounters('', '%', '10000');
 }
+
+echo "<center>";
+echo "<form method='post'>";
+echo "<input type='submit' class='submit' name='paperprediction' value='Voir les bornes qui ne vont plus avoir de papier'>";
+Html::closeForm();
+echo "</center>";
 
 Search::show('PluginMonitoringHostdailycounter');
 
