@@ -988,6 +988,8 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
    // ************** update function David ************//
    static function runAddDays() {
 
+      ini_set("max_execution_time", "0");
+
       $pmServices               = new PluginMonitoringService();
       $computer                 = new Computer();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
