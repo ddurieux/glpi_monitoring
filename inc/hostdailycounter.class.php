@@ -1067,7 +1067,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $input['dayname']             = $daysnameidx[date('w', $i)];
             $input['hostname']            = $hostname;
 
+            // Update initial values from previous record
             $input['cPagesInitial'] = $prev['cPagesInitial'];
+            $input['cRetractedInitial'] = $prev['cRetractedInitial'];
 
             // Keep previous day values
             $input['cPaperLoad'] = $prev['cPaperLoad'];
