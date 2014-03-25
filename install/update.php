@@ -3247,13 +3247,15 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $query = "CREATE TABLE `$newTable` (
                     `id` INT(11) NOT NULL AUTO_INCREMENT,
                     `hostname` VARCHAR(255) NOT NULL DEFAULT '',
-                    `plugin_monitoring_services_id` int(11) NOT NULL DEFAULT '0',
                     `day` DATE NOT NULL DEFAULT '2013-01-01',
                     PRIMARY KEY (`id`),
                     KEY (`hostname`,`day`)
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query);
       }
+         $migration->addField($newTable,
+                              'plugin_monitoring_services_id',
+                              "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
                                  'dayname',
                                  "varchar(255) NOT NULL DEFAULT ''");
