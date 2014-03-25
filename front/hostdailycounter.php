@@ -86,6 +86,8 @@ echo "<input type='submit' class='submit' name='paperprediction' value='Voir les
 Html::closeForm();
 echo "</center>";
 
+PluginMonitoringHostdailycounter::runAddDays();
+
 Search::show('PluginMonitoringHostdailycounter');
 
 Html::footer();

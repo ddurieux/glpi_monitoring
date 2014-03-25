@@ -50,9 +50,6 @@ Html::header(__('Monitoring - dashboard', 'monitoring'), $_SERVER["PHP_SELF"], "
 $pmMessage = new PluginMonitoringMessage();
 $pmMessage->getMessages();
 
-// David ...
-PluginMonitoringHostdailycounter::runAddDays();
-
 $toDisplayArea=0;
 
 if (PluginMonitoringProfile::haveRight("dashboard", 'r') && !PluginMonitoringProfile::haveRight("config", 'r')) {
