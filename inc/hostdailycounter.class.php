@@ -1008,7 +1008,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          $computer->getFromDB($pmComponentscatalog_Host->fields['items_id']);
          $hostname = $computer->fields['name'];
          if (!isset($a_counters['id'])) {
-            // Fred : first host daily counters ...
+            // First host daily counters ...
             $input = array();
             $input['plugin_monitoring_services_id'] = $services_id;
             // get first serviceevents
@@ -1025,6 +1025,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                continue;
             }
             $input['hostname']            = $hostname;
+            $a = strptime($input['day'], '%Y-%m-%d');
+            $timestamp = mktime(0, 0, 0, $a['tm_mon']+1, $a['tm_mday'], $a['tm_year']+1900);
+            $input['dayname']             = $daysnameidx[date('w', $timestamp)];
             $input['cRetractedInitial']   = $a_first['Retracted Pages'];
             $input['cPagesInitial']       = $a_first['Cut Pages'];
             // Fred : set up initial paper load ...
@@ -1038,10 +1041,10 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $a_last = $self->getLastValues($services_id, $input['day']);
 
             // Fred: compute daily values thanks to first and last day values.
-            $input['cRetractedTotal']     = $a_last['Retracted Pages'];
-            $input['cRetractedToday']     = $input['cRetractedTotal'] - $input['cRetractedInitial'];
+            $input['cRetractedTotal']     = $a_last['Retracted Pages'] - $a_first['Retracted Pages'];
+            $input['cRetractedToday']     = $input['cRetractedTotal'];
             $input['cPagesTotal']         = $a_last['Cut Pages'] - $a_first['Cut Pages'];
-            $input['cPagesToday']         = $input['cPagesTotal'] - $input['cPagesInitial'];
+            $input['cPagesToday']         = $input['cPagesTotal'];
             $input['cPagesRemaining']     = $input['cPaperLoad'] - $input['cPagesToday'];
             $input['cRetractedRemaining'] = $input['cRetractedToday'];
 
