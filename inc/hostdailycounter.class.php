@@ -213,8 +213,8 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          $tab[$i]['field']          = $key;
          $tab[$i]['name']           = __($value['name'], 'monitoring');
          // $tab[$i]['massiveaction']  = false;
-         // $tab[$i]['datatype']       = 'specific';
-         $tab[$i]['datatype']       = 'number';
+         $tab[$i]['datatype']       = 'specific';
+         // $tab[$i]['datatype']       = 'number';
          $i++;
       }
 
