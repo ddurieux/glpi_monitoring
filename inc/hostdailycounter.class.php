@@ -1052,12 +1052,12 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $a_counters = $input;
          }
 
-         // Fred: here it exists, at min, one host daily counters line ... and a_counters is the last known counters.
+         // Here it exists, at min, one host daily counters line ... and a_counters is the last known counters.
          $prev = $a_counters;
          unset($prev['id']);
          $a_cntprev = array();
          for ($i = (strtotime($a_counters['day']) + 86400); $i < strtotime(date('Y-m-d').' 00:00:00'); $i += 86400) {
-            // Fred : fetch perfdata of 1st event in day to update cPagesInitial and cRetractedInitial ...
+            // Fetch perfdata of 1st event in day to update cPagesInitial and cRetractedInitial ...
             $a_first = $self->getFirstValues($services_id, date('Y-m-d', $i));
             if (count($a_first) == 0) {
                continue;
@@ -1072,13 +1072,12 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $input['dayname']             = $daysnameidx[date('w', $i)];
             $input['hostname']            = $hostname;
 
-            // Update initial values from previous record
-            $input['cPagesInitial'] = $prev['cPagesInitial'];
-            $input['cRetractedInitial'] = $prev['cRetractedInitial'];
 
             // Keep previous day values
             $input['cPaperLoad'] = $prev['cPaperLoad'];
             $input['cPaperChanged'] = $prev['cPaperChanged'];
+            $input['cPagesInitial'] = $prev['cPagesInitial'];
+            $input['cRetractedInitial'] = $prev['cRetractedInitial'];
 
             // Detect if bin was emptied today
             $binEmptiedToday = false;
@@ -1144,9 +1143,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                $input['cPagesRemaining']     = $prev['cPagesRemaining'] - $input['cPagesToday'];
                // 4/ Compute remaining pages as total paper load - total printed pages
                $input['cRetractedRemaining'] += $input['cRetractedToday'];
+               
                // Detect if paper was changed today
                if ($a_cnt['Paper Reams'] > $prev['cPaperChanged']) {
-
                   // getPaperChanged
                   $retpages = $self->getPaperChanged($services_id, date('Y-m-d', $i).' 00:00:00', date('Y-m-d', $i).' 23:59:59', $prev['cPaperChanged']);
                   $input['cPagesToday'] = $retpages[0] + $retpages[1];
