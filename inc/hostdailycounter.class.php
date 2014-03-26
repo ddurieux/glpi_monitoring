@@ -271,17 +271,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
    /**
     * Before updating database ...
     */
+   /* Fred : remove unuseful code
    static function pre_item_update($dailyCounter) {
       // Toolbox::logInFile("pm", "daily counter, pre_item_update : ".$dailyCounter->fields['hostname']." / ".$dailyCounter->fields['day']."\n");
-
-/*
-      // fields contains current values ...
-      foreach ($dailyCounter->fields as $key => $value) {
-         if ($dailyCounter->input[$key] != $dailyCounter->fields[$key]) {
-            Toolbox::logInFile("pm", "new field value $key = $value -> ".$dailyCounter->input[$key]." !\n");
-         }
-      }
-*/
 
       // If update was made with GUI ...
       if (! isset($dailyCounter->input['gui'])) return true;
@@ -340,8 +332,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          $_SESSION['plugin_monitoring_hostdailycounters'] = 'binEmptied';
       }
    }
+*/
 
-
+   /* Fred : remove unuseful code
    function post_updateItem($history=1) {
       global $DB;
 
@@ -367,19 +360,6 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
             $pmCurrentCounter = $pmRecentCounter;
          }
-/*
-         $query = "SELECT * FROM `".$this->getTable()."` WHERE `hostname`='".$this->fields['hostname']."' AND `day` > DATE('".$this->fields['day']."') ORDER BY `day` ASC";
-         $result = $DB->query($query);
-         while ($data=$DB->fetch_array($result)) {
-            Toolbox::logInFile("pm", "daily counter, update : ".$data['hostname']." / ".$data['day']."\n");
-            $query2 = "UPDATE `".$this->getTable()."` SET
-               `cPrinterChanged`='".$this->fields['cPrinterChanged']."'
-               WHERE `id`='".$data['id']."'";
-            $result2 = $DB->query($query2);
-            while ($data=$DB->fetch_array($result)) {
-            }
-         }
-*/
       }
 
       // Post update after bin emptied ...
@@ -428,11 +408,12 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          }
       }
    }
-
+*/
 
    /**
     * Update daily counters ...
     */
+   /* Fred : remove unuseful code
    function updateDailyCounters($counter, $value, $previousRecordExists=null) {
       $this->fields[$counter] = $value;
       // Paper load ...
@@ -590,6 +571,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       }
       $this->update($this->fields);
    }
+*/
 
    /**
    *
@@ -644,6 +626,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
    }
 
 
+   /* Fred : remove unuseful code
    function getSpecificData($hostname='%', $which='last', $date='') {
       global $DB;
 
@@ -687,7 +670,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
       return $counters;
    }
-
+*/
 
    static function cronInfo($name){
 
@@ -744,6 +727,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       return true;
    }
 
+   /* Fred : remove unuseful code
    static function runUpdateCounters($date='', $hostname='%', $limit='5000') {
       global $DB;
 
@@ -798,129 +782,13 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       return countElementsInTable($pmHostCounter->getTable(),
                                   "`updated`='0' AND `hostname` LIKE '$hostname' AND `date` < date('$date')");
    }
+*/
 
-   // Test with service 1155 !
-   static function runUpdateCountersBis($services_id = '1155') {
-      global $DB;
-
-
-      Toolbox::logInFile("pm", "runUpdateCountersBis : service identifier : $services_id\n");
-      $pmCounters          = new PluginMonitoringHostdailycounter();
-      $pmCurrentCounter    = new PluginMonitoringHostdailycounter();
-      $pmPreviousCounter   = new PluginMonitoringHostdailycounter();
-
-      $pmService           = new PluginMonitoringService();
-      $pmServiceevent      = new PluginMonitoringServiceevent();
-      $pmComponent         = new PluginMonitoringComponent();
-      $pmPerfdataDetail    = new PluginMonitoringPerfdataDetail();
-
-      $hostname = '';
-      $date = '';
-
-      $where = '';
-      if ($services_id != '0') {
-         $where = " WHERE `id`='".$services_id."' ";
-      }
-
-      $query = "SELECT * FROM `glpi_plugin_monitoring_services` ".$where;
-      $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
-         $pmService->getFromDB($data['id']);
-         $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
-         $a_perfdatas = PluginMonitoringPerfdata::getArrayPerfdata($pmComponent->fields['graph_template']);
-         $servicename = $pmService->getName();
-         $hostname = $pmService->getHostName();
-
-         Toolbox::logInFile("pm", "runUpdateCountersBis, service $servicename, host : $hostname, graph template : ".$pmComponent->fields['graph_template']."\n");
-
-         // Actually, care only about printer and reader perfdatas ...
-         // TODO !!!
-         if (($a_perfdatas['command'] != 'nsca_printer')
-              && ($a_perfdatas['command'] != 'nsca_reader')) continue;
-
-         $nb = countElementsInTable('glpi_plugin_monitoring_serviceevents',
-               "`counters`='0'
-               AND `plugin_monitoring_services_id`='".$data['id']."'");
-
-         Toolbox::logInFile("pm", "runUpdateCountersBis : service ".$data['id'].", template : ".$pmComponent->fields['graph_template'].", count : $nb\n");
-
-         for ($i=0; $i < $nb; $i += 10000) {
-            $query2 = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
-               WHERE `counters`='0'
-                  AND `plugin_monitoring_services_id`='".$data['id']."'
-               ORDER BY `date` ASC
-               LIMIT ".$i.", 10000 ";
-            $result2 = $DB->query($query2);
-            while ($data2=$DB->fetch_array($result2)) {
-               // Toolbox::logInFile("pm", "runUpdateCountersBis, service event ".$data2['id'].", date : ".$data2['date']."\n");
-               $ret = $pmServiceevent->getData(
-                       array($data2),
-                       $pmComponent->fields['graph_template'],
-                       $data2['date'],
-                       $data2['date']);
-
-               $counters = array();
-               foreach ($a_perfdatas['parseperfdata'] as $perfdata) {
-                  $counter = $perfdata['name'];
-                  foreach ($perfdata['DS'] as $DS) {
-                     $counter .= " (".$DS['dsname'].")";
-                     if (isset($ret[0][$DS['dsname']]) && ($ret[0][$DS['dsname']][0] != 0)) {
-                        $counter .= " = ".$ret[0][$DS['dsname']][0];
-                        $counters[preg_replace("/[^A-Za-z0-9\-_]/","",$perfdata['name'])] = $ret[0][$DS['dsname']][0];
-                        // Toolbox::logInFile("pm", "runUpdateCountersBis, perfdata detail : $counter\n");
-                     }
-                  }
-               }
-
-               // Previous daily counters exist ?
-               $previousRecordExists = false;
-               $a_olderCounters = $pmCounters->find("`hostname`='$hostname' AND `day` < DATE('".$data2['date']."') ORDER BY `day` DESC LIMIT 1");
-               foreach ($a_olderCounters as $olderCounter) {
-                  // Found an older daily counter row ...
-                  if ($pmPreviousCounter->getFromDBByQuery("WHERE `hostname`='$hostname' AND `day`='".$olderCounter['day']."'")) {
-                     $previousRecordExists = true;
-                  }
-               }
-
-               // Current daily counters exist ?
-               $currentRecordExists = false;
-               $a_dailyCounters = $pmCounters->find("`hostname`='$hostname' AND `day`=DATE('".$data2['date']."')");
-               foreach ($a_dailyCounters as $dailyCounter) {
-                  // Found a daily counter row to be updated ...
-                  if ($pmCurrentCounter->getFromDBByQuery("WHERE `hostname`='$hostname' AND `day`='".$dailyCounter['day']."'")) {
-                     // Daily record still exists ... update it !
-                     foreach ($counters as $counter=>$value) {
-                        if ($counter=='CutPages') $counter='cPagesTotal';
-                        if ($counter=='RetractedPages') $counter='cRetractedTotal';
-                        Toolbox::logInFile("pm", "runUpdateCountersBis, $counter = $value\n");
-                        $pmCurrentCounter->updateDailyCounters($counter, $value, ($previousRecordExists) ? $pmPreviousCounter : null);
-                     }
-                  }
-                  $currentRecordExists = true;
-               }
-               if (! $currentRecordExists) {
-                  // We never recorded anything for the day ... create first record !
-                  $pmCurrentCounter->getEmpty();
-                  $pmCurrentCounter->setDefaultContent($hostname, $data2['date'], ($previousRecordExists) ? $pmPreviousCounter : null);
-                  $pmCurrentCounter->add($pmCurrentCounter->fields);
-                  foreach ($counters as $counter=>$value) {
-                     if ($counter=='CutPages') $counter='cPagesTotal';
-                     if ($counter=='RetractedPages') $counter='cRetractedTotal';
-                     Toolbox::logInFile("pm", "runUpdateCountersBis, $counter = $value\n");
-                     $pmCurrentCounter->updateDailyCounters($counter, $value, ($previousRecordExists) ? $pmPreviousCounter : null);
-                  }
-               }
-
-               $input = array();
-               $input['id'] = $data2['id'];
-               $input['counters'] = 1;
-               $pmServiceevent->update($input);
-            }
-         }
-      }
-   }
-
-
+   /*
+      Fred -> David : this function to check is counters are valid :
+      - should be scheduled in cron
+      - should be used to run prediction function
+   */
    static function runCheckCounters($date='', $hostname='%', $interval=-1) {
       global $DB;
 
@@ -1149,6 +1017,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                   // getPaperChanged
                   $retpages = $self->getPaperChanged($services_id, date('Y-m-d', $i).' 00:00:00', date('Y-m-d', $i).' 23:59:59', $prev['cPaperChanged']);
                   $input['cPagesToday'] = $retpages[0] + $retpages[1];
+                  $input['cRetractedToday'] = $retpages[2] + $retpages[3];
                   // Reset remaining pages with default paper ream load
                   $input['cPagesRemaining'] = 2000 - $retpages[1];
                   // Compute total paper load
@@ -1366,8 +1235,10 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
       $pagesBefore = $ret[0][$ret[4]['Cut Pages']][$cnt_atchange] - $ret[0][$ret[4]['Cut Pages']][$cnt_first];
       $pagesAfter  = $ret[0][$ret[4]['Cut Pages']][$cnt_end] - $ret[0][$ret[4]['Cut Pages']][$cnt_atchange];
+      $retractedBefore = $ret[0][$ret[4]['Retracted Pages']][$cnt_atchange] - $ret[0][$ret[4]['Retracted Pages']][$cnt_first];
+      $retractedAfter  = $ret[0][$ret[4]['Retracted Pages']][$cnt_end] - $ret[0][$ret[4]['Retracted Pages']][$cnt_atchange];
 
-      return array($pagesBefore, $pagesAfter);
+      return array($pagesBefore, $pagesAfter, $retractedBefore, $retractedAfter);
    }
 
 
