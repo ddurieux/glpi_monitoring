@@ -342,7 +342,6 @@ class PluginMonitoringWebservice {
 
 
    static function methodGetHostsStates($params, $protocol) {
-      // Toolbox::logInFile("pm-ws", "methodGetHostsStates\n");
       return PluginMonitoringWebservice::getHostsStates(isset($params['filter']) ? $params['filter'] : '');
    }
    static function getHostsStates($filter) {
@@ -366,8 +365,9 @@ class PluginMonitoringWebservice {
          LEFT JOIN `glpi_entities`
             ON CONCAT_WS('', `glpi_computers`.`entities_id`, `glpi_printers`.`entities_id`, `glpi_networkequipments`.`entities_id`) = `glpi_entities`.`id`
       ";
+      $query .= "WHERE `glpi_entities`.`id` IN (".$_SESSION['glpiactiveentities_string'].")";
       if (! empty($filter)) {
-         $query .= "WHERE $filter";
+         $query .= "AND $filter";
       }
       $query .= " ORDER BY host_name ASC;";
       // Toolbox::logInFile("pm-ws", "getHostsStates, query : $query\n");
@@ -390,7 +390,6 @@ class PluginMonitoringWebservice {
 
 
    static function methodGetServicesStates($params, $protocol) {
-      // Toolbox::logInFile("pm-ws", "methodGetServicesStates\n");
       return PluginMonitoringWebservice::getServicesStates(isset($params['filter']) ? $params['filter'] : '');
    }
    static function getServicesStates($filter) {
@@ -425,8 +424,9 @@ class PluginMonitoringWebservice {
          LEFT JOIN `glpi_networkequipments`
             ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_networkequipments`.`id` AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`='NetworkEquipment'
       ";
+      $query .= "WHERE `glpi_entities`.`id` IN (".$_SESSION['glpiactiveentities_string'].")";
       if (! empty($filter)) {
-         $query .= "WHERE $filter";
+         $query .= "AND $filter";
       }
       $query .= " ORDER BY host_name ASC;";
       // Toolbox::logInFile("pm-ws", "getHostsStates, query : $query\n");
