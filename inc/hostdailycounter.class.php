@@ -685,44 +685,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
    static function cronDailyCounters($task=NULL) {
 
-      // Fred : currently do not run update ...
-      return false;
-      ini_set("max_execution_time", "0");
-
-      if ($task) {
-         $task->log("Daily counters update started.\n");
-      } else {
-         Session::addMessageAfterRedirect("Daily counters update started.",false,ERROR);
-      }
-
-      $memoryUsage = memory_get_usage() / 1024 / 1024;
-      Toolbox::logInFile("pm", "Memory usage $memoryUsage\n");
-      // Toolbox::logInFile("pm", "Memory usage ".memory_get_usage()."\n");
-      $pmCounters = new PluginMonitoringHostdailycounter();
-      do {
-         $remaining = $pmCounters->runUpdateCounters();
-         if ($remaining > 0) {
-            Toolbox::logInFile("pm", "More update needed : $remaining records.\n");
-            echo "<pre>More update needed : $remaining records!</pre>";
-            if ($task) {
-               $task->log("More update needed : $remaining records.\n");
-            } else {
-               Session::addMessageAfterRedirect("More update needed : $remaining records.",false,ERROR);
-            }
-         }
-
-         $memoryUsage = memory_get_usage() / 1024 / 1024;
-         Toolbox::logInFile("pm", "Memory usage $memoryUsage\n");
-         if ($memoryUsage >= 64) {
-            Toolbox::logInFile("pm", "Allowed memory usage exceeded, please run the task again ...\n");
-         }
-      } while (($remaining > 0) && ($memoryUsage < 64));
-
-      if ($task) {
-         $task->log("Daily counters update started.\n");
-      } else {
-         Session::addMessageAfterRedirect("Daily counters update started.",false,ERROR);
-      }
+      PluginMonitoringHostdailycounter::runAddDays();
 
       return true;
    }
@@ -1011,7 +974,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                $input['cPagesRemaining']     = $prev['cPagesRemaining'] - $input['cPagesToday'];
                // 4/ Compute remaining pages as total paper load - total printed pages
                $input['cRetractedRemaining'] += $input['cRetractedToday'];
-               
+
                // Detect if paper was changed today
                if ($a_cnt['Paper Reams'] > $prev['cPaperChanged']) {
                   // getPaperChanged
@@ -1310,6 +1273,55 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       }
       echo "</table>";
 
+   }
+
+
+
+   function prepareInputForUpdate($input) {
+
+      if (isset($input["cPaperChanged"])
+              && !isset($input['cPagesRemaining'])) {
+         $input['cPagesRemaining'] = 2000;
+      }
+      // cPrinterChanged
+      // cBinEmptied
+
+      return $input;
+   }
+
+
+
+   function post_updateItem($history=1) {
+      global $DB, $CFG_GLPI;
+
+      if (isset($_SESSION['plugin_monitoring_hostdailyupdate'])) {
+         return;
+      }
+      $_SESSION['plugin_monitoring_hostdailyupdate'] = true;
+      foreach ($this->updates as $field) {
+         $oldvalue = $this->oldvalues[$field];
+         $newvalue = $this->fields[$field];
+         if ($field == 'cPaperChanged') {
+            $cPagesRemaining = 2000;
+            $a_data = getAllDatasFromTable(
+                        'glpi_plugin_monitoring_hostdailycounters',
+                        "`day` > '".$this->fields['day']."'
+                           AND `plugin_monitoring_services_id`='".$this->fields['plugin_monitoring_services_id']."'",
+                        false,
+                        '`day` ASC');
+            foreach ($a_data as $data) {
+               if ($cPagesRemaining < $data['cPagesRemaining']) {
+                  break;
+               } else {
+                  $data['cPagesRemaining'] = $cPagesRemaining - $data['cPagesToday'];
+                  $cPagesRemaining = $data['cPagesRemaining'];
+                  unset($data['hostname']);
+                  $this->update($data);
+               }
+            }
+         }
+      }
+      unset($_SESSION['plugin_monitoring_hostdailyupdate']);
    }
 }
 ?>
