@@ -296,10 +296,10 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_fields = $pmComponent->fields;
 
                // Manage host check_command arguments
-               // Toolbox::logInFile("pm", "Command line : ".$pmCommand->fields['command_line']."\n");
-               // Toolbox::logInFile("pm", "Arguments : ".$a_fields['arguments']."\n");
-               // Toolbox::logInFile("pm", "Arguments : ".$pmCommand->fields['arguments']."\n");
-
+               // Toolbox::logInFile("pm-shinken", "Command line : ".$pmCommand->fields['command_line']."\n");
+               // Toolbox::logInFile("pm-shinken", "Arguments : ".$a_fields['arguments']."\n");
+               // Toolbox::logInFile("pm-shinken", "Arguments : ".$pmCommand->fields['arguments']."\n");
+               
                $array = array();
                preg_match_all("/\\$(ARG\d+)\\$/", $pmCommand->fields['command_line'], $array);
                sort($array[0]);
