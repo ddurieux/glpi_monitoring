@@ -272,6 +272,22 @@ class PluginMonitoringSecurity extends CommonDBTM {
 
       }
    }
+
+
+
+   static function cleanforUser($parm) {
+
+      $pmSecurity = new PluginMonitoringSecurity();
+
+      $a_cleans = getAllDatasFromTable(
+              $pmSecurity->getTable(),
+              "`users_id`='".$parm->fields['users_id']."'");
+      foreach ($a_cleans as $a_clean) {
+         $pmSecurity->delete($a_clean);
+      }
+
+      return TRUE;
+   }
 }
 
 ?>

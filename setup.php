@@ -239,7 +239,9 @@ function plugin_init_monitoring() {
                                        'PluginMonitoringComponentscatalog_rule' =>
                                              array('PluginMonitoringComponentscatalog_rule','getItemsDynamicly'),
                                        'PluginMonitoringComponentscatalog_Host' =>
-                                             array('PluginMonitoringHost','addHost'));
+                                             array('PluginMonitoringHost','addHost'),
+                                       'Profile_User' =>
+                                             array('PluginMonitoringSecurity','cleanforUser'));
          $PLUGIN_HOOKS['item_update']['monitoring'] =
                                  array('Computer'         => $rule_check,
                                        'NetworkEquipment' => $rule_check,
@@ -254,6 +256,12 @@ function plugin_init_monitoring() {
                                  array('PluginMonitoringHostdailycounter' =>
                                              array('PluginMonitoringHostdailycounter','pre_item_update')
                                  );
+
+         $PLUGIN_HOOKS['item_delete']['monitoring'] =
+                                 array('Profile_User' =>
+                                             array('PluginMonitoringSecurity','cleanforUser'));
+
+
          $PLUGIN_HOOKS['item_purge']['monitoring'] =
                                  array('Computer'         => $rule_check,
                                        'NetworkEquipment' => $rule_check,
@@ -269,7 +277,9 @@ function plugin_init_monitoring() {
                                        'PluginMonitoringComponentscatalog' =>
                                              array('PluginMonitoringComponentscatalog','removeCatalog'),
                                        'PluginMonitoringBusinessrulegroup' =>
-                                             array('PluginMonitoringBusinessrule','removeBusinessruleonDeletegroup'));
+                                             array('PluginMonitoringBusinessrule','removeBusinessruleonDeletegroup'),
+                                       'Profile_User' =>
+                                             array('PluginMonitoringSecurity','cleanforUser'));
 
          if (!isset($_SESSION['glpi_plugin_monitoring']['_refresh'])) {
             $_SESSION['glpi_plugin_monitoring']['_refresh'] = '60';
