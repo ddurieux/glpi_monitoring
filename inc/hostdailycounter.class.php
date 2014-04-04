@@ -612,7 +612,8 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       foreach (self::$managedCounters as $key => $value) {
-         if ($this->canUpdate() and $value['editable']) {
+//         if ($this->canUpdate() and $value['editable']) {
+         if ($this->canUpdate()) {
             echo "<td><input type='text' name='$key' value='".$this->fields[$key]."' size='8'/></td>";
          } else {
             echo "<td>".$this->getValueToDisplay($key, $this->fields[$key])."</td>";
@@ -935,32 +936,22 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                   || $a_cnt['Cut Pages'] < $prev['cPagesTotal']
                   || $a_cnt['Retracted Pages'] < $prev['cRetractedTotal']) {
 
-               // When printer has been changed we should check all the data received during the day ...
-               // TODO
-
-               // *** Before printer changed ...
-               // 1/ Compute daily values thanks to first and last day values before printer changed.
-               $input['cPagesToday']         = $a_cnt['Cut Pages'] - $a_first['Cut Pages'];
-               $input['cRetractedToday']     = $a_cnt['Retracted Pages'] - $a_first['Retracted Pages'];
-
-               // *** When printer changes ...
-
-               // *** After printer changed ...
-               // 1/ Compute daily values thanks to first and last day values after printer changed.
-               // Fred -> David : Increase previous computed values !
-               $input['cPagesToday']         = $a_cnt['Cut Pages'] - $a_first['Cut Pages'];
-               $input['cRetractedToday']     = $a_cnt['Retracted Pages'] - $a_first['Retracted Pages'];
-
-               // 2/ Increase total values from previous day with daily values
-               $input['cRetractedTotal']     = $prev['cRetractedTotal'] + $input['cRetractedToday'];
-               $input['cPagesTotal']         = $prev['cPagesTotal'] + $input['cPagesToday'];
-
-               // 3/ Compute remaining pages as total paper load - total printed pages
-               $input['cPagesRemaining']     = $input['cPaperLoad'] - $input['cPagesTotal'];
-               // 4/ Compute remaining pages as total paper load - total printed pages
-               $input['cRetractedRemaining'] += $input['cRetractedToday'];
+               // getPrinterChanged
+               $retpages = $self->getPrinterChanged($services_id, date('Y-m-d', $i).' 00:00:00', date('Y-m-d', $i).' 23:59:59', $prev['cPrinterChanged']);
+               $input['cPagesToday'] = $retpages[0]['Cut Pages'] + $retpages[1]['Cut Pages'];
+               $input['cPagesTotal'] = $prev['cPagesTotal'] + $input['cPagesToday'];
+               $input['cRetractedTotal'] = $retpages[0]['Retracted Pages'] + $retpages[1]['Retracted Pages'];
+               $input['cRetractedTotal'] = $prev['cRetractedTotal'] + $input['cRetractedTotal'];
 
                $input['cPrinterChanged'] = $a_cnt['Printer Replace'];
+               if ($input['cPrinterChanged'] == $prev['cPrinterChanged']) {
+                  $input['cPrinterChanged'] = '-10';
+               }
+               $input['cPagesInitial'] = $retpages[2];
+               $input['cRetractedInitial'] = $retpages[3];
+
+               $input['cPagesRemaining'] = $input['cPaperLoad'] - $input['cPagesTotal'];
+               $input['cRetractedRemaining'] += $input['cRetractedToday'];
                $printerChangedToday = true;
             } else {
                // When printer has not been changed :
@@ -1202,6 +1193,129 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       $retractedAfter  = $ret[0][$ret[4]['Retracted Pages']][$cnt_end] - $ret[0][$ret[4]['Retracted Pages']][$cnt_atchange];
 
       return array($pagesBefore, $pagesAfter, $retractedBefore, $retractedAfter);
+   }
+
+
+
+   // TODO : to finish
+   function getPrinterChanged($services_id, $date_start, $date_end, $cnt_printerchanged) {
+      global $DB;
+
+      // get all data of this day
+      $pmService        = new PluginMonitoringService();
+      $pmServiceevent   = new PluginMonitoringServiceevent();
+      $pmComponent      = new PluginMonitoringComponent();
+
+      $pmService->getFromDB($services_id);
+      $_SESSION['plugin_monitoring_checkinterval'] = 86400;
+      $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
+      $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
+         WHERE `plugin_monitoring_services_id`='".$services_id."'
+            AND `date` >= '".$date_start."'
+            AND `date` <= '".$date_end."'
+            AND `glpi_plugin_monitoring_serviceevents`.`state` = 'OK'
+            AND `glpi_plugin_monitoring_serviceevents`.`perf_data` != ''
+            AND `event` LIKE 'Online%'
+         ORDER BY `date`";
+
+      $resultevent = $DB->query($query);
+
+      $ret = $pmServiceevent->getData(
+              $resultevent,
+              $pmComponent->fields['graph_template'],
+              $date_start,
+              $date_end);
+
+      $a_word = array();
+      foreach ($ret[4] as $perfname=>$legendname) {
+         if ($perfname == 'Cut Pages') {
+            $a_word['cut'] = $legendname;
+         } else if ($perfname == 'Printer Replace') {
+            $a_word['replace'] = $legendname;
+            break;
+         } else if ($perfname == 'Retracted Pages') {
+            $a_word['retract'] = $legendname;
+            break;
+         }
+      }
+
+      $replace_num = -1;
+      foreach ($a_word as $name=>$word) {
+         $prev = -100000;
+         foreach ($ret[0][$word] as $num=>$val) {
+            if ($name == 'replace') {
+               if ($val > $cnt_printerchanged) {
+                  $replace_num = $num;
+                  break 2;
+               }
+            } else {
+               if ($val < $prev) {
+                  $replace_num = $num;
+                  break 2;
+               }
+            }
+            $prev = $val;
+         }
+      }
+
+      // Now we have number of change
+      $a_before = array();
+      $a_after  = array();
+
+      $keys = array_keys($ret[0][$a_word['cut']]);
+      $numFirstCut = array_shift($keys);
+      $numEndCut   = array_pop($keys);
+      if ($numFirstCut == ''
+              || $numEndCut == '') {
+         $a_before['Cut Pages'] = 0;
+         $a_after['Cut Pages']  = 0;
+      } else if (!isset($ret[0][$a_word['cut']][$replace_num])) {
+         $a_before['Cut Pages'] = $ret[0][$a_word['cut']][$numEndCut] - $ret[0][$a_word['cut']][$numFirstCut];
+         $a_after['Cut Pages']  = $ret[0][$a_word['cut']][$numEndCut] - $ret[0][$a_word['cut']][$numEndCut];
+      } else {
+         $a_before['Cut Pages'] = $ret[0][$a_word['cut']][$replace_num] - $ret[0][$a_word['cut']][$numFirstCut];
+         $a_after['Cut Pages']  = $ret[0][$a_word['cut']][$numEndCut] - $ret[0][$a_word['cut']][$replace_num];
+      }
+
+      if (isset($a_word['replace'])) {
+         $numFirstReplace = key($ret[0][$a_word['replace']]);
+         $numEndReplace   = key( array_slice( $ret[0][$a_word['replace']], -1, 1, TRUE ) );
+         $a_before['Printer Replace'] = $ret[0][$a_word['replace']][$replace_num] - $ret[0][$a_word['replace']][$numFirstReplace];
+         $a_after['Printer Replace']  = $ret[0][$a_word['replace']][$numEndReplace] - $ret[0][$a_word['replace']][$replace_num];
+      } else {
+         $a_before['Printer Replace'] = $cnt_printerchanged;
+         $a_after['Printer Replace']  = $cnt_printerchanged;
+      }
+
+      $keys = array_keys($ret[0][$a_word['retract']]);
+      $numFirstRetract = array_shift($keys);
+      $numEndRetract   = array_pop($keys);
+      if ($numFirstRetract == ''
+              || $numEndRetract == '') {
+         $a_before['Retracted Pages'] = 0;
+         $a_after['Retracted Pages']  = 0;
+      } else if (!isset($ret[0][$a_word['retract']][$replace_num])) {
+         $a_before['Retracted Pages'] = $ret[0][$a_word['retract']][$numEndRetract] - $ret[0][$a_word['retract']][$numFirstRetract];
+         $a_after['Retracted Pages']  = $ret[0][$a_word['retract']][$numEndRetract] - $ret[0][$a_word['retract']][$numEndRetract];
+      } else {
+         $a_before['Retracted Pages'] = $ret[0][$a_word['retract']][$replace_num] - $ret[0][$a_word['retract']][$numFirstRetract];
+         $a_after['Retracted Pages']  = $ret[0][$a_word['retract']][$numEndRetract] - $ret[0][$a_word['retract']][$replace_num];
+      }
+
+      // manage 'cPagesInitial' of new printer
+      if (!isset($ret[0][$a_word['cut']][$replace_num])) {
+         $cPagesInitial = $ret[0][$a_word['cut']][$numFirstCut];
+      } else {
+         $cPagesInitial = $ret[0][$a_word['cut']][$replace_num];
+      }
+      // manage 'cRetractedInitial'
+      if (!isset($ret[0][$a_word['retract']][$replace_num])) {
+         $cRetractedInitial = $ret[0][$a_word['retract']][$numFirstCut];
+      } else {
+         $cRetractedInitial = $ret[0][$a_word['retract']][$replace_num];
+      }
+
+      return array($a_before, $a_after, $cPagesInitial, $cRetractedInitial);
    }
 
 
