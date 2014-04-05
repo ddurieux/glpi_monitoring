@@ -214,6 +214,7 @@ class PluginMonitoringWebservice {
          return $response;
       }
 
+      // Toolbox::logInFile("pm-ws", "methodDashboard, view : ".$params['view']."\n");
       $pm = new PluginMonitoringDisplay();
       if ($params['view'] == 'Hosts') {
          return $pm->displayHostsCounters(0);
@@ -367,9 +368,10 @@ class PluginMonitoringWebservice {
       ";
       $query .= "WHERE `glpi_computers`.`name` <> '' AND `glpi_entities`.`id` IN (".$_SESSION['glpiactiveentities_string'].")";
       if (! empty($filter)) {
-         $query .= "AND $filter";
+         $query .= " AND $filter";
       }
-      $query .= " ORDER BY entity_name ASC, host_name ASC;";
+//      $query .= " ORDER BY entity_name ASC, host_name ASC;";
+	  $query .= " ORDER BY entity_name ASC, FIELD(`glpi_plugin_monitoring_hosts`.`state`,'DOWN','PENDING','UNKNOWN','UNREACHABLE','UP');";
       // Toolbox::logInFile("pm-ws", "getHostsStates, query : $query\n");
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
@@ -423,10 +425,11 @@ class PluginMonitoringWebservice {
       ";
       $query .= "WHERE `glpi_entities`.`id` IN (".$_SESSION['glpiactiveentities_string'].")";
       if (! empty($filter)) {
-         $query .= "AND $filter";
+         $query .= " AND $filter";
       }
-      $query .= " ORDER BY host_name ASC;";
-      // Toolbox::logInFile("pm-ws", "getHostsStates, query : $query\n");
+//      $query .= " ORDER BY host_name ASC;";
+	  $query .= " ORDER BY FIELD(`glpi_plugin_monitoring_services`.`state`,'CRITICAL','PENDING','UNKNOWN','WARNING','OK');";
+      Toolbox::logInFile("pm-ws", "getHostsStates, query : $query\n");
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
          $host = array();
@@ -451,7 +454,7 @@ class PluginMonitoringWebservice {
    static function getLastCountersPerHost($filter) {
       global $DB;
 
-      $hosts = array();
+      $rows = array();
 
       $query = "
          SELECT tmp.* FROM ( SELECT * FROM `glpi_plugin_monitoring_hostdailycounters` ORDER BY DATE(DAY) DESC ) tmp
@@ -462,7 +465,7 @@ class PluginMonitoringWebservice {
       ";
       $query .= "WHERE `glpi_entities`.`id` IN (".$_SESSION['glpiactiveentities_string'].")";
       if (! empty($filter)) {
-         $query .= "AND $filter";
+         $query .= " AND $filter";
       }
       $query .= "
          GROUP BY hostname
@@ -471,26 +474,59 @@ class PluginMonitoringWebservice {
       // Toolbox::logInFile("pm-ws", "getDailyCounters, query : $query\n");
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
-         $host = array();
+         $row = array();
          foreach ($data as $key=>$value) {
             if (is_string($key)) {
-               $host[$key] = $value;
+               $row[$key] = $value;
             }
          }
-         $hosts[] = $host;
+         $rows[] = $row;
       }
 
-      return $hosts;
+      return $rows;
+   }
+   static function getLastCountersPerDay($filter) {
+      global $DB;
+
+      $rows = array();
+
+      $query = "
+         SELECT tmp.* FROM ( SELECT * FROM `glpi_plugin_monitoring_hostdailycounters` ORDER BY DATE(DAY) DESC ) tmp
+         LEFT JOIN `glpi_computers`
+          ON `tmp`.`hostname` = `glpi_computers`.`name`
+         LEFT JOIN `glpi_entities`
+          ON (`glpi_computers`.`entities_id` = `glpi_entities`.`id`)
+      ";
+      $query .= "WHERE `glpi_entities`.`id` IN (".$_SESSION['glpiactiveentities_string'].")";
+      if (! empty($filter)) {
+         $query .= " AND $filter";
+      }
+      $query .= "
+         GROUP BY hostname
+         ORDER BY hostname
+      ";
+      Toolbox::logInFile("pm-ws", "getDailyCounters, query : $query\n");
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         $row = array();
+         foreach ($data as $key=>$value) {
+            if (is_string($key)) {
+               $row[$key] = $value;
+            }
+         }
+         $rows[] = $row;
+      }
+
+      return $rows;
    }
    static function getDailyCounters($filter, $limit) {
       global $DB;
 
-      $hosts = array();
+      $rows = array();
 
       $query = "
          SELECT
             `glpi_entities`.`name` AS entity_name,
-            `glpi_computers`.*,
             `glpi_plugin_monitoring_hostdailycounters`.*
          FROM `glpi_plugin_monitoring_hostdailycounters`
          LEFT JOIN `glpi_computers`
@@ -500,22 +536,22 @@ class PluginMonitoringWebservice {
       ";
       $query .= "WHERE `glpi_entities`.`id` IN (".$_SESSION['glpiactiveentities_string'].")";
       if (! empty($filter)) {
-         $query .= "AND $filter";
+         $query .= " AND $filter";
       }
       $query .= " ORDER BY date(day) DESC LIMIT $limit;";
       // Toolbox::logInFile("pm-ws", "getDailyCounters, query : $query\n");
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
-         $host = array();
+         $row = array();
          foreach ($data as $key=>$value) {
             if (is_string($key)) {
-               $host[$key] = $value;
+               $row[$key] = $value;
             }
          }
-         $hosts[] = $host;
+         $rows[] = $row;
       }
 
-      return $hosts;
+      return $rows;
    }
 }
 
