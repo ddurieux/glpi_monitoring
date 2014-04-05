@@ -932,21 +932,26 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                - cut pages lower then previous value
                - retracted pages lower then previous value
             */
+/*
             if ($a_cnt['Printer Replace'] > $prev['cPrinterChanged']
                   || $a_cnt['Cut Pages'] < $prev['cPagesTotal']
                   || $a_cnt['Retracted Pages'] < $prev['cRetractedTotal']) {
+*/
+            if ($a_cnt['Printer Replace'] > $prev['cPrinterChanged']
+                  || $a_cnt['Cut Pages'] < $first['Cut Pages']
+                  || $a_cnt['Retracted Pages'] < $first['Retracted Pages']) {
 
                // getPrinterChanged
                $retpages = $self->getPrinterChanged($services_id, date('Y-m-d', $i).' 00:00:00', date('Y-m-d', $i).' 23:59:59', $prev['cPrinterChanged']);
                $input['cPagesToday'] = $retpages[0]['Cut Pages'] + $retpages[1]['Cut Pages'];
                $input['cPagesTotal'] = $prev['cPagesTotal'] + $input['cPagesToday'];
-               $input['cRetractedTotal'] = $retpages[0]['Retracted Pages'] + $retpages[1]['Retracted Pages'];
+               $input['cRetractedToday'] = $retpages[0]['Retracted Pages'] + $retpages[1]['Retracted Pages'];
                $input['cRetractedTotal'] = $prev['cRetractedTotal'] + $input['cRetractedTotal'];
 
                $input['cPrinterChanged'] = $a_cnt['Printer Replace'];
-               if ($input['cPrinterChanged'] == $prev['cPrinterChanged']) {
-                  $input['cPrinterChanged'] = '-10';
-               }
+               // if ($input['cPrinterChanged'] == $prev['cPrinterChanged']) {
+                  // $input['cPrinterChanged'] = '-10';
+               // }
                $input['cPagesInitial'] = $retpages[2];
                $input['cRetractedInitial'] = $retpages[3];
 
@@ -1035,21 +1040,26 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                - cut pages lower then previous value
                - retracted pages lower then previous value
             */
+/*
             if ($a_cnt['Printer Replace'] > $prev['cPrinterChanged']
                   || $a_cnt['Cut Pages'] < $prev['cPagesTotal']
                   || $a_cnt['Retracted Pages'] < $prev['cRetractedTotal']) {
+*/
+            if ($a_cnt['Printer Replace'] > $prev['cPrinterChanged']
+                  || $a_cnt['Cut Pages'] < $first['Cut Pages']
+                  || $a_cnt['Retracted Pages'] < $first['Retracted Pages']) {
 
                // getPrinterChanged
                $retpages = $self->getPrinterChanged($services_id, date('Y-m-d', $i).' 00:00:00', date('Y-m-d', $i).' 23:59:59', $prev['cPrinterChanged']);
                $input['cPagesToday'] = $retpages[0]['Cut Pages'] + $retpages[1]['Cut Pages'];
                $input['cPagesTotal'] = $prev['cPagesTotal'] + $input['cPagesToday'];
-               $input['cRetractedTotal'] = $retpages[0]['Retracted Pages'] + $retpages[1]['Retracted Pages'];
+               $input['cRetractedToday'] = $retpages[0]['Retracted Pages'] + $retpages[1]['Retracted Pages'];
                $input['cRetractedTotal'] = $prev['cRetractedTotal'] + $input['cRetractedTotal'];
 
                $input['cPrinterChanged'] = $a_cnt['Printer Replace'];
-               if ($input['cPrinterChanged'] == $prev['cPrinterChanged']) {
-                  $input['cPrinterChanged'] = '-10';
-               }
+               // if ($input['cPrinterChanged'] == $prev['cPrinterChanged']) {
+                  // $input['cPrinterChanged'] = '-10';
+               // }
                $input['cPagesInitial'] = $retpages[2];
                $input['cRetractedInitial'] = $retpages[3];
 
