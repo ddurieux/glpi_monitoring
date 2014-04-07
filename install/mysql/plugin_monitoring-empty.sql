@@ -942,7 +942,8 @@ DROP TABLE IF EXISTS `glpi_plugin_monitoring_hostdailycounters`;
 CREATE TABLE `glpi_plugin_monitoring_hostdailycounters` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
 	`hostname` varchar(255) NOT NULL DEFAULT '',
-   `plugin_monitoring_services_id` int(11) NOT NULL DEFAULT '0',
+    `plugin_monitoring_services_id` int(11) NOT NULL DEFAULT '0',
+    `plugin_monitoring_services_id2` int(11) NOT NULL DEFAULT '0',
 	`day` date NOT NULL DEFAULT '2013-01-01',
 	`dayname` varchar(255) NOT NULL DEFAULT '',
 	`cPaperChanged` int(11) NOT NULL DEFAULT '0',
@@ -957,9 +958,12 @@ CREATE TABLE `glpi_plugin_monitoring_hostdailycounters` (
 	`cRetractedToday` int(11) NOT NULL DEFAULT '0',
 	`cRetractedRemaining` int(11) NOT NULL DEFAULT '0',
 	`cPaperLoad` int(11) NOT NULL DEFAULT '0',
-	`cCardsInsertedOk` int(11) NOT NULL DEFAULT '0',
-	`cCardsInsertedKo` int(11) NOT NULL DEFAULT '0',
-	`cCardsRemoved` int(11) NOT NULL DEFAULT '0',
+	`cCardsInsertedOkToday` int(11) NOT NULL DEFAULT '0',
+	`cCardsInsertedOkTotal` int(11) NOT NULL DEFAULT '0',
+	`cCardsInsertedKoToday` int(11) NOT NULL DEFAULT '0',
+	`cCardsInsertedKoTotal` int(11) NOT NULL DEFAULT '0',
+	`cCardsRemovedToday` int(11) NOT NULL DEFAULT '0',
+	`cCardsRemovedTotal` int(11) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`id`),
 	KEY (`hostname`,`day`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

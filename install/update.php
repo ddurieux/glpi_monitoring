@@ -3257,6 +3257,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               'plugin_monitoring_services_id',
                               "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
+                              'plugin_monitoring_services_id2',
+                              "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
                                  'dayname',
                                  "varchar(255) NOT NULL DEFAULT ''");
          $migration->addField($newTable,
@@ -3295,14 +3298,29 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable,
                                  'cPaperLoad',
                                  "int(11) NOT NULL DEFAULT '0'");
+         $migration->dropField($newTable,
+                               'cCardsInsertedOk');
+         $migration->dropField($newTable,
+                               'cCardsInsertedKo');
+         $migration->dropField($newTable,
+                               'cCardsRemoved');
          $migration->addField($newTable,
-                                 'cCardsInsertedOk',
+                                 'cCardsInsertedOkToday',
                                  "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
-                                 'cCardsInsertedKo',
+                                 'cCardsInsertedOkTotal',
                                  "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
-                                 'cCardsRemoved',
+                                 'cCardsInsertedKoToday',
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                                 'cCardsInsertedKoTotal',
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                                 'cCardsRemovedToday',
+                                 "int(11) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                                 'cCardsRemovedTotal',
                                  "int(11) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
 
