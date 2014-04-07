@@ -429,7 +429,7 @@ class PluginMonitoringWebservice {
       }
 //      $query .= " ORDER BY host_name ASC;";
 	  $query .= " ORDER BY FIELD(`glpi_plugin_monitoring_services`.`state`,'CRITICAL','PENDING','UNKNOWN','WARNING','OK');";
-      Toolbox::logInFile("pm-ws", "getHostsStates, query : $query\n");
+      //Toolbox::logInFile("pm-ws", "getServicesStates, query : $query\n");
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
          $host = array();
@@ -446,10 +446,13 @@ class PluginMonitoringWebservice {
 
 
    static function methodGetDailyCounters($params, $protocol) {
-      if (isset($params['last'])) {
-         return PluginMonitoringWebservice::getLastCountersPerHost(isset($params['filter']) ? $params['filter'] : '');
+      // if (isset($params['lastPerHost'])) {
+         // return PluginMonitoringWebservice::getLastCountersPerHost(isset($params['filter']) ? $params['filter'] : '');
+      // }
+      if (isset($params['lastPerDay'])) {
+         return PluginMonitoringWebservice::getLastCountersPerDay(isset($params['filter']) ? $params['filter'] : '');
       }
-      return PluginMonitoringWebservice::getDailyCounters(isset($params['filter']) ? $params['filter'] : '', isset($params['limit']) ? $params['limit'] : '100');
+      return PluginMonitoringWebservice::getDailyCounters(isset($params['filter']) ? $params['filter'] : '', isset($params['period']) ? $params['period'] : '', isset($params['limit']) ? $params['limit'] : '100');
    }
    static function getLastCountersPerHost($filter) {
       global $DB;
@@ -457,9 +460,9 @@ class PluginMonitoringWebservice {
       $rows = array();
 
       $query = "
-         SELECT tmp.* FROM ( SELECT * FROM `glpi_plugin_monitoring_hostdailycounters` ORDER BY DATE(DAY) DESC ) tmp
+         SELECT * FROM `glpi_plugin_monitoring_hostdailycounters` 
          LEFT JOIN `glpi_computers`
-          ON `tmp`.`hostname` = `glpi_computers`.`name`
+          ON `glpi_plugin_monitoring_hostdailycounters`.`hostname` = `glpi_computers`.`name`
          LEFT JOIN `glpi_entities`
           ON (`glpi_computers`.`entities_id` = `glpi_entities`.`id`)
       ";
@@ -468,10 +471,9 @@ class PluginMonitoringWebservice {
          $query .= " AND $filter";
       }
       $query .= "
-         GROUP BY hostname
-         ORDER BY hostname
+		ORDER BY DATE(DAY) DESC
       ";
-      // Toolbox::logInFile("pm-ws", "getDailyCounters, query : $query\n");
+      //Toolbox::logInFile("pm-ws", "getLastCountersPerHost, query : $query\n");
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
          $row = array();
@@ -505,7 +507,7 @@ class PluginMonitoringWebservice {
          GROUP BY hostname
          ORDER BY hostname
       ";
-      Toolbox::logInFile("pm-ws", "getDailyCounters, query : $query\n");
+      //Toolbox::logInFile("pm-ws", "getLastCountersPerDay, query : $query\n");
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
          $row = array();
@@ -519,7 +521,7 @@ class PluginMonitoringWebservice {
 
       return $rows;
    }
-   static function getDailyCounters($filter, $limit) {
+   static function getDailyCounters($filter, $period, $limit) {
       global $DB;
 
       $rows = array();
@@ -536,10 +538,23 @@ class PluginMonitoringWebservice {
       ";
       $query .= "WHERE `glpi_entities`.`id` IN (".$_SESSION['glpiactiveentities_string'].")";
       if (! empty($filter)) {
-         $query .= " AND $filter";
+        $query .= " AND $filter";
       }
+      if (! empty($period)) {
+		if ($period == 'currentMonth') {
+          $query .= " AND MONTH(DAY) = MONTH(CURRENT_DATE)";
+		}
+		if ($period == 'lastMonth') {
+          $query .= " AND MONTH(DAY) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH)";
+		}
+      }
+	  // Last month
+	  // AND MONTH(DAY) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH)
+	  // Current month
+	  // AND MONTH(DAY) = MONTH(CURRENT_DATE)
+	  
       $query .= " ORDER BY date(day) DESC LIMIT $limit;";
-      // Toolbox::logInFile("pm-ws", "getDailyCounters, query : $query\n");
+      //Toolbox::logInFile("pm-ws", "getDailyCounters, query : $query\n");
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
          $row = array();
