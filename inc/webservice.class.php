@@ -343,12 +343,15 @@ class PluginMonitoringWebservice {
 
 
    static function methodGetHostsStates($params, $protocol) {
-      return PluginMonitoringWebservice::getHostsStates(isset($params['filter']) ? $params['filter'] : '');
+      return PluginMonitoringWebservice::getHostsStates(
+                  isset($params['filter']) ? $params['filter'] : ''
+                  , isset($params['start']) ? $params['start'] : '0'
+                  , isset($params['limit']) ? $params['limit'] : '1000');
    }
-   static function getHostsStates($filter) {
+   static function getHostsStates($filter, $start, $limit) {
       global $DB;
 
-      $hosts = array();
+      $rows = array();
 
       $query = "
          SELECT
@@ -371,30 +374,81 @@ class PluginMonitoringWebservice {
          $query .= " AND $filter";
       }
 //      $query .= " ORDER BY entity_name ASC, host_name ASC;";
-	  $query .= " ORDER BY entity_name ASC, FIELD(`glpi_plugin_monitoring_hosts`.`state`,'DOWN','PENDING','UNKNOWN','UNREACHABLE','UP');";
+      $query .= " ORDER BY entity_name ASC, FIELD(`glpi_plugin_monitoring_hosts`.`state`,'DOWN','PENDING','UNKNOWN','UNREACHABLE','UP')";
+      $query .= " LIMIT $start,$limit;";
       // Toolbox::logInFile("pm-ws", "getHostsStates, query : $query\n");
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
-         $host = array();
+         $row = array();
          foreach ($data as $key=>$value) {
             if (is_string($key)) {
-               $host[$key] = $value;
+               $row[$key] = $value;
             }
          }
-         $hosts[] = $host;
+         $rows[] = $row;
       }
 
-      return $hosts;
+      return $rows;
+   }
+
+
+   static function methodGetHostsLocations($params, $protocol) {
+      return PluginMonitoringWebservice::getHostsLocations(
+                  isset($params['filter']) ? $params['filter'] : ''
+                  , isset($params['start']) ? $params['start'] : '0'
+                  , isset($params['limit']) ? $params['limit'] : '1000');
+   }
+   static function getHostsLocations($filter, $start, $limit) {
+      global $DB;
+
+      $rows = array();
+
+      $query = "SELECT 
+               `glpi_computers`.*
+               , `glpi_computers`.`id` AS id_Host
+               , `glpi_plugin_monitoring_hosts`.*
+               , filterQuery.`id` AS id_monitoring
+               , `glpi_locations`.`id` AS id_Location, `glpi_locations`.`building` AS Location
+               , `glpi_states`.`id` AS id_State, `glpi_states`.`completename` AS status
+               FROM `glpi_computers` 
+               LEFT JOIN `glpi_locations` ON `glpi_locations`.`id` = `glpi_computers`.`locations_id` 
+               LEFT JOIN `glpi_states` ON `glpi_states`.`id` = `glpi_computers`.`states_id` 
+               LEFT JOIN `glpi_plugin_monitoring_hosts` ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`
+               LEFT JOIN `glpi_entities` ON `glpi_computers`.`entities_id` = `glpi_entities`.`id`
+               LEFT JOIN (SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts` GROUP BY `items_id`) filterQuery ON `glpi_computers`.`id` = filterQuery.`items_id` 
+			   ";
+      $query .= "WHERE `glpi_computers`.`name` <> '' AND `glpi_computers`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
+      if (! empty($filter)) {
+         $query .= " AND $filter";
+      }
+      $query .= " ORDER BY `name`";
+      $query .= " LIMIT $start,$limit;";
+      // Toolbox::logInFile("pm-ws", "getHostsLocations, query : $query\n");
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         $row = array();
+         foreach ($data as $key=>$value) {
+            if (is_string($key)) {
+               $row[$key] = $value;
+            }
+         }
+         $rows[] = $row;
+      }
+
+      return $rows;
    }
 
 
    static function methodGetServicesStates($params, $protocol) {
-      return PluginMonitoringWebservice::getServicesStates(isset($params['filter']) ? $params['filter'] : '');
+      return PluginMonitoringWebservice::getServicesStates(
+                  isset($params['filter']) ? $params['filter'] : ''
+                  , isset($params['start']) ? $params['start'] : '0'
+                  , isset($params['limit']) ? $params['limit'] : '1000');
    }
-   static function getServicesStates($filter) {
+   static function getServicesStates($filter, $start, $limit) {
       global $DB;
 
-      $hosts = array();
+      $rows = array();
 
       $query = "
          SELECT
@@ -428,20 +482,21 @@ class PluginMonitoringWebservice {
          $query .= " AND $filter";
       }
 //      $query .= " ORDER BY host_name ASC;";
-	  $query .= " ORDER BY FIELD(`glpi_plugin_monitoring_services`.`state`,'CRITICAL','PENDING','UNKNOWN','WARNING','OK');";
-      //Toolbox::logInFile("pm-ws", "getServicesStates, query : $query\n");
+      $query .= " ORDER BY FIELD(`glpi_plugin_monitoring_services`.`state`,'CRITICAL','PENDING','UNKNOWN','WARNING','OK')";
+      $query .= " LIMIT $start,$limit;";
+      Toolbox::logInFile("pm-ws", "getServicesStates, query : $query\n");
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
-         $host = array();
+         $row = array();
          foreach ($data as $key=>$value) {
             if (is_string($key)) {
-               $host[$key] = $value;
+               $row[$key] = $value;
             }
          }
-         $hosts[] = $host;
+         $rows[] = $row;
       }
 
-      return $hosts;
+      return $rows;
    }
 
 

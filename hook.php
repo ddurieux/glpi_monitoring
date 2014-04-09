@@ -545,6 +545,8 @@ function plugin_monitoring_registerMethods() {
 							     'methodGetServicesStates');
    $WEBSERVICES_METHOD['monitoring.getDailyCounters'] = array('PluginMonitoringWebservice',
 							     'methodGetDailyCounters');
+   $WEBSERVICES_METHOD['monitoring.getHostsLocations'] = array('PluginMonitoringWebservice',
+							     'methodGetHostsLocations');
    // $WEBSERVICES_METHOD['monitoring.doLogin'] = array('PluginWebservicesMethodSession',
 						     // 'methodLogin');
    // $WEBSERVICES_METHOD['monitoring.doLogout'] = array('PluginWebservicesMethodSession',
