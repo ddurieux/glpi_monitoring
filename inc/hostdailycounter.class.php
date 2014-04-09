@@ -843,7 +843,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          $computer->getFromDB($pmComponentscatalog_Host->fields['items_id']);
          $hostname = $computer->fields['name'];
          
-         // Toolbox::logInFile("pm-counters", "Service nsca_reader/$hostname : $services_id\n");
+         Toolbox::logInFile("pm-counters", "Service nsca_reader/$hostname : $services_id\n");
          
          $self = new self();
          $a_counters = current($self->find('`plugin_monitoring_services_id2`="'.$services_id.'"', '`id` DESC', 1));
@@ -861,7 +861,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                $splitdate = explode(' ', $first['date']);
                $input['day'] = $splitdate[0];
             }
-            // Toolbox::logInFile("pm-counters", "Service nsca_reader : $services_id, day: ".$input['day']."\n");
+            Toolbox::logInFile("pm-counters", "Service nsca_reader : $services_id, day: ".$input['day']."\n");
             // Fetch perfdata of 1st event in day to update cPagesInitial and cRetractedInitial ...
             $a_first = $self->getFirstValues($services_id, $input['day']);
             $input['hostname']            = $hostname;
@@ -911,7 +911,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $input['dayname']                   = $daysnameidx[date('w', $i)];
             $input['hostname']                  = $hostname;
 
-            // Toolbox::logInFile("pm-counters", "Counters ".$input['day']." for ".$input['hostname']." ($services_id)\n");
+            Toolbox::logInFile("pm-counters", "Counters ".$input['day']." for ".$input['hostname']." ($services_id)\n");
 
             if (count($a_first) == 0) {
                // Set null values ...
@@ -950,7 +950,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          $computer->getFromDB($pmComponentscatalog_Host->fields['items_id']);
          $hostname = $computer->fields['name'];
          
-         // Toolbox::logInFile("pm-counters", "Service nsca_printer/$hostname : $services_id\n");
+         Toolbox::logInFile("pm-counters", "Service nsca_printer/$hostname : $services_id\n");
          
          $self = new self();
          $a_counters = current($self->find('`plugin_monitoring_services_id`="'.$services_id.'"', '`id` DESC', 1));
@@ -969,7 +969,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $a_counters = current($self->find('`hostname`="'.$hostname.'"'
             . ' AND `day`="'.$input['day'].'"', '`id` DESC', 1));
             if (isset($a_counters['id'])) {
-               // Toolbox::logInFile("pm-counters", "Day : ".$a_counters['day']." still exists for $hostname\n");
+               Toolbox::logInFile("pm-counters", "Day : ".$a_counters['day']." still exists for $hostname\n");
                $input = $a_counters;
             }
             // First host daily counters ...
@@ -1031,12 +1031,12 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $a_counters = current($self->find('`hostname`="'.$hostname.'"'
             . ' AND `day`="'.$input['day'].'"', '`id` DESC', 1));
             if (isset($a_counters['id'])) {
-               // Toolbox::logInFile("pm-counters", "Day : ".$a_counters['day']." still exists for $hostname\n");
+               Toolbox::logInFile("pm-counters", "Day : ".$a_counters['day']." still exists for $hostname\n");
                $input = $a_counters;
             }
             $input['plugin_monitoring_services_id'] = $services_id;
             
-            // Toolbox::logInFile("pm-counters", "Counters ".$input['day']." for ".$input['hostname']." ($services_id)\n");
+            Toolbox::logInFile("pm-counters", "Counters ".$input['day']." for ".$input['hostname']." ($services_id)\n");
             
             // Keep previous day values
             $input['cPaperLoad'] = $prev['cPaperLoad'];
@@ -1071,8 +1071,8 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                   || $a_cnt['Retracted Pages'] < $prev['cRetractedTotal']) {
 */
             if ($a_cnt['Printer Replace'] > $prev['cPrinterChanged']
-                  || $a_cnt['Cut Pages'] < $first['Cut Pages']
-                  || $a_cnt['Retracted Pages'] < $first['Retracted Pages']) {
+                  || $a_cnt['Cut Pages'] < $a_first['Cut Pages']
+                  || $a_cnt['Retracted Pages'] < $a_first['Retracted Pages']) {
 
                // getPrinterChanged
                $retpages = $self->getPrinterChanged($services_id, date('Y-m-d', $i).' 00:00:00', date('Y-m-d', $i).' 23:59:59', $prev['cPrinterChanged']);
@@ -1183,8 +1183,8 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                   || $a_cnt['Retracted Pages'] < $prev['cRetractedTotal']) {
 */
             if ($a_cnt['Printer Replace'] > $prev['cPrinterChanged']
-                  || $a_cnt['Cut Pages'] < $first['Cut Pages']
-                  || $a_cnt['Retracted Pages'] < $first['Retracted Pages']) {
+                  || $a_cnt['Cut Pages'] < $a_first['Cut Pages']
+                  || $a_cnt['Retracted Pages'] < $a_first['Retracted Pages']) {
 
                // getPrinterChanged
                $retpages = $self->getPrinterChanged($services_id, date('Y-m-d', $i).' 00:00:00', date('Y-m-d', $i).' 23:59:59', $prev['cPrinterChanged']);
