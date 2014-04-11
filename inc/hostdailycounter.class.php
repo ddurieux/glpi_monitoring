@@ -636,6 +636,19 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       }
       echo "</tr>";
 
+      // Display non editable next record ...
+      $pmCounters = new PluginMonitoringHostdailycounter();
+      $a_olderCounters = current($pmCounters->find("`hostname`='".$this->getField('hostname')."' AND `day` > DATE('".$this->getField('day')."') ORDER BY `day` ASC LIMIT 1"));
+      if (isset($a_olderCounters['id'])) {
+         echo "<tr><td colspan='100'></tr></tr>";
+         echo "<tr><td colspan='100'>".__('Next day counters: ', 'monitoring')."</tr></tr>";
+         echo "<tr class='tab_bg_2'>";
+         foreach (self::$managedCounters as $key => $value) {
+            echo "<td>".$pmCounters->getValueToDisplay($key, $a_olderCounters[$key])."</td>";
+         }
+         echo "</tr>";
+      }
+
       // Display non editable previous record ...
       $pmCounters = new PluginMonitoringHostdailycounter();
       $a_olderCounters = current($pmCounters->find("`hostname`='".$this->getField('hostname')."' AND `day` < DATE('".$this->getField('day')."') ORDER BY `day` DESC LIMIT 1"));
