@@ -108,18 +108,33 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          'default'  => 'previous',
          'editable' => 0,
       ),
-      'cCardsInsertedOk' => array(
-         'name'     => 'Cards inserted Ok',
+      'cCardsInsertedOkToday' => array(
+         'name'     => 'Daily cards inserted',
          'default'  => 'previous',
          'editable' => 0,
       ),
-      'cCardsInsertedKo' => array(
-         'name'     => 'Cards inserted Ko',
+      'cCardsInsertedOkTotal' => array(
+         'name'     => 'Cumulative total for cards inserted',
          'default'  => 'previous',
          'editable' => 0,
       ),
-      'cCardsRemoved' => array(
-         'name'     => 'Cards removed',
+      'cCardsInsertedKoToday' => array(
+         'name'     => 'Daily bad cards',
+         'default'  => 'previous',
+         'editable' => 0,
+      ),
+      'cCardsInsertedKoTotal' => array(
+         'name'     => 'Cumultative total for bad cards',
+         'default'  => 'previous',
+         'editable' => 0,
+      ),
+      'cCardsRemovedToday' => array(
+         'name'     => 'Daily removed cards',
+         'default'  => 'previous',
+         'editable' => 0,
+      ),
+      'cCardsRemovedTotal' => array(
+         'name'     => 'Cumultative total for removed cards',
          'default'  => 'previous',
          'editable' => 0,
       ),
@@ -621,6 +636,19 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       }
       echo "</tr>";
 
+      // Display non editable previous record ...
+      $pmCounters = new PluginMonitoringHostdailycounter();
+      $a_olderCounters = current($pmCounters->find("`hostname`='".$this->getField('hostname')."' AND `day` < DATE('".$this->getField('day')."') ORDER BY `day` DESC LIMIT 1"));
+      if (isset($a_olderCounters['id'])) {
+         echo "<tr><td colspan='100'></tr></tr>";
+         echo "<tr><td colspan='100'>".__('Previous day counters: ', 'monitoring')."</tr></tr>";
+         echo "<tr class='tab_bg_2'>";
+         foreach (self::$managedCounters as $key => $value) {
+            echo "<td>".$pmCounters->getValueToDisplay($key, $a_olderCounters[$key])."</td>";
+         }
+         echo "</tr>";
+      }
+
       $this->showFormButtons(array("colspan" => count($this->fields)-3));
 
       return true;
@@ -937,6 +965,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          }
       }
 
+	  // Card reader counters
       $a_services = $pmServices->find("`name`='nsca_printer' OR `name`='Imprimante'");
       foreach ($a_services as $a_service) {
          $services_id = $a_service['id'];
@@ -1693,6 +1722,18 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                   unset($data['hostname']);
                   $this->update($data);
                }
+            }
+         }
+         
+         if ($field == 'cPrinterChanged') {
+            $a_data = getAllDatasFromTable(
+                        'glpi_plugin_monitoring_hostdailycounters',
+                        "`day` > '".$this->fields['day']."'
+                           AND `plugin_monitoring_services_id`='".$this->fields['plugin_monitoring_services_id']."'",
+                        false,
+                        '`day` ASC');
+            foreach ($a_data as $data) {
+               // TODO : update cPrinterChanged in all previous records ...
             }
          }
       }
