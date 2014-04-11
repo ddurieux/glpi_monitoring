@@ -1732,9 +1732,33 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                } else {
                   $data['cPagesRemaining'] = $cPagesRemaining - $data['cPagesToday'];
                   $cPagesRemaining = $data['cPagesRemaining'];
+                  
+                  $data['cPaperChanged'] += ($this->fields['cPaperChanged'] - $this->oldvalues['cPaperChanged']);
+               
+                  $data['cPaperLoad'] += 2000*($this->fields['cPaperChanged'] - $this->oldvalues['cPaperChanged']);
+               
                   unset($data['hostname']);
                   $this->update($data);
                }
+            }
+         }
+         
+         if ($field == 'cBinEmptied') {
+            $cRetractedRemaining = 0;
+            $a_data = getAllDatasFromTable(
+                        'glpi_plugin_monitoring_hostdailycounters',
+                        "`day` > '".$this->fields['day']."'
+                           AND `plugin_monitoring_services_id`='".$this->fields['plugin_monitoring_services_id']."'",
+                        false,
+                        '`day` ASC');
+            foreach ($a_data as $data) {
+               $data['cRetractedRemaining'] = $cRetractedRemaining + $data['cRetractedToday'];
+               $cRetractedRemaining = $data['cRetractedRemaining'];
+               
+               $data['cBinEmptied'] += ($this->fields['cBinEmptied'] - $this->oldvalues['cBinEmptied']);
+               
+               unset($data['hostname']);
+               $this->update($data);
             }
          }
          
@@ -1746,7 +1770,43 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                         false,
                         '`day` ASC');
             foreach ($a_data as $data) {
-               // TODO : update cPrinterChanged in all previous records ...
+               // TODO : Increment cPrinterChanged ... how to ?
+               $data['cPrinterChanged'] += ($this->fields['cPrinterChanged'] - $this->oldvalues['cPrinterChanged']);
+               $this->update($data);
+            }
+         }
+         
+         if ($field == 'cPagesToday') {
+            // Update current day and more recent days ...
+            $a_data = getAllDatasFromTable(
+                        'glpi_plugin_monitoring_hostdailycounters',
+                        "`day` >= '".$this->fields['day']."'
+                           AND `plugin_monitoring_services_id`='".$this->fields['plugin_monitoring_services_id']."'",
+                        false,
+                        '`day` ASC');
+            foreach ($a_data as $data) {
+               $data['cPagesTotal'] += ($newvalue - $oldvalue);
+               $data['cPagesRemaining'] -= ($newvalue - $oldvalue);
+            
+               unset($data['hostname']);
+               $this->update($data);
+            }
+         }
+         
+         if ($field == 'cRetractedToday') {
+            // Update current day and more recent days ...
+            $a_data = getAllDatasFromTable(
+                        'glpi_plugin_monitoring_hostdailycounters',
+                        "`day` >= '".$this->fields['day']."'
+                           AND `plugin_monitoring_services_id`='".$this->fields['plugin_monitoring_services_id']."'",
+                        false,
+                        '`day` ASC');
+            foreach ($a_data as $data) {
+               $data['cRetractedTotal'] += ($newvalue - $oldvalue);
+               $data['cRetractedRemaining'] += ($newvalue - $oldvalue);
+            
+               unset($data['hostname']);
+               $this->update($data);
             }
          }
       }
