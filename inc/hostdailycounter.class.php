@@ -50,93 +50,88 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       'cPagesInitial' => array(
          'name'     => 'Initial counter for printed pages',
          'default'  => 'previous',
-         'editable' => 0,
       ),
       'cPagesTotal'   => array(
          'name'     => 'Cumulative total for printed pages',
          'default'  => 'previous',
-         'editable' => 0,
+         'editable' => true,
       ),
       'cPagesToday'   => array(
          'name'     => 'Daily printed pages',
          'default'  => 'reset',
-         'editable' => 0,
+         'editable' => true,
       ),
       'cPagesRemaining' => array(
          'name'         => 'Remaining pages',
          'default'      => 'previous',
-         'editable'     => 0,
          'lowThreshold' => 100,
       ),
       'cRetractedInitial' => array(
          'name'     => 'Initial counter for retracted pages',
          'default'  => 'previous',
-         'editable' => 0,
       ),
       'cRetractedTotal' => array(
          'name'     => 'Cumulative total for retracted pages',
          'default'  => 'previous',
-         'editable' => 0,
+         'editable' => true,
       ),
       'cRetractedToday' => array(
          'name'     => 'Daily retracted pages',
          'default'  => 'reset',
-         'editable' => 0,
+         'editable' => true,
       ),
       'cRetractedRemaining' => array(
          'name'     => 'Stored retracted pages',
          'default'  => 'previous',
-         'editable' => 0,
       ),
       'cPrinterChanged' => array(
          'name'     => 'Cumulative total for printer changed',
          'default'  => 'previous',
-         'editable' => 1,
+         'editable' => true,
       ),
       'cPaperChanged' => array(
          'name'     => 'Cumulative total for paper changed',
          'default'  => 'previous',
-         'editable' => 1,
+         'editable' => true,
       ),
       'cBinEmptied'   => array(
          'name'     => 'Cumulative total for bin emptied',
          'default'  => 'previous',
-         'editable' => 1,
+         'editable' => true,
       ),
       'cPaperLoad'    => array(
          'name'     => 'Paper load',
          'default'  => 'previous',
-         'editable' => 0,
       ),
       'cCardsInsertedOkToday' => array(
          'name'     => 'Daily cards inserted',
          'default'  => 'previous',
-         'editable' => 0,
+         'editable' => true,
       ),
       'cCardsInsertedOkTotal' => array(
          'name'     => 'Cumulative total for cards inserted',
          'default'  => 'previous',
-         'editable' => 0,
+         'editable' => true,
       ),
       'cCardsInsertedKoToday' => array(
          'name'     => 'Daily bad cards',
          'default'  => 'previous',
-         'editable' => 0,
+         'editable' => true,
       ),
       'cCardsInsertedKoTotal' => array(
          'name'     => 'Cumultative total for bad cards',
          'default'  => 'previous',
-         'editable' => 0,
+         'editable' => true,
       ),
       'cCardsRemovedToday' => array(
          'name'     => 'Daily removed cards',
          'default'  => 'previous',
-         'editable' => 0,
+         'editable' => true,
       ),
       'cCardsRemovedTotal' => array(
          'name'     => 'Cumultative total for removed cards',
          'default'  => 'previous',
-         'editable' => 0,
+         'editable' => true,
       ),
    );
 
@@ -322,8 +317,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
       echo "<tr class='tab_bg_2'>";
       foreach (self::$managedCounters as $key => $value) {
-//         if ($this->canUpdate() and $value['editable']) {
-         if ($this->canUpdate()) {
+        if ($this->canUpdate() and isset($value['editable'])) {
             echo "<td><input type='text' name='$key' value='".$this->fields[$key]."' size='8'/></td>";
          } else {
             echo "<td>".$this->getValueToDisplay($key, $this->fields[$key])."</td>";
