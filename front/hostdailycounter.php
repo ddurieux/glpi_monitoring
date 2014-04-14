@@ -55,16 +55,20 @@ $pmDisplay->menu();
 if (isset($_POST['paperprediction'])) {
    $pmHostdailycounter = new PluginMonitoringHostdailycounter();
    $pmHostdailycounter->predictionEndPaper();
+   Search::show('PluginMonitoringHostdailycounter');
    Html::footer();
    exit;
 }
 
-if (isset($_GET['check'])) {
+if (isset($_GET['checkCounters'])) {
    // Hostname, up to date and limit may be specified as a parameter ...
    // Default hostname is all hosts, else hostname is used in SQL LIKE query
    // Default date is now
    // Default interval is 7 days
-   PluginMonitoringHostdailycounter::runCheckCounters(isset($_GET['date']) ? $_GET['date'] : '', isset($_GET['hostname']) ? $_GET['hostname'] : '%', isset($_GET['interval']) ? $_GET['interval'] : -1);
+   PluginMonitoringHostdailycounter::runCheckCounters(
+      isset($_GET['date']) ? $_GET['date'] : '', 
+      isset($_GET['hostname']) ? $_GET['hostname'] : '%', 
+      isset($_GET['interval']) ? $_GET['interval'] : 7);
 }
 
 echo "<center>";
@@ -73,6 +77,8 @@ echo "<input type='submit' class='submit' name='paperprediction' value='Voir les
 Html::closeForm();
 echo "</center>";
 
+$pmHostdailycounter = new PluginMonitoringHostdailycounter();
+$pmHostdailycounter->predictionEndPaper();
 Search::show('PluginMonitoringHostdailycounter');
 
 Html::footer();

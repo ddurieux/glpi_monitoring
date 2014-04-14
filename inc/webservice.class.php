@@ -343,40 +343,71 @@ class PluginMonitoringWebservice {
 
 
    static function methodGetHostsStates($params, $protocol) {
-      return PluginMonitoringWebservice::getHostsStates(
-                  isset($params['filter']) ? $params['filter'] : ''
-                  , isset($params['start']) ? $params['start'] : '0'
-                  , isset($params['limit']) ? $params['limit'] : '1000');
+      return PluginMonitoringWebservice::getHostsStates($params);
    }
-   static function getHostsStates($filter, $start, $limit) {
-      global $DB;
+   static function getHostsStates($params) {
+      global $DB, $CFG_GLPI;
 
-      $rows = array();
+      $where = $join = $fields = '';
+      $join .= "
+         INNER JOIN `glpi_computers`
+            ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id` AND `glpi_plugin_monitoring_hosts`.`itemtype`='Computer'
+         INNER JOIN `glpi_entities`
+            ON `glpi_computers`.`entities_id` = `glpi_entities`.`id`
+         ";
 
+      // Start / limit
+      $start = 0;
+      $limit = $CFG_GLPI["list_limit_max"];
+      if (isset($params['limit']) && is_numeric($params['limit'])) {
+         $limit = $params['limit'];
+      }
+      if (isset($params['start']) && is_numeric($params['start'])) {
+         $start = $params['start'];
+      }
+
+      // Entity
+      if (isset($params['entity'])) {
+         if (!Session::haveAccessToEntity($params['entity'])) {
+            return self::Error($protocol, WEBSERVICES_ERROR_NOTALLOWED, '', 'entity');
+         }
+         $where = getEntitiesRestrictRequest("WHERE", "glpi_computers", '', $params['entity']) .
+                     $where;
+      } else {
+         $where = getEntitiesRestrictRequest("WHERE", "glpi_computers") .
+                     $where;
+      }
+
+      // Filter
+      if (isset($params['filter'])) {
+         $where .= " AND " . $params['filter'];
+      }
+      
+      // Order
+      $order = "entity_name ASC, FIELD(`glpi_plugin_monitoring_hosts`.`state`,'DOWN','PENDING','UNKNOWN','UNREACHABLE','UP')";
+      if (isset($params['order'])) {
+         $order = $params['order'];
+      }
+      
       $query = "
          SELECT
             `glpi_entities`.`name` AS entity_name,
-            CONCAT_WS('', `glpi_computers`.`name`, `glpi_printers`.`name`, `glpi_networkequipments`.`name`) AS host_name,
-            `glpi_computers`.*,
-            `glpi_plugin_monitoring_hosts`.*
+            `glpi_computers`.`name`,
+            `glpi_plugin_monitoring_hosts`.`state`, 
+            `glpi_plugin_monitoring_hosts`.`state_type`, 
+            `glpi_plugin_monitoring_hosts`.`event`, 
+            `glpi_plugin_monitoring_hosts`.`last_check`, 
+            `glpi_plugin_monitoring_hosts`.`perf_data`, 
+            `glpi_plugin_monitoring_hosts`.`is_acknowledged`, 
+            `glpi_plugin_monitoring_hosts`.`acknowledge_comment`
          FROM `glpi_plugin_monitoring_hosts`
-         LEFT JOIN `glpi_computers`
-            ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id` AND `glpi_plugin_monitoring_hosts`.`itemtype`='Computer'
-         LEFT JOIN `glpi_printers`
-            ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_printers`.`id` AND `glpi_plugin_monitoring_hosts`.`itemtype`='Printer'
-         LEFT JOIN `glpi_networkequipments`
-            ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_networkequipments`.`id` AND `glpi_plugin_monitoring_hosts`.`itemtype`='NetworkEquipment'
-         LEFT JOIN `glpi_entities`
-            ON CONCAT_WS('', `glpi_computers`.`entities_id`, `glpi_printers`.`entities_id`, `glpi_networkequipments`.`entities_id`) = `glpi_entities`.`id`
+         $join
+         $where
+         ORDER BY $order
+         LIMIT $start,$limit;
       ";
-      $query .= "WHERE `glpi_computers`.`name` <> '' AND `glpi_entities`.`id` IN (".$_SESSION['glpiactiveentities_string'].")";
-      if (! empty($filter)) {
-         $query .= " AND $filter";
-      }
-//      $query .= " ORDER BY entity_name ASC, host_name ASC;";
-      $query .= " ORDER BY entity_name ASC, FIELD(`glpi_plugin_monitoring_hosts`.`state`,'DOWN','PENDING','UNKNOWN','UNREACHABLE','UP')";
-      $query .= " LIMIT $start,$limit;";
       // Toolbox::logInFile("pm-ws", "getHostsStates, query : $query\n");
+      $rows = array();
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
          $row = array();
@@ -393,16 +424,111 @@ class PluginMonitoringWebservice {
 
 
    static function methodGetHostsLocations($params, $protocol) {
-      return PluginMonitoringWebservice::getHostsLocations(
-                  isset($params['filter']) ? $params['filter'] : ''
-                  , isset($params['start']) ? $params['start'] : '0'
-                  , isset($params['limit']) ? $params['limit'] : '1000');
+      return PluginMonitoringWebservice::getHostsLocations($params);
    }
-   static function getHostsLocations($filter, $start, $limit) {
-      global $DB;
+   static function getHostsLocations($params) {
+      global $DB, $CFG_GLPI;
 
+      $where = $join = $fields = '';
+      $join .= "
+         INNER JOIN `glpi_computers`
+            ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id` AND `glpi_plugin_monitoring_hosts`.`itemtype`='Computer'
+         INNER JOIN `glpi_entities`
+            ON `glpi_computers`.`entities_id` = `glpi_entities`.`id`
+         LEFT JOIN `glpi_locations` 
+            ON `glpi_locations`.`id` = `glpi_computers`.`locations_id` 
+         ";
+
+      // Start / limit
+      $start = 0;
+      $limit = $CFG_GLPI["list_limit_max"];
+      if (isset($params['limit']) && is_numeric($params['limit'])) {
+         $limit = $params['limit'];
+      }
+      if (isset($params['start']) && is_numeric($params['start'])) {
+         $start = $params['start'];
+      }
+
+      // Entity
+      if (isset($params['entity'])) {
+         if (!Session::haveAccessToEntity($params['entity'])) {
+            return self::Error($protocol, WEBSERVICES_ERROR_NOTALLOWED, '', 'entity');
+         }
+         $where = getEntitiesRestrictRequest("WHERE", "glpi_computers", '', $params['entity']) .
+                     $where;
+      } else {
+         $where = getEntitiesRestrictRequest("WHERE", "glpi_computers") .
+                     $where;
+      }
+
+      // Filter
+      if (isset($params['filter'])) {
+         $where .= " AND " . $params['filter'];
+      }
+      
+      // Order
+      $order = "entity_name ASC, FIELD(`glpi_plugin_monitoring_hosts`.`state`,'DOWN','PENDING','UNKNOWN','UNREACHABLE','UP')";
+      if (isset($params['order'])) {
+         $order = $params['order'];
+      }
+      
+      $query = "
+         SELECT
+            `glpi_entities`.`name` AS entity_name,
+            `glpi_computers`.`name` AS name,
+            `glpi_locations`.`building` AS Location, 
+            `glpi_plugin_monitoring_hosts`.`state`, 
+            `glpi_plugin_monitoring_hosts`.`state_type`, 
+            `glpi_plugin_monitoring_hosts`.`event`, 
+            `glpi_plugin_monitoring_hosts`.`last_check`, 
+            `glpi_plugin_monitoring_hosts`.`perf_data`, 
+            `glpi_plugin_monitoring_hosts`.`is_acknowledged`, 
+            `glpi_plugin_monitoring_hosts`.`acknowledge_comment`
+         FROM `glpi_plugin_monitoring_hosts`
+         $join
+         $where
+         ORDER BY $order
+         LIMIT $start,$limit;
+      ";
+      Toolbox::logInFile("pm-ws", "getHostsLocations, query : $query\n");
       $rows = array();
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         $row = array();
+         foreach ($data as $key=>$value) {
+            if (is_string($key)) {
+               $row[$key] = $value;
+            }
+         }
+         // Default GPS coordinates ...
+         $row['lat'] = 45.054485;
+         $row['lng'] = 5.081413;
+         if (! empty($row['Location'])) {
+            $split = explode(',', $row['Location']);
+            if (count($split) > 1) {
+               // At least 2 elements, let us consider as GPS coordinates ...
+               $row['lat'] = $split[0];
+               $row['lng'] = $split[1];
+            }
+            unset ($row['Location']);
+         }
+      
+         // Fecth host services
+         $services = PluginMonitoringWebservice::getServicesStates(
+            array(
+               'start'     => 0,
+               'limit'     => 100,
+               'entity'    => isset($params['entity']) ? $params['entity'] : null,
+               'filter'    => "glpi_computers.name='".$row['name']."'"
+            )
+         );
+         $row['services'] = $services;
+         $rows[] = $row;
+      }
 
+      return $rows;
+
+/*
       $query = "SELECT 
                `glpi_computers`.*
                , `glpi_computers`.`id` AS id_Host
@@ -417,49 +543,27 @@ class PluginMonitoringWebservice {
                LEFT JOIN `glpi_entities` ON `glpi_computers`.`entities_id` = `glpi_entities`.`id`
                LEFT JOIN (SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts` GROUP BY `items_id`) filterQuery ON `glpi_computers`.`id` = filterQuery.`items_id` 
 			   ";
-      $query .= "WHERE `glpi_computers`.`name` <> '' AND `glpi_computers`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
-      if (! empty($filter)) {
-         $query .= " AND $filter";
-      }
-      $query .= " ORDER BY `name`";
-      $query .= " LIMIT $start,$limit;";
-      // Toolbox::logInFile("pm-ws", "getHostsLocations, query : $query\n");
-      $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
-         $row = array();
-         foreach ($data as $key=>$value) {
-            if (is_string($key)) {
-               $row[$key] = $value;
-            }
-         }
-         $rows[] = $row;
-      }
-
-      return $rows;
+*/
    }
 
 
    static function methodGetServicesStates($params, $protocol) {
-      return PluginMonitoringWebservice::getServicesStates(
-                  isset($params['filter']) ? $params['filter'] : ''
-                  , isset($params['start']) ? $params['start'] : '0'
-                  , isset($params['limit']) ? $params['limit'] : '1000');
+      return PluginMonitoringWebservice::getServicesStates($params);
    }
-   static function getServicesStates($filter, $start, $limit) {
-      global $DB;
+   /*
+    * Request statistics on table with parameters 
+    * - start / limit
+    * - filter
+    * - entity
+    * - order:
+         'hostname' : sort by hostname
+         'day' : sort by day
+    */
+   static function getServicesStates($params) {
+      global $DB, $CFG_GLPI;
 
-      $rows = array();
-
-      $query = "
-         SELECT
-            `glpi_entities`.`name` AS entity_name,
-            CONCAT_WS('', `glpi_computers`.`name`, `glpi_printers`.`name`, `glpi_networkequipments`.`name`) AS host_name,
-            `glpi_computers`.*,
-            `glpi_plugin_monitoring_hosts`.*,
-            `glpi_plugin_monitoring_services`.*,
-            `glpi_plugin_monitoring_componentscatalogs_hosts`.*,
-            `glpi_plugin_monitoring_components`.*
-         FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+      $where = $join = $fields = '';
+      $join .= "
          INNER JOIN `glpi_plugin_monitoring_services`
             ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
          INNER JOIN `glpi_plugin_monitoring_hosts`
@@ -468,23 +572,67 @@ class PluginMonitoringWebservice {
             ON `plugin_monitoring_componentscalalog_id` = `glpi_plugin_monitoring_componentscatalogs`.`id`
          INNER JOIN `glpi_plugin_monitoring_components`
             ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_components_id` = `glpi_plugin_monitoring_components`.`id`)
-         INNER JOIN `glpi_entities`
-            ON (`glpi_plugin_monitoring_services`.`entities_id` = `glpi_entities`.`id`)
          LEFT JOIN `glpi_computers`
             ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_computers`.`id` AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`='Computer'
          LEFT JOIN `glpi_printers`
             ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_printers`.`id` AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`='Printer'
          LEFT JOIN `glpi_networkequipments`
             ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_networkequipments`.`id` AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`='NetworkEquipment'
-      ";
-      $query .= "WHERE `glpi_entities`.`id` IN (".$_SESSION['glpiactiveentities_string'].")";
-      if (! empty($filter)) {
-         $query .= " AND $filter";
+         ";
+
+      // Start / limit
+      $start = 0;
+      $limit = $CFG_GLPI["list_limit_max"];
+      if (isset($params['limit']) && is_numeric($params['limit'])) {
+         $limit = $params['limit'];
       }
-//      $query .= " ORDER BY host_name ASC;";
-      $query .= " ORDER BY FIELD(`glpi_plugin_monitoring_services`.`state`,'CRITICAL','PENDING','UNKNOWN','WARNING','OK')";
-      $query .= " LIMIT $start,$limit;";
+      if (isset($params['start']) && is_numeric($params['start'])) {
+         $start = $params['start'];
+      }
+
+      // Entity
+      if (isset($params['entity'])) {
+         if (!Session::haveAccessToEntity($params['entity'])) {
+            return self::Error($protocol, WEBSERVICES_ERROR_NOTALLOWED, '', 'entity');
+         }
+         $where = getEntitiesRestrictRequest("WHERE", "glpi_computers", '', $params['entity']) .
+                     $where;
+      } else {
+         $where = getEntitiesRestrictRequest("WHERE", "glpi_computers") .
+                     $where;
+      }
+
+      // Filter
+      if (isset($params['filter'])) {
+         Toolbox::logInFile("pm-ws", "getServicesStates, filter : ".$params['filter']."\n");
+         $where .= " AND " . $params['filter'];
+      }
+      
+      // Order
+      $order = "FIELD(`glpi_plugin_monitoring_services`.`state`, 'CRITICAL','PENDING','UNKNOWN','WARNING','OK')";
+      if (isset($params['order'])) {
+         $order = $params['order'];
+      }
+      
+      $query = "
+         SELECT
+            CONCAT_WS('', `glpi_computers`.`name`, `glpi_printers`.`name`, `glpi_networkequipments`.`name`) AS host_name,
+            `glpi_plugin_monitoring_components`.`name`,
+            `glpi_plugin_monitoring_components`.`description`,
+            `glpi_plugin_monitoring_services`.`state`,
+            `glpi_plugin_monitoring_services`.`state_type`,
+            `glpi_plugin_monitoring_services`.`event`,
+            `glpi_plugin_monitoring_services`.`last_check`,
+            `glpi_plugin_monitoring_services`.`is_acknowledged`,
+            `glpi_plugin_monitoring_services`.`acknowledge_comment`
+         FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+         $join
+         $where
+         ORDER BY $order
+         LIMIT $start,$limit;
+      ";
       Toolbox::logInFile("pm-ws", "getServicesStates, query : $query\n");
+      $rows = array();
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
          $row = array();
@@ -501,127 +649,20 @@ class PluginMonitoringWebservice {
 
 
    static function methodGetDailyCounters($params, $protocol) {
-      // if (isset($params['lastPerHost'])) {
-         // return PluginMonitoringWebservice::getLastCountersPerHost(isset($params['filter']) ? $params['filter'] : '');
+
+      if (isset($params['lastPerHost'])) {
+         return PluginMonitoringHostdailycounter::getLastCountersPerHost($params);
+      }
+      
+      if (isset($params['type'])) {
+         return PluginMonitoringHostdailycounter::getStatistics($params);
+      }
+      
+      $result = PluginMonitoringHostdailycounter::getHostDailyCounters($params);
+      // foreach ($result as $line) {
+         // Toolbox::logInFile("pm-ws", "getHostDailyCounters, result : ".serialize($line)."\n");
       // }
-      if (isset($params['lastPerDay'])) {
-         return PluginMonitoringWebservice::getLastCountersPerDay(isset($params['filter']) ? $params['filter'] : '');
-      }
-      return PluginMonitoringWebservice::getDailyCounters(isset($params['filter']) ? $params['filter'] : '', isset($params['period']) ? $params['period'] : '', isset($params['limit']) ? $params['limit'] : '100');
-   }
-   static function getLastCountersPerHost($filter) {
-      global $DB;
-
-      $rows = array();
-
-      $query = "
-         SELECT * FROM `glpi_plugin_monitoring_hostdailycounters` 
-         LEFT JOIN `glpi_computers`
-          ON `glpi_plugin_monitoring_hostdailycounters`.`hostname` = `glpi_computers`.`name`
-         LEFT JOIN `glpi_entities`
-          ON (`glpi_computers`.`entities_id` = `glpi_entities`.`id`)
-      ";
-      $query .= "WHERE `glpi_entities`.`id` IN (".$_SESSION['glpiactiveentities_string'].")";
-      if (! empty($filter)) {
-         $query .= " AND $filter";
-      }
-      $query .= "
-		ORDER BY DATE(DAY) DESC
-      ";
-      //Toolbox::logInFile("pm-ws", "getLastCountersPerHost, query : $query\n");
-      $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
-         $row = array();
-         foreach ($data as $key=>$value) {
-            if (is_string($key)) {
-               $row[$key] = $value;
-            }
-         }
-         $rows[] = $row;
-      }
-
-      return $rows;
-   }
-   static function getLastCountersPerDay($filter) {
-      global $DB;
-
-      $rows = array();
-
-      $query = "
-         SELECT tmp.* FROM ( SELECT * FROM `glpi_plugin_monitoring_hostdailycounters` ORDER BY DATE(DAY) DESC ) tmp
-         LEFT JOIN `glpi_computers`
-          ON `tmp`.`hostname` = `glpi_computers`.`name`
-         LEFT JOIN `glpi_entities`
-          ON (`glpi_computers`.`entities_id` = `glpi_entities`.`id`)
-      ";
-      $query .= "WHERE `glpi_entities`.`id` IN (".$_SESSION['glpiactiveentities_string'].")";
-      if (! empty($filter)) {
-         $query .= " AND $filter";
-      }
-      $query .= "
-         GROUP BY hostname
-         ORDER BY hostname
-      ";
-      //Toolbox::logInFile("pm-ws", "getLastCountersPerDay, query : $query\n");
-      $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
-         $row = array();
-         foreach ($data as $key=>$value) {
-            if (is_string($key)) {
-               $row[$key] = $value;
-            }
-         }
-         $rows[] = $row;
-      }
-
-      return $rows;
-   }
-   static function getDailyCounters($filter, $period, $limit) {
-      global $DB;
-
-      $rows = array();
-
-      $query = "
-         SELECT
-            `glpi_entities`.`name` AS entity_name,
-            `glpi_plugin_monitoring_hostdailycounters`.*
-         FROM `glpi_plugin_monitoring_hostdailycounters`
-         LEFT JOIN `glpi_computers`
-            ON `glpi_plugin_monitoring_hostdailycounters`.`hostname` = `glpi_computers`.`name`
-         LEFT JOIN `glpi_entities`
-            ON (`glpi_computers`.`entities_id` = `glpi_entities`.`id`)
-      ";
-      $query .= "WHERE `glpi_entities`.`id` IN (".$_SESSION['glpiactiveentities_string'].")";
-      if (! empty($filter)) {
-        $query .= " AND $filter";
-      }
-      if (! empty($period)) {
-		if ($period == 'currentMonth') {
-          $query .= " AND MONTH(DAY) = MONTH(CURRENT_DATE)";
-		}
-		if ($period == 'lastMonth') {
-          $query .= " AND MONTH(DAY) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH)";
-		}
-      }
-	  // Last month
-	  // AND MONTH(DAY) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH)
-	  // Current month
-	  // AND MONTH(DAY) = MONTH(CURRENT_DATE)
-	  
-      $query .= " ORDER BY date(day) DESC LIMIT $limit;";
-      //Toolbox::logInFile("pm-ws", "getDailyCounters, query : $query\n");
-      $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
-         $row = array();
-         foreach ($data as $key=>$value) {
-            if (is_string($key)) {
-               $row[$key] = $value;
-            }
-         }
-         $rows[] = $row;
-      }
-
-      return $rows;
+      return $result;
    }
 }
 
