@@ -86,9 +86,13 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          'sum'       => true,
       ),
       'cPagesRemaining' => array(
-         'name'         => 'Remaining pages',
-         'default'      => 'previous',
-         'lowThreshold' => 100,
+         'name'            => 'Remaining pages',
+         'default'         => 'previous',
+         'lowThreshold'    => 200,
+         'zeroDetection'   => array (
+            "days"      => 5,
+            "counter"   => 'cPagesToday',
+         )
       ),
       'cRetractedInitial' => array(
          'name'      => 'Initial counter for retracted pages',
@@ -413,6 +417,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
       if ($date == '') $date = date('Y-m-d H:i:s');
 
+/*
       $pmCounters          = new PluginMonitoringHostdailycounter();
       $pmCurrentCounter    = new PluginMonitoringHostdailycounter();
       $pmPreviousCounter   = new PluginMonitoringHostdailycounter();
@@ -423,19 +428,6 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          $a_checkables = $pmCounters->find ("`hostname` LIKE '$hostname' AND `day` BETWEEN DATE_SUB('$date', INTERVAL $interval DAY) AND DATE('$date')", "`hostname` ASC, `day` DESC");
       }
 
-/*
-      $result = PluginMonitoringHostdailycounter::getStatistics(
-         array (
-            'start'  => 0,
-            'limit'  => 1000,
-            'type'   => 'avg'
-            )
-      );
-      foreach ($result as $line) {
-         // Toolbox::logInFile("pm-counters", "getHostDailyCounters, result : ".serialize($line)."\n");
-      }
-      return;
-*/
       echo "<table class='tab_cadre_fixe'>";
       echo "<tr class='tab_bg_1'>";
       echo "<th colspan='2'>";
@@ -456,8 +448,23 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       }
 
       echo "</table>";
+*/
 
       // Check out average printed pages on each kiosk per each day type ... only for the current and next 3 days.
+      // $daysnameidx = Toolbox::getDaysOfWeekArray();
+      // $a = strptime($input['day'], '%Y-%m-%d');
+      // $timestamp = mktime(0, 0, 0, $a['tm_mon']+1, $a['tm_mday'], $a['tm_year']+1900);
+      // $input['dayname'] = $daysnameidx[date('w', $timestamp)];
+      // $currentday = $daysnameidx[date('w', date('U'))];
+
+      // $next_week[0] = date('w', date('U'));
+      // $next_week[1] = date('w', date('U')) + 1;
+      // $next_week[2] = date('w', date('U')) + 2;
+      // $next_week[3] = date('w', date('U')) + 3;
+      // $next_week[4] = date('w', date('U')) + 4;
+      // $next_week[5] = date('w', date('U')) + 5;
+      // $next_week[6] = date('w', date('U')) + 6;
+/*
       $query = "
          SELECT 
           hostname, 
@@ -465,26 +472,132 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
           WEEKDAY(`day`) day_num, 
           AVG(cPagesToday) AS day_average
          FROM `glpi_plugin_monitoring_hostdailycounters` 
-         GROUP BY `hostname`, `dayname`
+         GROUP BY `hostname`, `day_name`
          ORDER BY hostname, day_num;
       ";
       $result = $DB->query($query);
+*/
       
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'>";
-      echo "<th colspan='2'>";
-      echo "Bornes à surveiller";
-      echo "</th>";
-      echo "</tr>";
-
-      while ($data=$DB->fetch_array($result)) {
-         // 
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>Kiosk '".$data['hostname']."' : ".$data['day_name']." / ".$data['day_average'].".</td>";
-         echo "</tr>";
+      // Check out more recent counters per host ... 
+      $a_checkables = PluginMonitoringHostdailycounter::getLastCountersPerHost(
+         array (
+            'start'  => 0,
+            'limit'  => 10000
+            )
+      );
+      
+      // Check all counters for negative values ...
+      $firstDetection = false;
+      foreach ($a_checkables as $checkable) {
+         foreach (self::$managedCounters as $key => $value) {
+            // Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname']."', day : ".$checkable['day']."\n");
+            if ($checkable[$key] < 0) {
+               if (! $firstDetection) {
+                  echo "<table class='tab_cadre_fixe'>";
+                  echo "<tr class='tab_bg_1'><th colspan='2'>";
+                  echo __('Negative counters', 'monitoring');
+                  echo "</th></tr>";
+                  $firstDetection = true;
+               }
+               echo "<tr class='tab_bg_1'><td>";
+               echo __('Host', 'monitoring') ." '".$checkable['hostname']."' ". __('has negative counter value:', 'monitoring') ." '$key' = ".$checkable[$key]. __(', day: ', 'monitoring'). $checkable['day'];
+               echo "</td></tr>";
+            }
+         }
+      }
+      if ($firstDetection) {
+         echo "</table>";
       }
 
-      echo "</table>";
+
+      // Check all counters for low threshold values ...
+      $firstDetection = false;
+      foreach ($a_checkables as $checkable) {
+         foreach (self::$managedCounters as $key => $value) {
+            // Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname']."', day : ".$checkable['day']."\n");
+            if (isset($value['lowThreshold']) && ($checkable[$key] >= 0) && ($checkable[$key] < $value['lowThreshold'])) {
+               if (! $firstDetection) {
+                  echo "<table class='tab_cadre_fixe'>";
+                  echo "<tr class='tab_bg_1'><th colspan='2'>";
+                  echo __('Thresholds detection', 'monitoring');
+                  echo "</th></tr>";
+                  $firstDetection = true;
+               }
+               echo "<tr class='tab_bg_1'><td>";
+               echo __('Host', 'monitoring') ." '".$checkable['hostname']."' ". __('has counter value lower than defined threshold:', 'monitoring') ." '$key' = ".$checkable[$key]. __(', day: ', 'monitoring'). $checkable['day'];
+               echo "</td></tr>";
+            }
+         }
+      }
+      if ($firstDetection) {
+         echo "</table>";
+      }
+
+      // Check out average printed pages on each kiosk per each day type ... 
+      $average = PluginMonitoringHostdailycounter::getStatistics(
+         array (
+            'start'  => 0,
+            'limit'  => 2000,
+            'type'   => 'avg',
+            'group'  => 'hostname, dayname'
+            )
+      );
+
+      // Check all counters for zero detection ...
+      foreach (self::$managedCounters as $key => $value) {
+         if (isset($value['zeroDetection']) && ($checkable[$key] >= 0)) {
+            $firstDetection = false;
+            $daysnameidx = Toolbox::getDaysOfWeekArray();
+            $todayNum = date('w', date('U'));
+            $todayName = $daysnameidx[$todayNum];
+            foreach ($a_checkables as $checkable) {
+               Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname'] . "', counter : ". $checkable[$key] . " (". $value['zeroDetection']['days'] . " / ". $value['zeroDetection']['counter'] . ")\n");
+               
+               $filter = array (
+                  'start'  => 0,
+                  'limit'  => 2000,
+                  'type'   => 'avg',
+                  'group'  => 'hostname, dayname'
+               );
+
+               $nextDayNum = $todayNum;
+               $listDays = array();
+               for ($i=$value['zeroDetection']['days']; $i >= 0; $i--) {
+                  $listDays[] = $daysnameidx[$nextDayNum];
+                  
+                  $nextDayNum++;
+                  if ($nextDayNum == 7) {
+                     $nextDayNum = 0;
+                  }
+               }
+               $filter['filter'] = "hostname = '".$checkable['hostname']."' AND dayname IN ('".implode("','", $listDays) . "')";
+               
+               $average = PluginMonitoringHostdailycounter::getStatistics($filter);
+               foreach ($average as $line) {
+                  if ($checkable['hostname'] == $line['hostname']) {
+                     $checkable[$key] -= $line['avg_'.$value['zeroDetection']['counter']];
+                  }
+               }
+               Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname'] . "', counter : ". $checkable[$key] . "\n");
+               if ($checkable[$key] <= 0) {
+                  if (! $firstDetection) {
+                     echo "<table class='tab_cadre_fixe'>";
+                     echo "<tr class='tab_bg_1'><th colspan='2'>";
+                     echo __('Near paper detection', 'monitoring');
+                     echo "</th></tr>";
+
+                     $firstDetection = true;
+                  }
+                  echo "<tr class='tab_bg_1'><td>";
+                  echo __('Host', 'monitoring') ." '".$checkable['hostname']."' ". __('has a counter which will become negative in ', 'monitoring') . $value['zeroDetection']['days'] . __(' days ', 'monitoring'). " : '$key' = ".$checkable[$key]. __(', day: ', 'monitoring'). $checkable['day'];
+                  echo "</td></tr>";
+               }
+            }
+            if ($firstDetection) {
+               echo "</table>";
+            }
+         }
+      }
    }
 
 
@@ -523,8 +636,8 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             // First host daily counters ...
             $input = array();
             
-            // Id of the card service ...
-            $input['plugin_monitoring_services_id2'] = $services_id;
+            // First host daily counters ...
+            
             // get first serviceevents
             $first = current($pmServiceevent->find("`plugin_monitoring_services_id`='".$services_id."'", '`id` ASC', 1));
             if (!isset($first['id'])) {
@@ -533,6 +646,15 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                $splitdate = explode(' ', $first['date']);
                $input['day'] = $splitdate[0];
             }
+            $a_counters = current($self->find('`hostname`="'.$hostname.'"'
+            . ' AND `day`="'.$input['day'].'"', '`id` DESC', 1));
+            if (isset($a_counters['id'])) {
+               // Toolbox::logInFile("pm-counters", "Day : ".$a_counters['day']." still exists for $hostname\n");
+               $input = $a_counters;
+            }
+            // Id of the card service ...
+            $input['plugin_monitoring_services_id2'] = $services_id;
+            
             // Toolbox::logInFile("pm-counters", "Service nsca_reader : $services_id, day: ".$input['day']."\n");
             // Fetch perfdata of 1st event in day to update cPagesInitial and cRetractedInitial ...
             $a_first = $self->getFirstValues($services_id, $input['day']);
@@ -540,6 +662,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $a = strptime($input['day'], '%Y-%m-%d');
             $timestamp = mktime(0, 0, 0, $a['tm_mon']+1, $a['tm_mday'], $a['tm_year']+1900);
             $input['dayname']             = $daysnameidx[date('w', $timestamp)];
+            // $input['daynum']              = date('w', $timestamp);
 
             // fetch perfdata of last event in day to update counters ...
             $a_last = $self->getLastValues($services_id, $input['day']);
@@ -569,20 +692,27 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          // Here it exists, at min, one host daily counters line ... and a_counters is the last known counters.
          $prev = $a_counters;
          for ($i = (strtotime($a_counters['day']) + 86400); $i < strtotime(date('Y-m-d').' 00:00:00'); $i += 86400) {
+            $input = array();
+            
             // Fetch perfdata of 1st event in day to update cPagesInitial and cRetractedInitial ...
             $a_first = $self->getFirstValues($services_id, date('Y-m-d', $i));
 
             // fetch perfdata of last event in day to update counters ...
             $a_last = $self->getLastValues($services_id, date('Y-m-d', $i));
 
-            $input = array();
-            
-            // Do not update services_id but services_id2 ... beurk !!!
-            $input['plugin_monitoring_services_id2'] = $services_id;
-            $input['day']                       = date('Y-m-d', $i);
-            $input['dayname']                   = $daysnameidx[date('w', $i)];
-            $input['hostname']                  = $hostname;
+            $input['day']                 = date('Y-m-d', $i);
+            // $input['daynum']              = date('w', $i);
+            $input['dayname']             = $daysnameidx[date('w', $i)];
+            $input['hostname']            = $hostname;
 
+            $a_counters = current($self->find('`hostname`="'.$hostname.'"'
+            . ' AND `day`="'.$input['day'].'"', '`id` DESC', 1));
+            if (isset($a_counters['id'])) {
+               // Toolbox::logInFile("pm-counters", "Day : ".$a_counters['day']." still exists for $hostname\n");
+               $input = $a_counters;
+            }
+            $input['plugin_monitoring_services_id2'] = $services_id;
+            
             // Toolbox::logInFile("pm-counters", "Counters ".$input['day']." for ".$input['hostname']." ($services_id)\n");
 
             if (count($a_first) == 0) {
@@ -607,9 +737,61 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $self->add($input);
             $prev = $input;
          }
+
+         // Manage counter for today
+         $yesterday = strtotime(date('Y-m-d').' 00:00:00') - 3600;
+         $a_counters = current($self->find('`plugin_monitoring_services_id2`="'.$services_id.'"'
+                 . ' AND `day`="'.date('Y-m-d', $yesterday).'"', '`id` DESC', 1));
+         $a_counters_today = current($self->find('`plugin_monitoring_services_id2`="'.$services_id.'"'
+                 . ' AND `day`="'.date('Y-m-d').'"', '`id` DESC', 1));
+         if (isset($a_counters['id'])) {
+            $input = array();
+            
+            // Fetch perfdata of 1st event in day to update cPagesInitial and cRetractedInitial ...
+            $a_first = $self->getFirstValues($services_id, date('Y-m-d', $i));
+
+            // fetch perfdata of last event in day to update counters ...
+            $a_last = $self->getLastValues($services_id, date('Y-m-d', $i));
+
+            $input['day']                 = date('Y-m-d', $i);
+            // $input['daynum']              = date('w', $i);
+            $input['dayname']             = $daysnameidx[date('w', $i)];
+            $input['hostname']            = $hostname;
+
+            $a_counters = current($self->find('`hostname`="'.$hostname.'"'
+            . ' AND `day`="'.$input['day'].'"', '`id` DESC', 1));
+            if (isset($a_counters['id'])) {
+               // Toolbox::logInFile("pm-counters", "Day : ".$a_counters['day']." still exists for $hostname\n");
+               $input = $a_counters;
+            }
+            $input['plugin_monitoring_services_id2'] = $services_id;
+            
+            // Toolbox::logInFile("pm-counters", "Counters ".$input['day']." for ".$input['hostname']." ($services_id)\n");
+
+            if (count($a_first) == 0) {
+               // Set null values ...
+               $input['cCardsInsertedOkTotal']	= $prev['cCardsInsertedOkTotal'];
+               $input['cCardsInsertedOkToday']  = 0;
+               $input['cCardsInsertedKoTotal']	= $prev['cCardsInsertedKoTotal'];
+               $input['cCardsInsertedKoToday']  = 0;
+               $input['cCardsRemovedTotal']     = $prev['cCardsRemovedTotal'];
+               $input['cCardsRemovedToday']     = 0;
+            } else {
+               // compute daily values thanks to first and last day values.
+               // 'Powered Cards'=2339c 'Mute Cards'=89c 'Cards Removed'=2428c
+               $input['cCardsInsertedOkTotal']	= $a_last['Powered Cards'];
+               $input['cCardsInsertedOkToday']  = $a_last['Powered Cards'] - $a_first['Powered Cards'];
+               $input['cCardsInsertedKoTotal']	= $a_last['Mute Cards'];
+               $input['cCardsInsertedKoToday']  = $a_last['Mute Cards'] - $a_first['Mute Cards'];
+               $input['cCardsRemovedTotal']     = $a_last['Cards Removed'];
+               $input['cCardsRemovedToday']     = $a_last['Cards Removed'] - $a_first['Cards Removed'];
+            }
+            
+            $self->add($input);
+         }
       }
 
-	  // Card reader counters
+	  // Printer counters
       $a_services = $pmServices->find("`name`='nsca_printer' OR `name`='Imprimante'");
       foreach ($a_services as $a_service) {
          $services_id = $a_service['id'];
@@ -630,6 +812,8 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          if (!isset($a_counters['id'])) {
             $input = array();
             
+            // First host daily counters ...
+            
             // get first serviceevents
             $first = current($pmServiceevent->find("`plugin_monitoring_services_id`='".$services_id."'", '`id` ASC', 1));
             if (!isset($first['id'])) {
@@ -645,8 +829,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                // Toolbox::logInFile("pm-counters", "Day : ".$a_counters['day']." still exists for $hostname\n");
                $input = $a_counters;
             }
-            // First host daily counters ...
+            // Id of the printer service ...
             $input['plugin_monitoring_services_id'] = $services_id;
+            
             // Fetch perfdata of 1st event in day to update cPagesInitial and cRetractedInitial ...
             $a_first = $self->getFirstValues($services_id, $input['day']);
             if (count($a_first) == 0) {
@@ -656,6 +841,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $a = strptime($input['day'], '%Y-%m-%d');
             $timestamp = mktime(0, 0, 0, $a['tm_mon']+1, $a['tm_mday'], $a['tm_year']+1900);
             $input['dayname']             = $daysnameidx[date('w', $timestamp)];
+            // $input['daynum']              = date('w', $timestamp);
             $input['cRetractedInitial']   = $a_first['Retracted Pages'];
             $input['cPagesInitial']       = $a_first['Cut Pages'];
             // set up initial paper load ...
@@ -699,6 +885,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
             $input['day']                 = date('Y-m-d', $i);
             $input['dayname']             = $daysnameidx[date('w', $i)];
+            // $input['daynum']              = date('w', $i);
             $input['hostname']            = $hostname;
 
             $a_counters = current($self->find('`hostname`="'.$hostname.'"'
@@ -711,11 +898,14 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             
             // Toolbox::logInFile("pm-counters", "Counters ".$input['day']." for ".$input['hostname']." ($services_id)\n");
             
-            // Keep previous day values
-            $input['cPaperLoad'] = $prev['cPaperLoad'];
-            $input['cPaperChanged'] = $prev['cPaperChanged'];
-            $input['cPagesInitial'] = $prev['cPagesInitial'];
-            $input['cRetractedInitial'] = $prev['cRetractedInitial'];
+            // Keep previous day values for all counters
+            foreach (self::$managedCounters as $key => $value) {
+               $input[$key] = $prev[$key];
+            }
+            // $input['cPaperLoad'] = $prev['cPaperLoad'];
+            // $input['cPaperChanged'] = $prev['cPaperChanged'];
+            // $input['cPagesInitial'] = $prev['cPagesInitial'];
+            // $input['cRetractedInitial'] = $prev['cRetractedInitial'];
 
             // Detect if bin was emptied today
             $binEmptiedToday = false;
@@ -800,8 +990,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $prev = $input;
             $a_cntprev = $a_cnt;
          }
-         // Manage counter of today (REQUIRE refactoring)
-         $yesterday = strtotime(date('Y-m-d').' 00:00:00') - 5000;
+
+         // Manage counter for today
+         $yesterday = strtotime(date('Y-m-d').' 00:00:00') - 3600;
          $a_counters = current($self->find('`plugin_monitoring_services_id`="'.$services_id.'"'
                  . ' AND `day`="'.date('Y-m-d', $yesterday).'"', '`id` DESC', 1));
          $a_counters_today = current($self->find('`plugin_monitoring_services_id`="'.$services_id.'"'
@@ -820,14 +1011,18 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $input['plugin_monitoring_services_id'] = $services_id;
             $input['day']                 = date('Y-m-d');
             $input['dayname']             = $daysnameidx[date('w')];
+            // $input['daynum']              = date('w');
             $input['hostname']            = $hostname;
 
 
-            // Keep previous day values
-            $input['cPaperLoad'] = $prev['cPaperLoad'];
-            $input['cPaperChanged'] = $prev['cPaperChanged'];
-            $input['cPagesInitial'] = $prev['cPagesInitial'];
-            $input['cRetractedInitial'] = $prev['cRetractedInitial'];
+            // Keep previous day values for all counters
+            foreach (self::$managedCounters as $key => $value) {
+               $input[$key] = $prev[$key];
+            }
+            // $input['cPaperLoad'] = $prev['cPaperLoad'];
+            // $input['cPaperChanged'] = $prev['cPaperChanged'];
+            // $input['cPagesInitial'] = $prev['cPagesInitial'];
+            // $input['cRetractedInitial'] = $prev['cRetractedInitial'];
 
             // Detect if bin was emptied today
             $binEmptiedToday = false;
@@ -1121,7 +1316,6 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
 
 
-   // TODO : to finish - really @david ????
    function getPrinterChanged($services_id, $date_start, $date_end, $cnt_printerchanged) {
       global $DB;
 
@@ -1454,9 +1648,10 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
    /*
     * Request on table with parameters 
-    * - start / limit
-    * - filter
-    * - entity
+    * - start / limit : rows to fetch
+    * - hostsFilter : filter on hostname or hostnames list
+    * - daysFilter : filter on day or days list
+    * - entity : filter on entity
     * - period:
          'currentDay'
          'lastDay'
@@ -1485,7 +1680,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          $start = $params['start'];
       }
 
-      // Entity
+      // Filters
       if (isset($params['entity'])) {
          if (!Session::haveAccessToEntity($params['entity'])) {
             return self::Error($protocol, WEBSERVICES_ERROR_NOTALLOWED, '', 'entity');
@@ -1497,11 +1692,29 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                      $where;
       }
 
+      // Hosts filter
+      if (isset($params['hostsFilter'])) {
+         if (is_array($params['hostsFilter'])) {
+            $where .= " AND `hostname` IN ('" . implode("','",$params['hostsFilter']) . "')";
+         } else {
+            $where .= " AND `hostname` = " . $params['hostsFilter'];
+         }
+      }
+
+      // Days filter
+      if (isset($params['daysFilter'])) {
+         if (is_array($params['daysFilter'])) {
+            $where .= " AND `day` IN ('" . implode("','",$params['daysFilter']) . "')";
+         } else {
+            $where .= " AND `day` = " . $params['daysFilter'];
+         }
+      }
+
       // Filter
       if (isset($params['filter'])) {
-         $where .= " AND " . $params['filter'];
+         $where .= " AND ".$params['filter'];
       }
-      
+
       // Period
       if (isset($params['period'])) {
          switch ($params['period']) {
@@ -1618,11 +1831,11 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
    /*
     * Request statistics on table with parameters 
     * - start / limit
-    * - filter
     * - entity
     * - type:
          'avg' : average value
          'sum' : cumulated value
+    * - filter: filter results by
     * - group:
          'hostname' : group by hostname
          'day': group by day
