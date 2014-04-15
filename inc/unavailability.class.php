@@ -233,7 +233,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
       global $DB;
 
 
-      Toolbox::logInFile("pm", "runUnavailability : service identifier : $services_id\n");
+      // Toolbox::logInFile("pm", "runUnavailability : service identifier : $services_id\n");
       $pmUnavailability = new PluginMonitoringUnavailability();
       $pmServiceevent = new PluginMonitoringServiceevent();
 
@@ -252,7 +252,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
                AND `state_type`='HARD'
                AND `plugin_monitoring_services_id`='".$data['id']."'");
 
-         Toolbox::logInFile("pm", "runUnavailability : service ".$data['id'].", count : $nb\n");
+         // Toolbox::logInFile("pm", "runUnavailability : service ".$data['id'].", count : $nb\n");
          for ($i=0; $i < $nb; $i += 10000) {
             $query2 = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
                WHERE `unavailability`='0'
