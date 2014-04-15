@@ -378,9 +378,13 @@ class PluginMonitoringWebservice {
                      $where;
       }
 
-      // Filter
-      if (isset($params['filter'])) {
-         $where .= " AND " . $params['filter'];
+      // Hosts filter
+      if (isset($params['hostsFilter'])) {
+         if (is_array($params['hostsFilter'])) {
+            $where .= " AND `glpi_computers`.`name` IN ('" . implode("','",$params['hostsFilter']) . "')";
+         } else {
+            $where .= " AND `glpi_computers`.`name` = " . $params['hostsFilter'];
+         }
       }
       
       // Order
@@ -461,9 +465,13 @@ class PluginMonitoringWebservice {
                      $where;
       }
 
-      // Filter
-      if (isset($params['filter'])) {
-         $where .= " AND " . $params['filter'];
+      // Hosts filter
+      if (isset($params['hostsFilter'])) {
+         if (is_array($params['hostsFilter'])) {
+            $where .= " AND `glpi_computers`.`name` IN ('" . implode("','",$params['hostsFilter']) . "')";
+         } else {
+            $where .= " AND `glpi_computers`.`name` = " . $params['hostsFilter'];
+         }
       }
       
       // Order
@@ -490,7 +498,7 @@ class PluginMonitoringWebservice {
          ORDER BY $order
          LIMIT $start,$limit;
       ";
-      Toolbox::logInFile("pm-ws", "getHostsLocations, query : $query\n");
+      // Toolbox::logInFile("pm-ws", "getHostsLocations, query : $query\n");
       $rows = array();
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
@@ -602,10 +610,13 @@ class PluginMonitoringWebservice {
                      $where;
       }
 
-      // Filter
-      if (isset($params['filter'])) {
-         Toolbox::logInFile("pm-ws", "getServicesStates, filter : ".$params['filter']."\n");
-         $where .= " AND " . $params['filter'];
+      // Services filter
+      if (isset($params['servicesFilter'])) {
+         if (is_array($params['servicesFilter'])) {
+            $where .= " AND `glpi_plugin_monitoring_components`.`name` IN ('" . implode("','",$params['servicesFilter']) . "')";
+         } else {
+            $where .= " AND `glpi_plugin_monitoring_components`.`name` = " . $params['servicesFilter'];
+         }
       }
       
       // Order
@@ -631,7 +642,7 @@ class PluginMonitoringWebservice {
          ORDER BY $order
          LIMIT $start,$limit;
       ";
-      Toolbox::logInFile("pm-ws", "getServicesStates, query : $query\n");
+      // Toolbox::logInFile("pm-ws", "getServicesStates, query : $query\n");
       $rows = array();
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
