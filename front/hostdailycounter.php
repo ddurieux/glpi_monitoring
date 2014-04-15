@@ -60,7 +60,7 @@ if (isset($_POST['paperprediction'])) {
    exit;
 }
 
-if (isset($_GET['checkCounters'])) {
+// if (isset($_GET['checkCounters'])) {
    // Hostname, up to date and limit may be specified as a parameter ...
    // Default hostname is all hosts, else hostname is used in SQL LIKE query
    // Default date is now
@@ -69,16 +69,16 @@ if (isset($_GET['checkCounters'])) {
       isset($_GET['date']) ? $_GET['date'] : '', 
       isset($_GET['hostname']) ? $_GET['hostname'] : '%', 
       isset($_GET['interval']) ? $_GET['interval'] : 7);
-}
+// }
 
-echo "<center>";
-echo "<form method='post'>";
-echo "<input type='submit' class='submit' name='paperprediction' value='Voir les bornes qui ne vont plus avoir de papier'>";
-Html::closeForm();
-echo "</center>";
+// echo "<center>";
+// echo "<form method='post'>";
+// echo "<input type='submit' class='submit' name='paperprediction' value='Voir les bornes qui ne vont plus avoir de papier'>";
+// Html::closeForm();
+// echo "</center>";
 
-$pmHostdailycounter = new PluginMonitoringHostdailycounter();
-$pmHostdailycounter->predictionEndPaper();
+// $pmHostdailycounter = new PluginMonitoringHostdailycounter();
+// $pmHostdailycounter->predictionEndPaper();
 Search::show('PluginMonitoringHostdailycounter');
 
 Html::footer();

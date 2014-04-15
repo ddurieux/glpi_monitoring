@@ -90,7 +90,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          'default'         => 'previous',
          'lowThreshold'    => 200,
          'zeroDetection'   => array (
-            "days"      => 5,
+            "days"      => 3,
             "counter"   => 'cPagesToday',
          )
       ),
@@ -519,7 +519,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                if (! $firstDetection) {
                   echo "<table class='tab_cadre_fixe'>";
                   echo "<tr class='tab_bg_1'><th colspan='2'>";
-                  echo __('Thresholds detection', 'monitoring');
+                  echo __('Thresholds detection, lower than ', 'monitoring'). " ".$value['lowThreshold'];
                   echo "</th></tr>";
                   $firstDetection = true;
                }
@@ -572,24 +572,26 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                }
                $filter['filter'] = "hostname = '".$checkable['hostname']."' AND dayname IN ('".implode("','", $listDays) . "')";
                
+               $breadcrumb = $checkable[$key];
                $average = PluginMonitoringHostdailycounter::getStatistics($filter);
                foreach ($average as $line) {
                   if ($checkable['hostname'] == $line['hostname']) {
                      $checkable[$key] -= $line['avg_'.$value['zeroDetection']['counter']];
+                     $breadcrumb .= '-' . $line['avg_'.$value['zeroDetection']['counter']];
                   }
                }
-               Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname'] . "', counter : ". $checkable[$key] . "\n");
+               Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname'] . "', counter : ". $checkable[$key] . "=" . $breadcrumb . "\n");
                if ($checkable[$key] <= 0) {
                   if (! $firstDetection) {
                      echo "<table class='tab_cadre_fixe'>";
                      echo "<tr class='tab_bg_1'><th colspan='2'>";
-                     echo __('Near paper detection', 'monitoring');
+                     echo __('End paper detection in ', 'monitoring') . $value['zeroDetection']['days'] . __(' days.', 'monitoring');
                      echo "</th></tr>";
 
                      $firstDetection = true;
                   }
                   echo "<tr class='tab_bg_1'><td>";
-                  echo __('Host', 'monitoring') ." '".$checkable['hostname']."' ". __('has a counter which will become negative in ', 'monitoring') . $value['zeroDetection']['days'] . __(' days ', 'monitoring'). " : '$key' = ".$checkable[$key]. __(', day: ', 'monitoring'). $checkable['day'];
+                  echo __('Host', 'monitoring') ." '".$checkable['hostname']."' ". __('has a counter which will become negative in ', 'monitoring') . $value['zeroDetection']['days'] . __(' days ', 'monitoring'). " : '$key' -> ".$checkable[$key]." = ".$breadcrumb;
                   echo "</td></tr>";
                }
             }
