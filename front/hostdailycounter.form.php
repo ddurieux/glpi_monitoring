@@ -54,6 +54,7 @@ if (isset ($_POST["add"])) {
    $pmHostdailycounter->add($_POST);
    $pmHostdailycounter->redirectToList();
 } else if (isset ($_POST["update"])) {
+   $_SESSION['plugin_monitoring_hostdailyupdate_gui'] = true;
    $pmHostdailycounter->update($_POST);
    $pmHostdailycounter->redirectToList();
 } else if (isset ($_POST["delete"])) {

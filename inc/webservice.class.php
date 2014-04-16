@@ -386,7 +386,11 @@ class PluginMonitoringWebservice {
             $where .= " AND `glpi_computers`.`name` = " . $params['hostsFilter'];
          }
       }
-      
+
+      // Filter
+      if (isset($params['filter'])) {
+         $where .= " AND " . $params['filter'];
+      }
       // Order
       $order = "entity_name ASC, FIELD(`glpi_plugin_monitoring_hosts`.`state`,'DOWN','PENDING','UNKNOWN','UNREACHABLE','UP')";
       if (isset($params['order'])) {
@@ -473,7 +477,11 @@ class PluginMonitoringWebservice {
             $where .= " AND `glpi_computers`.`name` = " . $params['hostsFilter'];
          }
       }
-      
+
+      // Filter
+      if (isset($params['filter'])) {
+         $where .= " AND " . $params['filter'];
+      }
       // Order
       $order = "entity_name ASC, FIELD(`glpi_plugin_monitoring_hosts`.`state`,'DOWN','PENDING','UNKNOWN','UNREACHABLE','UP')";
       if (isset($params['order'])) {
@@ -618,7 +626,11 @@ class PluginMonitoringWebservice {
             $where .= " AND `glpi_plugin_monitoring_components`.`name` = " . $params['servicesFilter'];
          }
       }
-      
+
+      // Filter
+      if (isset($params['filter'])) {
+         $where .= " AND " . $params['filter'];
+      }
       // Order
       $order = "FIELD(`glpi_plugin_monitoring_services`.`state`, 'CRITICAL','PENDING','UNKNOWN','WARNING','OK')";
       if (isset($params['order'])) {
