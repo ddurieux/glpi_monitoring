@@ -3253,12 +3253,21 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query);
       }
+/*
          $migration->addField($newTable,
                               'plugin_monitoring_services_id',
                               "int(11) NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
                               'plugin_monitoring_services_id2',
                               "int(11) NOT NULL DEFAULT '0'");
+*/
+         $migration->addField($newTable,
+                                 'counters',
+                                 "varchar(4096) NOT NULL DEFAULT ''");
+         $migration->dropField($newTable,
+                              'plugin_monitoring_services_id');
+         $migration->dropField($newTable,
+                              'plugin_monitoring_services_id2');
          $migration->addField($newTable,
                                  'dayname',
                                  "varchar(255) NOT NULL DEFAULT ''");
