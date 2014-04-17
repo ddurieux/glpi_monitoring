@@ -641,9 +641,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          // Simply testing on one host (card and printer services) ...
          // TODO : comment !!!!
          // ek3k-cnam-0035
-         if (($services_id != 358)) {
-            continue;
-         }
+         // if (($services_id != 358)) {
+            // continue;
+         // }
          // ek3k-cnam-0047
          // if (($services_id != 1172)) {
             // continue;
@@ -864,8 +864,11 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                      || $a_last['Retracted Pages'] < $previous['cRetractedTotal']) {
       */
                   if ($a_last['Printer Replace'] > $previous['cPrinterChanged']
-                     || $a_last['Cut Pages'] < $previous['cPagesInitial']
-                     || $a_last['Retracted Pages'] < $previous['cRetractedInitial']) {
+                     || ($a_last['Cut Pages'] - $a_first['Cut Pages'] < 0)
+                     || ($a_last['Retracted Pages'] - $a_first['Retracted Pages'] < 0)
+                     || ($a_last['Cut Pages'] < $previous['cPagesInitial'])
+                     || ($a_last['Retracted Pages'] < $previous['cRetractedInitial'])
+                     ) {
                      
                      Toolbox::logInFile("pm-counters", "Service $hostname/$services_name : $services_id, detected that printer has changed today!\n");
 
@@ -1159,11 +1162,17 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             // AND `glpi_plugin_monitoring_serviceevents`.`perf_data` != ''
             // AND `event` LIKE 'Online%'
          // ORDER BY `date`";
+      // $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
+         // WHERE `plugin_monitoring_services_id`='".$services_id."'
+            // AND `date` >= '".$date_start."'
+            // AND `date` <= '".$date_end."'
+            // AND `glpi_plugin_monitoring_serviceevents`.`state` = 'OK'
+            // AND `glpi_plugin_monitoring_serviceevents`.`perf_data` LIKE '%Cut Pages%'
+         // ORDER BY `date`";
       $query = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
          WHERE `plugin_monitoring_services_id`='".$services_id."'
             AND `date` >= '".$date_start."'
             AND `date` <= '".$date_end."'
-            AND `glpi_plugin_monitoring_serviceevents`.`state` = 'OK'
             AND `glpi_plugin_monitoring_serviceevents`.`perf_data` LIKE '%Cut Pages%'
          ORDER BY `date`";
 
@@ -1175,18 +1184,18 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
               $pmComponent->fields['graph_template'],
               $date_start,
               $date_end);
-      // Toolbox::logInFile("pm-counters", "getPrinterChanged, ret : ".serialize($ret)."\n");
+      Toolbox::logInFile("pm-counters", "getPrinterChanged, ret : ".serialize($ret[4])."\n");
 
       $a_word = array();
-      foreach ($ret[4] as $perfname=>$legendname) {
-         if ($perfname == 'Cut Pages') {
-            $a_word['cut'] = $legendname;
-         } else if ($perfname == 'Printer Replace') {
+      // Reverse for being sure that printer replace is first if exists ...
+      foreach (array_reverse($ret[4]) as $perfname=>$legendname) {
+         if ($perfname == 'Printer Replace') {
+            // Sure it will be the first word ...
             $a_word['replace'] = $legendname;
-            // break;
+         } else if ($perfname == 'Cut Pages') {
+            $a_word['cut'] = $legendname;
          } else if ($perfname == 'Retracted Pages') {
             $a_word['retract'] = $legendname;
-            // break;
          }
       }
       // Toolbox::logInFile("pm-counters", "getPrinterChanged : ".serialize($a_word)."\n");
@@ -1194,11 +1203,20 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       $replace_num = -1;
       foreach ($a_word as $name=>$word) {
          $prev = -100000;
+         Toolbox::logInFile("pm-counters", "getPrinterChanged, replace first index : $name / $word\n");
+         if ($name == 'replace') {
+            $cnt_printerchanged = -1;
+         }
          foreach ($ret[0][$word] as $num=>$val) {
             if ($name == 'replace') {
                if ($val > $cnt_printerchanged) {
-                  $replace_num = $num;
-                  break 2;
+                  if (-1 == $cnt_printerchanged) {
+                     $cnt_printerchanged = $val;
+                  } else {
+                     $replace_num = $num;
+                     Toolbox::logInFile("pm-counters", "getPrinterChanged, printer changed index : $replace_num\n");
+                     break 2;
+                  }
                }
             } else {
                if ($val < $prev) {
@@ -1224,7 +1242,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $a_before['Cut Pages'] = $ret[0][$a_word['cut']][$numEndCut] - $ret[0][$a_word['cut']][$numFirstCut];
             $a_after['Cut Pages']  = 0;
          } else {
-            $a_before['Cut Pages'] = $ret[0][$a_word['cut']][$replace_num] - $ret[0][$a_word['cut']][$numFirstCut];
+            $a_before['Cut Pages'] = $ret[0][$a_word['cut']][$replace_num-1] - $ret[0][$a_word['cut']][$numFirstCut];
             $a_after['Cut Pages']  = $ret[0][$a_word['cut']][$numEndCut] - $ret[0][$a_word['cut']][$replace_num];
          }
       }
@@ -1249,7 +1267,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $a_before['Retracted Pages'] = $ret[0][$a_word['retract']][$numEndRetract] - $ret[0][$a_word['retract']][$numFirstRetract];
             $a_after['Retracted Pages']  = $ret[0][$a_word['retract']][$numEndRetract] - $ret[0][$a_word['retract']][$numEndRetract];
          } else {
-            $a_before['Retracted Pages'] = $ret[0][$a_word['retract']][$replace_num] - $ret[0][$a_word['retract']][$numFirstRetract];
+            $a_before['Retracted Pages'] = $ret[0][$a_word['retract']][$replace_num-1] - $ret[0][$a_word['retract']][$numFirstRetract];
             $a_after['Retracted Pages']  = $ret[0][$a_word['retract']][$numEndRetract] - $ret[0][$a_word['retract']][$replace_num];
          }
       }
