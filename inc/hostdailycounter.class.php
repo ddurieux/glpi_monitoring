@@ -796,9 +796,6 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                   $previous = $a_counters;
                }
             }
-            // Service Id record
-            // nsca_reader : $input['plugin_monitoring_services_id2'] = $services_id;
-            // nsca_printer : $input['plugin_monitoring_services_id'] = $services_id;
 
             // Recorded counters types
             if (isset($input['counters'])) {
@@ -815,7 +812,8 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                   $input[$key] = $previous[$key];
                }
             }
-            Toolbox::logInFile("pm-counters", "Initial values : ".serialize($input)."\n");
+            
+            Toolbox::logInFile("pm-counters", "Initial values for {$input['day']} : ".serialize($input)."\n");
             if ($counters_type == 'cards') {
                // Set null values ...
                $input['cCardsInsertedOkToday']  = 0;
@@ -863,9 +861,10 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                      || $a_last['Cut Pages'] < $previous['cPagesTotal']
                      || $a_last['Retracted Pages'] < $previous['cRetractedTotal']) {
       */
+                  Toolbox::logInFile("pm-counters", "Printer replace : ".$a_last['Printer Replace']." / ".$previous['cPrinterChanged']."\n");
                   if ($a_last['Printer Replace'] > $previous['cPrinterChanged']
-                     || ($a_last['Cut Pages'] - $a_first['Cut Pages'] < 0)
-                     || ($a_last['Retracted Pages'] - $a_first['Retracted Pages'] < 0)
+                     || ($a_last['Cut Pages'] < $a_first['Cut Pages'])
+                     || ($a_last['Retracted Pages'] < $a_first['Retracted Pages'])
                      || ($a_last['Cut Pages'] < $previous['cPagesInitial'])
                      || ($a_last['Retracted Pages'] < $previous['cRetractedInitial'])
                      ) {
@@ -880,7 +879,16 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                      $input['cRetractedToday'] = $retpages[0]['Retracted Pages'] + $retpages[1]['Retracted Pages'];
                      $input['cRetractedTotal'] = $previous['cRetractedTotal'] + $input['cRetractedTotal'];
 
-                     $input['cPrinterChanged'] = ($a_last['Printer Replace'] != 0) ? $a_last['Printer Replace'] : $previous['cPrinterChanged']+1;
+                     // TODO : check if really ok ...
+                     // Toolbox::logInFile("pm-counters", "input['cPrinterChanged'] : ".$input['cPrinterChanged']."\n");
+                     // Toolbox::logInFile("pm-counters", "a_last['Printer Replace'] : ".$a_last['Printer Replace']."\n");
+                     // Toolbox::logInFile("pm-counters", "a_first['Printer Replace'] : ".$a_first['Printer Replace']."\n");
+                     // $input['cPrinterChanged'] = ($a_last['Printer Replace'] != 0) ? $input['cPrinterChanged'] + ($a_last['Printer Replace'] - $a_first['Printer Replace']) : $input['cPrinterChanged']+1;
+                     if ($retpages[1]['Printer Replace'] == $retpages[0]['Printer Replace']) {
+                        $input['cPrinterChanged'] += $retpages[1]['Printer Replace'] - $retpages[0]['Printer Replace'];
+                     } else {
+                        $input['cPrinterChanged'] = $retpages[1]['Printer Replace'];
+                     }
                      $input['cPagesInitial'] = $retpages[2];
                      $input['cRetractedInitial'] = $retpages[3];
 
@@ -945,24 +953,36 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       $_SESSION['plugin_monitoring_checkinterval'] = 86400;
       $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
 
-      $query = "SELECT
-           id,
-           perf_data,
-           date
-         FROM
-           glpi_plugin_monitoring_serviceevents
+      // $query = "SELECT
+           // id,
+           // perf_data,
+           // date
+         // FROM
+           // glpi_plugin_monitoring_serviceevents
+             // JOIN
+               // (SELECT MIN(glpi_plugin_monitoring_serviceevents.id) AS min
+                // FROM glpi_plugin_monitoring_serviceevents
+                // WHERE `plugin_monitoring_services_id` = '".$services_id."'
+                   // AND `glpi_plugin_monitoring_serviceevents`.`state` = 'OK'
+                   // AND `glpi_plugin_monitoring_serviceevents`.`perf_data` != ''
+                   // AND `glpi_plugin_monitoring_serviceevents`.`date` >= '".$date." 00:00:00'
+                   // AND `glpi_plugin_monitoring_serviceevents`.`date` <= '".$date." 23:59:59'
+                   // AND `event` LIKE 'Online%'
+
+                // ORDER BY glpi_plugin_monitoring_serviceevents.`date` ASC) min_id ON
+              // (min_id.min = id)";
+      $query = "SELECT id, perf_data, date FROM glpi_plugin_monitoring_serviceevents
              JOIN
                (SELECT MIN(glpi_plugin_monitoring_serviceevents.id) AS min
                 FROM glpi_plugin_monitoring_serviceevents
                 WHERE `plugin_monitoring_services_id` = '".$services_id."'
                    AND `glpi_plugin_monitoring_serviceevents`.`state` = 'OK'
-                   AND `glpi_plugin_monitoring_serviceevents`.`perf_data` != ''
                    AND `glpi_plugin_monitoring_serviceevents`.`date` >= '".$date." 00:00:00'
                    AND `glpi_plugin_monitoring_serviceevents`.`date` <= '".$date." 23:59:59'
-                   AND `event` LIKE 'Online%'
 
                 ORDER BY glpi_plugin_monitoring_serviceevents.`date` ASC) min_id ON
               (min_id.min = id)";
+      // Toolbox::logInFile("pm-counters", "getFirstValues: ".$query."\n");
 
       $resultevent = $DB->query($query);
       if ($DB->numrows($resultevent) == 0) {
@@ -1015,25 +1035,37 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       $_SESSION['plugin_monitoring_checkinterval'] = 86400;
       $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
 
-      $query = "SELECT
-           id,
-           perf_data,
-           date
-         FROM
-           glpi_plugin_monitoring_serviceevents
+      // $query = "SELECT
+           // id,
+           // perf_data,
+           // date
+         // FROM
+           // glpi_plugin_monitoring_serviceevents
+             // JOIN
+               // (SELECT MAX(glpi_plugin_monitoring_serviceevents.id) AS max
+                // FROM glpi_plugin_monitoring_serviceevents
+                // WHERE `plugin_monitoring_services_id` = '".$services_id."'
+                   // AND `glpi_plugin_monitoring_serviceevents`.`state` = 'OK'
+                   // AND `glpi_plugin_monitoring_serviceevents`.`perf_data` != ''
+                   // AND `glpi_plugin_monitoring_serviceevents`.`date` >= '".$date." 00:00:00'
+                   // AND `glpi_plugin_monitoring_serviceevents`.`date` <= '".$date." 23:59:59'
+                   // AND `event` LIKE 'Online%'
+
+                // ORDER BY glpi_plugin_monitoring_serviceevents.`date` DESC) max_id ON
+              // (max_id.max = id)";
+      $query = "SELECT id, perf_data, date FROM glpi_plugin_monitoring_serviceevents
              JOIN
                (SELECT MAX(glpi_plugin_monitoring_serviceevents.id) AS max
                 FROM glpi_plugin_monitoring_serviceevents
                 WHERE `plugin_monitoring_services_id` = '".$services_id."'
-                   AND `glpi_plugin_monitoring_serviceevents`.`state` = 'OK'
                    AND `glpi_plugin_monitoring_serviceevents`.`perf_data` != ''
                    AND `glpi_plugin_monitoring_serviceevents`.`date` >= '".$date." 00:00:00'
                    AND `glpi_plugin_monitoring_serviceevents`.`date` <= '".$date." 23:59:59'
-                   AND `event` LIKE 'Online%'
 
                 ORDER BY glpi_plugin_monitoring_serviceevents.`date` DESC) max_id ON
               (max_id.max = id)";
 
+      // Toolbox::logInFile("pm-counters", "getLastValues: ".$query."\n");
       $resultevent = $DB->query($query);
       if ($DB->numrows($resultevent) == 0) {
          $query = "SELECT
@@ -1200,10 +1232,11 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       }
       // Toolbox::logInFile("pm-counters", "getPrinterChanged : ".serialize($a_word)."\n");
 
-      $replace_num = -1;
+      $printerReplacementIndex = -1;
+      $pagesCountIndex = -1;
       foreach ($a_word as $name=>$word) {
          $prev = -100000;
-         Toolbox::logInFile("pm-counters", "getPrinterChanged, replace first index : $name / $word\n");
+         // Toolbox::logInFile("pm-counters", "getPrinterChanged, replace first index : $name / $word\n");
          if ($name == 'replace') {
             $cnt_printerchanged = -1;
          }
@@ -1213,21 +1246,24 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                   if (-1 == $cnt_printerchanged) {
                      $cnt_printerchanged = $val;
                   } else {
-                     $replace_num = $num;
-                     Toolbox::logInFile("pm-counters", "getPrinterChanged, printer changed index : $replace_num\n");
-                     break 2;
+                     $printerReplacementIndex = $num;
+                     Toolbox::logInFile("pm-counters", "getPrinterChanged, printer changed index : $printerReplacementIndex\n");
+                     break 1;
                   }
                }
             } else {
                if ($val < $prev) {
-                  $replace_num = $num;
-                  break 2;
+                  $pagesCountIndex = $num;
+                  break 1;
                }
             }
             $prev = $val;
          }
       }
-      Toolbox::logInFile("pm-counters", "getPrinterChanged, replace first index : $replace_num\n");
+      Toolbox::logInFile("pm-counters", "getPrinterChanged, printer replacement index : $printerReplacementIndex, pages count index : $pagesCountIndex\n");
+      if ($pagesCountIndex == -1) {
+         $pagesCountIndex = $printerReplacementIndex;
+      }
 
       // Now we have number of change
       $a_before = array();
@@ -1238,12 +1274,12 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       if (isset($a_word['cut'])) {
          $numFirstCut = 0;
          $numEndCut   = count($ret[0][$a_word['cut']])-1;
-         if ($replace_num==-1 || !isset($ret[0][$a_word['cut']][$replace_num])) {
+         if ($pagesCountIndex==-1 || !isset($ret[0][$a_word['cut']][$pagesCountIndex])) {
             $a_before['Cut Pages'] = $ret[0][$a_word['cut']][$numEndCut] - $ret[0][$a_word['cut']][$numFirstCut];
             $a_after['Cut Pages']  = 0;
          } else {
-            $a_before['Cut Pages'] = $ret[0][$a_word['cut']][$replace_num-1] - $ret[0][$a_word['cut']][$numFirstCut];
-            $a_after['Cut Pages']  = $ret[0][$a_word['cut']][$numEndCut] - $ret[0][$a_word['cut']][$replace_num];
+            $a_before['Cut Pages'] = $ret[0][$a_word['cut']][$pagesCountIndex-1] - $ret[0][$a_word['cut']][$numFirstCut];
+            $a_after['Cut Pages']  = $ret[0][$a_word['cut']][$numEndCut] - $ret[0][$a_word['cut']][$pagesCountIndex];
          }
       }
       Toolbox::logInFile("pm-counters", "getPrinterChanged, a_before['Cut Pages'] : ".$a_before['Cut Pages'].", a_after['Cut Pages'] : ".$a_after['Cut Pages']."\n");
@@ -1253,8 +1289,8 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       if (isset($a_word['replace'])) {
          $numFirstReplace = 0;
          $numEndReplace   = count($ret[0][$a_word['replace']])-1;
-         $a_before['Printer Replace'] = 0;
-         $a_after['Printer Replace']  = $ret[0][$a_word['replace']][$numEndReplace] - $ret[0][$a_word['replace']][$numFirstReplace];
+         $a_before['Printer Replace'] = $ret[0][$a_word['replace']][$numFirstReplace];
+         $a_after['Printer Replace']  = $ret[0][$a_word['replace']][$numEndReplace];
       }
       Toolbox::logInFile("pm-counters", "getPrinterChanged, a_before['Printer Replace'] : ".$a_before['Printer Replace'].", a_after['Printer Replace'] : ".$a_after['Printer Replace']."\n");
 
@@ -1263,27 +1299,27 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       if (isset($a_word['retract'])) {
          $numFirstRetract = 0;
          $numEndRetract   = count($ret[0][$a_word['cut']])-1;
-         if ($replace_num==-1 || !isset($ret[0][$a_word['retract']][$replace_num])) {
+         if ($pagesCountIndex==-1 || !isset($ret[0][$a_word['retract']][$pagesCountIndex])) {
             $a_before['Retracted Pages'] = $ret[0][$a_word['retract']][$numEndRetract] - $ret[0][$a_word['retract']][$numFirstRetract];
             $a_after['Retracted Pages']  = $ret[0][$a_word['retract']][$numEndRetract] - $ret[0][$a_word['retract']][$numEndRetract];
          } else {
-            $a_before['Retracted Pages'] = $ret[0][$a_word['retract']][$replace_num-1] - $ret[0][$a_word['retract']][$numFirstRetract];
-            $a_after['Retracted Pages']  = $ret[0][$a_word['retract']][$numEndRetract] - $ret[0][$a_word['retract']][$replace_num];
+            $a_before['Retracted Pages'] = $ret[0][$a_word['retract']][$pagesCountIndex-1] - $ret[0][$a_word['retract']][$numFirstRetract];
+            $a_after['Retracted Pages']  = $ret[0][$a_word['retract']][$numEndRetract] - $ret[0][$a_word['retract']][$pagesCountIndex];
          }
       }
       Toolbox::logInFile("pm-counters", "getPrinterChanged, a_before['Retracted Pages'] : ".$a_before['Retracted Pages'].", a_after['Retracted Pages'] : ".$a_after['Retracted Pages']."\n");
 
       // manage 'cPagesInitial' of new printer
-      if (!isset($ret[0][$a_word['cut']][$replace_num])) {
-         $cPagesInitial = $ret[0][$a_word['cut']][$numFirstCut];
+      if (!isset($ret[0][$a_word['cut']][$printerReplacementIndex])) {
+         $cPagesInitial = $ret[0][$a_word['cut']][0];
       } else {
-         $cPagesInitial = $ret[0][$a_word['cut']][$replace_num];
+         $cPagesInitial = $ret[0][$a_word['cut']][$pagesCountIndex];
       }
       // manage 'cRetractedInitial'
-      if (!isset($ret[0][$a_word['retract']][$replace_num])) {
-         $cRetractedInitial = $ret[0][$a_word['retract']][$numFirstRetract];
+      if (!isset($ret[0][$a_word['retract']][$printerReplacementIndex])) {
+         $cRetractedInitial = $ret[0][$a_word['retract']][0];
       } else {
-         $cRetractedInitial = $ret[0][$a_word['retract']][$replace_num];
+         $cRetractedInitial = $ret[0][$a_word['retract']][$pagesCountIndex];
       }
 
       return array($a_before, $a_after, $cPagesInitial, $cRetractedInitial);
