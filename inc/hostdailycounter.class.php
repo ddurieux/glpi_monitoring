@@ -640,6 +640,10 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          $services_name = $a_service['name'];
          // Simply testing on one host (card and printer services) ...
          // TODO : comment !!!!
+         // ek3k-cnam-0035
+         if (($services_id != 358)) {
+            continue;
+         }
          // ek3k-cnam-0047
          // if (($services_id != 1172)) {
             // continue;
@@ -860,8 +864,8 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                      || $a_last['Retracted Pages'] < $previous['cRetractedTotal']) {
       */
                   if ($a_last['Printer Replace'] > $previous['cPrinterChanged']
-                     || $a_last['Cut Pages'] < $previous['cPagesTotal']
-                     || $a_last['Retracted Pages'] < $previous['cRetractedTotal']) {
+                     || $a_last['Cut Pages'] < $previous['cPagesInitial']
+                     || $a_last['Retracted Pages'] < $previous['cRetractedInitial']) {
                      
                      Toolbox::logInFile("pm-counters", "Service $hostname/$services_name : $services_id, detected that printer has changed today!\n");
 
@@ -873,7 +877,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                      $input['cRetractedToday'] = $retpages[0]['Retracted Pages'] + $retpages[1]['Retracted Pages'];
                      $input['cRetractedTotal'] = $previous['cRetractedTotal'] + $input['cRetractedTotal'];
 
-                     $input['cPrinterChanged'] = $a_last['Printer Replace'];
+                     $input['cPrinterChanged'] = ($a_last['Printer Replace'] != 0) ? $a_last['Printer Replace'] : $previous['cPrinterChanged']+1;
                      $input['cPagesInitial'] = $retpages[2];
                      $input['cRetractedInitial'] = $retpages[3];
 
@@ -921,472 +925,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             }
             $previous = $input;
          }
-/*
-         $self = new self();
-         $a_counters = current($self->find('`plugin_monitoring_services_id2`="'.$services_id.'"', '`id` DESC', 1));
-         if (! isset($a_counters['id'])) {
-            // First host daily counters ...
-            $input = array();
-            
-            // First host daily counters ...
-            
-            // get first serviceevents
-            $first = current($pmServiceevent->find("`plugin_monitoring_services_id`='".$services_id."'", '`id` ASC', 1));
-            if (!isset($first['id'])) {
-               continue;
-            } else {
-               $splitdate = explode(' ', $first['date']);
-               $input['day'] = $splitdate[0];
-            }
-            $a_counters = current($self->find('`hostname`="'.$hostname.'"'
-            . ' AND `day`="'.$input['day'].'"', '`id` DESC', 1));
-            if (isset($a_counters['id'])) {
-               Toolbox::logInFile("pm-counters", "Day : ".$a_counters['day']." still exists for $hostname\n");
-               $input = $a_counters;
-            }
-            // Id of the card service ...
-            $input['plugin_monitoring_services_id2'] = $services_id;
-            Toolbox::logInFile("pm-counters", "Service nsca_reader : $services_id, first recorded day: ".$input['day']."\n");
-            
-            // Fetch perfdata of 1st event in day to update cPagesInitial and cRetractedInitial ...
-            $a_first = $self->getFirstValues($services_id, $input['day']);
-            $input['hostname']            = $hostname;
-            $a = strptime($input['day'], '%Y-%m-%d');
-            $timestamp = mktime(0, 0, 0, $a['tm_mon']+1, $a['tm_mday'], $a['tm_year']+1900);
-            $input['dayname']             = $daysnameidx[date('w', $timestamp)];
-            // $input['daynum']              = date('w', $timestamp);
-
-            // fetch perfdata of last event in day to update counters ...
-            $a_last = $self->getLastValues($services_id, $input['day']);
-
-            if (count($a_first) == 0) {
-               // Set null values ...
-               $input['cCardsInsertedOkTotal']	= 0;
-               $input['cCardsInsertedOkToday']  = 0;
-               $input['cCardsInsertedKoTotal']	= 0;
-               $input['cCardsInsertedKoToday']  = 0;
-               $input['cCardsRemovedTotal']     = 0;
-               $input['cCardsRemovedToday']     = 0;
-            } else {
-               // compute daily values thanks to first and last day values.
-               // 'Powered Cards'=2339c 'Mute Cards'=89c 'Cards Removed'=2428c
-               $input['cCardsInsertedOkTotal']	= $a_last['Powered Cards'];
-               $input['cCardsInsertedOkToday']  = $a_last['Powered Cards'] - $a_first['Powered Cards'];
-               $input['cCardsInsertedKoTotal']	= $a_last['Mute Cards'];
-               $input['cCardsInsertedKoToday']  = $a_last['Mute Cards'] - $a_first['Mute Cards'];
-               $input['cCardsRemovedTotal']     = $a_last['Cards Removed'];
-               $input['cCardsRemovedToday']     = $a_last['Cards Removed'] - $a_first['Cards Removed'];
-            }
-            $tmpid = $self->add($input);
-            $a_counters = $input;
-         }
-
-         // Here it exists, at min, one host daily counters line ... and a_counters is the last known counters.
-         $prev = $a_counters;
-         for ($i = (strtotime($a_counters['day']) + 86400); $i < strtotime(date('Y-m-d').' 00:00:00'); $i += 86400) {
-            $input = array();
-            
-            // Fetch perfdata of 1st event in day to update cPagesInitial and cRetractedInitial ...
-            $a_first = $self->getFirstValues($services_id, date('Y-m-d', $i));
-
-            // fetch perfdata of last event in day to update counters ...
-            $a_last = $self->getLastValues($services_id, date('Y-m-d', $i));
-
-            $input['day']                 = date('Y-m-d', $i);
-            // $input['daynum']              = date('w', $i);
-            $input['dayname']             = $daysnameidx[date('w', $i)];
-            $input['hostname']            = $hostname;
-
-            $a_counters = current($self->find('`hostname`="'.$hostname.'"'
-            . ' AND `day`="'.$input['day'].'"', '`id` DESC', 1));
-            if (isset($a_counters['id'])) {
-               // Toolbox::logInFile("pm-counters", "Day : ".$a_counters['day']." still exists for $hostname\n");
-               $input = $a_counters;
-            }
-            $input['plugin_monitoring_services_id2'] = $services_id;
-            
-            Toolbox::logInFile("pm-counters", "Counters nsca_reader, ".$input['day']." for ".$input['hostname']." ($services_id)\n");
-
-            if (count($a_first) == 0) {
-               // Set null values ...
-               $input['cCardsInsertedOkTotal']	= $prev['cCardsInsertedOkTotal'];
-               $input['cCardsInsertedOkToday']  = 0;
-               $input['cCardsInsertedKoTotal']	= $prev['cCardsInsertedKoTotal'];
-               $input['cCardsInsertedKoToday']  = 0;
-               $input['cCardsRemovedTotal']     = $prev['cCardsRemovedTotal'];
-               $input['cCardsRemovedToday']     = 0;
-            } else {
-               // compute daily values thanks to first and last day values.
-               // 'Powered Cards'=2339c 'Mute Cards'=89c 'Cards Removed'=2428c
-               $input['cCardsInsertedOkTotal']	= $a_last['Powered Cards'];
-               $input['cCardsInsertedOkToday']  = $a_last['Powered Cards'] - $a_first['Powered Cards'];
-               $input['cCardsInsertedKoTotal']	= $a_last['Mute Cards'];
-               $input['cCardsInsertedKoToday']  = $a_last['Mute Cards'] - $a_first['Mute Cards'];
-               $input['cCardsRemovedTotal']     = $a_last['Cards Removed'];
-               $input['cCardsRemovedToday']     = $a_last['Cards Removed'] - $a_first['Cards Removed'];
-            }
-            
-            $self->add($input);
-            $prev = $input;
-         }
-
-         // Manage counter for today
-         $yesterday = strtotime(date('Y-m-d').' 00:00:00') - 3600;
-         $a_counters = current($self->find('`plugin_monitoring_services_id2`="'.$services_id.'"'
-                 . ' AND `day`="'.date('Y-m-d', $yesterday).'"', '`id` DESC', 1));
-         $a_counters_today = current($self->find('`plugin_monitoring_services_id2`="'.$services_id.'"'
-                 . ' AND `day`="'.date('Y-m-d').'"', '`id` DESC', 1));
-         if (isset($a_counters['id'])) {
-            $input = array();
-            
-            // Fetch perfdata of 1st event in day to update cPagesInitial and cRetractedInitial ...
-            $a_first = $self->getFirstValues($services_id, date('Y-m-d', $i));
-
-            // fetch perfdata of last event in day to update counters ...
-            $a_last = $self->getLastValues($services_id, date('Y-m-d', $i));
-
-            $input['day']                 = date('Y-m-d', $i);
-            // $input['daynum']              = date('w', $i);
-            $input['dayname']             = $daysnameidx[date('w', $i)];
-            $input['hostname']            = $hostname;
-
-            $a_counters = current($self->find('`hostname`="'.$hostname.'"'
-            . ' AND `day`="'.$input['day'].'"', '`id` DESC', 1));
-            if (isset($a_counters['id'])) {
-               // Toolbox::logInFile("pm-counters", "Day : ".$a_counters['day']." still exists for $hostname\n");
-               $input = $a_counters;
-            }
-            $input['plugin_monitoring_services_id2'] = $services_id;
-            
-            Toolbox::logInFile("pm-counters", "Counters today nsca_reader, ".$input['day']." for ".$input['hostname']." ($services_id)\n");
-
-            if (count($a_first) == 0) {
-               // Set null values ...
-               $input['cCardsInsertedOkTotal']	= $prev['cCardsInsertedOkTotal'];
-               $input['cCardsInsertedOkToday']  = 0;
-               $input['cCardsInsertedKoTotal']	= $prev['cCardsInsertedKoTotal'];
-               $input['cCardsInsertedKoToday']  = 0;
-               $input['cCardsRemovedTotal']     = $prev['cCardsRemovedTotal'];
-               $input['cCardsRemovedToday']     = 0;
-            } else {
-               // compute daily values thanks to first and last day values.
-               // 'Powered Cards'=2339c 'Mute Cards'=89c 'Cards Removed'=2428c
-               $input['cCardsInsertedOkTotal']	= $a_last['Powered Cards'];
-               $input['cCardsInsertedOkToday']  = $a_last['Powered Cards'] - $a_first['Powered Cards'];
-               $input['cCardsInsertedKoTotal']	= $a_last['Mute Cards'];
-               $input['cCardsInsertedKoToday']  = $a_last['Mute Cards'] - $a_first['Mute Cards'];
-               $input['cCardsRemovedTotal']     = $a_last['Cards Removed'];
-               $input['cCardsRemovedToday']     = $a_last['Cards Removed'] - $a_first['Cards Removed'];
-            }
-            
-            if (isset($a_counters['id'])) {
-               $self->update($input);
-            } else {
-               $self->add($input);
-            }
-         }
-*/
       }
-
-/*
-      // Printer counters
-      $a_services = $pmServices->find("`name`='nsca_printer' OR `name`='Imprimante'");
-      foreach ($a_services as $a_service) {
-         $services_id = $a_service['id'];
-         // Simply testing on one service ...
-         // if($services_id != 3699) {
-            // continue;
-         // }
-         
-         $hostname = '';
-         $pmComponentscatalog_Host->getFromDB($a_service['plugin_monitoring_componentscatalogs_hosts_id']);
-         $computer->getFromDB($pmComponentscatalog_Host->fields['items_id']);
-         $hostname = $computer->fields['name'];
-         
-         Toolbox::logInFile("pm-counters", "Service nsca_printer/$hostname : $services_id\n");
-         
-         $self = new self();
-         $a_counters = current($self->find('`plugin_monitoring_services_id`="'.$services_id.'"', '`id` DESC', 1));
-         if (!isset($a_counters['id'])) {
-            $input = array();
-            
-            // First host daily counters ...
-            
-            // get first serviceevents
-            $first = current($pmServiceevent->find("`plugin_monitoring_services_id`='".$services_id."'", '`id` ASC', 1));
-            if (!isset($first['id'])) {
-               continue;
-            } else {
-               $splitdate = explode(' ', $first['date']);
-               $input['day'] = $splitdate[0];
-            }
-            
-            $a_counters = current($self->find('`hostname`="'.$hostname.'"'
-            . ' AND `day`="'.$input['day'].'"', '`id` DESC', 1));
-            if (isset($a_counters['id'])) {
-               Toolbox::logInFile("pm-counters", "Day : ".$a_counters['day']." still exists for $hostname\n");
-               $input = $a_counters;
-            }
-            // Id of the printer service ...
-            $input['plugin_monitoring_services_id'] = $services_id;
-            Toolbox::logInFile("pm-counters", "Service nsca_printer : $services_id, first recorded day: ".$input['day']."\n");
-            
-            // Fetch perfdata of 1st event in day to update cPagesInitial and cRetractedInitial ...
-            $a_first = $self->getFirstValues($services_id, $input['day']);
-            if (count($a_first) == 0) {
-               continue;
-            }
-            $input['hostname']            = $hostname;
-            $a = strptime($input['day'], '%Y-%m-%d');
-            $timestamp = mktime(0, 0, 0, $a['tm_mon']+1, $a['tm_mday'], $a['tm_year']+1900);
-            $input['dayname']             = $daysnameidx[date('w', $timestamp)];
-            // $input['daynum']              = date('w', $timestamp);
-            $input['cRetractedInitial']   = $a_first['Retracted Pages'];
-            $input['cPagesInitial']       = $a_first['Cut Pages'];
-            // set up initial paper load ...
-            $input['cPaperLoad']          = 2000;
-            $input['cPaperChanged']       = 0;
-            // set up printer changed and bin emptied counters ...
-            $input['cPrinterChanged']     = 0;
-            $input['cBinEmptied']         = 0;
-
-            // fetch perfdata of last event in day to update cPagesInitial and cRetractedInitial ...
-            $a_last = $self->getLastValues($services_id, $input['day']);
-
-            // compute daily values thanks to first and last day values.
-            $input['cRetractedTotal']     = $a_last['Retracted Pages'] - $a_first['Retracted Pages'];
-            $input['cRetractedToday']     = $input['cRetractedTotal'];
-            $input['cPagesTotal']         = $a_last['Cut Pages'] - $a_first['Cut Pages'];
-            $input['cPagesToday']         = $input['cPagesTotal'];
-            $input['cPagesRemaining']     = $input['cPaperLoad'] - $input['cPagesToday'];
-            $input['cRetractedRemaining'] = $input['cRetractedToday'];
-
-            if (isset($a_counters['id'])) {
-               $tmpid = $self->update($input);
-            } else {
-               $tmpid = $self->add($input);
-            }
-            $a_counters = $input;
-         }
-
-         // Here it exists, at min, one host daily counters line ... and a_counters is the last known counters.
-         $prev = $a_counters;
-         unset($prev['id']);
-         $a_cntprev = array();
-         for ($i = (strtotime($a_counters['day']) + 86400); $i < strtotime(date('Y-m-d').' 00:00:00'); $i += 86400) {
-            $input = array();
-            
-            // Fetch perfdata of 1st event in day to update cPagesInitial and cRetractedInitial ...
-            $a_first = $self->getFirstValues($services_id, date('Y-m-d', $i));
-
-            // Fetch perfdata of last event in day to update cPagesInitial and cRetractedInitial ...
-            $a_cnt = $self->getLastValues($services_id, date('Y-m-d', $i));
-
-            $input['day']                 = date('Y-m-d', $i);
-            $input['dayname']             = $daysnameidx[date('w', $i)];
-            // $input['daynum']              = date('w', $i);
-            $input['hostname']            = $hostname;
-
-            $a_counters = current($self->find('`hostname`="'.$hostname.'"'
-            . ' AND `day`="'.$input['day'].'"', '`id` DESC', 1));
-            if (isset($a_counters['id'])) {
-               // Toolbox::logInFile("pm-counters", "Day : ".$a_counters['day']." still exists for $hostname\n");
-               $input = $a_counters;
-            }
-            $input['plugin_monitoring_services_id'] = $services_id;
-            
-            Toolbox::logInFile("pm-counters", "Counters nsca_printer, ".$input['day']." for ".$input['hostname']." ($services_id)\n");
-            
-            // Keep previous day values for all counters
-            foreach (self::$managedCounters as $key => $value) {
-               $input[$key] = $prev[$key];
-            }
-            // $input['cPaperLoad'] = $prev['cPaperLoad'];
-            // $input['cPaperChanged'] = $prev['cPaperChanged'];
-            // $input['cPagesInitial'] = $prev['cPagesInitial'];
-            // $input['cRetractedInitial'] = $prev['cRetractedInitial'];
-
-            // Detect if bin was emptied today
-            $binEmptiedToday = false;
-            // Keep previous day values
-            $input['cRetractedRemaining'] = $prev['cRetractedRemaining'];
-            $input['cBinEmptied'] = $prev['cBinEmptied'];
-            if ($a_cnt['Trash Empty'] > $prev['cBinEmptied']) {
-               // No more paper in bin if bin is emptied ...
-               $input['cRetractedRemaining'] = 0;
-               $input['cBinEmptied'] = $a_cnt['Trash Empty'];
-               $binEmptiedToday = true;
-            }
-
-            // Detect if printer was changed today
-            $printerChangedToday = false;
-            // Keep previous day values
-            $input['cPrinterChanged'] = $prev['cPrinterChanged'];
-            if ($a_cnt['Printer Replace'] > $prev['cPrinterChanged']
-                  || $a_cnt['Cut Pages'] < $a_first['Cut Pages']
-                  || $a_cnt['Retracted Pages'] < $a_first['Retracted Pages']) {
-
-               // getPrinterChanged
-               $retpages = $self->getPrinterChanged($services_id, date('Y-m-d', $i).' 00:00:00', date('Y-m-d', $i).' 23:59:59', $prev['cPrinterChanged']);
-               $input['cPagesToday'] = $retpages[0]['Cut Pages'] + $retpages[1]['Cut Pages'];
-               $input['cPagesTotal'] = $prev['cPagesTotal'] + $input['cPagesToday'];
-               $input['cRetractedToday'] = $retpages[0]['Retracted Pages'] + $retpages[1]['Retracted Pages'];
-               $input['cRetractedTotal'] = $prev['cRetractedTotal'] + $input['cRetractedTotal'];
-
-               $input['cPrinterChanged'] = $a_cnt['Printer Replace'];
-               // if ($input['cPrinterChanged'] == $prev['cPrinterChanged']) {
-                  // $input['cPrinterChanged'] = '-10';
-               // }
-               $input['cPagesInitial'] = $retpages[2];
-               $input['cRetractedInitial'] = $retpages[3];
-
-               $input['cPagesRemaining'] = $input['cPaperLoad'] - $input['cPagesTotal'];
-               $input['cRetractedRemaining'] += $input['cRetractedToday'];
-               $printerChangedToday = true;
-            } else {
-               // When printer has not been changed :
-               // 1/ Compute daily values thanks to first and last day values.
-               $input['cPagesToday']         = $a_cnt['Cut Pages'] - $a_first['Cut Pages'];
-               $input['cRetractedToday']     = $a_cnt['Retracted Pages'] - $a_first['Retracted Pages'];
-               // 2/ Increase total values from previous day with daily values
-               $input['cRetractedTotal']     = $prev['cRetractedTotal'] + $input['cRetractedToday'];
-               $input['cPagesTotal']         = $prev['cPagesTotal'] + $input['cPagesToday'];
-               // 3/ Compute remaining pages as total paper load - total printed pages
-               $input['cPagesRemaining']     = $prev['cPagesRemaining'] - $input['cPagesToday'];
-               // 4/ Compute remaining pages as total paper load - total printed pages
-               $input['cRetractedRemaining'] += $input['cRetractedToday'];
-
-               // Detect if paper was changed today
-               if ($a_cnt['Paper Reams'] > $prev['cPaperChanged']) {
-                  // getPaperChanged
-                  $retpages = $self->getPaperChanged($services_id, date('Y-m-d', $i).' 00:00:00', date('Y-m-d', $i).' 23:59:59', $prev['cPaperChanged']);
-                  $input['cPagesToday'] = $retpages[0] + $retpages[1];
-                  $input['cRetractedToday'] = $retpages[2] + $retpages[3];
-                  // Reset remaining pages with default paper ream load
-                  $input['cPagesRemaining'] = 2000 - $retpages[1];
-                  // Compute total paper load
-                  $input['cPaperLoad'] = ($a_cnt['Paper Reams'] + 1) * 2000;
-                  $input['cPaperChanged'] = $a_cnt['Paper Reams'];
-               }
-            }
-
-            if (isset($a_counters['id'])) {
-               $self->update($input);
-            } else {
-               $self->add($input);
-            }
-
-            $prev = $input;
-            $a_cntprev = $a_cnt;
-         }
-
-         // Manage counter for today
-         $yesterday = strtotime(date('Y-m-d').' 00:00:00') - 3600;
-         $a_counters = current($self->find('`plugin_monitoring_services_id`="'.$services_id.'"'
-                 . ' AND `day`="'.date('Y-m-d', $yesterday).'"', '`id` DESC', 1));
-         $a_counters_today = current($self->find('`plugin_monitoring_services_id`="'.$services_id.'"'
-                 . ' AND `day`="'.date('Y-m-d').'"', '`id` DESC', 1));
-         if (isset($a_counters['id'])) {
-            $prev = $a_counters;
-            $a_first = $self->getFirstValues($services_id, date('Y-m-d'));
-            if (count($a_first) == 0) {
-               continue;
-            }
-
-            // Fetch perfdata of last event in day to update cPagesInitial and cRetractedInitial ...
-            $a_cnt = $self->getLastValues($services_id, date('Y-m-d'));
-
-            $input = array();
-            $input['plugin_monitoring_services_id'] = $services_id;
-            $input['day']                 = date('Y-m-d');
-            $input['dayname']             = $daysnameidx[date('w')];
-            // $input['daynum']              = date('w');
-            $input['hostname']            = $hostname;
-
-
-            Toolbox::logInFile("pm-counters", "Counters today nsca_printer, ".$input['day']." for ".$input['hostname']." ($services_id)\n");
-            
-            // Keep previous day values for all counters
-            foreach (self::$managedCounters as $key => $value) {
-               $input[$key] = $prev[$key];
-            }
-            // $input['cPaperLoad'] = $prev['cPaperLoad'];
-            // $input['cPaperChanged'] = $prev['cPaperChanged'];
-            // $input['cPagesInitial'] = $prev['cPagesInitial'];
-            // $input['cRetractedInitial'] = $prev['cRetractedInitial'];
-
-            // Detect if bin was emptied today
-            $binEmptiedToday = false;
-            // Keep previous day values
-            $input['cRetractedRemaining'] = $prev['cRetractedRemaining'];
-            $input['cBinEmptied'] = $prev['cBinEmptied'];
-            if ($a_cnt['Trash Empty'] > $prev['cBinEmptied']) {
-               // No more paper in bin if bin is emptied ...
-               $input['cRetractedRemaining'] = 0;
-               $input['cBinEmptied'] = $a_cnt['Trash Empty'];
-               $binEmptiedToday = true;
-            }
-
-            // Detect if printer was changed today
-            $printerChangedToday = false;
-            // Keep previous day values
-            $input['cPrinterChanged'] = $prev['cPrinterChanged'];
-            if ($a_cnt['Printer Replace'] > $prev['cPrinterChanged']
-                  || $a_cnt['Cut Pages'] < $a_first['Cut Pages']
-                  || $a_cnt['Retracted Pages'] < $a_first['Retracted Pages']) {
-
-               // getPrinterChanged
-               $retpages = $self->getPrinterChanged($services_id, date('Y-m-d', $i).' 00:00:00', date('Y-m-d', $i).' 23:59:59', $prev['cPrinterChanged']);
-               $input['cPagesToday'] = $retpages[0]['Cut Pages'] + $retpages[1]['Cut Pages'];
-               $input['cPagesTotal'] = $prev['cPagesTotal'] + $input['cPagesToday'];
-               $input['cRetractedToday'] = $retpages[0]['Retracted Pages'] + $retpages[1]['Retracted Pages'];
-               $input['cRetractedTotal'] = $prev['cRetractedTotal'] + $input['cRetractedTotal'];
-
-               $input['cPrinterChanged'] = $a_cnt['Printer Replace'];
-               // if ($input['cPrinterChanged'] == $prev['cPrinterChanged']) {
-                  // $input['cPrinterChanged'] = '-10';
-               // }
-               $input['cPagesInitial'] = $retpages[2];
-               $input['cRetractedInitial'] = $retpages[3];
-
-               $input['cPagesRemaining'] = $input['cPaperLoad'] - $input['cPagesTotal'];
-               $input['cRetractedRemaining'] += $input['cRetractedToday'];
-               $printerChangedToday = true;
-            } else {
-               // When printer has not been changed :
-               // 1/ Compute daily values thanks to first and last day values.
-               $input['cPagesToday']         = $a_cnt['Cut Pages'] - $a_first['Cut Pages'];
-               $input['cRetractedToday']     = $a_cnt['Retracted Pages'] - $a_first['Retracted Pages'];
-               // 2/ Increase total values from previous day with daily values
-               $input['cRetractedTotal']     = $prev['cRetractedTotal'] + $input['cRetractedToday'];
-               $input['cPagesTotal']         = $prev['cPagesTotal'] + $input['cPagesToday'];
-               // 3/ Compute remaining pages as total paper load - total printed pages
-               $input['cPagesRemaining']     = $prev['cPagesRemaining'] - $input['cPagesToday'];
-               // 4/ Compute remaining pages as total paper load - total printed pages
-               $input['cRetractedRemaining'] += $input['cRetractedToday'];
-
-               // Detect if paper was changed today
-               if ($a_cnt['Paper Reams'] > $prev['cPaperChanged']) {
-                  // getPaperChanged
-                  $retpages = $self->getPaperChanged($services_id, date('Y-m-d', $i).' 00:00:00', date('Y-m-d', $i).' 23:59:59', $prev['cPaperChanged']);
-                  $input['cPagesToday'] = $retpages[0] + $retpages[1];
-                  $input['cRetractedToday'] = $retpages[2] + $retpages[3];
-                  // Reset remaining pages with default paper ream load
-                  $input['cPagesRemaining'] = 2000 - $retpages[1];
-                  // Compute total paper load
-                  $input['cPaperLoad'] = ($a_cnt['Paper Reams'] + 1) * 2000;
-                  $input['cPaperChanged'] = $a_cnt['Paper Reams'];
-               }
-            }
-            if (isset($a_counters_today['id'])) {
-               $input['id'] = $a_counters_today['id'];
-               $self->update($input);
-            } else {
-               $self->add($input);
-            }
-         }
-      }
-*/
    }
 
 
@@ -1554,7 +1093,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             AND `date` >= '".$date_start."'
             AND `date` <= '".$date_end."'
             AND `glpi_plugin_monitoring_serviceevents`.`state` = 'OK'
-            AND `glpi_plugin_monitoring_serviceevents`.`perf_data` LIKE '%Paper Reams%'
+            AND `glpi_plugin_monitoring_serviceevents`.`perf_data` LIKE '%Cut Pages%'
          ORDER BY `date`";
 
       $resultevent = $DB->query($query);
@@ -1625,7 +1164,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             AND `date` >= '".$date_start."'
             AND `date` <= '".$date_end."'
             AND `glpi_plugin_monitoring_serviceevents`.`state` = 'OK'
-            AND `glpi_plugin_monitoring_serviceevents`.`perf_data` LIKE '%Printer Replace%'
+            AND `glpi_plugin_monitoring_serviceevents`.`perf_data` LIKE '%Cut Pages%'
          ORDER BY `date`";
 
       $resultevent = $DB->query($query);
@@ -1681,7 +1220,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       if (isset($a_word['cut'])) {
          $numFirstCut = 0;
          $numEndCut   = count($ret[0][$a_word['cut']])-1;
-         if (!isset($ret[0][$a_word['cut']][$replace_num])) {
+         if ($replace_num==-1 || !isset($ret[0][$a_word['cut']][$replace_num])) {
             $a_before['Cut Pages'] = $ret[0][$a_word['cut']][$numEndCut] - $ret[0][$a_word['cut']][$numFirstCut];
             $a_after['Cut Pages']  = 0;
          } else {
@@ -1706,7 +1245,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       if (isset($a_word['retract'])) {
          $numFirstRetract = 0;
          $numEndRetract   = count($ret[0][$a_word['cut']])-1;
-         if (!isset($ret[0][$a_word['retract']][$replace_num])) {
+         if ($replace_num==-1 || !isset($ret[0][$a_word['retract']][$replace_num])) {
             $a_before['Retracted Pages'] = $ret[0][$a_word['retract']][$numEndRetract] - $ret[0][$a_word['retract']][$numFirstRetract];
             $a_after['Retracted Pages']  = $ret[0][$a_word['retract']][$numEndRetract] - $ret[0][$a_word['retract']][$numEndRetract];
          } else {
