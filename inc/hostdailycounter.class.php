@@ -76,6 +76,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       ),
       'cPagesTotal'     => array(
          'service'   => 'printer',
+         'type'      => 'total',
          'name'      => 'Total printed pages',
          'default'   => 0,
          'editable'  => true,
@@ -105,6 +106,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       ),
       'cRetractedTotal' => array(
          'service'   => 'printer',
+         'type'      => 'total',
          'name'      => 'Total retracted pages',
          'default'   => 0,
          'editable'  => true,
@@ -155,6 +157,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       ),
       'cCardsInsertedOkTotal' => array(
          'service'   => 'cards',
+         'type'      => 'total',
          'name'      => 'Total inserted cards',
          'default'   => 'previous',
          'editable'  => true,
@@ -169,6 +172,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       ),
       'cCardsInsertedKoTotal' => array(
          'service'   => 'cards',
+         'type'      => 'total',
          'name'      => 'Total bad cards',
          'default'   => 'previous',
          'editable'  => true,
@@ -183,6 +187,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       ),
       'cCardsRemovedTotal' => array(
          'service'   => 'cards',
+         'type'      => 'total',
          'name'      => 'Total removed cards',
          'default'   => 'previous',
          'editable'  => true,
@@ -1422,12 +1427,20 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $a_data = getAllDatasFromTable(
                         'glpi_plugin_monitoring_hostdailycounters',
                         "`day` > '".$this->fields['day']."'
-                           AND `plugin_monitoring_services_id`='".$this->fields['plugin_monitoring_services_id']."'",
+                           AND `hostname`='".$this->fields['hostname']."'",
                         false,
                         '`day` ASC');
             foreach ($a_data as $data) {
                if ($cPagesRemaining < $data['cPagesRemaining']) {
-                  break;
+                  // $data['cPagesRemaining'] = $cPagesRemaining - $data['cPagesToday'];
+                  $cPagesRemaining = $data['cPagesRemaining'];
+                  
+                  $data['cPaperChanged'] += ($this->fields['cPaperChanged'] - $this->oldvalues['cPaperChanged']);
+               
+                  $data['cPaperLoad'] += 2000*($this->fields['cPaperChanged'] - $this->oldvalues['cPaperChanged']);
+               
+                  unset($data['hostname']);
+                  $this->update($data);
                } else {
                   $data['cPagesRemaining'] = $cPagesRemaining - $data['cPagesToday'];
                   $cPagesRemaining = $data['cPagesRemaining'];
@@ -1448,7 +1461,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $a_data = getAllDatasFromTable(
                         'glpi_plugin_monitoring_hostdailycounters',
                         "`day` > '".$this->fields['day']."'
-                           AND `plugin_monitoring_services_id`='".$this->fields['plugin_monitoring_services_id']."'",
+                           AND `hostname`='".$this->fields['hostname']."'",
                         false,
                         '`day` ASC');
             foreach ($a_data as $data) {
@@ -1467,7 +1480,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $a_data = getAllDatasFromTable(
                         'glpi_plugin_monitoring_hostdailycounters',
                         "`day` > '".$this->fields['day']."'
-                           AND `plugin_monitoring_services_id`='".$this->fields['plugin_monitoring_services_id']."'",
+                           AND `hostname`='".$this->fields['hostname']."'",
                         false,
                         '`day` ASC');
             foreach ($a_data as $data) {
@@ -1482,8 +1495,8 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             // Update current day and more recent days ...
             $a_data = getAllDatasFromTable(
                         'glpi_plugin_monitoring_hostdailycounters',
-                        "`day` >= '".$this->fields['day']."'
-                           AND `plugin_monitoring_services_id`='".$this->fields['plugin_monitoring_services_id']."'",
+                        "`day` > '".$this->fields['day']."'
+                           AND `hostname`='".$this->fields['hostname']."'",
                         false,
                         '`day` ASC');
             foreach ($a_data as $data) {
@@ -1500,8 +1513,8 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             // Update current day and more recent days ...
             $a_data = getAllDatasFromTable(
                         'glpi_plugin_monitoring_hostdailycounters',
-                        "`day` >= '".$this->fields['day']."'
-                           AND `plugin_monitoring_services_id`='".$this->fields['plugin_monitoring_services_id']."'",
+                        "`day` > '".$this->fields['day']."'
+                           AND `hostname`='".$this->fields['hostname']."'",
                         false,
                         '`day` ASC');
             foreach ($a_data as $data) {
@@ -1524,6 +1537,12 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
     * - hostsFilter : filter on hostname or hostnames list
     * - daysFilter : filter on day or days list
     * - entity : filter on entity
+    * - service:
+         'printer'
+         'cards'
+    * - type:
+         'daily'
+         'total'
     * - period:
          'currentDay'
          'lastDay'
@@ -1582,6 +1601,17 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          }
       }
 
+      // Counters type
+      if (isset($params['type'])) {
+         $counters = array();
+         foreach (self::$managedCounters as $key => $value) {
+            if (isset($value['type']) && $value['type'] == $params['type']) {
+               $counters[] = $key;
+            }
+         }
+         $fields = "`".implode("`,`",$counters)."`";
+      }
+      
       // Filter
       if (isset($params['filter'])) {
          $where .= " AND ".$params['filter'];
@@ -1626,7 +1656,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          ORDER BY date(day) DESC
          LIMIT $start,$limit
       ";
-      // Toolbox::logInFile("pm-counters", "getHostDailyCounters, query : $query\n");
+      // Toolbox::logInFile("pm-ws", "getHostDailyCounters, query : $query\n");
       $resp = array ();
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
@@ -1636,7 +1666,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          $row['day'] = $data['day'];
          
          foreach (self::$managedCounters as $key => $value) {
-            if (! isset($value['hidden'])) {
+            if (! isset($value['hidden']) && isset($data[$key])) {
                $row[$key] = $data[$key];
             }
          }
@@ -1704,7 +1734,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
     * Request statistics on table with parameters 
     * - start / limit
     * - entity
-    * - type:
+    * - statistics:
          'avg' : average value
          'sum' : cumulated value
     * - filter: filter results by
@@ -1790,9 +1820,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       
       $fields = 'hostname';
       // Group
-      $group = 'hostname';
+      $group = '';
       if (isset($params['group'])) {
-         $group = $params['group'];
+         $group = "GROUP BY ".$params['group'];
          $fields = $params['group'];
       }
       
@@ -1802,11 +1832,11 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          $order = $params['order'];
       }
       
-      // Type
-      if (isset($params['type'])) {
+      // statistics
+      if (isset($params['statistics'])) {
          foreach (self::$managedCounters as $key => $value) {
-            if (! isset($value['hidden']) && isset($value[$params['type']])) {
-               $fields .= ", ROUND( ".$params['type']."(".$key."),2 ) AS ".$params['type']."_$key";
+            if (! isset($value['hidden']) && isset($value[$params['statistics']])) {
+               $fields .= ", ROUND( ".$params['statistics']."(".$key."),2 ) AS ".$params['statistics']."_$key";
             }
          }
       }
@@ -1836,11 +1866,11 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          FROM `glpi_plugin_monitoring_hostdailycounters`
          $join
          $where
-         GROUP BY $group
+         $group
          ORDER BY $order
          LIMIT $start,$limit
       ";
-      // Toolbox::logInFile("pm-counters", "getStatistics, query : $query\n");
+      Toolbox::logInFile("pm-ws", "getStatistics, query : $query\n");
       $resp = array ();
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {

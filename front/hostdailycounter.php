@@ -52,6 +52,8 @@ $pmMessage->getMessages();
 $pmDisplay = new PluginMonitoringDisplay();
 $pmDisplay->menu();
 
+Search::show('PluginMonitoringHostdailycounter');
+
 if (isset($_POST['paperprediction'])) {
    $pmHostdailycounter = new PluginMonitoringHostdailycounter();
    $pmHostdailycounter->predictionEndPaper();
@@ -79,7 +81,5 @@ if (isset($_POST['paperprediction'])) {
 
 // $pmHostdailycounter = new PluginMonitoringHostdailycounter();
 // $pmHostdailycounter->predictionEndPaper();
-Search::show('PluginMonitoringHostdailycounter');
-
 Html::footer();
 ?>
