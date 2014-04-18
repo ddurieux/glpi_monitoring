@@ -70,10 +70,14 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       if ($item->getType()=='Computer') {
          if (self::canView()) {
             // Show list filtered on item, sorted on day descending ...
+            Search::manageGetValues(PluginMonitoringServiceevent::getTypeName());
             Search::showList(PluginMonitoringServiceevent::getTypeName(), array(
-               'field' => array(2), 'searchtype' => array('equals'), 'contains' => array($item->getID()),
-               'sort' => 3, 'order' => 'DESC'
-               ));
+               'field' => array(2), 'searchtype' => array('equals'), 'contains' => array(
+                  $item->getID()),
+                  'sort' => 3, 
+                  'order' => 'DESC'
+               )
+            );
             return true;
          }
       }
