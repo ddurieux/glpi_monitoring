@@ -637,6 +637,139 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
       $daysnameidx = Toolbox::getDaysOfWeekArray();
 
+      /*
+	   * Manage values from previous database server ...
+       */
+      $initialValues = array (
+         'ek3k-cnam-0027' => array('2013-12-27', '278', '6', '0', '0'),
+         'ek3k-cnam-0043' => array('2013-12-26', '271', '6', '0', '0'),
+         'ek3k-cnam-0053' => array('2013-12-26', '295', '5', '0', '0'),
+         'ek3k-cnam-0054' => array('2013-12-26', '203', '5', '0', '0'),
+         'ek3k-cnam-0060' => array('2013-12-26', '235', '7', '0', '0'),
+         'ek3k-cnam-0081' => array('2013-12-25', '127', '4', '0', '0'),
+         'ek3k-cnam-0106' => array('2013-12-25', '126', '5', '0', '0'),
+         'ek3k-cnam-0110' => array('2013-12-25', '99', '4', '0', '0'),
+         'ek3k-cnam-0111' => array('2013-12-25', '109', '3', '0', '0'),
+         'ek3k-cnam-0130' => array('2013-12-23', '116', '3', '0', '0'),
+         'ek3k-cnam-0119' => array('2013-12-25', '114', '3', '1', '0'),
+         'ek3k-cnam-0129' => array('2013-12-25', '141', '4', '2', '0'),
+         'ek6k-cnam-0011' => array('2013-12-25', '108', '4', '2', '0'),
+         'ek6k-cnam-0006' => array('2013-12-25', '338', '12', '4', '0'),
+         'ek3k-cnam-0112' => array('2013-12-25', '106', '3', '5', '0'),
+         'ek6k-cnam-0001' => array('2013-12-25', '318', '63', '6', '1'),
+         'ek3k-cnam-0135' => array('2013-12-25', '98', '4', '7', '0'),
+         'ek3k-cnam-0124' => array('2013-12-25', '134', '4', '9', '0'),
+         'ek3k-cnam-0113' => array('2013-12-25', '151', '6', '11', '0'),
+         'ek3k-cnam-0139' => array('2013-12-25', '144', '2', '13', '0'),
+         'ek3k-cnam-0122' => array('2013-12-25', '109', '3', '17', '0'),
+         'ek3k-cnam-0120' => array('2013-12-25', '152', '5', '25', '0'),
+         'ek3k-cnam-0128' => array('2013-12-25', '153', '4', '25', '0'),
+         'ek3k-cnam-0102' => array('2013-12-25', '143', '4', '31', '0'),
+         'ek3k-cnam-0136' => array('2013-12-25', '126', '3', '34', '0'),
+         'ek3k-cnam-0108' => array('2013-12-25', '140', '3', '40', '0'),
+         'ek3k-cnam-0093' => array('2013-12-25', '225', '5', '41', '0'),
+         'ek3k-cnam-0121' => array('2013-12-25', '141', '3', '41', '0'),
+         'ek3k-cnam-0115' => array('2013-12-25', '186', '3', '46', '0'),
+         'ek3k-cnam-0134' => array('2013-12-25', '192', '4', '54', '0'),
+         'ek6k-cnam-0004' => array('2013-12-25', '297', '7', '57', '2'),
+         'ek3k-cnam-0123' => array('2013-12-25', '180', '4', '63', '0'),
+         'ek3k-cnam-0011' => array('2013-12-25', '286', '6', '63', '2'),
+         'ek3k-cnam-0089' => array('2013-12-25', '244', '4', '66', '0'),
+         'ek3k-cnam-0116' => array('2013-12-25', '203', '4', '77', '0'),
+         'ek3k-cnam-0109' => array('2013-12-25', '182', '7', '79', '3'),
+         'ek3k-cnam-0133' => array('2013-12-25', '182', '3', '83', '0'),
+         'ek3k-cnam-0118' => array('2013-12-25', '194', '4', '87', '0'),
+         'ek3k-cnam-0099' => array('2013-12-25', '264', '8', '89', '1'),
+         'ek3k-cnam-0015' => array('2013-12-25', '395', '12', '98', '6'),
+         'ek3k-cnam-0077' => array('2013-12-25', '334', '6', '100', '2'),
+         'ek3k-cnam-0088' => array('2013-12-25', '313', '4', '105', '0'),
+         'ek3k-cnam-0095' => array('2013-12-25', '351', '8', '106', '0'),
+         'ek3k-cnam-0107' => array('2013-12-25', '242', '5', '108', '0'),
+         'ek3k-cnam-0006' => array('2013-12-25', '483', '7', '111', '1'),
+         'ek3k-cnam-0082' => array('2013-12-25', '303', '7', '120', '2'),
+         'ek3k-cnam-0103' => array('2013-12-25', '267', '5', '130', '1'),
+         'ek3k-cnam-0117' => array('2013-12-25', '384', '4', '135', '0'),
+         'ek3k-cnam-0132' => array('2013-12-25', '226', '3', '135', '1'),
+         'ek3k-cnam-0090' => array('2013-12-25', '497', '7', '138', '2'),
+         'ek3k-cnam-0025' => array('2013-12-25', '398', '9', '143', '1'),
+         'ek3k-cnam-0083' => array('2013-12-25', '280', '6', '143', '1'),
+         'ek3k-cnam-0086' => array('2013-12-23', '437', '5', '156', '0'),
+         'ek3k-cnam-0064' => array('2013-12-25', '346', '7', '156', '2'),
+         'ek3k-cnam-0127' => array('2013-12-25', '272', '4', '161', '1'),
+         'ek3k-cnam-0044' => array('2013-12-25', '405', '6', '170', '-3'),
+         'ek3k-cnam-0114' => array('2013-12-25', '283', '4', '180', '1'),
+         'ek3k-cnam-0084' => array('2013-12-25', '404', '8', '193', '2'),
+         'ek3k-cnam-0105' => array('2013-12-25', '342', '3', '208', '0'),
+         'ek3k-cnam-0101' => array('2013-12-25', '343', '6', '208', '1'),
+         'ek3k-cnam-0104' => array('2013-12-25', '353', '7', '211', '2'),
+         'ek3k-cnam-0076' => array('2013-12-23', '391', '4', '218', '0'),
+         'ek3k-cnam-0055' => array('2013-12-25', '551', '6', '223', '0'),
+         'ek3k-cnam-0079' => array('2013-12-25', '361', '5', '240', '1'),
+         'ek3k-cnam-0041' => array('2013-12-25', '518', '8', '255', '2'),
+         'ek3k-cnam-0075' => array('2013-12-25', '512', '8', '269', '2'),
+         'ek3k-cnam-0047' => array('2013-12-25', '490', '7', '282', '1'),
+         'ek3k-cnam-0051' => array('2013-12-25', '538', '7', '284', '2'),
+         'ek3k-cnam-0078' => array('2013-12-25', '492', '7', '290', '1'),
+         'ek3k-cnam-0096' => array('2013-12-25', '437', '8', '290', '5'),
+         'ek3k-cnam-0052' => array('2013-12-25', '526', '7', '301', '1'),
+         'ek3k-cnam-0069' => array('2013-12-25', '527', '8', '317', '3'),
+         'ek3k-cnam-0058' => array('2013-12-21', '524', '6', '322', '1'),
+         'ek3k-cnam-0098' => array('2013-12-25', '457', '6', '327', '2'),
+         'ek3k-cnam-0068' => array('2013-12-25', '527', '10', '328', '5'),
+         'ek3k-cnam-0080' => array('2013-12-25', '595', '9', '343', '4'),
+         'ek3k-cnam-0094' => array('2013-12-25', '463', '8', '345', '4'),
+         'ek3k-cnam-0057' => array('2013-12-25', '594', '19', '353', '13'),
+         'ek3k-cnam-0046' => array('2013-12-25', '644', '8', '355', '4'),
+         'ek3k-cnam-0091' => array('2013-12-25', '522', '8', '374', '4'),
+         'ek3k-cnam-0050' => array('2013-12-25', '616', '8', '379', '3'),
+         'ek3k-cnam-0049' => array('2013-12-25', '679', '6', '394', '0'),
+         'ek3k-cnam-0062' => array('2013-12-25', '633', '12', '403', '7'),
+         'ek3k-cnam-0065' => array('2013-12-25', '602', '4', '406', '0'),
+         'ek3k-cnam-0033' => array('2013-12-25', '589', '5', '410', '2'),
+         'ek3k-cnam-0097' => array('2013-12-25', '531', '5', '420', '1'),
+         'ek3k-cnam-0035' => array('2013-12-25', '673', '10', '422', '2'),
+         'ek3k-cnam-0074' => array('2013-12-25', '703', '11', '433', '6'),
+         'ek3k-cnam-0040' => array('2013-12-25', '670', '11', '453', '7'),
+         'ek3k-cnam-0087' => array('2013-12-25', '581', '8', '457', '4'),
+         'ek3k-cnam-0071' => array('2013-12-25', '669', '7', '471', '3'),
+         'ek3k-cnam-0072' => array('2013-12-25', '752', '5', '474', '1'),
+         'ek3k-cnam-0070' => array('2013-12-25', '739', '5', '484', '-3'),
+         'ek3k-cnam-0038' => array('2013-12-25', '727', '9', '509', '3'),
+         'ek3k-cnam-0042' => array('2013-12-25', '787', '10', '531', '2'),
+         'ek3k-cnam-0066' => array('2013-12-25', '766', '8', '539', '2'),
+         'ek3k-cnam-0022' => array('2013-12-25', '804', '16', '548', '10'),
+         'ek3k-cnam-0020' => array('2013-12-25', '780', '4', '552', '-2'),
+         'ek3k-cnam-0085' => array('2013-12-25', '676', '8', '565', '5'),
+         'ek3k-cnam-0063' => array('2013-12-25', '746', '6', '581', '2'),
+         'ek3k-cnam-0061' => array('2013-12-25', '833', '9', '595', '5'),
+         'ek3k-cnam-0012' => array('2013-12-25', '833', '9', '612', '5'),
+         'ek3k-cnam-0059' => array('2013-12-25', '866', '16', '614', '9'),
+         'ek3k-cnam-0045' => array('2013-12-25', '854', '6', '642', '1'),
+         'ek3k-cnam-0034' => array('2013-12-25', '889', '10', '654', '5'),
+         'ek3k-cnam-0029' => array('2013-12-25', '931', '14', '663', '8'),
+         'ek3k-cnam-0021' => array('2013-12-25', '890', '12', '667', '3'),
+         'ek3k-cnam-0073' => array('2013-12-25', '943', '15', '674', '10'),
+         'ek3k-cnam-0037' => array('2013-12-25', '950', '16', '685', '7'),
+         'ek3k-cnam-0048' => array('2013-12-25', '923', '10', '690', '6'),
+         'ek3k-cnam-0014' => array('2013-12-25', '1014', '9', '730', '5'),
+         'ek3k-cnam-0026' => array('2013-12-25', '1043', '9', '793', '1'),
+         'ek3k-cnam-0030' => array('2013-12-25', '1168', '18', '821', '4'),
+         'ek3k-cnam-0018' => array('2013-12-25', '1031', '21', '826', '13'),
+         'ek3k-cnam-0056' => array('2013-12-25', '1062', '11', '842', '5'),
+         'ek3k-cnam-0067' => array('2013-12-25', '1156', '8', '866', '2'),
+         'ek3k-cnam-0016' => array('2013-12-25', '1099', '5', '870', '0'),
+         'ek3k-cnam-0010' => array('2013-12-25', '1157', '16', '904', '9'),
+         'ek3k-cnam-0036' => array('2013-12-25', '1133', '13', '929', '9'),
+         'ek3k-cnam-0031' => array('2013-12-25', '1247', '11', '1018', '6'),
+         'ek3k-cnam-0023' => array('2013-12-25', '1326', '24', '1021', '14'),
+         'ek3k-cnam-0028' => array('2013-12-25', '1272', '20', '1040', '15'),
+         'ek3k-cnam-0017' => array('2013-12-25', '1246', '11', '1061', '7'),
+         'ek3k-cnam-0019' => array('2013-12-25', '1401', '11', '1123', '5'),
+         'ek3k-cnam-0032' => array('2013-12-25', '1315', '24', '1129', '19'),
+         'ek3k-cnam-0013' => array('2013-12-25', '1376', '17', '1163', '12'),
+         'ek3k-cnam-0039' => array('2013-12-25', '1465', '22', '1249', '13'),
+         'ek3k-cnam-0024' => array('2013-12-25', '1594', '7', '1337', '3'),
+      );
       // Card reader and printer counters
       // TODO : make it generic from data in managed counters table ...
       $a_services = $pmServices->find("`name`='nsca_reader' OR `name`='Lecteur de cartes' OR `name`='nsca_printer' OR `name`='Imprimante'");
@@ -740,7 +873,6 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $a = strptime($input['day'], '%Y-%m-%d');
             $timestamp = mktime(0, 0, 0, $a['tm_mon']+1, $a['tm_mday'], $a['tm_year']+1900);
             $input['dayname']             = $daysnameidx[date('w', $timestamp)];
-            // $input['daynum']              = date('w', $timestamp);
             
             // Recorded counters types
             if (isset($input['counters'])) {
@@ -781,17 +913,38 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                }
             }
             if ($counters_type == 'printer') {
+               // Set null values ...
+               $input['cPagesToday']         = 0;
+               $input['cPagesTotal']         = $input['cPagesToday'];
+               $input['cPagesRemaining']     = $input['cPagesToday'];
+               $input['cRetractedToday']     = 0;
+               $input['cRetractedTotal']     = $input['cRetractedToday'];
+               $input['cRetractedRemaining'] = $input['cRetractedToday'];
+               
+               if (isset($initialValues[$hostname])) {
+                  Toolbox::logInFile("pm-counters", "Initial values for $hostname : ". serialize($initialValues[$hostname]) ."\n");
+                  $input['cPagesToday']         = $initialValues[$hostname][3];
+                  $input['cPagesTotal']         = $input['cPagesToday'];
+                  $input['cPagesRemaining']     = $input['cPagesToday'];
+                  $input['cPagesInitial']       = $initialValues[$hostname][1];
+                  
+                  $input['cRetractedToday']     = $initialValues[$hostname][3];
+                  $input['cRetractedTotal']     = $input['cRetractedToday'];
+                  $input['cRetractedRemaining'] = $input['cRetractedToday'];
+                  $input['cRetractedInitial']   = $initialValues[$hostname][2];
+               }
+               
                if (count($a_first) != 0) {
                   $input['cRetractedInitial']   = $a_first['Retracted Pages'];
                   $input['cPagesInitial']       = $a_first['Cut Pages'];
 
                   // Compute daily values thanks to first and last day values.
-                  $input['cRetractedTotal']     = $a_last['Retracted Pages'] - $a_first['Retracted Pages'];
-                  $input['cRetractedToday']     = $input['cRetractedTotal'];
-                  $input['cPagesTotal']         = $a_last['Cut Pages'] - $a_first['Cut Pages'];
-                  $input['cPagesToday']         = $input['cPagesTotal'];
-                  $input['cPagesRemaining']     = $input['cPaperLoad'] - $input['cPagesToday'];
-                  $input['cRetractedRemaining'] = $input['cRetractedToday'];
+                  $input['cPagesTotal']         += $a_last['Cut Pages'] - $a_first['Cut Pages'];
+                  $input['cPagesToday']         += $input['cPagesTotal'];
+                  $input['cPagesRemaining']     += $input['cPaperLoad'] - $input['cPagesToday'];
+                  $input['cRetractedTotal']     += $a_last['Retracted Pages'] - $a_first['Retracted Pages'];
+                  $input['cRetractedToday']     += $input['cRetractedTotal'];
+                  $input['cRetractedRemaining'] += $input['cRetractedToday'];
                   
                   // Do not care about bin emptied, printer changed or paper loaded ...
                   $input['cBinEmptied']         = $a_last['Trash Empty'];
@@ -883,6 +1036,10 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                // Set null values ...
                $input['cPagesToday']         = 0;
                $input['cRetractedToday']     = 0;
+               $input['cRetractedTotal']     = $previous['cRetractedTotal'] + $input['cRetractedToday'];
+               $input['cPagesTotal']         = $previous['cPagesTotal'] + $input['cPagesToday'];
+               $input['cPagesRemaining']     = $previous['cPagesRemaining'] - $input['cPagesToday'];
+               $input['cRetractedRemaining'] += $input['cRetractedToday'];
                
                if (count($a_first) != 0) {
                   // Detect if bin was emptied today
@@ -927,7 +1084,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                      $input['cPagesToday'] = $retpages[0]['Cut Pages'] + $retpages[1]['Cut Pages'];
                      $input['cPagesTotal'] = $previous['cPagesTotal'] + $input['cPagesToday'];
                      $input['cRetractedToday'] = $retpages[0]['Retracted Pages'] + $retpages[1]['Retracted Pages'];
-                     $input['cRetractedTotal'] = $previous['cRetractedTotal'] + $input['cRetractedTotal'];
+                     $input['cRetractedTotal'] = $previous['cRetractedTotal'] + $input['cRetractedToday'];
 
                      // TODO : check if really ok ...
                      // Toolbox::logInFile("pm-counters", "input['cPrinterChanged'] : ".$input['cPrinterChanged']."\n");
