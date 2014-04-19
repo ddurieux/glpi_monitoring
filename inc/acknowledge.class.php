@@ -47,7 +47,8 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringAcknowledge extends CommonDBTM {
 
    static function getTypeName($nb=0) {
-      return _n(__('Host acknowledge', 'monitoring'),__('Host acknowledges', 'monitoring'),$nb);
+      return __CLASS__;
+      // return _n(__('Host acknowledge', 'monitoring'),__('Host acknowledges', 'monitoring'),$nb);
    }
 
 
@@ -112,6 +113,10 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
     * @return varchar name of the tab(s) to display
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
+      if ($item->getType() == 'Computer'){
+         return __('Acknowledges', 'monitoring');
+      }
+
       return '';
    }
 
@@ -128,6 +133,17 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
+      if ($item->getType()=='Computer') {
+         if (self::canView()) {
+            // Show list filtered on item, sorted on day descending ...
+            Search::manageGetValues(self::getTypeName());
+            Search::showList(self::getTypeName(), array(
+               'field' => array(2), 'searchtype' => array('equals'), 'contains' => array($item->getID()),
+               'sort' => 4, 'order' => 'DESC'
+               ));
+            return true;
+         }
+      }
       return true;
    }
 
@@ -154,16 +170,6 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
       $tab[2]['massiveaction']      = false;
       $tab[2]['additionalfields']   = array('itemtype');
       $tab[2]['options']            = array('hostname'=>'1');
-
-/*
-      $tab[21]['table']             = $this->getTable();
-      $tab[21]['field']             = 'itemtype';
-      $tab[21]['name']              = __('Associated item type');
-      $tab[21]['datatype']          = 'itemtypename';
-      $tab[21]['itemtype_list']     = 'ticket_types';
-      $tab[21]['nosort']            = true;
-      $tab[21]['massiveaction']     = false;
-*/
 
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'start_time';

@@ -139,8 +139,8 @@ class PluginMonitoringDowntime extends CommonDBTM {
       if ($item->getType()=='Computer') {
          if (self::canView()) {
             // Show list filtered on item, sorted on day descending ...
-            Search::manageGetValues(PluginMonitoringDowntime::getTypeName());
-            Search::showList(PluginMonitoringDowntime::getTypeName(), array(
+            Search::manageGetValues(self::getTypeName());
+            Search::showList(self::getTypeName(), array(
                'field' => array(2), 'searchtype' => array('equals'), 'contains' => array($item->getID()),
                'sort' => 4, 'order' => 'DESC'
                ));

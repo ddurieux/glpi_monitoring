@@ -241,7 +241,8 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       if ($item->getType()=='Computer') {
          if (self::canView()) {
             // Show list filtered on item, sorted on day descending ...
-            Search::showList(PluginMonitoringHostdailycounter::getTypeName(), array(
+            Search::manageGetValues(self::getTypeName());
+            Search::showList(self::getTypeName(), array(
                'field' => array(2), 'searchtype' => array('equals'), 'contains' => array($item->getID()),
                'sort' => 3, 'order' => 'DESC'
                ));

@@ -444,7 +444,7 @@ function plugin_monitoring_addLeftJoin($itemtype,$ref_table,$new_table,$linkfiel
           break;
 
       case 'PluginMonitoringDowntime':
-          // Join between daily counters and computers
+          // Join between downtimes and computers
           if ($new_table.".".$linkfield == "glpi_computers.computers_id") {
              return "
                 INNER JOIN `glpi_plugin_monitoring_hosts`
