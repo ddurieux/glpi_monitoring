@@ -784,6 +784,11 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
          // Simply testing on one host (card and printer services) ...
          // TODO : comment !!!!
+         // ek3k-cnam-0129
+         // if (($services_id != 1503)) {
+            // continue;
+         // }
+         
          // ek3k-cnam-0023 - 2147479585 pages on 2014-02-25 between 12:42 and 16:53! => faulty printer counter : 2147483647 !
          // if (($services_id != 1157)) {
             // continue;
@@ -1371,7 +1376,8 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       $printerReplacementIndex = -1;
       $pagesCountIndex = -1;
       foreach ($a_word as $name=>$word) {
-         $prev = -100000;
+         $prevLow = -1000000000;
+         $prevHigh = 1000000000;
          // Toolbox::logInFile("pm-counters", "getPrinterChanged, replace first index : $name / $word\n");
          if ($name == 'replace') {
             $cnt_printerchanged = -1;
@@ -1391,12 +1397,19 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                   }
                }
             } else {
-               if ($val < $prev) {
+               if ($val < $prevLow) {
                   $pagesCountIndex = $num;
+                  Toolbox::logInFile("pm-counters", "getPrinterChanged, pages count index (Lower) : $pagesCountIndex\n");
+                  break 1;
+               }
+               if ($val > $prevHigh + 500) {
+                  $pagesCountIndex = $num;
+                  Toolbox::logInFile("pm-counters", "getPrinterChanged, pages count index (Higher) : $pagesCountIndex\n");
                   break 1;
                }
             }
-            $prev = $val;
+            $prevLow = $val;
+            $prevHigh = $val;
          }
       }
       Toolbox::logInFile("pm-counters", "getPrinterChanged, printer replacement index : $printerReplacementIndex, pages count index : $pagesCountIndex\n");
