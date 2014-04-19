@@ -349,6 +349,9 @@ function plugin_monitoring_addLeftJoin($itemtype,$ref_table,$new_table,$linkfiel
          // Join between service events and components catalogs
          if ($new_table.".".$linkfield == "glpi_plugin_monitoring_components.plugin_monitoring_components_id") {
             return "
+               LEFT JOIN `glpi_plugin_monitoring_services`
+             ON (`glpi_plugin_monitoring_serviceevents`.`plugin_monitoring_services_id`
+             = `glpi_plugin_monitoring_services`.`id`)
                LEFT JOIN `glpi_plugin_monitoring_components`
              ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_components_id`
              = `glpi_plugin_monitoring_components`.`id`)
