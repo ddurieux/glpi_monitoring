@@ -678,7 +678,7 @@ class PluginMonitoringWebservice {
          return PluginMonitoringHostdailycounter::getLastCountersPerHost($params);
       }
       
-      if (isset($params['type'])) {
+      if (isset($params['statistics'])) {
          return PluginMonitoringHostdailycounter::getStatistics($params);
       }
       
