@@ -95,11 +95,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
     * @return varchar name of the tab(s) to display
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      if ($item->getType() == 'Ticket'){
-         return __('Downtimes', 'monitoring');
-      }
-
-      if ($item->getType() == 'Computer'){
+      if ($item->getType() == 'Ticket' || $item->getType() == 'Computer'){
          return __('Downtimes', 'monitoring');
       }
 
@@ -119,8 +115,8 @@ class PluginMonitoringDowntime extends CommonDBTM {
     */
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
 
+      // Toolbox::logInFile("pm-downtime", "Downtime, displayTabContentForItem ($withtemplate), item concerned : ".$item->getTypeName()."/".$item->getID()."\n");
       if ($item->getType()=='Ticket') {
-         Toolbox::logInFile("pm", "Downtime, displayTabContentForItem, item concerned : ".$item->getField('itemtype')."/".$item->getField('items_id')."\n");
          if (self::canView()) {
             // Find a monitoring host ...
             $host_id=-1;
@@ -335,9 +331,9 @@ class PluginMonitoringDowntime extends CommonDBTM {
       // End time ...
       $end_time = strtotime($this->fields["end_time"]);
 
-      // Toolbox::logInFile("pm", "isInDowntime, now : $now, start : $start_time, end : $end_time\n");
+      // Toolbox::logInFile("pm-downtime", "isInDowntime, now : $now, start : $start_time, end : $end_time\n");
       if (($start_time <= $now) && ($now <= $end_time)) {
-         // Toolbox::logInFile("pm", "isInDowntime, yes, id : ".$this->getID()."\n");
+         // Toolbox::logInFile("pm-downtime", "isInDowntime, yes, id : ".$this->getID()."\n");
          return true;
       }
 
@@ -360,13 +356,13 @@ class PluginMonitoringDowntime extends CommonDBTM {
 
       $this->fields["expired"] = ($now > $end_time);
       $this->update($this->fields);
-      // Toolbox::logInFile("pm", "isExpired, ".$this->fields["expired"]."\n");
+      // Toolbox::logInFile("pm-downtime", "isExpired, ".$this->fields["expired"]."\n");
       return ($this->fields["expired"] == 1);
    }
 
 
    function prepareInputForAdd($input) {
-      // Toolbox::logInFile("pm", "Downtime, prepareInputForAdd\n");
+      // Toolbox::logInFile("pm-downtime", "Downtime, prepareInputForAdd\n");
 
       if ($this->isExpired()) {
          Session::addMessageAfterRedirect(__('Downtime period has already expired!', 'monitoring'), false, ERROR);
@@ -458,7 +454,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
     * @return nothing
    **/
    function post_addItem() {
-      // Toolbox::logInFile("pm", "Downtime, post_add\n");
+      // Toolbox::logInFile("pm-downtime", "Downtime, post_add\n");
 
    }
 
@@ -470,7 +466,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
     * @return bool : true if item need to be deleted else false
    **/
    function pre_deleteItem() {
-      // Toolbox::logInFile("pm", "Downtime, pre_deleteItem\n");
+      // Toolbox::logInFile("pm-downtime", "Downtime, pre_deleteItem\n");
 
       $user = new User();
       $user->getFromDB($this->fields['users_id']);
@@ -679,7 +675,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
       global $DB;
 
       $query = "UPDATE `glpi_plugin_monitoring_downtimes` SET `expired` = '1' WHERE `expired` = '0' AND `end_time` < NOW();";
-      // Toolbox::logInFile("pm", "cronDowntimesExpired, query : $query\n");
+      // Toolbox::logInFile("pm-downtime", "cronDowntimesExpired, query : $query\n");
       $DB->query($query);
 
       return true;
