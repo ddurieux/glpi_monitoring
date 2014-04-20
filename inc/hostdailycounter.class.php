@@ -569,7 +569,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
       // Check all counters for zero detection ...
       foreach (self::$managedCounters as $key => $value) {
-         if (isset($value['zeroDetection']) && ($checkable[$key] >= 0)) {
+         if (isset($value['zeroDetection'])) {
             $firstDetection = false;
             $daysnameidx = Toolbox::getDaysOfWeekArray();
             $todayNum = date('w', date('U'));
@@ -642,11 +642,6 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 	   * Manage values from previous database server ...
        */
       $initialValues = array (
-         'ek3k-cnam-0027' => array('2013-12-27', '278', '6', '0', '0'),
-         'ek3k-cnam-0043' => array('2013-12-26', '271', '6', '0', '0'),
-         'ek3k-cnam-0053' => array('2013-12-26', '295', '5', '0', '0'),
-         'ek3k-cnam-0054' => array('2013-12-26', '203', '5', '0', '0'),
-         'ek3k-cnam-0060' => array('2013-12-26', '235', '7', '0', '0'),
          'ek3k-cnam-0081' => array('2013-12-25', '127', '4', '0', '0'),
          'ek3k-cnam-0106' => array('2013-12-25', '126', '5', '0', '0'),
          'ek3k-cnam-0110' => array('2013-12-25', '99', '4', '0', '0'),
@@ -922,7 +917,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                // Set null values ...
                $input['cPagesToday']         = 0;
                $input['cPagesTotal']         = $input['cPagesToday'];
-               $input['cPagesRemaining']     = $input['cPagesToday'];
+               $input['cPagesRemaining']     = 2000 - $input['cPagesToday'];
                $input['cRetractedToday']     = 0;
                $input['cRetractedTotal']     = $input['cRetractedToday'];
                $input['cRetractedRemaining'] = $input['cRetractedToday'];
@@ -931,26 +926,28 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                   Toolbox::logInFile("pm-counters", "Initial values for $hostname : ". serialize($initialValues[$hostname]) ."\n");
                   $input['cPagesToday']         = $initialValues[$hostname][3];
                   $input['cPagesTotal']         = $input['cPagesToday'];
-                  $input['cPagesRemaining']     = $input['cPagesToday'];
+                  $input['cPagesRemaining']     = $input['cPaperLoad'] - $input['cPagesToday'];
                   $input['cPagesInitial']       = $initialValues[$hostname][1];
                   
-                  $input['cRetractedToday']     = $initialValues[$hostname][3];
+                  $input['cRetractedToday']     = $initialValues[$hostname][4];
                   $input['cRetractedTotal']     = $input['cRetractedToday'];
                   $input['cRetractedRemaining'] = $input['cRetractedToday'];
                   $input['cRetractedInitial']   = $initialValues[$hostname][2];
+               } else {
+                  if (count($a_first) != 0) {
+                     $input['cRetractedInitial']   = $a_first['Retracted Pages'];
+                     $input['cPagesInitial']       = $a_first['Cut Pages'];
+                  }
                }
                
                if (count($a_first) != 0) {
-                  $input['cRetractedInitial']   = $a_first['Retracted Pages'];
-                  $input['cPagesInitial']       = $a_first['Cut Pages'];
-
                   // Compute daily values thanks to first and last day values.
                   $input['cPagesTotal']         += $a_last['Cut Pages'] - $a_first['Cut Pages'];
-                  $input['cPagesToday']         += $input['cPagesTotal'];
-                  $input['cPagesRemaining']     += $input['cPaperLoad'] - $input['cPagesToday'];
+                  $input['cPagesToday']         += $a_last['Cut Pages'] - $a_first['Cut Pages'];
+                  $input['cPagesRemaining']     = $input['cPaperLoad'] - $input['cPagesToday'];
                   $input['cRetractedTotal']     += $a_last['Retracted Pages'] - $a_first['Retracted Pages'];
-                  $input['cRetractedToday']     += $input['cRetractedTotal'];
-                  $input['cRetractedRemaining'] += $input['cRetractedToday'];
+                  $input['cRetractedToday']     += $a_last['Retracted Pages'] - $a_first['Retracted Pages'];
+                  $input['cRetractedRemaining'] = $input['cRetractedTotal'];
                   
                   // Do not care about bin emptied, printer changed or paper loaded ...
                   $input['cBinEmptied']         = $a_last['Trash Empty'];
@@ -972,12 +969,13 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
          // Here it exists, at min, one host daily counters line ... and a_counters is the last known counters.
          $previous = $a_counters;
-         for ($i = (strtotime($a_counters['day'])); $i < strtotime(date('Y-m-d').' 00:00:00'); $i += 86400) {
+         for ($i = (strtotime($a_counters['day'])); $i < strtotime(date('Y-m-d').' 23:59:59'); $i += 86400) {
             $input = array();
+            
+            Toolbox::logInFile("pm-counters", "Day : {$a_counters['day']} -> ".date('Y-m-d').' 00:00:00'."\n");
             
             // Hostname / day record
             $input['day']                 = date('Y-m-d', $i);
-            // $input['daynum']              = date('w', $i);
             $input['dayname']             = $daysnameidx[date('w', $i)];
             $input['hostname']            = $hostname;
 
@@ -1045,7 +1043,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                $input['cRetractedTotal']     = $previous['cRetractedTotal'] + $input['cRetractedToday'];
                $input['cPagesTotal']         = $previous['cPagesTotal'] + $input['cPagesToday'];
                $input['cPagesRemaining']     = $previous['cPagesRemaining'] - $input['cPagesToday'];
-               $input['cRetractedRemaining'] += $input['cRetractedToday'];
+               $input['cRetractedRemaining'] = $previous['cRetractedRemaining'] + $input['cRetractedToday'];
                
                if (count($a_first) != 0) {
                   // Detect if bin was emptied today
@@ -1106,7 +1104,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                      $input['cRetractedInitial'] = $retpages[3];
 
                      $input['cPagesRemaining'] = $input['cPaperLoad'] - $input['cPagesTotal'];
-                     $input['cRetractedRemaining'] += $input['cRetractedToday'];
+                     $input['cRetractedRemaining'] = $previous['cRetractedRemaining'] + $input['cRetractedToday'];
                   } else {
                      // When printer has not been changed :
                      // 1/ Compute daily values thanks to first and last day values.
@@ -1118,7 +1116,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                      // 3/ Decrease remaining pages with printed pages today
                      $input['cPagesRemaining']     = $previous['cPagesRemaining'] - $input['cPagesToday'];
                      // 4/ Increase retracted remaining pages with retracted pages today
-                     $input['cRetractedRemaining'] += $input['cRetractedToday'];
+                     $input['cRetractedRemaining'] = $previous['cRetractedRemaining'] + $input['cRetractedToday'];
 
                      // Detect if paper was changed today
                      if ($a_last['Paper Reams'] > $previous['cPaperChanged']) {
