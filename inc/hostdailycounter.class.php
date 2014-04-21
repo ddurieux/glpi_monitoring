@@ -638,6 +638,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
       $daysnameidx = Toolbox::getDaysOfWeekArray();
 
+      Toolbox::logInFile("pm-counters", "Begin ---------- \n");
       /*
 	   * Manage values from previous database server ...
        */
@@ -785,6 +786,15 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             // continue;
          // }
          
+         // ek3k-cnam-0010
+         // if (($services_id != 1151)) {
+            // continue;
+         // }
+         // ek3k-cnam-0336
+         // if (($services_id != 4659)) {
+            // continue;
+         // }
+
          // ek3k-cnam-0023 - 2147479585 pages on 2014-02-25 between 12:42 and 16:53! => faulty printer counter : 2147483647 !
          // if (($services_id != 1157)) {
             // continue;
@@ -886,9 +896,11 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
             // Fetch perfdata of 1st event in day ...
             $a_first = $self->getFirstValues($services_id, $input['day']);
+            Toolbox::logInFile("pm-counters", "First values : ".serialize($a_first)."\n");
 
             // Fetch perfdata of last event in day to update counters ...
             $a_last = $self->getLastValues($services_id, $input['day']);
+            Toolbox::logInFile("pm-counters", "Last values : ".serialize($a_last)."\n");
             
             // Set default values for counters ...
             foreach (self::$managedCounters as $key => $value) {
@@ -916,11 +928,11 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             if ($counters_type == 'printer') {
                // Set null values ...
                $input['cPagesToday']         = 0;
-               $input['cPagesTotal']         = $input['cPagesToday'];
+               $input['cPagesTotal']         = 0;
                $input['cPagesRemaining']     = 2000 - $input['cPagesToday'];
                $input['cRetractedToday']     = 0;
-               $input['cRetractedTotal']     = $input['cRetractedToday'];
-               $input['cRetractedRemaining'] = $input['cRetractedToday'];
+               $input['cRetractedTotal']     = 0;
+               $input['cRetractedRemaining'] = 0;
                
                if (isset($initialValues[$hostname])) {
                   Toolbox::logInFile("pm-counters", "Initial values for $hostname : ". serialize($initialValues[$hostname]) ."\n");
@@ -942,11 +954,11 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                
                if (count($a_first) != 0) {
                   // Compute daily values thanks to first and last day values.
-                  $input['cPagesTotal']         += $a_last['Cut Pages'] - $a_first['Cut Pages'];
                   $input['cPagesToday']         += $a_last['Cut Pages'] - $a_first['Cut Pages'];
+                  $input['cPagesTotal']         = $input['cPagesToday'];
                   $input['cPagesRemaining']     = $input['cPaperLoad'] - $input['cPagesToday'];
-                  $input['cRetractedTotal']     += $a_last['Retracted Pages'] - $a_first['Retracted Pages'];
                   $input['cRetractedToday']     += $a_last['Retracted Pages'] - $a_first['Retracted Pages'];
+                  $input['cRetractedTotal']     = $input['cRetractedToday'];
                   $input['cRetractedRemaining'] = $input['cRetractedTotal'];
                   
                   // Do not care about bin emptied, printer changed or paper loaded ...
@@ -972,13 +984,13 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          for ($i = (strtotime($a_counters['day'])); $i < strtotime(date('Y-m-d').' 23:59:59'); $i += 86400) {
             $input = array();
             
-            Toolbox::logInFile("pm-counters", "Day : {$a_counters['day']} -> ".date('Y-m-d').' 00:00:00'."\n");
-            
             // Hostname / day record
             $input['day']                 = date('Y-m-d', $i);
             $input['dayname']             = $daysnameidx[date('w', $i)];
             $input['hostname']            = $hostname;
 
+            Toolbox::logInFile("pm-counters", "Day : ". $input['day'] . " -> ".date('Y-m-d').' 00:00:00'."\n");
+            
             // Fetch perfdata of 1st event in day ...
             $a_first = $self->getFirstValues($services_id, $input['day']);
             Toolbox::logInFile("pm-counters", "First values : ".serialize($a_first)."\n");
@@ -1103,7 +1115,8 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                      $input['cPagesInitial'] = $retpages[2];
                      $input['cRetractedInitial'] = $retpages[3];
 
-                     $input['cPagesRemaining'] = $input['cPaperLoad'] - $input['cPagesTotal'];
+                     $input['cPagesRemaining'] = $previous['cPagesRemaining'] - $input['cPagesToday'];
+                     //$input['cPaperLoad'] - $input['cPagesTotal'];
                      $input['cRetractedRemaining'] = $previous['cRetractedRemaining'] + $input['cRetractedToday'];
                   } else {
                      // When printer has not been changed :
@@ -1148,6 +1161,8 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $previous = $input;
          }
       }
+
+      Toolbox::logInFile("pm-counters", "End ---------- \n");
    }
 
 
@@ -1169,7 +1184,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                (SELECT MIN(glpi_plugin_monitoring_serviceevents.id) AS min
                 FROM glpi_plugin_monitoring_serviceevents
                 WHERE `plugin_monitoring_services_id` = '".$services_id."'
-                   AND `glpi_plugin_monitoring_serviceevents`.`perf_data` != ''
+                   AND `glpi_plugin_monitoring_serviceevents`.`perf_data` LIKE '%Cut Pages%'
                    AND `glpi_plugin_monitoring_serviceevents`.`perf_data` NOT LIKE '\'Cut Pages\'=0c%'
                    AND `glpi_plugin_monitoring_serviceevents`.`perf_data` NOT LIKE '\'Cut Pages\'=2147483647c%'
                    AND `glpi_plugin_monitoring_serviceevents`.`date` >= '".$date." 00:00:00'
@@ -1213,7 +1228,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                (SELECT MAX(glpi_plugin_monitoring_serviceevents.id) AS max
                 FROM glpi_plugin_monitoring_serviceevents
                 WHERE `plugin_monitoring_services_id` = '".$services_id."'
-                   AND `glpi_plugin_monitoring_serviceevents`.`perf_data` != ''
+                   AND `glpi_plugin_monitoring_serviceevents`.`perf_data` LIKE '%Cut Pages%'
                    AND `glpi_plugin_monitoring_serviceevents`.`perf_data` NOT LIKE '\'Cut Pages\'=0c%'
                    AND `glpi_plugin_monitoring_serviceevents`.`perf_data` NOT LIKE '\'Cut Pages\'=2147483647c%'
                    AND `glpi_plugin_monitoring_serviceevents`.`date` >= '".$date." 00:00:00'
@@ -1356,7 +1371,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
               $pmComponent->fields['graph_template'],
               $date_start,
               $date_end);
-      Toolbox::logInFile("pm-counters", "getPrinterChanged, ret : ".serialize($ret[4])."\n");
+      // Toolbox::logInFile("pm-counters", "getPrinterChanged, ret : ".serialize($ret[4])."\n");
 
       $a_word = array();
       // Reverse for being sure that printer replace is first if exists ...
@@ -1757,7 +1772,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          if (is_array($params['hostsFilter'])) {
             $where .= " AND `hostname` IN ('" . implode("','",$params['hostsFilter']) . "')";
          } else {
-            $where .= " AND `hostname` = " . $params['hostsFilter'];
+            $where .= " AND `hostname` = '" . $params['hostsFilter'] . "'";
          }
       }
 
@@ -1825,7 +1840,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          ORDER BY date(day) DESC
          LIMIT $start,$limit
       ";
-      // Toolbox::logInFile("pm-ws", "getHostDailyCounters, query : $query\n");
+      Toolbox::logInFile("pm-ws", "getHostDailyCounters, query : $query\n");
       $resp = array ();
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
@@ -2039,7 +2054,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          ORDER BY $order
          LIMIT $start,$limit
       ";
-      Toolbox::logInFile("pm-ws", "getStatistics, query : $query\n");
+      // Toolbox::logInFile("pm-ws", "getStatistics, query : $query\n");
       $resp = array ();
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
