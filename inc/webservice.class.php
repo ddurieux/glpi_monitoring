@@ -214,7 +214,6 @@ class PluginMonitoringWebservice {
          return $response;
       }
 
-      // Toolbox::logInFile("pm-ws", "methodDashboard, view : ".$params['view']."\n");
       $pm = new PluginMonitoringDisplay();
       if ($params['view'] == 'Hosts') {
          return $pm->displayHostsCounters(0);
@@ -400,6 +399,7 @@ class PluginMonitoringWebservice {
       $query = "
          SELECT
             `glpi_entities`.`name` AS entity_name,
+            `glpi_computers`.`id`,
             `glpi_computers`.`name`,
             `glpi_plugin_monitoring_hosts`.`state`, 
             `glpi_plugin_monitoring_hosts`.`state_type`, 
