@@ -1184,7 +1184,11 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                (SELECT MIN(glpi_plugin_monitoring_serviceevents.id) AS min
                 FROM glpi_plugin_monitoring_serviceevents
                 WHERE `plugin_monitoring_services_id` = '".$services_id."'
-                   AND `glpi_plugin_monitoring_serviceevents`.`perf_data` LIKE '%Cut Pages%'
+                   AND (
+                     `glpi_plugin_monitoring_serviceevents`.`perf_data` LIKE '%Cut Pages%'
+                     OR
+                     `glpi_plugin_monitoring_serviceevents`.`perf_data` LIKE '%Powered Cards%'
+                   )
                    AND `glpi_plugin_monitoring_serviceevents`.`perf_data` NOT LIKE '\'Cut Pages\'=0c%'
                    AND `glpi_plugin_monitoring_serviceevents`.`perf_data` NOT LIKE '\'Cut Pages\'=2147483647c%'
                    AND `glpi_plugin_monitoring_serviceevents`.`date` >= '".$date." 00:00:00'
@@ -1228,7 +1232,11 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                (SELECT MAX(glpi_plugin_monitoring_serviceevents.id) AS max
                 FROM glpi_plugin_monitoring_serviceevents
                 WHERE `plugin_monitoring_services_id` = '".$services_id."'
-                   AND `glpi_plugin_monitoring_serviceevents`.`perf_data` LIKE '%Cut Pages%'
+                   AND (
+                     `glpi_plugin_monitoring_serviceevents`.`perf_data` LIKE '%Cut Pages%'
+                     OR
+                     `glpi_plugin_monitoring_serviceevents`.`perf_data` LIKE '%Powered Cards%'
+                   )
                    AND `glpi_plugin_monitoring_serviceevents`.`perf_data` NOT LIKE '\'Cut Pages\'=0c%'
                    AND `glpi_plugin_monitoring_serviceevents`.`perf_data` NOT LIKE '\'Cut Pages\'=2147483647c%'
                    AND `glpi_plugin_monitoring_serviceevents`.`date` >= '".$date." 00:00:00'
