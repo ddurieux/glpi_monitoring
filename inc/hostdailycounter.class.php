@@ -575,12 +575,12 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $todayNum = date('w', date('U'));
             $todayName = $daysnameidx[$todayNum];
             foreach ($a_checkables as $checkable) {
-               Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname'] . "', counter : ". $checkable[$key] . " (". $value['zeroDetection']['days'] . " / ". $value['zeroDetection']['counter'] . ")\n");
+               Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname'] . "', counter : ". $checkable[$key] . " (". $value['zeroDetection']['days'] . " days / ". $value['zeroDetection']['counter'] . ")\n");
                
                $filter = array (
                   'start'  => 0,
                   'limit'  => 2000,
-                  'type'   => 'avg',
+                  'statistics'   => 'avg',
                   'group'  => 'hostname, dayname'
                );
 
@@ -2063,6 +2063,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          LIMIT $start,$limit
       ";
       // Toolbox::logInFile("pm-ws", "getStatistics, query : $query\n");
+      // Toolbox::logInFile("pm-checkCounters", "getStatistics, query : $query\n");
       $resp = array ();
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
