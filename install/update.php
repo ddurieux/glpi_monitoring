@@ -3248,8 +3248,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                     `id` INT(11) NOT NULL AUTO_INCREMENT,
                     `hostname` VARCHAR(255) NOT NULL DEFAULT '',
                     `day` DATE NOT NULL DEFAULT '2013-01-01',
-                    PRIMARY KEY (`id`),
-                    KEY (`hostname`,`day`)
+                     PRIMARY KEY (`id`),
+                     KEY (`hostname`,`day`), 
+                     KEY (`hostname`,`dayname`)
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query);
       }

@@ -964,7 +964,8 @@ CREATE TABLE `glpi_plugin_monitoring_hostdailycounters` (
 	`cCardsRemovedToday` int(11) NOT NULL DEFAULT '0',
 	`cCardsRemovedTotal` int(11) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`id`),
-	KEY (`hostname`,`day`)
+	KEY (`hostname`,`day`), 
+	KEY (`hostname`,`dayname`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
