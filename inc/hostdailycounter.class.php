@@ -67,132 +67,134 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
    'Total removed cards'
 */
 
-   static $managedCounters = array(
-      'cPagesInitial'   => array(
-         'service'   => 'printer',
-         'name'      => 'Initial counter for printed pages',
-         'default'   => 0,
-         'hidden'    => true,
-      ),
-      'cPagesTotal'     => array(
-         'service'   => 'printer',
-         'type'      => 'total',
-         'name'      => 'Total printed pages',
-         'default'   => 0,
-         'editable'  => true,
-      ),
-      'cPagesToday'     => array(
-         'service'   => 'printer',
-         'name'      => 'Daily printed pages',
-         'default'   => 0,
-         'editable'  => true,
-         'avg'       => true,
-         'sum'       => true,
-      ),
-      'cPagesRemaining' => array(
-         'service'   => 'printer',
-         'name'            => 'Remaining pages',
-         'default'         => 2000,
-         'lowThreshold'    => 200,
-         'zeroDetection'   => array (
-            "days"      => 3,
-            "counter"   => 'cPagesToday',
-         )
-      ),
-      'cRetractedInitial' => array(
-         'service'   => 'printer',
-         'name'      => 'Initial counter for retracted pages',
-         'default'   => 0,
-      ),
-      'cRetractedTotal' => array(
-         'service'   => 'printer',
-         'type'      => 'total',
-         'name'      => 'Total retracted pages',
-         'default'   => 0,
-         'editable'  => true,
-      ),
-      'cRetractedToday' => array(
-         'service'   => 'printer',
-         'name'      => 'Daily retracted pages',
-         'default'   => 0,
-         'editable'  => true,
-         'avg'       => true,
-         'sum'       => true,
-      ),
-      'cRetractedRemaining' => array(
-         'service'   => 'printer',
-         'name'     => 'Stored retracted pages',
-         'default'  => 0,
-      ),
-      'cPrinterChanged' => array(
-         'service'   => 'printer',
-         'name'     => 'Total for printer changed',
-         'default'  => 0,
-         'editable' => true,
-      ),
-      'cPaperChanged' => array(
-         'service'   => 'printer',
-         'name'     => 'Total for paper changed',
-         'default'  => 0,
-         'editable' => true,
-      ),
-      'cBinEmptied'   => array(
-         'service'   => 'printer',
-         'name'     => 'Total for bin emptied',
-         'default'  => 0,
-         'editable' => true,
-      ),
-      'cPaperLoad'    => array(
-         'service'   => 'printer',
-         'name'     => 'Paper load',
-         'default'  => 2000,
-      ),
-      'cCardsInsertedOkToday' => array(
-         'service'   => 'cards',
-         'name'      => 'Daily inserted cards',
-         'default'   => 0,
-         'editable'  => true,
-         'avg'       => true,
-         'sum'       => true,
-      ),
-      'cCardsInsertedOkTotal' => array(
-         'service'   => 'cards',
-         'type'      => 'total',
-         'name'      => 'Total inserted cards',
-         'default'   => 'previous',
-         'editable'  => true,
-      ),
-      'cCardsInsertedKoToday' => array(
-         'service'   => 'cards',
-         'name'      => 'Daily bad cards',
-         'default'   => 0,
-         'editable'  => true,
-         'avg'       => true,
-         'sum'       => true,
-      ),
-      'cCardsInsertedKoTotal' => array(
-         'service'   => 'cards',
-         'type'      => 'total',
-         'name'      => 'Total bad cards',
-         'default'   => 'previous',
-         'editable'  => true,
-      ),
-      'cCardsRemovedToday' => array(
-         'service'   => 'cards',
-         'name'      => 'Daily removed cards',
-         'default'   => 0,
-         'editable'  => true,
-         'avg'       => true,
-         'sum'       => true,
-      ),
-      'cCardsRemovedTotal' => array(
-         'service'   => 'cards',
-         'type'      => 'total',
-         'name'      => 'Total removed cards',
-         'default'   => 'previous',
-         'editable'  => true,
-      ),
-   );
+   static function getManagedCounters() {
+      return array(
+         'cPagesInitial'   => array(
+            'service'   => 'printer',
+            'name'      => __('Initial counter for printed pages', 'monitoring'),
+            'default'   => 0,
+            'hidden'    => true,
+         ),
+         'cPagesTotal'     => array(
+            'service'   => 'printer',
+            'type'      => 'total',
+            'name'      => 'Total printed pages',
+            'default'   => 0,
+            'editable'  => true,
+         ),
+         'cPagesToday'     => array(
+            'service'   => 'printer',
+            'name'      => 'Daily printed pages',
+            'default'   => 0,
+            'editable'  => true,
+            'avg'       => true,
+            'sum'       => true,
+         ),
+         'cPagesRemaining' => array(
+            'service'   => 'printer',
+            'name'            => 'Remaining pages',
+            'default'         => 2000,
+            'lowThreshold'    => 200,
+            'zeroDetection'   => array (
+               "days"      => 3,
+               "counter"   => 'cPagesToday',
+            )
+         ),
+         'cRetractedInitial' => array(
+            'service'   => 'printer',
+            'name'      => 'Initial counter for retracted pages',
+            'default'   => 0,
+         ),
+         'cRetractedTotal' => array(
+            'service'   => 'printer',
+            'type'      => 'total',
+            'name'      => 'Total retracted pages',
+            'default'   => 0,
+            'editable'  => true,
+         ),
+         'cRetractedToday' => array(
+            'service'   => 'printer',
+            'name'      => 'Daily retracted pages',
+            'default'   => 0,
+            'editable'  => true,
+            'avg'       => true,
+            'sum'       => true,
+         ),
+         'cRetractedRemaining' => array(
+            'service'   => 'printer',
+            'name'     => 'Stored retracted pages',
+            'default'  => 0,
+         ),
+         'cPrinterChanged' => array(
+            'service'   => 'printer',
+            'name'     => 'Total for printer changed',
+            'default'  => 0,
+            'editable' => true,
+         ),
+         'cPaperChanged' => array(
+            'service'   => 'printer',
+            'name'     => 'Total for paper changed',
+            'default'  => 0,
+            'editable' => true,
+         ),
+         'cBinEmptied'   => array(
+            'service'   => 'printer',
+            'name'     => 'Total for bin emptied',
+            'default'  => 0,
+            'editable' => true,
+         ),
+         'cPaperLoad'    => array(
+            'service'   => 'printer',
+            'name'     => 'Paper load',
+            'default'  => 2000,
+         ),
+         'cCardsInsertedOkToday' => array(
+            'service'   => 'cards',
+            'name'      => 'Daily inserted cards',
+            'default'   => 0,
+            'editable'  => true,
+            'avg'       => true,
+            'sum'       => true,
+         ),
+         'cCardsInsertedOkTotal' => array(
+            'service'   => 'cards',
+            'type'      => 'total',
+            'name'      => 'Total inserted cards',
+            'default'   => 'previous',
+            'editable'  => true,
+         ),
+         'cCardsInsertedKoToday' => array(
+            'service'   => 'cards',
+            'name'      => 'Daily bad cards',
+            'default'   => 0,
+            'editable'  => true,
+            'avg'       => true,
+            'sum'       => true,
+         ),
+         'cCardsInsertedKoTotal' => array(
+            'service'   => 'cards',
+            'type'      => 'total',
+            'name'      => 'Total bad cards',
+            'default'   => 'previous',
+            'editable'  => true,
+         ),
+         'cCardsRemovedToday' => array(
+            'service'   => 'cards',
+            'name'      => 'Daily removed cards',
+            'default'   => 0,
+            'editable'  => true,
+            'avg'       => true,
+            'sum'       => true,
+         ),
+         'cCardsRemovedTotal' => array(
+            'service'   => 'cards',
+            'type'      => 'total',
+            'name'      => 'Total removed cards',
+            'default'   => 'previous',
+            'editable'  => true,
+         ),
+      );
+   }
 
 
    static function getTypeName($nb=0) {
@@ -277,11 +279,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       $tab[3]['massiveaction']   = false;
 
       $i = 4;
-      foreach (self::$managedCounters as $key => $value) {
+      foreach (self::getManagedCounters() as $key => $value) {
          $tab[$i]['table']          = $this->getTable();
          $tab[$i]['field']          = $key;
-         // TODO : Translation
-         $tab[$i]['name']           = $value['name'];
          $tab[$i]['name']           = __($value['name'], 'monitoring');
 
          $tab[$i]['datatype']       = 'specific';
@@ -325,7 +325,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       $this->fields['hostname'] = $hostname;
       $this->fields['day']      = $date;
 
-      foreach (self::$managedCounters as $key => $value) {
+      foreach (self::getManagedCounters() as $key => $value) {
          if ($value['default'] == 'previous') {
             $this->fields[$key] = $previousRecordExists ? $previousRecordExists->fields[$key] : 0;
          } else if ($value['default'] == 'reset') {
@@ -364,16 +364,16 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       echo Html::convDate($this->getField('day'))."</strong></td>";
       echo "</tr>";
 
-      echo "<tr><td colspan='".count(self::$managedCounters)."'><hr/></td></tr>";
+      echo "<tr><td colspan='".count(self::getManagedCounters())."'><hr/></td></tr>";
 
       echo "<tr class='tab_bg_1'>";
-      foreach (self::$managedCounters as $key => $value) {
+      foreach (self::getManagedCounters() as $key => $value) {
          echo "<td align='center'>".__($value['name'], 'monitoring')."</td>";
       }
       echo "</tr>";
 
       echo "<tr class='tab_bg_2'>";
-      foreach (self::$managedCounters as $key => $value) {
+      foreach (self::getManagedCounters() as $key => $value) {
         if ($this->canUpdate() and isset($value['editable'])) {
             echo "<td><input type='text' name='$key' value='".$this->fields[$key]."' size='8'/></td>";
          } else {
@@ -389,7 +389,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          echo "<tr><td colspan='100'></tr></tr>";
          echo "<tr><td colspan='100'>".__('Next day counters: ', 'monitoring')."</tr></tr>";
          echo "<tr class='tab_bg_2'>";
-         foreach (self::$managedCounters as $key => $value) {
+         foreach (self::getManagedCounters() as $key => $value) {
             echo "<td>".$pmCounters->getValueToDisplay($key, $a_olderCounters[$key])."</td>";
          }
          echo "</tr>";
@@ -402,7 +402,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          echo "<tr><td colspan='100'></tr></tr>";
          echo "<tr><td colspan='100'>".__('Previous day counters: ', 'monitoring')."</tr></tr>";
          echo "<tr class='tab_bg_2'>";
-         foreach (self::$managedCounters as $key => $value) {
+         foreach (self::getManagedCounters() as $key => $value) {
             echo "<td>".$pmCounters->getValueToDisplay($key, $a_olderCounters[$key])."</td>";
          }
          echo "</tr>";
@@ -460,7 +460,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       echo "</tr>";
 
       // Check all counters for negative values ...
-      foreach (self::$managedCounters as $key => $value) {
+      foreach (self::getManagedCounters() as $key => $value) {
          foreach ($a_checkables as $checkable) {
             // Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname']."', day : ".$checkable['day']."\n");
             if ($checkable[$key] < 0) {
@@ -513,7 +513,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       // Check all counters for negative values ...
       $firstDetection = false;
       foreach ($a_checkables as $checkable) {
-         foreach (self::$managedCounters as $key => $value) {
+         foreach (self::getManagedCounters() as $key => $value) {
             // Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname']."', day : ".$checkable['day']."\n");
             if ($checkable[$key] < 0) {
                if (! $firstDetection) {
@@ -537,7 +537,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       // Check all counters for low threshold values ...
       $firstDetection = false;
       foreach ($a_checkables as $checkable) {
-         foreach (self::$managedCounters as $key => $value) {
+         foreach (self::getManagedCounters() as $key => $value) {
             // Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname']."', day : ".$checkable['day']."\n");
             if (isset($value['lowThreshold']) && ($checkable[$key] >= 0) && ($checkable[$key] < $value['lowThreshold'])) {
                if (! $firstDetection) {
@@ -568,7 +568,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       );
 
       // Check all counters for zero detection ...
-      foreach (self::$managedCounters as $key => $value) {
+      foreach (self::getManagedCounters() as $key => $value) {
          if (isset($value['zeroDetection'])) {
             $firstDetection = false;
             $daysnameidx = Toolbox::getDaysOfWeekArray();
@@ -903,7 +903,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             Toolbox::logInFile("pm-counters", "Last values : ".serialize($a_last)."\n");
             
             // Set default values for counters ...
-            foreach (self::$managedCounters as $key => $value) {
+            foreach (self::getManagedCounters() as $key => $value) {
                if (isset($value['service']) && $value['service'] == $counters_type) {
                   if (isset($value['default'])) {
                      $input[$key] = $value['default'];
@@ -1022,7 +1022,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             }
 
             // Set default values for counters from previous record ...
-            foreach (self::$managedCounters as $key => $value) {
+            foreach (self::getManagedCounters() as $key => $value) {
                if (isset($value['service']) && $value['service'] == $counters_type) {
                   $input[$key] = $previous[$key];
                }
@@ -1796,7 +1796,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       // Counters type
       if (isset($params['type'])) {
          $counters = array();
-         foreach (self::$managedCounters as $key => $value) {
+         foreach (self::getManagedCounters() as $key => $value) {
             if (isset($value['type']) && $value['type'] == $params['type']) {
                $counters[] = $key;
             }
@@ -1809,6 +1809,12 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          $where .= " AND ".$params['filter'];
       }
 
+      // Start / limit
+      $order = "date(day) DESC";
+      if (isset($params['order'])) {
+         $order = $params['order'];
+      }
+      
       // Period
       if (isset($params['period'])) {
          switch ($params['period']) {
@@ -1845,7 +1851,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          FROM `glpi_plugin_monitoring_hostdailycounters`
          $join
          $where
-         ORDER BY date(day) DESC
+         ORDER BY $order
          LIMIT $start,$limit
       ";
       Toolbox::logInFile("pm-ws", "getHostDailyCounters, query : $query\n");
@@ -1857,7 +1863,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          $row['hostname'] = $data['hostname'];
          $row['day'] = $data['day'];
          
-         foreach (self::$managedCounters as $key => $value) {
+         foreach (self::getManagedCounters() as $key => $value) {
             if (! isset($value['hidden']) && isset($data[$key])) {
                $row[$key] = $data[$key];
             }
@@ -2026,7 +2032,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       
       // statistics
       if (isset($params['statistics'])) {
-         foreach (self::$managedCounters as $key => $value) {
+         foreach (self::getManagedCounters() as $key => $value) {
             if (! isset($value['hidden']) && isset($value[$params['statistics']])) {
                $fields .= ", ROUND( ".$params['statistics']."(".$key."),2 ) AS ".$params['statistics']."_$key";
             }
