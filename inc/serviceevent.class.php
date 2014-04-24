@@ -106,13 +106,14 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       $tab[2]['name']            = __('Service instance', 'monitoring');
       $tab[2]['datatype']        = 'itemlink';
 
+      $items_joinparams = array(
+          'beforejoin' => array('table' => 'glpi_plugin_monitoring_services'));
+
       $tab[21]['table']         = 'glpi_plugin_monitoring_components';
       $tab[21]['field']         = 'name';
       $tab[21]['name']          = __('Component', 'monitoring');
       $tab[21]['datatype']      = 'itemlink';
-
-      $items_joinparams = array(
-          'beforejoin' => array('table' => 'glpi_plugin_monitoring_services'));
+      $tab[21]['joinparams']    = $items_joinparams;
 
       $tab[22]['table']         = 'glpi_computers';
       $tab[22]['field']         = 'name';
