@@ -70,14 +70,16 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       if ($item->getType()=='Computer') {
          if (self::canView()) {
             // Show list filtered on item, sorted on day descending ...
+            $_GET = array(
+               'field' => array(22),
+               'searchtype' => array('equals'),
+               'contains' => array($item->getID()),
+               'itemtype' => 'PluginMonitoringServiceevent',
+               'start' => 0,
+               'sort' => 3,
+               'order' => 'DESC');
             Search::manageGetValues(self::getTypeName());
-            Search::showList(self::getTypeName(), array(
-               'field' => array(22), 'searchtype' => array('equals'), 'contains' => array(
-                  $item->getID()),
-                  'sort' => 3, 
-                  'order' => 'DESC'
-               )
-            );
+            Search::showList(self::getTypeName(), $_GET);
             return true;
          }
       }
@@ -109,11 +111,41 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       $tab[21]['name']          = __('Component', 'monitoring');
       $tab[21]['datatype']      = 'itemlink';
 
+      $items_joinparams = array(
+          'beforejoin' => array('table' => 'glpi_plugin_monitoring_services'));
+
       $tab[22]['table']         = 'glpi_computers';
       $tab[22]['field']         = 'name';
-      $tab[22]['name']          = __('Host', 'monitoring');
+      $tab[22]['linkfield']     = 'items_id';
+      $tab[22]['name']          = __('Computer');
       $tab[22]['datatype']      = 'itemlink';
       $tab[22]['itemlink_type'] = 'Computer';
+      $tab[22]['joinparams']      = array(
+          'condition'  => " AND REFTABLE.itemtype='Computer' ",
+          'beforejoin' => array('table'      => 'glpi_plugin_monitoring_componentscatalogs_hosts',
+                                'joinparams' => $items_joinparams));
+
+      $tab[23]['table']         = 'glpi_networkequipments';
+      $tab[23]['field']         = 'name';
+      $tab[23]['linkfield']     = 'items_id';
+      $tab[23]['name']          = _n('Network device', 'Network devices', 1);
+      $tab[23]['datatype']      = 'itemlink';
+      $tab[23]['itemlink_type'] = 'NetworkEquipment';
+      $tab[23]['joinparams']      = array(
+          'condition'  => " AND REFTABLE.itemtype='NetworkEquipment' ",
+          'beforejoin' => array('table'      => 'glpi_plugin_monitoring_componentscatalogs_hosts',
+                                'joinparams' => $items_joinparams));
+
+      $tab[24]['table']         = 'glpi_printers';
+      $tab[24]['field']         = 'name';
+      $tab[24]['linkfield']     = 'items_id';
+      $tab[24]['name']          = __('Printer');
+      $tab[24]['datatype']      = 'itemlink';
+      $tab[24]['itemlink_type'] = 'Printer';
+      $tab[24]['joinparams']      = array(
+          'condition'  => " AND REFTABLE.itemtype='Printer' ",
+          'beforejoin' => array('table'      => 'glpi_plugin_monitoring_componentscatalogs_hosts',
+                                'joinparams' => $items_joinparams));
 
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'date';
