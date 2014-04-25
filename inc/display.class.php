@@ -1214,15 +1214,26 @@ echo "
 
       echo "<td class='center'>";
       // Only if counters exist for the host
-//      if ($pm_Host->hasDailyCounters()) {
-//         $pmCounters = new PluginMonitoringHostdailycounter();
-//         $html = $pm_Host->displayCounters(array('cPagesTotal', 'cRetractedTotal', 'cPrinterChanged', 'cPaperChanged'), $data['id']);
-//         $counters = "<table width='600' class='tab_cadre'><tr><td>".$html."</td></tr></table>";
-//         Html::showToolTip($counters, array(
-//            // 'title'  => __('Counters', 'monitoring'),
-//            'img'    => $CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"
-//         ));
-//      }
+      $hostCounters = $pm_Host->hasDailyCounters();
+      // Toolbox::logInFile("pm", "Host daily counters ".$data['host_name']." : ".serialize($hostCounters) . " ...\n");
+      if (count($hostCounters)) {
+         // $pmCounters = new PluginMonitoringHostdailycounter();
+         // $html = $pm_Host->displayCounters(array('cPagesTotal', 'cRetractedTotal', 'cPrinterChanged', 'cPaperChanged'), $data['id']);
+         $counters  = "<table width='auto' class='tab_cadre'>";
+         foreach (PluginMonitoringHostdailycounter::getManagedCounters() as $key => $value) {
+            if (isset($value['display'])) {
+               $counters .= "<tr>";
+               $counters .= "<td>".$value['name']."</td><td>" . $hostCounters[$key] . "</td>";
+               $counters .= "</tr>";
+            }
+         }
+         $counters .="</table>";
+         
+         Html::showToolTip($counters, array(
+           'title'  => __('Daily counters', 'monitoring')." : ".$data['host_name'],
+           'img'    => $CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"
+         ));
+      }
       echo "</td>";
 
       echo "<td>";

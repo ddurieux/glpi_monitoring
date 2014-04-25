@@ -908,43 +908,7 @@ class PluginMonitoringHost extends CommonDBTM {
     */
    function hasDailyCounters() {
       $pmDailyCounters = new PluginMonitoringHostdailycounter();
-      $a_dailyCounters = $pmDailyCounters->find ("`hostname` LIKE '".$this->getName()."'");
-
-      return count($a_dailyCounters) != 0;
-   }
-   function displayCounters($counters, $location) {
-      global $CFG_GLPI;
-
-      $ret = '<div class="counter" id="dcHost_'.$location.'">'.$location.'</div>';
-
-      $sess_id = session_id();
-      PluginMonitoringSecurity::updateSession();
-
-      $ret .= "<script>
-            Ext.Ajax.request({
-               url: '". $CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateDailyCounters.php" ."',
-               params: {";
-      // define 'debug' parameter to add debug data in server response
-      // $ret .= "   'debug': 'debug',";
-      // define 'json' parameter to get a json server response
-      $ret .= "   'json': '0',";
-      $ret .= "   'hostname': '".$this->getName()."',";
-      $i=0;
-      foreach ($counters as $key => $value) {
-         $ret .= "   'counters[$i]': '$value',";
-         $i++;
-      }
-      $ret .= "   'sess_id': '".$sess_id."',
-                  'glpiID': '".$_SESSION['glpiID']."',
-                  'plugin_monitoring_securekey': '".$_SESSION['plugin_monitoring_securekey']."'
-               },
-               success: function(response)  {
-                  document.getElementById('dcHost_".$location."').innerHTML = response.responseText;
-                }
-            });
-      </script>";
-
-      return $ret;
+      return current($pmDailyCounters->find ("`hostname` = '".$this->getName()."'", "`id` DESC", 1));
    }
 }
 

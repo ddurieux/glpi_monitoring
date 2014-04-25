@@ -79,12 +79,14 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             'service'   => 'printer',
             'type'      => 'total',
             'name'      => 'Total printed pages',
+            'display'   => true,
             'default'   => 0,
             'editable'  => true,
          ),
          'cPagesToday'     => array(
             'service'   => 'printer',
             'name'      => 'Daily printed pages',
+            'display'   => true,
             'default'   => 0,
             'editable'  => true,
             'avg'       => true,
@@ -93,6 +95,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          'cPagesRemaining' => array(
             'service'   => 'printer',
             'name'            => 'Remaining pages',
+            'display'   => true,
             'default'         => 2000,
             'lowThreshold'    => 200,
             'zeroDetection'   => array (
@@ -109,12 +112,14 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             'service'   => 'printer',
             'type'      => 'total',
             'name'      => 'Total retracted pages',
+            'display'   => true,
             'default'   => 0,
             'editable'  => true,
          ),
          'cRetractedToday' => array(
             'service'   => 'printer',
             'name'      => 'Daily retracted pages',
+            'display'   => true,
             'default'   => 0,
             'editable'  => true,
             'avg'       => true,
@@ -151,6 +156,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          'cCardsInsertedOkToday' => array(
             'service'   => 'cards',
             'name'      => 'Daily inserted cards',
+            'display'   => true,
             'default'   => 0,
             'editable'  => true,
             'avg'       => true,
@@ -160,6 +166,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             'service'   => 'cards',
             'type'      => 'total',
             'name'      => 'Total inserted cards',
+            'display'   => true,
             'default'   => 'previous',
             'editable'  => true,
          ),
@@ -181,6 +188,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          'cCardsRemovedToday' => array(
             'service'   => 'cards',
             'name'      => 'Daily removed cards',
+            'display'   => true,
             'default'   => 0,
             'editable'  => true,
             'avg'       => true,
@@ -190,6 +198,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             'service'   => 'cards',
             'type'      => 'total',
             'name'      => 'Total removed cards',
+            'display'   => true,
             'default'   => 'previous',
             'editable'  => true,
          ),
@@ -441,67 +450,6 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
       if ($date == '') $date = date('Y-m-d H:i:s');
 
-/*
-      $pmCounters          = new PluginMonitoringHostdailycounter();
-      $pmCurrentCounter    = new PluginMonitoringHostdailycounter();
-      $pmPreviousCounter   = new PluginMonitoringHostdailycounter();
-
-      if ($interval == -1) {
-         $a_checkables = $pmCounters->find ("`hostname` LIKE '$hostname' AND `day` < date('$date')", "`hostname` ASC, `day` DESC");
-      } else {
-         $a_checkables = $pmCounters->find ("`hostname` LIKE '$hostname' AND `day` BETWEEN DATE_SUB('$date', INTERVAL $interval DAY) AND DATE('$date')", "`hostname` ASC, `day` DESC");
-      }
-
-      echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'>";
-      echo "<th colspan='2'>";
-      echo "Bornes à surveiller";
-      echo "</th>";
-      echo "</tr>";
-
-      // Check all counters for negative values ...
-      foreach (self::getManagedCounters() as $key => $value) {
-         foreach ($a_checkables as $checkable) {
-            // Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname']."', day : ".$checkable['day']."\n");
-            if ($checkable[$key] < 0) {
-               echo "<tr class='tab_bg_1'>";
-               echo "<td>Kiosk '".$checkable['hostname']."' has negative counter value : '$key' = ".$checkable[$key].", day : ".$checkable['day'].".</td>";
-               echo "</tr>";
-            }
-         }
-      }
-
-      echo "</table>";
-*/
-
-      // Check out average printed pages on each kiosk per each day type ... only for the current and next 3 days.
-      // $daysnameidx = Toolbox::getDaysOfWeekArray();
-      // $a = strptime($input['day'], '%Y-%m-%d');
-      // $timestamp = mktime(0, 0, 0, $a['tm_mon']+1, $a['tm_mday'], $a['tm_year']+1900);
-      // $input['dayname'] = $daysnameidx[date('w', $timestamp)];
-      // $currentday = $daysnameidx[date('w', date('U'))];
-
-      // $next_week[0] = date('w', date('U'));
-      // $next_week[1] = date('w', date('U')) + 1;
-      // $next_week[2] = date('w', date('U')) + 2;
-      // $next_week[3] = date('w', date('U')) + 3;
-      // $next_week[4] = date('w', date('U')) + 4;
-      // $next_week[5] = date('w', date('U')) + 5;
-      // $next_week[6] = date('w', date('U')) + 6;
-/*
-      $query = "
-         SELECT 
-          hostname, 
-          DAYNAME AS day_name, 
-          WEEKDAY(`day`) day_num, 
-          AVG(cPagesToday) AS day_average
-         FROM `glpi_plugin_monitoring_hostdailycounters` 
-         GROUP BY `hostname`, `day_name`
-         ORDER BY hostname, day_num;
-      ";
-      $result = $DB->query($query);
-*/
-      
       // Check out more recent counters per host ... 
       $a_checkables = PluginMonitoringHostdailycounter::getLastCountersPerHost(
          array (
@@ -575,7 +523,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $todayNum = date('w', date('U'));
             $todayName = $daysnameidx[$todayNum];
             foreach ($a_checkables as $checkable) {
-               Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname'] . "', counter : ". $checkable[$key] . " (". $value['zeroDetection']['days'] . " days / ". $value['zeroDetection']['counter'] . ")\n");
+               // Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname'] . "', counter : ". $checkable[$key] . " (". $value['zeroDetection']['days'] . " days / ". $value['zeroDetection']['counter'] . ")\n");
                
                $filter = array (
                   'start'  => 0,
@@ -604,7 +552,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                      $breadcrumb .= '-' . $line['avg_'.$value['zeroDetection']['counter']];
                   }
                }
-               Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname'] . "', counter : ". $checkable[$key] . "=" . $breadcrumb . "\n");
+               // Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname'] . "', counter : ". $checkable[$key] . "=" . $breadcrumb . "\n");
                if ($checkable[$key] <= 0) {
                   if (! $firstDetection) {
                      echo "<table class='tab_cadre_fixe'>";
@@ -780,7 +728,16 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          // }
 
          // Simply testing on one host (card and printer services) ...
-         // TODO : comment !!!!
+         // ek3k-cnam-0366
+         // if (($services_id != 5452) && ($services_id != 5453)) {
+            // continue;
+         // }
+         
+         // ek3k-cnam-0373
+         // if (($services_id != 5686)) {
+            // continue;
+         // }
+         
          // ek3k-cnam-0129
          // if (($services_id != 1503)) {
             // continue;
@@ -949,6 +906,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                   if (count($a_first) != 0) {
                      $input['cRetractedInitial']   = $a_first['Retracted Pages'];
                      $input['cPagesInitial']       = $a_first['Cut Pages'];
+                  } else {
+                     $input['cRetractedInitial']   = $a_last['Retracted Pages'];
+                     $input['cPagesInitial']       = $a_last['Cut Pages'];
                   }
                }
                
@@ -981,6 +941,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
          // Here it exists, at min, one host daily counters line ... and a_counters is the last known counters.
          $previous = $a_counters;
+         $todayUpdate = false;
          for ($i = (strtotime($a_counters['day'])); $i < strtotime(date('Y-m-d').' 23:59:59'); $i += 86400) {
             $input = array();
             
@@ -989,6 +950,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $input['dayname']             = $daysnameidx[date('w', $i)];
             $input['hostname']            = $hostname;
 
+            if ($input['day'] == date('Y-m-d')) {
+               $todayUpdate = true;
+            }
             Toolbox::logInFile("pm-counters", "Day : ". $input['day'] . " -> ".date('Y-m-d').' 00:00:00'."\n");
             
             // Fetch perfdata of 1st event in day ...
@@ -1008,7 +972,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                $a_previous = current($self->find("`hostname`='$hostname' AND `day`='" . date('Y-m-d', $i-86400) . "'", "`id` DESC", 1));
                if (isset($a_previous['id'])) {
                   Toolbox::logInFile("pm-counters", "Day : ".$a_previous['day']." exists for $hostname/$services_name, use as previous record ...\n");
-                  $previous = $a_counters;
+                  $previous = $a_previous;
                }
             }
 
