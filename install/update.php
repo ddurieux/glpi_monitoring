@@ -3271,7 +3271,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               'plugin_monitoring_services_id2');
          $migration->addField($newTable,
                                  'dayname',
-                                 "varchar(255) NOT NULL DEFAULT ''");
+                                 "varchar(16) NOT NULL DEFAULT ''");
          $migration->addField($newTable,
                                  'cPaperChanged',
                                  "int(11) NOT NULL DEFAULT '0'");
