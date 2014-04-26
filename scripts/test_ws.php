@@ -154,13 +154,17 @@ function call_glpi($args) {
 /*
 * getCounters
 */
-function getCounters($session, $lastPerHost=false) {
+function getCounters($session, $lastPerHost=false, $start=0, $limit=500) {
    /*
    * Get counters
    */
    $args['session'] = $session;
    $args['method'] = "monitoring.getDailyCounters";
    if ($lastPerHost) $args['lastPerHost'] = true;
+   $args['filter'] = "`glpi_entities`.`name` LIKE '%ISERE%'";
+   $args['start'] = $start;
+   $args['limit'] = $limit;
+   
    if ($counters = call_glpi($args)) {
       print_r($counters);
       return $counters;
@@ -172,13 +176,18 @@ function getCounters($session, $lastPerHost=false) {
 /*
 * getStatistics
 */
-function getStatistics($session) {
+function getStatistics($session, $statistics='sum', $group='hostname', $order='hostname ASC', $start=0, $limit=500) {
    /*
    * Get statistics
    */
    $args['session'] = $session;
    $args['method'] = "monitoring.getDailyCounters";
-   $args['method'] = "monitoring.getDailyCounters";
+   $args['statistics'] = $statistics;
+   $args['group'] = $group;
+   $args['order'] = $order;
+   $args['start'] = $start;
+   $args['limit'] = $limit;
+   
    if ($counters = call_glpi($args)) {
       print_r($counters);
       return $counters;
@@ -283,26 +292,41 @@ if (! $session = login()) {
    die ("Connexion refused !\n");
 }
 
+// Hosts counters
 if (getOverallState($session, "Hosts")) {
 }
+// Services catalogs counters
 if (getOverallState($session, "Businessrules")) {
 }
+// Components catalogs counters
 if (getOverallState($session, "Componentscatalog")) {
 }
+// Services counters
 if (getOverallState($session, "Ressources")) {
 }
-// if (getStatistics($session)) {
-// }
+
+// Hosts states
+if (getHostsStates($session)) {
+}
+// Services states
+if (getServicesStates($session)) {
+}
+
 // All counters
-// if (getCounters($session)) {
-// }
+if (getCounters($session)) {
+}
 // Last counters per each host
 if (getCounters($session, true)) {
 }
-// if (getHostsStates($session)) {
-// }
-// if (getServicesStates($session)) {
-// }
+// Sum of daily printed pages per host
+if (getStatistics($session, 'sum', 'hostname', 'hostname ASC')) {
+}
+// Sum of daily printed pages per entity ...
+if (getStatistics($session, 'sum', '`glpi_entities`.`name`', '`glpi_entities`.`name` ASC')) {
+}
+// ... ordered by printed pages total ascending.
+if (getStatistics($session, 'sum', '`glpi_entities`.`name`', '`sum_cPagesToday` ASC')) {
+}
 
 // Logout
 logout();

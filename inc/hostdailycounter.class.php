@@ -1852,8 +1852,8 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
    /*
     * Get more recent counters record
-    * - filter
-    * - entity
+    * - filter : where clause
+    * - entity : entity id
     */
    static function getLastCountersPerHost($params) {
       global $DB;
@@ -1883,12 +1883,24 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          $where .= " AND " . $params['filter'];
       }
       
+      // Group
+      $group = 'hostname';
+      if (isset($params['group'])) {
+         $group = "GROUP BY ".$params['group'];
+      }
+      
+      // Order
+      $order = 'hostname ASC';
+      if (isset($params['order'])) {
+         $order = $params['order'];
+      }
+      
       $query = "
          SELECT `glpi_entities`.`name` AS entity_name, tmp.* FROM ( SELECT * FROM `glpi_plugin_monitoring_hostdailycounters` ORDER BY DATE(DAY) DESC ) tmp
          $join
          $where
-         GROUP BY hostname
-         ORDER BY hostname
+         GROUP BY $group
+         ORDER BY $order
       ";
       //Toolbox::logInFile("pm-ws", "getLastCountersPerDay, query : $query\n");
       $resp = array ();
@@ -1916,11 +1928,12 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          'sum' : cumulated value
     * - filter: filter results by
     * - group:
+         'entity_name' : group by entity_name
          'hostname' : group by hostname
          'day': group by day
     * - order:
-         'hostname' : sort by hostname
-         'day' : sort by day
+         'hostname ASC' : sort by hostname
+         'day DESC' : sort by day
     * - period:
          'currentDay'
          'lastDay'
@@ -2011,7 +2024,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       }
       
       // Order
-      $order = $fields.' ASC';
+      $order = $fields;
       if (isset($params['order'])) {
          $order = $params['order'];
       }
@@ -2026,24 +2039,6 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       }
       
       // Check out average printed pages on each kiosk per each day type ... only for the current and next 3 days.
-/*
-      $query = "
-         SELECT 
-          hostname, 
-          DAYNAME AS day_name, 
-          WEEKDAY(`day`) day_num, 
-          AVG(cPagesToday) AS day_average
-         FROM `glpi_plugin_monitoring_hostdailycounters` 
-         WHERE WEEKDAY(`day`) IN (
-            WEEKDAY(NOW()), 
-            WEEKDAY(DATE_ADD(NOW(), INTERVAL +1 DAY)),
-            WEEKDAY(DATE_ADD(NOW(), INTERVAL +2 DAY)),
-            WEEKDAY(DATE_ADD(NOW(), INTERVAL +3 DAY))
-         )
-         GROUP BY `hostname`, `dayname`
-         ORDER BY hostname, day_num;
-      ";
-*/
       $query = "
          SELECT
          $fields
