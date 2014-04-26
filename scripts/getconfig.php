@@ -52,8 +52,8 @@ chdir("../../..");
 $url = "/" . basename(getcwd()) . "/plugins/webservices/xmlrpc.php";
 
 $host = 'localhost';
-$glpi_user  = "glpi";
-$glpi_pass  = "glpi";
+$glpi_user  = "test_ws";
+$glpi_pass  = "ipm-France2012";
 
 
 
@@ -144,6 +144,24 @@ function call_glpi($args) {
        return null;
    }
    return $response;
+}
+
+/*
+* getCounters
+*/
+function getCounters($session) {
+   /*
+   * Get counters
+   */
+   $args['session'] = $session;
+   $args['method'] = "monitoring.getDailyCounters";
+   if ($counters = call_glpi($args)) {
+      // echo "+ Response : $counters !!!!!!!!!!!!!!!!!!!\n";
+      print_r($counters);
+      return $counters;
+   }
+
+   return null;
 }
 
 /*
@@ -242,6 +260,8 @@ if (! $session = login()) {
    die ("Connexion refused !\n");
 }
 
+if (getCounters($session)) {
+}
 if (getOverallState($session)) {
 }
 if (getHostsStates($session)) {
