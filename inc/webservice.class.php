@@ -387,7 +387,7 @@ class PluginMonitoringWebservice {
       }
 
       // Filter
-      if (isset($params['filter'])) {
+      if (isset($params['filter']) && ! empty($params['filter'])) {
          $where .= " AND " . $params['filter'];
       }
       // Order
@@ -620,7 +620,7 @@ class PluginMonitoringWebservice {
       }
 
       // Services filter
-      if (isset($params['servicesFilter'])) {
+      if (isset($params['servicesFilter']) && ! empty($params['servicesFilter'])) {
          if (is_array($params['servicesFilter'])) {
             $where .= " AND `glpi_plugin_monitoring_components`.`name` IN ('" . implode("','",$params['servicesFilter']) . "')";
          } else {
@@ -629,7 +629,7 @@ class PluginMonitoringWebservice {
       }
 
       // Filter
-      if (isset($params['filter'])) {
+      if (isset($params['filter']) && ! empty($params['filter'])) {
          $where .= " AND " . $params['filter'];
       }
       // Order

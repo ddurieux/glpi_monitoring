@@ -1713,9 +1713,15 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       $where = $join = $fields = '';
-      $fields = '*';
-      $join .= "INNER JOIN `glpi_computers`
-                      ON `glpi_plugin_monitoring_hostdailycounters`.`hostname` = `glpi_computers`.`name` ";
+      $fields = "
+         `glpi_entities`.`name` AS entity_name
+      ";
+      $join .= "
+         INNER JOIN `glpi_computers`
+            ON `glpi_plugin_monitoring_hostdailycounters`.`hostname` = `glpi_computers`.`name`
+         INNER JOIN `glpi_entities`
+            ON `glpi_computers`.`entities_id` = `glpi_entities`.`id`
+      ";
 
       // Start / limit
       $start = 0;
@@ -1765,7 +1771,11 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                $counters[] = $key;
             }
          }
-         $fields = "`".implode("`,`",$counters)."`";
+         $fields .= "`".implode("`,`",$counters)."`";
+      } else {
+         $fields .= "
+            , `glpi_plugin_monitoring_hostdailycounters`.*
+         ";
       }
       
       // Filter
@@ -1824,6 +1834,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       while ($data=$DB->fetch_array($result)) {
          // Toolbox::logInFile("pm-counters", "getHostDailyCounters, line : ".$data['hostname']." / ".$data['day']."\n");
          $row = array ();
+         $row['entityname'] = $data['entity_name'];
          $row['hostname'] = $data['hostname'];
          $row['day'] = $data['day'];
          
@@ -1848,8 +1859,12 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       global $DB;
 
       $where = $join = '';
-      $join .= "INNER JOIN `glpi_computers`
-                      ON `tmp`.`hostname` = `glpi_computers`.`name` ";
+      $join .= "
+         INNER JOIN `glpi_computers`
+            ON `tmp`.`hostname` = `glpi_computers`.`name`
+         INNER JOIN `glpi_entities`
+            ON `glpi_computers`.`entities_id` = `glpi_entities`.`id`
+      ";
 
       // Entity
       if (isset($params['entity'])) {
@@ -1869,7 +1884,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       }
       
       $query = "
-         SELECT tmp.* FROM ( SELECT * FROM `glpi_plugin_monitoring_hostdailycounters` ORDER BY DATE(DAY) DESC ) tmp
+         SELECT `glpi_entities`.`name` AS entity_name, tmp.* FROM ( SELECT * FROM `glpi_plugin_monitoring_hostdailycounters` ORDER BY DATE(DAY) DESC ) tmp
          $join
          $where
          GROUP BY hostname
@@ -1920,8 +1935,15 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       $where = $join = $fields = '';
-      $join .= "INNER JOIN `glpi_computers`
-                      ON `glpi_plugin_monitoring_hostdailycounters`.`hostname` = `glpi_computers`.`name` ";
+      $fields = "
+         `glpi_entities`.`name` AS entity_name
+      ";
+      $join .= "
+         INNER JOIN `glpi_computers`
+            ON `glpi_plugin_monitoring_hostdailycounters`.`hostname` = `glpi_computers`.`name`
+         INNER JOIN `glpi_entities`
+            ON `glpi_computers`.`entities_id` = `glpi_entities`.`id`
+      ";
 
       // Start / limit
       $start = 0;
