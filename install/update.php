@@ -3134,6 +3134,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'users_id',
                                  "int(11) DEFAULT '-1'");
          $migration->addField($newTable,
+                                 'tickets_id',
+                                 "int(11) DEFAULT '0'");
+         $migration->addField($newTable,
                                  'services',
                                  "tinyint(1) DEFAULT '0'");
          $migration->addField($newTable,

@@ -118,16 +118,12 @@ class PluginMonitoringDowntime extends CommonDBTM {
       // Toolbox::logInFile("pm-downtime", "Downtime, displayTabContentForItem ($withtemplate), item concerned : ".$item->getTypeName()."/".$item->getID()."\n");
       if ($item->getType()=='Ticket') {
          if (self::canView()) {
-            // Find a monitoring host ...
-            $host_id=-1;
-            $pmHost = new PluginMonitoringHost();
-            $a_list = $pmHost->find("itemtype = '".$item->getField('itemtype')."' AND items_id = '".$item->getField('items_id')."'");
-            foreach ($a_list as $data) {
-               $host_id=$data['id'];
-            }
-
-            $pmDowntime = new PluginMonitoringDowntime();
-            $pmDowntime->showForm(-1, $host_id);
+            // Show list filtered on item, sorted on day descending ...
+            Search::manageGetValues(self::getTypeName());
+            Search::showList(self::getTypeName(), array(
+               'field' => array(12), 'searchtype' => array('equals'), 'contains' => array($item->getID()),
+               'sort' => 4, 'order' => 'DESC'
+               ));
             return true;
          }
       }
@@ -154,12 +150,12 @@ class PluginMonitoringDowntime extends CommonDBTM {
 
       $tab['common'] = __('Host downtimes', 'monitoring');
 
-      // $tab[1]['table']           = $this->getTable();
-      // $tab[1]['field']           = 'id';
-      // $tab[1]['linkfield']       = 'id';
-      // $tab[1]['name']            = __('ID');
-      // $tab[1]['datatype']        = 'itemlink';
-      // $tab[1]['massiveaction']   = false; // implicit field is id
+      $tab[1]['table']           = $this->getTable();
+      $tab[1]['field']           = 'id';
+      $tab[1]['linkfield']       = 'id';
+      $tab[1]['name']            = __('ID');
+      $tab[1]['datatype']        = 'itemlink';
+      $tab[1]['massiveaction']   = false; // implicit field is id
 
       // $tab[2]['table']           = $this->getTable();
       // $tab[2]['field']           = 'plugin_monitoring_hosts_id';
@@ -223,6 +219,11 @@ class PluginMonitoringDowntime extends CommonDBTM {
       $tab[11]['name']           = __('Period expired', 'monitoring');
       $tab[11]['datatype']       = 'bool';
       $tab[11]['massiveaction']  = false;
+
+      $tab[12]['table']          = "glpi_tickets";
+      $tab[12]['field']          = 'id';
+      $tab[12]['name']           = __('Ticket');
+      $tab[12]['datatype']       = 'itemlink';
 
       return $tab;
    }
@@ -356,8 +357,17 @@ class PluginMonitoringDowntime extends CommonDBTM {
 
       $this->fields["expired"] = ($now > $end_time);
       $this->update($this->fields);
-      // Toolbox::logInFile("pm-downtime", "isExpired, ".$this->fields["expired"]."\n");
       return ($this->fields["expired"] == 1);
+   }
+
+
+   /**
+    * Downtime has an associated ticket ?
+    */
+   function isAssociatedTicket() {
+      if ($this->getID() == -1) return false;
+
+      return ($this->fields["tickets_id"] != 0);
    }
 
 
@@ -421,8 +431,20 @@ class PluginMonitoringDowntime extends CommonDBTM {
             $a_services = $pmHost->getServicesID();
             if (is_array($a_services)) {
                foreach ($a_services as $service_id) {
+                  // Send downtime for a service to shinken via webservice
+                  $pmShinkenwebservice->sendDowntime(-1,
+                                                      $service_id,
+                                                      $user->getName(1),
+                                                      $input['comment'],
+                                                      $input['flexible'],
+                                                      $input['start_time'],
+                                                      $input['end_time'],
+                                                      $input['duration_seconds'],
+                                                      'add'
+                                                      );
+                                                         
+/*
                   // Send acknowledge command for a service to shinken via webservice
-                  $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
                   if ($pmShinkenwebservice->sendAcknowledge(-1,
                                                             $service_id,
                                                             $user->getName(1),
@@ -433,6 +455,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
                      $pmService->getFromDB($service_id);
                      $pmService->setAcknowledged($input['comment']);
                   }
+*/
                }
             }
          }
@@ -474,7 +497,6 @@ class PluginMonitoringDowntime extends CommonDBTM {
       // Downtime is to be created ...
       // ... send information to shinken via webservice
       $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
-      // sendDowntime($host_id=-1, $service_id=-1, $author= '', $comment='', $start_time='0', $fixed='0', $duration='1') {
       if ($pmShinkenwebservice->sendDowntime($this->fields['plugin_monitoring_hosts_id'],
                                              -1,
                                              $user->getName(1),
@@ -533,16 +555,11 @@ class PluginMonitoringDowntime extends CommonDBTM {
          $this->getFromDB($items_id);
       }
 
-      // $pmDowntime = new PluginMonitoringDowntime();
-      // $pmDowntime->getFromDBByQuery("WHERE `" . $pmDowntime->getTable() . "`.`plugin_monitoring_hosts_id` = '" . $this->getID() . "' LIMIT 1");
-      // if (isset($options['monitoring']) && $options['monitoring']) {
-      // }
-
       // Now ...
       $nowDate = date('Y-m-d');
       $nowTime = date('H:i:s');
 
-      $this->showFormHeader($options);
+      $this->showFormHeader(array('colspan' => '4'));
 
       $this->isExpired();
 
@@ -654,8 +671,88 @@ class PluginMonitoringDowntime extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
-      $this->showFormButtons();
+      if (Ticket::canView()) {
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='4'>&nbsp;</td>";
+         echo "</tr>";
+         
+         if ($this->isAssociatedTicket()) {
+            echo "<tr class='tab_bg_3'>";
+            echo "<td colspan='4'>".__('Downtime associated ticket', 'monitoring')."</td>";
+            echo "</tr>";
+            
+            // Find ticket in DB ...
+            $track = new Ticket();
+            $track->getFromDB($this->getField("tickets_id"));
 
+            // Display ticket id, name and tracking ...
+            $bgcolor = $_SESSION["glpipriority_".$track->fields["priority"]];
+            echo "<tr class='tab_bg_2'>";
+            echo "<td class='center' bgcolor='$bgcolor'>".sprintf(__('%1$s: %2$s'), __('ID'),
+                                                                  $track->fields["id"])."</td>";
+            echo "<td class='center'>";
+            
+            $showprivate = Session::haveRight("show_full_ticket", 1);
+            $link = "<a id='ticket".$track->fields["id"]."' href='".$CFG_GLPI["root_doc"].
+                      "/front/ticket.form.php?id=".$track->fields["id"];
+            $link .= "'>";
+            $link .= "<span class='b'>".$track->getNameID()."</span></a>";
+            $link = sprintf(__('%1$s (%2$s)'), $link,
+                            sprintf(__('%1$s - %2$s'), $track->numberOfFollowups($showprivate),
+                                    $track->numberOfTasks($showprivate)));
+            $link = printf(__('%1$s %2$s'), $link,
+                           Html::showToolTip($track->fields['content'],
+                                             array('applyto' => 'ticket'.$track->fields["id"],
+                                                   'display' => false)));
+
+            echo "</td>";
+            echo "</tr>";
+         } else if ($createDowntime && Ticket::canCreate()) {
+            echo "<tr class='tab_bg_3'>";
+            echo "<td colspan='4'>".__('Associated ticket (no declared SLA implies no ticket created):', 'monitoring')."</td>";
+            echo "</tr>";
+            
+            echo "<input type='hidden' name='redirect' value='".$CFG_GLPI["root_doc"]."/front/ticket.form.php' />";
+            echo "<input type='hidden' name='itemtype' value='".$pmHost->getField("itemtype")."' />";
+            echo "<input type='hidden' name='items_id' value='".$pmHost->getField("items_id")."' />";
+            $item = new $itemtype();
+            $item->getFromDB($pmHost->getField("items_id"));
+            echo "<input type='hidden' name='locations_id' value='".$item->getField("locations_id")."' />";
+            
+            // Find SLA ...
+            $sla = new Sla();
+            $slas = current($sla->find("`name` LIKE '%proactive%' LIMIT 1"));
+            $sla_id = isset($slas['id']) ? $slas['id'] : 0;
+            
+            echo "<tr class='tab_bg_3'>";
+            echo "<td>".__('Ticket SLA:', 'monitoring')."</td>";
+            echo "<td colspan='3'>";
+            Sla::dropdown(array('value'  => $sla_id));
+            echo "</td>";
+            echo "</tr>";
+            
+            // Find category ...
+            $category = new ITILCategory();
+            $categories = current($category->find("`name` LIKE '%incident%' LIMIT 1"));
+            $category_id = isset($categories['id']) ? $categories['id'] : 0;
+            
+            echo "<tr class='tab_bg_3'>";
+            echo "<td>".__('Ticket category:', 'monitoring')."</td>";
+            echo "<td colspan='3'>";
+            ITILCategory::dropdown(array('value'  => $category_id));
+            echo "</td>";
+            echo "</tr>";
+         } else {
+            echo "<tr class='tab_bg_3'>";
+            echo "<td colspan='4'>".__('No associated ticket for this downtime', 'monitoring')."</td>";
+            echo "</tr>";
+         }
+      }
+      
+      $this->showFormButtons(array(
+         'canedit'      => $createDowntime
+         ));
+         
       return true;
    }
 
@@ -675,7 +772,6 @@ class PluginMonitoringDowntime extends CommonDBTM {
       global $DB;
 
       $query = "UPDATE `glpi_plugin_monitoring_downtimes` SET `expired` = '1' WHERE `expired` = '0' AND `end_time` < NOW();";
-      // Toolbox::logInFile("pm-downtime", "cronDowntimesExpired, query : $query\n");
       $DB->query($query);
 
       return true;

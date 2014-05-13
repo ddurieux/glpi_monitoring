@@ -49,8 +49,39 @@ Html::header(__('Monitoring - downtimes', 'monitoring'),'', "plugins", "monitori
 $pmDowntime = new PluginMonitoringDowntime();
 
 if (isset ($_POST["add"])) {
-   $pmDowntime->add($_POST);
-   $pmDowntime->redirectToList();
+   // If SLA is specified, a new ticket is to be created ...
+   if (isset ($_POST['slas_id']) && ($_POST['slas_id'] != 0)) {
+      $track = new Ticket();
+      $track->check(-1,'w',$_POST);
+      
+      $sla_name = Dropdown::getDropdownName("glpi_slas", $_POST['slas_id']);
+      $category_name = Dropdown::getDropdownName("glpi_itilcategories", $_POST['itilcategories_id']);
+      $track_name = __('Scheduled downtime', 'monitoring')." / ".$sla_name." / ".$category_name;
+
+      $fields = array('itemtype'          => $_POST['itemtype'],
+                      'items_id'          => $_POST['items_id'],
+                      'slas_id'           => $_POST['slas_id'],
+                      'itilcategories_id' => $_POST['itilcategories_id'],
+                      'locations_id'      => $_POST['locations_id'],
+                      'name'              => $track_name, 
+                      'content'           => $_POST['comment']
+      );
+      // Create a new ticket ...
+      $_POST['tickets_id'] = $track->add($fields);
+
+      // Create new downtime with associated ticket ...
+      $pmDowntime->add($_POST);
+      
+      // Redirect to new ticket form if required
+      if (isset ($_POST["redirect"])) {
+         Html::redirect($_POST["redirect"]."?id=".$_POST['tickets_id']);
+      } else {
+         $pmDowntime->redirectToList();
+      }
+   } else {
+      // Create new downtime without associated ticket ...
+      $pmDowntime->add($_POST);
+   }
 } else if (isset ($_POST["update"])) {
    $pmDowntime->update($_POST);
    $pmDowntime->redirectToList();

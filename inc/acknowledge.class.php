@@ -394,22 +394,22 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
             if (is_array($a_services)) {
                foreach ($a_services as $service_id) {
                   // Send acknowledge command for a service to shinken via webservice
-                  // $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
-                  // if ($pmShinkenwebservice->sendAcknowledge(-1,
-                                                            // $service_id,
-                                                            // $user->getName(1),
-                                                            // $input['comment'],
-                                                            // $input['sticky'],
-                                                            // $input['notify'],
-                                                            // $input['persistent'],
-                                                            // 'add'
-                                                            // )) {
+                  $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
+                  if ($pmShinkenwebservice->sendAcknowledge(-1,
+                                                            $service_id,
+                                                            $user->getName(1),
+                                                            $input['comment'],
+                                                            $input['sticky'],
+                                                            $input['notify'],
+                                                            $input['persistent'],
+                                                            'add'
+                                                            )) {
                      // Set service as acknowledged
                      $pmService = new PluginMonitoringService();
                      $pmService->getFromDB($service_id);
                      // Will force to create a new acknowledgement for a service ... beware of infinite loop in this function !
                      $pmService->setAcknowledged($input['comment'], true);
-                  // }
+                  }
                }
             }
 

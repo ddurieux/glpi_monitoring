@@ -865,6 +865,7 @@ CREATE TABLE `glpi_plugin_monitoring_downtimes` (
   `comment` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
   `services` tinyint(1) DEFAULT '0',
   `users_id` int(11) DEFAULT '-1',
+  `tickets_id` int(11) DEFAULT '0',
   `notified` tinyint(1) DEFAULT '0',
   `expired` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),

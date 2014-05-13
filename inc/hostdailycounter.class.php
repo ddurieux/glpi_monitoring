@@ -82,6 +82,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             'display'   => true,
             'default'   => 0,
             'editable'  => true,
+            'max'       => 'max',
+            'avg'       => 'avg',
+            'sum'       => 'max',
          ),
          'cPagesToday'     => array(
             'service'   => 'printer',
@@ -89,8 +92,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             'display'   => true,
             'default'   => 0,
             'editable'  => true,
-            'avg'       => true,
-            'sum'       => true,
+            'max'       => 'max',
+            'avg'       => 'avg',
+            'sum'       => 'sum',
          ),
          'cPagesRemaining' => array(
             'service'   => 'printer',
@@ -115,6 +119,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             'display'   => true,
             'default'   => 0,
             'editable'  => true,
+            'max'       => 'max',
+            'avg'       => 'avg',
+            'sum'       => 'max',
          ),
          'cRetractedToday' => array(
             'service'   => 'printer',
@@ -122,8 +129,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             'display'   => true,
             'default'   => 0,
             'editable'  => true,
-            'avg'       => true,
-            'sum'       => true,
+            'max'       => 'max',
+            'avg'       => 'avg',
+            'sum'       => 'sum',
          ),
          'cRetractedRemaining' => array(
             'service'   => 'printer',
@@ -159,8 +167,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             'display'   => true,
             'default'   => 0,
             'editable'  => true,
-            'avg'       => true,
-            'sum'       => true,
+            'max'       => 'max',
+            'avg'       => 'avg',
+            'sum'       => 'sum',
          ),
          'cCardsInsertedOkTotal' => array(
             'service'   => 'cards',
@@ -169,14 +178,16 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             'display'   => true,
             'default'   => 'previous',
             'editable'  => true,
+            'max'       => 'max',
          ),
          'cCardsInsertedKoToday' => array(
             'service'   => 'cards',
             'name'      => 'Daily bad cards',
             'default'   => 0,
             'editable'  => true,
-            'avg'       => true,
-            'sum'       => true,
+            'max'       => 'max',
+            'avg'       => 'avg',
+            'sum'       => 'sum',
          ),
          'cCardsInsertedKoTotal' => array(
             'service'   => 'cards',
@@ -184,6 +195,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             'name'      => 'Total bad cards',
             'default'   => 'previous',
             'editable'  => true,
+            'max'       => 'max',
          ),
          'cCardsRemovedToday' => array(
             'service'   => 'cards',
@@ -191,8 +203,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             'display'   => true,
             'default'   => 0,
             'editable'  => true,
-            'avg'       => true,
-            'sum'       => true,
+            'max'       => 'max',
+            'avg'       => 'avg',
+            'sum'       => 'sum',
          ),
          'cCardsRemovedTotal' => array(
             'service'   => 'cards',
@@ -201,6 +214,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             'display'   => true,
             'default'   => 'previous',
             'editable'  => true,
+            'max'       => 'max',
          ),
       );
    }
@@ -446,7 +460,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       - should be used to run prediction function ?
    */
    static function runCheckCounters($date='', $hostname='%', $interval=2) {
-      global $DB;
+      global $DB, $CFG_GLPI;
 
       if ($date == '') $date = date('Y-m-d H:i:s');
 
@@ -458,6 +472,186 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             )
       );
       
+      // Check out average printed pages on each kiosk per each day type ... 
+      $average = PluginMonitoringHostdailycounter::getStatistics(
+         array (
+            'start'  => 0,
+            'limit'  => 2000,
+            'type'   => 'avg',
+            'group'  => 'hostname, dayname'
+            )
+      );
+
+                  
+      // Ticket SLA ...
+      $sla = new Sla();
+      $slas = current($sla->find("`name` LIKE '%proactive%' LIMIT 1"));
+      $sla_id = isset($slas['id']) ? $slas['id'] : 0;
+      $sla_name = Dropdown::getDropdownName("glpi_slas", $sla_id);
+      
+      // Ticket category ...
+      $category = new ITILCategory();
+      $categories = current($category->find("`name` LIKE '%rechargement%' LIMIT 1"));
+      $category_id = isset($categories['id']) ? $categories['id'] : 0;
+      $category_name = Dropdown::getDropdownName("glpi_itilcategories", $category_id);
+      
+      // Check all counters for zero detection ...
+      foreach (self::getManagedCounters() as $key => $value) {
+         if (! isset($value['zeroDetection'])) continue;
+         
+         $firstDetection = false;
+         $daysnameidx = Toolbox::getDaysOfWeekArray();
+         $todayNum = date('w', date('U'));
+         $todayName = $daysnameidx[$todayNum];
+         foreach ($a_checkables as $checkable) {
+            // Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname'] . "', counter : ". $checkable[$key] . " (". $value['zeroDetection']['days'] . " days / ". $value['zeroDetection']['counter'] . ")\n");
+            
+            $filter = array (
+               'start'  => 0,
+               'limit'  => 2000,
+               'statistics'   => 'avg',
+               'group'  => 'hostname, dayname'
+            );
+
+            $nextDayNum = $todayNum;
+            $listDays = array();
+            for ($i=$value['zeroDetection']['days']; $i >= 0; $i--) {
+               $listDays[] = $daysnameidx[$nextDayNum];
+               
+               $nextDayNum++;
+               if ($nextDayNum == 7) {
+                  $nextDayNum = 0;
+               }
+            }
+            $filter['filter'] = "hostname = '".$checkable['hostname']."' AND dayname IN ('".implode("','", $listDays) . "')";
+            
+            $breadcrumb = $checkable[$key];
+            $average = PluginMonitoringHostdailycounter::getStatistics($filter);
+            foreach ($average as $line) {
+               if ($checkable['hostname'] == $line['hostname']) {
+                  $checkable[$key] -= $line['avg_'.$value['zeroDetection']['counter']];
+                  $breadcrumb .= '-' . $line['avg_'.$value['zeroDetection']['counter']];
+               }
+            }
+            // Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname'] . "', counter : ". $checkable[$key] . "=" . $breadcrumb . "\n");
+            if ($checkable[$key] <= 0) {
+               if (! $firstDetection) {
+                  echo '<table class="tab_cadre_fixe">';
+                  echo '<tr class="tab_bg_1"><th colspan="4">';
+                  echo __('Hosts out of paper in ', 'monitoring') . $value['zeroDetection']['days'] . __(' days.', 'monitoring');
+                  echo '</th></tr>';
+                  echo '<tr>';
+                  echo '<th>';
+                  echo '';
+                  echo '</th>';
+                  echo '<th>';
+                  echo 'Current Host / services status';
+                  echo '</th>';
+                  echo '<th colspan="2">';
+                  echo 'Ticket';
+                  echo '</th>';
+                  echo '</tr>';
+
+                  $firstDetection = true;
+               }
+               // echo '<tr class="tab_bg_1">';
+               // echo '<td>';
+               // echo __('Host', 'monitoring') ." '".$checkable['hostname']."' ". __('has a counter which will become negative in ', 'monitoring') . $value['zeroDetection']['days'] . __(' days ', 'monitoring'). " : '$key' -> ".$checkable[$key]." = ".$breadcrumb;
+               // echo '</td>';
+               // echo '</tr>';
+      
+               // Search existing tickets ...
+               // Find computer ...
+               $pmComputer = new Computer();
+               $computer = current($pmComputer->find("`name`='".$checkable['hostname']."' LIMIT 1"));
+               // ... and monitoring host.
+               $pmHost = new PluginMonitoringHost();
+               $host = current($pmHost->find("`itemtype`='Computer' AND `items_id` = '".$computer['id']."' LIMIT 1"));
+               $pmHost->getFromDB($host['id']);
+               
+               echo '<tr class="tab_bg_1">';
+               echo '<td>';
+               echo $pmHost->getLink() . __(' will be out of paper in ', 'monitoring') . $value['zeroDetection']['days'] . __(' days ', 'monitoring');
+               echo '</td>';
+               echo '<td>';
+               
+               // Get all host services except if state is ok ...
+               $a_ret = PluginMonitoringHost::getServicesState($pmHost->getField('id'),
+                                                               "`glpi_plugin_monitoring_services`.`state` != 'OK'");
+               echo $pmHost->getField('state') . '&nbsp; / &nbsp;';
+               echo $a_ret[0] . '&nbsp;';
+               if (!empty($a_ret[1])) {
+                  echo "&nbsp;".Html::showToolTip($a_ret[1], array('display' => false));
+               }
+               echo '</td>';
+      
+               // Find tickets not closed with SLA and category ...
+               $track = new Ticket();
+               $tickets = current($track->find("`status`<>'".Ticket::SOLVED."' AND `status`<>'".Ticket::CLOSED."' AND `slas_id`='$sla_id' AND `itilcategories_id`='$category_id' AND `itemtype`='Computer' AND `items_id` = '".$computer['id']."' ORDER BY `id` DESC LIMIT 1"));
+               if (isset($tickets['id']) && $tickets['id']!='0') {
+                  // Find ticket in DB ...
+                  $track = new Ticket();
+                  $track->getFromDB($tickets['id']);
+
+                  // Display ticket id, name and tracking ...
+                  $bgcolor = $_SESSION["glpipriority_".$track->fields["priority"]];
+                  echo "<td class='center' bgcolor='$bgcolor'>".sprintf(__('%1$s: %2$s'), __('ID'),
+                                                                        $track->fields["id"])."</td>";
+                  echo "<td class='center'>";
+                  $showprivate = Session::haveRight("show_full_ticket", 1);
+                  $link = "<a id='ticket".$track->fields["id"]."' href='".$CFG_GLPI["root_doc"].
+                            "/front/ticket.form.php?id=".$track->fields["id"];
+                  $link .= "'>";
+                  $link .= "<span class='b'>".$track->getNameID()."</span></a>";
+                  $link = sprintf(__('%1$s (%2$s)'), $link,
+                                  sprintf(__('%1$s - %2$s'), $track->numberOfFollowups($showprivate),
+                                          $track->numberOfTasks($showprivate)));
+                  $link = printf(__('%1$s %2$s'), $link,
+                                 Html::showToolTip($track->fields['content'],
+                                                   array('applyto' => 'ticket'.$track->fields["id"],
+                                                         'display' => false)));
+                  echo '</td>';
+               } else {
+                  echo '<td colspan="2">';
+                  
+                  // Form to create a ticket ...
+                  echo '<form name="form" method="post"
+                     action="'.$CFG_GLPI['root_doc'].'/front/ticket.form.php">';
+
+                  echo '<input type="hidden" name="itemtype" value="Computer" />';
+                  echo '<input type="hidden" name="items_id" value="'.$computer['id'].'" />';
+                  echo '<input type="hidden" name="locations_id" value="'.$computer['locations_id'].'" />';
+                  echo '<input type="hidden" name="slas_id" value="'.$sla_id.'" />';
+                  echo '<input type="hidden" name="itilcategories_id" value="'.$category_id.'" />';
+                  $track_name = __('End paper prediction', 'monitoring')." / ".$sla_name." / ".$category_name;
+                  echo '<input type="hidden" name="name" value="'.$track_name.'" />';
+                  echo '<input type="hidden" name="content" value="'.$track_name.'" />';
+                  
+                  // Find ticket template if available ...
+                  $track = new Ticket();
+                  $tt = $track->getTicketTemplateToUse(0, Ticket::DEMAND_TYPE, $category_id, 0);
+                                                      
+                  if (isset($tt->predefined) && count($tt->predefined)) {
+                     foreach ($tt->predefined as $predeffield => $predefvalue) {
+                        // Load template data
+                        $values[$predeffield]            = $predefvalue;
+                        echo '<input type="hidden" name="'.$predeffield.'" value="'.$predefvalue.'" />';
+                     }
+                  }
+                  
+                  echo '<input type="submit" name="add" value="'.__('Add a ticket', 'monitoring').'" class="submit">';
+                  Html::closeForm();
+                  echo '</td>';
+               }
+                        
+               echo '</tr>';
+            }
+         }
+         if ($firstDetection) {
+            echo "</table>";
+         }
+      }
+
       // Check all counters for negative values ...
       $firstDetection = false;
       foreach ($a_checkables as $checkable) {
@@ -505,73 +699,6 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          echo "</table>";
       }
 
-      // Check out average printed pages on each kiosk per each day type ... 
-      $average = PluginMonitoringHostdailycounter::getStatistics(
-         array (
-            'start'  => 0,
-            'limit'  => 2000,
-            'type'   => 'avg',
-            'group'  => 'hostname, dayname'
-            )
-      );
-
-      // Check all counters for zero detection ...
-      foreach (self::getManagedCounters() as $key => $value) {
-         if (isset($value['zeroDetection'])) {
-            $firstDetection = false;
-            $daysnameidx = Toolbox::getDaysOfWeekArray();
-            $todayNum = date('w', date('U'));
-            $todayName = $daysnameidx[$todayNum];
-            foreach ($a_checkables as $checkable) {
-               // Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname'] . "', counter : ". $checkable[$key] . " (". $value['zeroDetection']['days'] . " days / ". $value['zeroDetection']['counter'] . ")\n");
-               
-               $filter = array (
-                  'start'  => 0,
-                  'limit'  => 2000,
-                  'statistics'   => 'avg',
-                  'group'  => 'hostname, dayname'
-               );
-
-               $nextDayNum = $todayNum;
-               $listDays = array();
-               for ($i=$value['zeroDetection']['days']; $i >= 0; $i--) {
-                  $listDays[] = $daysnameidx[$nextDayNum];
-                  
-                  $nextDayNum++;
-                  if ($nextDayNum == 7) {
-                     $nextDayNum = 0;
-                  }
-               }
-               $filter['filter'] = "hostname = '".$checkable['hostname']."' AND dayname IN ('".implode("','", $listDays) . "')";
-               
-               $breadcrumb = $checkable[$key];
-               $average = PluginMonitoringHostdailycounter::getStatistics($filter);
-               foreach ($average as $line) {
-                  if ($checkable['hostname'] == $line['hostname']) {
-                     $checkable[$key] -= $line['avg_'.$value['zeroDetection']['counter']];
-                     $breadcrumb .= '-' . $line['avg_'.$value['zeroDetection']['counter']];
-                  }
-               }
-               // Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname'] . "', counter : ". $checkable[$key] . "=" . $breadcrumb . "\n");
-               if ($checkable[$key] <= 0) {
-                  if (! $firstDetection) {
-                     echo "<table class='tab_cadre_fixe'>";
-                     echo "<tr class='tab_bg_1'><th colspan='2'>";
-                     echo __('End paper detection in ', 'monitoring') . $value['zeroDetection']['days'] . __(' days.', 'monitoring');
-                     echo "</th></tr>";
-
-                     $firstDetection = true;
-                  }
-                  echo "<tr class='tab_bg_1'><td>";
-                  echo __('Host', 'monitoring') ." '".$checkable['hostname']."' ". __('has a counter which will become negative in ', 'monitoring') . $value['zeroDetection']['days'] . __(' days ', 'monitoring'). " : '$key' -> ".$checkable[$key]." = ".$breadcrumb;
-                  echo "</td></tr>";
-               }
-            }
-            if ($firstDetection) {
-               echo "</table>";
-            }
-         }
-      }
    }
 
 
@@ -1543,7 +1670,6 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
    }
 
-  
 
    function prepareInputForUpdate($input) {
 
@@ -1828,7 +1954,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          ORDER BY $order
          LIMIT $start,$limit
       ";
-      Toolbox::logInFile("pm-ws", "getHostDailyCounters, query : $query\n");
+      // Toolbox::logInFile("pm-ws", "getHostDailyCounters, query : $query\n");
       $resp = array ();
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
@@ -1884,7 +2010,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       }
       
       // Group
-      $group = 'hostname';
+      $group = 'GROUP BY hostname';
       if (isset($params['group'])) {
          $group = "GROUP BY ".$params['group'];
       }
@@ -1896,10 +2022,11 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       }
       
       $query = "
-         SELECT `glpi_entities`.`name` AS entity_name, tmp.* FROM ( SELECT * FROM `glpi_plugin_monitoring_hostdailycounters` ORDER BY DATE(DAY) DESC ) tmp
+         SELECT `glpi_entities`.`name` AS entity_name, `glpi_entities`.`id` AS entity_id, 
+         tmp.* FROM ( SELECT * FROM `glpi_plugin_monitoring_hostdailycounters` ORDER BY DATE(DAY) DESC ) tmp
          $join
          $where
-         GROUP BY $group
+         $group
          ORDER BY $order
       ";
       //Toolbox::logInFile("pm-ws", "getLastCountersPerDay, query : $query\n");
@@ -1949,7 +2076,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
       $where = $join = $fields = '';
       $fields = "
-         `glpi_entities`.`name` AS entity_name
+         `glpi_entities`.`name` AS entity_name, `glpi_entities`.`id` AS entity_id
       ";
       $join .= "
          INNER JOIN `glpi_computers`
@@ -2015,25 +2142,25 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          }
       }
       
-      $fields = 'hostname';
+      // $fields = 'hostname';
       // Group
       $group = '';
       if (isset($params['group'])) {
          $group = "GROUP BY ".$params['group'];
-         $fields = $params['group'];
+         $fields .= ', '.$params['group'];
       }
       
       // Order
-      $order = $fields;
+      $order = '';
       if (isset($params['order'])) {
-         $order = $params['order'];
+         $order = "ORDER BY ".$params['order'];
       }
       
       // statistics
       if (isset($params['statistics'])) {
          foreach (self::getManagedCounters() as $key => $value) {
             if (! isset($value['hidden']) && isset($value[$params['statistics']])) {
-               $fields .= ", ROUND( ".$params['statistics']."(".$key."),2 ) AS ".$params['statistics']."_$key";
+               $fields .= ", ROUND( ".$value[$params['statistics']]."(".$key."),2 ) AS ".$value[$params['statistics']]."_$key";
             }
          }
       }
@@ -2046,7 +2173,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          $join
          $where
          $group
-         ORDER BY $order
+         $order
          LIMIT $start,$limit
       ";
       // Toolbox::logInFile("pm-ws", "getStatistics, query : $query\n");
