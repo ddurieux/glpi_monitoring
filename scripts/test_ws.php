@@ -43,7 +43,7 @@
 /*
 * SETTINGS
 */
-$xmlrpc = true;
+$xmlrpc = false;
 chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
 chdir("../../..");
 if ($xmlrpc) {
@@ -51,12 +51,13 @@ if ($xmlrpc) {
       die("Extension xmlrpc not loaded\n");
    }
 
-   $url = "/" . basename(getcwd()) . "/plugins/webservices/xmlrpc.php";
+   $url = "/plugins/webservices/xmlrpc.php";
 } else {
-   $url = "/" . basename(getcwd()) . "/plugins/webservices/rest.php";
+   $url = "/plugins/webservices/rest.php";
 }
 
-$host = 'localhost';
+$host = 'localhost/glpi';
+$host = 'kiosks.ipmfrance.com';
 $glpi_user  = "test_ws";
 $glpi_pass  = "ipm-France2012";
 
@@ -67,22 +68,24 @@ $glpi_pass  = "ipm-France2012";
 */
 function login() {
    global $glpi_user, $glpi_pass, $ws_user, $ws_pass;
+
+   $args['method']          = "glpi.doLogin";
+   $args['login_name']      = $glpi_user;
+   $args['login_password']  = $glpi_pass;
+
+   if (isset($ws_user)){
+      $args['username'] = $ws_user;
+   }
+
+   if (isset($ws_pass)){
+      $args['password'] = $ws_pass;
+   }
+
+   if($result = call_glpi($args)) {
+      return $result['session'];
+   }
    
-    $args['method']          = "glpi.doLogin";
-    $args['login_name']      = $glpi_user;
-    $args['login_password']  = $glpi_pass;
-    
-    if (isset($ws_user)){
-       $args['username'] = $ws_user;
-    }
-    
-    if (isset($ws_pass)){
-       $args['password'] = $ws_pass;
-    }
-    
-    if($result = call_glpi($args)) {
-       return $result['session'];
-    }
+   return null;
 }
 
 /*
@@ -100,9 +103,13 @@ function logout() {
 * GENERIC CALL
 */
 function call_glpi($args) {
-   global $host,$url,$deflate,$base64;
+   global $host,$url,$deflate,$base64,$xmlrpc;
 
-   echo "+ Calling {".$args['method']."} on http://$host/$url\n";
+   if ($xmlrpc) {
+      echo "+ Calling {".$args['method']."} RPC, on http://$host/$url\n";
+   } else {
+      echo "+ Calling {".$args['method']."} JSON, on http://$host/$url\n";
+   }
 
    if (isset($args['session'])) {
       $url_session = $url.'?session='.$args['session'];
@@ -110,19 +117,37 @@ function call_glpi($args) {
       $url_session = $url;
    }
 
-   $header = "Content-Type: text/xml";
-
-   if (isset($deflate)) {
-      $header .= "\nAccept-Encoding: deflate";
+   if ($xmlrpc) {
+      $header = "Content-Type: text/xml";
+      if (isset($deflate)) {
+         $header .= "\nAccept-Encoding: deflate";
+      }
+      $request = xmlrpc_encode_request($args['method'], $args);
+      $context = stream_context_create(array('http' => array('method'  => "POST",
+                                                             'header'  => $header,
+                                                             'content' => $request)));
+   } else {
+      $header = "Content-Type: application/json";
+      if (isset($deflate)) {
+         $header .= "\nAccept-Encoding: deflate";
+      }
+      $context = stream_context_create(array('http' => array('method'  => "GET",
+                                                             'header'  => $header)));
+      if (isset($args['session'])) {
+         $url_session = $url.'?session='.$args['session'].'&'.http_build_query($args);
+      } else {
+         $url_session = $url.'?'.http_build_query($args);
+      }
    }
    
-
-   $request = xmlrpc_encode_request($args['method'], $args);
-   $context = stream_context_create(array('http' => array('method'  => "POST",
-                                                          'header'  => $header,
-                                                          'content' => $request)));
+   
+   $begin_time = array_sum(explode(' ', microtime()));
 
    $file = file_get_contents("http://$host/$url_session", false, $context);
+
+   $end_time = array_sum(explode(' ', microtime()));
+   echo '+ Duration: '.($end_time - $begin_time)."\n";
+   
    if (!$file) {
       die("+ No response\n");
    }
@@ -135,20 +160,44 @@ function call_glpi($args) {
       echo "+ Uncompressed response : $lend (".round(100.0*$lenc/$lend)."%)\n";
    }
    
-   // echo "+ Content : $file\n";
-   $response = xmlrpc_decode($file);
-   // echo "+ Response : $response\n";
-   if (!is_array($response)) {
-      echo "+ Content : $file\n";
-      // echo "+ Response : $response\n";
-      echo "+ Bad response, not an array !\n";
-   }
-   
-   if (is_array($response) && xmlrpc_is_fault($response)) {
-       echo(" -> xmlrpc error(".$response['faultCode']."): ".$response['faultString']."\n");
-       return null;
+   if ($xmlrpc) {
+      $response = xmlrpc_decode($file);
+      if (!is_array($response)) {
+         echo "+ Content : $file\n";
+         echo "+ Bad response, not an array !\n";
+      }
+      
+      if (is_array($response) && xmlrpc_is_fault($response)) {
+          echo(" -> xmlrpc error(".$response['faultCode']."): ".$response['faultString']."\n");
+          return null;
+      }
+   } else {
+      // echo "+ Content : $file\n";
+      $response = json_decode($file, true);
+      // print_r($response);
    }
    return $response;
+}
+
+/*
+* getTickets
+*/
+function getTickets($session, $start=0, $limit=5000) {
+   /*
+   * Get tickets
+   */
+   $args['session'] = $session;
+   $args['method'] = "glpi.listTickets";
+   $args['start'] = $start;
+   $args['limit'] = $limit;
+   
+   if ($tickets = call_glpi($args)) {
+      // print_r($tickets);
+      echo "+ Got ".count($tickets)." tickets.\n";
+      return $tickets;
+   }
+
+   return null;
 }
 
 /*
@@ -166,7 +215,8 @@ function getCounters($session, $lastPerHost=false, $start=0, $limit=500) {
    $args['limit'] = $limit;
    
    if ($counters = call_glpi($args)) {
-      print_r($counters);
+      echo "+ Got ".count($counters)." tickets.\n";
+      // print_r($counters);
       return $counters;
    }
 
@@ -291,6 +341,12 @@ function getServicesStates($session, $filter="") {
 if (! $session = login()) {
    die ("Connexion refused !\n");
 }
+
+// Tickets
+if (getTickets($session)) {
+}
+
+die('test');
 
 // Hosts counters
 if (getOverallState($session, "Hosts")) {
