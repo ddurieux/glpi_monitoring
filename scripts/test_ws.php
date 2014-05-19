@@ -193,7 +193,7 @@ function getTickets($session, $start=0, $limit=5000) {
    
    if ($tickets = call_glpi($args)) {
       // print_r($tickets);
-      echo "+ Got ".count($tickets)." tickets.\n";
+      echo "+ Got ".count($tickets)." records.\n";
       return $tickets;
    }
 
@@ -215,7 +215,7 @@ function getCounters($session, $lastPerHost=false, $start=0, $limit=500) {
    $args['limit'] = $limit;
    
    if ($counters = call_glpi($args)) {
-      echo "+ Got ".count($counters)." tickets.\n";
+      echo "+ Got ".count($counters)." records.\n";
       // print_r($counters);
       return $counters;
    }
@@ -239,7 +239,8 @@ function getStatistics($session, $statistics='sum', $group='hostname', $order='h
    $args['limit'] = $limit;
    
    if ($counters = call_glpi($args)) {
-      print_r($counters);
+      echo "+ Got ".count($counters)." records.\n";
+      // print_r($counters);
       return $counters;
    }
 
@@ -263,8 +264,8 @@ function getOverallState($session, $view="Hosts") {
    */
    $args['view'] = $view;
    if ($counters = call_glpi($args)) {
-      // echo "+ Response : $counters !!!!!!!!!!!!!!!!!!!\n";
-      print_r($counters);
+      echo "+ Got ".count($counters)." records.\n";
+      // print_r($counters);
       return $counters;
    }
 
@@ -289,6 +290,7 @@ function getHostsStates($session, $filter="") {
    $args['filter'] = $filter;
 
    if ($hostsStates = call_glpi($args)) {
+      echo "+ Got ".count($hostsStates)." records.\n";
       echo "Host states : \n";
       foreach ($hostsStates as $computer) {
          echo " - ".$computer['name']." is ".$computer['state']." (".$computer['state_type'].")\n";
@@ -322,6 +324,7 @@ function getServicesStates($session, $filter="") {
    $args['filter'] = $filter;
 
    if ($servicesStates = call_glpi($args)) {
+      echo "+ Got ".count($servicesStates)." records.\n";
       echo "Services states : \n";
       foreach ($servicesStates as $service) {
          echo " - ".$service['host_name']." / ".$service['name']." is ".$service['state']." (".$service['state_type'].")\n";
@@ -346,7 +349,7 @@ if (! $session = login()) {
 if (getTickets($session)) {
 }
 
-die('test');
+// die('test');
 
 // Hosts counters
 if (getOverallState($session, "Hosts")) {
