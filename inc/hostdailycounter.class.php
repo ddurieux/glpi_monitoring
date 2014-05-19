@@ -614,33 +614,37 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                } else {
                   echo '<td colspan="2">';
                   
-                  // Form to create a ticket ...
-                  echo '<form name="form" method="post"
-                     action="'.$CFG_GLPI['root_doc'].'/front/ticket.form.php">';
+                  if (PluginMonitoringProfile::haveRight("counters", 'w')) {
+                     // Form to create a ticket ...
+                     echo '<form name="form" method="post"
+                        action="'.$CFG_GLPI['root_doc'].'/front/ticket.form.php">';
 
-                  echo '<input type="hidden" name="itemtype" value="Computer" />';
-                  echo '<input type="hidden" name="items_id" value="'.$computer['id'].'" />';
-                  echo '<input type="hidden" name="locations_id" value="'.$computer['locations_id'].'" />';
-                  echo '<input type="hidden" name="slas_id" value="'.$sla_id.'" />';
-                  echo '<input type="hidden" name="itilcategories_id" value="'.$category_id.'" />';
-                  $track_name = __('End paper prediction', 'monitoring')." / ".$sla_name." / ".$category_name;
-                  echo '<input type="hidden" name="name" value="'.$track_name.'" />';
-                  echo '<input type="hidden" name="content" value="'.$track_name.'" />';
-                  
-                  // Find ticket template if available ...
-                  $track = new Ticket();
-                  $tt = $track->getTicketTemplateToUse(0, Ticket::DEMAND_TYPE, $category_id, 0);
-                                                      
-                  if (isset($tt->predefined) && count($tt->predefined)) {
-                     foreach ($tt->predefined as $predeffield => $predefvalue) {
-                        // Load template data
-                        $values[$predeffield]            = $predefvalue;
-                        echo '<input type="hidden" name="'.$predeffield.'" value="'.$predefvalue.'" />';
+                     echo '<input type="hidden" name="itemtype" value="Computer" />';
+                     echo '<input type="hidden" name="items_id" value="'.$computer['id'].'" />';
+                     echo '<input type="hidden" name="locations_id" value="'.$computer['locations_id'].'" />';
+                     echo '<input type="hidden" name="slas_id" value="'.$sla_id.'" />';
+                     echo '<input type="hidden" name="itilcategories_id" value="'.$category_id.'" />';
+                     $track_name = __('End paper prediction', 'monitoring')." / ".$sla_name." / ".$category_name;
+                     echo '<input type="hidden" name="name" value="'.$track_name.'" />';
+                     echo '<input type="hidden" name="content" value="'.$track_name.'" />';
+                     
+                     // Find ticket template if available ...
+                     $track = new Ticket();
+                     $tt = $track->getTicketTemplateToUse(0, Ticket::DEMAND_TYPE, $category_id, 0);
+                                                         
+                     if (isset($tt->predefined) && count($tt->predefined)) {
+                        foreach ($tt->predefined as $predeffield => $predefvalue) {
+                           // Load template data
+                           $values[$predeffield]            = $predefvalue;
+                           echo '<input type="hidden" name="'.$predeffield.'" value="'.$predefvalue.'" />';
+                        }
                      }
+                     
+                     echo '<input type="submit" name="add" value="'.__('Add a ticket', 'monitoring').'" class="submit">';
+                     Html::closeForm();
+                  } else {
+                     echo __('Paper replacement ticket not yet created.', 'monitoring');
                   }
-                  
-                  echo '<input type="submit" name="add" value="'.__('Add a ticket', 'monitoring').'" class="submit">';
-                  Html::closeForm();
                   echo '</td>';
                }
                         
