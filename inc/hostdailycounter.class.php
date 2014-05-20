@@ -290,18 +290,23 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       $tab[1]['datatype']        = 'itemlink';
       $tab[1]['massiveaction']   = false;
 
-      $tab[2]['table']          = "glpi_computers";
-      $tab[2]['field']          = 'name';
-      $tab[2]['name']           = __('Computer');
-      $tab[2]['datatype']       = 'itemlink';
+      $tab[2]['table']           = "glpi_computers";
+      $tab[2]['field']           = 'name';
+      $tab[2]['name']            = __('Computer');
+      $tab[2]['datatype']        = 'itemlink';
 
-      $tab[3]['table']           = $this->getTable();
-      $tab[3]['field']           = 'day';
-      $tab[3]['name']            = __('Day', 'monitoring');
-      $tab[3]['datatype']        = 'date';
-      $tab[3]['massiveaction']   = false;
+      $tab[3]['table']           = "glpi_entities";
+      $tab[3]['field']           = 'name';
+      $tab[3]['name']            = __('Entity');
+      $tab[3]['datatype']        = 'itemlink';
 
-      $i = 4;
+      $tab[4]['table']           = $this->getTable();
+      $tab[4]['field']           = 'day';
+      $tab[4]['name']            = __('Day', 'monitoring');
+      $tab[4]['datatype']        = 'date';
+      $tab[4]['massiveaction']   = false;
+
+      $i = 5;
       foreach (self::getManagedCounters() as $key => $value) {
          $tab[$i]['table']          = $this->getTable();
          $tab[$i]['field']          = $key;

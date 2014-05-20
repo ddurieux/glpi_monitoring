@@ -377,17 +377,25 @@ function plugin_monitoring_addLeftJoin($itemtype,$ref_table,$new_table,$linkfiel
 //         }
        break;
 
-	 case 'PluginMonitoringHostdailycounter':
-       // Join between daily counters and computers
-       if ($new_table.".".$linkfield == "glpi_computers.computers_id") {
-          return "
-             INNER JOIN `glpi_computers`
-           ON (`glpi_plugin_monitoring_hostdailycounters`.`hostname` = `glpi_computers`.`name`
+      case 'PluginMonitoringHostdailycounter':
+         // Join between daily counters and computers
+         if ($new_table.".".$linkfield == "glpi_computers.computers_id") {
+            return "
+               INNER JOIN `glpi_computers`
+            ON (`glpi_plugin_monitoring_hostdailycounters`.`hostname` = `glpi_computers`.`name`
                AND `glpi_computers`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
-           )
-          ";
-       }
-       break;
+               )
+            ";
+         }
+         // Join between daily counters and entities
+         if ($new_table.".".$linkfield == "glpi_entities.entities_id") {
+            return "
+               INNER JOIN `glpi_entities`
+               ON (`glpi_computers`.`entities_id` = `glpi_entities`.`id`
+               )
+            ";
+         }
+         break;
 
       case 'PluginMonitoringUnavailability':
           // Join between unavailabilities and services
