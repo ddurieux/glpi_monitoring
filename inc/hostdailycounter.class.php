@@ -526,11 +526,13 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             $filter['filter'] = "hostname = '".$checkable['hostname']."' AND dayname IN ('".implode("','", $listDays) . "')";
             
             $breadcrumb = $checkable[$key];
+            $breadcrumb = "";
+            $currentValue = $checkable[$key];
             $average = PluginMonitoringHostdailycounter::getStatistics($filter);
             foreach ($average as $line) {
                if ($checkable['hostname'] == $line['hostname']) {
                   $checkable[$key] -= $line['avg_'.$value['zeroDetection']['counter']];
-                  $breadcrumb .= '-' . $line['avg_'.$value['zeroDetection']['counter']];
+                  $breadcrumb .= ' - ' . $line['avg_'.$value['zeroDetection']['counter']];
                }
             }
             // Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname'] . "', counter : ". $checkable[$key] . "=" . $breadcrumb . "\n");
@@ -539,6 +541,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                   echo '<table class="tab_cadre_fixe">';
                   echo '<tr class="tab_bg_1"><th colspan="4">';
                   echo __('Hosts out of paper in ', 'monitoring') . $value['zeroDetection']['days'] . __(' days.', 'monitoring');
+                  if (PluginMonitoringProfile::haveRight("counters", 'w')) {
+                     echo " ('". implode("','", $listDays). "')";
+                  }
                   echo '</th></tr>';
                   echo '<tr>';
                   echo '<th>';
@@ -554,11 +559,6 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
                   $firstDetection = true;
                }
-               // echo '<tr class="tab_bg_1">';
-               // echo '<td>';
-               // echo __('Host', 'monitoring') ." '".$checkable['hostname']."' ". __('has a counter which will become negative in ', 'monitoring') . $value['zeroDetection']['days'] . __(' days ', 'monitoring'). " : '$key' -> ".$checkable[$key]." = ".$breadcrumb;
-               // echo '</td>';
-               // echo '</tr>';
       
                // Search existing tickets ...
                // Find computer ...
@@ -571,7 +571,14 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                
                echo '<tr class="tab_bg_1">';
                echo '<td>';
-               echo $pmHost->getLink() . __(' will be out of paper in ', 'monitoring') . $value['zeroDetection']['days'] . __(' days ', 'monitoring');
+               echo $pmHost->getLink() . __(' will be out of paper in ', 'monitoring');
+               echo $value['zeroDetection']['days'];
+               echo __(' days ', 'monitoring');
+               if (PluginMonitoringProfile::haveRight("counters", 'w')) {
+                  echo "&nbsp;".Html::showToolTip(
+                     "'$key', current value = ".$currentValue.", current and next days values: ".$breadcrumb." = ".$checkable[$key]
+                     , array('display' => false));
+               }
                echo '</td>';
                echo '<td>';
                
@@ -649,6 +656,16 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                }
                         
                echo '</tr>';
+/*
+               
+               if (PluginMonitoringProfile::haveRight("counters", 'w')) {
+                  echo '<tr class="tab_bg_1">';
+                  echo '<td colspan="3">';
+                  echo "'$key', current value = ".$currentValue.", next days values: ".$breadcrumb." = ".$checkable[$key];
+                  echo '</td>';
+                  echo '</tr>';
+               }
+*/
             }
          }
          if ($firstDetection) {
@@ -656,51 +673,53 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          }
       }
 
-      // Check all counters for negative values ...
-      $firstDetection = false;
-      foreach ($a_checkables as $checkable) {
-         foreach (self::getManagedCounters() as $key => $value) {
-            // Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname']."', day : ".$checkable['day']."\n");
-            if ($checkable[$key] < 0) {
-               if (! $firstDetection) {
-                  echo "<table class='tab_cadre_fixe'>";
-                  echo "<tr class='tab_bg_1'><th colspan='2'>";
-                  echo __('Negative counters', 'monitoring');
-                  echo "</th></tr>";
-                  $firstDetection = true;
+      if (PluginMonitoringProfile::haveRight("counters", 'w')) {
+         // Check all counters for negative values ...
+         $firstDetection = false;
+         foreach ($a_checkables as $checkable) {
+            foreach (self::getManagedCounters() as $key => $value) {
+               // Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname']."', day : ".$checkable['day']."\n");
+               if ($checkable[$key] < 0) {
+                  if (! $firstDetection) {
+                     echo "<table class='tab_cadre_fixe'>";
+                     echo "<tr class='tab_bg_1'><th colspan='2'>";
+                     echo __('Negative counters', 'monitoring');
+                     echo "</th></tr>";
+                     $firstDetection = true;
+                  }
+                  echo "<tr class='tab_bg_1'><td>";
+                  echo __('Host', 'monitoring') ." '".$checkable['hostname']."' ". __('has negative counter value:', 'monitoring') ." '$key' = ".$checkable[$key]. __(', day: ', 'monitoring'). $checkable['day'];
+                  echo "</td></tr>";
                }
-               echo "<tr class='tab_bg_1'><td>";
-               echo __('Host', 'monitoring') ." '".$checkable['hostname']."' ". __('has negative counter value:', 'monitoring') ." '$key' = ".$checkable[$key]. __(', day: ', 'monitoring'). $checkable['day'];
-               echo "</td></tr>";
             }
          }
-      }
-      if ($firstDetection) {
-         echo "</table>";
-      }
+         if ($firstDetection) {
+            echo "</table>";
+         }
 
 
-      // Check all counters for low threshold values ...
-      $firstDetection = false;
-      foreach ($a_checkables as $checkable) {
-         foreach (self::getManagedCounters() as $key => $value) {
-            // Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname']."', day : ".$checkable['day']."\n");
-            if (isset($value['lowThreshold']) && ($checkable[$key] >= 0) && ($checkable[$key] < $value['lowThreshold'])) {
-               if (! $firstDetection) {
-                  echo "<table class='tab_cadre_fixe'>";
-                  echo "<tr class='tab_bg_1'><th colspan='2'>";
-                  echo __('Thresholds detection, lower than ', 'monitoring'). " ".$value['lowThreshold'];
-                  echo "</th></tr>";
-                  $firstDetection = true;
+         // Check all counters for low threshold values ...
+         $firstDetection = false;
+         foreach ($a_checkables as $checkable) {
+            foreach (self::getManagedCounters() as $key => $value) {
+               // Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname']."', day : ".$checkable['day']."\n");
+               if (isset($value['lowThreshold']) && ($checkable[$key] >= 0) && ($checkable[$key] < $value['lowThreshold'])) {
+                  if (! $firstDetection) {
+                     echo "<table class='tab_cadre_fixe'>";
+                     echo "<tr class='tab_bg_1'><th colspan='2'>";
+                     echo __('Thresholds detection, lower than ', 'monitoring'). " ".$value['lowThreshold'];
+                     echo "</th></tr>";
+                     $firstDetection = true;
+                  }
+                  echo "<tr class='tab_bg_1'><td>";
+                  echo __('Host', 'monitoring') ." '".$checkable['hostname']."' ". __('has counter value lower than defined threshold:', 'monitoring') ." '$key' = ".$checkable[$key]. __(', day: ', 'monitoring'). $checkable['day'];
+                  echo "</td></tr>";
                }
-               echo "<tr class='tab_bg_1'><td>";
-               echo __('Host', 'monitoring') ." '".$checkable['hostname']."' ". __('has counter value lower than defined threshold:', 'monitoring') ." '$key' = ".$checkable[$key]. __(', day: ', 'monitoring'). $checkable['day'];
-               echo "</td></tr>";
             }
          }
-      }
-      if ($firstDetection) {
-         echo "</table>";
+         if ($firstDetection) {
+            echo "</table>";
+         }
       }
 
    }
