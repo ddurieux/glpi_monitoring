@@ -183,17 +183,30 @@ function call_glpi($args) {
 * getTickets
 */
 function getTickets($session, $start=0, $limit=5000) {
+   global $verbose, $limitation;
+   
    /*
    * Get tickets
    */
    $args['session'] = $session;
    $args['method'] = "glpi.listTickets";
+   $args['id2name'] = 'yes';
    $args['start'] = $start;
-   $args['limit'] = $limit;
+   $args['limit'] = $limitation==0 ? $limit : $limitation;
    
    if ($tickets = call_glpi($args)) {
       // print_r($tickets);
       echo "+ Got ".count($tickets)." records.\n";
+      if ($verbose) {
+         echo "Tickets : \n";
+         foreach ($tickets as $ticket) {
+            if (isset($ticket['items_name'])) {
+               echo " - ".$ticket['id'].": ".$ticket['name']." for ".$ticket['items_name']." (".$ticket['status_name'].")\n";
+            } else {
+               echo " - ".$ticket['id'].": ".$ticket['name']." for UNKNOWN HOST (".$ticket['status_name'].")\n";
+            }
+         }
+      }
       return $tickets;
    }
 
@@ -204,6 +217,8 @@ function getTickets($session, $start=0, $limit=5000) {
 * getCounters
 */
 function getCounters($session, $lastPerHost=false, $start=0, $limit=500) {
+   global $verbose;
+   
    /*
    * Get counters
    */
@@ -227,6 +242,8 @@ function getCounters($session, $lastPerHost=false, $start=0, $limit=500) {
 * getStatistics
 */
 function getStatistics($session, $statistics='sum', $group='hostname', $order='hostname ASC', $start=0, $limit=500) {
+   global $verbose;
+   
    /*
    * Get statistics
    */
@@ -251,6 +268,8 @@ function getStatistics($session, $statistics='sum', $group='hostname', $order='h
 * getOverallState
 */
 function getOverallState($session, $view="Hosts") {
+   global $verbose;
+   
    /*
    * Get overall status
    */
@@ -275,7 +294,9 @@ function getOverallState($session, $view="Hosts") {
 /*
 * getHostsStates
 */
-function getHostsStates($session, $filter="") {
+function getHostsStates($session, $filter="", $start=0, $limit=5000) {
+   global $verbose;
+   
    /*
    * Get hosts states
    */
@@ -288,12 +309,16 @@ function getHostsStates($session, $filter="") {
    */
    // $args['filter'] = "`glpi_computers`.`name` LIKE 'ek3k%'";
    $args['filter'] = $filter;
+   $args['start'] = $start;
+   $args['limit'] = $limit;
 
    if ($hostsStates = call_glpi($args)) {
       echo "+ Got ".count($hostsStates)." records.\n";
-      echo "Host states : \n";
-      foreach ($hostsStates as $computer) {
-         echo " - ".$computer['name']." is ".$computer['state']." (".$computer['state_type'].")\n";
+      if ($verbose) {
+         echo "Host states : \n";
+         foreach ($hostsStates as $computer) {
+            echo " - ".$computer['name']." is ".$computer['state']." (".$computer['state_type'].")\n";
+         }
       }
       
       return $hostsStates;
@@ -305,7 +330,9 @@ function getHostsStates($session, $filter="") {
 /*
 * getServicesStates
 */
-function getServicesStates($session, $filter="") {
+function getServicesStates($session, $filter="", $start=0, $limit=5000) {
+   global $verbose;
+   
    /*
    * Get hosts states
    */
@@ -322,12 +349,16 @@ function getServicesStates($session, $filter="") {
    */
    // $args['filter'] = "`glpi_computers`.`name` LIKE 'ek3k%'";
    $args['filter'] = $filter;
+   $args['start'] = $start;
+   $args['limit'] = $limit;
 
    if ($servicesStates = call_glpi($args)) {
       echo "+ Got ".count($servicesStates)." records.\n";
-      echo "Services states : \n";
-      foreach ($servicesStates as $service) {
-         echo " - ".$service['host_name']." / ".$service['name']." is ".$service['state']." (".$service['state_type'].")\n";
+      if ($verbose) {
+         echo "Services states : \n";
+         foreach ($servicesStates as $service) {
+            echo " - ".$service['host_name']." / ".$service['name']." is ".$service['state']." (".$service['state_type'].")\n";
+         }
       }
       
       return $servicesStates;
@@ -337,6 +368,24 @@ function getServicesStates($session, $filter="") {
 }
 
 /*
+* PARAMETERS
+*/
+
+// $argv[0] is full script name
+$options = getopt("v::h:l:");
+// var_dump($options);
+
+$verbose = isset($options['v']) ? true : false;
+echo '+ Use command line parameter -v to set verbose mode: '. $verbose ."\n";
+
+$limitation = isset($options['l']) ? $options['l'] : 0;
+echo '+ Use command line parameter -l number to set request limit: '. $limitation ."\n";
+
+if (isset($options['h'])) {
+   $host = $options['h'];
+}
+echo '+ Use command line parameter -h "hostname" to set Web Services host: '. $host ."\n";
+/*
 * ACTIONS
 */
 
@@ -345,11 +394,9 @@ if (! $session = login()) {
    die ("Connexion refused !\n");
 }
 
-// Tickets
-if (getTickets($session)) {
+// Tickets (100 record from first)
+if (getTickets($session, 0, 100)) {
 }
-
-// die('test');
 
 // Hosts counters
 if (getOverallState($session, "Hosts")) {
@@ -364,11 +411,11 @@ if (getOverallState($session, "Componentscatalog")) {
 if (getOverallState($session, "Ressources")) {
 }
 
-// Hosts states
-if (getHostsStates($session)) {
+// Hosts states (no filter, 100 record from first)
+if (getHostsStates($session, '', 0, 1)) {
 }
-// Services states
-if (getServicesStates($session)) {
+// Services states (no filter, 100 record from first)
+if (getServicesStates($session, '', 0, 1)) {
 }
 
 // All counters
