@@ -2015,9 +2015,14 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       $where = $join = '';
       $join .= "
          INNER JOIN `glpi_computers`
-            ON `tmp`.`hostname` = `glpi_computers`.`name`
+            ON `glpi_plugin_monitoring_hostdailycounters`.`hostname` = `glpi_computers`.`name`
          INNER JOIN `glpi_entities`
             ON `glpi_computers`.`entities_id` = `glpi_entities`.`id`
+         INNER JOIN (
+            SELECT hostname, MAX(DAY) AS max_day 
+            FROM `glpi_plugin_monitoring_hostdailycounters` 
+            GROUP BY hostname
+         ) AS t2 ON (`t2`.`hostname` = `glpi_plugin_monitoring_hostdailycounters`.`hostname` AND `t2`.`max_day` = `glpi_plugin_monitoring_hostdailycounters`.`day`) 
       ";
 
       // Entity
@@ -2040,24 +2045,25 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       // Group
       $group = 'GROUP BY hostname';
       if (isset($params['group'])) {
-         $group = "GROUP BY ".$params['group'];
+         $group = 'GROUP BY '.$params['group'];
       }
       
       // Order
-      $order = 'hostname ASC';
+      $order = 'ORDER BY hostname ASC';
       if (isset($params['order'])) {
-         $order = $params['order'];
+         $order = 'ORDER BY '.$params['order'];
       }
       
       $query = "
-         SELECT `glpi_entities`.`name` AS entity_name, `glpi_entities`.`id` AS entity_id, 
-         tmp.* FROM ( SELECT * FROM `glpi_plugin_monitoring_hostdailycounters` ORDER BY DATE(DAY) DESC ) tmp
+         SELECT `glpi_entities`.`name` AS entity_name, `glpi_entities`.`id` AS entity_id, `glpi_plugin_monitoring_hostdailycounters`.*
+         FROM `glpi_plugin_monitoring_hostdailycounters`
          $join
          $where
          $group
-         ORDER BY $order
+         $order
       ";
-      //Toolbox::logInFile("pm-ws", "getLastCountersPerDay, query : $query\n");
+      
+      Toolbox::logInFile("pm-ws", "getLastCountersPerHost, query : $query\n");
       $resp = array ();
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
