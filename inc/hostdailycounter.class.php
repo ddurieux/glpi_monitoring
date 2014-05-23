@@ -1449,6 +1449,27 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                      $input['cPagesRemaining'] = $previous['cPagesRemaining'] - $input['cPagesToday'];
                      //$input['cPaperLoad'] - $input['cPagesTotal'];
                      $input['cRetractedRemaining'] = $previous['cRetractedRemaining'] + $input['cRetractedToday'];
+                     
+                     // Detect if paper was changed today
+                     // FM : last > first event fetched from service events ... not from database previous counters.
+                     // if ($a_last['Paper Reams'] > $previous['cPaperChanged']) {
+                     if ($a_last['Paper Reams'] > $a_first['Paper Reams']) {
+                        // getPaperChanged
+                        $retpages = $self->getPaperChanged($services_id, date('Y-m-d', $i).' 00:00:00', date('Y-m-d', $i).' 23:59:59', $previous['cPaperChanged']);
+                        Toolbox::logInFile("pm-counters", "Paper changed today, counters : ".serialize($retpages)."\n");
+                        // Do not change because printer changed ...
+                        // $input['cPagesToday'] = $retpages[0] + $retpages[1];
+                        // $input['cRetractedToday'] = $retpages[2] + $retpages[3];
+                        // Reset remaining pages with default paper ream load
+                        $input['cPagesRemaining'] = 2000 - ($retpages[0] + $retpages[1]);
+                        // Increase paper changed counter
+                        $input['cPaperChanged'] = $previous['cPaperChanged'] + ($a_last['Paper Reams'] - $a_first['Paper Reams']);
+                        // Compute total paper load
+                        $input['cPaperLoad'] = $input['cPaperChanged'] * 2000;
+                     } else {
+                        // Set paper changed counter
+                        $input['cPaperChanged'] = $a_last['Paper Reams'];
+                     }
                   } else {
                      // When printer has not been changed :
                      // 1/ Compute daily values thanks to first and last day values.
