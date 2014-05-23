@@ -391,7 +391,7 @@ class PluginMonitoringWebservice {
          $where .= " AND " . $params['filter'];
       }
       // Order
-      $order = "entity_name ASC, FIELD(`glpi_plugin_monitoring_hosts`.`state`,'DOWN','PENDING','UNKNOWN','UNREACHABLE','UP')";
+      $order = "FIELD(`glpi_plugin_monitoring_hosts`.`state`,'DOWN','PENDING','UNKNOWN','UNREACHABLE','UP'), entity_name ASC";
       if (isset($params['order'])) {
          $order = $params['order'];
       }
