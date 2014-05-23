@@ -103,8 +103,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             'default'         => 2000,
             'lowThreshold'    => 200,
             'zeroDetection'   => array (
-               "days"      => 3,
-               "counter"   => 'cPagesToday',
+               "days"      => 3,             // How many days for paper end detection ...
+               "weekend"   => false,         // Do not include WE days
+               "counter"   => 'cPagesToday', // Which mean counter is to be used ?
             )
          ),
          'cRetractedInitial' => array(
@@ -520,7 +521,21 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
             $nextDayNum = $todayNum;
             $listDays = array();
-            for ($i=$value['zeroDetection']['days']; $i >= 0; $i--) {
+            
+            // Week days excluding saturday and sunday
+            for ($nbDays = $value['zeroDetection']['days']; $nbDays >= 0; ) {
+               if (! $value['zeroDetection']['weekend']) {
+                  // Skip Saturday ...
+                  if ($nextDayNum == 6) {
+                     $nextDayNum = 0; continue;
+                  }
+                  // Skip Sunday ...
+                  if ($nextDayNum == 0) {
+                     $nextDayNum = 1; continue;
+                  }
+               }
+               
+               $nbDays -= 1;
                $listDays[] = $daysnameidx[$nextDayNum];
                
                $nextDayNum++;
@@ -724,6 +739,199 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          }
          if ($firstDetection) {
             echo "</table>";
+         }
+
+         // Check all counters for incorrect total per day values ...
+         $initialValues = array (
+            'ek3k-cnam-0001' => array('25/12/13 20:43', '113'),
+            'ek3k-cnam-0002' => array('18/12/13 16:52', '639'),
+            'ek3k-cnam-0003' => array('25/12/13 20:40', '71'),
+            'ek3k-cnam-0006' => array('25/12/13 20:40', '99'),
+            'ek3k-cnam-0010' => array('25/12/13 20:40', '781'),
+            'ek3k-cnam-0011' => array('25/12/13 20:40', '63'),
+            'ek3k-cnam-0012' => array('25/12/13 20:40', '611'),
+            'ek3k-cnam-0013' => array('25/12/13 20:40', '1162'),
+            'ek3k-cnam-0014' => array('25/12/13 20:40', '730'),
+            'ek3k-cnam-0015' => array('25/12/13 20:40', '97'),
+            'ek3k-cnam-0016' => array('25/12/13 20:40', '870'),
+            'ek3k-cnam-0017' => array('25/12/13 20:40', '1059'),
+            'ek3k-cnam-0018' => array('25/12/13 20:40', '826'),
+            'ek3k-cnam-0019' => array('25/12/13 20:40', '915'),
+            'ek3k-cnam-0020' => array('25/12/13 20:40', '473'),
+            'ek3k-cnam-0021' => array('25/12/13 20:40', '487'),
+            'ek3k-cnam-0022' => array('25/12/13 20:40', '397'),
+            'ek3k-cnam-0023' => array('25/12/13 20:40', '917'),
+            'ek3k-cnam-0024' => array('25/12/13 20:40', '1116'),
+            'ek3k-cnam-0025' => array('25/12/13 20:40', '143'),
+            'ek3k-cnam-0026' => array('25/12/13 20:40', '713'),
+            'ek3k-cnam-0028' => array('25/12/13 20:40', '766'),
+            'ek3k-cnam-0029' => array('25/12/13 20:40', '613'),
+            'ek3k-cnam-0030' => array('25/12/13 20:40', '821'),
+            'ek3k-cnam-0031' => array('25/12/13 20:40', '1015'),
+            'ek3k-cnam-0032' => array('25/12/13 20:40', '972'),
+            'ek3k-cnam-0033' => array('25/12/13 20:40', '853'),
+            'ek3k-cnam-0034' => array('25/12/13 20:40', '537'),
+            'ek3k-cnam-0035' => array('25/12/13 20:40', '422'),
+            'ek3k-cnam-0036' => array('25/12/13 20:40', '714'),
+            'ek3k-cnam-0037' => array('25/12/13 20:40', '683'),
+            'ek3k-cnam-0038' => array('25/12/13 20:40', '509'),
+            'ek3k-cnam-0039' => array('25/12/13 20:40', '1031'),
+            'ek3k-cnam-0040' => array('25/12/13 20:40', '310'),
+            'ek3k-cnam-0041' => array('25/12/13 20:40', '255'),
+            'ek3k-cnam-0042' => array('25/12/13 20:40', '321'),
+            'ek3k-cnam-0044' => array('25/12/13 20:40', '213'),
+            'ek3k-cnam-0045' => array('25/12/13 20:40', '491'),
+            'ek3k-cnam-0046' => array('25/12/13 20:40', '261'),
+            'ek3k-cnam-0047' => array('25/12/13 20:40', '215'),
+            'ek3k-cnam-0048' => array('25/12/13 20:40', '690'),
+            'ek3k-cnam-0049' => array('25/12/13 20:40', '387'),
+            'ek3k-cnam-0050' => array('25/12/13 20:40', '265'),
+            'ek3k-cnam-0051' => array('25/12/13 20:40', '265'),
+            'ek3k-cnam-0052' => array('25/12/13 20:40', '285'),
+            'ek3k-cnam-0055' => array('25/12/13 20:40', '133'),
+            'ek3k-cnam-0056' => array('25/12/13 20:40', '839'),
+            'ek3k-cnam-0057' => array('25/12/13 20:40', '268'),
+            'ek3k-cnam-0058' => array('21/12/13 10:10', '221'),
+            'ek3k-cnam-0059' => array('25/12/13 20:40', '614'),
+            'ek3k-cnam-0061' => array('25/12/13 20:39', '429'),
+            'ek3k-cnam-0062' => array('25/12/13 20:40', '403'),
+            'ek3k-cnam-0063' => array('25/12/13 20:40', '380'),
+            'ek3k-cnam-0064' => array('25/12/13 20:40', '156'),
+            'ek3k-cnam-0065' => array('25/12/13 20:40', '406'),
+            'ek3k-cnam-0066' => array('25/12/13 20:40', '262'),
+            'ek3k-cnam-0067' => array('25/12/13 20:40', '866'),
+            'ek3k-cnam-0068' => array('25/12/13 20:40', '328'),
+            'ek3k-cnam-0069' => array('25/12/13 20:40', '317'),
+            'ek3k-cnam-0070' => array('25/12/13 20:40', '512'),
+            'ek3k-cnam-0071' => array('25/12/13 20:39', '311'),
+            'ek3k-cnam-0072' => array('25/12/13 20:40', '474'),
+            'ek3k-cnam-0073' => array('25/12/13 20:40', '493'),
+            'ek3k-cnam-0074' => array('25/12/13 20:40', '348'),
+            'ek3k-cnam-0075' => array('25/12/13 20:40', '269'),
+            'ek3k-cnam-0076' => array('23/12/13 16:10', '218'),
+            'ek3k-cnam-0077' => array('25/12/13 20:40', '100'),
+            'ek3k-cnam-0078' => array('25/12/13 20:40', '290'),
+            'ek3k-cnam-0079' => array('25/12/13 20:40', '240'),
+            'ek3k-cnam-0080' => array('25/12/13 20:40', '343'),
+            'ek3k-cnam-0081' => array('25/12/13 20:40', '0'),
+            'ek3k-cnam-0082' => array('25/12/13 20:40', '120'),
+            'ek3k-cnam-0083' => array('25/12/13 20:40', '143'),
+            'ek3k-cnam-0084' => array('25/12/13 20:41', '193'),
+            'ek3k-cnam-0085' => array('25/12/13 20:40', '565'),
+            'ek3k-cnam-0086' => array('23/12/13 16:10', '156'),
+            'ek3k-cnam-0087' => array('25/12/13 20:40', '457'),
+            'ek3k-cnam-0088' => array('25/12/13 20:40', '105'),
+            'ek3k-cnam-0089' => array('25/12/13 20:40', '66'),
+            'ek3k-cnam-0090' => array('25/12/13 20:40', '138'),
+            'ek3k-cnam-0091' => array('25/12/13 20:40', '374'),
+            'ek3k-cnam-0093' => array('25/12/13 20:40', '41'),
+            'ek3k-cnam-0094' => array('25/12/13 20:40', '345'),
+            'ek3k-cnam-0095' => array('25/12/13 20:40', '106'),
+            'ek3k-cnam-0096' => array('25/12/13 20:40', '290'),
+            'ek3k-cnam-0097' => array('25/12/13 20:40', '420'),
+            'ek3k-cnam-0098' => array('25/12/13 20:40', '258'),
+            'ek3k-cnam-0099' => array('25/12/13 20:40', '89'),
+            'ek3k-cnam-0101' => array('25/12/13 20:40', '208'),
+            'ek3k-cnam-0102' => array('25/12/13 20:40', '31'),
+            'ek3k-cnam-0103' => array('25/12/13 20:40', '130'),
+            'ek3k-cnam-0104' => array('25/12/13 20:40', '211'),
+            'ek3k-cnam-0105' => array('25/12/13 20:40', '208'),
+            'ek3k-cnam-0106' => array('25/12/13 20:40', '0'),
+            'ek3k-cnam-0107' => array('25/12/13 20:40', '108'),
+            'ek3k-cnam-0108' => array('25/12/13 20:40', '40'),
+            'ek3k-cnam-0109' => array('25/12/13 20:40', '79'),
+            'ek3k-cnam-0110' => array('25/12/13 20:40', '0'),
+            'ek3k-cnam-0111' => array('25/12/13 20:40', '0'),
+            'ek3k-cnam-0112' => array('25/12/13 20:40', '5'),
+            'ek3k-cnam-0113' => array('25/12/13 20:40', '11'),
+            'ek3k-cnam-0114' => array('25/12/13 20:40', '180'),
+            'ek3k-cnam-0115' => array('25/12/13 20:40', '46'),
+            'ek3k-cnam-0116' => array('25/12/13 20:40', '77'),
+            'ek3k-cnam-0117' => array('25/12/13 20:40', '135'),
+            'ek3k-cnam-0118' => array('25/12/13 20:40', '87'),
+            'ek3k-cnam-0119' => array('25/12/13 20:40', '1'),
+            'ek3k-cnam-0120' => array('25/12/13 20:40', '25'),
+            'ek3k-cnam-0121' => array('25/12/13 20:40', '41'),
+            'ek3k-cnam-0122' => array('25/12/13 20:40', '17'),
+            'ek3k-cnam-0123' => array('25/12/13 07:10', '63'),
+            'ek3k-cnam-0124' => array('25/12/13 20:40', '9'),
+            'ek3k-cnam-0127' => array('25/12/13 20:40', '161'),
+            'ek3k-cnam-0128' => array('25/12/13 20:40', '25'),
+            'ek3k-cnam-0129' => array('25/12/13 20:40', '2'),
+            'ek3k-cnam-0130' => array('23/12/13 15:10', '0'),
+            'ek3k-cnam-0132' => array('25/12/13 20:40', '135'),
+            'ek3k-cnam-0133' => array('25/12/13 20:40', '83'),
+            'ek3k-cnam-0134' => array('25/12/13 20:40', '54'),
+            'ek3k-cnam-0135' => array('25/12/13 20:40', '7'),
+            'ek3k-cnam-0136' => array('25/12/13 20:40', '34'),
+            'ek3k-cnam-0139' => array('25/12/13 20:40', '13'),
+            'ek6k-cnam-0001' => array('25/12/13 23:59', '6'),
+            'ek6k-cnam-0004' => array('25/12/13 23:45', '57'),
+            'ek6k-cnam-0006' => array('25/12/13 23:45', '4'),
+            'ek6k-cnam-0011' => array('25/12/13 23:45', '2'),
+         );
+         
+         $firstDetection = false;
+         $hosts = 0;
+         foreach ($a_checkables as $checkable) {
+            $firstDay = true;
+            $printedPages = 0;
+            $retractedPages = 0;
+            
+            $hostname = $checkable['hostname'];
+            
+            // Find counters for the host ...
+            $pmCounters = new PluginMonitoringHostdailycounter();
+            foreach ($pmCounters->find("`hostname`='$hostname' ORDER BY `day` ASC LIMIT 1") as $dailyCounters) {
+               // echo __('Host', 'monitoring') ." '$hostname' ". __(', day: ', 'monitoring'). $dailyCounters['day'] . __(', pages counters, total : ', 'monitoring') .$dailyCounters['cPagesTotal']. __(', today : ', 'monitoring'). $dailyCounters['cPagesToday'];
+               
+               if ($dailyCounters['cPagesToday'] != $dailyCounters['cPagesTotal']) {
+                  $printedPages = 0;
+                  if (isset($initialValues[$hostname])) {
+                     echo __(', initial value (', 'monitoring'). $initialValues[$hostname][0] .") ". $initialValues[$hostname][1];
+                     
+                     $printedPages = $initialValues[$hostname][1] + $dailyCounters['cPagesToday'];
+                  } else {
+                     $printedPages = $dailyCounters['cPagesToday'];
+                  }
+                  echo __(' ==> ', 'monitoring') .$printedPages. '<br/>';
+                  
+                  // Update current day and more recent days ...
+                  // Set session variable to avoid post_update treatment ...
+                  $_SESSION['plugin_monitoring_hostdailyupdate'] = true;
+                  
+                  // Update first day record
+                  $dailyCounters['cPagesToday'] = $printedPages;
+                  $dailyCounters['cPagesTotal'] = $printedPages;
+                  unset($dailyCounters['hostname']);
+                  $pmCounters->update($dailyCounters);
+                  // echo __(' Update: ', 'monitoring') .serialize($dailyCounters). '<br/>';
+                  echo __(' Update from: ', 'monitoring') .$dailyCounters['day']. ' / '.$dailyCounters['cPagesToday']. ' / '.$dailyCounters['cPagesTotal'];
+                  
+                  $a_data = getAllDatasFromTable(
+                              'glpi_plugin_monitoring_hostdailycounters',
+                              "`day` > '".$dailyCounters['day']."'
+                                 AND `hostname`='$hostname'",
+                              false,
+                              '`day` ASC');
+
+                  foreach ($a_data as $data) {
+                     $printedPages += $data['cPagesToday'];
+                     
+                     if ($printedPages != $data['cPagesTotal']) {
+                        $data['cPagesTotal'] = $printedPages;
+                     
+                        unset($data['hostname']);
+                        $pmCounters->update($data);
+                     }
+                  }
+                  echo __(' to: ', 'monitoring') .$data['day']. ' / '.$data['cPagesToday']. ' / '.$data['cPagesTotal']. '<br/>';
+                  unset($_SESSION['plugin_monitoring_hostdailyupdate']);
+                  // die('Test de Fred !');
+               } else {
+                  // echo '<br/>';
+               }
+            }
          }
       }
 
@@ -1176,7 +1384,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                $input['cPagesRemaining']     = $previous['cPagesRemaining'] - $input['cPagesToday'];
                $input['cRetractedRemaining'] = $previous['cRetractedRemaining'] + $input['cRetractedToday'];
                
-               if (count($a_first) != 0) {
+               if ((count($a_first) != 0) && (count($a_last) != 0)) {
                   // Detect if bin was emptied today
                   $binEmptiedToday = false;
                   if ($a_last['Trash Empty'] > $previous['cBinEmptied']) {
@@ -1188,7 +1396,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                   
                    // Detect if printer was changed today
                   // Toolbox::logInFile("pm-counters", "Printer replace : ".$a_last['Printer Replace']." / ".$previous['cPrinterChanged']."\n");
-                  if ($a_last['Printer Replace'] > $previous['cPrinterChanged']
+                  // FM : last > first event fetched from service events ... not from database previous counters.
+                  // if ($a_last['Printer Replace'] > $previous['cPrinterChanged']
+                  if ($a_last['Printer Replace'] > $a_first['Printer Replace']
                      || ($a_last['Cut Pages'] > $a_first['Cut Pages'] + 500)
                      || ($a_last['Cut Pages'] < $a_first['Cut Pages'])
                      || ($a_last['Retracted Pages'] < $a_first['Retracted Pages'])
@@ -1197,7 +1407,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                      ) {
                      
                      Toolbox::logInFile("pm-counters", "Service $hostname/$services_name : $services_id, detected that printer has changed today!\n");
-                     if ($a_last['Printer Replace'] > $previous['cPrinterChanged']) {
+                     // FM : last > first event fetched from service events ... not from database previous counters.
+                     // if ($a_last['Printer Replace'] > $previous['cPrinterChanged']) {
+                     if ($a_last['Printer Replace'] > $a_first['Printer Replace']) {
                         Toolbox::logInFile("pm-counters", "Printer replaced counter increased!\n");
                      }
                      if ($a_last['Cut Pages'] < $a_first['Cut Pages']) {
@@ -1251,16 +1463,22 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                      $input['cRetractedRemaining'] = $previous['cRetractedRemaining'] + $input['cRetractedToday'];
 
                      // Detect if paper was changed today
-                     if ($a_last['Paper Reams'] > $previous['cPaperChanged']) {
+                     // FM : last > first event fetched from service events ... not from database previous counters.
+                     // if ($a_last['Paper Reams'] > $previous['cPaperChanged']) {
+                     if ($a_last['Paper Reams'] > $a_first['Paper Reams']) {
                         // getPaperChanged
                         $retpages = $self->getPaperChanged($services_id, date('Y-m-d', $i).' 00:00:00', date('Y-m-d', $i).' 23:59:59', $previous['cPaperChanged']);
-                        Toolbox::logInFile("pm-counters", "Paper changed counters : ".serialize($retpages)."\n");
+                        Toolbox::logInFile("pm-counters", "Paper changed today, counters : ".serialize($retpages)."\n");
                         $input['cPagesToday'] = $retpages[0] + $retpages[1];
                         $input['cRetractedToday'] = $retpages[2] + $retpages[3];
                         // Reset remaining pages with default paper ream load
-                        $input['cPagesRemaining'] = 2000 - $retpages[1];
+                        $input['cPagesRemaining'] = 2000 - ($retpages[0] + $retpages[1]);
+                        // Increase paper changed counter
+                        $input['cPaperChanged'] = $previous['cPaperChanged'] + ($a_last['Paper Reams'] - $a_first['Paper Reams']);
                         // Compute total paper load
-                        $input['cPaperLoad'] = ($a_last['Paper Reams'] + 1) * 2000;
+                        $input['cPaperLoad'] = $input['cPaperChanged'] * 2000;
+                     } else {
+                        // Set paper changed counter
                         $input['cPaperChanged'] = $a_last['Paper Reams'];
                      }
                   }
@@ -1298,13 +1516,14 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       $_SESSION['plugin_monitoring_checkinterval'] = 86400;
       $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
 
+      // Search Paper Reams counter ...
       $query = "SELECT id, perf_data, date FROM glpi_plugin_monitoring_serviceevents
              JOIN
                (SELECT MIN(glpi_plugin_monitoring_serviceevents.id) AS min
                 FROM glpi_plugin_monitoring_serviceevents
                 WHERE `plugin_monitoring_services_id` = '".$services_id."'
                    AND (
-                     `glpi_plugin_monitoring_serviceevents`.`perf_data` LIKE '%Cut Pages%'
+                     `glpi_plugin_monitoring_serviceevents`.`perf_data` LIKE '%Paper Reams%'
                      OR
                      `glpi_plugin_monitoring_serviceevents`.`perf_data` LIKE '%Powered Cards%'
                    )
@@ -1346,13 +1565,14 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       $_SESSION['plugin_monitoring_checkinterval'] = 86400;
       $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
 
+      // Search Paper Reams counter ...
       $query = "SELECT id, perf_data, date FROM glpi_plugin_monitoring_serviceevents
              JOIN
                (SELECT MAX(glpi_plugin_monitoring_serviceevents.id) AS max
                 FROM glpi_plugin_monitoring_serviceevents
                 WHERE `plugin_monitoring_services_id` = '".$services_id."'
                    AND (
-                     `glpi_plugin_monitoring_serviceevents`.`perf_data` LIKE '%Cut Pages%'
+                     `glpi_plugin_monitoring_serviceevents`.`perf_data` LIKE '%Paper Reams%'
                      OR
                      `glpi_plugin_monitoring_serviceevents`.`perf_data` LIKE '%Powered Cards%'
                    )
@@ -1422,6 +1642,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       $cnt_atchange = 0;
       $val_end      = 0;
       $cnt_end      = 0;
+      
+      $cnt_paperchanged = -1;
+      
       if (isset($ret[0][$word])) {
          foreach ($ret[0][$word] as $num=>$val) {
             if ($cnt_first < 0) {
@@ -1717,10 +1940,6 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
       // Toolbox::logInFile("pm-counters", "post_updateItem ...\n");
       
-      if (! isset($_SESSION['plugin_monitoring_hostdailyupdate_gui'])) {
-         return;
-      }
-      
       if (isset($_SESSION['plugin_monitoring_hostdailyupdate'])) {
          return;
       }
@@ -1837,7 +2056,6 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          }
       }
       unset($_SESSION['plugin_monitoring_hostdailyupdate']);
-      unset($_SESSION['plugin_monitoring_hostdailyupdate_gui']);
    }
 
 
