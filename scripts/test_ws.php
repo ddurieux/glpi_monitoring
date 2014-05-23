@@ -182,7 +182,7 @@ function call_glpi($args) {
 /*
 * getTickets
 */
-function getTickets($session, $start=0, $limit=5000) {
+function getTickets($session, $start=0, $limit=100) {
    global $verbose, $limitation;
    
    /*
@@ -217,7 +217,7 @@ function getTickets($session, $start=0, $limit=5000) {
 * getCounters
 */
 function getCounters($session, $lastPerHost=false, $start=0, $limit=500) {
-   global $verbose;
+   global $verbose, $limitation;
    
    /*
    * Get counters
@@ -227,7 +227,7 @@ function getCounters($session, $lastPerHost=false, $start=0, $limit=500) {
    if ($lastPerHost) $args['lastPerHost'] = true;
    $args['filter'] = "`glpi_entities`.`name` LIKE '%ISERE%'";
    $args['start'] = $start;
-   $args['limit'] = $limit;
+   $args['limit'] = $limitation==0 ? $limit : $limitation;
    
    if ($counters = call_glpi($args)) {
       echo "+ Got ".count($counters)." records.\n";
@@ -242,7 +242,7 @@ function getCounters($session, $lastPerHost=false, $start=0, $limit=500) {
 * getStatistics
 */
 function getStatistics($session, $statistics='sum', $group='hostname', $order='hostname ASC', $start=0, $limit=500) {
-   global $verbose;
+   global $verbose, $limitation;
    
    /*
    * Get statistics
@@ -253,7 +253,7 @@ function getStatistics($session, $statistics='sum', $group='hostname', $order='h
    $args['group'] = $group;
    $args['order'] = $order;
    $args['start'] = $start;
-   $args['limit'] = $limit;
+   $args['limit'] = $limitation==0 ? $limit : $limitation;
    
    if ($counters = call_glpi($args)) {
       echo "+ Got ".count($counters)." records.\n";
@@ -295,7 +295,7 @@ function getOverallState($session, $view="Hosts") {
 * getHostsStates
 */
 function getHostsStates($session, $filter="", $start=0, $limit=5000) {
-   global $verbose;
+   global $verbose, $limitation;
    
    /*
    * Get hosts states
@@ -310,7 +310,7 @@ function getHostsStates($session, $filter="", $start=0, $limit=5000) {
    // $args['filter'] = "`glpi_computers`.`name` LIKE 'ek3k%'";
    $args['filter'] = $filter;
    $args['start'] = $start;
-   $args['limit'] = $limit;
+   $args['limit'] = $limitation==0 ? $limit : $limitation;
 
    if ($hostsStates = call_glpi($args)) {
       echo "+ Got ".count($hostsStates)." records.\n";
@@ -331,7 +331,7 @@ function getHostsStates($session, $filter="", $start=0, $limit=5000) {
 * getServicesStates
 */
 function getServicesStates($session, $filter="", $start=0, $limit=5000) {
-   global $verbose;
+   global $verbose, $limitation;
    
    /*
    * Get hosts states
@@ -350,7 +350,7 @@ function getServicesStates($session, $filter="", $start=0, $limit=5000) {
    // $args['filter'] = "`glpi_computers`.`name` LIKE 'ek3k%'";
    $args['filter'] = $filter;
    $args['start'] = $start;
-   $args['limit'] = $limit;
+   $args['limit'] = $limitation==0 ? $limit : $limitation;
 
    if ($servicesStates = call_glpi($args)) {
       echo "+ Got ".count($servicesStates)." records.\n";
@@ -395,7 +395,7 @@ if (! $session = login()) {
 }
 
 // Tickets (100 record from first)
-if (getTickets($session, 0, 100)) {
+if (getTickets($session)) {
 }
 
 // Hosts counters
