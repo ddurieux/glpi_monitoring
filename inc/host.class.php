@@ -366,7 +366,7 @@ class PluginMonitoringHost extends CommonDBTM {
 
       $pmAcknowledge = new PluginMonitoringAcknowledge();
       if ($pmAcknowledge->getFromHost($this->getID(), 'Host') != -1) {
-         Toolbox::logInFile("pm", "isCurrentlyAcknowledged ? ".$this->getID()." : ".(! $pmAcknowledge->isExpired())." \n");
+         // Toolbox::logInFile("pm", "isCurrentlyAcknowledged ? ".$this->getID()." : ".(! $pmAcknowledge->isExpired())." \n");
          return (! $pmAcknowledge->isExpired());
       }
 
