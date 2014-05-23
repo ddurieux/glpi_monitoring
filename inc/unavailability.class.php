@@ -290,6 +290,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
             $this->currentstate = 'ok';
          }
       } else {
+         // Assume it is ok ...
          $this->currentstate = 'ok';
       }
    }
