@@ -925,7 +925,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                         $pmCounters->update($data);
                      }
                   }
-                  echo __(' to: ', 'monitoring') .$data['day']. ' / '.$data['cPagesToday']. ' / '.$data['cPagesTotal']. '<br/>';
+                  if (isset($data)) {
+                     echo __(' to: ', 'monitoring') .$data['day']. ' / '.$data['cPagesToday']. ' / '.$data['cPagesTotal']. '<br/>';
+                  }
                   unset($_SESSION['plugin_monitoring_hostdailyupdate']);
                   // die('Test de Fred !');
                } else {
@@ -1427,7 +1429,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
                      // getPrinterChanged
                      $retpages = $self->getPrinterChanged($services_id, date('Y-m-d', $i).' 00:00:00', date('Y-m-d', $i).' 23:59:59', $previous['cPrinterChanged']);
-                     // Toolbox::logInFile("pm-counters", "Printer changed counters : ".serialize($retpages)."\n");
+                     Toolbox::logInFile("pm-counters", "Printer changed today, counters : ".serialize($retpages)."\n");
                      $input['cPagesToday'] = $retpages[0]['Cut Pages'] + $retpages[1]['Cut Pages'];
                      $input['cPagesTotal'] = $previous['cPagesTotal'] + $input['cPagesToday'];
                      $input['cRetractedToday'] = $retpages[0]['Retracted Pages'] + $retpages[1]['Retracted Pages'];
@@ -1461,7 +1463,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                         // $input['cPagesToday'] = $retpages[0] + $retpages[1];
                         // $input['cRetractedToday'] = $retpages[2] + $retpages[3];
                         // Reset remaining pages with default paper ream load
-                        $input['cPagesRemaining'] = 2000 - ($retpages[0] + $retpages[1]);
+                        $input['cPagesRemaining'] = 2000 - ($input['cPagesToday']);
                         // Increase paper changed counter
                         $input['cPaperChanged'] = $previous['cPaperChanged'] + ($a_last['Paper Reams'] - $a_first['Paper Reams']);
                         // Compute total paper load
