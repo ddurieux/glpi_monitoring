@@ -78,7 +78,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          'cPagesTotal'     => array(
             'service'   => 'printer',
             'type'      => 'total',
-            'name'      => 'Total printed pages',
+            'name'      => __('Total printed pages', 'monitoring'),
             'display'   => true,
             'default'   => 0,
             'editable'  => true,
@@ -88,7 +88,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          ),
          'cPagesToday'     => array(
             'service'   => 'printer',
-            'name'      => 'Daily printed pages',
+            'name'      => __('Daily printed pages', 'monitoring'),
             'display'   => true,
             'default'   => 0,
             'editable'  => true,
@@ -97,9 +97,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             'sum'       => 'sum',
          ),
          'cPagesRemaining' => array(
-            'service'   => 'printer',
-            'name'            => 'Remaining pages',
-            'display'   => true,
+            'service'         => 'printer',
+            'name'            => __('Remaining pages', 'monitoring'),
+            'display'         => true,
             'default'         => 2000,
             'lowThreshold'    => 200,
             'zeroDetection'   => array (
@@ -110,13 +110,13 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          ),
          'cRetractedInitial' => array(
             'service'   => 'printer',
-            'name'      => 'Initial counter for retracted pages',
+            'name'      => __('Initial counter for retracted pages', 'monitoring'),
             'default'   => 0,
          ),
          'cRetractedTotal' => array(
             'service'   => 'printer',
             'type'      => 'total',
-            'name'      => 'Total retracted pages',
+            'name'      => __('Total retracted pages', 'monitoring'),
             'display'   => true,
             'default'   => 0,
             'editable'  => true,
@@ -126,7 +126,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          ),
          'cRetractedToday' => array(
             'service'   => 'printer',
-            'name'      => 'Daily retracted pages',
+            'name'      => __('Daily retracted pages', 'monitoring'),
             'display'   => true,
             'default'   => 0,
             'editable'  => true,
@@ -136,35 +136,35 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          ),
          'cRetractedRemaining' => array(
             'service'   => 'printer',
-            'name'     => 'Stored retracted pages',
+            'name'     => __('Stored retracted pages', 'monitoring'),
             'default'  => 0,
          ),
          'cPrinterChanged' => array(
             'service'   => 'printer',
-            'name'     => 'Total for printer changed',
+            'name'     => __('Total for printer changed', 'monitoring'),
             'default'  => 0,
             'editable' => true,
          ),
          'cPaperChanged' => array(
             'service'   => 'printer',
-            'name'     => 'Total for paper changed',
+            'name'     => __('Total for paper changed', 'monitoring'),
             'default'  => 0,
             'editable' => true,
          ),
          'cBinEmptied'   => array(
             'service'   => 'printer',
-            'name'     => 'Total for bin emptied',
+            'name'     => __('Total for bin emptied', 'monitoring'),
             'default'  => 0,
             'editable' => true,
          ),
          'cPaperLoad'    => array(
             'service'   => 'printer',
-            'name'     => 'Paper load',
+            'name'     => __('Paper load', 'monitoring'),
             'default'  => 2000,
          ),
          'cCardsInsertedOkToday' => array(
             'service'   => 'cards',
-            'name'      => 'Daily inserted cards',
+            'name'      => __('Daily inserted cards', 'monitoring'),
             'display'   => true,
             'default'   => 0,
             'editable'  => true,
@@ -175,7 +175,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          'cCardsInsertedOkTotal' => array(
             'service'   => 'cards',
             'type'      => 'total',
-            'name'      => 'Total inserted cards',
+            'name'      => __('Total inserted cards', 'monitoring'),
             'display'   => true,
             'default'   => 'previous',
             'editable'  => true,
@@ -183,7 +183,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          ),
          'cCardsInsertedKoToday' => array(
             'service'   => 'cards',
-            'name'      => 'Daily bad cards',
+            'name'      => __('Daily bad cards', 'monitoring'),
             'default'   => 0,
             'editable'  => true,
             'max'       => 'max',
@@ -193,14 +193,14 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          'cCardsInsertedKoTotal' => array(
             'service'   => 'cards',
             'type'      => 'total',
-            'name'      => 'Total bad cards',
+            'name'      => __('Total bad cards', 'monitoring'),
             'default'   => 'previous',
             'editable'  => true,
             'max'       => 'max',
          ),
          'cCardsRemovedToday' => array(
             'service'   => 'cards',
-            'name'      => 'Daily removed cards',
+            'name'      => __('Daily removed cards', 'monitoring'),
             'display'   => true,
             'default'   => 0,
             'editable'  => true,
@@ -211,7 +211,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          'cCardsRemovedTotal' => array(
             'service'   => 'cards',
             'type'      => 'total',
-            'name'      => 'Total removed cards',
+            'name'      => __('Total removed cards', 'monitoring'),
             'display'   => true,
             'default'   => 'previous',
             'editable'  => true,
