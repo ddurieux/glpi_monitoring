@@ -1180,6 +1180,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          $hostname = $computer->fields['name'];
          
          Toolbox::logInFile("pm-counters", "Service $hostname/$services_name : $services_id\n");
+         $firstRecordCreated = false;
          $self = new self();
          $a_counters = current($self->find("`hostname`='$hostname' AND LOCATE('$counters_type', `counters`) > 0", "`id` DESC", 1));
          if (! isset($a_counters['id'])) {
@@ -1302,12 +1303,17 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                Toolbox::logInFile("pm-counters", "Service $hostname/$services_name : $services_id, added first record for day: ".$input['day']."\n");
             }
             $a_counters = $input;
+            $firstRecordCreated = true;
          }
 
          // Here it exists, at min, one host daily counters line ... and a_counters is the last known counters.
          $previous = $a_counters;
          $todayUpdate = false;
          for ($i = (strtotime($a_counters['day'])); $i < strtotime(date('Y-m-d').' 23:59:59'); $i += 86400) {
+            if ($firstRecordCreated) {
+               $firstRecordCreated = false;
+               continue;
+            }
             $input = array();
             
             // Hostname / day record
