@@ -672,6 +672,14 @@ class PluginMonitoringWebservice {
    }
 
 
+   static function methodGetLastCounters($params, $protocol) {
+      return PluginMonitoringHostdailycounter::getLastCountersPerHost($params);
+   }
+
+   static function methodGetStatistics($params, $protocol) {
+      return PluginMonitoringHostdailycounter::getStatistics($params);
+   }
+
    static function methodGetDailyCounters($params, $protocol) {
 
       if (isset($params['lastPerHost'])) {
