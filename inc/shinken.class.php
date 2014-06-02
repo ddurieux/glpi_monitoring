@@ -222,6 +222,10 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_hosts[$i]['_ITEMSID'] = $data['items_id'];
                $a_hosts[$i]['_ITEMTYPE'] = $classname;
                Toolbox::logInFile("pm-shinken", " - add host ".$a_hosts[$i]['host_name']."\n");
+               // Fix if hostname is not defined ...
+               if (empty($a_hosts[$i]['host_name'])) {
+                  continue;
+               }
 
    /* Uncomment to send information for Shinken WebUI ...
                if (! empty($data['completename'])) {
@@ -619,11 +623,14 @@ class PluginMonitoringShinken extends CommonDBTM {
                if (isset($a_entities_allowed['-1'])
                        OR isset($a_entities_allowed[$item->fields['entities_id']])) {
 
-                  $a_hostname[] = preg_replace("/[^A-Za-z0-9\-_]/","",$item->fields['name']);
-                  $a_hostname_type[] = $datah['itemtype'];
-                  $a_hostname_id[] = $datah['items_id'];
-                  $hostname = $item->fields['name'];
-                  $plugin_monitoring_componentscatalogs_id = $datah['plugin_monitoring_componentscalalog_id'];
+                  // Fix if hostname is not defined ...
+                  if (! empty($item->fields['name'])) {
+                     $a_hostname[] = preg_replace("/[^A-Za-z0-9\-_]/","",$item->fields['name']);
+                     $a_hostname_type[] = $datah['itemtype'];
+                     $a_hostname_id[] = $datah['items_id'];
+                     $hostname = $item->fields['name'];
+                     $plugin_monitoring_componentscatalogs_id = $datah['plugin_monitoring_componentscalalog_id'];
+                  }
                }
             }
          }
