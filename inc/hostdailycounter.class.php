@@ -933,6 +933,49 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                } else {
                   // echo '<br/>';
                }
+               
+               if ($dailyCounters['cPagesRemaining'] != 2000 - $dailyCounters['cPagesTotal']) {
+                  echo __('Host', 'monitoring') ." '$hostname' ". __(' Update from: ', 'monitoring') .$dailyCounters['day']. ' / '.$dailyCounters['cPagesTotal']. ', remaining: '.$dailyCounters['cPagesRemaining'].'<br/>';
+
+                  // Update current day and more recent days ...
+                  // Set session variable to avoid post_update treatment ...
+                  $_SESSION['plugin_monitoring_hostdailyupdate'] = true;
+                  
+                  $pagesRemaining = 2000 - $dailyCounters['cPagesTotal'];
+                  $paperChanged = $dailyCounters['cPaperChanged'];
+                  
+                  // Update first day record
+                  $dailyCounters['cPagesRemaining'] = $pagesRemaining;
+                  unset($dailyCounters['hostname']);
+                  $pmCounters->update($dailyCounters);
+                  echo __(' Update from: ', 'monitoring') .$dailyCounters['day']. ' / '.$dailyCounters['cPagesTotal']. ', remaining: '.$dailyCounters['cPagesRemaining'];
+                  
+                  $a_data = getAllDatasFromTable(
+                              'glpi_plugin_monitoring_hostdailycounters',
+                              "`day` > '".$dailyCounters['day']."'
+                                 AND `hostname`='$hostname'",
+                              false,
+                              '`day` ASC');
+
+                  foreach ($a_data as $data) {
+                     if ($paperChanged != $data['cPaperChanged']) {
+                        $paperChanged = $data['cPaperChanged'];
+                        $pagesRemaining = 2000 - $data['cPagesToday'];
+                     } else {
+                        $pagesRemaining -= $data['cPagesToday'];
+                     }
+                     $data['cPagesRemaining'] = $pagesRemaining;
+                     unset($data['hostname']);
+                     $pmCounters->update($data);
+                  }
+                  if (isset($data)) {
+                     echo __(' to: ', 'monitoring') .$data['day']. ' / '.$data['cPagesToday']. ' / '.$data['cPagesTotal']. '<br/>';
+                  }
+                  unset($_SESSION['plugin_monitoring_hostdailyupdate']);
+                  // die ('Test de Fred ...');
+               } else {
+                  // echo '<br/>';
+               }
             }
          }
       }
