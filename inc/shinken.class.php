@@ -221,11 +221,12 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_hosts[$i]['hostgroups'] = "hostgroup-".$data['entityId'];
                $a_hosts[$i]['_ITEMSID'] = $data['items_id'];
                $a_hosts[$i]['_ITEMTYPE'] = $classname;
-               Toolbox::logInFile("pm-shinken", " - add host ".$a_hosts[$i]['host_name']."\n");
+               $a_hosts[$i]['_GRAPHITE_PRE'] = "knm.shinken";
                // Fix if hostname is not defined ...
                if (empty($a_hosts[$i]['host_name'])) {
                   continue;
                }
+               Toolbox::logInFile("pm-shinken", " - add host ".$a_hosts[$i]['host_name']."\n");
 
    /* Uncomment to send information for Shinken WebUI ...
                if (! empty($data['completename'])) {
