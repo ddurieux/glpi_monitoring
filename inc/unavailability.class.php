@@ -221,6 +221,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
    static function cronUnavailability() {
 
       ini_set("max_execution_time", "0");
+      ini_set("memory_limit", "512M");
 
       $pmUnavailability = new PluginMonitoringUnavailability();
       $pmUnavailability->runUnavailability();
@@ -229,52 +230,62 @@ class PluginMonitoringUnavailability extends CommonDBTM {
    }
 
 
-   static function runUnavailability($services_id = 0) {
+   function runUnavailability($services_id = 0, $start = 0, $limit = 100) {
       global $DB;
 
+      require_once(GLPI_ROOT."/plugins/monitoring/inc/unavailability.class.php");
+      require_once(GLPI_ROOT."/plugins/monitoring/inc/serviceevent.class.php");
 
-      // Toolbox::logInFile("pm", "runUnavailability : service identifier : $services_id\n");
       $pmUnavailability = new PluginMonitoringUnavailability();
       $pmServiceevent = new PluginMonitoringServiceevent();
 
       $where = '';
       if ($services_id != '0') {
-         $where = " WHERE `id`='".$services_id."' ";
+      $where = " WHERE `id`='".$services_id."' ";
       }
 
-      $query = "SELECT * FROM `glpi_plugin_monitoring_services` ".$where;
+      $query = "SELECT `id` FROM `glpi_plugin_monitoring_services` ".$where." LIMIT $start, $limit";
+      Toolbox::logInFile("pm-unavailability", "runUnavailability, query : $query\n");
       $result = $DB->query($query);
+
       while ($data=$DB->fetch_array($result)) {
          $pmUnavailability->getCurrentState($data['id']);
 
-         $nb = countElementsInTable('glpi_plugin_monitoring_serviceevents',
-                 "`unavailability`='0'
-               AND `state_type`='HARD'
-               AND `plugin_monitoring_services_id`='".$data['id']."'");
+         $query2 = "SELECT `id`,`state`,`date`,`event` FROM `glpi_plugin_monitoring_serviceevents`
+                     WHERE `unavailability`='0'
+                     AND `state_type`='HARD'
+                     AND `plugin_monitoring_services_id`='".$data['id']."'
+                     ORDER BY `date`";
+         Toolbox::logInFile("pm-unavailability", "runUnavailability, query2 : $query2\n");
+         $result2 = $DB->query($query2);
 
-         // Toolbox::logInFile("pm", "runUnavailability : service ".$data['id'].", count : $nb\n");
-         for ($i=0; $i < $nb; $i += 10000) {
-            $query2 = "SELECT * FROM `glpi_plugin_monitoring_serviceevents`
-               WHERE `unavailability`='0'
-                  AND `state_type`='HARD'
-                  AND `plugin_monitoring_services_id`='".$data['id']."'
-               ORDER BY `date`
-               LIMIT ".$i.", 10000 ";
-            $result2 = $DB->query($query2);
-            while ($data2=$DB->fetch_array($result2)) {
-               $pmUnavailability->checkState($data2['state'],
-                                             $data2['date'],
-                                             $data['id'],
-                                             $DB->escape($data2['event']));
-               $input = array();
-               $input['id'] = $data2['id'];
-               $input['unavailability'] = 1;
-               $pmServiceevent->update($input);
+         $query3 = "UPDATE `glpi_plugin_monitoring_serviceevents` SET `unavailability` = '1' WHERE `id` IN (";
+         $first = 1;
+         $update = 0;
+
+         while ($data2=$DB->fetch_array($result2)) {
+            $pmUnavailability->checkState($data2['state'],
+            $data2['date'],
+            $data['id'],
+            $DB->escape($data2['event']));
+
+            if ($data2['id'] != "") {
+               $update = 1;
             }
+            if (!$first) {
+               $query3 .= ", ";
+            } else {
+               $first = 0;
+            }
+            $query3 .= $data2['id'];
+         }
+         $query3 .= ")";
+         if ($update) {
+            Toolbox::logInFile("pm-unavailability", "runUnavailability, query3 : $query3\n");
+            $result3 = $DB->query($query3);
          }
       }
    }
-
 
    function getCurrentState($plugin_monitoring_services_id) {
       $this->plugin_monitoring_services_id = $plugin_monitoring_services_id;
@@ -290,7 +301,6 @@ class PluginMonitoringUnavailability extends CommonDBTM {
             $this->currentstate = 'ok';
          }
       } else {
-         // Assume it is ok ...
          $this->currentstate = 'ok';
       }
    }

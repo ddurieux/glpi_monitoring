@@ -61,7 +61,11 @@ if (isset($_GET['component_catalog_id'])) {
 if (isset($_GET['forceUpdate'])) {
    // A services_id may be specified as a parameter ...
    // Default services_id is 0 for all services
-   PluginMonitoringUnavailability::runUnavailability(isset($_GET['services_id']) ? $_GET['services_id'] : 0);
+   // start and limit may also be specified, defaults are 0 / 100
+   PluginMonitoringUnavailability::runUnavailability(
+      isset($_GET['services_id']) ? $_GET['services_id'] : 0, 
+      isset($_GET['start']) ? $_GET['start'] : 0, 
+      isset($_GET['limit']) ? $_GET['limit'] : 100);
 }
 
 Search::show('PluginMonitoringUnavailability');
