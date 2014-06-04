@@ -530,7 +530,7 @@ class PluginMonitoringWebservice {
             unset ($row['Location']);
          }
       
-         // Fecth host services
+         // Fetch host services
          $services = PluginMonitoringWebservice::getServicesStates(
             array(
                'start'     => 0,
