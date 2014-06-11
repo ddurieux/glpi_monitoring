@@ -90,7 +90,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
             Search::manageGetValues(PluginMonitoringUnavailability::getTypeName());
             Search::showList(PluginMonitoringUnavailability::getTypeName(), array(
                'field' => array(22), 'searchtype' => array('equals'), 'contains' => array($item->getID()),
-               'sort' => 21, 'order' => 'ASC'
+               'sort' => 3, 'order' => 'DESC'
                ));
             return true;
          }
@@ -100,7 +100,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
             Search::manageGetValues(PluginMonitoringUnavailability::getTypeName());
             Search::showList(PluginMonitoringUnavailability::getTypeName(), array(
                'field' => array(23), 'searchtype' => array('equals'), 'contains' => array($item->getID()),
-               'sort' => 21, 'order' => 'ASC'
+               'sort' => 3, 'order' => 'DESC'
                ));
             return true;
          }
@@ -221,7 +221,8 @@ class PluginMonitoringUnavailability extends CommonDBTM {
    static function cronUnavailability() {
 
       ini_set("max_execution_time", "0");
-      ini_set("memory_limit", "512M");
+	  // No memory limit
+      // ini_set("memory_limit", "512M");
 
       $pmUnavailability = new PluginMonitoringUnavailability();
       $pmUnavailability->runUnavailability();
@@ -230,11 +231,9 @@ class PluginMonitoringUnavailability extends CommonDBTM {
    }
 
 
-   function runUnavailability($services_id = 0, $start = 0, $limit = 100) {
+   // Default is to limit 100.000 services !
+   static function runUnavailability($services_id = 0, $start = 0, $limit = 100000) {
       global $DB;
-
-      require_once(GLPI_ROOT."/plugins/monitoring/inc/unavailability.class.php");
-      require_once(GLPI_ROOT."/plugins/monitoring/inc/serviceevent.class.php");
 
       $pmUnavailability = new PluginMonitoringUnavailability();
       $pmServiceevent = new PluginMonitoringServiceevent();
@@ -245,7 +244,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
       }
 
       $query = "SELECT `id` FROM `glpi_plugin_monitoring_services` ".$where." LIMIT $start, $limit";
-      Toolbox::logInFile("pm-unavailability", "runUnavailability, query : $query\n");
+      Toolbox::logInFile("pm-unavailability", "runUnavailability, start query : $query\n");
       $result = $DB->query($query);
 
       while ($data=$DB->fetch_array($result)) {
@@ -256,7 +255,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
                      AND `state_type`='HARD'
                      AND `plugin_monitoring_services_id`='".$data['id']."'
                      ORDER BY `date`";
-         Toolbox::logInFile("pm-unavailability", "runUnavailability, query2 : $query2\n");
+         // Toolbox::logInFile("pm-unavailability", "runUnavailability, query2 : $query2\n");
          $result2 = $DB->query($query2);
 
          $query3 = "UPDATE `glpi_plugin_monitoring_serviceevents` SET `unavailability` = '1' WHERE `id` IN (";
@@ -281,10 +280,12 @@ class PluginMonitoringUnavailability extends CommonDBTM {
          }
          $query3 .= ")";
          if ($update) {
-            Toolbox::logInFile("pm-unavailability", "runUnavailability, query3 : $query3\n");
+            // Toolbox::logInFile("pm-unavailability", "runUnavailability, query3 : $query3\n");
             $result3 = $DB->query($query3);
          }
       }
+
+      Toolbox::logInFile("pm-unavailability", "runUnavailability, end\n");
    }
 
    function getCurrentState($plugin_monitoring_services_id) {
