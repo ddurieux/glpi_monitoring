@@ -265,6 +265,8 @@ class PluginMonitoringHost extends CommonDBTM {
          $input = array();
          $input['itemtype'] = $item->fields['itemtype'];
          $input['items_id'] = $item->fields['items_id'];
+         // Try to fix entities_id = 0
+         $input['entities_id'] = $item->fields['entities_id'];
          $pmHost->add($input);
       }
    }
