@@ -493,7 +493,8 @@ class PluginMonitoringWebservice {
          SELECT
             `glpi_entities`.`name` AS entity_name,
             `glpi_computers`.`name` AS name,
-            `glpi_locations`.`building` AS Location, 
+            `glpi_locations`.`building` AS gps, 
+            `glpi_locations`.`name` AS location, 
             `glpi_plugin_monitoring_hosts`.`state`, 
             `glpi_plugin_monitoring_hosts`.`state_type`, 
             `glpi_plugin_monitoring_hosts`.`event`, 
@@ -520,14 +521,14 @@ class PluginMonitoringWebservice {
          // Default GPS coordinates ...
          $row['lat'] = 45.054485;
          $row['lng'] = 5.081413;
-         if (! empty($row['Location'])) {
-            $split = explode(',', $row['Location']);
+         if (! empty($row['gps'])) {
+            $split = explode(',', $row['gps']);
             if (count($split) > 1) {
                // At least 2 elements, let us consider as GPS coordinates ...
                $row['lat'] = $split[0];
                $row['lng'] = $split[1];
             }
-            unset ($row['Location']);
+            unset ($row['gps']);
          }
       
          // Fetch host services
@@ -682,20 +683,195 @@ class PluginMonitoringWebservice {
 
    static function methodGetDailyCounters($params, $protocol) {
 
-      if (isset($params['lastPerHost'])) {
-         return PluginMonitoringHostdailycounter::getLastCountersPerHost($params);
-      }
-      
-      if (isset($params['statistics'])) {
-         return PluginMonitoringHostdailycounter::getStatistics($params);
-      }
-      
-      $result = PluginMonitoringHostdailycounter::getHostDailyCounters($params);
-      // foreach ($result as $line) {
-         // Toolbox::logInFile("pm-ws", "getHostDailyCounters, result : ".serialize($line)."\n");
-      // }
-      return $result;
+     if (isset($params['lastPerHost'])) {
+       return PluginMonitoringHostdailycounter::getLastCountersPerHost($params);
+     }
+     
+     if (isset($params['statistics'])) {
+       return PluginMonitoringHostdailycounter::getStatistics($params);
+     }
+     
+     $result = PluginMonitoringHostdailycounter::getHostDailyCounters($params);
+     // foreach ($result as $line) {
+     // Toolbox::logInFile("pm-ws", "getHostDailyCounters, result : ".serialize($line)."\n");
+     // }
+     return $result;
    }
+
+   static function methodGetUnavailabilities($params, $protocol) {
+     global $DB;
+
+     if (isset($params['help'])) {
+       return array (
+		     'heures' => 'bool,optional',
+		     'from' => 'date,mandatory',
+		     'to'    => 'date,mandatory',
+		     'help' => 'bool,optional'
+		     );
+     }
+     if (!Session::getLoginUserID()) {
+       return self::Error($protocol,WEBSERVICES_ERROR_NOTAUTHENTICATED);
+     }
+     if (!isset($params['from'])) {
+       return self::Error($protocol,WEBSERVICES_ERROR_MISSINGPARAMETER, '', 'profile');
+     }
+     if (!isset($params['to'])) {
+       return self::Error($protocol,WEBSERVICES_ERROR_MISSINGPARAMETER, '', 'profile');
+     }
+
+     if (isset($params['heure'])) {
+       $heure_begin = "08";
+       $heure_end = "17";
+     } else {
+       $heure_begin = "00";
+       $heure_end = "23";
+     }
+
+     // Voir pour le format de dates
+     list($month, $day, $year) = explode('/', $_GET['from']);
+     $from = "$year-$month-$day";
+     $qbegin = strtotime("$from $heure_begin:00:00");
+
+     list($month, $day, $year) = explode('/', $_GET['to']);
+     $to = "$year-$month-$day";
+     $qend   = strtotime("$to $heure_end:59:59");
+
+     $diff = $qend - $qbegin;
+
+     $query = "SELECT 
+`e`.`name` as 'entity',
+`c`.`name` as 'name',  
+`u`.`begin_date` as 'begin_date',
+`u`.`end_date` as 'end_date'
+FROM 
+`glpi_computers` as `c`, 
+`glpi_plugin_monitoring_unavailabilities` as `u`,
+`glpi_plugin_monitoring_services` as `s`,
+`glpi_plugin_monitoring_componentscatalogs_hosts` as `cch`,
+`glpi_entities` as `e`
+WHERE 
+`u`.`plugin_monitoring_services_id` = `s`.`id`
+AND
+`s`.`plugin_monitoring_componentscatalogs_hosts_id` = `cch`.`id`
+AND
+`cch`.`items_id` = `c`.`id`
+AND
+`s`.`entities_id` = `e`.`id`
+AND
+(
+(`u`.`begin_date` <= '$from $heure_begin:00:00' AND `u`.`end_date` >= '$from $heure_begin:00:00')
+OR 
+(`u`.`begin_date` >= '$from $heure_begin:00:00' AND `u`.`end_date` <= '$to $heure_end:59:59')
+OR
+(`u`.`begin_date` <= '$to $heure_end:59:59' AND `u`.`end_date` >= '$to $heure_end:59:59' )
+)
+ORDER BY `c`.`name`
+";
+
+     $result = $DB->query($query);
+
+     $indispo = array();
+
+     while($data=$DB->fetch_array($result)) {
+       $begin = strtotime($data['begin_date']);
+       $end   = strtotime($data['end_date']);
+
+       if ($begin < $qbegin) {
+	 $begin = $qbegin;
+       }
+       if ($end > $qend) {
+	 $end = $qend;
+       }
+       $indispo[$data['name']]['entity'] = $data['entity'];
+       $indispo[$data['name']]['name'] = $data['name'];
+       $indispo[$data['name']]['indispo'][] = array (
+						     'begin' => $begin,
+						     'end'   => $end,
+						     'duration' => ($end-$begin)
+						     );
+     }
+
+     foreach ($indispo as &$borne) {
+       $borne['indispo'] = PluginMonitoringWebservice::checkLimits($borne['indispo']);
+     }
+
+     $indispo_result = array();
+     $i =  0;
+     foreach($indispo as $value) {
+       $indispo_result[$i]['name'] = $value['name'];
+       $indispo_result[$i]['entity'] = $value['entity'];
+       $duration = 0;
+       foreach ($value['indispo'] as $indispo_begin_end) {
+	 $duration += $indispo_begin_end['end']-$indispo_begin_end['begin'];
+       }
+       $indispo_result[$i]['duration'] = $duration;
+       $indispo_result[$i]['percent'] = round ((($diff - $duration)/$diff)*100, 2);
+       $i++;
+     }
+     return(json_encode($indispo_result));
+   }
+
+   private function checkLimits($bornes) {
+     $new_indispos = array();
+     $i = 0;
+     $recheck = 0;
+     foreach ($bornes as $datas) {
+       $begin = $datas['begin'];
+       $end = $datas['end'];
+
+       if (count($new_indispos) == 0) {
+	 $new_indispos[0]['begin'] = $begin;
+	 $new_indispos[0]['end'] = $end;
+	 $new_indispos[0]['duration'] = $end-$begin;
+       } else {
+
+	 $found = 0;
+	 foreach ($new_indispos as &$begin_end) {
+	   if ( ($begin_end['begin'] > $begin) && ($begin_end['end'] < $end) ) {
+	     echo ($read ? "$begin - $end -> zone plus grande\n": '');
+	     $begin_end['begin'] = $begin;
+	     $begin_end['end'] = $end;
+	     $begin_end['duration'] = $begin_end['end']-$begin_end['begin'];
+	     $found = 1;
+	     $recheck = 1;
+	     break;
+	   } elseif ( ($begin_end['begin'] < $begin) && ($begin_end['end'] > $begin) && ($begin_end['end'] < $end) ) { 
+	     echo ($read ? "$begin - $end -> fin apres\n": '');
+	     $begin_end['end'] = $end;
+	     $begin_end['duration'] = $begin_end['end']-$begin_end['begin'];
+	     $found = 1;
+	     $recheck = 1;
+	     break;
+	   } elseif ( ($begin_end['begin'] > $begin) && ($begin_end['begin'] < $end) && ($begin_end['end'] > $end) ) {
+	     echo ($read ? "$begin - $end -> debut avant \n": '');
+	     $begin_end['begin'] = $begin;
+	     $begin_end['duration'] = $begin_end['end']-$begin_end['begin'];
+	     $found = 1;
+	     $recheck = 1;
+	     break;
+	   } elseif ( ($begin_end['begin'] <= $begin) && ($begin_end['end'] >= $end) ) {
+	     echo ($read ? "$begin - $end -> dans la zone\n": '');
+	     $found = 1;
+	     break;
+	   }
+	 }
+	 if (!$found) {
+	   $new_indispos[] = array (
+				    'begin' => $begin,
+				    'end'   => $end,
+				    'duration' => ($end-$begin)
+				    );
+	 }
+       }
+     }
+
+     if ($recheck) {
+       $new_indispos = PluginMonitoringWebservice::checkLimits($new_indispos);
+     }
+     return $new_indispos;
+   }
+
+
 }
 
 ?>

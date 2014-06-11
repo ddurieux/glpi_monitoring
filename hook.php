@@ -558,6 +558,8 @@ function plugin_monitoring_registerMethods() {
 							     'methodGetDailyCounters');
    $WEBSERVICES_METHOD['monitoring.getHostsLocations'] = array('PluginMonitoringWebservice',
 							     'methodGetHostsLocations');
+   $WEBSERVICES_METHOD['monitoring.getUnavailabilities'] = array('PluginMonitoringWebservice',
+							     'methodGetUnavailabilities');
 }
 
 /**
