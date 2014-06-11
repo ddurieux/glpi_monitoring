@@ -69,7 +69,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
 
       if ($item->getType()=='Computer') {
          if (self::canView()) {
-            // Show list filtered on item, sorted on day descending ...
+            // Show list filtered on computer, sorted on day descending ...
             $_GET = array(
                'field' => array(22),
                'searchtype' => array('equals'),
