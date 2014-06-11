@@ -221,7 +221,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_hosts[$i]['hostgroups'] = "hostgroup-".$data['entityId'];
                $a_hosts[$i]['_ITEMSID'] = $data['items_id'];
                $a_hosts[$i]['_ITEMTYPE'] = $classname;
-               $a_hosts[$i]['_GRAPHITE_PRE'] = "knm.shinken";
+               $a_hosts[$i]['_GRAPHITE_PRE'] = "knm.shinken." . $a_hosts[$i]['_ENTITY'];
                // Fix if hostname is not defined ...
                if (empty($a_hosts[$i]['host_name'])) {
                   continue;
