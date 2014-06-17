@@ -405,7 +405,8 @@ CREATE TABLE `glpi_plugin_monitoring_hosts` (
   `is_acknowledgeconfirmed` tinyint(1) NOT NULL DEFAULT '0',
   `acknowledge_comment` text DEFAULT NULL COLLATE utf8_unicode_ci,
   `acknowledge_users_id` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `itemtype` (`itemtype`,`items_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

@@ -1752,6 +1752,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable,
                               'execution_time',
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addKey($newTable,
+                            array('itemtype','items_id'),
+                            'itemtype');
       $migration->migrationOneTable($newTable);
 
       if (count($a_hosts) > 0) {
@@ -3252,7 +3255,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                     `hostname` VARCHAR(255) NOT NULL DEFAULT '',
                     `day` DATE NOT NULL DEFAULT '2013-01-01',
                      PRIMARY KEY (`id`),
-                     KEY (`hostname`,`day`), 
+                     KEY (`hostname`,`day`),
                      KEY (`hostname`,`dayname`)
                   ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
          $DB->query($query);
