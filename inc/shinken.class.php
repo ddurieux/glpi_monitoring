@@ -189,7 +189,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       $query = "SELECT
          `glpi_plugin_monitoring_componentscatalogs_hosts`.*,
          `glpi_computers`.`id`, `glpi_computers`.`locations_id`,
-         `glpi_entities`.`id` AS entityId, `glpi_entities`.`name` AS entityName,
+         `glpi_entities`.`id` AS entityId, `glpi_entities`.`name` AS entityName, `glpi_entities`.`completename` AS entityFullName,
          `glpi_locations`.`id`, `glpi_locations`.`completename`,
          `glpi_locations`.`comment`, `glpi_locations`.`building`,
          `glpi_plugin_monitoring_services`.`networkports_id`
@@ -216,17 +216,23 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_hosts[$i]['_HOSTID'] = $pmHost->getField('id');
 
                $a_hosts[$i]['host_name'] = preg_replace("/[^A-Za-z0-9\-_]/","",$class->fields['name']);
-               $a_hosts[$i]['_ENTITIESID'] = $data['entityId'];
-               $a_hosts[$i]['_ENTITY'] = preg_replace("/[^A-Za-z0-9\-_]/","",$data['entityName']);
-               $a_hosts[$i]['hostgroups'] = "hostgroup-".$data['entityId'];
-               $a_hosts[$i]['_ITEMSID'] = $data['items_id'];
-               $a_hosts[$i]['_ITEMTYPE'] = $classname;
-               $a_hosts[$i]['_GRAPHITE_PRE'] = "knm.shinken." . $a_hosts[$i]['_ENTITY'];
                // Fix if hostname is not defined ...
                if (empty($a_hosts[$i]['host_name'])) {
                   continue;
                }
                Toolbox::logInFile("pm-shinken", " - add host ".$a_hosts[$i]['host_name']."\n");
+               
+               $a_hosts[$i]['_ENTITIESID'] = $data['entityId'];
+               $a_hosts[$i]['_ENTITY'] = preg_replace("/[^A-Za-z0-9\-_]/","",$data['entityName']);
+               $data['entityFullName'] = preg_replace("/ > /","#",$data['entityFullName']);
+               $data['entityFullName'] = preg_replace("/Entité racine#/","",$data['entityFullName']);
+               $data['entityFullName'] = preg_replace("/#/","_",$data['entityFullName']);
+               $a_hosts[$i]['_ENTITY_COMPLETE'] = preg_replace("/[^A-Za-z0-9\-_]/","",$data['entityFullName']);
+               $data['entityFullName'] = preg_replace("/_/",".",$data['entityFullName']);
+               $a_hosts[$i]['_GRAPHITE_PRE'] = "knm.kiosks." . preg_replace("/[^A-Za-z0-9\-_.]/","",$data['entityFullName']);
+               $a_hosts[$i]['hostgroups'] = "hostgroup-".$data['entityId'];
+               $a_hosts[$i]['_ITEMSID'] = $data['items_id'];
+               $a_hosts[$i]['_ITEMTYPE'] = $classname;
 
    /* Uncomment to send information for Shinken WebUI ...
                if (! empty($data['completename'])) {
