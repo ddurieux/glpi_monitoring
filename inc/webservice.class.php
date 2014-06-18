@@ -494,7 +494,8 @@ class PluginMonitoringWebservice {
             `glpi_entities`.`name` AS entity_name,
             `glpi_computers`.`name` AS name,
             `glpi_locations`.`building` AS gps, 
-            `glpi_locations`.`name` AS location, 
+            `glpi_locations`.`name` AS short_location, 
+            `glpi_locations`.`completename` AS location, 
             `glpi_plugin_monitoring_hosts`.`state`, 
             `glpi_plugin_monitoring_hosts`.`state_type`, 
             `glpi_plugin_monitoring_hosts`.`event`, 
@@ -537,7 +538,8 @@ class PluginMonitoringWebservice {
                'start'     => 0,
                'limit'     => 100,
                'entity'    => isset($params['entity']) ? $params['entity'] : null,
-               'filter'    => "glpi_computers.name='".$row['name']."'"
+               'filter'    => "glpi_computers.name='".$row['name']."'",
+               'order'     => "`glpi_plugin_monitoring_components`.`name` ASC"
             )
          );
          $row['services'] = $services;
@@ -545,23 +547,6 @@ class PluginMonitoringWebservice {
       }
 
       return $rows;
-
-/*
-      $query = "SELECT 
-               `glpi_computers`.*
-               , `glpi_computers`.`id` AS id_Host
-               , `glpi_plugin_monitoring_hosts`.*
-               , filterQuery.`id` AS id_monitoring
-               , `glpi_locations`.`id` AS id_Location, `glpi_locations`.`building` AS Location
-               , `glpi_states`.`id` AS id_State, `glpi_states`.`completename` AS status
-               FROM `glpi_computers` 
-               LEFT JOIN `glpi_locations` ON `glpi_locations`.`id` = `glpi_computers`.`locations_id` 
-               LEFT JOIN `glpi_states` ON `glpi_states`.`id` = `glpi_computers`.`states_id` 
-               LEFT JOIN `glpi_plugin_monitoring_hosts` ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`
-               LEFT JOIN `glpi_entities` ON `glpi_computers`.`entities_id` = `glpi_entities`.`id`
-               LEFT JOIN (SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts` GROUP BY `items_id`) filterQuery ON `glpi_computers`.`id` = filterQuery.`items_id` 
-			   ";
-*/
    }
 
 
