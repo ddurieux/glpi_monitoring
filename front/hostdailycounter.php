@@ -54,7 +54,7 @@ $pmDisplay->menu();
 
 // Show table sorted on day descending ...
 Search::manageGetValues('PluginMonitoringHostdailycounter');
-Search::showList('PluginMonitoringHostdailycounter', array(
+Search::show('PluginMonitoringHostdailycounter', array(
    'sort' => 4, 'order' => 'DESC'
    ));
 
