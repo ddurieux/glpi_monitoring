@@ -101,6 +101,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             'name'            => __('Remaining pages', 'monitoring'),
             'display'         => true,
             'default'         => 2000,
+            'editable'        => true,
             'lowThreshold'    => 200,
             'zeroDetection'   => array (
                "days"      => 3,             // How many days for paper end detection ...
@@ -2087,6 +2088,23 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             foreach ($a_data as $data) {
                // TODO : Increment cPrinterChanged ... how to ?
                $data['cPrinterChanged'] += ($this->fields['cPrinterChanged'] - $this->oldvalues['cPrinterChanged']);
+               $this->update($data);
+            }
+         }
+         
+         // Remaining pages
+         if ($field == 'cPagesRemaining') {
+            // Update current day and more recent days ...
+            $a_data = getAllDatasFromTable(
+                        'glpi_plugin_monitoring_hostdailycounters',
+                        "`day` > '".$this->fields['day']."'
+                           AND `hostname`='".$this->fields['hostname']."'",
+                        false,
+                        '`day` ASC');
+            foreach ($a_data as $data) {
+               $data['cPagesRemaining'] += ($newvalue - $oldvalue);
+            
+               unset($data['hostname']);
                $this->update($data);
             }
          }
