@@ -228,33 +228,47 @@ class PluginMonitoringShinken extends CommonDBTM {
                $data['entityFullName'] = preg_replace("/Entité racine#/","",$data['entityFullName']);
                $data['entityFullName'] = preg_replace("/#/","_",$data['entityFullName']);
                $a_hosts[$i]['_ENTITY_COMPLETE'] = preg_replace("/[^A-Za-z0-9\-_]/","",$data['entityFullName']);
-               $data['entityFullName'] = preg_replace("/_/",".",$data['entityFullName']);
-               $a_hosts[$i]['_GRAPHITE_PRE'] = "knm.kiosks." . preg_replace("/[^A-Za-z0-9\-_.]/","",$data['entityFullName']);
+               $a_hosts[$i]['_ENTITY_COMPLETE'] = strtolower($a_hosts[$i]['_ENTITY_COMPLETE']);
+               // if (
+                  // ($a_hosts[$i]['host_name'] == 'ek3k-cnam-0047') 
+                  // || ($a_hosts[$i]['host_name'] == 'ek3k-cnam-0254') 
+                  // || ($a_hosts[$i]['host_name'] == 'ek3k-cnam-0265') 
+                  // || ($a_hosts[$i]['host_name'] == 'ek6k-cnam-0010') 
+                  // ) {
+                  $data['entityFullName'] = preg_replace("/_/",".",$data['entityFullName']);
+                  $a_hosts[$i]['_GRAPHITE_PRE'] = "knm.kiosks." . preg_replace("/[^A-Za-z0-9\-_.]/","",$data['entityFullName']);
+                  $a_hosts[$i]['_GRAPHITE_PRE'] = strtolower($a_hosts[$i]['_GRAPHITE_PRE']);
+               // }
                $a_hosts[$i]['hostgroups'] = "hostgroup-".$data['entityId'];
                $a_hosts[$i]['_ITEMSID'] = $data['items_id'];
                $a_hosts[$i]['_ITEMTYPE'] = $classname;
 
    /* Uncomment to send information for Shinken WebUI ...
                if (! empty($data['completename'])) {
-                  $a_hosts[$i]['_LOC_NAME'] = preg_replace("/[\r\n]/"," / ",$data['completename']);
+                  $a_hosts[$i]['_LOC_NAME'] = preg_replace("/[\r\n]/",".",$data['completename']);
                   $a_hosts[$i]['_LOC_NAME'] = preg_replace("/[^A-Za-z0-9\-_]/"," / ",$a_hosts[$i]['_LOC_NAME']);
                }
                if (! empty($data['comment'])) {
-                  $a_hosts[$i]['_LOC_COMMENT'] = preg_replace("/[\r\n]/"," / ",$data['comment']);
+                  $a_hosts[$i]['_LOC_COMMENT'] = preg_replace("/[\r\n]/",".",$data['comment']);
                   $a_hosts[$i]['_LOC_COMMENT'] = preg_replace("/[^A-Za-z0-9\-_]/"," / ",$a_hosts[$i]['_LOC_COMMENT']);
                }
+   */
                if (! empty($data['building'])) {
                   $split = explode(',', $data['building']);
-                  if (count($split) > 1) {
+                  if (count($split) > 2) {
+                     // At least 3 elements, let us consider as GPS coordinates with altitude ...
+                     $a_hosts[$i]['_LOC_LAT'] = $split[0];
+                     $a_hosts[$i]['_LOC_LNG'] = $split[1];
+                     $a_hosts[$i]['_LOC_ALT'] = $split[2];
+                  } else if (count($split) > 1) {
                      // At least 2 elements, let us consider as GPS coordinates ...
-                        $a_hosts[$i]['_LOC_LAT'] = $split[0];
-                        $a_hosts[$i]['_LOC_LNG'] = $split[1];
+                     $a_hosts[$i]['_LOC_LAT'] = $split[0];
+                     $a_hosts[$i]['_LOC_LNG'] = $split[1];
                   } else {
-                     $a_hosts[$i]['_LOC_BUILDING'] = preg_replace("/[\r\n]/","",$data['building']);
+                     $a_hosts[$i]['_LOC_BUILDING'] = preg_replace("/[\r\n]/",".",$data['building']);
                      $a_hosts[$i]['_LOC_BUILDING'] = preg_replace("/[^A-Za-z0-9\-_]/"," / ",$a_hosts[$i]['_LOC_BUILDING']);
                   }
                }
-   */
                $a_hosts_found[$a_hosts[$i]['host_name']] = 1;
                $a_hosts[$i]['alias'] = preg_replace("/[^A-Za-z0-9\-_]/","",$class->fields['name'])." / ".$classname."-".$data['items_id'];
                if (isset($class->fields['networkequipmenttypes_id'])) {
