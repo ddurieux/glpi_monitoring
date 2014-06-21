@@ -856,7 +856,77 @@ ORDER BY `c`.`name`
      return $new_indispos;
    }
 
+   static function methodGetGeoloc($params, $protocol) {
 
+     $xml   = simplexml_load_string(html_entity_decode($params['xml']));
+     $latu  = $xml->latitudeUtilisateur;
+     $longu = $xml->longitudeUtilisateur;
+     $latr  = $xml->latitudeRecherche;
+     $longr = $xml->longitudeRecherche;
+     $dist  = $xml->rayon;
+     $limit = $xml->nbrMax;
+
+     $bornesup = $xml->borneSup;
+     $borneinf = $xml->borneInf;
+     $borne    = $dist;
+
+     $result = "";
+     while( ($borne <= $bornesup) ) {
+       $result = self::searchGaam($latr, $longr, $dist, $limit);
+       $borne += $borneinf;
+     }
+     return $result;
+   }
+
+   private function searchGaam($latr, $longr, $dist, $limit) {
+     global $DB;
+     $terre = 6378;
+
+     $query = "
+SELECT `glpi_locations`.`id`,
+       `glpi_locations`.`name` as locationName,
+       `glpi_computers`.`name` as computerName,
+       `glpi_locations`.`completename`,
+       ACOS( 
+          SIN( RADIANS( SUBSTRING_INDEX(`building`, ',', 1) ) ) 
+         *SIN( RADIANS( $latr                               ) ) 
+        +
+          COS( RADIANS( SUBSTRING_INDEX(`building`, ',', 1) ) ) 
+         *COS( RADIANS( $latr                               ) ) 
+         *COS( RADIANS( SUBSTRING_INDEX(SUBSTRING_INDEX(`building`, ',', 2), ',', -1) - $longr ) )
+         )*$terre AS dist
+FROM `glpi_locations`, `glpi_computers`, `glpi_plugin_monitoring_hosts`
+WHERE 
+     ACOS( 
+          SIN( RADIANS( SUBSTRING_INDEX(`building`, ',', 1) ) ) 
+         *SIN( RADIANS( $latr                               ) ) 
+        +
+          COS( RADIANS( SUBSTRING_INDEX(`building`, ',', 1) ) ) 
+         *COS( RADIANS( $latr                               ) ) 
+         *COS( RADIANS( SUBSTRING_INDEX(SUBSTRING_INDEX(`building`, ',', 2), ',', -1) - $longr ) )
+         )*$terre 
+     <= $dist
+     AND
+     `glpi_locations`.`id` = `glpi_computers`.`locations_id`
+     AND 
+     `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`
+     AND
+     `glpi_plugin_monitoring_hosts`.`state` = 'UP'
+ORDER BY dist
+LIMIT $limit";
+     
+     // return $query; exit;
+
+     $result = $DB->query($query);
+
+     $xml_answer = '<?xml version="1.0" encoding="UTF-8" standalone="no" ?><root>';
+     while($data=$DB->fetch_array($result)) {
+       $xml_answer .= '<recupererListeResponse><code>'.$data['computerName'].'</code><libelle>'.$data['locationName'].'</libelle><listeGaam>'.$data['completename'].'</listeGaam></recupererListeResponse>';
+     }
+     $xml_answer .= '</root>';
+
+     return $xml_answer;
+   }
 }
 
 ?>
