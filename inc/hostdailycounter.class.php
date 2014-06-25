@@ -271,7 +271,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             Search::manageGetValues(self::getTypeName());
             Search::showList(self::getTypeName(), array(
                'field' => array(2), 'searchtype' => array('equals'), 'contains' => array($item->getID()),
-               'sort' => 4, 'order' => 'DESC'
+               'sort' => 3, 'order' => 'DESC'
                ));
             return true;
          }
