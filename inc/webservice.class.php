@@ -535,11 +535,12 @@ class PluginMonitoringWebservice {
          // Fetch host services
          $services = PluginMonitoringWebservice::getServicesStates(
             array(
-               'start'     => 0,
-               'limit'     => 100,
-               'entity'    => isset($params['entity']) ? $params['entity'] : null,
-               'filter'    => "glpi_computers.name='".$row['name']."'",
-               'order'     => "`glpi_plugin_monitoring_components`.`name` ASC"
+               'start'           => 0,
+               'limit'           => 100,
+               'entity'          => isset($params['entity']) ? $params['entity'] : null,
+               'filter'          => "glpi_computers.name='".$row['name']."'",
+               'servicesFilter'  => isset($params['servicesFilter']) ? $params['servicesFilter'] : '',
+               'order'           => "`glpi_plugin_monitoring_components`.`name` ASC"
             )
          );
          $row['services'] = $services;
