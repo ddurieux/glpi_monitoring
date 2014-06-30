@@ -650,6 +650,8 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                      echo '<input type="hidden" name="itemtype" value="Computer" />';
                      echo '<input type="hidden" name="items_id" value="'.$computer['id'].'" />';
                      echo '<input type="hidden" name="locations_id" value="'.$computer['locations_id'].'" />';
+                     echo '<input type="hidden" name="entities_id" value="'.$computer['entities_id'].'" />';
+                     echo '<input type="hidden" name="type" value="2" />';
                      echo '<input type="hidden" name="slas_id" value="'.$sla_id.'" />';
                      echo '<input type="hidden" name="itilcategories_id" value="'.$category_id.'" />';
                      $track_name = __('End paper prediction', 'monitoring')." / ".$sla_name." / ".$category_name;
