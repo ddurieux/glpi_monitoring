@@ -474,7 +474,7 @@ class PluginMonitoringWebservice {
          if (is_array($params['hostsFilter'])) {
             $where .= " AND `glpi_computers`.`name` IN ('" . implode("','",$params['hostsFilter']) . "')";
          } else {
-            $where .= " AND `glpi_computers`.`name` = " . $params['hostsFilter'];
+            $where .= " AND `glpi_computers`.`name` = '" . $params['hostsFilter'] . "'";
          }
       }
 
