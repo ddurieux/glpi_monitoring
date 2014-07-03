@@ -709,16 +709,20 @@ class PluginMonitoringDowntime extends CommonDBTM {
             echo "</tr>";
          } else if ($createDowntime && Ticket::canCreate()) {
             echo "<tr class='tab_bg_3'>";
-            echo "<td colspan='4'>".__('Associated ticket (no declared SLA implies no ticket created):', 'monitoring')."</td>";
+            echo "<td colspan='4'>".__('Associated ticket (no declared category implies no ticket created):', 'monitoring')."</td>";
             echo "</tr>";
             
             echo "<input type='hidden' name='redirect' value='".$CFG_GLPI["root_doc"]."/front/ticket.form.php' />";
             echo "<input type='hidden' name='itemtype' value='".$pmHost->getField("itemtype")."' />";
             echo "<input type='hidden' name='items_id' value='".$pmHost->getField("items_id")."' />";
+            
+            echo '<input type="hidden" name="entities_id" value="'.$item->fields['entities_id'].'" />';
+            
             $item = new $itemtype();
             $item->getFromDB($pmHost->getField("items_id"));
             echo "<input type='hidden' name='locations_id' value='".$item->getField("locations_id")."' />";
             
+/*
             // Find SLA ...
             $sla = new Sla();
             $slas = current($sla->find("`name` LIKE '%proactive%' LIMIT 1"));
@@ -730,16 +734,44 @@ class PluginMonitoringDowntime extends CommonDBTM {
             Sla::dropdown(array('value'  => $sla_id));
             echo "</td>";
             echo "</tr>";
+*/
+            
+            // Ticket type ...
+            echo "<tr class='tab_bg_3'>";
+            echo "<td>".__('Ticket type:', 'monitoring')."</td>";
+            echo "<td colspan='3'>";
+            Ticket::dropdownType("type", array('value'  => Ticket::INCIDENT_TYPE));
+            echo "</td>";
+            echo "</tr>";
             
             // Find category ...
             $category = new ITILCategory();
             $categories = current($category->find("`name` LIKE '%incident%' LIMIT 1"));
             $category_id = isset($categories['id']) ? $categories['id'] : 0;
             
+/*
+            echo "
+            <script>
+            function changeCategory() {
+               alert(document.getElementById('dropdown_itilcategories_idcategory'));
+               alert($('#dropdown_itilcategories_idcategory').val());
+            }
+            </script>
+            ";
+*/
             echo "<tr class='tab_bg_3'>";
             echo "<td>".__('Ticket category:', 'monitoring')."</td>";
             echo "<td colspan='3'>";
-            ITILCategory::dropdown(array('value'  => $category_id));
+            ITILCategory::dropdown(array(
+               'value'     => $category_id,
+            ));
+/*
+            ITILCategory::dropdown(array(
+               'value'     => $category_id,
+               'rand'      => 'category',
+               'on_change' => 'changeCategory();'
+            ));
+*/
             echo "</td>";
             echo "</tr>";
          } else {

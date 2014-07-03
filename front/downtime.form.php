@@ -49,23 +49,49 @@ Html::header(__('Monitoring - downtimes', 'monitoring'),'', "plugins", "monitori
 $pmDowntime = new PluginMonitoringDowntime();
 
 if (isset ($_POST["add"])) {
-   // If SLA is specified, a new ticket is to be created ...
-   if (isset ($_POST['slas_id']) && ($_POST['slas_id'] != 0)) {
+   // If category is specified, a new ticket is to be created ...
+   if (isset ($_POST['itilcategories_id']) && ($_POST['itilcategories_id'] != 0)) {
       $track = new Ticket();
       $track->check(-1,'w',$_POST);
       
-      $sla_name = Dropdown::getDropdownName("glpi_slas", $_POST['slas_id']);
+      // $sla_name = Dropdown::getDropdownName("glpi_slas", $_POST['slas_id']);
       $category_name = Dropdown::getDropdownName("glpi_itilcategories", $_POST['itilcategories_id']);
-      $track_name = __('Scheduled downtime', 'monitoring')." / ".$sla_name." / ".$category_name;
+      $track_name = __('Scheduled downtime', 'monitoring')." / ".$category_name;
+      
+      $fields = array();
+      $fields['content'] = "";
+      
+      // Find ticket template if available ...
+      $tt = $track->getTicketTemplateToUse(0, $_POST['type'], $_POST['itilcategories_id']);
+      if (isset($tt->predefined) && count($tt->predefined)) {
+         foreach ($tt->predefined as $predeffield => $predefvalue) {
+            // Load template data
+            $fields[$predeffield]            = $predefvalue;
+         }
+      }
+/*
+      echo "<pre>";
+      print_r($fields);
+      echo "</pre>";
+*/
 
-      $fields = array('itemtype'          => $_POST['itemtype'],
-                      'items_id'          => $_POST['items_id'],
-                      'slas_id'           => $_POST['slas_id'],
-                      'itilcategories_id' => $_POST['itilcategories_id'],
-                      'locations_id'      => $_POST['locations_id'],
-                      'name'              => $track_name, 
-                      'content'           => $_POST['comment']
-      );
+      $fields['itemtype'] =            $_POST['itemtype'];
+      $fields['items_id'] =            $_POST['items_id'];
+      // $fields['slas_id'] =             $_POST['slas_id'];
+      $fields['entities_id'] =         $_POST['entities_id'];
+      // $fields['type'] =                $_POST['type'];
+      $fields['itilcategories_id'] =   $_POST['itilcategories_id'];
+      $fields['locations_id'] =        $_POST['locations_id'];
+      $fields['name'] =                $track_name; 
+      $fields['content'] .=            "\n-----\n" . $_POST['comment'];
+
+/*
+      echo "<pre>";
+      print_r($fields);
+      echo "</pre>";
+      die('test');
+*/
+      
       // Create a new ticket ...
       $_POST['tickets_id'] = $track->add($fields);
 
