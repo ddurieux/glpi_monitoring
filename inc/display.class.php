@@ -1231,7 +1231,7 @@ echo "
                }
             }
             $counters .="</table>";
-            
+
             Html::showToolTip($counters, array(
               'title'  => __('Daily counters', 'monitoring')." : ".$data['host_name'],
               'img'    => $CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"
@@ -2464,7 +2464,8 @@ Ext.onReady(function(){
          INNER JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
             ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
          INNER JOIN `glpi_plugin_monitoring_hosts`
-            ON (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_plugin_monitoring_hosts`.`items_id`)
+            ON (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_plugin_monitoring_hosts`.`items_id`
+               AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype` = `glpi_plugin_monitoring_hosts`.`itemtype`)
          WHERE ".$whereState."
             AND `glpi_plugin_monitoring_services`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
       $result = $DB->query($query);
