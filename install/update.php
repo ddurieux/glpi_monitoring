@@ -2563,6 +2563,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $a_table['renamefields'] = array();
 
       $a_table['keys'] = array();
+      $a_table['keys'][] = array('field' => array("users_id", "last_session_start"),
+                                 'name' => 'users_id',
+                                 'type' => 'INDEX');
 
       $a_table['oldkeys'] = array();
 
