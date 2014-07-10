@@ -862,6 +862,8 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                             'state');
          $migration->addKey($newTable,
                             'plugin_monitoring_componentscatalogs_hosts_id');
+         $migration->addKey($newTable,
+                            'last_check');
       $migration->migrationOneTable($newTable);
 
 

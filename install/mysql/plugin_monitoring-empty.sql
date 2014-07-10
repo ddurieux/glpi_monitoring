@@ -135,7 +135,8 @@ CREATE TABLE `glpi_plugin_monitoring_services` (
   `acknowledge_users_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `state` (`state`(50),`state_type`(50)),
-  KEY `plugin_monitoring_componentscatalogs_hosts_id` (`plugin_monitoring_componentscatalogs_hosts_id`)
+  KEY `plugin_monitoring_componentscatalogs_hosts_id` (`plugin_monitoring_componentscatalogs_hosts_id`),
+  KEY `last_check` (`last_check`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
