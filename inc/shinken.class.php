@@ -158,6 +158,12 @@ class PluginMonitoringShinken extends CommonDBTM {
             $a_commands[$i]['name'] = $data['name'];
             $a_commands[$i]['command_name'] = $data['command_name'];
             $a_commands[$i]['command_line'] = $data['command_line'];
+            if (! empty($data['module_type'])) {
+               $a_commands[$i]['module_type'] = $data['module_type'];
+            }
+            if (! empty($data['poller_tag'])) {
+               $a_commands[$i]['poller_tag'] = $data['poller_tag'];
+            }
             $i++;
          }
          if ($data['command_name'] == "restart_shinken") {
@@ -1496,8 +1502,8 @@ Nagios configuration file :
       action_url	url
    }
 */
-         if (isset($a_entities_allowed['-1'])
-                 OR isset($a_entities_allowed[$data['entityId']])) {
+         // if (isset($a_entities_allowed['-1'])
+                 // OR isset($a_entities_allowed[$data['entityId']])) {
 
             // Hostgroup name
             $hostgroup_name = strtolower(preg_replace("/[^A-Za-z0-9\-_ ]/","",$data['entityName']));
@@ -1506,11 +1512,27 @@ Nagios configuration file :
             Toolbox::logInFile("pm-shinken", " - add group $hostgroup_name ...\n");
 
             $a_hostgroups[$i]['hostgroup_name'] = $hostgroup_name;
-            // $a_hostgroups[$i]['alias'] = preg_replace("/[^A-Za-z0-9\-_ ]/","",$data['entityName']);
             $a_hostgroups[$i]['alias'] = $data['entityName'];
 
+            $a_sons_list = getSonsOf("glpi_entities", $data['entityId']);
+            if (count($a_sons_list) > 1) {
+               $a_hostgroups[$i]['hostgroup_members'] = '';
+               $first_member = true;
+               foreach ($a_sons_list as $son_entity) {
+                  if ($son_entity == $data['entityId']) continue;
+                  $pmEntity = new Entity();
+                  $pmEntity->getFromDB($son_entity);
+
+                  $hostgroup_name = strtolower(preg_replace("/[^A-Za-z0-9\-_ ]/","",$pmEntity->getField('name')));
+                  $hostgroup_name = preg_replace("/[ ]/","_",$hostgroup_name);
+                  
+                  $a_hostgroups[$i]['hostgroup_members'] .= (! $first_member) ? ", $hostgroup_name" : "$hostgroup_name";
+                  if ($first_member) $first_member = false;
+               }
+            }
+
             $i++;
-         }
+         // }
       }
 
       Toolbox::logInFile("pm-shinken", "End generateHostgroupsCfg\n");
