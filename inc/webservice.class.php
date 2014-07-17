@@ -49,9 +49,11 @@ class PluginMonitoringWebservice {
 
    static function methodShinkenGetConffiles($params, $protocol) {
 
+      Toolbox::logInFile("pm-shinken", "Starting methodShinkenGetConffiles ...\n");
+      
       if (isset ($params['help'])) {
-         return array('file'  => 'config filename to get : commands.cfg, hosts.cfg',
-                      'help'    => 'bool,optional');
+         return array('file'  => 'config filename to get : commands.cfg, hosts.cfg, ... use all to get all files.',
+                      'help'  => 'bool,optional');
       }
 
       if (!isset($params['tag'])) {

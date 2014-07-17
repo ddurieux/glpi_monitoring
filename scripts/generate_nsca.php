@@ -58,6 +58,23 @@ $glpi_pass  = "glpi";
 $method = "monitoring.shinkenGetConffiles";
 $file = "all";
 
+/*
+* PARAMETERS
+*/
+
+// $argv[0] is full script name
+$options = getopt("v::t:");
+// var_dump($options);
+
+$verbose = isset($options['v']) ? true : false;
+echo '+ Use command line parameter -v to set verbose mode: '. $verbose ."\n";
+
+$tag = '';
+if (isset($options['t'])) {
+   $tag = $options['t'];
+}
+echo '+ Use command line parameter -t "tag" to set Shinken tag: '. $tag ."\n";
+
 
 
 /*
@@ -159,7 +176,7 @@ $session = login();
 $args['session'] = $session;
 $args['method'] = $method;
 $args['file'] = $file;
-
+$args['tag'] = $tag;
 
 $configfiles = call_glpi($args);
 
@@ -175,8 +192,7 @@ foreach ($configfiles as $filename=>$filecontent) {
    }
 }
 
-// Reset login after create entity
 logout();
-$session = login();
+// $session = login();
 
 ?>
