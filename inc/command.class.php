@@ -106,12 +106,32 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['command_line'] = "\$PLUGINSDIR\$/check_ftp -H \$HOSTADDRESS\$";
       $this->add($input);
 
+      // Fred : not yet tested on real migration 
       $input = array();
       $input['name'] = 'Ask a nrpe agent';
       $input['command_name'] = 'check_nrpe';
-      $input['command_line'] = "\$PLUGINSDIR\$/check_nrpe -H \$HOSTADDRESS\$ -t 9 -u -c \$ARG1\$";
+      $input['command_line'] = "\$PLUGINSDIR\$/check_nrpe -H \$HOSTADDRESS\$ -t \$ARG1\$ -u \$ARG2\$ -c \$ARG3\$";
       $arg = array();
-      $arg['ARG1'] = 'NRPE check command';
+      $arg['ARG1'] = 'NRPE timeout (seconds)';
+      $arg['ARG2'] = 'NRPE SSL enable/disable (-n to disable)';
+      $arg['ARG3'] = 'NRPE check command';
+      $input['arguments'] = exportArrayToDB($arg);
+      $this->add($input);
+
+      $input = array();
+      $input['name'] = 'Ask a nrpe agent with arguments';
+      $input['command_name'] = 'check_nrpe_args';
+      $input['command_line'] = "\$PLUGINSDIR\$/check_nrpe -H \$HOSTADDRESS\$ -t \$ARG1\$ -u \$ARG2\$ -c \$ARG3\$ -a  \$ARG4\$ \$ARG5\$ \$ARG6\$ \$ARG7\$ \$ARG8\$ \$ARG9\$";
+      $arg = array();
+      $arg['ARG1'] = 'NRPE timeout (seconds)';
+      $arg['ARG2'] = 'NRPE SSL enable/disable (-n to disable)';
+      $arg['ARG3'] = 'NRPE check command';
+      $arg['ARG4'] = 'NRPE check argument';
+      $arg['ARG5'] = 'NRPE check argument';
+      $arg['ARG6'] = 'NRPE check argument';
+      $arg['ARG7'] = 'NRPE check argument';
+      $arg['ARG8'] = 'NRPE check argument';
+      $arg['ARG9'] = 'NRPE check argument';
       $input['arguments'] = exportArrayToDB($arg);
       $this->add($input);
 
