@@ -366,15 +366,15 @@ class PluginMonitoringCommand extends CommonDBTM {
       $tab[$i]['name']      = __('Arguments', 'monitoring');
 
       // Issue #112, what should be done with these fields ?
-      // $i++;
-      // $tab[$i]['table']     = $this->getTable();
-      // $tab[$i]['field']     = 'poller_tag';
-      // $tab[$i]['name']      = __('Shinken poller tag', 'monitoring');
+      $i++;
+      $tab[$i]['table']     = $this->getTable();
+      $tab[$i]['field']     = 'poller_tag';
+      $tab[$i]['name']      = __('Shinken poller tag', 'monitoring');
 
-      // $i++;
-      // $tab[$i]['table']     = $this->getTable();
-      // $tab[$i]['field']     = 'module_type';
-      // $tab[$i]['name']      = __('Shinken module type', 'monitoring');
+      $i++;
+      $tab[$i]['table']     = $this->getTable();
+      $tab[$i]['field']     = 'module_type';
+      $tab[$i]['name']      = __('Shinken module type', 'monitoring');
 
       return $tab;
    }
@@ -423,6 +423,17 @@ class PluginMonitoringCommand extends CommonDBTM {
       echo "<td>".__('Command name', 'monitoring')."&nbsp;:</td>";
       echo "<td>";
       echo "<input type='text' name='command_name' value='".$this->fields["command_name"]."' size='30'/>";
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Module type', 'monitoring')." :</td>";
+      echo "<td>";
+      echo "<input type='text' name='module_type' value='".$this->fields["module_type"]."' size='30'/>";
+      echo "</td>";
+      echo "<td>".__('Poller tag', 'monitoring')."&nbsp;:</td>";
+      echo "<td>";
+      echo "<input type='text' name='poller_tag' value='".$this->fields["poller_tag"]."' size='30'/>";
       echo "</td>";
       echo "</tr>";
 
