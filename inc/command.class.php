@@ -316,17 +316,45 @@ class PluginMonitoringCommand extends CommonDBTM {
 
       $tab['common'] = __('Commands', 'monitoring');
 
-		$tab[1]['table'] = $this->getTable();
-		$tab[1]['field'] = 'name';
-		$tab[1]['linkfield'] = 'name';
-		$tab[1]['name'] = __('Name');
-		$tab[1]['datatype'] = 'itemlink';
+      $i=1;
+		$tab[$i]['table'] = $this->getTable();
+		$tab[$i]['field'] = 'name';
+		$tab[$i]['linkfield'] = 'name';
+		$tab[$i]['name'] = __('Name');
+		$tab[$i]['datatype'] = 'itemlink';
 
-      $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     = 'is_active';
-      $tab[2]['linkfield'] = 'is_active';
-      $tab[2]['name']      = __('Active');
-      $tab[2]['datatype']  = 'bool';
+      $i++;
+      $tab[$i]['table']     = $this->getTable();
+      $tab[$i]['field']     = 'is_active';
+      $tab[$i]['linkfield'] = 'is_active';
+      $tab[$i]['name']      = __('Active', 'monitoring');
+      $tab[$i]['datatype']  = 'bool';
+
+      $i++;
+      $tab[$i]['table']     = $this->getTable();
+      $tab[$i]['field']     = 'command_name';
+      $tab[$i]['name']      = __('Command name', 'monitoring');
+
+      $i++;
+      $tab[$i]['table']     = $this->getTable();
+      $tab[$i]['field']     = 'command_line';
+      $tab[$i]['name']      = __('Command line', 'monitoring');
+
+      $i++;
+      $tab[$i]['table']     = $this->getTable();
+      $tab[$i]['field']     = 'arguments';
+      $tab[$i]['name']      = __('Arguments', 'monitoring');
+
+      // Issue #112, what should be done with these fields ?
+      // $i++;
+      // $tab[$i]['table']     = $this->getTable();
+      // $tab[$i]['field']     = 'poller_tag';
+      // $tab[$i]['name']      = __('Shinken poller tag', 'monitoring');
+
+      // $i++;
+      // $tab[$i]['table']     = $this->getTable();
+      // $tab[$i]['field']     = 'module_type';
+      // $tab[$i]['name']      = __('Shinken module type', 'monitoring');
 
       return $tab;
    }
