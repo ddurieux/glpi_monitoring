@@ -149,7 +149,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_commands = array();
       $i=0;
 
-      $a_list = $pmCommand->find();
+      $a_list = $pmCommand->find("`is_active`='1'");
       $a_listnotif = $pmNotificationcommand->find();
       $a_list = array_merge($a_list, $a_listnotif);
       $restart_shinken_found = false;
