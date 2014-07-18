@@ -51,9 +51,30 @@ chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
 chdir("../../..");
 $url = "/" . basename(getcwd()) . "/plugins/webservices/xmlrpc.php";
 
+$url = "/glpi/plugins/webservices/xmlrpc.php";
 $host = 'localhost';
-$glpi_user  = "test_ws";
+$glpi_user  = "ipmfrance";
 $glpi_pass  = "ipm-France2012";
+
+$method = "monitoring.shinkenGetConffiles";
+$file = "all";
+
+/*
+* PARAMETERS
+*/
+
+// $argv[0] is full script name
+$options = getopt("v::t:");
+// var_dump($options);
+
+$verbose = isset($options['v']) ? true : false;
+echo '+ Use command line parameter -v to set verbose mode: '. $verbose ."\n";
+
+$tag = '';
+if (isset($options['t'])) {
+   $tag = $options['t'];
+}
+echo '+ Use command line parameter -t "tag" to set Shinken tag: '. $tag ."\n";
 
 
 
@@ -97,7 +118,7 @@ function logout() {
 function call_glpi($args) {
    global $host,$url,$deflate,$base64;
 
-   echo "+ Calling {".$args['method']."} on http://$host/$url\n";
+   echo "+ Calling {$args['method']} on http://$host/$url\n";
 
    if (isset($args['session'])) {
       $url_session = $url.'?session='.$args['session'];
@@ -130,125 +151,17 @@ function call_glpi($args) {
       echo "+ Uncompressed response : $lend (".round(100.0*$lenc/$lend)."%)\n";
    }
    
-   // echo "+ Content : $file\n";
    $response = xmlrpc_decode($file);
-   // echo "+ Response : $response\n";
    if (!is_array($response)) {
-      echo "+ Content : $file\n";
-      // echo "+ Response : $response\n";
-      echo "+ Bad response, not an array !\n";
+      echo $file;
+      die ("+ Bad response\n");
    }
    
-   if (is_array($response) && xmlrpc_is_fault($response)) {
-       echo(" -> xmlrpc error(".$response['faultCode']."): ".$response['faultString']."\n");
-       return null;
+   if (xmlrpc_is_fault($response)) {
+       echo("xmlrpc error(".$response['faultCode']."): ".$response['faultString']."\n");
+   } else {
+      return $response;
    }
-   return $response;
-}
-
-/*
-* getCounters
-*/
-function getCounters($session) {
-   /*
-   * Get counters
-   */
-   $args['session'] = $session;
-   $args['method'] = "monitoring.getDailyCounters";
-   if ($counters = call_glpi($args)) {
-      // echo "+ Response : $counters !!!!!!!!!!!!!!!!!!!\n";
-      print_r($counters);
-      return $counters;
-   }
-
-   return null;
-}
-
-/*
-* getOverallState
-*/
-function getOverallState($session, $view="Hosts") {
-   /*
-   * Get overall status
-   */
-   $args['session'] = $session;
-   $args['method'] = "monitoring.dashboard";
-   /* Requested view : 
-      'Hosts', counters for all monitored hosts
-      'Ressources', counters for all monitored services
-      'Componentscatalog', counters for components catalogs
-      'Businessrules', counters for business rules
-   */
-   $args['view'] = $view;
-   if ($counters = call_glpi($args)) {
-      // echo "+ Response : $counters !!!!!!!!!!!!!!!!!!!\n";
-      print_r($counters);
-      return $counters;
-   }
-
-   return null;
-}
-
-/*
-* getHostsStates
-*/
-function getHostsStates($session, $filter="") {
-   /*
-   * Get hosts states
-   */
-   $args['session'] = $session;
-   $args['method'] = "monitoring.getHostsStates";
-   /* Filter used in DB query; you may use : 
-      `glpi_entities`.`name`, for entity name, or any column name from glpi_entities table
-      `glpi_computers`.`name`, for computer name, or any column name from glpi_computers table
-      any column name from glpi_plugin_monitoring_hosts table
-   */
-   // $args['filter'] = "`glpi_computers`.`name` LIKE 'ek3k%'";
-   $args['filter'] = $filter;
-
-   if ($hostsStates = call_glpi($args)) {
-      echo "Host states : \n";
-      foreach ($hostsStates as $computer) {
-         echo " - ".$computer['host_name']." is ".$computer['state']." (".$computer['state_type'].")\n";
-      }
-      
-      return $hostsStates;
-   }
-
-   return null;
-}
-
-/*
-* getServicesStates
-*/
-function getServicesStates($session, $filter="") {
-   /*
-   * Get hosts states
-   */
-   $args['session'] = $session;
-   $args['method'] = "monitoring.getServicesStates";
-   /* Filter used in DB query; you may use : 
-      `glpi_entities`.`name`, for entity name, or any column name from glpi_entities table
-      `glpi_computers`.`name`, for computer name, or any column name from glpi_computers table
-      `glpi_computers`.*,
-      `glpi_plugin_monitoring_hosts`.*,
-      `glpi_plugin_monitoring_services`.*,
-      `glpi_plugin_monitoring_componentscatalogs_hosts`.*,
-      `glpi_plugin_monitoring_components`.*
-   */
-   // $args['filter'] = "`glpi_computers`.`name` LIKE 'ek3k%'";
-   $args['filter'] = $filter;
-
-   if ($servicesStates = call_glpi($args)) {
-      echo "Services states : \n";
-      foreach ($servicesStates as $service) {
-         echo " - ".$service['host_name']." / ".$service['name']." is ".$service['state']." (".$service['state_type'].")\n";
-      }
-      
-      return $servicesStates;
-   }
-
-   return null;
 }
 
 /*
@@ -256,30 +169,12 @@ function getServicesStates($session, $filter="") {
 */
 
 // Init sessions
-if (! $session = login()) {
-   die ("Connexion refused !\n");
-}
-
-if (getCounters($session)) {
-}
-if (getOverallState($session)) {
-}
-if (getHostsStates($session)) {
-}
-if (getServicesStates($session)) {
-}
-
-
-/*
-* Get Shinken configuration objects
-*/
-$method = "monitoring.shinkenGetConffiles";
-$file = "all";
+$session = login();
 
 $args['session'] = $session;
 $args['method'] = $method;
 $args['file'] = $file;
-
+$args['tag'] = $tag;
 
 $configfiles = call_glpi($args);
 
@@ -290,11 +185,10 @@ foreach ($configfiles as $filename=>$filecontent) {
        if (fwrite($handle, $filecontent) === FALSE) {
          echo "Impossible to write file ".$filename."\n";
        }
-       echo " -> File ".$filename." written successfully\n";
+       echo "File ".$filename." writen successful\n";
        fclose($handle);
    }
 }
 
-// Logout
 logout();
 ?>
