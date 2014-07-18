@@ -427,6 +427,18 @@ class PluginMonitoringCommand extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Active ?', 'monitoring')."</td>";
+      echo "<td>";
+      if (self::canCreate()) {
+         Dropdown::showYesNo('is_active', $this->fields['is_active']);
+      } else {
+         echo Dropdown::getYesNo($this->fields['is_active']);
+      }
+      echo "</td>";
+      echo "</tr>";
+
+
+      echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Module type', 'monitoring')." :</td>";
       echo "<td>";
       echo "<input type='text' name='module_type' value='".$this->fields["module_type"]."' size='30'/>";
