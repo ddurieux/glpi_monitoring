@@ -71,6 +71,40 @@ class PluginMonitoringShinken extends CommonDBTM {
          // Altitude
          'alt' => '_LOC_ALT',
       ),
+      // Shinken configuration
+      'shinken' => array(
+         // Build fake hosts for parents relationship
+         'fake_hosts' => array(
+            // Default values
+            'build' => true,
+            // Fake hosts name prefix
+            'name_prefix' => '_fake_',
+            // Hostgroup name
+            'hostgroup_name' => 'fake_hosts',
+            // Hostgroup name
+            'hostgroup_alias' => 'Fake hosts',
+            // Main root parent
+            'root_parent' => 'Root',
+            // Main root parent
+            'bp_host' => 'BP_host'
+         ),
+         'hosts' => array(
+            // Default values
+            'check_period' => '24x7',
+            'process_perf_data' => '1',
+            'notification_period' => '24x7',
+            'notification_options' => 'd,u,r,f,s',
+            'notification_interval' => '86400',
+            // Set as 'entity' to use hostgroupname else use the defined value ...
+            // When fake_hosts are built (see upper), use 'entity' !
+            'parents' => 'entity',
+         ),
+         'services' => array(
+            // Default check_period
+            'check_period' => '24x7',
+            'process_perf_data' => '1',
+         )
+      ),
       // Graphite configuration
       'graphite' => array(
          // Prefix
@@ -131,20 +165,6 @@ class PluginMonitoringShinken extends CommonDBTM {
       $pmCommand = new PluginMonitoringCommand();
       $pmNotificationcommand = new PluginMonitoringNotificationcommand();
       $pmEventhandler = new PluginMonitoringEventhandler();
-
-      $pmLog = new PluginMonitoringLog();
-      // Log Shinken restart event ...
-      if (isset($_SERVER['HTTP_USER_AGENT'])
-              AND strstr($_SERVER['HTTP_USER_AGENT'], 'xmlrpclib.py')) {
-         if (!isset($_SESSION['glpi_currenttime'])) {
-            $_SESSION['glpi_currenttime'] = date("Y-m-d H:i:s");
-         }
-         $input = array();
-         $input['user_name'] = "Shinken";
-         $input['action'] = "restart";
-         $input['date_mod'] = date("Y-m-d H:i:s");
-         $pmLog->add($input);
-      }
 
       $a_commands = array();
       $i=0;
@@ -207,6 +227,21 @@ class PluginMonitoringShinken extends CommonDBTM {
    function generateHostsCfg($file=0, $tag='') {
       global $DB;
 
+      // Log Shinken restart event with Tag information ...
+      $pmLog = new PluginMonitoringLog();
+      if (isset($_SERVER['HTTP_USER_AGENT'])
+              AND strstr($_SERVER['HTTP_USER_AGENT'], 'xmlrpclib.py')) {
+         if (!isset($_SESSION['glpi_currenttime'])) {
+            $_SESSION['glpi_currenttime'] = date("Y-m-d H:i:s");
+         }
+         $input = array();
+         $input['user_name'] = "Shinken";
+         $input['action'] = "restart";
+         $input['date_mod'] = date("Y-m-d H:i:s");
+         $input['value'] = $tag;
+         $pmLog->add($input);
+      }
+
       Toolbox::logInFile("pm-shinken", "Starting generateHostsCfg ($tag) ...\n");
       $pmCommand     = new PluginMonitoringCommand();
       $pmCheck       = new PluginMonitoringCheck();
@@ -228,19 +263,15 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_hosts_found = array();
 
       $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
-      // Toolbox::logInFile("pm-shinken", " Allowed entities:\n");
       $a_entities_list = array();
       foreach ($a_entities_allowed as $entity) {
-         // Toolbox::logInFile("pm-shinken", " - ".$entity."\n");
          $a_entities_list = getSonsOf("glpi_entities", $entity);
       }
-      // Toolbox::logInFile("pm-shinken", serialize($a_entities_list). "\n");
       $where = '';
       if (! isset($a_entities_allowed['-1'])) {
          $where = getEntitiesRestrictRequest("WHERE", "glpi_entities", '', $a_entities_list);
       }
-      // Toolbox::logInFile("pm-shinken", "where: $where\n");
-
+      
 
       // * Prepare contacts
       $a_contacts_entities = array();
@@ -259,7 +290,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          // GROUP BY `itemtype`, `items_id`";
       $query = "SELECT
          `glpi_plugin_monitoring_componentscatalogs_hosts`.*,
-         `glpi_computers`.`id`, `glpi_computers`.`locations_id`,
+         `glpi_computers`.`id`, 
          `glpi_entities`.`id` AS entityId, `glpi_entities`.`name` AS entityName, `glpi_entities`.`completename` AS entityFullName,
          `glpi_locations`.`id`, `glpi_locations`.`completename` AS locationName,
          `glpi_locations`.`comment` AS locationComment, `glpi_locations`.`building` AS locationGPS,
@@ -413,7 +444,14 @@ class PluginMonitoringShinken extends CommonDBTM {
                         }
                      }
                   }
-
+                  
+                  if (empty($parent)) {
+                     if (self::$shinkenParameters['shinken']['hosts']['parents'] == 'entity') {
+                        $parent = self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'] . $a_hosts[$i]['hostgroups'];
+                     } else {
+                        $parent = self::$shinkenParameters['shinken']['hosts']['parents'];
+                     }
+                  }
                }
                $a_hosts[$i]['parents'] = $parent;
 
@@ -519,7 +557,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                if ($calendar->getFromDB($pmComponent->fields['calendars_id'])) {
                   $a_hosts[$i]['check_period'] = $calendar->fields['name'];
                } else {
-                  $a_hosts[$i]['check_period'] = "24x7";
+                  $a_hosts[$i]['check_period'] = self::$shinkenParameters['shinken']['hosts']['check_period'];
                }
                $a_hosts[$i]['active_checks_enabled'] = $a_fields['active_checks_enabled'];
                $a_hosts[$i]['passive_checks_enabled'] = $a_fields['passive_checks_enabled'];
@@ -527,7 +565,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                // Manage freshness
                if ($a_fields['freshness_count'] == 0) {
                   $a_hosts[$i]['check_freshness'] = '0';
-                  $a_hosts[$i]['freshness_threshold'] = '3600';
+                  $a_hosts[$i]['freshness_threshold'] = '0';
                } else {
                   $multiple = 1;
                   if ($a_fields['freshness_type'] == 'seconds') {
@@ -557,11 +595,10 @@ class PluginMonitoringShinken extends CommonDBTM {
                                                                                     $class->getID()));
                $a_hosts[$i]['realm'] = $pmRealm->fields['name'];
                
-               $a_hosts[$i]['process_perf_data'] = '1';
-               
-               $a_hosts[$i]['notification_period'] = "24x7";
-               $a_hosts[$i]['notification_options'] = 'd,u,r,f,s';
-               $a_hosts[$i]['notification_interval'] = '86400';
+               $a_hosts[$i]['process_perf_data'] = self::$shinkenParameters['shinken']['hosts']['process_perf_data'];
+               $a_hosts[$i]['notification_period'] = self::$shinkenParameters['shinken']['hosts']['notification_period'];
+               $a_hosts[$i]['notification_options'] = self::$shinkenParameters['shinken']['hosts']['notification_options'];
+               $a_hosts[$i]['notification_interval'] = self::$shinkenParameters['shinken']['hosts']['notification_interval'];
 
                // For contacts, check if a component catalog contains the host associated component ...
                $a_hosts[$i]['contacts'] = '';
@@ -616,16 +653,17 @@ class PluginMonitoringShinken extends CommonDBTM {
          }
       }
 
-      // Dummy host for bp
+      // Fake host for bp
       Toolbox::logInFile("pm-shinken", " - add host_for_bp\n");
-      $a_hosts[$i]['host_name'] = 'host_for_bp';
+      $a_hosts[$i]['host_name'] = self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'] . self::$shinkenParameters['shinken']['fake_hosts']['bp_host'];
       $a_hosts[$i]['check_command'] = 'check_dummy!0';
       $a_hosts[$i]['alias'] = 'host_for_bp';
       $a_hosts[$i]['_HOSTID'] = '0';
       $a_hosts[$i]['_ITEMSID'] = '0';
       $a_hosts[$i]['_ITEMTYPE'] = 'Computer';
       $a_hosts[$i]['address'] = '127.0.0.1';
-      $a_hosts[$i]['parents'] = '';
+      $a_hosts[$i]['parents'] = self::$shinkenParameters['shinken']['fake_hosts']['root_parent'];
+      $a_hosts[$i]['hostgroups'] = self::$shinkenParameters['shinken']['fake_hosts']['hostgroup_name'];
       $a_hosts[$i]['check_interval'] = '60';
       $a_hosts[$i]['retry_interval'] = '1';
       $a_hosts[$i]['max_check_attempts'] = '1';
@@ -635,8 +673,79 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_hosts[$i]['notification_interval'] = '720';
       $a_hosts[$i]['notification_period'] = '24x7';
       $a_hosts[$i]['notification_options'] = 'd,u,r,f,s';
+      $i++;
 
 
+      // Add one fake host for each entity
+      if (self::$shinkenParameters['shinken']['fake_hosts']['build']) {
+         Toolbox::logInFile("pm-shinken", " - add fake hosts for parents relationship\n");
+
+         // Main root parent
+         Toolbox::logInFile("pm-shinken", " - add host_for_bp\n");
+         $a_hosts[$i]['host_name'] = self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'] . self::$shinkenParameters['shinken']['fake_hosts']['root_parent'];
+         $a_hosts[$i]['check_command'] = 'check_dummy!0';
+         $a_hosts[$i]['alias'] = 'Main root parent';
+         $a_hosts[$i]['_HOSTID'] = '0';
+         $a_hosts[$i]['_ITEMSID'] = '0';
+         $a_hosts[$i]['_ITEMTYPE'] = 'Computer';
+         $a_hosts[$i]['address'] = '127.0.0.1';
+         $a_hosts[$i]['parents'] = '';
+         $a_hosts[$i]['hostgroups'] = self::$shinkenParameters['shinken']['fake_hosts']['hostgroup_name'];
+         $a_hosts[$i]['check_interval'] = '60';
+         $a_hosts[$i]['retry_interval'] = '1';
+         $a_hosts[$i]['max_check_attempts'] = '1';
+         $a_hosts[$i]['check_period'] = '24x7';
+         $a_hosts[$i]['contacts'] = '';
+         $a_hosts[$i]['process_perf_data'] = '1';
+         $a_hosts[$i]['notification_interval'] = '720';
+         $a_hosts[$i]['notification_period'] = '24x7';
+         $a_hosts[$i]['notification_options'] = 'd,u,r,f,s';
+         $i++;
+
+         $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
+         $a_entities_list = array();
+         foreach ($a_entities_allowed as $entity) {
+            $a_entities_list = getSonsOf("glpi_entities", $entity);
+         }
+         $where = '';
+         if (! isset($a_entities_allowed['-1'])) {
+            $where = getEntitiesRestrictRequest("WHERE", "glpi_entities", '', $a_entities_list);
+         }
+
+         $query = "SELECT 
+            `glpi_entities`.`id` AS entityId, `glpi_entities`.`name` AS entityName
+            FROM `glpi_entities` $where";
+         $result = $DB->query($query);
+         while ($dataEntity=$DB->fetch_array($result)) {
+            // Hostgroup name : used as host name for parents ...
+            $fake_host_name = strtolower(preg_replace("/[^A-Za-z0-9\-_ ]/","",$dataEntity['entityName']));
+            $fake_host_name = preg_replace("/[ ]/","_",$fake_host_name);
+
+            Toolbox::logInFile("pm-shinken", " - add parent $fake_host_name ...\n");
+            $a_hosts[$i]['host_name'] = self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'] . $fake_host_name;
+            $a_hosts[$i]['check_command'] = 'check_dummy!0';
+            $a_hosts[$i]['alias'] = $dataEntity['entityName'];
+            $a_hosts[$i]['_HOSTID'] = '0';
+            $a_hosts[$i]['_ITEMSID'] = '0';
+            $a_hosts[$i]['_ITEMTYPE'] = 'Computer';
+            $a_hosts[$i]['address'] = '127.0.0.1';
+            $a_hosts[$i]['parents'] = self::$shinkenParameters['shinken']['fake_hosts']['root_parent'];
+            $a_hosts[$i]['hostgroups'] = self::$shinkenParameters['shinken']['fake_hosts']['hostgroup_name'];
+            $a_hosts[$i]['check_interval'] = '60';
+            $a_hosts[$i]['retry_interval'] = '1';
+            $a_hosts[$i]['max_check_attempts'] = '1';
+            $a_hosts[$i]['check_period'] = '24x7';
+            $a_hosts[$i]['contacts'] = '';
+            $a_hosts[$i]['process_perf_data'] = '1';
+            $a_hosts[$i]['notification_interval'] = '720';
+            $a_hosts[$i]['notification_period'] = '24x7';
+            $a_hosts[$i]['notification_options'] = 'd,u,r,f,s';
+
+            $i++;
+         }
+         Toolbox::logInFile("pm-shinken", "End generateHostgroupsCfg\n");
+      }
+      
       // Check if parents all exist in hosts config
       foreach ($a_parents_found as $host => $num) {
          if (!isset($a_hosts_found[$host])) {
@@ -1123,7 +1232,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                if ($calendar->getFromDB($dataBA['calendars_id'])) {
                   $a_services[$i]['check_period'] = $calendar->fields['name'];
                }
-               $a_services[$i]['host_name'] = 'host_for_bp';
+               $a_services[$i]['host_name'] = self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'] . self::$shinkenParameters['shinken']['fake_hosts']['bp_host'];
                $a_services[$i]['business_impact'] = $dataBA['business_priority'];
                $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9\-_]/","",$dataBA['name']);
                $a_services[$i]['_ENTITIESID'] = $dataBA['id'];
@@ -1267,7 +1376,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                      $a_services[$i]['check_period'] = $calendar->fields['name'];
                   }
                   $a_services[$i]['host_name'] = preg_replace("/[^A-Za-z0-9\-_]/","",$a_derivatedSC['name']);
-                  $a_services[$i]['host_name'] = 'host_for_bp';
+                  $a_services[$i]['host_name'] = self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'] . self::$shinkenParameters['shinken']['fake_hosts']['bp_host'];
                   $a_services[$i]['business_impact'] = $a_derivatedSC['business_priority'];
                   $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9\-_]/","",$a_derivatedSC['name']);
                   $a_services[$i]['_ENTITIESID'] = $a_derivatedSC['entities_id'];
@@ -1452,39 +1561,21 @@ class PluginMonitoringShinken extends CommonDBTM {
       global $DB;
 
       Toolbox::logInFile("pm-shinken", "Starting generateHostgroupsCfg ($tag) ...\n");
-      $pmCommand     = new PluginMonitoringCommand();
-      $pmCheck       = new PluginMonitoringCheck();
-      $pmComponent   = new PluginMonitoringComponent();
       $pmEntity      = new PluginMonitoringEntity();
-      $pmHostconfig  = new PluginMonitoringHostconfig();
-      $pmHost        = new PluginMonitoringHost();
 
       $a_hostgroups = array();
       $i=0;
-      $a_hostgroups_found = array();
 
       $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
-      // Toolbox::logInFile("pm-shinken", " Allowed entities:\n");
       $a_entities_list = array();
       foreach ($a_entities_allowed as $entity) {
-         // Toolbox::logInFile("pm-shinken", " - ".$entity."\n");
          $a_entities_list = getSonsOf("glpi_entities", $entity);
       }
-      // Toolbox::logInFile("pm-shinken", serialize($a_entities_list). "\n");
       $where = '';
       if (! isset($a_entities_allowed['-1'])) {
          $where = getEntitiesRestrictRequest("WHERE", "glpi_entities", '', $a_entities_list);
       }
-      // Toolbox::logInFile("pm-shinken", "where: $where\n");
 
-      // $query = "SELECT
-         // `glpi_entities`.`id` AS entityId, `glpi_entities`.`name` AS entityName
-         // FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
-         // INNER JOIN `glpi_computers`
-            // ON `glpi_computers`.`id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`
-         // INNER JOIN `glpi_entities`
-            // ON `glpi_computers`.`entities_id` = `glpi_entities`.`id`
-         // GROUP BY `entityId`";
       $query = "SELECT 
          `glpi_entities`.`id` AS entityId, `glpi_entities`.`name` AS entityName
          FROM `glpi_entities` $where";
@@ -1502,39 +1593,41 @@ Nagios configuration file :
       action_url	url
    }
 */
-         // if (isset($a_entities_allowed['-1'])
-                 // OR isset($a_entities_allowed[$data['entityId']])) {
+         // Hostgroup name
+         $hostgroup_name = strtolower(preg_replace("/[^A-Za-z0-9\-_ ]/","",$data['entityName']));
+         $hostgroup_name = preg_replace("/[ ]/","_",$hostgroup_name);
+            
+         Toolbox::logInFile("pm-shinken", " - add group $hostgroup_name ...\n");
 
-            // Hostgroup name
-            $hostgroup_name = strtolower(preg_replace("/[^A-Za-z0-9\-_ ]/","",$data['entityName']));
-            $hostgroup_name = preg_replace("/[ ]/","_",$hostgroup_name);
+         $a_hostgroups[$i]['hostgroup_name'] = $hostgroup_name;
+         $a_hostgroups[$i]['alias'] = $data['entityName'];
+
+         $a_sons_list = getSonsOf("glpi_entities", $data['entityId']);
+         if (count($a_sons_list) > 1) {
+            $a_hostgroups[$i]['hostgroup_members'] = '';
+            $first_member = true;
+            foreach ($a_sons_list as $son_entity) {
+               if ($son_entity == $data['entityId']) continue;
+               $pmEntity = new Entity();
+               $pmEntity->getFromDB($son_entity);
+
+               $hostgroup_name = strtolower(preg_replace("/[^A-Za-z0-9\-_ ]/","",$pmEntity->getField('name')));
+               $hostgroup_name = preg_replace("/[ ]/","_",$hostgroup_name);
                
-            Toolbox::logInFile("pm-shinken", " - add group $hostgroup_name ...\n");
-
-            $a_hostgroups[$i]['hostgroup_name'] = $hostgroup_name;
-            $a_hostgroups[$i]['alias'] = $data['entityName'];
-
-            $a_sons_list = getSonsOf("glpi_entities", $data['entityId']);
-            if (count($a_sons_list) > 1) {
-               $a_hostgroups[$i]['hostgroup_members'] = '';
-               $first_member = true;
-               foreach ($a_sons_list as $son_entity) {
-                  if ($son_entity == $data['entityId']) continue;
-                  $pmEntity = new Entity();
-                  $pmEntity->getFromDB($son_entity);
-
-                  $hostgroup_name = strtolower(preg_replace("/[^A-Za-z0-9\-_ ]/","",$pmEntity->getField('name')));
-                  $hostgroup_name = preg_replace("/[ ]/","_",$hostgroup_name);
-                  
-                  $a_hostgroups[$i]['hostgroup_members'] .= (! $first_member) ? ", $hostgroup_name" : "$hostgroup_name";
-                  if ($first_member) $first_member = false;
-               }
+               $a_hostgroups[$i]['hostgroup_members'] .= (! $first_member) ? ", $hostgroup_name" : "$hostgroup_name";
+               if ($first_member) $first_member = false;
             }
+         }
 
-            $i++;
-         // }
+         $i++;
       }
 
+      // Add an hostgroup for fake hosts 
+      if (self::$shinkenParameters['shinken']['fake_hosts']['build']) {
+         $a_hostgroups[$i]['hostgroup_name'] = self::$shinkenParameters['shinken']['fake_hosts']['hostgroup_name'];
+         $a_hostgroups[$i]['alias'] = self::$shinkenParameters['shinken']['fake_hosts']['hostgroup_alias'];
+      }
+      
       Toolbox::logInFile("pm-shinken", "End generateHostgroupsCfg\n");
 
       if ($file == "1") {
