@@ -53,16 +53,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $redirect = FALSE;
       $a_url = array();
 
-      if (PluginMonitoringProfile::haveRight("restartshinken", 'r')) {
-         echo "<table class='tab_cadre_fixe' style='width: 120px; position: absolute; left: 15px;'>";
-         echo "<tr class='tab_bg_1'>";
-         echo "<td>";
-         echo "<button><a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/restartshinken.form.php'>".__('Restart Shinken', 'monitoring')."</a></button>";
-         echo "</td>";
-         echo "</tr>";
-         echo "</table>";
-      }
-
 /* Moke-up for user's preferences ...
       if (PluginMonitoringProfile::haveRight("preferences", 'r')) {
          echo "<table class='tab_cadre_fixe' style='width: 120px; position: absolute; right: 15px;'>";

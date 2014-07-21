@@ -45,7 +45,11 @@ include ("../../../inc/includes.php");
 PluginMonitoringProfile::checkRight("restartshinken","r");
 
 $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
-$pmShinkenwebservice->sendRestartArbiter(1);
+if (isset($_GET["tag"])) {
+   $pmShinkenwebservice->sendRestartArbiter(1, $_GET["tag"]);
+} else {
+   $pmShinkenwebservice->sendRestartArbiter(1);
+}
 Html::back();
 
 ?>

@@ -141,7 +141,7 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
    }
 
 
-   function sendRestartArbiter($force=0) {
+   function sendRestartArbiter($force=0, $tag='') {
 
       $pmTag = new PluginMonitoringTag();
       $pmLog = new PluginMonitoringLog();
@@ -150,6 +150,10 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       foreach ($a_tags as $data) {
          if (!$pmLog->isRestartLessThanFiveMinutes()
                  || $force) {
+            // Only specified tag, if specified ...
+            if (! empty($tag) && ($tag != $data['tag'])) { continue; }
+            
+            // TODO : should be parameters ... Shinken arbiter may use another port and may use HTTPS !
             $url = 'http://'.$data['ip'].':7760/';
             $action = 'restart';
             $a_fields = array();
@@ -193,16 +197,21 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       $return = true;
       if ($ret === false) {
          Session::addMessageAfterRedirect(
-                 __('Shinken communication failed:', 'monitoring').' '.curl_error($ch),
+                 __('Shinken communication failed:', 'monitoring').' '.curl_error($ch).'<br/>'.$url.$action.' '.$fields_string,
                  false,
                  ERROR);
          $return = false;
       } else if (strstr($ret, 'error')) {
          Session::addMessageAfterRedirect(
-                 __('Shinken communication failed:', 'monitoring').' '.$ret,
+                 __('Shinken communication failed:', 'monitoring').' '.$ret.'<br/>'.$url.$action.' '.$fields_string,
                  false,
                  ERROR);
          $return = false;
+      } else {
+         Session::addMessageAfterRedirect(
+                 __('Shinken communication succeeded:', 'monitoring').' '.$ret.'<br/>'.$url.$action.' '.$fields_string,
+                 false);
+         $return = true;
       }
       curl_close($ch);
       return $return;
