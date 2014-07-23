@@ -169,14 +169,21 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_commands = array();
       $i=0;
 
+      // Only active commands and notification commands ...
       $a_list = $pmCommand->find("`is_active`='1'");
       $a_listnotif = $pmNotificationcommand->find();
       $a_list = array_merge($a_list, $a_listnotif);
+      
+      $reload_shinken_found = false;
       $restart_shinken_found = false;
+      $restart_shinken_1_4_found = false;
       foreach ($a_list as $data) {
          if ($data['command_name'] != "bp_rule") {
+            // For comments ...
             $a_commands[$i]['name'] = $data['name'];
-            $a_commands[$i]['command_name'] = $data['command_name'];
+            
+            // For Shinken ...
+            $a_commands[$i]['command_name'] = PluginMonitoringCommand::$command_prefix . $data['command_name'];
             $a_commands[$i]['command_line'] = $data['command_line'];
             if (! empty($data['module_type'])) {
                $a_commands[$i]['module_type'] = $data['module_type'];
@@ -186,27 +193,46 @@ class PluginMonitoringShinken extends CommonDBTM {
             }
             $i++;
          }
-         if ($data['command_name'] == "restart_shinken") {
+         if ($data['command_name'] == "reload-shinken") {
+            $reload_shinken_found = true;
+         }
+         if ($data['command_name'] == "restart-shinken") {
             $restart_shinken_found = true;
          }
+         if ($data['command_name'] == "restart_shinken") {
+            $restart_shinken_1_4_found = true;
+         }
       }
-      if (! $restart_shinken_found) {
+      if (! $restart_shinken_1_4_found) {
          // * Restart shinken command
-         $a_commands[$i]['name'] = 'restart_shinken';
+         $a_commands[$i]['name'] = 'Restart Shinken (1.4)';
          $a_commands[$i]['command_name'] = 'restart_shinken';
          $a_commands[$i]['command_line'] = "nohup sh -c '/usr/local/shinken/bin/stop_arbiter.sh && sleep 3 && /usr/local/shinken/bin/launch_arbiter.sh'  > /dev/null 2>&1 &";
       }
+      if (! $reload_shinken_found) {
+         // * Reload shinken command (2.0)
+         $a_commands[$i]['name'] = 'Reload Shinken configuration';
+         $a_commands[$i]['command_name'] = PluginMonitoringCommand::$command_prefix . 'reload-shinken';
+         $a_commands[$i]['command_line'] = "nohup sh -c '/etc/init.d/shinken reload'  > /dev/null 2>&1 &";
+      }
+      if (! $restart_shinken_found) {
+         // * Restart shinken command (2.0)
+         $a_commands[$i]['name'] = 'Restart Shinken';
+         $a_commands[$i]['command_name'] = PluginMonitoringCommand::$command_prefix . 'restart-shinken';
+         $a_commands[$i]['command_line'] = "nohup sh -c '/etc/init.d/shinken restart'  > /dev/null 2>&1 &";
+      }
 
+      // Event handlers
       $a_list = $pmEventhandler->find();
       foreach ($a_list as $data) {
          if ($data['command_name'] != "bp_rule") {
             $a_commands[$i]['name'] = $data['name'];
-            $a_commands[$i]['command_name'] = $data['command_name'];
+            
+            $a_commands[$i]['command_name'] = PluginMonitoringCommand::$command_prefix . $data['command_name'];
             $a_commands[$i]['command_line'] = $data['command_line'];
             $i++;
          }
       }
-
       Toolbox::logInFile("pm-shinken", "End generateCommandsCfg\n");
 
       if ($file == "1") {
@@ -485,6 +511,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                $args = '';
                foreach ($array[0] as $arg) {
                   if ($arg != '$PLUGINSDIR$'
+                          AND $arg != '$NAGIOSPLUGINSDIR$'
                           AND $arg != '$HOSTADDRESS$'
                           AND $arg != '$MYSQLUSER$'
                           AND $arg != '$MYSQLPASSWORD$') {
@@ -662,7 +689,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_hosts[$i]['_ITEMSID'] = '0';
       $a_hosts[$i]['_ITEMTYPE'] = 'Computer';
       $a_hosts[$i]['address'] = '127.0.0.1';
-      $a_hosts[$i]['parents'] = self::$shinkenParameters['shinken']['fake_hosts']['root_parent'];
+      $a_hosts[$i]['parents'] = self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'] . self::$shinkenParameters['shinken']['fake_hosts']['root_parent'];
       $a_hosts[$i]['hostgroups'] = self::$shinkenParameters['shinken']['fake_hosts']['hostgroup_name'];
       $a_hosts[$i]['check_interval'] = '60';
       $a_hosts[$i]['retry_interval'] = '1';
@@ -729,7 +756,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             $a_hosts[$i]['_ITEMSID'] = '0';
             $a_hosts[$i]['_ITEMTYPE'] = 'Computer';
             $a_hosts[$i]['address'] = '127.0.0.1';
-            $a_hosts[$i]['parents'] = self::$shinkenParameters['shinken']['fake_hosts']['root_parent'];
+            $a_hosts[$i]['parents'] = self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'] . self::$shinkenParameters['shinken']['fake_hosts']['root_parent'];
             $a_hosts[$i]['hostgroups'] = self::$shinkenParameters['shinken']['fake_hosts']['hostgroup_name'];
             $a_hosts[$i]['check_interval'] = '60';
             $a_hosts[$i]['retry_interval'] = '1';
@@ -955,6 +982,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                $args = '';
                foreach ($array[0] as $arg) {
                   if ($arg != '$PLUGINSDIR$'
+                          AND $arg != '$NAGIOSPLUGINSDIR$'
                           AND $arg != '$HOSTADDRESS$'
                           AND $arg != '$MYSQLUSER$'
                           AND $arg != '$MYSQLPASSWORD$') {
