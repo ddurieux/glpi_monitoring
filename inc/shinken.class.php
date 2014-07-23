@@ -662,7 +662,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_hosts[$i]['_ITEMSID'] = '0';
       $a_hosts[$i]['_ITEMTYPE'] = 'Computer';
       $a_hosts[$i]['address'] = '127.0.0.1';
-      $a_hosts[$i]['parents'] = self::$shinkenParameters['shinken']['fake_hosts']['root_parent'];
+      $a_hosts[$i]['parents'] = self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'] . self::$shinkenParameters['shinken']['fake_hosts']['root_parent'];
       $a_hosts[$i]['hostgroups'] = self::$shinkenParameters['shinken']['fake_hosts']['hostgroup_name'];
       $a_hosts[$i]['check_interval'] = '60';
       $a_hosts[$i]['retry_interval'] = '1';
@@ -729,7 +729,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             $a_hosts[$i]['_ITEMSID'] = '0';
             $a_hosts[$i]['_ITEMTYPE'] = 'Computer';
             $a_hosts[$i]['address'] = '127.0.0.1';
-            $a_hosts[$i]['parents'] = self::$shinkenParameters['shinken']['fake_hosts']['root_parent'];
+            $a_hosts[$i]['parents'] = self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'] . self::$shinkenParameters['shinken']['fake_hosts']['root_parent'];
             $a_hosts[$i]['hostgroups'] = self::$shinkenParameters['shinken']['fake_hosts']['hostgroup_name'];
             $a_hosts[$i]['check_interval'] = '60';
             $a_hosts[$i]['retry_interval'] = '1';
