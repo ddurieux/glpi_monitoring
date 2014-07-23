@@ -141,7 +141,7 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
    }
 
 
-   function sendRestartArbiter($force=0, $tag='') {
+   function sendRestartArbiter($force=0, $tag='', $command='reload') {
 
       $pmTag = new PluginMonitoringTag();
       $pmLog = new PluginMonitoringLog();
@@ -155,7 +155,7 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
             
             // TODO : should be parameters ... Shinken arbiter may use another port and may use HTTPS !
             $url = 'http://'.$data['ip'].':7760/';
-            $action = 'restart';
+            $action = $command;
             $a_fields = array();
 
             $auth = $pmTag->getAuth($data['tag']);
@@ -167,6 +167,7 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
                        ' ('.$_SESSION['glpiname'].')';
                $input['action']    = "restart_planned";
                $input['date_mod']  = date("Y-m-d H:i:s");
+               $input['value']    = $data['tag'];
                $pmLog->add($input);
             }
          }
