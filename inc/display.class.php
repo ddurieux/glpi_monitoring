@@ -1778,8 +1778,9 @@ Ext.onReady(function(){
 
 
          $acknowledge = $this->countServicesQuery("
-            `glpi_plugin_monitoring_hosts`.`is_acknowledged`='1'
-            OR `glpi_plugin_monitoring_services`.`is_acknowledged`='1'");
+            `glpi_plugin_monitoring_services`.`is_acknowledged`='1'");
+            // `glpi_plugin_monitoring_hosts`.`is_acknowledged`='1'
+            // OR `glpi_plugin_monitoring_services`.`is_acknowledged`='1'");
 
          // ** Manage play sound if critical increase since last refresh
             if (isset($_SESSION['plugin_monitoring_dashboard_Ressources'])) {
