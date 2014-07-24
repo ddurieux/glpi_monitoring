@@ -46,7 +46,7 @@ PluginMonitoringProfile::checkRight("restartshinken","r");
 
 $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
 if (isset($_GET["tag"])) {
-   $pmShinkenwebservice->sendRestartArbiter(1, $_GET["tag"]);
+   $pmShinkenwebservice->sendRestartArbiter(1, $_GET["tag"], isset($_GET["action"]) ? $_GET["action"] : 'reload');
 } else {
    $pmShinkenwebservice->sendRestartArbiter(1);
 }
