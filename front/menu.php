@@ -63,12 +63,12 @@ if (PluginMonitoringProfile::haveRight("restartshinken", 'r')) {
    if (count($a_tags) > 1) {
       echo "<tr class='tab_bg_1'>";
       echo '<td style="width: 30px;">';
-      echo "<button><a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/restartshinken.form.php'>".__('Restart Shinken', 'monitoring')." <br/>(all) "."</a></button>";
+      echo "<button><a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/restartshinken.form.php?action=reload&tag='>".__('Restart Shinken', 'monitoring')." <br/>(all) "."</a></button>";
       echo "</td>";
       $i=2;
       foreach ($a_tags as $data) {
          echo '<td style="width: 30px;">';
-         echo "<button><a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/restartshinken.form.php?tag=". $data['tag'] ."'>".__('Restart Shinken', 'monitoring')." <br/>(". $data['tag'] .") "."</a></button>";
+         echo "<button><a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/restartshinken.form.php?action=reload&tag=". $data['tag'] ."'>".__('Restart Shinken', 'monitoring')." <br/>(". $data['tag'] .") "."</a></button>";
          echo "</td>";
          if ($i > 2) {
             $i = 1;
