@@ -178,30 +178,38 @@ class PluginMonitoringShinken extends CommonDBTM {
       $restart_shinken_found = false;
       $restart_shinken_1_4_found = false;
       foreach ($a_list as $data) {
-         if ($data['command_name'] != "bp_rule") {
-            // For comments ...
-            $a_commands[$i]['name'] = $data['name'];
-            
-            // For Shinken ...
-            $a_commands[$i]['command_name'] = PluginMonitoringCommand::$command_prefix . $data['command_name'];
-            $a_commands[$i]['command_line'] = $data['command_line'];
-            if (! empty($data['module_type'])) {
-               $a_commands[$i]['module_type'] = $data['module_type'];
-            }
-            if (! empty($data['poller_tag'])) {
-               $a_commands[$i]['poller_tag'] = $data['poller_tag'];
-            }
-            $i++;
+         if ($data['command_name'] == "bp_rule") { continue; }
+         
+         // For comments ...
+         $a_commands[$i]['name'] = $data['name'];
+         
+         // For Shinken ...
+         $a_commands[$i]['command_name'] = PluginMonitoringCommand::$command_prefix . $data['command_name'];
+         $a_commands[$i]['command_line'] = $data['command_line'];
+         if (! empty($data['module_type'])) {
+            $a_commands[$i]['module_type'] = $data['module_type'];
          }
+         if (! empty($data['poller_tag'])) {
+            $a_commands[$i]['poller_tag'] = $data['poller_tag'];
+         }
+         if (! empty($data['reactionner_tag'])) {
+            $a_commands[$i]['reactionner_tag'] = $data['reactionner_tag'];
+         }
+
          if ($data['command_name'] == "reload-shinken") {
             $reload_shinken_found = true;
+            // No prefix for this command (WS arbiter)
+            $a_commands[$i]['command_name'] = $data['command_name'];
          }
          if ($data['command_name'] == "restart-shinken") {
             $restart_shinken_found = true;
+            // No prefix for this command (WS arbiter)
+            $a_commands[$i]['command_name'] = $data['command_name'];
          }
          if ($data['command_name'] == "restart_shinken") {
             $restart_shinken_1_4_found = true;
          }
+         $i++;
       }
       if (! $restart_shinken_1_4_found) {
          // * Restart shinken command
@@ -212,14 +220,14 @@ class PluginMonitoringShinken extends CommonDBTM {
       if (! $reload_shinken_found) {
          // * Reload shinken command (2.0)
          $a_commands[$i]['name'] = 'Reload Shinken configuration';
-         $a_commands[$i]['command_name'] = PluginMonitoringCommand::$command_prefix . 'reload-shinken';
-         $a_commands[$i]['command_line'] = "nohup sh -c '/etc/init.d/shinken reload'  > /dev/null 2>&1 &";
+         $a_commands[$i]['command_name'] = 'reload-shinken';
+         $a_commands[$i]['command_line'] = "nohup sh -c '/etc/init.d/shinken reload'    > /dev/null 2>&1 &";
       }
       if (! $restart_shinken_found) {
          // * Restart shinken command (2.0)
          $a_commands[$i]['name'] = 'Restart Shinken';
-         $a_commands[$i]['command_name'] = PluginMonitoringCommand::$command_prefix . 'restart-shinken';
-         $a_commands[$i]['command_line'] = "nohup sh -c '/etc/init.d/shinken restart'  > /dev/null 2>&1 &";
+         $a_commands[$i]['command_name'] = 'restart-shinken';
+         $a_commands[$i]['command_line'] = "nohup sh -c '/etc/init.d/shinken restart'    > /dev/null 2>&1 &";
       }
 
       // Event handlers
@@ -573,7 +581,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                   }
                }
 
-               $a_hosts[$i]['check_command'] = $pmCommand->fields['command_name'].$args;
+               $a_hosts[$i]['check_command'] = PluginMonitoringCommand::$command_prefix . $pmCommand->fields['command_name'].$args;
                // Toolbox::logInFile("pm", "check_command : ".$a_hosts[$i]['check_command']."\n");
 
 
@@ -683,7 +691,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       // Fake host for bp
       Toolbox::logInFile("pm-shinken", " - add host_for_bp\n");
       $a_hosts[$i]['host_name'] = self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'] . self::$shinkenParameters['shinken']['fake_hosts']['bp_host'];
-      $a_hosts[$i]['check_command'] = 'check_dummy!0';
+      $a_hosts[$i]['check_command'] = PluginMonitoringCommand::$command_prefix . 'check_dummy!0';
       $a_hosts[$i]['alias'] = 'host_for_bp';
       $a_hosts[$i]['_HOSTID'] = '0';
       $a_hosts[$i]['_ITEMSID'] = '0';
@@ -710,7 +718,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          // Main root parent
          Toolbox::logInFile("pm-shinken", " - add host_for_bp\n");
          $a_hosts[$i]['host_name'] = self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'] . self::$shinkenParameters['shinken']['fake_hosts']['root_parent'];
-         $a_hosts[$i]['check_command'] = 'check_dummy!0';
+         $a_hosts[$i]['check_command'] = PluginMonitoringCommand::$command_prefix . 'check_dummy!0';
          $a_hosts[$i]['alias'] = 'Main root parent';
          $a_hosts[$i]['_HOSTID'] = '0';
          $a_hosts[$i]['_ITEMSID'] = '0';
@@ -750,7 +758,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
             Toolbox::logInFile("pm-shinken", " - add parent $fake_host_name ...\n");
             $a_hosts[$i]['host_name'] = self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'] . $fake_host_name;
-            $a_hosts[$i]['check_command'] = 'check_dummy!0';
+            $a_hosts[$i]['check_command'] = PluginMonitoringCommand::$command_prefix . 'check_dummy!0';
             $a_hosts[$i]['alias'] = $dataEntity['entityName'];
             $a_hosts[$i]['_HOSTID'] = '0';
             $a_hosts[$i]['_ITEMSID'] = '0';
@@ -824,6 +832,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_services = array();
       $i=0;
 
+      // TODO: only contacts in allowed entities ...
       // Prepare individual contacts
       $a_contacts_entities = array();
       $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
@@ -1052,12 +1061,12 @@ class PluginMonitoringShinken extends CommonDBTM {
                         $ip = PluginMonitoringHostaddress::getIp($split[1], $split[0], '');
                         $alias_command = str_replace("[[IP]]", $ip, $alias_command);
                      }
-                     $a_services[$i]['check_command'] = "check_nrpe!".$alias_command;
+                     $a_services[$i]['check_command'] = PluginMonitoringCommand::$command_prefix . "check_nrpe!".$alias_command;
                   } else {
-                     $a_services[$i]['check_command'] = "check_nrpe!".$pMonitoringCommand->fields['command_name'];
+                     $a_services[$i]['check_command'] = PluginMonitoringCommand::$command_prefix . "check_nrpe!".$pMonitoringCommand->fields['command_name'];
                   }
                } else {
-                  $a_services[$i]['check_command'] = $pMonitoringCommand->fields['command_name'].$args;
+                  $a_services[$i]['check_command'] = PluginMonitoringCommand::$command_prefix . $pMonitoringCommand->fields['command_name'].$args;
                }
 
                // * Manage event handler
@@ -1120,7 +1129,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                      $a_services[$i]['event_handler_enabled'] = '1';
                   } else {
                      $a_services[$i]['event_handler_enabled'] = '0';
-                     $a_services[$i]['event_handler_enabled'] = '';
+                     // $a_services[$i]['event_handler_enabled'] = '';
                   }
                   $a_services[$i]['flap_detection_enabled'] = '1';
                   $a_services[$i]['failure_prediction_enabled'] = '1';
@@ -1276,7 +1285,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                      $a_group[$key] = "(".trim($value).")";
                   }
                }
-               $a_services[$i]['check_command'] = $command.implode("&", $a_group);
+               $a_services[$i]['check_command'] = PluginMonitoringCommand::$command_prefix . $command.implode("&", $a_group);
                if ($dataBA['notification_interval'] != '30') {
                   $a_services[$i]['notification_interval'] = $dataBA['notification_interval'];
                } else {
@@ -1420,7 +1429,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                         $a_group[$key] = "(".trim($value).")";
                      }
                   }
-                  $a_services[$i]['check_command'] = $command.implode("&", $a_group);
+                  $a_services[$i]['check_command'] = PluginMonitoringCommand::$command_prefix . $command.implode("&", $a_group);
                   if ($a_derivatedSC['notification_interval'] != '30') {
                      $a_services[$i]['notification_interval'] = $a_derivatedSC['notification_interval'];
                   } else {
@@ -1817,13 +1826,13 @@ Nagios configuration file :
       
       $pmNotificationcommand->getFromDB($a_pmcontact['service_notification_commands']);
       if (isset($pmNotificationcommand->fields['command_name'])) {
-         $a_contacts[$i]['service_notification_commands'] = $pmNotificationcommand->fields['command_name'];
+         $a_contacts[$i]['service_notification_commands'] = PluginMonitoringCommand::$command_prefix . $pmNotificationcommand->fields['command_name'];
       } else {
          $a_contacts[$i]['service_notification_commands'] = '';
       }
       $pmNotificationcommand->getFromDB($a_pmcontact['host_notification_commands']);
       if (isset($pmNotificationcommand->fields['command_name'])) {
-         $a_contacts[$i]['host_notification_commands'] = $pmNotificationcommand->fields['command_name'];
+         $a_contacts[$i]['host_notification_commands'] = PluginMonitoringCommand::$command_prefix . $pmNotificationcommand->fields['command_name'];
       } else {
          $a_contacts[$i]['host_notification_commands'] = '';
       }
