@@ -245,6 +245,21 @@ class PluginMonitoringMessage extends CommonDBTM {
 
       $pmLog = new PluginMonitoringLog();
 
+      $a_reload_planned = $pmLog->find("`action` LIKE 'reload%' AND "
+              ."`date_mod` > date_add(now(), interval - 10 MINUTE)", "`id` DESC", 1);
+      if (count($a_reload_planned) == 1) {
+         $a_reload = current($a_reload_planned);
+         if ($a_reload['action'] == 'reload_planned') {
+            echo "<div class='msgboxmonit msgboxmonit-red'>";
+            echo __('Shinken reload order has been sent at', 'monitoring')." ".Html::convDateTime($a_reload['date_mod']);
+            echo "</div>";
+         } else {
+            echo "<div class='msgboxmonit msgboxmonit-orange'>";
+            echo __('Shinken reloaded at '.Html::convDateTime($a_reload['date_mod']));
+            echo "</div>";
+         }
+      }
+
       $a_restart_planned = $pmLog->find("`action` LIKE 'restart%' AND "
               ."`date_mod` > date_add(now(), interval - 10 MINUTE)", "`id` DESC", 1);
       if (count($a_restart_planned) == 1) {

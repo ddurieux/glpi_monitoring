@@ -57,36 +57,67 @@ $toDisplayArea=0;
 // - one button per each declared Shinken tag
 // - one button to restart all Shinken instances
 if (PluginMonitoringProfile::haveRight("restartshinken", 'r')) {
-   echo '<table style="width: 20%; position: absolute; left: 15px;">';
    $pmTag = new PluginMonitoringTag();
    $a_tags = $pmTag->find();
-   if (count($a_tags) > 1) {
-      echo "<tr class='tab_bg_1'>";
-      echo '<td style="width: 30px;">';
-      echo "<button><a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/restartshinken.form.php?action=reload&tag='>".__('Restart Shinken', 'monitoring')." <br/>(all) "."</a></button>";
-      echo "</td>";
-      $i=2;
-      foreach ($a_tags as $data) {
-         echo '<td style="width: 30px;">';
-         echo "<button><a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/restartshinken.form.php?action=reload&tag=". $data['tag'] ."'>".__('Restart Shinken', 'monitoring')." <br/>(". $data['tag'] .") "."</a></button>";
-         echo "</td>";
-         if ($i > 2) {
-            $i = 1;
-            echo "</tr>";
-            echo "<tr class='tab_bg_1'>";
-         } else {
-            $i++;
-         }
-      }
-      echo "</tr>";
+   if (count($a_tags) > 0) {
+      $shinken_commands = [
+            'reload'    => [ 
+                  'command' => 'reload',
+                  'title' => __('Reconfigure Shinken from Glpi database', 'monitoring'), 
+                  'button' => __('Reconfigure Shinken', 'monitoring'),
+            ],
+            'restart'   => [
+                  'command' => 'restart',
+                  'title' => __('Restart all Shinken daemons', 'monitoring'),
+                  'button' => __('Restart Shinken', 'monitoring'),
+            ],
+      ];
+      
+      echo '<div style="position: absolute; left: 15px;">';
+         foreach ($shinken_commands as $command) {
+            echo '<table style="table-layout: fixed">';
+            echo '<tr>';
+            echo '<td colspan="5">';
+            echo $command['title'];
+            echo '</td>';
+            echo '</tr>';
+            
+            echo '<tr>';
+            echo '<td >';
+            echo "<button style='width: 100px;'><a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/restartshinken.form.php?action=".$command['command']."&tag='>".$command['button']."<br/>".__('All instances', 'monitoring')."</a></button>";
+            echo '</td><td style="width: 5px;"></td>';
+            echo '</tr>';
+            
+            if (count($a_tags) > 1) {
+               $i=1;
+               echo '<tr>';
+               foreach ($a_tags as $data) {
+                  echo '<td>';
+                  echo "<button style='width: 100px;'><a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/restartshinken.form.php?action=".$command['command']."&tag=". $data['tag'] ."'>".$command['button']." <br/>(". $data['tag'] .") "."</a></button>";
+                  echo '</td>';
+                  echo '<td style="width: 5px;"></td>';
+                  if ($i > 2) {
+                     $i = 1;
+                     echo '</tr><tr>';
+                  } else {
+                     $i++;
+                  }
+               }
+               echo '</tr>';
+            }
+            echo '</table>';
+            echo '</br>';
+         }      
+      echo '</div>';
    } else {
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo "<button><a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/restartshinken.form.php'>".__('Restart Shinken', 'monitoring')."</a></button>";
-      echo "</td>";
-      echo "</tr>";
+      echo '<table style="position: absolute; left: 15px;">';
+      echo '<tr>';
+      echo '<td>';
+      echo __('No Shinken instance configured', 'monitoring');
+      echo '</td>';
+      echo '</tr>';
+      echo "</table>";
    }
-   echo "</table>";
 }
 
 if (PluginMonitoringProfile::haveRight("dashboard", 'r') && !PluginMonitoringProfile::haveRight("config", 'r')) {
