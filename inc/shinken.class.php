@@ -77,19 +77,29 @@ class PluginMonitoringShinken extends CommonDBTM {
          'fake_hosts' => array(
             // Default values
             'build' => true,
+            // Fake hosts tag
+            'use' => 'fake',
             // Fake hosts name prefix
             'name_prefix' => '_fake_',
             // Hostgroup name
             'hostgroup_name' => 'fake_hosts',
-            // Hostgroup name
+            // Hostgroup alias
             'hostgroup_alias' => 'Fake hosts',
             // Main root parent
             'root_parent' => 'Root',
             // Main root parent
             'bp_host' => 'BP_host'
          ),
+         // Build fake contacts for fake hosts
+         'fake_contacts' => array(
+            // Default values
+            'build' => true,
+            // Contact name
+            'contact_name' => 'monitoring',
+         ),
          'hosts' => array(
             // Default values
+            'use' => 'important',
             'check_period' => '24x7',
             'process_perf_data' => '1',
             'notification_period' => '24x7',
@@ -98,11 +108,29 @@ class PluginMonitoringShinken extends CommonDBTM {
             // Set as 'entity' to use hostgroupname else use the defined value ...
             // When fake_hosts are built (see upper), use 'entity' !
             'parents' => 'entity',
+            // Shinken host parameters
+            'notes' => '',
+            'notes_url' => '',
+            'action_url' => '',
+            'icon_image' => '',
+            'icon_image_alt' => '',
+            'vrml_image' => '',
+            'statusmap_image' => '',
          ),
          'services' => array(
             // Default check_period
             'check_period' => '24x7',
             'process_perf_data' => '1',
+            // Shinken service parameters
+            'notes' => '',
+            'notes_url' => '',
+            'action_url' => '',
+            'icon_image' => '',
+            'icon_image_alt' => '',
+         ),
+         'contacts' => array(
+            // Default check_period
+            'user_category' => 'glpi',
          )
       ),
       // Graphite configuration
@@ -117,18 +145,24 @@ class PluginMonitoringShinken extends CommonDBTM {
       'webui' => array(
          // Hosts custom view
          'hostView' => array(
-            'name'   => 'custom_views',
-            'value'  => 'kiosk'
+            'name'      => 'custom_views',
+            'value'     => 'kiosk'
          ),
          // Hosts icon set
          'hostIcons' => array(
-            'name'   => 'icon_set',
-            'value'  => 'host'
+            'name'      => 'icon_set',
+            'value'     => 'host'
          ),
          // Services icon set
          'serviceIcons' => array(
-            'name'   => 'icon_set',
-            'value'  => 'service'
+            'name'      => 'icon_set',
+            'value'     => 'service'
+         ),
+         // Contacts role
+         'contacts' => array(
+            'is_admin'              => '1',
+            'can_submit_commands'   => '0',
+            'password'              => 'ipmfrance'
          ),
       ),
    );
@@ -140,7 +174,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
 
 
-   function constructFile($name, $array) {
+   function writeFile($name, $array) {
       $config = '';
       $config .= "define ".$name."{\n";
       foreach ($array as $key => $value) {
@@ -248,7 +282,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          foreach ($a_commands as $data) {
             $config .= "# ".$data['name']."\n";
             unset($data['name']);
-            $config .= $this->constructFile("command", $data);
+            $config .= $this->writeFile("command", $data);
          }
          return array('commands.cfg', $config);
       } else {
@@ -630,10 +664,21 @@ class PluginMonitoringShinken extends CommonDBTM {
                                                                                     $class->getID()));
                $a_hosts[$i]['realm'] = $pmRealm->fields['name'];
                
-               $a_hosts[$i]['process_perf_data'] = self::$shinkenParameters['shinken']['hosts']['process_perf_data'];
-               $a_hosts[$i]['notification_period'] = self::$shinkenParameters['shinken']['hosts']['notification_period'];
-               $a_hosts[$i]['notification_options'] = self::$shinkenParameters['shinken']['hosts']['notification_options'];
-               $a_hosts[$i]['notification_interval'] = self::$shinkenParameters['shinken']['hosts']['notification_interval'];
+               if (! empty(self::$shinkenParameters['shinken']['hosts']['use'])) $a_hosts[$i]['use'] = self::$shinkenParameters['shinken']['hosts']['use'];
+               
+               if (! empty(self::$shinkenParameters['shinken']['hosts']['process_perf_data'])) $a_hosts[$i]['process_perf_data'] = self::$shinkenParameters['shinken']['hosts']['process_perf_data'];
+               if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_period'])) $a_hosts[$i]['notification_period'] = self::$shinkenParameters['shinken']['hosts']['notification_period'];
+               if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_options'])) $a_hosts[$i]['notification_options'] = self::$shinkenParameters['shinken']['hosts']['notification_options'];
+               if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_interval'])) $a_hosts[$i]['notification_interval'] = self::$shinkenParameters['shinken']['hosts']['notification_interval'];
+
+               if (! empty(self::$shinkenParameters['shinken']['hosts']['notes'])) $a_hosts[$i]['notes'] = self::$shinkenParameters['shinken']['hosts']['notes'];
+               if (! empty(self::$shinkenParameters['shinken']['hosts']['notes_url'])) $a_hosts[$i]['notes_url'] = self::$shinkenParameters['shinken']['hosts']['notes_url'];
+               if (! empty(self::$shinkenParameters['shinken']['hosts']['action_url'])) $a_hosts[$i]['action_url'] = self::$shinkenParameters['shinken']['hosts']['action_url'];
+               if (! empty(self::$shinkenParameters['shinken']['hosts']['icon_image'])) $a_hosts[$i]['icon_image'] = self::$shinkenParameters['shinken']['hosts']['icon_image'];
+               if (! empty(self::$shinkenParameters['shinken']['hosts']['icon_image_alt'])) $a_hosts[$i]['icon_image_alt'] = self::$shinkenParameters['shinken']['hosts']['icon_image_alt'];
+               if (! empty(self::$shinkenParameters['shinken']['hosts']['vrml_image'])) $a_hosts[$i]['vrml_image'] = self::$shinkenParameters['shinken']['hosts']['vrml_image'];
+               if (! empty(self::$shinkenParameters['shinken']['hosts']['statusmap_image'])) $a_hosts[$i]['statusmap_image'] = self::$shinkenParameters['shinken']['hosts']['statusmap_image'];
+
 
                // For contacts, check if a component catalog contains the host associated component ...
                $a_hosts[$i]['contacts'] = '';
@@ -688,11 +733,12 @@ class PluginMonitoringShinken extends CommonDBTM {
          }
       }
 
-      // Fake host for bp
+
+      // Fake host for business rules
       Toolbox::logInFile("pm-shinken", " - add host_for_bp\n");
       $a_hosts[$i]['host_name'] = self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'] . self::$shinkenParameters['shinken']['fake_hosts']['bp_host'];
       $a_hosts[$i]['check_command'] = PluginMonitoringCommand::$command_prefix . 'check_dummy!0';
-      $a_hosts[$i]['alias'] = 'host_for_bp';
+      $a_hosts[$i]['alias'] = 'Fake host for business rules';
       $a_hosts[$i]['_HOSTID'] = '0';
       $a_hosts[$i]['_ITEMSID'] = '0';
       $a_hosts[$i]['_ITEMTYPE'] = 'Computer';
@@ -703,11 +749,25 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_hosts[$i]['retry_interval'] = '1';
       $a_hosts[$i]['max_check_attempts'] = '1';
       $a_hosts[$i]['check_period'] = '24x7';
-      $a_hosts[$i]['contacts'] = '';
-      $a_hosts[$i]['process_perf_data'] = '1';
-      $a_hosts[$i]['notification_interval'] = '720';
-      $a_hosts[$i]['notification_period'] = '24x7';
-      $a_hosts[$i]['notification_options'] = 'd,u,r,f,s';
+      if (self::$shinkenParameters['shinken']['fake_contacts']['build']) {
+         $a_hosts[$i]['contacts'] = self::$shinkenParameters['shinken']['fake_contacts']['contact_name'];
+      } else {
+         $a_hosts[$i]['contacts'] = '';
+      }
+      if (! empty(self::$shinkenParameters['shinken']['fake_hosts']['use'])) $a_hosts[$i]['use'] = self::$shinkenParameters['shinken']['fake_hosts']['use'];
+      
+      if (! empty(self::$shinkenParameters['shinken']['hosts']['process_perf_data'])) $a_hosts[$i]['process_perf_data'] = self::$shinkenParameters['shinken']['hosts']['process_perf_data'];
+      if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_period'])) $a_hosts[$i]['notification_period'] = self::$shinkenParameters['shinken']['hosts']['notification_period'];
+      if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_options'])) $a_hosts[$i]['notification_options'] = self::$shinkenParameters['shinken']['hosts']['notification_options'];
+      if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_interval'])) $a_hosts[$i]['notification_interval'] = self::$shinkenParameters['shinken']['hosts']['notification_interval'];
+
+      if (! empty(self::$shinkenParameters['shinken']['hosts']['notes'])) $a_hosts[$i]['notes'] = self::$shinkenParameters['shinken']['hosts']['notes'];
+      if (! empty(self::$shinkenParameters['shinken']['hosts']['notes_url'])) $a_hosts[$i]['notes_url'] = self::$shinkenParameters['shinken']['hosts']['notes_url'];
+      if (! empty(self::$shinkenParameters['shinken']['hosts']['action_url'])) $a_hosts[$i]['action_url'] = self::$shinkenParameters['shinken']['hosts']['action_url'];
+      if (! empty(self::$shinkenParameters['shinken']['hosts']['icon_image'])) $a_hosts[$i]['icon_image'] = self::$shinkenParameters['shinken']['hosts']['icon_image'];
+      if (! empty(self::$shinkenParameters['shinken']['hosts']['icon_image_alt'])) $a_hosts[$i]['icon_image_alt'] = self::$shinkenParameters['shinken']['hosts']['icon_image_alt'];
+      if (! empty(self::$shinkenParameters['shinken']['hosts']['vrml_image'])) $a_hosts[$i]['vrml_image'] = self::$shinkenParameters['shinken']['hosts']['vrml_image'];
+      if (! empty(self::$shinkenParameters['shinken']['hosts']['statusmap_image'])) $a_hosts[$i]['statusmap_image'] = self::$shinkenParameters['shinken']['hosts']['statusmap_image'];
       $i++;
 
 
@@ -716,7 +776,6 @@ class PluginMonitoringShinken extends CommonDBTM {
          Toolbox::logInFile("pm-shinken", " - add fake hosts for parents relationship\n");
 
          // Main root parent
-         Toolbox::logInFile("pm-shinken", " - add host_for_bp\n");
          $a_hosts[$i]['host_name'] = self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'] . self::$shinkenParameters['shinken']['fake_hosts']['root_parent'];
          $a_hosts[$i]['check_command'] = PluginMonitoringCommand::$command_prefix . 'check_dummy!0';
          $a_hosts[$i]['alias'] = 'Main root parent';
@@ -730,11 +789,25 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_hosts[$i]['retry_interval'] = '1';
          $a_hosts[$i]['max_check_attempts'] = '1';
          $a_hosts[$i]['check_period'] = '24x7';
-         $a_hosts[$i]['contacts'] = '';
-         $a_hosts[$i]['process_perf_data'] = '1';
-         $a_hosts[$i]['notification_interval'] = '720';
-         $a_hosts[$i]['notification_period'] = '24x7';
-         $a_hosts[$i]['notification_options'] = 'd,u,r,f,s';
+         if (self::$shinkenParameters['shinken']['fake_contacts']['build']) {
+            $a_hosts[$i]['contacts'] = self::$shinkenParameters['shinken']['fake_contacts']['contact_name'];
+         } else {
+            $a_hosts[$i]['contacts'] = '';
+         }
+         if (! empty(self::$shinkenParameters['shinken']['fake_hosts']['use'])) $a_hosts[$i]['use'] = self::$shinkenParameters['shinken']['fake_hosts']['use'];
+      
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['process_perf_data'])) $a_hosts[$i]['process_perf_data'] = self::$shinkenParameters['shinken']['hosts']['process_perf_data'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_period'])) $a_hosts[$i]['notification_period'] = self::$shinkenParameters['shinken']['hosts']['notification_period'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_options'])) $a_hosts[$i]['notification_options'] = self::$shinkenParameters['shinken']['hosts']['notification_options'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_interval'])) $a_hosts[$i]['notification_interval'] = self::$shinkenParameters['shinken']['hosts']['notification_interval'];
+
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['notes'])) $a_hosts[$i]['notes'] = self::$shinkenParameters['shinken']['hosts']['notes'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['notes_url'])) $a_hosts[$i]['notes_url'] = self::$shinkenParameters['shinken']['hosts']['notes_url'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['action_url'])) $a_hosts[$i]['action_url'] = self::$shinkenParameters['shinken']['hosts']['action_url'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['icon_image'])) $a_hosts[$i]['icon_image'] = self::$shinkenParameters['shinken']['hosts']['icon_image'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['icon_image_alt'])) $a_hosts[$i]['icon_image_alt'] = self::$shinkenParameters['shinken']['hosts']['icon_image_alt'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['vrml_image'])) $a_hosts[$i]['vrml_image'] = self::$shinkenParameters['shinken']['hosts']['vrml_image'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['statusmap_image'])) $a_hosts[$i]['statusmap_image'] = self::$shinkenParameters['shinken']['hosts']['statusmap_image'];
          $i++;
 
          $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
@@ -756,7 +829,6 @@ class PluginMonitoringShinken extends CommonDBTM {
             $fake_host_name = strtolower(preg_replace("/[^A-Za-z0-9\-_ ]/","",$dataEntity['entityName']));
             $fake_host_name = preg_replace("/[ ]/","_",$fake_host_name);
 
-            Toolbox::logInFile("pm-shinken", " - add parent $fake_host_name ...\n");
             $a_hosts[$i]['host_name'] = self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'] . $fake_host_name;
             $a_hosts[$i]['check_command'] = PluginMonitoringCommand::$command_prefix . 'check_dummy!0';
             $a_hosts[$i]['alias'] = $dataEntity['entityName'];
@@ -770,11 +842,25 @@ class PluginMonitoringShinken extends CommonDBTM {
             $a_hosts[$i]['retry_interval'] = '1';
             $a_hosts[$i]['max_check_attempts'] = '1';
             $a_hosts[$i]['check_period'] = '24x7';
-            $a_hosts[$i]['contacts'] = '';
-            $a_hosts[$i]['process_perf_data'] = '1';
-            $a_hosts[$i]['notification_interval'] = '720';
-            $a_hosts[$i]['notification_period'] = '24x7';
-            $a_hosts[$i]['notification_options'] = 'd,u,r,f,s';
+            if (self::$shinkenParameters['shinken']['fake_contacts']['build']) {
+               $a_hosts[$i]['contacts'] = self::$shinkenParameters['shinken']['fake_contacts']['contact_name'];
+            } else {
+               $a_hosts[$i]['contacts'] = '';
+            }
+            if (! empty(self::$shinkenParameters['shinken']['fake_hosts']['use'])) $a_hosts[$i]['use'] = self::$shinkenParameters['shinken']['fake_hosts']['use'];
+      
+            if (! empty(self::$shinkenParameters['shinken']['hosts']['process_perf_data'])) $a_hosts[$i]['process_perf_data'] = self::$shinkenParameters['shinken']['hosts']['process_perf_data'];
+            if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_period'])) $a_hosts[$i]['notification_period'] = self::$shinkenParameters['shinken']['hosts']['notification_period'];
+            if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_options'])) $a_hosts[$i]['notification_options'] = self::$shinkenParameters['shinken']['hosts']['notification_options'];
+            if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_interval'])) $a_hosts[$i]['notification_interval'] = self::$shinkenParameters['shinken']['hosts']['notification_interval'];
+
+            if (! empty(self::$shinkenParameters['shinken']['hosts']['notes'])) $a_hosts[$i]['notes'] = self::$shinkenParameters['shinken']['hosts']['notes'];
+            if (! empty(self::$shinkenParameters['shinken']['hosts']['notes_url'])) $a_hosts[$i]['notes_url'] = self::$shinkenParameters['shinken']['hosts']['notes_url'];
+            if (! empty(self::$shinkenParameters['shinken']['hosts']['action_url'])) $a_hosts[$i]['action_url'] = self::$shinkenParameters['shinken']['hosts']['action_url'];
+            if (! empty(self::$shinkenParameters['shinken']['hosts']['icon_image'])) $a_hosts[$i]['icon_image'] = self::$shinkenParameters['shinken']['hosts']['icon_image'];
+            if (! empty(self::$shinkenParameters['shinken']['hosts']['icon_image_alt'])) $a_hosts[$i]['icon_image_alt'] = self::$shinkenParameters['shinken']['hosts']['icon_image_alt'];
+            if (! empty(self::$shinkenParameters['shinken']['hosts']['vrml_image'])) $a_hosts[$i]['vrml_image'] = self::$shinkenParameters['shinken']['hosts']['vrml_image'];
+            if (! empty(self::$shinkenParameters['shinken']['hosts']['statusmap_image'])) $a_hosts[$i]['statusmap_image'] = self::$shinkenParameters['shinken']['hosts']['statusmap_image'];
 
             $i++;
          }
@@ -800,7 +886,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $config = "# Generated by plugin monitoring for GLPI\n# on ".date("Y-m-d H:i:s")."\n\n";
 
          foreach ($a_hosts as $data) {
-            $config .= $this->constructFile("host", $data);
+            $config .= $this->writeFile("host", $data);
          }
          return array('hosts.cfg', $config);
 
@@ -1076,6 +1162,14 @@ class PluginMonitoringShinken extends CommonDBTM {
                   }
                }
 
+               if (! empty(self::$shinkenParameters['shinken']['services']['process_perf_data'])) $a_services[$i]['process_perf_data'] = self::$shinkenParameters['shinken']['services']['process_perf_data'];
+
+               if (! empty(self::$shinkenParameters['shinken']['services']['notes'])) $a_services[$i]['notes'] = self::$shinkenParameters['shinken']['services']['notes'];
+               if (! empty(self::$shinkenParameters['shinken']['services']['notes_url'])) $a_services[$i]['notes_url'] = self::$shinkenParameters['shinken']['services']['notes_url'];
+               if (! empty(self::$shinkenParameters['shinken']['services']['action_url'])) $a_services[$i]['action_url'] = self::$shinkenParameters['shinken']['services']['action_url'];
+               if (! empty(self::$shinkenParameters['shinken']['services']['icon_image'])) $a_services[$i]['icon_image'] = self::$shinkenParameters['shinken']['services']['icon_image'];
+               if (! empty(self::$shinkenParameters['shinken']['services']['icon_image_alt'])) $a_services[$i]['icon_image_alt'] = self::$shinkenParameters['shinken']['services']['icon_image_alt'];
+      
                // * Contacts
                $a_contacts = array();
                $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
@@ -1136,7 +1230,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                   $a_services[$i]['retain_status_information'] = '1';
                   $a_services[$i]['retain_nonstatus_information'] = '1';
                   $a_services[$i]['is_volatile'] = '0';
-                  $a_services[$i]['_httpstink'] = 'NO';
+                  // $a_services[$i]['_httpstink'] = 'NO';
                } else {
                   // Notification options
                   $a_services[$i]['notification_interval'] = '30';
@@ -1285,7 +1379,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                      $a_group[$key] = "(".trim($value).")";
                   }
                }
-               $a_services[$i]['check_command'] = PluginMonitoringCommand::$command_prefix . $command.implode("&", $a_group);
+               $a_services[$i]['check_command'] = $command.implode("&", $a_group);
                if ($dataBA['notification_interval'] != '30') {
                   $a_services[$i]['notification_interval'] = $dataBA['notification_interval'];
                } else {
@@ -1309,7 +1403,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_services[$i]['retain_status_information'] = '1';
                $a_services[$i]['retain_nonstatus_information'] = '1';
                $a_services[$i]['is_volatile'] = '0';
-               $a_services[$i]['_httpstink'] = 'NO';
+               // $a_services[$i]['_httpstink'] = 'NO';
 
                // * Contacts
                $a_contacts = array();
@@ -1429,7 +1523,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                         $a_group[$key] = "(".trim($value).")";
                      }
                   }
-                  $a_services[$i]['check_command'] = PluginMonitoringCommand::$command_prefix . $command.implode("&", $a_group);
+                  $a_services[$i]['check_command'] = $command.implode("&", $a_group);
                   if ($a_derivatedSC['notification_interval'] != '30') {
                      $a_services[$i]['notification_interval'] = $a_derivatedSC['notification_interval'];
                   } else {
@@ -1453,7 +1547,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                   $a_services[$i]['retain_status_information'] = '1';
                   $a_services[$i]['retain_nonstatus_information'] = '1';
                   $a_services[$i]['is_volatile'] = '0';
-                  $a_services[$i]['_httpstink'] = 'NO';
+                  // $a_services[$i]['_httpstink'] = 'NO';
 
                   // * Contacts
                   $a_contacts = array();
@@ -1494,7 +1588,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $config = "# Generated by plugin monitoring for GLPI\n# on ".date("Y-m-d H:i:s")."\n\n";
 
          foreach ($a_services as $data) {
-            $config .= $this->constructFile("service", $data);
+            $config .= $this->writeFile("service", $data);
          }
          return array('services.cfg', $config);
 
@@ -1558,7 +1652,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             $a_servicetemplates[$i]['is_volatile'] = '0';
          }
 */
-         $a_servicetemplates[$i]['_httpstink'] = 'NO';
+         // $a_servicetemplates[$i]['_httpstink'] = 'NO';
          $a_servicetemplates[$i]['register'] = '0';
 
          // Manage user interface ...
@@ -1583,7 +1677,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $config = "# Generated by plugin monitoring for GLPI\n# on ".date("Y-m-d H:i:s")."\n\n";
 
          foreach ($a_servicetemplates as $data) {
-            $config .= $this->constructFile("service", $data);
+            $config .= $this->writeFile("service", $data);
          }
          return array('servicetemplates.cfg', $config);
 
@@ -1671,7 +1765,7 @@ Nagios configuration file :
          $config = "# Generated by plugin monitoring for GLPI\n# on ".date("Y-m-d H:i:s")."\n\n";
 
          foreach ($a_hostgroups as $data) {
-            $config .= $this->constructFile("hostgroup", $data);
+            $config .= $this->writeFile("hostgroup", $data);
          }
          return array('hostgroups.cfg', $config);
 
@@ -1720,7 +1814,7 @@ Nagios configuration file :
          $config = "# Generated by plugin monitoring for GLPI\n# on ".date("Y-m-d H:i:s")."\n\n";
 
          foreach ($a_contacts as $data) {
-            $config .= $this->constructFile("contact", $data);
+            $config .= $this->writeFile("contact", $data);
          }
          return array('contacts.cfg', $config);
 
@@ -1752,6 +1846,7 @@ Nagios configuration file :
       }
       $a_contacts[$i]['contact_name'] = $user->fields['name'];
       $a_contacts[$i]['alias'] = $user->getName();
+      
       if (!isset($a_pmcontact['host_notification_period'])) {
          $a_calendars = current($calendar->find("", "", 1));
          $a_pmcontact['host_notifications_enabled'] = '0';
@@ -1851,6 +1946,15 @@ Nagios configuration file :
       }
       $a_contacts[$i]['pager'] = $user->fields['phone'];
 
+      $a_contacts[$i]['is_admin'] = self::$shinkenParameters['webui']['contacts']['is_admin'];
+      $a_contacts[$i]['can_submit_commands'] = self::$shinkenParameters['webui']['contacts']['can_submit_commands'];
+      $a_contacts[$i]['password'] = self::$shinkenParameters['webui']['contacts']['password'];
+      
+      /*
+      TODO:
+      address1, address2, ..., address6 are available in Shinken
+      */
+      
       return $a_contacts;
    }
 
@@ -1932,7 +2036,7 @@ Nagios configuration file :
          $config = "# Generated by plugin monitoring for GLPI\n# on ".date("Y-m-d H:i:s")."\n\n";
 
          foreach ($a_timeperiods as $data) {
-            $config .= $this->constructFile("timeperiod", $data);
+            $config .= $this->writeFile("timeperiod", $data);
          }
          return array('timeperiods.cfg', $config);
 
