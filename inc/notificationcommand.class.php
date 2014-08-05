@@ -149,19 +149,41 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
    function getSearchOptions() {
       $tab = array();
 
-      $tab['common'] = "notification commands";
+      $tab['common'] = __('Notification commands', 'monitoring');
 
-		$tab[1]['table'] = $this->getTable();
-		$tab[1]['field'] = 'name';
-		$tab[1]['linkfield'] = 'name';
-		$tab[1]['name'] = __('Name');
-		$tab[1]['datatype'] = 'itemlink';
+      $i=1;
+		$tab[$i]['table'] = $this->getTable();
+		$tab[$i]['field'] = 'name';
+		$tab[$i]['linkfield'] = 'name';
+		$tab[$i]['name'] = __('Name');
+		$tab[$i]['datatype'] = 'itemlink';
 
-      $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     = 'is_active';
-      $tab[2]['linkfield'] = 'is_active';
-      $tab[2]['name']      = __('Active');
-      $tab[2]['datatype']  = 'bool';
+      $i++;
+      $tab[$i]['table']     = $this->getTable();
+      $tab[$i]['field']     = 'is_active';
+      $tab[$i]['linkfield'] = 'is_active';
+      $tab[$i]['name']      = __('Active', 'monitoring');
+      $tab[$i]['datatype']  = 'bool';
+
+      $i++;
+      $tab[$i]['table']     = $this->getTable();
+      $tab[$i]['field']     = 'command_name';
+      $tab[$i]['name']      = __('Command name', 'monitoring');
+
+      $i++;
+      $tab[$i]['table']     = $this->getTable();
+      $tab[$i]['field']     = 'command_line';
+      $tab[$i]['name']      = __('Command line', 'monitoring');
+
+      $i++;
+      $tab[$i]['table']     = $this->getTable();
+      $tab[$i]['field']     = 'reactionner_tag';
+      $tab[$i]['name']      = __('Shinken reactionner tag', 'monitoring');
+
+      $i++;
+      $tab[$i]['table']     = $this->getTable();
+      $tab[$i]['field']     = 'module_type';
+      $tab[$i]['name']      = __('Shinken module type', 'monitoring');
 
       return $tab;
    }
@@ -206,6 +228,29 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
       echo "<input type='text' name='command_name' value='".$this->fields["command_name"]."' size='30'/>";
       echo "</td>";
       echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Active ?', 'monitoring')."</td>";
+      echo "<td>";
+      if (self::canCreate()) {
+         Dropdown::showYesNo('is_active', $this->fields['is_active']);
+      } else {
+         echo Dropdown::getYesNo($this->fields['is_active']);
+      }
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Module type', 'monitoring')." :</td>";
+      echo "<td>";
+      echo "<input type='text' name='module_type' value='".$this->fields["module_type"]."' size='30'/>";
+      echo "</td>";
+      echo "<td>".__('Reactionner tag', 'monitoring')."&nbsp;:</td>";
+      echo "<td>";
+      echo "<input type='text' name='reactionner_tag' value='".$this->fields["reactionner_tag"]."' size='30'/>";
+      echo "</td>";
+      echo "</tr>";
+
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Command line', 'monitoring')."&nbsp;:</td>";
