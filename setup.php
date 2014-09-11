@@ -110,6 +110,9 @@ function plugin_init_monitoring() {
                  AND isset($_SESSION['glpi_plugin_monitoring_profile'])) {
 
             $PLUGIN_HOOKS['menu_entry']['monitoring'] = true;
+
+            // No menu in helpdesk interface ...
+            $PLUGIN_HOOKS["helpdesk_menu_entry"]['monitoring'] = false;
          }
 
          $PLUGIN_HOOKS['config_page']['monitoring'] = 'front/config.form.php';

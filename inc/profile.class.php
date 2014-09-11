@@ -115,13 +115,25 @@ class PluginMonitoringProfile extends CommonDBTM {
 
 
    static function changeprofile() {
-      if (isset($_SESSION['glpiactiveprofile']['id'])) {
-         $tmp = new self();
-          if ($tmp->getFromDB($_SESSION['glpiactiveprofile']['id'])) {
-             $_SESSION["glpi_plugin_monitoring_profile"] = $tmp->fields;
-          } else {
-             unset($_SESSION["glpi_plugin_monitoring_profile"]);
-          }
+      if (isset($_SESSION['glpiactiveprofile']['id']) and isset($_SESSION['glpiactiveprofile']['id'])) {
+         $pmp = new PluginMonitoringProfile();
+
+         $i = 0;
+         if ($pmp->getFromDB($_SESSION['glpiactiveprofile']['id'])) {
+            foreach ($pmp->fields as $key => $value) {
+               if ($key == 'profiles_id') continue;
+               
+               if (! empty($value)) {
+                  $i++;
+                  $_SESSION["glpi_plugin_monitoring_profile"][$key] = $value;
+               }
+            }
+         }
+         if ($i == '0') {
+            unset($_SESSION["glpi_plugin_monitoring_profile"]);
+         }
+      } else {
+         unset($_SESSION["glpi_plugin_monitoring_profile"]);
       }
    }
 
