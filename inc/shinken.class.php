@@ -1814,6 +1814,23 @@ Nagios configuration file :
       }
       $a_contacts[$i]['pager'] = $user->fields['phone'];
 
+      if (isset($a_pmcontact['shinken_administrator'])) {
+         $a_contacts[$i]['is_admin'] = $a_pmcontact['shinken_administrator'];
+      } else {
+         $a_contacts[$i]['is_admin'] = '0';
+      }
+      if (isset($a_pmcontact['shinken_can_submit_commands'])) {
+         $a_contacts[$i]['can_submit_commands'] = $a_pmcontact['shinken_can_submit_commands'];
+      } else {
+         $a_contacts[$i]['can_submit_commands'] = '0';
+      }
+      $a_contacts[$i]['password'] = self::$shinkenParameters['webui']['contacts']['password'];
+      
+      /*
+      TODO:
+      address1, address2, ..., address6 are available in Shinken
+      */
+      
       return $a_contacts;
    }
 

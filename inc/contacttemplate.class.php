@@ -99,6 +99,7 @@ class PluginMonitoringContacttemplate extends CommonDBTM {
          $this->getEmpty();
       }
 
+      $this->showTabs($options);
       $this->showFormHeader($options);
 
       $this->getFromDB($items_id);
@@ -114,6 +115,21 @@ class PluginMonitoringContacttemplate extends CommonDBTM {
       echo "<td>".__('Default template', 'monitoring')."&nbsp;:</td>";
       echo "<td align='center'>";
       Dropdown::showYesNo("is_default", $this->fields['is_default']);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<th colspan='4'>".__('Contact configuration for Shinken WebUI', 'monitoring')."</th>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Contact has Shinken administrator rights', 'monitoring')."&nbsp;:</td>";
+      echo "<td align='center'>";
+      Dropdown::showYesNo('shinken_administrator', $this->fields['shinken_administrator']);
+      echo "</td>";
+      echo "<td>".__('Contact can submit Shinken commands', 'monitoring')."&nbsp;:</td>";
+      echo "<td align='center'>";
+      Dropdown::showYesNo('shinken_can_submit_commands', $this->fields['shinken_can_submit_commands']);
       echo "</td>";
       echo "</tr>";
 
