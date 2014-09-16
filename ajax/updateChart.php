@@ -90,6 +90,10 @@ if ($_POST['customdate'] == ''
 if (isset($_POST['components_id']) && !isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']])) {
    PluginMonitoringToolbox::loadPreferences($_POST['components_id']);
 }
+if (! isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']])) {
+   echo __('No data ...', 'monitoring');
+   exit;
+}
 $time_start = microtime(true);
 if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']][''])) {
    unset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']]['']);
