@@ -44,7 +44,7 @@ include ("../../../inc/includes.php");
 
 PluginMonitoringProfile::checkRight("config","r");
 
-Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
+Html::header(__('Monitoring - component', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "components");
 
 
