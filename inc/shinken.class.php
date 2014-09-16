@@ -205,7 +205,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
       // Only active commands and notification commands ...
       $a_list = $pmCommand->find("`is_active`='1'");
-      $a_listnotif = $pmNotificationcommand->find();
+      $a_listnotif = $pmNotificationcommand->find("`is_active`='1'");
       $a_list = array_merge($a_list, $a_listnotif);
       
       $reload_shinken_found = false;
@@ -243,7 +243,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          if ($data['command_name'] == "restart_shinken") {
             $restart_shinken_1_4_found = true;
          }
-         Toolbox::logInFile("pm-shinken", "- command: ".$a_commands[$i]['name']."\n");
+         Toolbox::logInFile("pm-shinken", "- command: ".$a_commands[$i]['command_name']." -> ".$a_commands[$i]['name']."\n");
          $i++;
       }
       if (! $restart_shinken_1_4_found) {
@@ -266,14 +266,14 @@ class PluginMonitoringShinken extends CommonDBTM {
       }
 
       // Event handlers
-      $a_list = $pmEventhandler->find();
+      $a_list = $pmEventhandler->find("`is_active`='1'");
       foreach ($a_list as $data) {
          if ($data['command_name'] != "bp_rule") {
             $a_commands[$i]['name'] = $data['name'];
             
             $a_commands[$i]['command_name'] = PluginMonitoringCommand::$command_prefix . $data['command_name'];
             $a_commands[$i]['command_line'] = $data['command_line'];
-            Toolbox::logInFile("pm-shinken", "- command: ".$a_commands[$i]['name']."\n");
+            Toolbox::logInFile("pm-shinken", "- command: ".$a_commands[$i]['command_name']." -> ".$a_commands[$i]['name']."\n");
             $i++;
          }
       }
@@ -960,15 +960,12 @@ class PluginMonitoringShinken extends CommonDBTM {
       // Toolbox::logInFile("pm-shinken", " Allowed entities:\n");
       $a_entities_list = array();
       foreach ($a_entities_allowed as $entity) {
-         // Toolbox::logInFile("pm-shinken", " - ".$entity."\n");
          $a_entities_list = getSonsOf("glpi_entities", $entity);
       }
-      // Toolbox::logInFile("pm-shinken", serialize($a_entities_list). "\n");
       $where = '';
       if (! isset($a_entities_allowed['-1'])) {
          $where = getEntitiesRestrictRequest("WHERE", "glpi_plugin_monitoring_services", '', $a_entities_list);
       }
-      // Toolbox::logInFile("pm-shinken", "where: $where\n");
 
       // --------------------------------------------------
       // "Normal" services ....
@@ -1352,9 +1349,9 @@ class PluginMonitoringShinken extends CommonDBTM {
                         } else {
                            $a_group[$gdata['id']] = $gdata['operator']." ".$hostname.",".preg_replace("/[^A-Za-z0-9\-_]/","",$item->getName());
                         }
-                        Toolbox::logInFile("pm-shinken", "   - SC group : ".$a_group[$gdata['id']]."\n");
                      }
                   }
+                  Toolbox::logInFile("pm-shinken", "   - SC group : ".$a_group[$gdata['id']]."\n");
                }
             }
             if (count($a_group) > 0) {
