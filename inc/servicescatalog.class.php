@@ -53,8 +53,8 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    *
    **/
    static function getTypeName($nb=0) {
-      return _n(__('Services catalog', 'monitoring'),__('Services catalogs', 'monitoring'),$nb);
-   }
+       return __('Services catalog', 'monitoring');  
+  }
 
 
 
