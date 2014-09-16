@@ -224,10 +224,10 @@ class PluginMonitoringUnavailability extends CommonDBTM {
 	  // No memory limit
       // ini_set("memory_limit", "512M");
 
-      $pmUnavailability = new PluginMonitoringUnavailability();
-      $pmUnavailability->runUnavailability();
+      $pmUnavailability = new PluginMonitoringUnavailability(); 
+      return $pmUnavailability->runUnavailability(); 
 
-      return true;
+//      return true;
    }
 
 
@@ -235,8 +235,8 @@ class PluginMonitoringUnavailability extends CommonDBTM {
    static function runUnavailability($services_id = 0, $start = 0, $limit = 100000) {
       global $DB;
 
-      $pmUnavailability = new PluginMonitoringUnavailability();
-      $pmServiceevent = new PluginMonitoringServiceevent();
+      $pmUnavailability = new PluginMonitoringUnavailability(); $pmServiceevent = new PluginMonitoringServiceevent();  
+      $nb = 0; 
 
       $where = '';
       if ($services_id != '0') {
@@ -263,6 +263,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
          $update = 0;
 
          while ($data2=$DB->fetch_array($result2)) {
+            $nb++;
             $pmUnavailability->checkState($data2['state'],
             $data2['date'],
             $data['id'],
@@ -285,8 +286,11 @@ class PluginMonitoringUnavailability extends CommonDBTM {
          }
       }
 
-      Toolbox::logInFile("pm-unavailability", "runUnavailability, end\n");
-   }
+      Toolbox::logInFile("pm-unavailability", "runUnavailability, end\n");  
+
+      return $nb;  
+
+   } 
 
    function getCurrentState($plugin_monitoring_services_id) {
       $this->plugin_monitoring_services_id = $plugin_monitoring_services_id;
