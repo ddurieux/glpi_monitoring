@@ -243,6 +243,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          if ($data['command_name'] == "restart_shinken") {
             $restart_shinken_1_4_found = true;
          }
+         Toolbox::logInFile("pm-shinken", "- command: ".$a_commands[$i]['name']."\n");
          $i++;
       }
       if (! $restart_shinken_1_4_found) {
@@ -272,6 +273,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             
             $a_commands[$i]['command_name'] = PluginMonitoringCommand::$command_prefix . $data['command_name'];
             $a_commands[$i]['command_line'] = $data['command_line'];
+            Toolbox::logInFile("pm-shinken", "- command: ".$a_commands[$i]['name']."\n");
             $i++;
          }
       }
@@ -1442,6 +1444,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       Toolbox::logInFile("pm-shinken", "Starting generateServicesCfg business rules templates ...\n");
 
       // Services catalogs templates
+      // TODO : correctly test and improve it !
       $a_listBA = $pmServicescatalog->find("`is_generic`='1'");
       foreach ($a_listBA as $dataBA) {
          Toolbox::logInFile("pm-shinken", "   - SC : ".$dataBA['id']."\n");
@@ -1708,7 +1711,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       }
 
       $query = "SELECT 
-         `glpi_entities`.`id` AS entityId, `glpi_entities`.`name` AS entityName
+         `glpi_entities`.`id` AS entityId, `glpi_entities`.`name` AS entityName, `glpi_entities`.`level` AS entityLevel
          FROM `glpi_entities` $where";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
@@ -1733,6 +1736,8 @@ Nagios configuration file :
          $a_hostgroups[$i]['hostgroup_name'] = $hostgroup_name;
          $a_hostgroups[$i]['alias'] = $data['entityName'];
 
+         $a_hostgroups[$i]['_GROUP_LEVEL'] = $data['entityLevel'];
+         
          $a_sons_list = getSonsOf("glpi_entities", $data['entityId']);
          if (count($a_sons_list) > 1) {
             $a_hostgroups[$i]['hostgroup_members'] = '';
@@ -1835,17 +1840,20 @@ Nagios configuration file :
 
       $user->getFromDB($users_id);
 
-      // Get template
+      // Get contact template
       $a_pmcontact = current($pmContact->find("`users_id`='".$users_id."'", "", 1));
       if (empty($a_pmcontact) OR
               (isset($a_pmcontact['plugin_monitoring_contacttemplates_id'])
               AND $a_pmcontact['plugin_monitoring_contacttemplates_id'] == '0')) {
+         // Use default template
          $a_pmcontact = current($pmContacttemplate->find("`is_default`='1'", "", 1));
       } else {
+         // Use contact defined template
          $a_pmcontact = current($pmContacttemplate->find("`id`='".$a_pmcontact['plugin_monitoring_contacttemplates_id']."'", "", 1));
       }
       $a_contacts[$i]['contact_name'] = $user->fields['name'];
       $a_contacts[$i]['alias'] = $user->getName();
+      Toolbox::logInFile("pm-shinken", "- contact ".$user->fields['name']." - ".$user->getName()."\n");
       
       if (!isset($a_pmcontact['host_notification_period'])) {
          $a_calendars = current($calendar->find("", "", 1));
@@ -1946,8 +1954,16 @@ Nagios configuration file :
       }
       $a_contacts[$i]['pager'] = $user->fields['phone'];
 
-      $a_contacts[$i]['is_admin'] = self::$shinkenParameters['webui']['contacts']['is_admin'];
-      $a_contacts[$i]['can_submit_commands'] = self::$shinkenParameters['webui']['contacts']['can_submit_commands'];
+      if (isset($a_pmcontact['shinken_administrator'])) {
+         $a_contacts[$i]['is_admin'] = $a_pmcontact['shinken_administrator'];
+      } else {
+         $a_contacts[$i]['is_admin'] = self::$shinkenParameters['webui']['contacts']['is_admin'];
+      }
+      if (isset($a_pmcontact['shinken_can_submit_commands'])) {
+         $a_contacts[$i]['can_submit_commands'] = $a_pmcontact['shinken_can_submit_commands'];
+      } else {
+         $a_contacts[$i]['can_submit_commands'] = self::$shinkenParameters['webui']['contacts']['can_submit_commands'];
+      }
       $a_contacts[$i]['password'] = self::$shinkenParameters['webui']['contacts']['password'];
       
       /*

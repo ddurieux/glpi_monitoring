@@ -567,10 +567,12 @@ function plugin_monitoring_registerMethods() {
 **/
 function plugin_monitoring_getDropdown(){
 
-   return array('PluginMonitoringServicescatalog'     => __('Services catalogs', 'monitoring'),
+   return array(
+      'PluginMonitoringServicescatalog'     => __('Services catalogs', 'monitoring'),
 		'PluginMonitoringCheck'               => __('Check definitions', 'monitoring'),
 		'PluginMonitoringCommand'             => __('Commands', 'monitoring'),
 		'PluginMonitoringComponentscatalog'   => __('Components catalogs', 'monitoring'),
+		'PluginMonitoringContacttemplate'     => __('Contact templates', 'monitoring'),
 		'PluginMonitoringComponent'           => __('Components', 'monitoring'));
 }
 
