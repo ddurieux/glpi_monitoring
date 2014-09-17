@@ -195,6 +195,7 @@ if (count($tags) > 1) {
       }
    }
 } else {
+   $args['tag'] = $args['tags'];
    $configfiles = call_glpi($args);
    foreach ($configfiles as $filename=>$filecontent) {
       $filename = "plugins/monitoring/scripts/".$filename;
