@@ -1783,14 +1783,29 @@ Nagios configuration file :
 
 
 
-   function generateContactsCfg($file=0) {
+   function generateContactsCfg($file=0, $tag='') {
       global $DB;
 
-      Toolbox::logInFile("pm-shinken", "Starting generateContactsCfg ...\n");
+      $pmEntity      = new PluginMonitoringEntity();
+      
+      Toolbox::logInFile("pm-shinken", "Starting generateContactsCfg ($tag) ...\n");
+
+      $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
+      $a_entities_list = array();
+      foreach ($a_entities_allowed as $entity) {
+         $a_entities_list = getSonsOf("glpi_entities", $entity);
+      }
+      $where = '';
+      if (! isset($a_entities_allowed['-1'])) {
+         $where = getEntitiesRestrictRequest("WHERE", "glpi_plugin_monitoring_contacts_items", '', $a_entities_list);
+      }
+      
+      
       $a_contacts = array();
       $i=0;
 
-      $query = "SELECT * FROM `glpi_plugin_monitoring_contacts_items`";
+      $query = "SELECT * FROM `glpi_plugin_monitoring_contacts_items` $where";
+      // Toolbox::logInFile("pm-shinken", "- Contacts query: $query\n");
       $result = $DB->query($query);
       $a_users_used = array();
       while ($data=$DB->fetch_array($result)) {
