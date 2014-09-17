@@ -1733,6 +1733,7 @@ Nagios configuration file :
          $a_hostgroups[$i]['hostgroup_name'] = $hostgroup_name;
          $a_hostgroups[$i]['alias'] = $data['entityName'];
 
+         // Custom variable are ignored for hostgroups ... simple information for debug purpose !
          $a_hostgroups[$i]['_GROUP_LEVEL'] = $data['entityLevel'];
          
          $a_sons_list = getSonsOf("glpi_entities", $data['entityId']);
@@ -1741,8 +1742,12 @@ Nagios configuration file :
             $first_member = true;
             foreach ($a_sons_list as $son_entity) {
                if ($son_entity == $data['entityId']) continue;
+               if (! in_array ($son_entity, $a_entities_list)) continue;
+               
                $pmEntity = new Entity();
                $pmEntity->getFromDB($son_entity);
+			   // Only immediate sub level are considered as hostgroup members
+               if ($data['entityLevel']+1 != $pmEntity->fields['level']) continue;
 
                $hostgroup_name = strtolower(preg_replace("/[^A-Za-z0-9\-_ ]/","",$pmEntity->getField('name')));
                $hostgroup_name = preg_replace("/[ ]/","_",$hostgroup_name);
