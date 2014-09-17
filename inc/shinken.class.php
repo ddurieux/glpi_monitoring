@@ -160,8 +160,10 @@ class PluginMonitoringShinken extends CommonDBTM {
          ),
          // Contacts role
          'contacts' => array(
+            // Used if not defined in contact template
             'is_admin'              => '1',
             'can_submit_commands'   => '0',
+            // Use this password is user has an empty password
             'password'              => 'ipmfrance'
          ),
       ),
@@ -1795,6 +1797,8 @@ Nagios configuration file :
       foreach ($a_entities_allowed as $entity) {
          $a_entities_list = getSonsOf("glpi_entities", $entity);
       }
+	  // Always add root entity
+      $a_entities_list[] = '0';
       $where = '';
       if (! isset($a_entities_allowed['-1'])) {
          $where = getEntitiesRestrictRequest("WHERE", "glpi_plugin_monitoring_contacts_items", '', $a_entities_list);
@@ -1849,11 +1853,11 @@ Nagios configuration file :
 
    function _addContactUser($a_contacts, $users_id, $i) {
 
-      $pmContact             = new PluginMonitoringContact();
-      $pmNotificationcommand = new PluginMonitoringNotificationcommand();
-      $pmContacttemplate = new PluginMonitoringContacttemplate();
-      $user     = new User();
-      $calendar = new Calendar();
+      $pmContact              = new PluginMonitoringContact();
+      $pmNotificationcommand  = new PluginMonitoringNotificationcommand();
+      $pmContacttemplate      = new PluginMonitoringContacttemplate();
+      $user                   = new User();
+      $calendar               = new Calendar();
 
       $user->getFromDB($users_id);
 
@@ -1871,6 +1875,7 @@ Nagios configuration file :
       $a_contacts[$i]['contact_name'] = $user->fields['name'];
       $a_contacts[$i]['alias'] = $user->getName();
       Toolbox::logInFile("pm-shinken", "- contact ".$user->fields['name']." - ".$user->getName()."\n");
+      // Toolbox::logInFile("pm-contacts", "- contact ".serialize($user->fields)."\n");
       
       if (!isset($a_pmcontact['host_notification_period'])) {
          $a_calendars = current($calendar->find("", "", 1));
@@ -1981,7 +1986,11 @@ Nagios configuration file :
       } else {
          $a_contacts[$i]['can_submit_commands'] = self::$shinkenParameters['webui']['contacts']['can_submit_commands'];
       }
-      $a_contacts[$i]['password'] = self::$shinkenParameters['webui']['contacts']['password'];
+      if (empty($user->fields['password'])) {
+         $a_contacts[$i]['password'] = self::$shinkenParameters['webui']['contacts']['password'];
+      } else {
+         $a_contacts[$i]['password'] = $user->fields['password'];
+      }
       
       /*
       TODO:
