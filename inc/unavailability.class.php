@@ -75,7 +75,9 @@ class PluginMonitoringUnavailability extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       if ($item->getType() == 'Computer'
               || $item->getType() == 'NetworkEquipment'){
-         return __('Unavailabilities', 'monitoring');
+         if (self::canView()) {
+            return __('Unavailabilities', 'monitoring');
+         }
       }
 
       return '';
