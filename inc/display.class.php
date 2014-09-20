@@ -1233,7 +1233,8 @@ echo "
       echo "<td>";
       $entity = new Entity();
       $entity->getFromDB($data["entities_id"]);
-      echo $entity = $entity->getName();
+      // echo $entity = $entity->getName();
+      echo $data["entity_name"];
       // echo "&nbsp;".$entity->getComments();
       echo "</td>";
 
