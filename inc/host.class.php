@@ -56,6 +56,9 @@ class PluginMonitoringHost extends CommonDBTM {
       return Session::haveRight('computer', 'w');
    }
 
+   static function canView() {
+      return PluginMonitoringProfile::haveRight("homepage_hosts_status", 'r');
+   }
 
    function getSearchOptions() {
       $tab = array();
@@ -164,11 +167,13 @@ class PluginMonitoringHost extends CommonDBTM {
          }
          $array_ret = array();
          if ($item->getID() > 0) {
-            $array_ret[0] = self::createTabEntry(
-                    __('Resources', 'monitoring'),
-                    self::countForItem($item));
-            $array_ret[1] = self::createTabEntry(
-                    __('Resources (graph)', 'monitoring'));
+            if (self::canView()) {
+               $array_ret[0] = self::createTabEntry(
+                       __('Resources', 'monitoring'),
+                       self::countForItem($item));
+               $array_ret[1] = self::createTabEntry(
+                       __('Resources (graph)', 'monitoring'));
+            }
          }
          return $array_ret;
       }
@@ -216,6 +221,7 @@ class PluginMonitoringHost extends CommonDBTM {
             $pmHostconfig = new PluginMonitoringHostconfig();
             $pmHostconfig->showForm($item->getID(), get_class($item));
          } else if ($tabnum == 1) {
+            echo "Test de Fred";
             $pmService = new PluginMonitoringService();
             $pmService->showGraphsByHost(get_class($item), $item->fields['id']);
          }

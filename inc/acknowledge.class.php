@@ -113,8 +113,10 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
     * @return varchar name of the tab(s) to display
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      if ($item->getType() == 'Computer'){
-         return __('Acknowledges', 'monitoring');
+      if ($item->getType()=='Computer') {
+         if (self::canView()) {
+            return __('Acknowledges', 'monitoring');
+         }
       }
 
       return '';
