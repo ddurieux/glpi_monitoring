@@ -29,14 +29,14 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author 
-   @comment   
+   @co-author
+   @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
    @since     2011
- 
+
    ------------------------------------------------------------------------
  */
 
@@ -83,19 +83,19 @@ echo '+ Use command line parameter -t "tag" to set Shinken tag: '. $tag ."\n";
 */
 function login() {
    global $glpi_user, $glpi_pass, $ws_user, $ws_pass;
-   
+
     $args['method']          = "glpi.doLogin";
     $args['login_name']      = $glpi_user;
     $args['login_password']  = $glpi_pass;
-    
+
     if (isset($ws_user)){
        $args['username'] = $ws_user;
     }
-    
+
     if (isset($ws_pass)){
        $args['password'] = $ws_pass;
     }
-    
+
     if($result = call_glpi($args)) {
        return $result['session'];
     }
@@ -106,7 +106,7 @@ function login() {
 */
 function logout() {
     $args['method'] = "glpi.doLogout";
-    
+
     if($result = call_glpi($args)) {
        return true;
     }
@@ -131,7 +131,7 @@ function call_glpi($args) {
    if (isset($deflate)) {
       $header .= "\nAccept-Encoding: deflate";
    }
-   
+
 
    $request = xmlrpc_encode_request($args['method'], $args);
    $context = stream_context_create(array('http' => array('method'  => "POST",
@@ -150,13 +150,13 @@ function call_glpi($args) {
       $lend=strlen($file);
       echo "+ Uncompressed response : $lend (".round(100.0*$lenc/$lend)."%)\n";
    }
-   
+
    $response = xmlrpc_decode($file);
    if (!is_array($response)) {
       echo $file;
       die ("+ Bad response\n");
    }
-   
+
    if (xmlrpc_is_fault($response)) {
        echo("xmlrpc error(".$response['faultCode']."): ".$response['faultString']."\n");
    } else {
