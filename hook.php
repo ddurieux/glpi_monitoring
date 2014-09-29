@@ -67,9 +67,33 @@ function plugin_monitoring_getAddSearchOptions($itemtype) {
       $sopt[9100]['datatype']       = 'number';
       $sopt[9100]['width']          = 64;
       $sopt[9100]['name']           = __('Processor number', 'monitoring');
-      $sopt[9100]['massiveaction'] = false;
-      $sopt[9100]['joinparams']    = array('jointype' => 'child');
+      $sopt[9100]['massiveaction']  = false;
+      $sopt[9100]['joinparams']     = array('jointype' => 'child');
    }
+   
+   if ($itemtype == 'Entity') {
+      // Shinken tag for the entity
+      $sopt[9101]['table']          ='glpi_plugin_monitoring_entities';
+      $sopt[9101]['field']          ='tag';
+      $sopt[9100]['datatype']       = 'number';
+      $sopt[9101]['name']           =__('Entity tag', 'monitoring');
+      $sopt[9101]['joinparams']     = array('jointype' => 'child');
+      $sopt[9101]['massiveaction']  = false;
+   }
+
+   if ($itemtype == 'User') {
+      // Contact template for user
+      $sopt[9102]['table']          ='glpi_plugin_monitoring_contacttemplates';
+      $sopt[9102]['field']          ='name';
+      $sopt[9102]['datatype']       = 'itemtype';
+      $sopt[9102]['name']           =__('User template', 'monitoring');
+      $sopt[9102]['joinparams']    = array('beforejoin'
+                                         => array('table'      => 'glpi_plugin_monitoring_contacts',
+                                                  'joinparams' => array('jointype' => 'child')));
+
+      $sopt[9102]['massiveaction']  = false;
+   }
+
    return $sopt;
 }
 
@@ -567,10 +591,12 @@ function plugin_monitoring_registerMethods() {
 **/
 function plugin_monitoring_getDropdown(){
 
-   return array('PluginMonitoringServicescatalog'     => __('Services catalogs', 'monitoring'),
+   return array(
+      'PluginMonitoringServicescatalog'     => __('Services catalogs', 'monitoring'),
 		'PluginMonitoringCheck'               => __('Check definitions', 'monitoring'),
 		'PluginMonitoringCommand'             => __('Commands', 'monitoring'),
 		'PluginMonitoringComponentscatalog'   => __('Components catalogs', 'monitoring'),
+		'PluginMonitoringContacttemplate'     => __('Contact templates', 'monitoring'),
 		'PluginMonitoringComponent'           => __('Components', 'monitoring'));
 }
 

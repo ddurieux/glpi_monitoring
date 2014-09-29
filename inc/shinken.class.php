@@ -160,8 +160,10 @@ class PluginMonitoringShinken extends CommonDBTM {
          ),
          // Contacts role
          'contacts' => array(
+            // Used if not defined in contact template
             'is_admin'              => '1',
             'can_submit_commands'   => '0',
+            // Use this password is user has an empty password
             'password'              => 'ipmfrance'
          ),
       ),
@@ -205,7 +207,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
       // Only active commands and notification commands ...
       $a_list = $pmCommand->find("`is_active`='1'");
-      $a_listnotif = $pmNotificationcommand->find();
+      $a_listnotif = $pmNotificationcommand->find("`is_active`='1'");
       $a_list = array_merge($a_list, $a_listnotif);
       
       $reload_shinken_found = false;
@@ -243,6 +245,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          if ($data['command_name'] == "restart_shinken") {
             $restart_shinken_1_4_found = true;
          }
+         Toolbox::logInFile("pm-shinken", "- command: ".$a_commands[$i]['command_name']." -> ".$a_commands[$i]['name']."\n");
          $i++;
       }
       if (! $restart_shinken_1_4_found) {
@@ -265,13 +268,14 @@ class PluginMonitoringShinken extends CommonDBTM {
       }
 
       // Event handlers
-      $a_list = $pmEventhandler->find();
+      $a_list = $pmEventhandler->find("`is_active`='1'");
       foreach ($a_list as $data) {
          if ($data['command_name'] != "bp_rule") {
             $a_commands[$i]['name'] = $data['name'];
             
             $a_commands[$i]['command_name'] = PluginMonitoringCommand::$command_prefix . $data['command_name'];
             $a_commands[$i]['command_line'] = $data['command_line'];
+            Toolbox::logInFile("pm-shinken", "- command: ".$a_commands[$i]['command_name']." -> ".$a_commands[$i]['name']."\n");
             $i++;
          }
       }
@@ -958,15 +962,12 @@ class PluginMonitoringShinken extends CommonDBTM {
       // Toolbox::logInFile("pm-shinken", " Allowed entities:\n");
       $a_entities_list = array();
       foreach ($a_entities_allowed as $entity) {
-         // Toolbox::logInFile("pm-shinken", " - ".$entity."\n");
          $a_entities_list = getSonsOf("glpi_entities", $entity);
       }
-      // Toolbox::logInFile("pm-shinken", serialize($a_entities_list). "\n");
       $where = '';
       if (! isset($a_entities_allowed['-1'])) {
          $where = getEntitiesRestrictRequest("WHERE", "glpi_plugin_monitoring_services", '', $a_entities_list);
       }
-      // Toolbox::logInFile("pm-shinken", "where: $where\n");
 
       // --------------------------------------------------
       // "Normal" services ....
@@ -1350,9 +1351,9 @@ class PluginMonitoringShinken extends CommonDBTM {
                         } else {
                            $a_group[$gdata['id']] = $gdata['operator']." ".$hostname.",".preg_replace("/[^A-Za-z0-9\-_]/","",$item->getName());
                         }
-                        Toolbox::logInFile("pm-shinken", "   - SC group : ".$a_group[$gdata['id']]."\n");
                      }
                   }
+                  Toolbox::logInFile("pm-shinken", "   - SC group : ".$a_group[$gdata['id']]."\n");
                }
             }
             if (count($a_group) > 0) {
@@ -1442,6 +1443,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       Toolbox::logInFile("pm-shinken", "Starting generateServicesCfg business rules templates ...\n");
 
       // Services catalogs templates
+      // TODO : correctly test and improve it !
       $a_listBA = $pmServicescatalog->find("`is_generic`='1'");
       foreach ($a_listBA as $dataBA) {
          Toolbox::logInFile("pm-shinken", "   - SC : ".$dataBA['id']."\n");
@@ -1708,7 +1710,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       }
 
       $query = "SELECT 
-         `glpi_entities`.`id` AS entityId, `glpi_entities`.`name` AS entityName
+         `glpi_entities`.`id` AS entityId, `glpi_entities`.`name` AS entityName, `glpi_entities`.`level` AS entityLevel
          FROM `glpi_entities` $where";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
@@ -1733,14 +1735,21 @@ Nagios configuration file :
          $a_hostgroups[$i]['hostgroup_name'] = $hostgroup_name;
          $a_hostgroups[$i]['alias'] = $data['entityName'];
 
+         // Custom variable are ignored for hostgroups ... simple information for debug purpose !
+         $a_hostgroups[$i]['_GROUP_LEVEL'] = $data['entityLevel'];
+         
          $a_sons_list = getSonsOf("glpi_entities", $data['entityId']);
          if (count($a_sons_list) > 1) {
             $a_hostgroups[$i]['hostgroup_members'] = '';
             $first_member = true;
             foreach ($a_sons_list as $son_entity) {
                if ($son_entity == $data['entityId']) continue;
+               if (! in_array ($son_entity, $a_entities_list)) continue;
+               
                $pmEntity = new Entity();
                $pmEntity->getFromDB($son_entity);
+			   // Only immediate sub level are considered as hostgroup members
+               if ($data['entityLevel']+1 != $pmEntity->fields['level']) continue;
 
                $hostgroup_name = strtolower(preg_replace("/[^A-Za-z0-9\-_ ]/","",$pmEntity->getField('name')));
                $hostgroup_name = preg_replace("/[ ]/","_",$hostgroup_name);
@@ -1776,14 +1785,31 @@ Nagios configuration file :
 
 
 
-   function generateContactsCfg($file=0) {
+   function generateContactsCfg($file=0, $tag='') {
       global $DB;
 
-      Toolbox::logInFile("pm-shinken", "Starting generateContactsCfg ...\n");
+      $pmEntity      = new PluginMonitoringEntity();
+      
+      Toolbox::logInFile("pm-shinken", "Starting generateContactsCfg ($tag) ...\n");
+
+      $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
+      $a_entities_list = array();
+      foreach ($a_entities_allowed as $entity) {
+         $a_entities_list = getSonsOf("glpi_entities", $entity);
+      }
+	  // Always add root entity
+      $a_entities_list[] = '0';
+      $where = '';
+      if (! isset($a_entities_allowed['-1'])) {
+         $where = getEntitiesRestrictRequest("WHERE", "glpi_plugin_monitoring_contacts_items", '', $a_entities_list);
+      }
+      
+      
       $a_contacts = array();
       $i=0;
 
-      $query = "SELECT * FROM `glpi_plugin_monitoring_contacts_items`";
+      $query = "SELECT * FROM `glpi_plugin_monitoring_contacts_items` $where";
+      // Toolbox::logInFile("pm-shinken", "- Contacts query: $query\n");
       $result = $DB->query($query);
       $a_users_used = array();
       while ($data=$DB->fetch_array($result)) {
@@ -1827,25 +1853,29 @@ Nagios configuration file :
 
    function _addContactUser($a_contacts, $users_id, $i) {
 
-      $pmContact             = new PluginMonitoringContact();
-      $pmNotificationcommand = new PluginMonitoringNotificationcommand();
-      $pmContacttemplate = new PluginMonitoringContacttemplate();
-      $user     = new User();
-      $calendar = new Calendar();
+      $pmContact              = new PluginMonitoringContact();
+      $pmNotificationcommand  = new PluginMonitoringNotificationcommand();
+      $pmContacttemplate      = new PluginMonitoringContacttemplate();
+      $user                   = new User();
+      $calendar               = new Calendar();
 
       $user->getFromDB($users_id);
 
-      // Get template
+      // Get contact template
       $a_pmcontact = current($pmContact->find("`users_id`='".$users_id."'", "", 1));
       if (empty($a_pmcontact) OR
               (isset($a_pmcontact['plugin_monitoring_contacttemplates_id'])
               AND $a_pmcontact['plugin_monitoring_contacttemplates_id'] == '0')) {
+         // Use default template
          $a_pmcontact = current($pmContacttemplate->find("`is_default`='1'", "", 1));
       } else {
+         // Use contact defined template
          $a_pmcontact = current($pmContacttemplate->find("`id`='".$a_pmcontact['plugin_monitoring_contacttemplates_id']."'", "", 1));
       }
       $a_contacts[$i]['contact_name'] = $user->fields['name'];
       $a_contacts[$i]['alias'] = $user->getName();
+      Toolbox::logInFile("pm-shinken", "- contact ".$user->fields['name']." - ".$user->getName()."\n");
+      // Toolbox::logInFile("pm-contacts", "- contact ".serialize($user->fields)."\n");
       
       if (!isset($a_pmcontact['host_notification_period'])) {
          $a_calendars = current($calendar->find("", "", 1));
@@ -1946,9 +1976,21 @@ Nagios configuration file :
       }
       $a_contacts[$i]['pager'] = $user->fields['phone'];
 
-      $a_contacts[$i]['is_admin'] = self::$shinkenParameters['webui']['contacts']['is_admin'];
-      $a_contacts[$i]['can_submit_commands'] = self::$shinkenParameters['webui']['contacts']['can_submit_commands'];
-      $a_contacts[$i]['password'] = self::$shinkenParameters['webui']['contacts']['password'];
+      if (isset($a_pmcontact['shinken_administrator'])) {
+         $a_contacts[$i]['is_admin'] = $a_pmcontact['shinken_administrator'];
+      } else {
+         $a_contacts[$i]['is_admin'] = self::$shinkenParameters['webui']['contacts']['is_admin'];
+      }
+      if (isset($a_pmcontact['shinken_can_submit_commands'])) {
+         $a_contacts[$i]['can_submit_commands'] = $a_pmcontact['shinken_can_submit_commands'];
+      } else {
+         $a_contacts[$i]['can_submit_commands'] = self::$shinkenParameters['webui']['contacts']['can_submit_commands'];
+      }
+      if (empty($user->fields['password'])) {
+         $a_contacts[$i]['password'] = self::$shinkenParameters['webui']['contacts']['password'];
+      } else {
+         $a_contacts[$i]['password'] = $user->fields['password'];
+      }
       
       /*
       TODO:

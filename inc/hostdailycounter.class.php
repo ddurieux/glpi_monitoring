@@ -256,7 +256,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       if ($item->getType() == 'Computer'){
-         return __('Daily counters', 'monitoring');
+         if (self::canView()) {
+            return __('Daily counters', 'monitoring');
+         }
       }
 
       return '';

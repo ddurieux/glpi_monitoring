@@ -226,6 +226,19 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
 
 
 
+   function prepareInputForUpdate($input) {
+
+      if (isset($input["notification_interval_hours"])
+              && isset($input['notification_interval_minutes'])) {
+         $input['notification_interval'] = $input["notification_interval_hours"]*60 + $input['notification_interval_minutes'];
+         unset($input["notification_interval_hours"]);
+         unset($input['notification_interval_minutes']);
+      }
+
+      return $input;
+   }
+
+   
    function displaySpecificTypeField($ID, $field=array()) {
 
 
@@ -236,11 +249,28 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             } else {
                $this->fields['notification_interval'] = 30;
             }
-            Dropdown::showNumber('notification_interval', array(
-                'value' => $this->fields['notification_interval'],
-                'min'   => 1,
-                'max'   => 1000)
+            $hours = (int)($this->fields['notification_interval'] / 60);
+            $minutes = (int)($this->fields['notification_interval'] % 60);
+            Dropdown::showNumber('notification_interval_hours', array(
+                'value' => $hours,
+                'min'   => 0,
+                'max'   => 168,
+                'step'  => 1)
             );
+            echo "&nbsp;".__('hours', 'monitoring');
+            Dropdown::showNumber('notification_interval_minutes', array(
+                'value' => $minutes,
+                'min'   => 0,
+                'max'   => 59,
+                'step'  => 1)
+            );
+            echo "&nbsp;".__('minutes', 'monitoring');
+            // Dropdown::showNumber('notification_interval', array(
+                // 'value' => $this->fields['notification_interval'],
+                // 'min'   => 0,
+                // 'max'   => 2880,
+                // 'step'  => 10)
+            // );
             break;
       }
    }

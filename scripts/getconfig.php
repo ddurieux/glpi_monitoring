@@ -70,11 +70,11 @@ $options = getopt("v::t:");
 $verbose = isset($options['v']) ? true : false;
 echo '+ Use command line parameter -v to set verbose mode: '. $verbose ."\n";
 
-$tag = '';
+$tags = '';
 if (isset($options['t'])) {
-   $tag = $options['t'];
+   $tags = $options['t'];
 }
-echo '+ Use command line parameter -t "tag" to set Shinken tag: '. $tag ."\n";
+echo '+ Use command line parameter -t "tags" to set Shinken tags: '. $tags ."\n";
 
 
 
@@ -174,19 +174,39 @@ $session = login();
 $args['session'] = $session;
 $args['method'] = $method;
 $args['file'] = $file;
-$args['tag'] = $tag;
+$args['tags'] = $tags;
 
-$configfiles = call_glpi($args);
-
-foreach ($configfiles as $filename=>$filecontent) {
-   $filename = "plugins/monitoring/scripts/".$filename;
-   $handle = fopen($filename,"w+");
-   if (is_writable($filename)) {
-       if (fwrite($handle, $filecontent) === FALSE) {
-         echo "Impossible to write file ".$filename."\n";
-       }
-       echo "File ".$filename." writen successful\n";
-       fclose($handle);
+$tags = explode(',', $args['tags']);
+if (count($tags) > 1) {
+   foreach ($tags as $tag) {
+      $tag = trim($tag);
+      $args['tag'] = $tag;
+      $configfiles = call_glpi($args);
+      foreach ($configfiles as $filename=>$filecontent) {
+         $filename = "plugins/monitoring/scripts/".$tag."-".$filename;
+         $handle = fopen($filename,"w+");
+         if (is_writable($filename)) {
+             if (fwrite($handle, $filecontent) === FALSE) {
+               echo "Impossible to write file ".$filename."\n";
+             }
+             echo "File ".$filename." writen successful\n";
+             fclose($handle);
+         }
+      }
+   }
+} else {
+   $args['tag'] = $args['tags'];
+   $configfiles = call_glpi($args);
+   foreach ($configfiles as $filename=>$filecontent) {
+      $filename = "plugins/monitoring/scripts/".$filename;
+      $handle = fopen($filename,"w+");
+      if (is_writable($filename)) {
+          if (fwrite($handle, $filecontent) === FALSE) {
+            echo "Impossible to write file ".$filename."\n";
+          }
+          echo "File ".$filename." writen successful\n";
+          fclose($handle);
+      }
    }
 }
 

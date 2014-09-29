@@ -892,6 +892,14 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'is_default',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->changeField($newTable,
+                                 'shinken_administrator',
+                                 'shinken_administrator',
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable,
+                                 'shinken_can_submit_commands',
+                                 'shinken_can_submit_commands',
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable,
                                  'host_notifications_enabled',
                                  'host_notifications_enabled',
                                  "tinyint(1) NOT NULL DEFAULT '1'");
@@ -969,6 +977,12 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
          $migration->addField($newTable,
                                  'is_default',
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                                 'shinken_administrator',
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                                 'shinken_can_submit_commands',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
                                  'host_notifications_enabled',

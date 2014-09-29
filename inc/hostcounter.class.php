@@ -89,7 +89,9 @@ class PluginMonitoringHostCounter extends CommonDBTM {
     */
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       if ($item->getType() == 'Computer'){
-         return __('Counter updates', 'monitoring');
+         if (self::canView()) {
+            return __('Counter updates', 'monitoring');
+         }
       }
 
       return '';

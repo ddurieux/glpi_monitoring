@@ -40,7 +40,7 @@
    ------------------------------------------------------------------------
  */
 
-define ("PLUGIN_MONITORING_VERSION","0.84+1.3j");
+define ("PLUGIN_MONITORING_VERSION","0.84+2.0");
 
 define('_MPDF_TEMP_PATH', GLPI_PLUGIN_DOC_DIR.'/monitoring/pdf/');
 
@@ -110,6 +110,9 @@ function plugin_init_monitoring() {
                  AND isset($_SESSION['glpi_plugin_monitoring_profile'])) {
 
             $PLUGIN_HOOKS['menu_entry']['monitoring'] = true;
+
+            // No menu in helpdesk interface ...
+            $PLUGIN_HOOKS["helpdesk_menu_entry"]['monitoring'] = false;
          }
 
          $PLUGIN_HOOKS['config_page']['monitoring'] = 'front/config.form.php';
