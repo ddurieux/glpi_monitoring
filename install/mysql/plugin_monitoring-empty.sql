@@ -757,6 +757,18 @@ CREATE TABLE `glpi_plugin_monitoring_unavailabilities` (
 
 
 
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_unavailabilitystates`;
+
+CREATE TABLE `glpi_plugin_monitoring_unavailabilitystates` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
+   `plugin_monitoring_services_id` int(11) NOT NULL DEFAULT '0',
+
+  PRIMARY KEY (`id`),
+  KEY `plugin_monitoring_services_id` (`plugin_monitoring_services_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_unavaibilities`;
 
 CREATE TABLE `glpi_plugin_monitoring_unavaibilities` (

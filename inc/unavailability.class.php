@@ -231,62 +231,84 @@ class PluginMonitoringUnavailability extends CommonDBTM {
    }
 
 
+
    // Default is to limit 100.000 services !
    static function runUnavailability($services_id = 0, $start = 0, $limit = 100000) {
       global $DB;
 
-      $pmUnavailability = new PluginMonitoringUnavailability();
-      $pmServiceevent = new PluginMonitoringServiceevent();
+      $limit = 10000;
+      $pmUnavailability      = new PluginMonitoringUnavailability();
+      $pmUnavailabilityState = new PluginMonitoringUnavailabilityState();
+      $pmServiceevent        = new PluginMonitoringServiceevent();
 
       $where = '';
       if ($services_id != '0') {
       $where = " WHERE `id`='".$services_id."' ";
       }
 
-      $query = "SELECT `id` FROM `glpi_plugin_monitoring_services` ".$where." LIMIT $start, $limit";
-      Toolbox::logInFile("pm-unavailability", "runUnavailability, start query : $query\n");
+      $query = "SELECT `id` FROM `glpi_plugin_monitoring_services` ".$where." ";
       $result = $DB->query($query);
+//      $nb = 0;
+//      $tttime = 0;
 
       while ($data=$DB->fetch_array($result)) {
          $pmUnavailability->getCurrentState($data['id']);
 
-         $query2 = "SELECT `id`,`state`,`date`,`event` FROM `glpi_plugin_monitoring_serviceevents`
-                     WHERE `unavailability`='0'
-                     AND `state_type`='HARD'
-                     AND `plugin_monitoring_services_id`='".$data['id']."'
-                     ORDER BY `date`";
-         // Toolbox::logInFile("pm-unavailability", "runUnavailability, query2 : $query2\n");
-         $result2 = $DB->query($query2);
+//         Toolbox::logInFile('UNAV', "======= ".$data['id']." =======\n");
+         $serviceevents_id = $pmUnavailabilityState->getLastID($data['id']);
+//         $loop = 0;
+         while (true) {
+//            Toolbox::logInFile('UNAV', "start (loop ".$loop.")\n");
+//   $time = microtime();
+//   $time = explode(' ', $time);
+//   $time = $time[1] + $time[0];
+//   $start = $time;
+            $query2 = "SELECT `id`,`state`,`date`,`event`
+               FROM `glpi_plugin_monitoring_serviceevents`
+               USE INDEX (unavailability)
+                     WHERE `unavailability` IN (0, 1)
+                        AND `state_type`='HARD'
+                        AND `plugin_monitoring_services_id`='".$data['id']."'
+                        ORDER BY `id`
+                        LIMIT $serviceevents_id, $limit";
+            $result2 = $DB->query($query2);
+//Toolbox::logInFile('UNAV', "LIMIT $serviceevents_id, $limit (".$DB->numrows($result2).")\n");
 
-         $query3 = "UPDATE `glpi_plugin_monitoring_serviceevents` SET `unavailability` = '1' WHERE `id` IN (";
-         $first = 1;
-         $update = 0;
-
-         while ($data2=$DB->fetch_array($result2)) {
-            $pmUnavailability->checkState($data2['state'],
-            $data2['date'],
-            $data['id'],
-            $DB->escape($data2['event']));
-
-            if ($data2['id'] != "") {
-               $update = 1;
-            }
-            if (!$first) {
-               $query3 .= ", ";
+            $stop = False;
+            if ($DB->numrows($result2) < $limit) {
+               $stop = True;
+  //             $nb += $DB->numrows($result2);
+               $serviceevents_id += $DB->numrows($result2);
             } else {
-               $first = 0;
+               $serviceevents_id += $limit;
+//               $nb += $limit;
             }
-            $query3 .= $data2['id'];
-         }
-         $query3 .= ")";
-         if ($update) {
-            // Toolbox::logInFile("pm-unavailability", "runUnavailability, query3 : $query3\n");
-            $result3 = $DB->query($query3);
+
+            while ($data2=$DB->fetch_array($result2)) {
+               $pmUnavailability->checkState($data2['state'],
+                                             $data2['date'],
+                                             $data['id'],
+                                             $DB->escape($data2['event']));
+
+            }
+            $pmUnavailabilityState->setLastID($data['id'], $serviceevents_id);
+
+//   $time = microtime();
+//   $time = explode(' ', $time);
+//   $time = $time[1] + $time[0];
+//   $finish = $time;
+//   $total_time = round(($finish - $start), 4);
+//   $tttime += $total_time;
+//            Toolbox::logInFile('UNAV', "end (".$total_time." seconds - ".$nb." / ".$tttime.")\n");
+//            $loop++;
+            if ($stop) {
+               break;
+            }
          }
       }
-
-      Toolbox::logInFile("pm-unavailability", "runUnavailability, end\n");
    }
+
+
 
    function getCurrentState($plugin_monitoring_services_id) {
       $this->plugin_monitoring_services_id = $plugin_monitoring_services_id;
