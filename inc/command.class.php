@@ -46,10 +46,101 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringCommand extends CommonDBTM {
 
+/*
+   Shinken 2.0 defines:
+      # Nagios legacy macros
+      $USER1$=$NAGIOSPLUGINSDIR$
+      $NAGIOSPLUGINSDIR$=/usr/lib/nagios/plugins
+
+      #-- Location of the plugins for Shinken
+      $PLUGINSDIR$=/var/lib/shinken/libexec
+ */
+
+   // Prefix to use when commands are built for Shinken configuration
+   public static $command_prefix = 'pm-';
 
    function initCommands() {
       global $DB;
 
+      // Shinken 1.4
+      // - restart/reload Shinken
+      $input = array();
+      $input['name'] = "Shinken (1.4) reload";
+      // Default is not active ...
+      $input['is_active'] = "0";
+      $input['command_name'] = "restart_shinken";
+      $input['command_line'] = $DB->escape("nohup sh -c '/usr/local/shinken/bin/stop_arbiter.sh && sleep 3 && /usr/local/shinken/bin/launch_arbiter.sh'  > /dev/null 2>&1 &");
+      $this->add($input);
+
+      // Shinken 2.0
+      // - restart/reload Shinken
+      // - same command_name as default Shinken's
+      $input = array();
+      $input['name'] = "Shinken (2.0) restart";
+      $input['command_name'] = "restart-shinken";
+      $input['command_line'] = $DB->escape("nohup sh -c '/etc/init.d/shinken restart'  > /dev/null 2>&1 &");
+      $this->add($input);
+      
+      $input = array();
+      $input['name'] = "Shinken (2.0) reload";
+      $input['command_name'] = "reload-shinken";
+      $input['command_line'] = $DB->escape("nohup sh -c '/etc/init.d/shinken reload'  > /dev/null 2>&1 &");
+      $this->add($input);
+      
+      // Shinken 2.0
+      // - default installed checks
+      $input = array();
+      $input['name'] = 'Check host alive (ICMP)';
+      $input['command_name'] = 'check_host_alive';
+      $input['command_line'] = "$NAGIOSPLUGINSDIR$/check_icmp -H $HOSTADDRESS$ -w 1000,100% -c 3000,100% -p 1";
+      $this->add($input);
+
+      $input = array();
+      $input['name'] = 'Check host alive (ping)';
+      $input['command_name'] = 'check_ping';
+      $input['command_line'] = "\$NAGIOSPLUGINSDIR\$/check_ping -H \$HOSTADDRESS\$ -w 3000,100% -c 5000,100% -p 1";
+      $this->add($input);
+
+      $input = array();
+      $input['name'] = 'Ask a nrpe agent';
+      $input['command_name'] = 'check_nrpe';
+      $input['command_line'] = "\$NAGIOSPLUGINSDIR\$/check_nrpe -H \$HOSTADDRESS\$ -t \$ARG1\$ -u \$ARG2\$ -c \$ARG3\$";
+      $input['module_type'] = 'nrpe_poller';
+      $arg = array();
+      $arg['ARG1'] = 'NRPE timeout (seconds)';
+      $arg['ARG2'] = 'NRPE SSL enable/disable (-n to disable)';
+      $arg['ARG3'] = 'NRPE check command';
+      $input['arguments'] = exportArrayToDB($arg);
+      $this->add($input);
+
+      $input = array();
+      $input['name'] = 'Ask a nrpe agent with arguments';
+      $input['command_name'] = 'check_nrpe_args';
+      $input['command_line'] = "\$NAGIOSPLUGINSDIR\$/check_nrpe -H \$HOSTADDRESS\$ -t \$ARG1\$ -u \$ARG2\$ -c \$ARG3\$ -a  \$ARG4\$ \$ARG5\$ \$ARG6\$ \$ARG7\$ \$ARG8\$ \$ARG9\$";
+      $input['module_type'] = 'nrpe_poller';
+      $arg = array();
+      $arg['ARG1'] = 'NRPE timeout (seconds)';
+      $arg['ARG2'] = 'NRPE SSL enable/disable (-n to disable)';
+      $arg['ARG3'] = 'NRPE check command';
+      $arg['ARG4'] = 'NRPE check argument';
+      $arg['ARG5'] = 'NRPE check argument';
+      $arg['ARG6'] = 'NRPE check argument';
+      $arg['ARG7'] = 'NRPE check argument';
+      $arg['ARG8'] = 'NRPE check argument';
+      $arg['ARG9'] = 'NRPE check argument';
+      $input['arguments'] = exportArrayToDB($arg);
+      $this->add($input);
+
+      
+      // Plugin Monitoring - Host action command
+      $input = array();
+      $input['name'] = "Host action";
+      $input['command_name'] = "host_action";
+      $input['command_line'] = $DB->escape("host_action");
+      $this->add($input);
+
+      
+      // Nagios plugins
       $input = array();
       $input['name'] = "Dummy check";
       $input['command_name'] = "check_dummy";
@@ -58,19 +149,6 @@ class PluginMonitoringCommand extends CommonDBTM {
       $arg['ARG1'] = 'INTEGER: dummy status code';
       $arg['ARG2'] = 'TEXT: dummy status output text';
       $input['arguments'] = exportArrayToDB($arg);
-      $this->add($input);
-
-      $input = array();
-      $input['name'] = "Restart Shinken";
-      $input['command_name'] = "restart_shinken";
-      $input['command_line'] = $DB->escape("nohup sh -c '/usr/local/shinken/bin/stop_arbiter.sh && sleep 3 && /usr/local/shinken/bin/launch_arbiter.sh' > /dev/null 2>&1 &");
-      $this->add($input);
-
-      // Host action command
-      $input = array();
-      $input['name'] = "Host action";
-      $input['command_name'] = "host_action";
-      $input['command_line'] = $DB->escape("host_action");
       $this->add($input);
 
       $input = array();
@@ -104,41 +182,6 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['name'] = 'Check a FTP service';
       $input['command_name'] = 'check_ftp';
       $input['command_line'] = "\$PLUGINSDIR\$/check_ftp -H \$HOSTADDRESS\$";
-      $this->add($input);
-
-      // Fred : not yet tested on real migration 
-      $input = array();
-      $input['name'] = 'Ask a nrpe agent';
-      $input['command_name'] = 'check_nrpe';
-      $input['command_line'] = "\$PLUGINSDIR\$/check_nrpe -H \$HOSTADDRESS\$ -t \$ARG1\$ -u \$ARG2\$ -c \$ARG3\$";
-      $arg = array();
-      $arg['ARG1'] = 'NRPE timeout (seconds)';
-      $arg['ARG2'] = 'NRPE SSL enable/disable (-n to disable)';
-      $arg['ARG3'] = 'NRPE check command';
-      $input['arguments'] = exportArrayToDB($arg);
-      $this->add($input);
-
-      $input = array();
-      $input['name'] = 'Ask a nrpe agent with arguments';
-      $input['command_name'] = 'check_nrpe_args';
-      $input['command_line'] = "\$PLUGINSDIR\$/check_nrpe -H \$HOSTADDRESS\$ -t \$ARG1\$ -u \$ARG2\$ -c \$ARG3\$ -a  \$ARG4\$ \$ARG5\$ \$ARG6\$ \$ARG7\$ \$ARG8\$ \$ARG9\$";
-      $arg = array();
-      $arg['ARG1'] = 'NRPE timeout (seconds)';
-      $arg['ARG2'] = 'NRPE SSL enable/disable (-n to disable)';
-      $arg['ARG3'] = 'NRPE check command';
-      $arg['ARG4'] = 'NRPE check argument';
-      $arg['ARG5'] = 'NRPE check argument';
-      $arg['ARG6'] = 'NRPE check argument';
-      $arg['ARG7'] = 'NRPE check argument';
-      $arg['ARG8'] = 'NRPE check argument';
-      $arg['ARG9'] = 'NRPE check argument';
-      $input['arguments'] = exportArrayToDB($arg);
-      $this->add($input);
-
-      $input = array();
-      $input['name'] = 'Simple ping command';
-      $input['command_name'] = 'check_ping';
-      $input['command_line'] = "\$PLUGINSDIR\$/check_ping -H \$HOSTADDRESS\$ -w 3000,100% -c 5000,100% -p 1";
       $this->add($input);
 
       $input = array();
@@ -217,12 +260,6 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['name'] = 'Check Linux host alive';
       $input['command_name'] = 'check_linux_host_alive';
       $input['command_line'] = "\$PLUGINSDIR\$/check_tcp -H \$HOSTADDRESS\$ -p 22 -t 3";
-      $this->add($input);
-
-      $input = array();
-      $input['name'] = 'Check host alive';
-      $input['command_name'] = 'check_host_alive';
-      $input['command_line'] = "\$PLUGINSDIR\$/check_ping -H \$HOSTADDRESS\$ -w 1,50% -c 2,70% -p 1";
       $this->add($input);
 
       $input = array();

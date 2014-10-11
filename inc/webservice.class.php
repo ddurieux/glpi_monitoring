@@ -82,12 +82,12 @@ class PluginMonitoringWebservice {
             break;
 
          case 'contacts.cfg':
-            $array = $pmShinken->generateContactsCfg(1);
+            $array = $pmShinken->generateContactsCfg(1, $params['tag']);
             return array($array[0]=>$array[1]);
             break;
 
          case 'timeperiods.cfg':
-            $array = $pmShinken->generateTimeperiodsCfg(1);
+            $array = $pmShinken->generateTimeperiodsCfg(1, $params['tag']);
             return array($array[0]=>$array[1]);
             break;
 
@@ -109,9 +109,9 @@ class PluginMonitoringWebservice {
             $output[$array[0]] = $array[1];
             $array = $pmShinken->generateHostgroupsCfg(1, $params['tag']);
             $output[$array[0]] = $array[1];
-            $array = $pmShinken->generateContactsCfg(1);
+            $array = $pmShinken->generateContactsCfg(1, $params['tag']);
             $output[$array[0]] = $array[1];
-            $array = $pmShinken->generateTimeperiodsCfg(1);
+            $array = $pmShinken->generateTimeperiodsCfg(1, $params['tag']);
             $output[$array[0]] = $array[1];
             $array = $pmShinken->generateTemplatesCfg(1, $params['tag']);
             $output[$array[0]] = $array[1];

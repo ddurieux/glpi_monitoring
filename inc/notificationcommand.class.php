@@ -46,9 +46,59 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringNotificationcommand extends CommonDBTM {
 
+/*
+   Shinken 2.0 defines:
+      # Nagios legacy macros
+      $USER1$=$NAGIOSPLUGINSDIR$
+      $NAGIOSPLUGINSDIR$=/usr/lib/nagios/plugins
+
+      #-- Location of the plugins for Shinken
+      $PLUGINSDIR$=/var/lib/shinken/libexec
+ */
 
    function initCommands() {
-
+      // Shinken 2.0 default commands
+      // Host notifications
+      $input = array();
+      $input['name'] = 'Host : mail notification';
+      $input['command_name'] = 'notify-host-by-email';
+      $input['command_line'] = $DB->escape('/usr/bin/printf "%b" "Shinken Notification\n\nType:$NOTIFICATIONTYPE$\nHost: $HOSTNAME$\nState: $HOSTSTATE$\nAddress: $HOSTADDRESS$\nInfo: $HOSTOUTPUT$\nDate/Time: $DATE$ $TIME$\n" | /usr/bin/mail -s "Host $HOSTSTATE$ alert for $HOSTNAME$" $CONTACTEMAIL$');
+      $this->add($input);
+      
+      $input = array();
+      $input['name'] = 'Host : mail detailed notification';
+      $input['command_name'] = 'detailled-host-by-email';
+      $input['command_line'] = $DB->escape('/usr/bin/printf "%b" "Shinken Notification\n\nType:$NOTIFICATIONTYPE$\nHost: $HOSTNAME$\nState: $HOSTSTATE$\nAddress: $HOSTADDRESS$\nDate/Time: $DATE$/$TIME$\n Host Output : $HOSTOUTPUT$\n\nHost description: $_HOSTDESC$\nHost Impact: $_HOSTIMPACT$" | /usr/bin/mail -s "Host $HOSTSTATE$ alert for $HOSTNAME$" $CONTACTEMAIL$');
+      $this->add($input);
+      
+      $input = array();
+      $input['name'] = 'Host : XMPP notification';
+      $input['command_name'] = 'notify-host-by-xmpp';
+      $input['command_line'] = $DB->escape('$PLUGINSDIR$/notify_by_xmpp.py -a $PLUGINSDIR$/notify_by_xmpp.ini "Host $HOSTNAME$ is $HOSTSTATE$ - Info : $HOSTOUTPUT$" $CONTACTEMAIL$');
+      $this->add($input);
+      
+      // Service notifications
+      $input = array();
+      $input['name'] = 'Service : mail notification';
+      $input['command_name'] = 'notify-service-by-email';
+      $input['command_line'] = $DB->escape('/usr/bin/printf "%b" "Shinken Notification\n\nNotification Type: $NOTIFICATIONTYPE$\n\nService: $SERVICEDESC$\nHost: $HOSTNAME$\nAddress: $HOSTADDRESS$\nState: $SERVICESTATE$\n\nDate/Time: $DATE$ $TIME$\nAdditional Info : $SERVICEOUTPUT$\n" | /usr/bin/mail -s "** $NOTIFICATIONTYPE$ alert - $HOSTNAME$/$SERVICEDESC$ is $SERVICESTATE$ **" $CONTACTEMAIL$');
+      $this->add($input);
+      
+      $input = array();
+      $input['name'] = 'Service : mail detailed notification';
+      $input['command_name'] = 'detailled-service-by-email';
+      $input['command_line'] = $DB->escape('/usr/bin/printf "%b" "Shinken Notification\n\nNotification Type: $NOTIFICATIONTYPE$\n\nService: $SERVICEDESC$\nHost: $HOSTALIAS$\nAddress: $HOSTADDRESS$\nState: $SERVICESTATE$\n\nDate/Time: $DATE$ at $TIME$\nService Output : $SERVICEOUTPUT$\n\nService Description: $_SERVICEDETAILLEDESC$\nService Impact: $_SERVICEIMPACT$\nFix actions: $_SERVICEFIXACTIONS$" | /usr/bin/mail -s "$SERVICESTATE$ on Host : $HOSTALIAS$/Service : $SERVICEDESC$" $CONTACTEMAIL$');
+      $this->add($input);
+      
+      $input = array();
+      $input['name'] = 'Service : XMPP notification';
+      $input['command_name'] = 'notify-service-by-xmpp';
+      $input['command_line'] = $DB->escape('$PLUGINSDIR$/notify_by_xmpp.py -a $PLUGINSDIR$/notify_by_xmpp.ini "$NOTIFICATIONTYPE$ $HOSTNAME$ $SERVICEDESC$ $SERVICESTATE$ $SERVICEOUTPUT$ $LONGDATETIME$" $CONTACTEMAIL$');
+      $this->add($input);
+      
+      
+/*
+   TODO : migration script should remove (or rename ...) those commands from existing table
       $input = array();
       $input['name'] = 'Host : notify by mail';
       $input['command_name'] = 'notify-host-by-email';
@@ -66,6 +116,7 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
       $input['command_name'] = 'notify-service-by-email-py';
       $input['command_line'] = "\$PLUGINSDIR\$/sendmailservice.py -s \"\$SERVICEDESC\$\" -n \"\$SERVICESTATE\$\" -H \"\$HOSTALIAS\$\" -a \"\$HOSTADDRESS\$\" -i \"\$SHORTDATETIME\$\" -o \"\$SERVICEOUTPUT\$\" -t \"\$CONTACTEMAIL\$\" -r \"\$SERVICESTATE\$\"";
       $this->add($input);
+*/
 
    }
 
@@ -98,19 +149,41 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
    function getSearchOptions() {
       $tab = array();
 
-      $tab['common'] = "notification commands";
+      $tab['common'] = __('Notification commands', 'monitoring');
 
-		$tab[1]['table'] = $this->getTable();
-		$tab[1]['field'] = 'name';
-		$tab[1]['linkfield'] = 'name';
-		$tab[1]['name'] = __('Name');
-		$tab[1]['datatype'] = 'itemlink';
+      $i=1;
+		$tab[$i]['table'] = $this->getTable();
+		$tab[$i]['field'] = 'name';
+		$tab[$i]['linkfield'] = 'name';
+		$tab[$i]['name'] = __('Name');
+		$tab[$i]['datatype'] = 'itemlink';
 
-      $tab[2]['table']     = $this->getTable();
-      $tab[2]['field']     = 'is_active';
-      $tab[2]['linkfield'] = 'is_active';
-      $tab[2]['name']      = __('Active');
-      $tab[2]['datatype']  = 'bool';
+      $i++;
+      $tab[$i]['table']     = $this->getTable();
+      $tab[$i]['field']     = 'is_active';
+      $tab[$i]['linkfield'] = 'is_active';
+      $tab[$i]['name']      = __('Active', 'monitoring');
+      $tab[$i]['datatype']  = 'bool';
+
+      $i++;
+      $tab[$i]['table']     = $this->getTable();
+      $tab[$i]['field']     = 'command_name';
+      $tab[$i]['name']      = __('Command name', 'monitoring');
+
+      $i++;
+      $tab[$i]['table']     = $this->getTable();
+      $tab[$i]['field']     = 'command_line';
+      $tab[$i]['name']      = __('Command line', 'monitoring');
+
+      $i++;
+      $tab[$i]['table']     = $this->getTable();
+      $tab[$i]['field']     = 'reactionner_tag';
+      $tab[$i]['name']      = __('Shinken reactionner tag', 'monitoring');
+
+      $i++;
+      $tab[$i]['table']     = $this->getTable();
+      $tab[$i]['field']     = 'module_type';
+      $tab[$i]['name']      = __('Shinken module type', 'monitoring');
 
       return $tab;
    }
@@ -155,6 +228,29 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
       echo "<input type='text' name='command_name' value='".$this->fields["command_name"]."' size='30'/>";
       echo "</td>";
       echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Active ?', 'monitoring')."</td>";
+      echo "<td>";
+      if (self::canCreate()) {
+         Dropdown::showYesNo('is_active', $this->fields['is_active']);
+      } else {
+         echo Dropdown::getYesNo($this->fields['is_active']);
+      }
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Module type', 'monitoring')." :</td>";
+      echo "<td>";
+      echo "<input type='text' name='module_type' value='".$this->fields["module_type"]."' size='30'/>";
+      echo "</td>";
+      echo "<td>".__('Reactionner tag', 'monitoring')."&nbsp;:</td>";
+      echo "<td>";
+      echo "<input type='text' name='reactionner_tag' value='".$this->fields["reactionner_tag"]."' size='30'/>";
+      echo "</td>";
+      echo "</tr>";
+
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Command line', 'monitoring')."&nbsp;:</td>";

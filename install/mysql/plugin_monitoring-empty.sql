@@ -566,6 +566,8 @@ CREATE TABLE `glpi_plugin_monitoring_notificationcommands` (
    `name` varchar(255) DEFAULT NULL,
    `command_name` varchar(255) DEFAULT NULL,
    `command_line` text DEFAULT NULL COLLATE utf8_unicode_ci,
+   `reactionner_tag` varchar(255) DEFAULT NULL,
+   `module_type` varchar(255) DEFAULT NULL,
    PRIMARY KEY (`id`),
    KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

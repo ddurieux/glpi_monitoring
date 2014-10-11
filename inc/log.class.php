@@ -95,15 +95,25 @@ class PluginMonitoringLog extends CommonDBTM {
          $a_restart = current($a_restarts);
          $id_restart = $a_restart['id'];
       }
+      $id_reload = 0;
+      $a_reloads = $pmLog->find("`action`='reload'", "`id` DESC", 1);
+      if (count($a_reloads) > 0) {
+         $a_reload = current($a_reloads);
+         $id_reload = $a_reload['id'];
+      }
+      
       $pmConfig->getFromDB(1);
       $secs = $pmConfig->fields['logretention'] * DAY_TIMESTAMP;
       $query = "DELETE FROM `".$pmLog->getTable()."`
          WHERE UNIX_TIMESTAMP(date_mod) < UNIX_TIMESTAMP()-$secs";
-      if ($id_restart > 0) {
+      if (($id_restart > 0) || ($id_reload > 0)) {
+         // Keep last reload or restart command
+         $id_restart = max($id_restart, $id_reload);
          $query .= " AND `id` < '".$id_restart."'";
       }
       $DB->query($query);
 
+      // TODO: Delete serviceevents table content ???
       $query = "DELETE FROM `glpi_plugin_monitoring_serviceevents`
          WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
       $DB->query($query);
@@ -115,6 +125,14 @@ class PluginMonitoringLog extends CommonDBTM {
 
    function isRestartLessThanFiveMinutes() {
       $a_restarts = $this->find("`action` LIKE 'restart%' AND `date_mod` > date_add(now(), interval - 5 MINUTE)", "`id` DESC", 1);
+      if (count($a_restarts) > 0) {
+         return true;
+      }
+      return false;
+   }
+
+   function isReloadLessThanFiveMinutes() {
+      $a_restarts = $this->find("`action` LIKE 'reload%' AND `date_mod` > date_add(now(), interval - 5 MINUTE)", "`id` DESC", 1);
       if (count($a_restarts) > 0) {
          return true;
       }

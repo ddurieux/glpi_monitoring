@@ -2363,6 +2363,14 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'command_line',
                                  'command_line',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->changeField($newTable,
+                                 'reactionner_tag',
+                                 'reactionner_tag',
+                                 "varchar(255) DEFAULT NULL");
+         $migration->changeField($newTable,
+                                 'module_type',
+                                 'module_type',
+                                 "varchar(255) DEFAULT NULL");
       $migration->migrationOneTable($newTable);
          $migration->addField($newTable,
                                  'is_active',
@@ -2376,6 +2384,12 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable,
                                  'command_line',
                                  "text DEFAULT NULL COLLATE utf8_unicode_ci");
+         $migration->addField($newTable,
+                                 'reactionner_tag',
+                                 "varchar(255) DEFAULT NULL");
+         $migration->addField($newTable,
+                                 'module_type',
+                                 "varchar(255) DEFAULT NULL");
          $migration->addKey($newTable,
                             "name");
       $migration->migrationOneTable($newTable);
