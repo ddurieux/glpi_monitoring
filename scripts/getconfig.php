@@ -51,10 +51,10 @@ chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
 chdir("../../..");
 $url = "/" . basename(getcwd()) . "/plugins/webservices/xmlrpc.php";
 
-$url = "/glpi/plugins/webservices/xmlrpc.php";
+$url = "/glpi084/plugins/webservices/xmlrpc.php";
 $host = 'localhost';
-$glpi_user  = "ipmfrance";
-$glpi_pass  = "ipm-France2012";
+$glpi_user  = "glpi";
+$glpi_pass  = "glpi";
 
 $method = "monitoring.shinkenGetConffiles";
 $file = "all";
