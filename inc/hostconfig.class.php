@@ -68,6 +68,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
             $data = $DB->fetch_assoc($result2);
             $input['plugin_monitoring_realms_id'] = $data['id'];
          }
+         $input['plugin_monitoring_components_id'] = 1;
 
          $this->add($input);
       }
