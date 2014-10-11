@@ -85,13 +85,13 @@ class PluginMonitoringTag extends CommonDBTM {
 		$tab[1]['table']     = $this->getTable();
 		$tab[1]['field']     = 'tag';
 		$tab[1]['linkfield'] = 'tag';
-		$tab[1]['name']      = __('Tag', 'monitoring');
+		$tab[1]['name']      = __('Shinken tag', 'monitoring');
       $tab[1]['datatype']  = 'itemlink';
 
 		$tab[2]['table']     = $this->getTable();
 		$tab[2]['field']     = 'ip';
 		$tab[2]['linkfield'] = 'ip';
-		$tab[2]['name']      = __('Ip');
+		$tab[2]['name']      = __('Shinken IP address', 'monitoring');
 
 		$tab[3]['table']     = $this->getTable();
 		$tab[3]['field']     = 'username';
@@ -106,7 +106,8 @@ class PluginMonitoringTag extends CommonDBTM {
 		$tab[5]['table']     = $this->getTable();
 		$tab[5]['field']     = 'iplock';
 		$tab[5]['linkfield'] = 'iplock';
-		$tab[5]['name']      = __('Lock shinken IP', 'monitoring');
+		$tab[5]['name']      = __('Lock shinken address', 'monitoring');
+      $tab[5]['datatype']  = 'bool';
 
       return $tab;
    }

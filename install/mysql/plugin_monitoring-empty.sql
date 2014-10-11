@@ -147,6 +147,8 @@ CREATE TABLE `glpi_plugin_monitoring_contacttemplates` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `is_default` tinyint(1) NOT NULL DEFAULT '0',
+  `shinken_administrator` tinyint(1) NOT NULL DEFAULT '0',
+  `shinken_can_submit_commands` tinyint(1) NOT NULL DEFAULT '0',
   `host_notifications_enabled` tinyint(1) NOT NULL DEFAULT '1',
   `service_notifications_enabled` tinyint(1) NOT NULL DEFAULT '1',
   `service_notification_period` int(11) NOT NULL DEFAULT '0',

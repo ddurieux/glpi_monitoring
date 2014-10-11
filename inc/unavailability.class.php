@@ -75,7 +75,9 @@ class PluginMonitoringUnavailability extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       if ($item->getType() == 'Computer'
               || $item->getType() == 'NetworkEquipment'){
-         return __('Unavailabilities', 'monitoring');
+         if (self::canView()) {
+            return __('Unavailabilities', 'monitoring');
+         }
       }
 
       return '';
@@ -225,9 +227,9 @@ class PluginMonitoringUnavailability extends CommonDBTM {
       // ini_set("memory_limit", "512M");
 
       $pmUnavailability = new PluginMonitoringUnavailability();
-      $pmUnavailability->runUnavailability();
+      return $pmUnavailability->runUnavailability();
 
-      return true;
+//      return true;
    }
 
 

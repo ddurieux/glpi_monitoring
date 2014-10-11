@@ -73,7 +73,7 @@ class PluginMonitoringContact extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       $array_ret = array();
-      if ($item->getID() > 0) {
+      if (($item->getID() > 0) && (PluginMonitoringContact::canView())) {
          $array_ret[0] = self::createTabEntry(
                  __('Monitoring', 'monitoring')."-".__('Contact', 'monitoring'));
       }

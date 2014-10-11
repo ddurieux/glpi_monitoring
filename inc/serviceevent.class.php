@@ -58,7 +58,9 @@ class PluginMonitoringServiceevent extends CommonDBTM {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       if ($item->getType() == 'Computer'){
-         return __('Service events', 'monitoring');
+         if (self::canView()) {
+            return __('Service events', 'monitoring');
+         }
       }
 
       return '';

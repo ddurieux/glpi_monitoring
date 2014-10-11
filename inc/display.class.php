@@ -1233,7 +1233,8 @@ echo "
       echo "<td>";
       $entity = new Entity();
       $entity->getFromDB($data["entities_id"]);
-      echo $entity = $entity->getName();
+      // echo $entity = $entity->getName();
+      echo $data["entity_name"];
       // echo "&nbsp;".$entity->getComments();
       echo "</td>";
 
@@ -1657,9 +1658,9 @@ Ext.onReady(function(){
       $a_list["1d"]  = __("Last 24 hours", "monitoring");
       if (!isset($_GET['mobile'])) {
          $a_list["1w"]     = __("Last 7 days (average)", "monitoring");
-         $a_list["1m"]     = __("Last month (average)", "monitoring");
-         $a_list["0y6m"]   = __("Last 6 months (average)", "monitoring");
-         $a_list["1y"]     = __("Last year (average)", "monitoring");
+//         $a_list["1m"]     = __("Last month (average)", "monitoring");
+//         $a_list["0y6m"]   = __("Last 6 months (average)", "monitoring");
+//         $a_list["1y"]     = __("Last year (average)", "monitoring");
       }
 
       foreach ($a_list as $time=>$name) {
