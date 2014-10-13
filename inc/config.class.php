@@ -80,8 +80,9 @@ class PluginMonitoringConfig extends CommonDBTM {
       $result = $DB->query($query);
       if ($DB->numrows($result) == '0') {
          $input = array();
-         $input['timezones'] = '["0"]';
+         $input['timezones']    = '["0"]';
          $input['logretention'] = 30;
+         $input['extradebug']   = 0;
          $this->add($input);
       }
    }
@@ -177,6 +178,15 @@ class PluginMonitoringConfig extends CommonDBTM {
          echo "</td>";
          echo "</tr>";
          echo "</table>";
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Extra-debug', 'monitoring')." :</td>";
+      echo "<td>";
+      Dropdown::showYesNo("extradebug", $this->fields['extradebug']);
+      echo "</td>";
+      echo "<td colspan='2'>";
       echo "</td>";
       echo "</tr>";
 

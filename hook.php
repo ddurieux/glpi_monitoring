@@ -70,7 +70,7 @@ function plugin_monitoring_getAddSearchOptions($itemtype) {
       $sopt[9100]['massiveaction']  = false;
       $sopt[9100]['joinparams']     = array('jointype' => 'child');
    }
-   
+
    if ($itemtype == 'Entity') {
       // Shinken tag for the entity
       $sopt[9101]['table']          ='glpi_plugin_monitoring_entities';
@@ -604,7 +604,10 @@ function plugin_monitoring_searchOptionsValues($item) {
    global $CFG_GLPI;
 
    // Fred : Add a log to check whether this function is still called ...
-   Toolbox::logInFile("pm", "plugin_monitoring_searchOptionsValues is called ..\n");
+   PluginMonitoringToolbox::logIfExtradebug(
+      'pm',
+      "plugin_monitoring_searchOptionsValues is called ..\n"
+   );
    // Search options for services
    if ($item['searchoption']['table'] == 'glpi_plugin_monitoring_services'
 	   AND $item['searchoption']['field'] == 'state') {

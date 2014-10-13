@@ -392,6 +392,22 @@ myPicker.fromString(\''.$color.'\')
       return true;
    }
 
+
+
+   /**
+    * Log when extra-debug is activated
+    */
+   static function logIfExtradebug($file, $message) {
+      $config = new PluginMonitoringConfig();
+      $config->getFromDB(1);
+      if ($config->fields['extradebug']) {
+         if (is_array($message)) {
+            $message = print_r($message, TRUE);
+         }
+         Toolbox::logInFile($file, $message);
+      }
+   }
+
 }
 
 ?>

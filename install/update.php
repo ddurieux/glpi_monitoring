@@ -1254,6 +1254,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable,
                               'logretention',
                               "int(5) NOT NULL DEFAULT '30'");
+         $migration->addField($newTable,
+                              'extradebug',
+                              "tinyint(1) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
 
 

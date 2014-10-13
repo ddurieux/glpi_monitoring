@@ -469,7 +469,10 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
     * @return bool : true if item need to be deleted else false
    **/
    function pre_deleteItem() {
-      Toolbox::logInFile("pm-ack", "acknowledge, pre_deleteItem : ".$this->fields['id']."\n");
+      PluginMonitoringToolbox::logIfExtradebug(
+         'pm-ack',
+         "acknowledge, pre_deleteItem : ".$this->fields['id']."\n"
+      );
 
       $user = new User();
       $user->getFromDB($this->fields['users_id']);

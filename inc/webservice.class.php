@@ -49,8 +49,11 @@ class PluginMonitoringWebservice {
 
    static function methodShinkenGetConffiles($params, $protocol) {
 
-      Toolbox::logInFile("pm-shinken", "Starting methodShinkenGetConffiles ...\n");
-      
+      PluginMonitoringToolbox::logIfExtradebug(
+         'pm-shinken',
+         "Starting methodShinkenGetConffiles ...\n"
+      );
+
       if (isset ($params['help'])) {
          return array('file'  => 'config filename to get : commands.cfg, hosts.cfg, ... use all to get all files.',
                       'help'  => 'bool,optional');
@@ -397,18 +400,18 @@ class PluginMonitoringWebservice {
       if (isset($params['order'])) {
          $order = $params['order'];
       }
-      
+
       $query = "
          SELECT
             `glpi_entities`.`name` AS entity_name,
             `glpi_computers`.`id`,
             `glpi_computers`.`name`,
-            `glpi_plugin_monitoring_hosts`.`state`, 
-            `glpi_plugin_monitoring_hosts`.`state_type`, 
-            `glpi_plugin_monitoring_hosts`.`event`, 
-            `glpi_plugin_monitoring_hosts`.`last_check`, 
-            `glpi_plugin_monitoring_hosts`.`perf_data`, 
-            `glpi_plugin_monitoring_hosts`.`is_acknowledged`, 
+            `glpi_plugin_monitoring_hosts`.`state`,
+            `glpi_plugin_monitoring_hosts`.`state_type`,
+            `glpi_plugin_monitoring_hosts`.`event`,
+            `glpi_plugin_monitoring_hosts`.`last_check`,
+            `glpi_plugin_monitoring_hosts`.`perf_data`,
+            `glpi_plugin_monitoring_hosts`.`is_acknowledged`,
             `glpi_plugin_monitoring_hosts`.`acknowledge_comment`
          FROM `glpi_plugin_monitoring_hosts`
          $join
@@ -445,8 +448,8 @@ class PluginMonitoringWebservice {
             ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id` AND `glpi_plugin_monitoring_hosts`.`itemtype`='Computer'
          INNER JOIN `glpi_entities`
             ON `glpi_computers`.`entities_id` = `glpi_entities`.`id`
-         LEFT JOIN `glpi_locations` 
-            ON `glpi_locations`.`id` = `glpi_computers`.`locations_id` 
+         LEFT JOIN `glpi_locations`
+            ON `glpi_locations`.`id` = `glpi_computers`.`locations_id`
          ";
 
       // Start / limit
@@ -484,26 +487,26 @@ class PluginMonitoringWebservice {
       if (isset($params['filter'])) {
          $where .= " AND " . $params['filter'];
       }
-      
+
       // Order
       $order = "entity_name ASC, FIELD(`glpi_plugin_monitoring_hosts`.`state`,'DOWN','PENDING','UNKNOWN','UNREACHABLE','UP')";
       if (isset($params['order'])) {
          $order = $params['order'];
       }
-      
+
       $query = "
          SELECT
             `glpi_entities`.`name` AS entity_name,
             `glpi_computers`.`name` AS name,
-            `glpi_locations`.`building` AS gps, 
-            `glpi_locations`.`name` AS short_location, 
-            `glpi_locations`.`completename` AS location, 
-            `glpi_plugin_monitoring_hosts`.`state`, 
-            `glpi_plugin_monitoring_hosts`.`state_type`, 
-            `glpi_plugin_monitoring_hosts`.`event`, 
-            `glpi_plugin_monitoring_hosts`.`last_check`, 
-            `glpi_plugin_monitoring_hosts`.`perf_data`, 
-            `glpi_plugin_monitoring_hosts`.`is_acknowledged`, 
+            `glpi_locations`.`building` AS gps,
+            `glpi_locations`.`name` AS short_location,
+            `glpi_locations`.`completename` AS location,
+            `glpi_plugin_monitoring_hosts`.`state`,
+            `glpi_plugin_monitoring_hosts`.`state_type`,
+            `glpi_plugin_monitoring_hosts`.`event`,
+            `glpi_plugin_monitoring_hosts`.`last_check`,
+            `glpi_plugin_monitoring_hosts`.`perf_data`,
+            `glpi_plugin_monitoring_hosts`.`is_acknowledged`,
             `glpi_plugin_monitoring_hosts`.`acknowledge_comment`
          FROM `glpi_plugin_monitoring_hosts`
          $join
@@ -533,7 +536,7 @@ class PluginMonitoringWebservice {
             }
             unset ($row['gps']);
          }
-      
+
          // Fetch host services
          $services = PluginMonitoringWebservice::getServicesStates(
             array(
@@ -557,7 +560,7 @@ class PluginMonitoringWebservice {
       return PluginMonitoringWebservice::getServicesStates($params);
    }
    /*
-    * Request statistics on table with parameters 
+    * Request statistics on table with parameters
     * - start / limit
     * - filter
     * - entity
@@ -626,7 +629,7 @@ class PluginMonitoringWebservice {
       if (isset($params['order'])) {
          $order = $params['order'];
       }
-      
+
       $query = "
          SELECT
             CONCAT_WS('', `glpi_computers`.`name`, `glpi_printers`.`name`, `glpi_networkequipments`.`name`) AS host_name,
@@ -674,11 +677,11 @@ class PluginMonitoringWebservice {
      if (isset($params['lastPerHost'])) {
        return PluginMonitoringHostdailycounter::getLastCountersPerHost($params);
      }
-     
+
      if (isset($params['statistics'])) {
        return PluginMonitoringHostdailycounter::getStatistics($params);
      }
-     
+
      $result = PluginMonitoringHostdailycounter::getHostDailyCounters($params);
      // foreach ($result as $line) {
      // Toolbox::logInFile("pm-ws", "getHostDailyCounters, result : ".serialize($line)."\n");
@@ -726,18 +729,18 @@ class PluginMonitoringWebservice {
 
      $diff = $qend - $qbegin;
 
-     $query = "SELECT 
+     $query = "SELECT
 `e`.`name` as 'entity',
-`c`.`name` as 'name',  
+`c`.`name` as 'name',
 `u`.`begin_date` as 'begin_date',
 `u`.`end_date` as 'end_date'
-FROM 
-`glpi_computers` as `c`, 
+FROM
+`glpi_computers` as `c`,
 `glpi_plugin_monitoring_unavailabilities` as `u`,
 `glpi_plugin_monitoring_services` as `s`,
 `glpi_plugin_monitoring_componentscatalogs_hosts` as `cch`,
 `glpi_entities` as `e`
-WHERE 
+WHERE
 `u`.`plugin_monitoring_services_id` = `s`.`id`
 AND
 `s`.`plugin_monitoring_componentscatalogs_hosts_id` = `cch`.`id`
@@ -748,7 +751,7 @@ AND
 AND
 (
 (`u`.`begin_date` <= '$from $heure_begin:00:00' AND `u`.`end_date` >= '$from $heure_begin:00:00')
-OR 
+OR
 (`u`.`begin_date` >= '$from $heure_begin:00:00' AND `u`.`end_date` <= '$to $heure_end:59:59')
 OR
 (`u`.`begin_date` <= '$to $heure_end:59:59' AND `u`.`end_date` >= '$to $heure_end:59:59' )
@@ -823,7 +826,7 @@ ORDER BY `c`.`name`
 	     $found = 1;
 	     $recheck = 1;
 	     break;
-	   } elseif ( ($begin_end['begin'] < $begin) && ($begin_end['end'] > $begin) && ($begin_end['end'] < $end) ) { 
+	   } elseif ( ($begin_end['begin'] < $begin) && ($begin_end['end'] > $begin) && ($begin_end['end'] < $end) ) {
 	     echo ($read ? "$begin - $end -> fin apres\n": '');
 	     $begin_end['end'] = $end;
 	     $begin_end['duration'] = $begin_end['end']-$begin_end['begin'];
@@ -890,34 +893,34 @@ SELECT `glpi_locations`.`id`,
        `glpi_locations`.`name` as locationName,
        `glpi_computers`.`name` as computerName,
        `glpi_locations`.`completename`,
-       ACOS( 
-          SIN( RADIANS( SUBSTRING_INDEX(`building`, ',', 1) ) ) 
-         *SIN( RADIANS( $latr                               ) ) 
+       ACOS(
+          SIN( RADIANS( SUBSTRING_INDEX(`building`, ',', 1) ) )
+         *SIN( RADIANS( $latr                               ) )
         +
-          COS( RADIANS( SUBSTRING_INDEX(`building`, ',', 1) ) ) 
-         *COS( RADIANS( $latr                               ) ) 
+          COS( RADIANS( SUBSTRING_INDEX(`building`, ',', 1) ) )
+         *COS( RADIANS( $latr                               ) )
          *COS( RADIANS( SUBSTRING_INDEX(SUBSTRING_INDEX(`building`, ',', 2), ',', -1) - $longr ) )
          )*$terre AS dist
 FROM `glpi_locations`, `glpi_computers`, `glpi_plugin_monitoring_hosts`
-WHERE 
-     ACOS( 
-          SIN( RADIANS( SUBSTRING_INDEX(`building`, ',', 1) ) ) 
-         *SIN( RADIANS( $latr                               ) ) 
+WHERE
+     ACOS(
+          SIN( RADIANS( SUBSTRING_INDEX(`building`, ',', 1) ) )
+         *SIN( RADIANS( $latr                               ) )
         +
-          COS( RADIANS( SUBSTRING_INDEX(`building`, ',', 1) ) ) 
-         *COS( RADIANS( $latr                               ) ) 
+          COS( RADIANS( SUBSTRING_INDEX(`building`, ',', 1) ) )
+         *COS( RADIANS( $latr                               ) )
          *COS( RADIANS( SUBSTRING_INDEX(SUBSTRING_INDEX(`building`, ',', 2), ',', -1) - $longr ) )
-         )*$terre 
+         )*$terre
      <= $dist
      AND
      `glpi_locations`.`id` = `glpi_computers`.`locations_id`
-     AND 
+     AND
      `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`
      AND
      `glpi_plugin_monitoring_hosts`.`state` = 'UP'
 ORDER BY dist
 LIMIT $limit";
-     
+
      // return $query; exit;
 
      $result = $DB->query($query);

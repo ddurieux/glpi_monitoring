@@ -277,7 +277,11 @@ class PluginMonitoringDisplay extends CommonDBTM {
    function defineTabs($options=array()){
       global $CFG_GLPI;
 
-      Toolbox::logInFile("pm", "defineTabs ... no more use function ?\n");
+      PluginMonitoringToolbox::logIfExtradebug(
+         'pm',
+         "defineTabs ... no more use function ?\n"
+      );
+
       if (isset($_GET['glpi_tab'])) {
          Session::setActiveTab("PluginMonitoringDisplay",$_GET['glpi_tab']);
       }
@@ -316,7 +320,11 @@ class PluginMonitoringDisplay extends CommonDBTM {
    function showTabs($options=array()) {
       global $CFG_GLPI;
 
-      Toolbox::logInFile("pm", "showTabs ... no more use function ?\n");
+      PluginMonitoringToolbox::logIfExtradebug(
+         'pm',
+         "showTabs ... no more use function ?\n"
+      );
+
       // for objects not in table like central
       $ID = 0;
       if (isset($this->fields['id'])) {
