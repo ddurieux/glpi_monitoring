@@ -3567,6 +3567,15 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    $pmConfig->initConfig();
 
 
+   // Add user monitoring if not defined
+   if (!countElementsInTable('glpi_users', "`name`='monitoring'")) {
+      // Create
+      $input = array('name' => 'monitoring');
+      $user = new User();
+      $user->add($input);
+   }
+
+
    // * Calculate unavailability
    if ($unavailability_reset == 1) {
       // Delete unavailability periods

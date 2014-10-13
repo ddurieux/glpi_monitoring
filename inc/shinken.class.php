@@ -1886,25 +1886,25 @@ Nagios configuration file :
       $a_users_used = array();
       $a_contacts = array();
       // Add default contact 'monitoring' for fake hosts
-      $a_calendars = current($calendar->find("", "", 1));
-      $cal = '24x7';
-      if (isset($a_calendars['name'])) {
-         $cal = $a_calendars['name'];
-      }
-      $a_contacts[-1] = array(
-          'contact_name'                   => 'monitoring',
-          'alias'                          => 'monitoring',
-          'host_notifications_enabled'     => '0',
-          'service_notifications_enabled'  => '0',
-          'service_notification_period'    => $cal,
-          'host_notification_period'       => $cal,
-          'service_notification_options' => '',
-          'host_notification_options'    => '',
-          'service_notification_commands'  => '',
-          'host_notification_commands'     => '',
-          'email'                          => '',
-          'pager'                          => '',
-      );
+//      $a_calendars = current($calendar->find("", "", 1));
+//      $cal = '24x7';
+//      if (isset($a_calendars['name'])) {
+//         $cal = $a_calendars['name'];
+//      }
+//      $a_contacts[-1] = array(
+//          'contact_name'                   => 'monitoring',
+//          'alias'                          => 'monitoring',
+//          'host_notifications_enabled'     => '0',
+//          'service_notifications_enabled'  => '0',
+//          'service_notification_period'    => $cal,
+//          'host_notification_period'       => $cal,
+//          'service_notification_options' => '',
+//          'host_notification_options'    => '',
+//          'service_notification_commands'  => '',
+//          'host_notification_commands'     => '',
+//          'email'                          => '',
+//          'pager'                          => '',
+//      );
 
 
       $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
@@ -1944,8 +1944,11 @@ Nagios configuration file :
                }
             }
          }
-
       }
+      // Add user monitoring
+      $user = new User();
+      $a_monit_user = current($user->find("`name`='monitoring'", '', 1));
+      $a_contacts = $this->_addContactUser($a_contacts, $a_monit_user['id'], $i);
 
       PluginMonitoringToolbox::logIfExtradebug(
          'pm-shinken',

@@ -149,6 +149,15 @@ function pluginMonitoringInstall($version) {
       $calendarSegment->add($input);
    }
 
+   // Add user monitoring if not defined
+   if (!countElementsInTable('glpi_users', "`name`='monitoring'")) {
+      // Create
+      $input = array('name' => 'monitoring');
+      $user = new User();
+      $user->add($input);
+   }
+
+
    if (!is_dir(GLPI_PLUGIN_DOC_DIR.'/monitoring')) {
       mkdir(GLPI_PLUGIN_DOC_DIR."/monitoring");
    }
