@@ -1789,8 +1789,33 @@ Nagios configuration file :
       global $DB;
 
       $pmEntity      = new PluginMonitoringEntity();
+      $calendar      = new Calendar();
 
       Toolbox::logInFile("pm-shinken", "Starting generateContactsCfg ($tag) ...\n");
+
+      $a_users_used = array();
+      $a_contacts = array();
+      // Add default contact 'monitoring' for fake hosts
+      $a_calendars = current($calendar->find("", "", 1));
+      $cal = '24x7';
+      if (isset($a_calendars['name'])) {
+         $cal = $a_calendars['name'];
+      }
+      $a_contacts[-1] = array(
+          'contact_name'                   => 'monitoring',
+          'alias'                          => 'monitoring',
+          'host_notifications_enabled'     => '0',
+          'service_notifications_enabled'  => '0',
+          'service_notification_period'    => $cal,
+          'host_notification_period'       => $cal,
+          'service_notification_options' => '',
+          'host_notification_options'    => '',
+          'service_notification_commands'  => '',
+          'host_notification_commands'     => '',
+          'email'                          => '',
+          'pager'                          => '',
+      );
+
 
       $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
       $a_entities_list = array();
@@ -1805,13 +1830,11 @@ Nagios configuration file :
       }
 
 
-      $a_contacts = array();
       $i=0;
 
       $query = "SELECT * FROM `glpi_plugin_monitoring_contacts_items` $where";
       // Toolbox::logInFile("pm-shinken", "- Contacts query: $query\n");
       $result = $DB->query($query);
-      $a_users_used = array();
       while ($data=$DB->fetch_array($result)) {
          if ($data['users_id'] > 0) {
             if ((!isset($a_users_used[$data['users_id']]))) {
@@ -1879,10 +1902,14 @@ Nagios configuration file :
 
       if (!isset($a_pmcontact['host_notification_period'])) {
          $a_calendars = current($calendar->find("", "", 1));
+         $cal = '24x7';
+         if (isset($a_calendars['name'])) {
+            $cal = $a_calendars['name'];
+         }
          $a_pmcontact['host_notifications_enabled'] = '0';
          $a_pmcontact['service_notifications_enabled'] = '0';
-         $a_pmcontact['service_notification_period'] = $a_calendars['id'];
-         $a_pmcontact['host_notification_period'] = $a_calendars['id'];
+         $a_pmcontact['service_notification_period'] = $cal;
+         $a_pmcontact['host_notification_period'] = $cal;
          $a_pmcontact['service_notification_options_w'] = '0';
          $a_pmcontact['service_notification_options_u'] = '0';
          $a_pmcontact['service_notification_options_c'] = '0';
