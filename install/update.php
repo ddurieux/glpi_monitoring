@@ -2917,6 +2917,33 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
 
     /*
+     * glpi_plugin_monitoring_unavailabilitystates
+     */
+      $a_table = array();
+      $a_table['name'] = 'glpi_plugin_monitoring_unavailabilitystates';
+      $a_table['oldname'] = array();
+
+      $a_table['fields']  = array(
+         'id'           => array('type'    => 'autoincrement',  'value'   => ''),
+         'plugin_monitoring_services_id'
+                        => array('type'    => 'integer',        'value'   => 0),
+         'plugin_monitoring_serviceevents_id'
+                        => array('type'    => 'integer',        'value'   => 0),
+      );
+
+      $a_table['oldfields']  = array();
+
+      $a_table['renamefields'] = array();
+
+      $a_table['keys'] = array();
+
+      $a_table['oldkeys'] = array();
+
+      migrateTablesMonitoring($migration, $a_table);
+
+
+
+    /*
     * Table glpi_plugin_monitoring_weathermaps
     */
       $newTable = "glpi_plugin_monitoring_weathermaps";
@@ -3576,37 +3603,24 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    }
 
 
-   // * Calculate unavailability
-   if ($unavailability_reset == 1) {
-      // Delete unavailability periods
-      $query = "DELETE FROM `glpi_plugin_monitoring_unavailabilities`";
-      $DB->query($query) or die('Unable to delete table `glpi_plugin_monitoring_unavailabilities`');
-
-      // Reset service events unavailability
-      $DB->query("ALTER TABLE glpi_plugin_monitoring_serviceevents DISABLE KEYS");
-      $query = "UPDATE `glpi_plugin_monitoring_serviceevents`
-         SET `unavailability`='0'";
-      $DB->query($query) or die('Unable to update table `glpi_plugin_monitoring_serviceevents`');
-      $DB->query("ALTER TABLE glpi_plugin_monitoring_serviceevents ENABLE KEYS");
-      include (GLPI_ROOT . "/plugins/monitoring/inc/display.class.php");
-      include (GLPI_ROOT . "/plugins/monitoring/inc/serviceevent.class.php");
-      include (GLPI_ROOT . "/plugins/monitoring/inc/unavailability.class.php");
-      PluginMonitoringUnavailability::runUnavailability();
-   }
-
-   // * Recalculate unavailability
-   if ($unavailability_recalculate == 1) {
-      $query = "SELECT * FROM `glpi_plugin_monitoring_unavailabilities`
-         WHERE `end_date` IS NOT NULL";
+   // * Update unavailability (with table glpi_plugin_monitoring_unavailabilitystates)
+      include (GLPI_ROOT . "/plugins/monitoring/inc/unavailabilitystate.class.php");
+      $pmUnavailabilityState = new PluginMonitoringUnavailabilityState();
+      $query = "SELECT * FROM `glpi_plugin_monitoring_services`";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
-         $time = strtotime($data['end_date']) - strtotime($data['begin_date']);
-         $queryd = "UPDATE `glpi_plugin_monitoring_unavailabilities`
-            SET `duration`='".$time."'
-            WHERE `id`='".$data['id']."'";
-         $DB->query($queryd);
+         if ($pmUnavailabilityState->getLastID($data['id']) == 0) {
+            $query2 = "SELECT id FROM `glpi_plugin_monitoring_serviceevents`
+               WHERE `plugin_monitoring_services_id`='".$data['id']."'
+                  AND `unavailability`='1'
+               ORDER BY id DESC
+               LIMIT 1";
+            $result2 = $DB->query($query2);
+            while ($data2=$DB->fetch_array($result2)) {
+               $pmUnavailabilityState->setLastID($data['id'], $data2['id']);
+            }
+         }
       }
-   }
 
 
    $query = "UPDATE `glpi_plugin_monitoring_configs`
