@@ -1948,7 +1948,9 @@ Nagios configuration file :
       // Add user monitoring
       $user = new User();
       $a_monit_user = current($user->find("`name`='monitoring'", '', 1));
-      $a_contacts = $this->_addContactUser($a_contacts, $a_monit_user['id'], $i);
+      if ((!isset($a_users_used[$a_monit_user['id']]))) {
+         $a_contacts = $this->_addContactUser($a_contacts, $a_monit_user['id'], $i);
+      }
 
       PluginMonitoringToolbox::logIfExtradebug(
          'pm-shinken',
