@@ -40,7 +40,7 @@
    ------------------------------------------------------------------------
  */
 
-define ("PLUGIN_MONITORING_VERSION","0.84+2.0");
+define ("PLUGIN_MONITORING_VERSION","0.85+1.0");
 
 define('_MPDF_TEMP_PATH', GLPI_PLUGIN_DOC_DIR.'/monitoring/pdf/');
 
@@ -304,7 +304,7 @@ function plugin_version_monitoring() {
                 'license'        => 'AGPLv3+',
                 'author'         =>'<a href="mailto:d.durieux@siprossii.com">David DURIEUX</a>',
                 'homepage'       =>'https://forge.indepnet.net/projects/monitoring/',
-                'minGlpiVersion' => '0.83.3'
+                'minGlpiVersion' => '0.85'
    );
 }
 
@@ -312,8 +312,8 @@ function plugin_version_monitoring() {
 // Optional : check prerequisites before install : may print errors or add to message after redirect
 function plugin_monitoring_check_prerequisites() {
 
-   if (version_compare(GLPI_VERSION,'0.84','lt') || version_compare(GLPI_VERSION,'0.85','ge')) {
-      echo "error, require GLPI 0.84.x";
+   if (version_compare(GLPI_VERSION,'0.85','lt') || version_compare(GLPI_VERSION,'0.86','ge')) {
+      echo "error, require GLPI 0.85.x";
    } else {
       return true;
    }
