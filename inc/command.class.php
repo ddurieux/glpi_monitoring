@@ -80,19 +80,19 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['command_name'] = "restart-shinken";
       $input['command_line'] = $DB->escape("nohup sh -c '/etc/init.d/shinken restart'  > /dev/null 2>&1 &");
       $this->add($input);
-      
+
       $input = array();
       $input['name'] = "Shinken (2.0) reload";
       $input['command_name'] = "reload-shinken";
       $input['command_line'] = $DB->escape("nohup sh -c '/etc/init.d/shinken reload'  > /dev/null 2>&1 &");
       $this->add($input);
-      
+
       // Shinken 2.0
       // - default installed checks
       $input = array();
       $input['name'] = 'Check host alive (ICMP)';
       $input['command_name'] = 'check_host_alive';
-      $input['command_line'] = "$NAGIOSPLUGINSDIR$/check_icmp -H $HOSTADDRESS$ -w 1000,100% -c 3000,100% -p 1";
+      $input['command_line'] = "\$NAGIOSPLUGINSDIR$/check_icmp -H \$HOSTADDRESS$ -w 1000,100% -c 3000,100% -p 1";
       $this->add($input);
 
       $input = array();
@@ -131,7 +131,7 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['arguments'] = exportArrayToDB($arg);
       $this->add($input);
 
-      
+
       // Plugin Monitoring - Host action command
       $input = array();
       $input['name'] = "Host action";
@@ -139,7 +139,7 @@ class PluginMonitoringCommand extends CommonDBTM {
       $input['command_line'] = $DB->escape("host_action");
       $this->add($input);
 
-      
+
       // Nagios plugins
       $input = array();
       $input['name'] = "Dummy check";
