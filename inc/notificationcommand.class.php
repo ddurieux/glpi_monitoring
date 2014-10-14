@@ -57,6 +57,8 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
  */
 
    function initCommands() {
+      global $DB;
+      
       // Shinken 2.0 default commands
       // Host notifications
       $input = array();
@@ -64,39 +66,39 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
       $input['command_name'] = 'notify-host-by-email';
       $input['command_line'] = $DB->escape('/usr/bin/printf "%b" "Shinken Notification\n\nType:$NOTIFICATIONTYPE$\nHost: $HOSTNAME$\nState: $HOSTSTATE$\nAddress: $HOSTADDRESS$\nInfo: $HOSTOUTPUT$\nDate/Time: $DATE$ $TIME$\n" | /usr/bin/mail -s "Host $HOSTSTATE$ alert for $HOSTNAME$" $CONTACTEMAIL$');
       $this->add($input);
-      
+
       $input = array();
       $input['name'] = 'Host : mail detailed notification';
       $input['command_name'] = 'detailled-host-by-email';
       $input['command_line'] = $DB->escape('/usr/bin/printf "%b" "Shinken Notification\n\nType:$NOTIFICATIONTYPE$\nHost: $HOSTNAME$\nState: $HOSTSTATE$\nAddress: $HOSTADDRESS$\nDate/Time: $DATE$/$TIME$\n Host Output : $HOSTOUTPUT$\n\nHost description: $_HOSTDESC$\nHost Impact: $_HOSTIMPACT$" | /usr/bin/mail -s "Host $HOSTSTATE$ alert for $HOSTNAME$" $CONTACTEMAIL$');
       $this->add($input);
-      
+
       $input = array();
       $input['name'] = 'Host : XMPP notification';
       $input['command_name'] = 'notify-host-by-xmpp';
       $input['command_line'] = $DB->escape('$PLUGINSDIR$/notify_by_xmpp.py -a $PLUGINSDIR$/notify_by_xmpp.ini "Host $HOSTNAME$ is $HOSTSTATE$ - Info : $HOSTOUTPUT$" $CONTACTEMAIL$');
       $this->add($input);
-      
+
       // Service notifications
       $input = array();
       $input['name'] = 'Service : mail notification';
       $input['command_name'] = 'notify-service-by-email';
       $input['command_line'] = $DB->escape('/usr/bin/printf "%b" "Shinken Notification\n\nNotification Type: $NOTIFICATIONTYPE$\n\nService: $SERVICEDESC$\nHost: $HOSTNAME$\nAddress: $HOSTADDRESS$\nState: $SERVICESTATE$\n\nDate/Time: $DATE$ $TIME$\nAdditional Info : $SERVICEOUTPUT$\n" | /usr/bin/mail -s "** $NOTIFICATIONTYPE$ alert - $HOSTNAME$/$SERVICEDESC$ is $SERVICESTATE$ **" $CONTACTEMAIL$');
       $this->add($input);
-      
+
       $input = array();
       $input['name'] = 'Service : mail detailed notification';
       $input['command_name'] = 'detailled-service-by-email';
       $input['command_line'] = $DB->escape('/usr/bin/printf "%b" "Shinken Notification\n\nNotification Type: $NOTIFICATIONTYPE$\n\nService: $SERVICEDESC$\nHost: $HOSTALIAS$\nAddress: $HOSTADDRESS$\nState: $SERVICESTATE$\n\nDate/Time: $DATE$ at $TIME$\nService Output : $SERVICEOUTPUT$\n\nService Description: $_SERVICEDETAILLEDESC$\nService Impact: $_SERVICEIMPACT$\nFix actions: $_SERVICEFIXACTIONS$" | /usr/bin/mail -s "$SERVICESTATE$ on Host : $HOSTALIAS$/Service : $SERVICEDESC$" $CONTACTEMAIL$');
       $this->add($input);
-      
+
       $input = array();
       $input['name'] = 'Service : XMPP notification';
       $input['command_name'] = 'notify-service-by-xmpp';
       $input['command_line'] = $DB->escape('$PLUGINSDIR$/notify_by_xmpp.py -a $PLUGINSDIR$/notify_by_xmpp.ini "$NOTIFICATIONTYPE$ $HOSTNAME$ $SERVICEDESC$ $SERVICESTATE$ $SERVICEOUTPUT$ $LONGDATETIME$" $CONTACTEMAIL$');
       $this->add($input);
-      
-      
+
+
 /*
    TODO : migration script should remove (or rename ...) those commands from existing table
       $input = array();
