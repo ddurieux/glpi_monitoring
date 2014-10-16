@@ -62,7 +62,7 @@ if (PluginMonitoringProfile::haveRight("restartshinken", 'r')) {
 
    $a_tags = array();
    foreach ($a_tagsBrut as $data) {
-      if (!isset($data[$data['ip'].':'.$data['port']])) {
+      if (!isset($a_tags[$data['ip'].':'.$data['port']])) {
          $a_tags[$data['ip'].':'.$data['port']] = $data;
       }
    }
