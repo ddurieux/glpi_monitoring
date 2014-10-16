@@ -58,7 +58,15 @@ $toDisplayArea=0;
 // - one button to restart all Shinken instances
 if (PluginMonitoringProfile::haveRight("restartshinken", 'r')) {
    $pmTag = new PluginMonitoringTag();
-   $a_tags = $pmTag->find();
+   $a_tagsBrut = $pmTag->find();
+
+   $a_tags = array();
+   foreach ($a_tagsBrut as $data) {
+      if (!isset($data[$data['ip'].':'.$data['port']])) {
+         $a_tags[$data['ip'].':'.$data['port']] = $data;
+      }
+   }
+
    if (count($a_tags) > 0) {
       $shinken_commands = [
             'reload'    => [
@@ -84,16 +92,16 @@ if (PluginMonitoringProfile::haveRight("restartshinken", 'r')) {
 
             echo '<tr>';
             echo '<td >';
-            echo "<button style='width: 100px;'><a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/restartshinken.form.php?action=".$command['command']."&tag='>".$command['button']."<br/>".__('All instances', 'monitoring')."</a></button>";
+            echo "<button style='width: 100px;'><a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/restartshinken.form.php?action=".$command['command']."&tag=0'>".$command['button']."<br/>".__('All instances', 'monitoring')."</a></button>";
             echo '</td><td style="width: 5px;"></td>';
             echo '</tr>';
 
             if (count($a_tags) > 1) {
                $i=1;
                echo '<tr>';
-               foreach ($a_tags as $data) {
+               foreach ($a_tags as $taginfo=>$data) {
                   echo '<td>';
-                  echo "<button style='width: 100px;'><a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/restartshinken.form.php?action=".$command['command']."&tag=". $data['tag'] ."'>".$command['button']." <br/>(". $data['tag'] .") "."</a></button>";
+                  echo "<button style='width: 100px;'><a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/restartshinken.form.php?action=".$command['command']."&tag=". $data['id'] ."'>".$command['button']." <br/>(". $taginfo .") "."</a></button>";
                   echo '</td>';
                   echo '<td style="width: 5px;"></td>';
                   if ($i > 2) {

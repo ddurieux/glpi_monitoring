@@ -141,30 +141,44 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
    }
 
 
-   function sendRestartArbiter($force=0, $tag='', $command='reload') {
+   function sendRestartArbiter($force=0, $tag=0, $command='reload') {
 
       $pmTag = new PluginMonitoringTag();
       $pmLog = new PluginMonitoringLog();
 
-      $a_tags = $pmTag->find();
-      foreach ($a_tags as $data) {
-         if (!$pmLog->isRestartLessThanFiveMinutes()
-                 || $force) {
-            // Only specified tag, if specified ...
-            if (! empty($tag) && ($tag != $data['tag'])) { continue; }
+      if (!$pmLog->isRestartLessThanFiveMinutes()
+              || $force) {
+         if ($tag > 0) {
+            $pmTag->getFromDB($tag);
 
-            // TODO : should be parameters ... Shinken arbiter may use another port and may use HTTPS !
-            $url = 'http://'.$data['ip'].':7760/';
+            $url = 'http://'.$pmTag->fields['ip'].':'.$pmTag->fields['port'].'/';
 
-            $auth = $pmTag->getAuth($data['tag']);
+            $auth = $pmTag->getAuth($pmTag->fields['tag']);
             if ($this->sendCommand($url, $command, array(), '', $auth)) {
                $input = array();
                $input['user_name'] = $_SESSION['glpifirstname'].' '.$_SESSION['glpirealname'].
                        ' ('.$_SESSION['glpiname'].')';
                $input['action']    = $command . "_planned";
                $input['date_mod']  = date("Y-m-d H:i:s");
-               $input['value']     = $data['tag'];
+               $input['value']     = $pmTag->fields['tag'];
                $pmLog->add($input);
+            }
+         } else {
+            $a_tags = $pmTag->find();
+            foreach ($a_tags as $data) {
+               // TODO : should be parameters ... Shinken arbiter may use another port and may use HTTPS !
+               $url = 'http://'.$data['ip'].':'.$data['port'].'/';
+
+               $auth = $pmTag->getAuth($data['tag']);
+               if ($this->sendCommand($url, $command, array(), '', $auth)) {
+                  $input = array();
+                  $input['user_name'] = $_SESSION['glpifirstname'].' '.$_SESSION['glpirealname'].
+                          ' ('.$_SESSION['glpiname'].')';
+                  $input['action']    = $command . "_planned";
+                  $input['date_mod']  = date("Y-m-d H:i:s");
+                  $input['value']     = $data['tag'];
+                  $pmLog->add($input);
+               }
             }
          }
       }
