@@ -109,6 +109,16 @@ class PluginMonitoringTag extends CommonDBTM {
 		$tab[5]['name']      = __('Lock shinken address', 'monitoring');
       $tab[5]['datatype']  = 'bool';
 
+		$tab[6]['table']     = $this->getTable();
+		$tab[6]['field']     = 'port';
+		$tab[6]['linkfield'] = 'port';
+		$tab[6]['name']      = __('Port', 'monitoring');
+
+      $tab[7]['table']     = $this->getTable();
+      $tab[7]['field']     = 'comment';
+      $tab[7]['name']      = __('Comments');
+      $tab[7]['datatype']  = 'text';
+
       return $tab;
    }
 
@@ -142,18 +152,18 @@ class PluginMonitoringTag extends CommonDBTM {
       echo "</td>";
       echo "<td>".__('Username (Shinken webservice)', 'monitoring')."&nbsp;:</td>";
       echo "<td>";
-      echo "<input type='text' name='username' value='".$this->fields["username"]."' size='30'/>";
+      Html::autocompletionTextField($this, 'username');
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Shinken IP address', 'monitoring')." :</td>";
       echo "<td>";
-      echo "<input type='text' name='ip' value='".$this->fields["ip"]."' size='30'/>";
+      Html::autocompletionTextField($this, 'ip');
       echo "</td>";
       echo "<td>".__('Password (Shinken webservice)', 'monitoring')."&nbsp;:</td>";
       echo "<td>";
-      echo "<input type='text' name='password' value='".$this->fields["password"]."' size='30'/>";
+      Html::autocompletionTextField($this, 'password');
       echo "</td>";
       echo "</tr>";
 
@@ -162,7 +172,23 @@ class PluginMonitoringTag extends CommonDBTM {
       echo "<td>";
       Dropdown::showYesNo('iplock', $this->fields["iplock"]);
       echo "</td>";
+      echo "<td rowspan='2'>".__('Comments')."</td>";
+      echo "<td rowspan='2' class='middle'>";
+      echo "<textarea cols='45' rows='3' name='comment' >".$this->fields["comment"];
+      echo "</textarea></td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Port', 'monitoring')." :</td>";
+      echo "<td>";
+      Html::autocompletionTextField($this, 'port', array('size' => 10));
+      echo "</td>";
       echo "<td colspan='2'>";
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td colspan='4'>";
       echo "</td>";
       echo "</tr>";
 
@@ -192,6 +218,18 @@ class PluginMonitoringTag extends CommonDBTM {
       if (count($a_tags) == 1) {
          $a_tag = current($a_tags);
          return $a_tag['ip'];
+      }
+      return '';
+   }
+
+
+
+   function getPort($tag) {
+
+      $a_tags = $this->find("`tag`='".$tag."'", '', 1);
+      if (count($a_tags) == 1) {
+         $a_tag = current($a_tags);
+         return $a_tag['port'];
       }
       return '';
    }

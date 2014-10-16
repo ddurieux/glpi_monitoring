@@ -3164,6 +3164,12 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable,
                               'password',
                               "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
+         $migration->addField($newTable,
+                              'port',
+                              "varchar(255) COLLATE utf8_unicode_ci DEFAULT '7760'");
+         $migration->addField($newTable,
+                              'comment',
+                              "text DEFAULT NULL COLLATE utf8_unicode_ci");
       $migration->migrationOneTable($newTable);
 
 

@@ -856,6 +856,8 @@ CREATE TABLE `glpi_plugin_monitoring_tags` (
   `iplock` tinyint(1) NOT NULL DEFAULT '0',
   `username` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `password` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `port` varchar(255) COLLATE utf8_unicode_ci DEFAULT '7760',
+  `comment` text DEFAULT NULL COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
