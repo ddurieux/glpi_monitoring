@@ -58,4 +58,6 @@ Session::checkLoginUser();
 $pmMessage = new PluginMonitoringMessage();
 $pmMessage->displayShinkenRestart();
 
+Html::ajaxFooter();
+
 ?>

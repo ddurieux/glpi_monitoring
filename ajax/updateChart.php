@@ -320,4 +320,6 @@ updategraph'.$_POST['items_id'].$_POST['time'].$suffix.'();
 ';
 echo '</script>';
 
+Html::ajaxFooter();
+
 ?>

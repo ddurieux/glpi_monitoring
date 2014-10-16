@@ -58,4 +58,6 @@ Session::checkLoginUser();
 $pmDisplay = new PluginMonitoringDisplay();
 $pmDisplay->displayCounters($_POST['type']);
 
+Html::ajaxFooter();
+
 ?>

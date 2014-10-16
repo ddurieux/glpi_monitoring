@@ -51,4 +51,6 @@ if (isset($_POST['id'])) {
    $pmWeathermapnode->update($_POST);
 }
 
+Html::ajaxFooter();
+
 ?>
