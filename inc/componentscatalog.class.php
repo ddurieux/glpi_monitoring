@@ -238,7 +238,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       return $input;
    }
 
-   
+
    function displaySpecificTypeField($ID, $field=array()) {
 
 
@@ -577,7 +577,9 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          }
          // echo "<td><div style='width: 5px !important;'>&nbsp;</div></td>";
          if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
-            echo  "<td class='left'><a href='".$link."'>".$hosts_ids[$hosts_id]['name']."</a></td>";
+            $item = new $hosts_ids[$hosts_id]['itemtype'];
+            $item->getFromDB($hosts_ids[$hosts_id]['items_id']);
+            echo  "<td class='left'><a href='".$link."'>".$hosts_ids[$hosts_id]['name']."</a> ".$item->getComments()."</td>";
          } else {
             echo  "<td class='left'>".$hosts_ids[$hosts_id]['name']."</td>";
          }
