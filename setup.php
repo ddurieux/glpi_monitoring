@@ -50,12 +50,10 @@ function plugin_init_monitoring() {
 
    $PLUGIN_HOOKS['csrf_compliant']['monitoring'] = true;
 
-   $PLUGIN_HOOKS['change_profile']['monitoring'] = array('PluginMonitoringProfile','changeprofile');
+//   $PLUGIN_HOOKS['change_profile']['monitoring'] = array('PluginMonitoringProfile','changeprofile');
 
    $Plugin = new Plugin();
    if ($Plugin->isActivated('monitoring')) {
-//      if (isset($_SESSION["glpiID"])) {
-//         Plugin::loadLang("monitoring");
 
          Plugin::registerClass('PluginMonitoringEntity',
               array('addtabon' => array('Entity')));
@@ -101,7 +99,6 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['add_css']['monitoring']="css/views.css";
          $PLUGIN_HOOKS['add_javascript']['monitoring'] = array(
              "lib/jscolor/jscolor.js",
-             "lib/jquery/js/jquery-1.8.3.js",
              "lib/jqueryplugins/jquery-tagbox/js/jquery.tagbox.js"
              );
 
@@ -109,10 +106,12 @@ function plugin_init_monitoring() {
          if ($plugin->isActivated('monitoring')
                  AND isset($_SESSION['glpi_plugin_monitoring_profile'])) {
 
-            $PLUGIN_HOOKS['menu_entry']['monitoring'] = true;
+//            $PLUGIN_HOOKS['menu_entry']['monitoring'] = true;
 
             // No menu in helpdesk interface ...
-            $PLUGIN_HOOKS["helpdesk_menu_entry"]['monitoring'] = false;
+//            $PLUGIN_HOOKS["helpdesk_menu_entry"]['monitoring'] = false;
+
+            $PLUGIN_HOOKS['menu_toadd']['monitoring'] = array('plugins' => 'PluginMonitoringMenu');
          }
 
          $PLUGIN_HOOKS['config_page']['monitoring'] = 'front/config.form.php';
