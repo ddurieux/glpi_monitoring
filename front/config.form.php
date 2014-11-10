@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("config","w");
+Session::checkRight("config", UPDATE);
 
 Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "config");
@@ -78,7 +78,7 @@ if (isset ($_POST["update"])) {
 }
 
 
-$pmConfig->showForm(0, array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
+$pmConfig->showForm(0, array('canedit' => Session::haveRight("config", UPDATE)));
 
 Html::footer();
 

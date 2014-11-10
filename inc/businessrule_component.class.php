@@ -46,18 +46,7 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringBusinessrule_component extends CommonDBTM {
 
-
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("servicescatalog", 'w');
-   }
-
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("servicescatalog", 'r');
-   }
-
-
+   static $rightname = 'plugin_monitoring_servicescatalog';
 
    function replayDynamicServices($plugin_monitoring_businessrulegroups_id) {
       global $DB;

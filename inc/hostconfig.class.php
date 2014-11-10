@@ -46,6 +46,7 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringHostconfig extends CommonDBTM {
 
+   static $rightname = 'plugin_monitoring_componentscatalog';
 
    function initConfig() {
       global $DB;
@@ -84,16 +85,6 @@ class PluginMonitoringHostconfig extends CommonDBTM {
    **/
    static function getTypeName($nb=0) {
       return __('Host configuration', 'monitoring');
-   }
-
-
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config", 'w');
-   }
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config", 'r');
    }
 
 

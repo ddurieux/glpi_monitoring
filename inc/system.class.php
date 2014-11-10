@@ -47,13 +47,20 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringSystem extends CommonDBTM {
 
 
+   const HOMEPAGE         =  1024;
+   const DASHBOARD        =  2048;
+
+   static $rightname = 'plugin_monitoring_systemstatus';
+
+
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Central' :
-               if (PluginMonitoringProfile::haveRight("homepage", 'r') && PluginMonitoringProfile::haveRight("homepage_system_status", 'r')) {
+               if (Session::haveRight("plugin_monitoring_homepage", READ)
+                       && Session::haveRight("plugin_monitoring_systemstatus", PluginMonitoringSystem::HOMEPAGE)) {
                   return array(1 => "[".__('System status', 'monitoring'));
                } else {
                   return '';
@@ -82,6 +89,24 @@ class PluginMonitoringSystem extends CommonDBTM {
       }
       return true;
    }
+
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+    **/
+   function getRights($interface='central') {
+
+      $values = array();
+      $values[self::HOMEPAGE]    = __('See in homepage', 'monitoring');
+      $values[self::DASHBOARD]   = __('See in dashboard', 'monitoring');
+
+      return $values;
+   }
+
+
 }
 
 ?>

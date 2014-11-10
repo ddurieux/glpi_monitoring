@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("counters","w");
+Session::checkRight("plugin_monitoring_counter", READ);
 
 Html::header(__('Monitoring - daily counters', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "hostdailycounter");
@@ -64,9 +64,9 @@ if (isset ($_POST["add"])) {
 
 
 if (isset($_GET["id"])) {
-   $pmHostdailycounter->showForm($_GET["id"], array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
+   $pmHostdailycounter->showForm($_GET["id"], array('canedit' => Session::haveRight("config", UPDATE)));
 } else {
-   $pmHostdailycounter->showForm(0, array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
+   $pmHostdailycounter->showForm(0, array('canedit' => Session::haveRight("config", UPDATE)));
 }
 
 Html::footer();

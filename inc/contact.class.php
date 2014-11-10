@@ -46,6 +46,7 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringContact extends CommonDBTM {
 
+   static $rightname = 'plugin_monitoring_service';
 
    /**
    * Get name of this type
@@ -57,17 +58,6 @@ class PluginMonitoringContact extends CommonDBTM {
       return __('Contact', 'monitoring');
    }
 
-
-
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config", 'w');
-   }
-
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config", 'r');
-   }
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {

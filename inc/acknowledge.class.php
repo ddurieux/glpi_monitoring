@@ -46,29 +46,11 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringAcknowledge extends CommonDBTM {
 
+   static $rightname = 'plugin_monitoring_acknowledge';
+
    static function getTypeName($nb=0) {
       return __CLASS__;
       // return _n(__('Host acknowledge', 'monitoring'),__('Host acknowledges', 'monitoring'),$nb);
-   }
-
-
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("acknowledge", 'w');
-   }
-
-
-   static function canUpdate() {
-      return PluginMonitoringProfile::haveRight('acknowledge', 'w');
-   }
-
-
-   static function canDelete() {
-      return PluginMonitoringProfile::haveRight('acknowledge', 'w');
-   }
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("acknowledge", 'r');
    }
 
 
@@ -94,7 +76,7 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
       // echo $this->getUsername();
       echo"<i>". __('Acknowledged by: ', 'monitoring').$this->getUsername()."</i><br/>";
       echo"<i>". __('Acknowledge started: ', 'monitoring').$this->getField('start_time')."</i><br/>";
-      if (PluginMonitoringProfile::haveRight("acknowledge", 'w')) {
+      if (Session::haveRight("plugin_monitoring_acknowledge", UPDATE)) {
          echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?id=".$this->getID()."' title='".htmlspecialchars(__('Modify acknowledge comment', 'monitoring'), ENT_QUOTES)."'>";
          echo $this->getField('comment')."</a>";
       } else {
@@ -228,6 +210,7 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
 
       return $tab;
    }
+
 
 
    static function getSpecificValueToDisplay($field, $values, array $options=array()) {

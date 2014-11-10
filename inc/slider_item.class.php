@@ -47,6 +47,8 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringSlider_item extends CommonDBTM {
 
 
+   static $rightname = 'plugin_monitoring_slider';
+
    /**
    * Get name of this type
    *
@@ -58,19 +60,7 @@ class PluginMonitoringSlider_item extends CommonDBTM {
    }
 
 
-
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config_sliders", 'w');
-   }
-
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config_sliders", 'r');
-   }
-
-
-
+   
    function view($id, $config=0) {
       global $DB, $CFG_GLPI;
 

@@ -46,6 +46,9 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringComponent extends CommonDBTM {
 
+   static $rightname = 'plugin_monitoring_component';
+
+
    /**
    * Get name of this type
    *
@@ -64,18 +67,6 @@ class PluginMonitoringComponent extends CommonDBTM {
    function initComponents() {
 
 
-   }
-
-
-
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config", 'w');
-   }
-
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config", 'r');
    }
 
 
@@ -482,7 +473,7 @@ class PluginMonitoringComponent extends CommonDBTM {
          }
       }
 
-      if (PluginMonitoringProfile::haveRight("config_weathermap","r")) {
+      if (Session::haveRight("plugin_monitoring_weathermap", READ)) {
          echo "<tr>";
          echo "<th colspan='4'>".__('Weathermap', 'monitoring')."&nbsp;</th>";
          echo "</tr>";
@@ -536,7 +527,7 @@ class PluginMonitoringComponent extends CommonDBTM {
 
    function copyItem($items_id) {
 
-      if (! PluginMonitoringProfile::haveRight("config","w")) return;
+      if (! Session::haveRight("config", UPDATE)) return;
 
       // Add form for copy item
 

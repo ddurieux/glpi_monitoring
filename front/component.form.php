@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("config","r");
+Session::checkRight("plugin_monitoring_component", READ);
 
 Html::header(__('Monitoring - component', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "components");
@@ -156,9 +156,9 @@ if (isset($_POST["copy"])) {
 
 
 if (isset($_GET["id"])) {
-   $pMonitoringComponent->showForm($_GET["id"], array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
+   $pMonitoringComponent->showForm($_GET["id"], array('canedit' => Session::haveRight("config", UPDATE)));
 } else {
-   $pMonitoringComponent->showForm(0, array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
+   $pMonitoringComponent->showForm(0, array('canedit' => Session::haveRight("config", UPDATE)));
 }
 
 Html::footer();

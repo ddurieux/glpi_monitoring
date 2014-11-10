@@ -47,6 +47,7 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringCustomitem_Counter extends CommonDBTM {
 
 
+   static $rightname = 'plugin_monitoring_displayview';
 
    /**
    * Get name of this type
@@ -58,19 +59,7 @@ class PluginMonitoringCustomitem_Counter extends CommonDBTM {
       return __('Custom item', 'monitoring')." - ".__('Counter', 'monitoring');
    }
 
-
-
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config", 'w');
-   }
-
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config", 'r');
-   }
-
-
+   
 
    function getSearchOptions() {
 

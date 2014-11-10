@@ -47,6 +47,8 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringLog extends CommonDBTM {
 
 
+   static $rightname = 'config';
+
    /**
    * Get name of this type
    *
@@ -57,19 +59,7 @@ class PluginMonitoringLog extends CommonDBTM {
       return __('Logs', 'monitoring');
    }
 
-
-
-   static function canCreate() {
-      return Session::haveRight('config', 'w');
-   }
-
-
-
-   static function canView() {
-      return Session::haveRight('config', 'r');
-   }
-
-
+   
 
    static function cronInfo($name){
 
@@ -101,7 +91,7 @@ class PluginMonitoringLog extends CommonDBTM {
          $a_reload = current($a_reloads);
          $id_reload = $a_reload['id'];
       }
-      
+
       $pmConfig->getFromDB(1);
       $secs = $pmConfig->fields['logretention'] * DAY_TIMESTAMP;
       $query = "DELETE FROM `".$pmLog->getTable()."`

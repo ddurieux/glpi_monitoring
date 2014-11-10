@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("config_components_catalogs","r");
+Session::checkRight("plugin_monitoring_componentscatalog", READ);
 
 $pmComponentscatalog_Component = new PluginMonitoringComponentscatalog_Component();
 

@@ -46,6 +46,7 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringMenu extends CommonGLPI {
 
+   static $rightname = 'config';
 
    /**
    * Get name of this type
@@ -56,21 +57,6 @@ class PluginMonitoringMenu extends CommonGLPI {
    static function getTypeName($nb=0) {
       return 'Monitoring';
    }
-
-
-
-   static function canCreate() {
-      return true;
-      return PluginMonitoringProfile::haveRight("config", 'w');
-   }
-
-
-
-   static function canView() {
-      return true;
-      return PluginMonitoringProfile::haveRight("config", 'r');
-   }
-
 
 }
 

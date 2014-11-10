@@ -46,6 +46,9 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringCommand extends CommonDBTM {
 
+   static $rightname = 'plugin_monitoring_command';
+
+
 /*
    Shinken 2.0 defines:
       # Nagios legacy macros
@@ -355,18 +358,6 @@ class PluginMonitoringCommand extends CommonDBTM {
 
 
 
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config", 'w');
-   }
-
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config", 'r');
-   }
-
-
-
    function getSearchOptions() {
 
       $tab = array();
@@ -522,7 +513,7 @@ class PluginMonitoringCommand extends CommonDBTM {
       $this->showFormButtons($options);
 
       // Add form for copy item
-      if ($items_id!='' && PluginMonitoringProfile::haveRight("config","w")) {
+      if ($items_id!='' && Session::haveRight("config", UPDATE)) {
          $this->fields['id'] = 0;
          $this->showFormHeader($options);
 

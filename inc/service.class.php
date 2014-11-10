@@ -46,16 +46,15 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringService extends CommonDBTM {
 
+   const HOMEPAGE         =  1024;
+   const DASHBOARD        =  2048;
+
+   static $rightname = 'plugin_monitoring_service';
+
 
    static function getTypeName($nb=0) {
       return __('Resources', 'monitoring');
    }
-
-
-   static function canCreate() {
-      return Session::haveRight('computer', 'w');
-   }
-
 
 
    function getSearchOptions() {
@@ -173,10 +172,12 @@ class PluginMonitoringService extends CommonDBTM {
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Central' :
-               if (PluginMonitoringProfile::haveRight("homepage", 'r') && PluginMonitoringProfile::haveRight("homepage_all_ressources", 'r')) {
+               if (Session::haveRight("plugin_monitoring_homepage", READ)
+                       && Session::haveRight("plugin_monitoring_service", READ)) {
                   return array(1 => __('All resources', 'monitoring'));
                } else {
-                  if (PluginMonitoringProfile::haveRight("homepage", 'r') && PluginMonitoringProfile::haveRight("homepage_perfdata", 'r')) {
+                  if (Session::haveRight("plugin_monitoring_homepage", READ)
+                          && Session::haveRight("plugin_monitoring_perfdata", READ)) {
                      return array(1 => __('Performance data', 'monitoring'));
                   } else {
                      return '';
@@ -186,6 +187,23 @@ class PluginMonitoringService extends CommonDBTM {
       }
       return '';
    }
+
+
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+    **/
+   function getRights($interface='central') {
+
+      $values = array();
+      $values[self::HOMEPAGE]    = __('See in homepage', 'monitoring');
+      $values[self::DASHBOARD]   = __('See in dashboard', 'monitoring');
+
+      return $values;
+   }
+
+
 
 
    /**
@@ -565,7 +583,7 @@ class PluginMonitoringService extends CommonDBTM {
       if ($itemtype == 'Computer') {
          $pmHostaddress = new PluginMonitoringHostaddress();
          $item = new $itemtype();
-         if ($item->can($items_id, 'w')) {
+         if ($item->can($items_id, UPDATE)) {
             $pmHostaddress->showForm($items_id, $itemtype);
          }
       }
@@ -1389,7 +1407,7 @@ class PluginMonitoringService extends CommonDBTM {
    function showAddAcknowledgeForm($id=-1) {
       global $CFG_GLPI,$DB;
 
-      PluginMonitoringProfile::checkRight("acknowledge", 'w');
+      Session::checkRight("plugin_monitoring_acknowledge", UPDATE);
 
       if ($id == -1) {
          $pm_Service = $this;
@@ -1440,7 +1458,7 @@ class PluginMonitoringService extends CommonDBTM {
    function showUpdateAcknowledgeForm($id='-1') {
       global $CFG_GLPI;
 
-      PluginMonitoringProfile::checkRight("acknowledge", 'w');
+      Session::checkRight("plugin_monitoring_acknowledge", UPDATE);
 
       if ($id == -1) {
          $pm_Service = $this;

@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("acknowledge","r");
+Session::checkRight("plugin_monitoring_acknowledge", READ);
 
 Html::header(__('Monitoring - acknowledges', 'monitoring'),'', "plugins", "monitoring", "acknowledge");
 

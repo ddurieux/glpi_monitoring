@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("dashboard_all_ressources","r");
+Session::checkRight("plugin_monitoring_service", READ);
 
 Html::header(__('Monitoring - resources events', 'monitoring'),'', "plugins", "monitoring", "event");
 

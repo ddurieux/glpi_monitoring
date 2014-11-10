@@ -49,20 +49,10 @@ class PluginMonitoringRealm extends CommonDropdown {
    public $first_level_menu  = "plugins";
    public $second_level_menu = "monitoring";
 
+   static $rightname = 'plugin_monitoring_realm';
+
    static function getTypeName($nb=0) {
       return __('Reamls', 'monitoring');
-   }
-
-
-
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config", 'w');
-   }
-
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config", 'r');
    }
 
 

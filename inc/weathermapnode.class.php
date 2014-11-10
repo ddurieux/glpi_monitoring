@@ -46,18 +46,7 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringWeathermapnode extends CommonDBTM {
 
-
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config_weathermap", 'w');
-   }
-
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config_weathermap", 'r');
-   }
-
-
+   static $rightname = 'plugin_monitoring_weathermap';
 
    function getNodeName($nodes_id) {
 

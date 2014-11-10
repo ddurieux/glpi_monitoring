@@ -47,19 +47,10 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringContact_Item extends CommonDBTM {
 
 
+   static $rightname = 'plugin_monitoring_service';
+
    static function getTypeName($nb=0) {
       return __('Contacts', 'monitoring');
-   }
-
-
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config", 'w');
-   }
-
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config", 'r');
    }
 
 

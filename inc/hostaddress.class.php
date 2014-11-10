@@ -47,6 +47,7 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringHostaddress extends CommonDBTM {
    public $table = "glpi_plugin_monitoring_hostaddresses";
 
+   static $rightname = 'plugin_monitoring_hoststatus';
 
    /**
    * Get name of this type
@@ -56,18 +57,6 @@ class PluginMonitoringHostaddress extends CommonDBTM {
    **/
    static function getTypeName($nb=0) {
       return "Host address";
-   }
-
-
-
-   static function canCreate() {
-      return Session::haveRight('computer', 'w');
-   }
-
-
-
-   static function canView() {
-      return Session::haveRight('computer', 'r');
    }
 
 

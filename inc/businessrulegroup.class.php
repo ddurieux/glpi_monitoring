@@ -46,20 +46,10 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringBusinessrulegroup extends CommonDBTM {
 
+   static $rightname = 'plugin_monitoring_servicescatalog';
 
    static function getTypeName($nb=0) {
       return _n('Group', 'Groups', $nb, 'monitoring');
-   }
-
-
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config_services_catalogs", 'w');
-   }
-
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config_services_catalogs", 'r');
    }
 
 
@@ -117,7 +107,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
       echo "<input type='text' name='name' value='".$this->fields["name"]."' size='30'/>";
       echo "</td>";
       if ($items_id!='') {
-         if (PluginMonitoringProfile::haveRight("config_services_catalogs", 'w')) {
+         if (Session::haveRight("plugin_monitoring_servicescatalog", CREATE)) {
             echo "<th colspan='2' width='60%'>";
             echo __('Resources', 'monitoring');
             echo "&nbsp;";
@@ -151,7 +141,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
       echo "</td>";
       if ($items_id!='') {
          echo "<td colspan='2'>";
-         if (PluginMonitoringProfile::haveRight("config_services_catalogs", 'w')) {
+         if (Session::haveRight("plugin_monitoring_servicescatalog", CREATE)) {
             // ** Dropdown to display
             echo "<div style='display:none' id='ressources".$rand."' >";
             // Static (a service for an host)

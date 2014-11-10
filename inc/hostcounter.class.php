@@ -46,6 +46,8 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringHostCounter extends CommonDBTM {
 
+   static $rightname = 'plugin_monitoring_counter';
+
    /**
    * Get name of this type
    *
@@ -57,20 +59,10 @@ class PluginMonitoringHostCounter extends CommonDBTM {
    }
 
 
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config", 'w');
-   }
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config", 'r');
-   }
-
 
    function defineTabs($options=array()){
 
       $ong = array();
-
       return $ong;
    }
 

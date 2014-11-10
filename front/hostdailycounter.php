@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("counters","r");
+Session::checkRight("plugin_monitoring_counter", READ);
 
 Html::header(__('Monitoring - daily counters', 'monitoring'),'', "plugins", "monitoring", "hostdailycounter");
 
@@ -59,8 +59,8 @@ Search::show('PluginMonitoringHostdailycounter', array(
    ));
 
 PluginMonitoringHostdailycounter::runCheckCounters(
-   isset($_GET['date']) ? $_GET['date'] : '', 
-   isset($_GET['hostname']) ? $_GET['hostname'] : '%', 
+   isset($_GET['date']) ? $_GET['date'] : '',
+   isset($_GET['hostname']) ? $_GET['hostname'] : '%',
    isset($_GET['interval']) ? $_GET['interval'] : 7);
 
 Html::footer();

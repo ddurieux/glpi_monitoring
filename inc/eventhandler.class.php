@@ -46,6 +46,7 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringEventhandler extends CommonDBTM {
 
+   static $rightname = 'plugin_monitoring_eventhandler';
 
    /**
    * Get name of this type
@@ -55,18 +56,6 @@ class PluginMonitoringEventhandler extends CommonDBTM {
    **/
    static function getTypeName($nb=0) {
       return __('Event handler', 'monitoring');
-   }
-
-
-
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config", 'w');
-   }
-
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config", 'r');
    }
 
 

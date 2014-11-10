@@ -47,6 +47,8 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
 
 
+   static $rightname = 'plugin_monitoring_componentscatalog';
+
    /**
    * Get name of this type
    *
@@ -55,18 +57,6 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
    **/
    static function getTypeName($nb=0) {
       return _n('Rule', 'Rules', $nb);
-   }
-
-
-
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config_components_catalogs", 'w');
-   }
-
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config_components_catalogs", 'r');
    }
 
 
@@ -117,7 +107,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
    function preaddRule($componentscatalogs_id) {
       global $CFG_GLPI,$DB;
 
-      if (! PluginMonitoringProfile::haveRight("config_components_catalogs", 'w')) return;
+      if (! Session::haveRight("plugin_monitoring_componentscatalog", UPDATE)) return;
 
       $networkport_types = $CFG_GLPI['networkport_types'];
       $networkport_types[] = "PluginMonitoringNetworkport";

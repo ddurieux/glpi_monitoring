@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("downtime","r");
+Session::checkRight("plugin_monitoring_downtime", READ);
 
 Html::header(__('Monitoring - downtimes', 'monitoring'),'', "plugins", "monitoring", "downtime");
 
@@ -52,15 +52,15 @@ if (isset ($_POST["add"])) {
    // If category is specified, a new ticket is to be created ...
    if (isset ($_POST['itilcategories_id']) && ($_POST['itilcategories_id'] != 0)) {
       $track = new Ticket();
-      $track->check(-1,'w',$_POST);
-      
+      $track->check(-1, CREATE ,$_POST);
+
       // $sla_name = Dropdown::getDropdownName("glpi_slas", $_POST['slas_id']);
       $category_name = Dropdown::getDropdownName("glpi_itilcategories", $_POST['itilcategories_id']);
       $track_name = __('Scheduled downtime', 'monitoring')." / ".$category_name;
-      
+
       $fields = array();
       $fields['content'] = "";
-      
+
       // Find ticket template if available ...
       $tt = $track->getTicketTemplateToUse(0, $_POST['type'], $_POST['itilcategories_id']);
       if (isset($tt->predefined) && count($tt->predefined)) {
@@ -82,7 +82,7 @@ if (isset ($_POST["add"])) {
       // $fields['type'] =                $_POST['type'];
       $fields['itilcategories_id'] =   $_POST['itilcategories_id'];
       $fields['locations_id'] =        $_POST['locations_id'];
-      $fields['name'] =                $track_name; 
+      $fields['name'] =                $track_name;
       $fields['content'] .=            "\n-----\n" . $_POST['comment'];
 
 /*
@@ -91,13 +91,13 @@ if (isset ($_POST["add"])) {
       echo "</pre>";
       die('test');
 */
-      
+
       // Create a new ticket ...
       $_POST['tickets_id'] = $track->add($fields);
 
       // Create new downtime with associated ticket ...
       $pmDowntime->add($_POST);
-      
+
       // Redirect to new ticket form if required
       if (isset ($_POST["redirect"])) {
          Html::redirect($_POST["redirect"]."?id=".$_POST['tickets_id']);

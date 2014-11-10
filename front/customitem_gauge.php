@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("config","r");
+Session::checkRight("plugin_monitoring_displayview", READ);
 
 Html::header(__('Monitoring - gauge', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "customitem_gauge");

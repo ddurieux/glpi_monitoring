@@ -46,16 +46,7 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringPerfdataDetail extends CommonDBTM {
 
-
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config", 'w');
-   }
-
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config", 'r');
-   }
+   static $rightname = 'plugin_monitoring_perfdata';
 
 
 
@@ -120,7 +111,7 @@ class PluginMonitoringPerfdataDetail extends CommonDBTM {
          echo "</td>";
       }
 
-      if (PluginMonitoringProfile::haveRight("config","w")) {
+      if (Session::haveRight("config", UPDATE)) {
          echo "<td>";
          echo "<input type='hidden' name='id' value='".$this->fields['id']."'/>";
          echo "<input type='submit' class='submit' name='update' value='update'/>";

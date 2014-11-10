@@ -56,7 +56,7 @@ $toDisplayArea=0;
 // - on main Monitoring plugin page
 // - one button per each declared Shinken tag
 // - one button to restart all Shinken instances
-if (PluginMonitoringProfile::haveRight("restartshinken", 'r')) {
+if (Session::haveRight("plugin_monitoring_restartshinken", CREATE)) {
    $pmTag = new PluginMonitoringTag();
    $a_tagsBrut = $pmTag->find();
 
@@ -128,20 +128,20 @@ if (PluginMonitoringProfile::haveRight("restartshinken", 'r')) {
    }
 }
 
-if (PluginMonitoringProfile::haveRight("dashboard", 'r') && !PluginMonitoringProfile::haveRight("config", 'r')) {
+if (Session::haveRight("plugin_monitoring_dashboard", READ)
+        && !Session::haveRight("config", READ)) {
    Html::redirect($CFG_GLPI['root_doc']."/plugins/monitoring/front/dashboard.php");
 }
 
-if (PluginMonitoringProfile::haveRight("dashboard", 'r')
+if (Session::haveRight("plugin_monitoring_dashboard", READ)
       && (
-         PluginMonitoringProfile::haveRight("restartshinken", 'r')
-         || PluginMonitoringProfile::haveRight("dashboard_system_status", 'r')
-         || PluginMonitoringProfile::haveRight("dashboard_hosts_status", 'r')
-         || PluginMonitoringProfile::haveRight("dashboard_services_catalogs", 'r')
-         || PluginMonitoringProfile::haveRight("dashboard_components_catalogs", 'r')
-         || PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')
-         || PluginMonitoringProfile::haveRight("dashboard_perfdata", 'r')
-         || PluginMonitoringProfile::haveRight("dashboard_views", 'r'))) {
+         Session::haveRight("plugin_monitoring_restartshinken", CREATE)
+         || Session::haveRight("plugin_monitoring_systemstatus", PluginMonitoringSystem::DASHBOARD)
+         || Session::haveRight("plugin_monitoring_hoststatus", PluginMonitoringHost::DASHBOARD)
+         || Session::haveRight("plugin_monitoring_servicescatalog", PluginMonitoringServicescatalog::DASHBOARD)
+         || Session::haveRight("plugin_monitoring_componentscatalog", PluginMonitoringComponentscatalog::DASHBOARD)
+         || Session::haveRight("plugin_monitoring_service", PluginMonitoringService::DASHBOARD)
+         || Session::haveRight("plugin_monitoring_displayview", PluginMonitoringDisplayview::DASHBOARD))) {
    $toDisplayArea++;
 
    echo "<table class='tab_cadre' width='950'>";
@@ -154,18 +154,18 @@ if (PluginMonitoringProfile::haveRight("dashboard", 'r')
 
    echo "<br/>";
 }
-if (PluginMonitoringProfile::haveRight("config_views", 'r')
-        || PluginMonitoringProfile::haveRight("config_sliders", 'r')) {
+if (Session::haveRight("plugin_monitoring_displayview", READ)
+        || Session::haveRight("plugin_monitoring_slider", READ)) {
 
    echo "<table class='tab_cadre' width='950'>";
    echo "<tr class='tab_bg_1'>";
-   if (PluginMonitoringProfile::haveRight("config_views", 'r')) {
+   if (Session::haveRight("plugin_monitoring_displayview", READ)) {
       $toDisplayArea++;
       echo "<th align='center' height='40' width='34%'>";
       echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/displayview.php'>".__('Views', 'monitoring')."</a>";
       echo "</th>";
    }
-   if (PluginMonitoringProfile::haveRight("config_sliders", 'r')) {
+   if (Session::haveRight("plugin_monitoring_slider", READ)) {
       echo "<th align='center' height='40' width='34%'>";
       echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/slider.php'>".__('Carrousel / slider', 'monitoring')."</a>";
       echo "</th>";
@@ -176,19 +176,19 @@ if (PluginMonitoringProfile::haveRight("config_views", 'r')
 }
 
 
-if (PluginMonitoringProfile::haveRight("config_services_catalogs", 'r')
-      || PluginMonitoringProfile::haveRight("config_weathermap", 'r')
-      || PluginMonitoringProfile::haveRight("config_views", 'r')) {
+if (Session::haveRight("plugin_monitoring_servicescatalog", READ)
+      || Session::haveRight("plugin_monitoring_weathermap", READ)
+      || Session::haveRight("plugin_monitoring_displayview", READ)) {
    echo "<table class='tab_cadre' width='950'>";
    echo "<tr class='tab_bg_1'>";
-   if (PluginMonitoringProfile::haveRight("config_services_catalogs", 'r')) {
+   if (Session::haveRight("plugin_monitoring_servicescatalog", READ)) {
       $toDisplayArea++;
       echo "<th align='center' height='30' width='33%'>";
       echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicescatalog.php'>".__('Services catalogs', 'monitoring')."</a>";
       echo "</th>";
    }
 
-   if (PluginMonitoringProfile::haveRight("config_weathermap", 'r')) {
+   if (Session::haveRight("plugin_monitoring_weathermap", READ)) {
       $toDisplayArea++;
       echo "<th align='center' height='30' width='33%'>";
       echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/weathermap.php'>".__('Weathermaps', 'monitoring')."</a>";
@@ -197,7 +197,7 @@ if (PluginMonitoringProfile::haveRight("config_services_catalogs", 'r')
    echo "</tr>";
 
    echo "<tr class='tab_bg_1'>";
-   if (PluginMonitoringProfile::haveRight("config_views", 'r')) {
+   if (Session::haveRight("plugin_monitoring_displayview", READ)) {
       $toDisplayArea++;
       echo "<th align='center' height='30' width='34%'>";
       echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/customitem_gauge.php'>".PluginMonitoringCustomitem_Gauge::getTypeName()."</a>";
@@ -212,7 +212,7 @@ if (PluginMonitoringProfile::haveRight("config_services_catalogs", 'r')
    echo "<br/>";
 }
 
-if (PluginMonitoringProfile::haveRight("config_components_catalogs", 'r')) {
+if (Session::haveRight("plugin_monitoring_componentscatalog", READ)) {
    $toDisplayArea++;
    echo "<table class='tab_cadre' width='950'>";
    echo "<th height='30'>";
@@ -224,7 +224,7 @@ if (PluginMonitoringProfile::haveRight("config_components_catalogs", 'r')) {
    echo "<br/>";
 }
 
-if (PluginMonitoringProfile::haveRight("config", 'r')) {
+if (Session::haveRight("config", READ)) {
 
    $toDisplayArea++;
    echo "<table class='tab_cadre' width='950'>";
@@ -261,7 +261,7 @@ if (PluginMonitoringProfile::haveRight("config", 'r')) {
    echo "</th>";
 
    echo "<th width='11%'>";
-   if (Session::haveRight('calendar', 'r')) {
+   if (Session::haveRight('calendar', READ)) {
       echo "<a href='".$CFG_GLPI['root_doc']."/front/calendar.php'>".__('Calendar')."</a>";
    }
    echo "</th>";

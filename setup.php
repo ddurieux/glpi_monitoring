@@ -103,8 +103,7 @@ function plugin_init_monitoring() {
              );
 
          $plugin = new Plugin();
-         if ($plugin->isActivated('monitoring')
-                 AND isset($_SESSION['glpi_plugin_monitoring_profile'])) {
+         if ($plugin->isActivated('monitoring')) {
 
 //            $PLUGIN_HOOKS['menu_entry']['monitoring'] = true;
 

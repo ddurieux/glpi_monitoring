@@ -46,14 +46,12 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringServiceevent extends CommonDBTM {
 
+   static $rightname = 'plugin_monitoring_service';
+
    static function getTypeName($nb=0) {
       return __CLASS__;
    }
 
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r') || PluginMonitoringProfile::haveRight("homepage_all_ressources", 'r');
-   }
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {

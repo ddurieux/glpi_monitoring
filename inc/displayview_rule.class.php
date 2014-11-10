@@ -47,6 +47,8 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringDisplayview_rule extends CommonDBTM {
 
 
+   static $rightname = 'plugin_monitoring_displayview';
+
    /**
    * Get name of this type
    *
@@ -55,18 +57,6 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
    **/
    static function getTypeName($nb=0) {
       return _n('Rule', 'Rules', $nb);
-   }
-
-
-
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config_views", 'w');
-   }
-
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config_views", 'r');
    }
 
 

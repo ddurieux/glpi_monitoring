@@ -46,28 +46,11 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringDowntime extends CommonDBTM {
 
+   static $rightname = 'plugin_monitoring_downtime';
+
+
    static function getTypeName($nb=0) {
       return __CLASS__;
-   }
-
-
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("downtime", 'w');
-   }
-
-
-   static function canUpdate() {
-      return PluginMonitoringProfile::haveRight('downtime', 'w');
-   }
-
-
-   static function canDelete() {
-      return PluginMonitoringProfile::haveRight('downtime', 'w');
-   }
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("downtime", 'r');
    }
 
 
@@ -444,7 +427,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
                                                       $input['duration_seconds'],
                                                       'add'
                                                       );
-                                                         
+
 /*
                   // Send acknowledge command for a service to shinken via webservice
                   if ($pmShinkenwebservice->sendAcknowledge(-1,
@@ -677,12 +660,12 @@ class PluginMonitoringDowntime extends CommonDBTM {
          echo "<tr class='tab_bg_1'>";
          echo "<td colspan='4'>&nbsp;</td>";
          echo "</tr>";
-         
+
          if ($this->isAssociatedTicket()) {
             echo "<tr class='tab_bg_3'>";
             echo "<td colspan='4'>".__('Downtime associated ticket', 'monitoring')."</td>";
             echo "</tr>";
-            
+
             // Find ticket in DB ...
             $track = new Ticket();
             $track->getFromDB($this->getField("tickets_id"));
@@ -693,7 +676,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
             echo "<td class='center' bgcolor='$bgcolor'>".sprintf(__('%1$s: %2$s'), __('ID'),
                                                                   $track->fields["id"])."</td>";
             echo "<td class='center'>";
-            
+
             $showprivate = Session::haveRight("show_full_ticket", 1);
             $link = "<a id='ticket".$track->fields["id"]."' href='".$CFG_GLPI["root_doc"].
                       "/front/ticket.form.php?id=".$track->fields["id"];
@@ -713,23 +696,23 @@ class PluginMonitoringDowntime extends CommonDBTM {
             echo "<tr class='tab_bg_3'>";
             echo "<td colspan='4'>".__('Associated ticket (no declared category implies no ticket created):', 'monitoring')."</td>";
             echo "</tr>";
-            
+
             echo "<input type='hidden' name='redirect' value='".$CFG_GLPI["root_doc"]."/front/ticket.form.php' />";
             echo "<input type='hidden' name='itemtype' value='".$pmHost->getField("itemtype")."' />";
             echo "<input type='hidden' name='items_id' value='".$pmHost->getField("items_id")."' />";
-            
+
             echo '<input type="hidden" name="entities_id" value="'.$item->fields['entities_id'].'" />';
-            
+
             $item = new $itemtype();
             $item->getFromDB($pmHost->getField("items_id"));
             echo "<input type='hidden' name='locations_id' value='".$item->getField("locations_id")."' />";
-            
+
 /*
             // Find SLA ...
             $sla = new Sla();
             $slas = current($sla->find("`name` LIKE '%proactive%' LIMIT 1"));
             $sla_id = isset($slas['id']) ? $slas['id'] : 0;
-            
+
             echo "<tr class='tab_bg_3'>";
             echo "<td>".__('Ticket SLA:', 'monitoring')."</td>";
             echo "<td colspan='3'>";
@@ -737,7 +720,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
             echo "</td>";
             echo "</tr>";
 */
-            
+
             // Ticket type ...
             echo "<tr class='tab_bg_3'>";
             echo "<td>".__('Ticket type:', 'monitoring')."</td>";
@@ -745,12 +728,12 @@ class PluginMonitoringDowntime extends CommonDBTM {
             Ticket::dropdownType("type", array('value'  => Ticket::INCIDENT_TYPE));
             echo "</td>";
             echo "</tr>";
-            
+
             // Find category ...
             $category = new ITILCategory();
             $categories = current($category->find("`name` LIKE '%incident%' LIMIT 1"));
             $category_id = isset($categories['id']) ? $categories['id'] : 0;
-            
+
 /*
             echo "
             <script>
@@ -782,11 +765,11 @@ class PluginMonitoringDowntime extends CommonDBTM {
             echo "</tr>";
          }
       }
-      
+
       $this->showFormButtons(array(
          'canedit'      => $createDowntime
          ));
-         
+
       return true;
    }
 

@@ -69,15 +69,14 @@ class PluginMonitoringDisplay extends CommonDBTM {
       echo "<tr class='tab_bg_3'>";
       echo "<td>";
 
-      if (PluginMonitoringProfile::haveRight("dashboard_system_status", 'r')
-              || PluginMonitoringProfile::haveRight("dashboard_perfdata", 'r')
-              || PluginMonitoringProfile::haveRight("dashboard_hosts_status", 'r')
-              || PluginMonitoringProfile::haveRight("dashboard_services_catalogs", 'r')
-              || PluginMonitoringProfile::haveRight("dashboard_components_catalogs", 'r')
-              || PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+      if (Session::haveRight("plugin_monitoring_systemstatus", PluginMonitoringSystem::DASHBOARD)
+              || Session::haveRight("plugin_monitoring_hoststatus", PluginMonitoringHost::DASHBOARD)
+              || Session::haveRight("plugin_monitoring_servicescatalog", PluginMonitoringService::DASHBOARD)
+              || Session::haveRight("plugin_monitoring_componentscatalog", PluginMonitoringComponentscatalog::DASHBOARD)
+              || Session::haveRight("plugin_monitoring_service", PluginMonitoringService::DASHBOARD)) {
          echo "<table class='tab_cadre_fixe'>";
          echo "<tr class='tab_bg_1'>";
-         if (PluginMonitoringProfile::haveRight("dashboard_system_status", 'r')) {
+         if (Session::haveRight("plugin_monitoring_systemstatus", PluginMonitoringSystem::DASHBOARD)) {
             echo "<th colspan='2'>";
             $this->displayPuce('display_system_status');
             echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_system_status.php'>";
@@ -90,7 +89,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                $redirect = TRUE;
             }
          }
-         if (PluginMonitoringProfile::haveRight("dashboard_hosts_status", 'r')) {
+         if (Session::haveRight("plugin_monitoring_hoststatus", PluginMonitoringHost::DASHBOARD)) {
             echo "<th colspan='2'>";
             $this->displayPuce('host');
             echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/host.php'>";
@@ -103,7 +102,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                $redirect = TRUE;
             }
          }
-         if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+         if (Session::haveRight("plugin_monitoring_servicescatalog", PluginMonitoringService::DASHBOARD)) {
             echo "<th colspan='2'>";
             $this->displayPuce('service');
             echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/service.php'>";
@@ -116,7 +115,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                $redirect = TRUE;
             }
          }
-         if (PluginMonitoringProfile::haveRight("dashboard_perfdata", 'r')) {
+         if (Session::haveRight("plugin_monitoring_service", PluginMonitoringService::DASHBOARD)) {
             echo "<th colspan='2'>";
             $this->displayPuce('perfdatas');
             echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/perfdatas.php'>";
@@ -129,7 +128,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                $redirect = TRUE;
             }
          }
-         if (PluginMonitoringProfile::haveRight("dashboard_services_catalogs", 'r')) {
+         if (Session::haveRight("plugin_monitoring_servicescatalog", PluginMonitoringService::DASHBOARD)) {
             echo "<th colspan='2'>";
             $this->displayPuce('display_servicescatalog');
             echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_servicescatalog.php'>";
@@ -142,7 +141,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                $redirect = TRUE;
             }
          }
-         if (PluginMonitoringProfile::haveRight("dashboard_components_catalogs", 'r')) {
+         if (Session::haveRight("plugin_monitoring_componentscatalog", PluginMonitoringComponentscatalog::DASHBOARD)) {
             echo "<th colspan='2'>";
             $this->displayPuce('display_componentscatalog');
             echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_componentscatalog.php'>";
@@ -157,7 +156,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          }
          echo "</tr>";
          echo "</table>";
-         if (PluginMonitoringProfile::haveRight("counters", 'r')) {
+         if (Session::haveRight("plugin_monitoring_counter", READ)) {
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'>";
             echo "<th>";
@@ -166,8 +165,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
             echo "</tr>";
             echo "</table>";
          }
-         if (PluginMonitoringProfile::haveRight("acknowledge", 'r')
-              || PluginMonitoringProfile::haveRight("downtime", 'r')) {
+         if (Session::haveRight("plugin_monitoring_acknowledge", READ)
+              || Session::haveRight("plugin_monitoring_downtime", READ)) {
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'>";
             echo "<th>";
@@ -191,7 +190,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          }
       }
 
-      if (PluginMonitoringProfile::haveRight("dashboard_views", 'r')) {
+      if (Session::haveRight("plugin_monitoring_displayview", PluginMonitoringDisplayview::DASHBOARD)) {
          $i = 1;
             $pmDisplayview = new PluginMonitoringDisplayview();
             $a_views = $pmDisplayview->getViews();
@@ -228,7 +227,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
             }
       }
 
-      if (PluginMonitoringProfile::haveRight("dashboard_sliders", 'r')) {
+      if (Session::haveRight("plugin_monitoring_slider", PluginMonitoringSlider::DASHBOARD)) {
          $i = 1;
             $pmSlider = new PluginMonitoringSlider();
             $a_sliders = $pmSlider->getSliders();
@@ -289,23 +288,23 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $pmDisplayview = new PluginMonitoringDisplayview();
 
       $ong = array();
-      if (PluginMonitoringProfile::haveRight("dashboard_system_status", 'r')) {
+      if (Session::haveRight("plugin_monitoring_systemstatus", PluginMonitoringSystem::DASHBOARD)) {
          $ong[1] = __('System status', 'monitoring');
       }
-      if (PluginMonitoringProfile::haveRight("dashboard_hosts_status", 'r')) {
+      if (Session::haveRight("plugin_monitoring_hoststatus", PluginMonitoringHost::DASHBOARD)) {
          $ong[2] = __('Hosts status', 'monitoring');
       }
-      if (PluginMonitoringProfile::haveRight("dashboard_services_catalogs", 'r')) {
+      if (Session::haveRight("plugin_monitoring_servicescatalog", PluginMonitoringServicescatalog::DASHBOARD)) {
          $ong[3] = __('Services catalog', 'monitoring');
       }
-      if (PluginMonitoringProfile::haveRight("dashboard_components_catalogs", 'r')) {
+      if (Session::haveRight("plugin_monitoring_componentscatalog", PluginMonitoringComponentscatalog::DASHBOARD)) {
          $ong[4] = __('Components catalog', 'monitoring');
       }
-      if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+      if (Session::haveRight("plugin_monitoring_service", READ)) {
          $ong[5] = __('All resources', 'monitoring');
       }
       $ong[6] = __('Dependencies;', 'monitoring');
-      if (PluginMonitoringProfile::haveRight("dashboard_views", 'r')) {
+      if (Session::haveRight("plugin_monitoring_displayview", PluginMonitoringDisplayview::DASHBOARD)) {
          $i = 7;
          $a_views = $pmDisplayview->getViews();
          foreach ($a_views as $name) {
@@ -681,7 +680,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
          $this->showHeaderItem(__('Last check', 'monitoring'), 4, $num, $start, $globallinkto, 'service.php', 'PluginMonitoringService');
          echo Search::showHeaderItem(0, __('Result details', 'monitoring'), $num);
          echo Search::showHeaderItem(0, __('Check period', 'monitoring'), $num);
-         if (PluginMonitoringProfile::haveRight("acknowledge", 'r')) {
+         if (Session::haveRight("plugin_monitoring_acknowledge", READ)) {
             echo Search::showHeaderItem(0, __('Acknowledge', 'monitoring'), $num);
          }
       }
@@ -897,7 +896,7 @@ echo "
       }
       $num = 0;
 
-      if (PluginMonitoringProfile::haveRight("host_command", 'r')) {
+      if (Session::haveRight("plugin_monitoring_hostcommand", CREATE)) {
          // Host test command ...
          $pmCommand = new PluginMonitoringCommand();
          $a_commands = array();
@@ -909,7 +908,7 @@ echo "
       }
 
       echo "<tr class='tab_bg_1'>";
-      if (PluginMonitoringProfile::haveRight("counters", 'r')) {
+      if (Session::haveRight("plugin_monitoring_counter", READ)) {
          $this->showHeaderItem(__('Daily counters', 'monitoring'), 0, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
       }
       $this->showHeaderItem(__('Entity'), 0, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
@@ -924,8 +923,8 @@ echo "
       $this->showHeaderItem(__('Last check', 'monitoring'), 4, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
       $this->showHeaderItem(__('Result details', 'monitoring'), 5, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
       $this->showHeaderItem(__('Performance data', 'monitoring'), 6, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
-      if (PluginMonitoringProfile::haveRight("acknowledge", 'r')
-         || PluginMonitoringProfile::haveRight("downtime", 'r')) {
+      if (Session::haveRight("plugin_monitoring_acknowledge", READ)
+         || Session::haveRight("plugin_monitoring_downtime", READ)) {
          $this->showHeaderItem(__('Maintenance', 'monitoring'), 7, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
       }
       echo "</tr>";
@@ -1075,7 +1074,7 @@ echo "
       }
 
       echo "<td>";
-      if (PluginMonitoringProfile::haveRight("config", 'r')) {
+      if (Session::haveRight("plugin_monitoring_component", READ)) {
          echo $pMonitoringComponent->getLink();
       } else {
          echo $pMonitoringComponent->getName();
@@ -1140,10 +1139,10 @@ echo "
             echo "</td>";
          }
 
-         if (PluginMonitoringProfile::haveRight("acknowledge", 'r')) {
+         if (Session::haveRight("plugin_monitoring_acknowledge", READ)) {
             echo "<td>";
             if ($pMonitoringService->isCurrentlyAcknowledged()) {
-               if (PluginMonitoringProfile::haveRight("acknowledge", 'w')) {
+               if (Session::haveRight("plugin_monitoring_acknowledge", CREATE)) {
                   echo "<span>";
                   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?itemtype=Service&items_id=".$data['id']."'>"
                            ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_ok.png'"
@@ -1164,7 +1163,7 @@ echo "
                     || $shortstate == 'yellow'
                     || $shortstate == 'orange'
                     || !empty($data['host_services_state_list'])) {
-               if (PluginMonitoringProfile::haveRight("acknowledge", 'w')) {
+               if (Session::haveRight("plugin_monitoring_acknowledge", CREATE)) {
                   echo "<span>";
                   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?itemtype=Service&items_id=".$data['id']."'>"
                            ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_ko.png'"
@@ -1180,7 +1179,7 @@ echo "
 
       if ($displayhost == '0') {
          echo "<td>";
-         if (PluginMonitoringProfile::haveRight("config_components_catalogs", 'w')) {
+         if (Session::haveRight("plugin_monitoring_componentscatalog", UPDATE)) {
 
             $a_arg = importArrayFromDB($pMonitoringService->fields['arguments']);
             $cnt = '';
@@ -1212,7 +1211,7 @@ echo "
                                       $data['event'],
                                       $pm_Host->isCurrentlyAcknowledged());
 
-      if (PluginMonitoringProfile::haveRight("counters", 'r')) {
+      if (Session::haveRight("plugin_monitoring_counter", READ)) {
          echo "<td class='center'>";
          // Only if counters exist for the host
          $hostCounters = $pm_Host->hasDailyCounters();
@@ -1293,7 +1292,7 @@ echo "
       echo "<div class='page foldtl resource".$data['host_services_state']."'>";
       echo "<div style='vertical-align:middle;'>";
       echo "<span>";
-      if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+      if (Session::haveRight("plugin_monitoring_service", READ)) {
          $link = $CFG_GLPI['root_doc'].
             "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
                "&field[0]=1&searchtype[0]=equals&contains[0]=".$data['items_id'].
@@ -1327,18 +1326,18 @@ echo "
       echo $data['perf_data'];
       echo "</td>";
 
-      if (PluginMonitoringProfile::haveRight("acknowledge", 'r')
-         || PluginMonitoringProfile::haveRight("downtime", 'r')) {
+      if (Session::haveRight("plugin_monitoring_acknowledge", READ)
+         || Session::haveRight("plugin_monitoring_downtime", READ)) {
          echo "<td>";
          // Manage downtimes for an host
-         if (PluginMonitoringProfile::haveRight("downtime", 'r')) {
+         if (Session::haveRight("plugin_monitoring_downtime", READ)) {
             if ($pm_Host->isInScheduledDowntime()) {
                $pmDowntime = new PluginMonitoringDowntime();
                $pmDowntime->getFromDBByQuery("WHERE `" . $pmDowntime->getTable() . "`.`plugin_monitoring_hosts_id` = '" . $pm_Host->getID() . "' ORDER BY end_time DESC LIMIT 1");
 
                $downtime_id = $pmDowntime->getID();
                // Toolbox::logInFile("pm", "Host ".$pm_Host->getName()." is in downtime period \n");
-               if (PluginMonitoringProfile::haveRight("downtime", 'w')) {
+               if (Session::haveRight("plugin_monitoring_downtime", CREATE)) {
                   echo "<div style='float: left; margin-right: 10px;'>";
                   echo "<span>";
                   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/downtime.form.php?host_id=".$data['id']."'>"
@@ -1358,7 +1357,7 @@ echo "
                   echo "</div>";
                }
             } else {
-               if (PluginMonitoringProfile::haveRight("downtime", 'w')) {
+               if (Session::haveRight("plugin_monitoring_downtime", CREATE)) {
                   echo "<div style='float: left; margin-right: 10px;'>";
                   echo "<span>";
                   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/downtime.form.php?id=-1&host_id=".$data['id']."'>"
@@ -1374,7 +1373,7 @@ echo "
          echo "<div style='float: left;'>";
          // Manage acknowledgement for an host
          if ($pm_Host->isCurrentlyAcknowledged()) {
-            if (PluginMonitoringProfile::haveRight("acknowledge", 'w')) {
+            if (Session::haveRight("plugin_monitoring_acknowledge", CREATE)) {
                echo "<span>";
                echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?itemtype=Host&items_id=".$data['id']."'>"
                         ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_ok.png'"
@@ -1395,7 +1394,7 @@ echo "
                  || $shortstate == 'yellow'
                  || $shortstate == 'orange'
                  || !empty($data['host_services_state_list'])) {
-            if (PluginMonitoringProfile::haveRight("acknowledge", 'w')) {
+            if (Session::haveRight("plugin_monitoring_acknowledge", CREATE)) {
                echo "<span>";
                echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?itemtype=Host&items_id=".$data['id']."'>"
                         ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_ko.png'"

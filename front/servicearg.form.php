@@ -60,7 +60,7 @@ if (isset($_POST['update'])) {
    Html::back();
 }
 
-if (PluginMonitoringProfile::haveRight("config_components_catalogs", 'w')) {
+if (Session::haveRight("plugin_monitoring_componentscatalog", UPDATE)) {
    $pmService->showCustomArguments($_GET['id']);
 }
 

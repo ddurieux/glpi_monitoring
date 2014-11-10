@@ -62,7 +62,7 @@ if (isset($a_views[$_GET['id']])) {
    $pass = $pmSlider->haveVisibilityAccess();
 }
 if ($pass == 0) {
-   PluginMonitoringProfile::checkRight("config_sliders", 'r');
+   Session::checkRight("plugin_monitoring_slider", READ);
 }
 
 if (isset($a_sliders[$_GET['id']])) {

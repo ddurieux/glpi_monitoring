@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("config","r");
+Session::checkRight("plugin_monitoring_displayview", READ);
 
 Html::header(__('Monitoring - counter', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "customitem_counter");
@@ -120,9 +120,9 @@ if (isset($_POST['add_item'])) {
 
 
 if (isset($_GET["id"])) {
-   $pmCustomitem_Counter->showForm($_GET["id"], array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
+   $pmCustomitem_Counter->showForm($_GET["id"], array('canedit' => Session::haveRight("config", UPDATE)));
 } else {
-   $pmCustomitem_Counter->showForm("", array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
+   $pmCustomitem_Counter->showForm("", array('canedit' => Session::haveRight("config", UPDATE)));
 }
 
 Html::footer();

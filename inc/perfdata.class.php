@@ -46,6 +46,10 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringPerfdata extends CommonDBTM {
 
+   const HOMEPAGE         =  1024;
+   const DASHBOARD        =  2048;
+
+   static $rightname = 'plugin_monitoring_perfdata';
 
    /**
    * Get name of this type
@@ -58,15 +62,18 @@ class PluginMonitoringPerfdata extends CommonDBTM {
    }
 
 
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+    **/
+   function getRights($interface='central') {
 
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config", 'w');
-   }
+      $values = parent::getRights();
+      $values[self::HOMEPAGE]    = __('See in homepage', 'monitoring');
+      $values[self::DASHBOARD]   = __('See in dashboard', 'monitoring');
 
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config", 'r');
+      return $values;
    }
 
 

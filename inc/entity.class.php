@@ -47,6 +47,7 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringEntity extends CommonDBTM {
 
 
+   static $rightname = 'entity';
 
    /**
    * Get name of this type
@@ -60,23 +61,11 @@ class PluginMonitoringEntity extends CommonDBTM {
 
 
 
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config", 'w');
-   }
-
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config", 'r');
-   }
-
-
-
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
 
       $array_ret = array();
       if ($item->getID() > -1) {
-         if (PluginMonitoringProfile::haveRight("config", 'r')) {
+         if (Session::haveRight("entity", READ)) {
             $array_ret[0] = self::createTabEntry(__('Monitoring', 'monitoring'));
          }
       }

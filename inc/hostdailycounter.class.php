@@ -46,6 +46,8 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringHostdailycounter extends CommonDBTM {
 
+   static $rightname = 'plugin_monitoring_counter';
+
 /* Counters names to be included in plugin translation :
    'Initial counter for printed pages'
    'Total printed pages'
@@ -226,20 +228,6 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       return __CLASS__;
    }
 
-
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("counters", 'w');
-   }
-
-
-   static function canUpdate() {
-      return PluginMonitoringProfile::haveRight("counters", 'w');
-   }
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("counters", 'r');
-   }
 
 
    function defineTabs($options=array()){
@@ -564,7 +552,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                   echo '<table class="tab_cadre_fixe">';
                   echo '<tr class="tab_bg_1"><th colspan="4">';
                   echo __('Hosts out of paper in ', 'monitoring') . $value['zeroDetection']['days'] . __(' days.', 'monitoring');
-                  if (PluginMonitoringProfile::haveRight("counters", 'w')) {
+                  if (Session::haveRight("plugin_monitoring_counter", UPDATE)) {
                      echo " ('". implode("','", $listDays). "')";
                   }
                   echo '</th></tr>';
@@ -597,7 +585,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                echo $pmHost->getLink() . __(' will be out of paper in ', 'monitoring');
                echo $value['zeroDetection']['days'];
                echo __(' days ', 'monitoring');
-               if (PluginMonitoringProfile::haveRight("counters", 'w')) {
+               if (Session::haveRight("plugin_monitoring_counter", UPDATE)) {
                   echo "&nbsp;".Html::showToolTip(
                      "'$key', current value = ".$currentValue.", current and next days values: ".$breadcrumb." = ".$checkable[$key]
                      , array('display' => false));
@@ -644,7 +632,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                } else {
                   echo '<td colspan="2">';
 
-                  if (PluginMonitoringProfile::haveRight("counters", 'w')) {
+                  if (Session::haveRight("plugin_monitoring_counter", UPDATE)) {
                      // Form to create a ticket ...
                      echo '<form name="form" method="post"
                         action="'.$CFG_GLPI['root_doc'].'/front/ticket.form.php">';
@@ -683,7 +671,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                echo '</tr>';
 /*
 
-               if (PluginMonitoringProfile::haveRight("counters", 'w')) {
+               if (Session::haveRight("plugin_monitoring_counter", UPDATE)) {
                   echo '<tr class="tab_bg_1">';
                   echo '<td colspan="3">';
                   echo "'$key', current value = ".$currentValue.", next days values: ".$breadcrumb." = ".$checkable[$key];
@@ -698,7 +686,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          }
       }
 
-      if (PluginMonitoringProfile::haveRight("counters", 'w')) {
+      if (Session::haveRight("plugin_monitoring_counter", UPDATE)) {
          // Check all counters for negative values ...
          $firstDetection = false;
          foreach ($a_checkables as $checkable) {

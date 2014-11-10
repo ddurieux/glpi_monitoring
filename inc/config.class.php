@@ -47,6 +47,8 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringConfig extends CommonDBTM {
 
 
+   static $rightname = 'config';
+
    /**
    * Get name of this type
    *
@@ -55,18 +57,6 @@ class PluginMonitoringConfig extends CommonDBTM {
    **/
    static function getTypeName($nb=0) {
       return __('Configuration', 'monitoring');
-   }
-
-
-
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config", 'w');
-   }
-
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config", 'r');
    }
 
 

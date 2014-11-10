@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("config","r");
+Session::checkRight("plugin_monitoring_displayview", READ);
 
 Html::header(__('Monitoring - gauge', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "customitem_gauge");
@@ -119,9 +119,9 @@ if (isset($_POST['add_item'])) {
 
 
 if (isset($_GET["id"])) {
-   $pmCustomitem_Gauge->showForm($_GET["id"], array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
+   $pmCustomitem_Gauge->showForm($_GET["id"], array('canedit' => Session::haveRight("config", UPDATE)));
 } else {
-   $pmCustomitem_Gauge->showForm("", array('canedit' => PluginMonitoringProfile::haveRight("config","w")));
+   $pmCustomitem_Gauge->showForm("", array('canedit' => Session::haveRight("config", UPDATE)));
 }
 
 Html::footer();

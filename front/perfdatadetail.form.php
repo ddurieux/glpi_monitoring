@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("config","r");
+Session::checkRight("plugin_monitoring_perfdata", READ);
 
 $pmPerfdataDetail = new PluginMonitoringPerfdataDetail();
 

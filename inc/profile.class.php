@@ -45,120 +45,223 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginMonitoringProfile extends CommonDBTM {
+class PluginMonitoringProfile extends Profile {
 
-   static function canView() {
-      return Session::haveRight('profile','r');
-   }
+      static $rightname = "config";
 
-   static function canCreate() {
-      return Session::haveRight('profile','w');
-   }
-
-
-
-   /**
-    * Get the name of the index field
-    *
-    * @return name of the index field
-   **/
-   static function getIndexName() {
-      return "profiles_id";
-   }
-
-
-   /**
-    * Create full profile
-    *
-    **/
-   static function initProfile() {
-      if (isset($_SESSION['glpiactiveprofile']['id'])) {
-         $input = array();
-         $input['profiles_id'] = $_SESSION['glpiactiveprofile']['id'];
-         $input['config'] = 'w';
-
-         $input['config_services_catalogs'] = 'w';
-         $input['config_components_catalogs'] = 'w';
-         $input['config_weathermap'] = 'w';
-         $input['config_views'] = 'w';
-         $input['config_sliders'] = 'w';
-
-         $input['homepage'] = 'r';
-         $input['homepage_views'] = 'r';
-         $input['homepage_system_status'] = 'r';
-         $input['homepage_hosts_status'] = 'r';
-         $input['homepage_services_catalogs'] = 'r';
-         $input['homepage_components_catalogs'] = 'r';
-         $input['homepage_perfdatas'] = 'r';
-         $input['homepage_all_ressources'] = 'r';
-
-         $input['dashboard'] = 'r';
-         $input['dashboard_views'] = 'r';
-         $input['dashboard_sliders'] = 'r';
-         $input['dashboard_system_status'] = 'r';
-         $input['dashboard_hosts_status'] = 'r';
-         $input['dashboard_services_catalogs'] = 'r';
-         $input['dashboard_components_catalogs'] = 'r';
-         $input['dashboard_perfdatas'] = 'r';
-         $input['dashboard_all_ressources'] = 'r';
-
-         $input['restartshinken'] = 'r';
-         $input['counters'] = 'r';
-         $input['acknowledge'] = 'r';
-         $input['downtime'] = 'r';
-         $input['host_command'] = 'r';
-         $pmProfile = new self();
-         $pmProfile->add($input);
-      }
-   }
+      /*
+       * Old profile names:
+       *
+       * config_services_catalogs
+       * config_components_catalogs
+       * config_weathermap
+       * config_views
+       * config_sliders
+       * homepage
+       * homepage_views
+       * homepage_system_status
+       * homepage_hosts_status
+       * homepage_services_catalogs
+       * homepage_components_catalogs
+       *[not used] homepage_perfdatas
+       * homepage_all_ressources (service)
+       * dashboard
+       * dashboard_views
+       * dashboard_sliders
+       * dashboard_system_status
+       * dashboard_hosts_status
+       * dashboard_services_catalogs
+       * dashboard_components_catalogs
+       *[not used] dashboard_perfdatas
+       * dashboard_all_ressources (service)
+       * restartshinken
+       * counters
+       * acknowledge
+       * downtime
+       * host_command
+       *
+       */
 
 
-
-   static function changeprofile() {
-      if (isset($_SESSION['glpiactiveprofile']['id']) and isset($_SESSION['glpiactiveprofile']['id'])) {
-         $pmp = new PluginMonitoringProfile();
-
-         $i = 0;
-         if ($pmp->getFromDB($_SESSION['glpiactiveprofile']['id'])) {
-            foreach ($pmp->fields as $key => $value) {
-               if ($key == 'profiles_id') continue;
-               
-               if (! empty($value)) {
-                  $i++;
-                  $_SESSION["glpi_plugin_monitoring_profile"][$key] = $value;
-               }
-            }
-         }
-         if ($i == '0') {
-            unset($_SESSION["glpi_plugin_monitoring_profile"]);
-         }
-      } else {
-         unset($_SESSION["glpi_plugin_monitoring_profile"]);
-      }
+   static function getOldRightsMappings() {
+      $types = array (
+          'config_services_catalogs'      => 'plugin_monitoring_servicescatalog',
+          'config_components_catalogs'    => 'plugin_monitoring_componentscatalog',
+          'config_weathermap'             => 'plugin_monitoring_weathermap',
+          'config_views'                  => 'plugin_monitoring_displayview',
+          'config_sliders'                => 'plugin_monitoring_slider',
+          'homepage'                      => 'plugin_monitoring_homepage',
+          'homepage_views'                => 'plugin_monitoring_displayview',
+          'homepage_system_status'        => 'plugin_monitoring_systemstatus',
+          'homepage_hosts_status'         => 'plugin_monitoring_hoststatus',
+          'homepage_services_catalogs'    => 'plugin_monitoring_servicescatalog',
+          'homepage_components_catalogs'  => 'plugin_monitoring_componentscatalog',
+          'homepage_perfdatas'            => 'plugin_monitoring_perfdata',
+          'homepage_all_ressources'       => 'plugin_monitoring_service',
+          'dashboard'                     => 'plugin_monitoring_dashboard',
+          'dashboard_views'               => 'plugin_monitoring_displayview',
+          'dashboard_sliders'             => 'plugin_monitoring_slider',
+          'dashboard_system_status'       => 'plugin_monitoring_systemstatus',
+          'dashboard_hosts_status'        => 'plugin_monitoring_hoststatus',
+          'dashboard_services_catalogs'   => 'plugin_monitoring_servicescatalog',
+          'dashboard_components_catalogs' => 'plugin_monitoring_componentscatalog',
+          'dashboard_perfdatas'           => 'plugin_monitoring_perfdata',
+          'dashboard_all_ressources'      => 'plugin_monitoring_service',
+          'restartshinken'                => 'plugin_monitoring_restartshinken',
+          'counters'                      => 'plugin_monitoring_counter',
+          'acknowledge'                   => 'plugin_monitoring_acknowledge',
+          'downtime'                      => 'plugin_monitoring_downtime',
+          'host_command'                  => 'plugin_monitoring_hostcommand'
+          );
+      return $types;
    }
 
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-
-      if (Session::haveRight('profile', "r")) {
-         if ($item->getID() > 0) {
-            return self::createTabEntry(__('Monitoring', 'monitoring'));
-         }
+      if ($item->fields['interface'] == 'central') {
+         return self::createTabEntry('Monitoring');
       }
-      return '';
    }
 
 
 
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
+      $pmProfile = new self();
+      $pmProfile->showForm($item->getID());
+      return TRUE;
+   }
 
-      if ($item->getID() > 0) {
-         $pmProfile = new self();
-         $pmProfile->showForm($item->getID());
+
+
+   static function uninstallProfile() {
+      $pfProfile = new self();
+      $a_rights = $pfProfile->getAllRights();
+      foreach ($a_rights as $data) {
+         ProfileRight::deleteProfileRights(array($data['field']));
       }
+   }
 
-      return true;
+
+
+   function getAllRights() {
+      $a_rights = array();
+      $a_rights = array_merge($a_rights, $this->getRightsGeneral());
+      return $a_rights;
+   }
+
+
+
+   function getRightsGeneral() {
+      $rights = array(
+          array('rights'    => array(READ => __('Read')),
+                'label'     => __('Dashboard', 'monitoring'),
+                'field'     => 'plugin_monitoring_dashboard'
+          ),
+          array('rights'    => array(READ => __('Read')),
+                'label'     => __('Homepage', 'monitoring'),
+                'field'     => 'plugin_monitoring_homepage'
+          ),
+          array('itemtype'  => 'PluginMonitoringComponent',
+                'label'     => __('Component=', 'monitoring'),
+                'field'     => 'plugin_monitoring_component'
+          ),
+          array('itemtype'  => 'PluginMonitoringComponentscatalog',
+                'label'     => __('Components catalog', 'monitoring'),
+                'field'     => 'plugin_monitoring_componentscatalog'
+          ),
+          array('itemtype'  => 'PluginMonitoringServicescatalog',
+                'label'     => __('Services catalog', 'monitoring'),
+                'field'     => 'plugin_monitoring_servicescatalog'
+          ),
+          array('itemtype'  => 'PluginMonitoringDisplayview',
+                'label'     => __('Views', 'monitoring'),
+                'field'     => 'plugin_monitoring_displayview'
+          ),
+          array('itemtype'  => 'PluginMonitoringCommand',
+                'label'     => __('Command', 'monitoring'),
+                'field'     => 'plugin_monitoring_command'
+          ),
+          array('itemtype'  => 'PluginMonitoringSlider',
+                'label'     => __('Slider', 'monitoring'),
+                'field'     => 'plugin_monitoring_slider'
+          ),
+          array('itemtype'  => 'PluginMonitoringService',
+                'label'     => __('Services (ressources)', 'monitoring'),
+                'field'     => 'plugin_monitoring_service'
+          ),
+          array('itemtype'  => 'PluginMonitoringRealm',
+                'label'     => __('Reamls', 'monitoring'),
+                'field'     => 'plugin_monitoring_realm'
+          ),
+          array('itemtype'  => 'PluginMonitoringSystem',
+                'label'     => __('System status', 'monitoring'),
+                'field'     => 'plugin_monitoring_systemstatus'
+          ),
+          array('itemtype'  => 'PluginMonitoringHost',
+                'label'     => __('Host status', 'monitoring'),
+                'field'     => 'plugin_monitoring_hoststatus'
+          ),
+          array('rights'    => array(CREATE => __('Create')),
+                'label'     => __('Restart Shinken', 'monitoring'),
+                'field'     => 'plugin_monitoring_restartshinken'
+          ),
+          array('rights'    => array(CREATE => __('Create')),
+                'label'     => __('Host commands', 'monitoring'),
+                'field'     => 'plugin_monitoring_hostcommand'
+          ),
+          array('itemtype'  => 'PluginMonitoringAcknowledge',
+                'label'     => __('Acknowledge', 'monitoring'),
+                'field'     => 'plugin_monitoring_acknowledge'
+          ),
+          array('itemtype'  => 'PluginMonitoringDowntime',
+                'label'     => __('Downtime', 'monitoring'),
+                'field'     => 'plugin_monitoring_downtime'
+          ),
+          array('itemtype'  => 'PluginMonitoringWeathermap',
+                'label'     => __('Weathermap', 'monitoring'),
+                'field'     => 'plugin_monitoring_weathermap'
+          ),
+          array('itemtype'  => 'PluginMonitoringEventhandler',
+                'label'     => __('Event handler', 'monitoring'),
+                'field'     => 'plugin_monitoring_eventhandler'
+          ),
+          array('itemtype'  => 'PluginMonitoringTag',
+                'label'     => __('Tag', 'monitoring'),
+                'field'     => 'plugin_monitoring_tag'
+          ),
+          array('rights'    => array(READ => __('Read')),
+                'label'     => __('Unavailability', 'monitoring'),
+                'field'     => 'plugin_monitoring_unavailability'
+          ),
+          array('itemtype'  => 'PluginMonitoringPerfdata',
+                'label'     => __('Graph template', 'monitoring'),
+                'field'     => 'plugin_monitoring_perfdata'
+          ),
+          array('itemtype'  => 'PluginMonitoringHostdailycounter',
+                'label'     => __('Counter', 'monitoring'),
+                'field'     => 'plugin_monitoring_counter'
+          ),
+      );
+      return $rights;
+   }
+
+
+
+   static function addDefaultProfileInfos($profiles_id, $rights) {
+      $profileRight = new ProfileRight();
+      foreach ($rights as $right => $value) {
+         if (!countElementsInTable('glpi_profilerights',
+                                   "`profiles_id`='$profiles_id' AND `name`='$right'")) {
+            $myright['profiles_id'] = $profiles_id;
+            $myright['name']        = $right;
+            $myright['rights']      = $value;
+            $profileRight->add($myright);
+
+            //Add right to the current session
+            $_SESSION['glpiactiveprofile'][$right] = $value;
+         }
+      }
    }
 
 
@@ -172,416 +275,138 @@ class PluginMonitoringProfile extends CommonDBTM {
     *
     * @return nothing
     **/
-   function showForm($items_id) {
-      global $CFG_GLPI;
+   function showForm($profiles_id=0, $openform=TRUE, $closeform=TRUE) {
 
-      if ($items_id > 0
-              AND $this->getFromDB($items_id)) {
-
-      } else {
-         $this->getEmpty();
+      echo "<div class='firstbloc'>";
+      if (($canedit = Session::haveRightsOr(self::$rightname, array(CREATE, UPDATE, PURGE)))
+          && $openform) {
+         $profile = new Profile();
+         echo "<form method='post' action='".$profile->getFormURL()."'>";
       }
 
-      if (!Session::haveRight("profile","r")) {
-         return false;
-      }
-      $canedit=Session::haveRight("profile","w");
-      if ($canedit) {
-         echo "<form method='post' action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/profile.form.php'>";
-         echo '<input type="hidden" name="profiles_id" value="'.$items_id.'"/>';
-      }
+      $profile = new Profile();
+      $profile->getFromDB($profiles_id);
 
-      echo "<div class='spaced'>";
-      echo "<table class='tab_cadre_fixe'>";
-
-      echo "<tr>";
-      echo "<th colspan='4'>".__('Monitoring', 'monitoring')." (".__('configuration', 'monitoring').") :</th>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('Setup')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("config", $this->fields["config"], 1, 1, 1);
-      echo "</td>";
-      echo "</tr>";
+      $rights = $this->getRightsGeneral();
+      $profile->displayRightsChoiceMatrix($rights, array('canedit'       => $canedit,
+                                                      'default_class' => 'tab_bg_2',
+                                                      'title'         => __('General', 'monitoring')));
 
 
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('Components catalog', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("config_components_catalogs", $this->fields["config_components_catalogs"], 1, 1, 1);
-      echo "</td>";
-      echo "<td>";
-      echo __('Services catalog', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("config_services_catalogs", $this->fields["config_services_catalogs"], 1, 1, 1);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('Views', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("config_views", $this->fields["config_views"], 1, 1, 1);
-      echo "</td>";
-      echo "<td>";
-      echo __('Weathermap', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("config_weathermap", $this->fields["config_weathermap"], 1, 1, 1);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('Carrousel / slider', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("config_sliders", $this->fields["config_sliders"], 1, 1, 1);
-      echo "</td>";
-      echo "<td>";
-      echo "</td>";
-      echo "<td>";
-      echo "</td>";
-      echo "</tr>";
-
-
-      echo "<tr><td colspan='4'><hr/></td></tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('Restart shinken', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("restartshinken", $this->fields["restartshinken"], 1, 1, 0);
-      echo "</td>";
-      echo "<td>";
-      echo __('Host command', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("host_command", $this->fields["host_command"], 1, 1, 0);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('Acknowledge problems', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("acknowledge", $this->fields["acknowledge"], 1, 1, 1);
-      echo "</td>";
-      echo "<td>";
-      echo __('Schedule downtimes', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("downtime", $this->fields["downtime"], 1, 1, 1);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('Manage counters', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("counters", $this->fields["counters"], 1, 1, 1);
-      echo "</td>";
-      echo "<td>";
-      echo "</td>";
-      echo "<td>";
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr><td colspan='4'><br/></td></tr>";
-
-      echo "<tr>";
-      echo "<th colspan='4'>".__('Monitoring', 'monitoring')." (".__('dashboard', 'monitoring').") :</th>";
-      echo "</tr>";
-
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('Dashboard', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("dashboard", $this->fields["dashboard"], 1, 1, 0);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('View system status', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("dashboard_system_status", $this->fields["dashboard_system_status"], 1, 1, 0);
-      echo "</td>";
-      echo "<td>";
-      echo __('View hosts status', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("dashboard_hosts_status", $this->fields["dashboard_hosts_status"], 1, 1, 0);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('View services catalogs', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("dashboard_services_catalogs", $this->fields["dashboard_services_catalogs"], 1, 1, 0);
-      echo "</td>";
-      echo "<td>";
-      echo __('View components catalogs', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("dashboard_components_catalogs", $this->fields["dashboard_components_catalogs"], 1, 1, 0);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('View views', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("dashboard_views", $this->fields["dashboard_views"], 1, 1, 0);
-      echo "</td>";
-      echo "<td>";
-      echo __('View all resources', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("dashboard_all_ressources", $this->fields["dashboard_all_ressources"], 1, 1, 0);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('View carrousel / slider', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("dashboard_sliders", $this->fields["dashboard_sliders"], 1, 1, 0);
-      echo "</td>";
-      echo "<td>";
-      echo __('View performance data', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("dashboard_perfdatas", $this->fields["dashboard_perfdatas"], 1, 1, 0);
-      echo "</td>";
-      echo "</tr>";
-
-
-
-      echo "<tr><td colspan='4'><br/></td></tr>";
-
-      echo "<tr>";
-      echo "<th colspan='4'>".__('Monitoring', 'monitoring')." (".__('home page', 'monitoring').") :</th>";
-      echo "</tr>";
-
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('Home page', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("homepage", $this->fields["homepage"], 1, 1, 0);
-      echo "</td>";
-      echo "<td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('View system status', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("homepage_system_status", $this->fields["homepage_system_status"], 1, 1, 0);
-      echo "</td>";
-      echo "<td>";
-      echo __('View hosts status', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("homepage_hosts_status", $this->fields["homepage_hosts_status"], 1, 1, 0);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('View services catalogs', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("homepage_services_catalogs", $this->fields["homepage_services_catalogs"], 1, 1, 0);
-      echo "</td>";
-      echo "<td>";
-      echo __('View components catalogs', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("homepage_components_catalogs", $this->fields["homepage_components_catalogs"], 1, 1, 0);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('View views', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("homepage_views", $this->fields["homepage_views"], 1, 1, 0);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>";
-      echo __('View performance data', 'monitoring')."&nbsp;:";
-      echo "</td>";
-      echo "<td>";
-      Profile::dropdownNoneReadWrite("homepage_perfdatas", $this->fields["homepage_perfdatas"], 1, 1, 0);
-      echo "</td>";
-      echo "</tr>";
-
-      if ($canedit) {
-         echo "<tr>";
-         echo "<th colspan='4'>";
-         echo "<input type='hidden' name='profile_id' value='".$items_id."'/>";
-         echo "<input type='submit' name='update' value=\"".__('Save')."\" class='submit'>";
-         echo "</td>";
-         echo "</tr>";
-         echo "</table>";
+      if ($canedit
+          && $closeform) {
+         echo "<div class='center'>";
+         echo Html::hidden('id', array('value' => $profiles_id));
+         echo Html::submit(_sx('button', 'Save'), array('name' => 'update'));
+         echo "</div>\n";
          Html::closeForm();
-      } else {
-         echo "</table>";
       }
       echo "</div>";
-
-      Html::closeForm();
    }
-
-
-
-   static function checkRight($module, $right) {
-      global $CFG_GLPI;
-
-      if (!PluginMonitoringProfile::haveRight($module, $right)) {
-         // Gestion timeout session
-         if (!Session::getLoginUserID()) {
-            Html::redirect($CFG_GLPI["root_doc"] . "/index.php");
-            exit ();
-         }
-         Html::displayRightError();
-      }
-   }
-
-
-
-   static function haveRight($module, $right) {
-      global $DB;
-
-      //If GLPI is using the slave DB -> read only mode
-      if ($DB->isSlave() && $right == "w") {
-         return false;
-      }
-
-      $matches = array(""  => array("", "r", "w"), // ne doit pas arriver normalement
-                       "r" => array("r", "w"),
-                       "w" => array("w"),
-                       "1" => array("1"),
-                       "0" => array("0", "1")); // ne doit pas arriver non plus
-
-      if (isset ($_SESSION["glpi_plugin_monitoring_profile"][$module])
-          && in_array($_SESSION["glpi_plugin_monitoring_profile"][$module], $matches[$right])) {
-         return true;
-      }
-      return false;
-   }
-
-
 
    /**
-    * Update the item in the database
-    *
-    * @param $updates fields to update
-    * @param $oldvalues old values of the updated fields
-    *
-    * @return nothing
-   **/
-   function updateInDB($updates, $oldvalues=array()) {
-      global $DB, $CFG_GLPI;
+    * @param $ID  integer
+    */
+   static function createFirstAccess($profiles_id) {
+      include_once(GLPI_ROOT."/plugins/monitoring/inc/profile.class.php");
+      $profile = new self();
+      foreach ($profile->getAllRights() as $right) {
+         self::addDefaultProfileInfos($profiles_id,
+                                      array($right['field'] => ALLSTANDARDRIGHT));
+      }
+   }
 
-      foreach ($updates as $field) {
-         if (isset($this->fields[$field])) {
-            $query  = "UPDATE `".$this->getTable()."`
-                       SET `".$field."`";
+   static function removeRightsFromSession() {
+      $profile = new self();
+      foreach ($profile->getAllRights() as $right) {
+         if (isset($_SESSION['glpiactiveprofile'][$right['field']])) {
+            unset($_SESSION['glpiactiveprofile'][$right['field']]);
+         }
+      }
+      ProfileRight::deleteProfileRights(array($right['field']));
+   }
 
-            if ($this->fields[$field]=="NULL") {
-               $query .= " = ".$this->fields[$field];
+   static function migrateProfiles() {
+      global $DB;
+      //Get all rights from the old table
+      $profiles = getAllDatasFromTable(getTableForItemType(__CLASS__));
 
+      //Load mapping of old rights to their new equivalent
+      $oldrights = self::getOldRightsMappings();
+
+      //For each old profile : translate old right the new one
+      foreach ($profiles as $id => $profile) {
+         switch ($profile['right']) {
+            case 'r' :
+               $value = READ;
+               break;
+            case 'w':
+               $value = ALLSTANDARDRIGHT;
+               break;
+            case 0:
+            default:
+               $value = 0;
+               break;
+         }
+         //Write in glpi_profilerights the new monitoring right
+         if (isset($oldrights[$profile['type']])) {
+            //There's one new right corresponding to the old one
+            if (!is_array($oldrights[$profile['type']])) {
+               self::addDefaultProfileInfos($profile['profiles_id'],
+                                            array($oldrights[$profile['type']] => $value));
             } else {
-               $query .= " = '".$this->fields[$field]."'";
-            }
-
-            $query .= " WHERE `profiles_id` ='".$this->fields["profiles_id"]."'";
-
-            if (!$DB->query($query)) {
-               if (isset($oldvalues[$field])) {
-                  unset($oldvalues[$field]);
+               //One old right has been splitted into serveral new ones
+               foreach ($oldrights[$profile['type']] as $newtype) {
+                  self::addDefaultProfileInfos($profile['profiles_id'],
+                                               array($newtype => $value));
                }
             }
-
-         } else {
-            // Clean oldvalues
-            if (isset($oldvalues[$field])) {
-               unset($oldvalues[$field]);
-            }
          }
-
       }
-
-      if (count($oldvalues)) {
-         Log::constructHistory($this, $oldvalues, $this->fields);
-      }
-      return true;
    }
-
-
 
    /**
-    * Add a message on update action
-   **/
-   function addMessageOnUpdateAction() {
-      global $CFG_GLPI;
+   * Init profiles during installation :
+   * - add rights in profile table for the current user's profile
+   * - current profile has all rights on the plugin
+   */
+   static function initProfile() {
+      $pfProfile = new self();
+      $profile   = new Profile();
+      $a_rights  = $pfProfile->getAllRights();
 
-      $link = $this->getFormURL();
-      if (!isset($link)) {
-         return;
-      }
-
-      $addMessAfterRedirect = false;
-
-      if (isset($this->input['_update'])) {
-         $addMessAfterRedirect = true;
-      }
-
-      if (isset($this->input['_no_message']) || !$this->auto_message_on_action) {
-         $addMessAfterRedirect = false;
-      }
-
-      if ($addMessAfterRedirect) {
-         $profile = new Profile();
-         $profile->getFromDB($this->fields['profiles_id']);
-         // Do not display quotes
-         if (isset($profile->fields['name'])) {
-            $profile->fields['name'] = stripslashes($profile->fields['name']);
-         } else {
-            $profile->fields['name'] = $profile->getTypeName()." : ".__('ID')." ".
-                                    $profile->fields['id'];
+      foreach ($a_rights as $data) {
+         if (countElementsInTable("glpi_profilerights", "`name` = '".$data['field']."'") == 0) {
+            ProfileRight::addProfileRights(array($data['field']));
+            $_SESSION['glpiactiveprofile'][$data['field']] = 0;
          }
+      }
 
-         Session::addMessageAfterRedirect(__('Item successfully updated')."&nbsp;: " .
-                                 (isset($this->input['_no_message_link'])?$profile->getNameID()
-                                                                         :$profile->getLink()));
+      // Add all rights to current profile of the user
+      if (isset($_SESSION['glpiactiveprofile'])) {
+         $dataprofile       = array();
+         $dataprofile['id'] = $_SESSION['glpiactiveprofile']['id'];
+         $profile->getFromDB($_SESSION['glpiactiveprofile']['id']);
+         foreach ($a_rights as $info) {
+            if (is_array($info)
+                && ((!empty($info['itemtype'])) || (!empty($info['rights'])))
+                  && (!empty($info['label'])) && (!empty($info['field']))) {
+
+               if (isset($info['rights'])) {
+                  $rights = $info['rights'];
+               } else {
+                  $rights = $profile->getRightsFor($info['itemtype']);
+               }
+               foreach ($rights as $right => $label) {
+                  $dataprofile['_'.$info['field']][$right] = 1;
+                  $_SESSION['glpiactiveprofile'][$data['field']] = $right;
+               }
+            }
+         }
+         $profile->update($dataprofile);
       }
    }
+
 }
 
 ?>

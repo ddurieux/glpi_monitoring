@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("acknowledge","r");
+Session::checkRight("plugin_monitoring_unavailability", READ);
 
 Html::header(__('Monitoring - unavailabilities', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
              "monitoring", "unavailability");

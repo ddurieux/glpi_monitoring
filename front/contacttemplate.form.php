@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("config","r");
+Session::checkRight("plugin_monitoring_service", READ);
 
 Html::header(__('Monitoring - contact templates', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "contacttemplates");

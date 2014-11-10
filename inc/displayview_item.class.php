@@ -47,6 +47,8 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringDisplayview_item extends CommonDBTM {
 
 
+   static $rightname = 'plugin_monitoring_displayview';
+
    /**
    * Get name of this type
    *
@@ -55,36 +57,6 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
    **/
    static function getTypeName($nb=0) {
       return __('Views', 'monitoring');
-   }
-
-
-
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config_views", 'w');
-   }
-
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config_views", 'r');
-   }
-
-
-
-   function canCancel() {
-      return PluginMonitoringProfile::haveRight("config_views", 'w');
-   }
-
-
-
-   function canUndo() {
-      return PluginMonitoringProfile::haveRight("config_views", 'w');
-   }
-
-
-
-   function canValidate() {
-      return true;
    }
 
 

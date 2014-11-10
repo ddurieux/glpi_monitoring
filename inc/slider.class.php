@@ -47,6 +47,12 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringSlider extends CommonDBTM {
 
 
+   const HOMEPAGE         =  1024;
+   const DASHBOARD        =  2048;
+
+   static $rightname = 'plugin_monitoring_slider';
+
+
    /**
    * Get name of this type
    *
@@ -58,15 +64,18 @@ class PluginMonitoringSlider extends CommonDBTM {
    }
 
 
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+    **/
+   function getRights($interface='central') {
 
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config_sliders", 'w');
-   }
+      $values = parent::getRights();
+      $values[self::HOMEPAGE]    = __('See in homepage', 'monitoring');
+      $values[self::DASHBOARD]   = __('See in dashboard', 'monitoring');
 
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config_sliders", 'r');
+      return $values;
    }
 
 
@@ -222,7 +231,8 @@ class PluginMonitoringSlider extends CommonDBTM {
          $a_sliders = $this->getSliders(1);
          foreach ($a_sliders as $sliders_id=>$name) {
             $this->getFromDB($sliders_id);
-            if (PluginMonitoringProfile::haveRight("homepage_sliders", 'r') && $this->haveVisibilityAccess()) {
+            if (Session::haveRight("plugin_monitoring_slider", PluginMonitoringSlider::HOMEPAGE)
+                    && $this->haveVisibilityAccess()) {
                $ong[] = "[".__('Carrousel / slider', 'monitoring')."] ".$this->fields['name'];
             }
          }
@@ -248,7 +258,7 @@ class PluginMonitoringSlider extends CommonDBTM {
 
          }
       } else if ($item->getType() == 'Central') {
-         if (PluginMonitoringProfile::haveRight("homepage_sliders", 'r')) {
+         if (Session::haveRight("plugin_monitoring_slider", PluginMonitoringSlider::HOMEPAGE)) {
             $pmSlider_item = new PluginMonitoringSlider_item();
             $pmSlider = new PluginMonitoringSlider();
             $a_sliders = $pmSlider->getSliders(1);
@@ -601,7 +611,7 @@ echo '    </div>
       global $DB, $CFG_GLPI;
 
       $ID      = $this->fields['id'];
-      $canedit = $this->can($ID,'w');
+      $canedit = $this->can($ID, UPDATE);
 
       echo "<div class='center'>";
 

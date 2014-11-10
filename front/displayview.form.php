@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("config_views","r");
+Session::checkRight("plugin_monitoring_displayview", READ);
 
 Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
              "monitoring", "displayview");
@@ -106,7 +106,7 @@ if (isset ($_POST["add"])) {
    $pmDisplayview->delete($_POST);
    $pmDisplayview->redirectToList();
 } else if (isset($_POST["update"])) {
-   $remind->check($_POST["id"],'w');   // Right to update the reminder
+   $remind->check($_POST["id"], UPDATE);   // Right to update the reminder
 
    $remind->update($_POST);
    Event::log($_POST["id"], "reminder", 4, "tools",
@@ -117,9 +117,9 @@ if (isset ($_POST["add"])) {
 }
 
 if (isset($_GET["id"])) {
-   $pmDisplayview->showForm($_GET["id"], array('canedit' => PluginMonitoringProfile::haveRight("config_views","w")));
+   $pmDisplayview->showForm($_GET["id"], array('canedit' => Session::haveRight("PluginMonitoringDisplayview", UPDATE)));
 } else {
-   $pmDisplayview->showForm(0, array('canedit' => PluginMonitoringProfile::haveRight("config_views","w")));
+   $pmDisplayview->showForm(0, array('canedit' => Session::haveRight("PluginMonitoringDisplayview", CREATE)));
 }
 
 Html::footer();

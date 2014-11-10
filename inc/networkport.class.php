@@ -46,6 +46,8 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringNetworkport extends CommonDBTM {
 
+   static $rightname = 'plugin_monitoring_componentscatalog';
+
    /**
    * Get name of this type
    *
@@ -54,17 +56,6 @@ class PluginMonitoringNetworkport extends CommonDBTM {
    **/
    static function getTypeName($nb=0) {
       return __('Network ports of networking devices', 'monitoring');
-   }
-
-
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config_components_catalogs", 'w');
-   }
-
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config_components_catalogs", 'r');
    }
 
 

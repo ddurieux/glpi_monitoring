@@ -47,6 +47,8 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringTag extends CommonDBTM {
 
 
+   static $rightname = 'plugin_monitoring_tag';
+
    /**
    * Get name of this type
    *
@@ -59,20 +61,17 @@ class PluginMonitoringTag extends CommonDBTM {
 
 
 
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config", 'w');
-   }
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+    **/
+   function getRights($interface='central') {
 
+      $values = parent::getRights();
+      unset($values[CREATE]);
 
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config", 'r');
-   }
-
-
-
-   static function canDelete() {
-      return FALSE;
+      return $values;
    }
 
 

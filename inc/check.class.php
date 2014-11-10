@@ -46,6 +46,7 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringCheck extends CommonDBTM {
 
+   static $rightname = 'config';
 
    function initChecks() {
 
@@ -88,18 +89,6 @@ class PluginMonitoringCheck extends CommonDBTM {
    **/
    static function getTypeName($nb=0) {
       return __('Check definition', 'monitoring');
-   }
-
-
-
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config", 'w');
-   }
-
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config", 'r');
    }
 
 

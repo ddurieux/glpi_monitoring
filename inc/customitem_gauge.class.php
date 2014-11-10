@@ -47,6 +47,7 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
 
 
+   static $rightname = 'plugin_monitoring_displayview';
 
    /**
    * Get name of this type
@@ -56,18 +57,6 @@ class PluginMonitoringCustomitem_Gauge extends CommonDBTM {
    **/
    static function getTypeName($nb=0) {
       return __('Custom item', 'monitoring')." - ".__('Gauge', 'monitoring');
-   }
-
-
-
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config", 'w');
-   }
-
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config", 'r');
    }
 
 

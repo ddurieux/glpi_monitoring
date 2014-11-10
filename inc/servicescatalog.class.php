@@ -46,6 +46,11 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringServicescatalog extends CommonDropdown {
 
+   const HOMEPAGE         =  1024;
+   const DASHBOARD        =  2048;
+
+   static $rightname = 'plugin_monitoring_servicescatalog';
+
    /**
    * Get name of this type
    *
@@ -58,20 +63,18 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
 
 
 
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config_services_catalogs", 'w');
-   }
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+    **/
+   function getRights($interface='central') {
 
+      $values = parent::getRights();
+      $values[self::HOMEPAGE]    = __('See in homepage', 'monitoring');
+      $values[self::DASHBOARD]   = __('See in dashboard', 'monitoring');
 
-
-   static function canUpdate() {
-      return PluginMonitoringProfile::haveRight("config_services_catalogs", 'w');
-   }
-
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config_services_catalogs", 'r');
+      return $values;
    }
 
 
@@ -93,7 +96,8 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       if (get_class($item) == __CLASS__) {
          $array_ret[50] = __('Contacts', 'monitoring');
       } else {
-         if (PluginMonitoringProfile::haveRight("homepage", 'r') && PluginMonitoringProfile::haveRight("homepage_services_catalogs", 'r')) {
+         if (Session::haveRight("plugin_monitoring_homepage", READ)
+                 && Session::haveRight("plugin_monitoring_servicescatalog", PluginMonitoringServicescatalog::HOMEPAGE)) {
             $array_ret[49] = self::createTabEntry(
                     __('Services catalogs', 'monitoring'));
          }
@@ -693,7 +697,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
          echo __('Hosts', 'monitoring');
          echo "</th>";
          foreach ($group['services'] as $serviceName => $service) {
-            if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+            if (Session::haveRight("plugin_monitoring_service", READ)) {
                $link = $CFG_GLPI['root_doc'].
                   "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
                      "&field[0]=2&searchtype[0]=equals&contains[0]=".$service.
@@ -712,7 +716,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
          foreach ($group['hosts'] as $host) {
             echo  "<tr class='tab_bg_2' style='height: 50px;'>";
 
-            if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+            if (Session::haveRight("plugin_monitoring_service", READ)) {
                $link = $CFG_GLPI['root_doc'].
                   "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
                      "&field[0]=20&searchtype[0]=equals&contains[0]=".$host['id'].

@@ -42,8 +42,8 @@
 
 include ("../../../inc/includes.php");
 
-if (PluginMonitoringProfile::haveRight("dashboard_services_catalogs", 'r')
-   || PluginMonitoringProfile::haveRight("homepage_services_catalogs", 'r')) {
+if (Session::haveRight("plugin_monitoring_servicescatalog", PluginMonitoringServicescatalog::DASHBOARD)
+   || Session::haveRight("plugin_monitoring_servicescatalog", PluginMonitoringServicescatalog::HOMEPAGE)) {
 
    $dropdown = new PluginMonitoringServicescatalog();
    Html::header(__('Monitoring - services catalogs', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
@@ -55,6 +55,6 @@ if (PluginMonitoringProfile::haveRight("dashboard_services_catalogs", 'r')
       include (GLPI_ROOT . "/front/dropdown.common.form.php");
    }
 } else {
-   PluginMonitoringProfile::checkRight("dashboard_services_catalogs","r");
+   Session::checkRight("plugin_monitoring_servicescatalog", PluginMonitoringServicescatalog::DASHBOARD);
 }
 ?>

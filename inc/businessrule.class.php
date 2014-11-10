@@ -46,19 +46,9 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringBusinessrule extends CommonDBTM {
 
+   static $rightname = 'plugin_monitoring_servicescatalog';
 
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config_services_catalogs", 'w');
-   }
-
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config_services_catalogs", 'r');
-   }
-
-
-
+   
    /**
    * Display form for agent configuration
    *

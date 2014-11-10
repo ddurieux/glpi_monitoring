@@ -46,6 +46,9 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringServicedef extends CommonDBTM {
 
+
+   static $rightname = 'plugin_monitoring_service';
+
    /**
    * Get name of this type
    *
@@ -66,18 +69,6 @@ class PluginMonitoringServicedef extends CommonDBTM {
 
 
 
-   }
-
-
-
-   static function canCreate() {
-      return Session::haveRight('computer', 'w');
-   }
-
-
-
-   static function canView() {
-      return Session::haveRight('computer', 'r');
    }
 
 

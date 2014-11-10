@@ -46,6 +46,10 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringNotificationcommand extends CommonDBTM {
 
+
+   static $rightname = 'plugin_monitoring_command';
+
+
 /*
    Shinken 2.0 defines:
       # Nagios legacy macros
@@ -58,7 +62,7 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
 
    function initCommands() {
       global $DB;
-      
+
       // Shinken 2.0 default commands
       // Host notifications
       $input = array();
@@ -132,18 +136,6 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
    **/
    static function getTypeName($nb=0) {
       return __('Notification commands', 'monitoring');
-   }
-
-
-
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config", 'w');
-   }
-
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config", 'r');
    }
 
 

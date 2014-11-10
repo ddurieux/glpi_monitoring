@@ -46,20 +46,10 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
 
+   static $rightname = 'plugin_monitoring_componentscatalog';
 
    static function getTypeName($nb=0) {
       return __('Hosts', 'monitoring');
-   }
-
-
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config_components_catalogs", 'w');
-   }
-
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config_components_catalogs", 'r');
    }
 
 
@@ -185,7 +175,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
    function addHost($componentscatalogs_id) {
       global $DB;
 
-      if (! PluginMonitoringProfile::haveRight("config_components_catalogs", 'w')) return;
+      if (! Session::haveRight("plugin_monitoring_componentscatalog", UPDATE)) return;
 
       $this->getEmpty();
 

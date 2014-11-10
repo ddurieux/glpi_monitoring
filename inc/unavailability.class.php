@@ -52,16 +52,13 @@ class PluginMonitoringUnavailability extends CommonDBTM {
 
    static $currentItem = NULL;
 
+   static $rightname = 'plugin_monitoring_unavailability';
 
 
    static function getTypeName($nb=0) {
       return __CLASS__;
    }
 
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("acknowledge", 'r');
-   }
 
 
     /**
@@ -193,7 +190,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
 
          case "scheduled" :
             $out = Dropdown::getValueWithUnit(Dropdown::getYesNo($values[$field]), '');
-            if (PluginMonitoringProfile::haveRight("acknowledge", 'r')) {
+            if (Session::haveRight("plugin_monitoring_acknowledge", READ)) {
                $newValue = (self::$currentItem->fields['scheduled'] == '0') ? '1' : '0';
                $out .= "&nbsp;";
                $out .= "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/unavailability.form.php?id=".self::$currentItem->fields['id']."&scheduled=".$newValue."'>"

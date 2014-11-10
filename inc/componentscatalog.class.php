@@ -46,6 +46,12 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringComponentscatalog extends CommonDropdown {
 
+
+   const HOMEPAGE         =  1024;
+   const DASHBOARD        =  2048;
+
+   static $rightname = 'plugin_monitoring_componentscatalog';
+
    /**
    * Get name of this type
    *
@@ -58,14 +64,18 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
 
 
 
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config_components_catalogs", 'w');
-   }
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+    **/
+   function getRights($interface='central') {
 
+      $values = parent::getRights();
+      $values[self::HOMEPAGE]    = __('See in homepage', 'monitoring');
+      $values[self::DASHBOARD]   = __('See in dashboard', 'monitoring');
 
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config_components_catalogs", 'r');
+      return $values;
    }
 
 
@@ -92,7 +102,8 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       if (!$withtemplate) {
          switch ($item->getType()) {
             case 'Central' :
-               if (PluginMonitoringProfile::haveRight("homepage", 'r') && PluginMonitoringProfile::haveRight("homepage_components_catalogs", 'r')) {
+               if (Session::haveRight("plugin_monitoring_homepage", READ)
+                       && Session::haveRight("plugin_monitoring_componentscatalog", PluginMonitoringComponentscatalog::HOMEPAGE)) {
                   return array(1 => __('Components catalogs', 'monitoring'));
                } else {
                   return '';
@@ -452,7 +463,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             "&itemtype=PluginMonitoringService&start=0";
       }
 
-      if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+      if (Session::haveRight("plugin_monitoring_service", READ)) {
          $link_catalog = $CFG_GLPI['root_doc'].
             "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset"
                . "&field[0]=9&searchtype[0]=equals&contains[0]=".$id.
@@ -514,7 +525,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          // Do not display fake host service ...
          if ($services[$i] == '_fake_') continue;
 
-         if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+         if (Session::haveRight("plugin_monitoring_service", READ)) {
             $link = $CFG_GLPI['root_doc'].
                "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
                   "&field[0]=2&searchtype[0]=equals&contains[0]=".$services_ids[$services[$i]].
@@ -576,7 +587,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             echo  "<tr class='services tab_bg_3' style='display:none;'>";
          }
          // echo "<td><div style='width: 5px !important;'>&nbsp;</div></td>";
-         if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+         if (Session::haveRight("plugin_monitoring_service", READ)) {
             $item = new $hosts_ids[$hosts_id]['itemtype'];
             $item->getFromDB($hosts_ids[$hosts_id]['items_id']);
             echo  "<td class='left'><a href='".$link."'>".$hosts_ids[$hosts_id]['name']."</a> ".$item->getComments()."</td>";
@@ -590,7 +601,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                $overallServicesState = $resources[$services[$i]]['state'];
             }
             echo '<td class="serviceState">';
-            if (PluginMonitoringProfile::haveRight("dashboard_all_ressources", 'r')) {
+            if (Session::haveRight("plugin_monitoring_service", READ)) {
                $link_service = $link;
                $link_service .= "&link[1]=AND&field[1]=2&searchtype[1]=equals&contains[1]=".
                        $resources[$services[$i]]['plugin_monitoring_components_id'];

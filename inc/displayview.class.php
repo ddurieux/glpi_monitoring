@@ -52,6 +52,12 @@ class PluginMonitoringDisplayview extends CommonDBTM {
    protected $profiles  = array();
    protected $entities  = array();
 
+   const HOMEPAGE         =  1024;
+   const DASHBOARD        =  2048;
+
+   static $rightname = 'plugin_monitoring_displayview';
+
+
    /**
    * Get name of this type
    *
@@ -64,15 +70,20 @@ class PluginMonitoringDisplayview extends CommonDBTM {
 
 
 
-   static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config_views", 'w');
+   /**
+    * @since version 0.85
+    *
+    * @see commonDBTM::getRights()
+    **/
+   function getRights($interface='central') {
+
+      $values = parent::getRights();
+      $values[self::HOMEPAGE]    = __('See in homepage', 'monitoring');
+      $values[self::DASHBOARD]   = __('See in dashboard', 'monitoring');
+
+      return $values;
    }
 
-
-
-   static function canView() {
-      return PluginMonitoringProfile::haveRight("config_views", 'r');
-   }
 
 
    function post_getFromDB() {
@@ -241,7 +252,8 @@ class PluginMonitoringDisplayview extends CommonDBTM {
          $a_views = $this->getViews(1);
          foreach ($a_views as $views_id=>$name) {
             $this->getFromDB($views_id);
-            if (PluginMonitoringProfile::haveRight("homepage_views", 'r') && $this->haveVisibilityAccess()) {
+            if (Session::haveRight("plugin_monitoring_displayview", PluginMonitoringDisplayview::HOMEPAGE)
+                    && $this->haveVisibilityAccess()) {
                $ong[] = "["._n('View', 'Views', 1, 'monitoring')."] ".$this->fields['name'];
             }
          }
@@ -271,7 +283,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
             $pmDisplayview_rule->ShowRulesTabs($item->getID(), $tabnum);
          }
       } else if ($item->getType() == 'Central') {
-         if (PluginMonitoringProfile::haveRight("homepage_views", 'r')) {
+         if (Session::haveRight("plugin_monitoring_displayview", PluginMonitoringDisplayview::HOMEPAGE)) {
             $pmDisplayview_item = new PluginMonitoringDisplayview_item();
             $pmDisplayview = new PluginMonitoringDisplayview();
             $a_views = $pmDisplayview->getViews(1);
@@ -413,7 +425,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       global $DB, $CFG_GLPI;
 
       $ID      = $this->fields['id'];
-      $canedit = $this->can($ID,'w');
+      $canedit = $this->can($ID, CREATE);
 
       echo "<div class='center'>";
 
@@ -604,7 +616,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
                                          'PluginMonitoringDisplayview_User'))) {
                   $item = new $type();
                   foreach ($items as $key => $val) {
-                     if ($item->can($key,'w')) {
+                     if ($item->can($key, PURGE)) {
                         if ($item->delete(array('id' => $key))) {
                            $res['ok']++;
                         } else {
@@ -807,7 +819,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       echo '<div class="ch-item">
          <div class="ch-info-'.$class.'">
 			<h1><a href="';
-      if ($item->can($item->getID(), 'r')) {
+      if ($item->can($item->getID(), READ)) {
          echo $item->getFormURL().'?id='.$item->getID().'&forcetab=PluginMonitoringHost$0';
       } else {
          echo $CFG_GLPI['root_doc']."/plugins/monitoring/front/displayhost.php?itemtype=".$itemtype

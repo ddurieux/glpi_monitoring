@@ -60,7 +60,7 @@ $pmMessage->getMessages();
 
 $pmDisplay->menu();
 
-PluginMonitoringProfile::checkRight("dashboard_services_catalogs", 'r');
+Session::checkRight("plugin_monitoring_servicescatalog", PluginMonitoringServicescatalog::DASHBOARD);
 
 $pmDisplay->showCounters("Businessrules");
 $pmServicescatalog->showChecks($_SESSION['plugin_monitoring_reduced_interface']);
