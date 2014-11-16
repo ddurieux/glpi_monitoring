@@ -489,13 +489,15 @@ class PluginMonitoringWebservice {
       }
 
       // Order
-      $order = "entity_name ASC, FIELD(`glpi_plugin_monitoring_hosts`.`state`,'DOWN','PENDING','UNKNOWN','UNREACHABLE','UP')";
+      $order = "entity_name ASC, location ASC, FIELD(`glpi_plugin_monitoring_hosts`.`state`,'DOWN','PENDING','UNKNOWN','UNREACHABLE','UP')";
       if (isset($params['order'])) {
          $order = $params['order'];
       }
 
       $query = "
          SELECT
+            `glpi_computers`.`id` AS id,
+            `glpi_entities`.`id` AS entity_id,
             `glpi_entities`.`name` AS entity_name,
             `glpi_computers`.`name` AS name,
             `glpi_locations`.`building` AS gps,
