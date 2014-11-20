@@ -444,9 +444,9 @@ class PluginMonitoringWebservice {
 
       $where = $join = $fields = '';
       $join .= "
-         INNER JOIN `glpi_computers`
+         LEFT JOIN `glpi_plugin_monitoring_hosts`
             ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id` AND `glpi_plugin_monitoring_hosts`.`itemtype`='Computer'
-         INNER JOIN `glpi_entities`
+         LEFT JOIN `glpi_entities`
             ON `glpi_computers`.`entities_id` = `glpi_entities`.`id`
          LEFT JOIN `glpi_locations`
             ON `glpi_locations`.`id` = `glpi_computers`.`locations_id`
@@ -510,7 +510,7 @@ class PluginMonitoringWebservice {
             `glpi_plugin_monitoring_hosts`.`perf_data`,
             `glpi_plugin_monitoring_hosts`.`is_acknowledged`,
             `glpi_plugin_monitoring_hosts`.`acknowledge_comment`
-         FROM `glpi_plugin_monitoring_hosts`
+         FROM `glpi_computers`
          $join
          $where
          ORDER BY $order
