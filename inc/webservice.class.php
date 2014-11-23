@@ -370,12 +370,12 @@ class PluginMonitoringWebservice {
          $start = $params['start'];
       }
 
-      // Entity
-      if (isset($params['entity'])) {
-         if (!Session::haveAccessToEntity($params['entity'])) {
+      // Entities
+      if (isset($params['entitiesList'])) {
+         if (!Session::haveAccessToAllOfEntities($params['entitiesList'])) {
             return self::Error($protocol, WEBSERVICES_ERROR_NOTALLOWED, '', 'entity');
          }
-         $where = getEntitiesRestrictRequest("WHERE", "glpi_computers", '', $params['entity']) .
+         $where = getEntitiesRestrictRequest("WHERE", "glpi_computers", '', $params['entitiesList']) .
                      $where;
       } else {
          $where = getEntitiesRestrictRequest("WHERE", "glpi_computers") .
@@ -462,12 +462,12 @@ class PluginMonitoringWebservice {
          $start = $params['start'];
       }
 
-      // Entity
-      if (isset($params['entity'])) {
-         if (!Session::haveAccessToEntity($params['entity'])) {
+      // Entities
+      if (isset($params['entitiesList'])) {
+         if (!Session::haveAccessToAllOfEntities($params['entitiesList'])) {
             return self::Error($protocol, WEBSERVICES_ERROR_NOTALLOWED, '', 'entity');
          }
-         $where = getEntitiesRestrictRequest("WHERE", "glpi_computers", '', $params['entity']) .
+         $where = getEntitiesRestrictRequest("WHERE", "glpi_computers", '', $params['entitiesList']) .
                      $where;
       } else {
          $where = getEntitiesRestrictRequest("WHERE", "glpi_computers") .
@@ -497,18 +497,24 @@ class PluginMonitoringWebservice {
       $query = "
          SELECT
             `glpi_computers`.`id` AS id,
+            `glpi_computers`.`name` AS name,
+            `glpi_computers`.`serial` AS serial,
+            `glpi_computers`.`otherserial` AS inventory,
+            `glpi_computers`.`comment` AS comment,
             `glpi_entities`.`id` AS entity_id,
             `glpi_entities`.`name` AS entity_name,
-            `glpi_computers`.`name` AS name,
+            `glpi_entities`.`completename` AS entity_completename,
             `glpi_locations`.`building` AS gps,
             `glpi_locations`.`name` AS short_location,
             `glpi_locations`.`completename` AS location,
+            `glpi_plugin_monitoring_hosts`.`id` as monitoring_id,
             `glpi_plugin_monitoring_hosts`.`state`,
             `glpi_plugin_monitoring_hosts`.`state_type`,
             `glpi_plugin_monitoring_hosts`.`event`,
             `glpi_plugin_monitoring_hosts`.`last_check`,
             `glpi_plugin_monitoring_hosts`.`perf_data`,
             `glpi_plugin_monitoring_hosts`.`is_acknowledged`,
+            `glpi_plugin_monitoring_hosts`.`is_acknowledgeconfirmed`,
             `glpi_plugin_monitoring_hosts`.`acknowledge_comment`
          FROM `glpi_computers`
          $join
@@ -601,12 +607,12 @@ class PluginMonitoringWebservice {
          $start = $params['start'];
       }
 
-      // Entity
-      if (isset($params['entity'])) {
-         if (!Session::haveAccessToEntity($params['entity'])) {
+      // Entities
+      if (isset($params['entitiesList'])) {
+         if (!Session::haveAccessToAllOfEntities($params['entitiesList'])) {
             return self::Error($protocol, WEBSERVICES_ERROR_NOTALLOWED, '', 'entity');
          }
-         $where = getEntitiesRestrictRequest("WHERE", "glpi_computers", '', $params['entity']) .
+         $where = getEntitiesRestrictRequest("WHERE", "glpi_computers", '', $params['entitiesList']) .
                      $where;
       } else {
          $where = getEntitiesRestrictRequest("WHERE", "glpi_computers") .
@@ -618,7 +624,7 @@ class PluginMonitoringWebservice {
          if (is_array($params['servicesFilter'])) {
             $where .= " AND `glpi_plugin_monitoring_components`.`name` IN ('" . implode("','",$params['servicesFilter']) . "')";
          } else {
-            $where .= " AND `glpi_plugin_monitoring_components`.`name` = " . $params['servicesFilter'];
+            $where .= " AND `glpi_plugin_monitoring_components`.`name` = '" . $params['servicesFilter'] . "'";
          }
       }
 
