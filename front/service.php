@@ -82,7 +82,8 @@ if (isset($_GET['reset'])) {
 if (isset($_GET['glpi_tab'])) {
    unset($_GET['glpi_tab']);
 }
-Search::manageGetValues("PluginMonitoringService");
+//Search::manageGetValues("PluginMonitoringService");
+$_GET = Search::prepareDatasForSearch("PluginMonitoringService", $_GET);
 if (isset($_GET['hidesearch'])) {
    echo "<table class='tab_cadre_fixe'>";
    echo "<tr class='tab_bg_1'>";
