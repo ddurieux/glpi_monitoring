@@ -51,7 +51,7 @@ class ManageRessources extends PHPUnit_Framework_TestCase {
       $PLUGIN_HOOKS = plugin_init_monitoring();
       plugin::load("monitoring");
 
-      $CFG_GLPI['root_doc'] = "http://127.0.0.1/monitoring0.84/";
+      $CFG_GLPI['root_doc'] = "http://127.0.0.1/monitoring0.85/";
 
       Session::loadLanguage("en_GB");
 
