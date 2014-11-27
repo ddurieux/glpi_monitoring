@@ -155,12 +155,39 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
 
 
    function addRule() {
+      global $CFG_GLPI;
 
-      Search::manageGetValues($_GET['itemtype']);
-      $pmSearch = new PluginMonitoringSearch();
-      $pmSearch->showGenericSearch($_GET['itemtype'], $_GET);
+      $params = Search::manageParams($_GET['itemtype'], $_GET, FALSE);
+      $params['showbookmark'] = false;
+      $params['target'] = $CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog_rule.form.php";
+      $params['addhidden'] = array();
+      $params['addhidden']['plugin_monitoring_componentscalalog_id'] = $_GET['plugin_monitoring_componentscalalog_id'];
+      if (isset($_GET['id'])) {
+         $params['addhidden']['id'] = $_GET['id'];
+      }
+      Search::showGenericSearch($_GET['itemtype'], $params);
 
-      echo "<br/><br/>";
+      echo "<form name='searchform' method='get' action=\"".$params['target']."\">";
+      echo "<table class='tab_cadre_fixe' >";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td align='center'>";
+      if (isset($_GET['id'])) {
+
+      } else {
+         echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$_GET['plugin_monitoring_componentscalalog_id']."' >";
+         echo "<input type='submit' name='addrule' value=\"Add this rule\" class='submit' >";
+      }
+      echo "</td>";
+      echo "</tr>";
+      echo "</table>";
+      echo "</form>";
+
+
+//      Search::manageGetValues($_GET['itemtype']);
+//      $pmSearch = new PluginMonitoringSearch();
+//      $pmSearch->showGenericSearch($_GET['itemtype'], $_GET);
+
+      echo "<br/>";
       echo "<table class='tab_cadre_fixe'>";
 
       echo "<tr>";
@@ -188,7 +215,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       Session::changeActiveEntities($pmComponentscatalog->fields['entities_id'],
                            $pmComponentscatalog->fields['is_recursive']);
 
-      Search::showList($_GET['itemtype'], $_GET);
+      Search::showList($_GET['itemtype'], $params);
 
       Session::changeActiveEntities($default_entity,
                            $entities_isrecursive);
