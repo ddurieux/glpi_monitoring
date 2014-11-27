@@ -156,15 +156,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
          }
          echo "</tr>";
          echo "</table>";
-         if (Session::haveRight("plugin_monitoring_counter", READ)) {
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_1'>";
-            echo "<th>";
-            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/hostdailycounter.php'>".__('Daily counters', 'monitoring')."</a>";
-            echo "</th>";
-            echo "</tr>";
-            echo "</table>";
-         }
          if (Session::haveRight("plugin_monitoring_acknowledge", READ)
               || Session::haveRight("plugin_monitoring_downtime", READ)) {
             echo "<table class='tab_cadre_fixe'>";
@@ -1248,32 +1239,6 @@ echo "
                                       $data['state_type'],
                                       $data['event'],
                                       $pm_Host->isCurrentlyAcknowledged());
-
-      if (Session::haveRight("plugin_monitoring_counter", READ)) {
-         echo "<td class='center'>";
-         // Only if counters exist for the host
-         $hostCounters = $pm_Host->hasDailyCounters();
-         // Toolbox::logInFile("pm", "Host daily counters ".$data['host_name']." : ".serialize($hostCounters) . " ...\n");
-         if (count($hostCounters)) {
-            // $pmCounters = new PluginMonitoringHostdailycounter();
-            // $html = $pm_Host->displayCounters(array('cPagesTotal', 'cRetractedTotal', 'cPrinterChanged', 'cPaperChanged'), $data['id']);
-            $counters  = "<table width='auto' class='tab_cadre'>";
-            foreach (PluginMonitoringHostdailycounter::getManagedCounters() as $key => $value) {
-               if (isset($value['display'])) {
-                  $counters .= "<tr>";
-                  $counters .= "<td>".$value['name']."</td><td>" . $hostCounters[$key] . "</td>";
-                  $counters .= "</tr>";
-               }
-            }
-            $counters .="</table>";
-
-            Html::showToolTip($counters, array(
-              'title'  => __('Daily counters', 'monitoring')." : ".$data['host_name'],
-              'img'    => $CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"
-            ));
-         }
-         echo "</td>";
-      }
 
       echo "<td>";
       $entity = new Entity();

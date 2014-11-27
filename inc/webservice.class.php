@@ -672,30 +672,6 @@ class PluginMonitoringWebservice {
    }
 
 
-   static function methodGetLastCounters($params, $protocol) {
-      return PluginMonitoringHostdailycounter::getLastCountersPerHost($params);
-   }
-
-   static function methodGetStatistics($params, $protocol) {
-      return PluginMonitoringHostdailycounter::getStatistics($params);
-   }
-
-   static function methodGetDailyCounters($params, $protocol) {
-
-     if (isset($params['lastPerHost'])) {
-       return PluginMonitoringHostdailycounter::getLastCountersPerHost($params);
-     }
-
-     if (isset($params['statistics'])) {
-       return PluginMonitoringHostdailycounter::getStatistics($params);
-     }
-
-     $result = PluginMonitoringHostdailycounter::getHostDailyCounters($params);
-     // foreach ($result as $line) {
-     // Toolbox::logInFile("pm-ws", "getHostDailyCounters, result : ".serialize($line)."\n");
-     // }
-     return $result;
-   }
 
    static function methodGetUnavailabilities($params, $protocol) {
      global $DB;

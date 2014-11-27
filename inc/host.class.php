@@ -926,15 +926,6 @@ class PluginMonitoringHost extends CommonDBTM {
       Html::closeForm();
    }
 
-
-
-   /**
-    * Daily counters available for the host
-    */
-   function hasDailyCounters() {
-      $pmDailyCounters = new PluginMonitoringHostdailycounter();
-      return current($pmDailyCounters->find ("`hostname` = '".$this->getName()."'", "`id` DESC", 1));
-   }
 }
 
 ?>

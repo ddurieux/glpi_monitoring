@@ -238,10 +238,6 @@ class PluginMonitoringProfile extends Profile {
                 'label'     => __('Graph template', 'monitoring'),
                 'field'     => 'plugin_monitoring_perfdata'
           ),
-          array('itemtype'  => 'PluginMonitoringHostdailycounter',
-                'label'     => __('Counter', 'monitoring'),
-                'field'     => 'plugin_monitoring_counter'
-          ),
       );
       return $rights;
    }
