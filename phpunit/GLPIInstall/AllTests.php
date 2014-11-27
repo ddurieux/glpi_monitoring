@@ -70,11 +70,11 @@ class GLPIInstall extends PHPUnit_Framework_TestCase {
       $DB  = new DB();
       $res = $DB->runFile(GLPI_ROOT ."/install/mysql/glpi-0.85-empty.sql");
       $this->assertTrue($res, "Fail: SQL Error during install");
-      $DB->query("UPDATE `glpi_configs` SET `version`='0.85' WHERE `id`='1'");
+      $DB->query("UPDATE `glpi_configs` SET `value`='0.85' WHERE `name`='version' AND `context`='core'");
 
       // update default language
       $query = "UPDATE `glpi_configs`
-                SET `language` = 'fr_FR'";
+                SET `value` = 'fr_FR' WHERE `name`='language' AND `context`='core'";
       $this->assertTrue($DB->query($query), "Fail: can't set default language");
       $query = "UPDATE `glpi_users`
                 SET `language` = 'fr_FR'";
