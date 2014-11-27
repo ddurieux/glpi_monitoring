@@ -77,8 +77,11 @@ class PluginMonitoringToolbox {
 
       $_SESSION['glpi_plugin_monitoring']['perfname'][$components_id] = array();
       // $a_perfname = importArrayFromDB($pmComponent->fields['perfname']);
-      $a_perfname = @unserialize($pmComponent->fields['perfname']);
-
+      if ($pmComponent->fields['perfname'] == '') {
+         $a_perfname = FALSE;
+      } else {
+         $a_perfname = @unserialize($pmComponent->fields['perfname']);
+      }
       if ($a_perfname === FALSE) {
          // Val not serialized
          $input = array(
@@ -101,7 +104,12 @@ class PluginMonitoringToolbox {
 
       $_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$components_id] = array();
       // $a_perfnameinvert = importArrayFromDB($pmComponent->fields['perfnameinvert']);
-      $a_perfnameinvert = @unserialize($pmComponent->fields['perfnameinvert']);
+      if ($pmComponent->fields['perfnameinvert'] == ''
+              || $pmComponent->fields['perfnameinvert'] == '[]') {
+         $a_perfnameinvert = FALSE;
+      } else {
+         $a_perfnameinvert = @unserialize($pmComponent->fields['perfnameinvert']);
+      }
       if ($a_perfnameinvert !== false) {
          foreach ($a_perfnameinvert as $perfname=>$active) {
             $_SESSION['glpi_plugin_monitoring']['perfnameinvert'][$components_id][$perfname] = 'checked';
