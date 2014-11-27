@@ -245,7 +245,6 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       $pmCc_Rule                 = new PluginMonitoringComponentscatalog_rule();
       $pmComponentscatalog_Host  = new PluginMonitoringComponentscatalog_Host();
       $pmComponentscatalog       = new PluginMonitoringComponentscatalog();
-      $pmSearch                  = new PluginMonitoringSearch();
       $pmService                 = new PluginMonitoringService();
 
       $devices_present = array();
@@ -272,24 +271,10 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
 
          $get_tmp = '';
          $itemtype = $pmCc_Rule->fields['itemtype'];
-         if (isset($_GET)) {
-             $get_tmp = $_GET;
-         }
-         if (isset($_SESSION["glpisearchcount"][$pmCc_Rule->fields['itemtype']])) {
-            unset($_SESSION["glpisearchcount"][$pmCc_Rule->fields['itemtype']]);
-         }
-         if (isset($_SESSION["glpisearchcount2"][$pmCc_Rule->fields['itemtype']])) {
-            unset($_SESSION["glpisearchcount2"][$pmCc_Rule->fields['itemtype']]);
-         }
 
-         $_GET = importArrayFromDB($pmCc_Rule->fields['condition']);
+         $condition = importArrayFromDB($pmCc_Rule->fields['condition']);
 
-         $_GET["glpisearchcount"] = count($_GET['field']);
-         if (isset($_GET['field2'])) {
-            $_GET["glpisearchcount2"] = count($_GET['field2']);
-         }
-
-         Search::manageGetValues($pmCc_Rule->fields['itemtype']);
+         $params = Search::manageParams($itemtype, $condition, FALSE);
 
          $queryd = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
             WHERE `plugin_monitoring_componentscalalog_id`='".$pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"]."'
@@ -313,33 +298,28 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
             $devicesnetworkport_present[$data['id']] = 1;
          }
 
-         $glpilist_limit = $_SESSION['glpilist_limit'];
-         $_SESSION['glpilist_limit'] = 500000;
-         $result = $pmSearch->constructSQL($itemtype,
-                                        $_GET);
-         $_SESSION['glpilist_limit'] = $glpilist_limit;
+         $data = Search::prepareDatasForSearch($itemtype, $params);
+         Search::constructSQL($data);
+
+         $DBread = DBConnection::getReadConnection();
+         $DBread->query("SET SESSION group_concat_max_len = 16384;");
+         $result = $DBread->query($data['sql']['search']);
+         /// Check group concat limit : if warning : increase limit
+         if ($result2 = $DBread->query('SHOW WARNINGS')) {
+            if ($DBread->numrows($result2) > 0) {
+               $res = $DBread->fetch_assoc($result2);
+               if ($res['Code'] == 1260) {
+                  $DBread->query("SET SESSION group_concat_max_len = 4194304;");
+                  $result = $DBread->query($data['sql']['search']);
+               }
+            }
+         }
 
          while ($data=$DB->fetch_array($result)) {
             $networkports_id = 0;
             $itemtype_device = $pmCc_Rule->fields['itemtype'];
             $items_id_device = $data['id'];
             if ($itemtype_device == 'PluginMonitoringNetworkport') {
-//               $queryh = "SELECT `itemtype`, `items_id`,
-//                     `glpi_plugin_monitoring_services`.`id`,
-//                     `glpi_plugin_monitoring_componentscatalogs_hosts`.`id` as hid
-//                     FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
-//                  LEFT JOIN `glpi_plugin_monitoring_services`
-//                     ON `plugin_monitoring_componentscatalogs_hosts_id` =
-//                        `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
-//                  WHERE `plugin_monitoring_componentscalalog_id`='".$pmCc_Rule->fields["plugin_monitoring_componentscalalog_id"]."'
-//                     AND `itemtype`='".$itemtype_device."'
-//                     AND `items_id`='".$items_id_device."'
-//                     AND `glpi_plugin_monitoring_services`.`id` IS NULL";
-//               $resulth = $DB->query($queryh);
-//               while ($datah=$DB->fetch_array($resulth)) {
-//                  $pmComponentscatalog_Host->delete(array('id'=>$datah['hid']));
-//               }
-
                $pmNetworkport = new PluginMonitoringNetworkport();
                $pmNetworkport->getFromDB($data['id']);
                $itemtype_device = $pmNetworkport->fields['itemtype'];
@@ -474,7 +454,6 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       $a_find = array();
       $pmComponentscatalog_rule = new PluginMonitoringComponentscatalog_rule();
       $pmComponentscatalog      = new PluginMonitoringComponentscatalog();
-      $pmSearch                 = new PluginMonitoringSearch();
 
       $query = "SELECT * FROM `".$pmComponentscatalog_rule->getTable()."`
          WHERE `itemtype`='".$itemtype."'";
@@ -484,19 +463,6 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
           $get_tmp = $_GET;
       }
       while ($data=$DB->fetch_array($result)) {
-         if (isset($_SESSION["glpisearchcount"][$data['itemtype']])) {
-            unset($_SESSION["glpisearchcount"][$data['itemtype']]);
-         }
-         if (isset($_SESSION["glpisearchcount2"][$data['itemtype']])) {
-            unset($_SESSION["glpisearchcount2"][$data['itemtype']]);
-         }
-
-         $_GET = importArrayFromDB($data['condition']);
-
-         $_GET["glpisearchcount"] = count($_GET['field']);
-         if (isset($_GET['field2'])) {
-            $_GET["glpisearchcount2"] = count($_GET['field2']);
-         }
 
          if (!isset($_SESSION['glpiactiveentities_string'])) {
             $_SESSION['glpiactiveentities_string'] = $parm->fields['entities_id'];
@@ -525,13 +491,35 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
             Session::changeActiveEntities($pmComponentscatalog->fields['entities_id'],
                                  $pmComponentscatalog->fields['is_recursive']);
 
+         $itemtype = $data['itemtype'];
 
-         Search::manageGetValues($data['itemtype']);
+         $condition = importArrayFromDB($data['condition']);
+         $params = Search::manageParams($itemtype, $condition, FALSE);
 
-         $resultr = $pmSearch->constructSQL($itemtype,
-                                        $_GET,
-                                        $items_id);
-         if ($DB->numrows($resultr) > 0) {
+         $datar = Search::prepareDatasForSearch($itemtype, $params);
+         Search::constructSQL($datar);
+
+         $DBread = DBConnection::getReadConnection();
+         $DBread->query("SET SESSION group_concat_max_len = 16384;");
+         $resultr = $DBread->query($datar['sql']['search']);
+         /// Check group concat limit : if warning : increase limit
+         if ($result2 = $DBread->query('SHOW WARNINGS')) {
+            if ($DBread->numrows($result2) > 0) {
+               $res = $DBread->fetch_assoc($result2);
+               if ($res['Code'] == 1260) {
+                  $DBread->query("SET SESSION group_concat_max_len = 4194304;");
+                  $resultr = $DBread->query($datar['sql']['search']);
+               }
+            }
+         }
+         $find = 0;
+         while ($datar=$DB->fetch_array($resultr)) {
+            if ($datar['id'] == $items_id) {
+               $find = 1;
+               break;
+            }
+         }
+         if ($find == 1) {
             $a_find[$data['plugin_monitoring_componentscalalog_id']] = 1;
          } else {
             if (!isset($a_find[$data['plugin_monitoring_componentscalalog_id']])) {

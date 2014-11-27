@@ -56,8 +56,7 @@ $pmComponentscatalog = new PluginMonitoringComponentscatalog();
 
 
 if (isset($_GET['addrule'])) {
-   if (!isset($_GET['contains'])
-        AND !isset($_GET['reset'])) {
+   if (!isset($_GET['criteria'])) {
 //      $_SESSION['plugin_monitoring_rules'] = $_POST;
    } else {
       $_POST = $_GET;
