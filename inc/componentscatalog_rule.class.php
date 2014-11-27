@@ -157,7 +157,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
    function addRule() {
       global $CFG_GLPI;
 
-      $params = Search::manageParams($_GET['itemtype'], $_GET, FALSE);
+      $params = Search::manageParams($_GET['itemtype'], $_GET);
       $params['showbookmark'] = false;
       $params['target'] = $CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog_rule.form.php";
       $params['addhidden'] = array();
@@ -165,23 +165,31 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       if (isset($_GET['id'])) {
          $params['addhidden']['id'] = $_GET['id'];
       }
+
+      ob_start();
       Search::showGenericSearch($_GET['itemtype'], $params);
-
-      echo "<form name='searchform' method='get' action=\"".$params['target']."\">";
-      echo "<table class='tab_cadre_fixe' >";
-      echo "<tr class='tab_bg_1'>";
-      echo "<td align='center'>";
+      $form = ob_get_contents();
+      ob_end_clean();
       if (isset($_GET['id'])) {
-
+         $table = "<tr class='tab_bg_1'>"
+                 . "<td align='center'>"
+                 . "<input type='submit' name='updaterule' value=\"Update this rule\" class='submit' >"
+                 . "</td>"
+                 . "<td align='center'>"
+                 . "<input type='submit' name='deleterule' value=\"Delete this rule\" class='submit' >"
+                 . "</td>"
+                 . "</tr>"
+                 . "</table><input";
       } else {
-         echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$_GET['plugin_monitoring_componentscalalog_id']."' >";
-         echo "<input type='submit' name='addrule' value=\"Add this rule\" class='submit' >";
+         $table = "<tr class='tab_bg_1'>"
+                 . "<td align='center' colspan='2'>"
+                 . "<input type='submit' name='addrule' value=\"Add this rule\" class='submit' >"
+                 . "</td>"
+                 . "</tr>"
+                 . "</table><input";
       }
-      echo "</td>";
-      echo "</tr>";
-      echo "</table>";
-      echo "</form>";
-
+      $form = str_replace("</table>\n<input", $table, $form);
+      echo $form;
 
 //      Search::manageGetValues($_GET['itemtype']);
 //      $pmSearch = new PluginMonitoringSearch();

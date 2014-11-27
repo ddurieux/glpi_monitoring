@@ -58,6 +58,19 @@ class PluginMonitoringMenu extends CommonGLPI {
       return 'Monitoring';
    }
 
+
+
+   static function getAdditionalMenuOptions() {
+
+      return array('componentscatalog' => array(
+              'title' => PluginMonitoringComponentscatalog::getTypeName(),
+              'page'  => PluginMonitoringComponentscatalog::getSearchURL(false),
+              'links' => array(
+                  'search' => '/plugins/monitoring/front/componentscatalog.php',
+                  'add'    => '/plugins/monitoring/front/componentscatalog.form.php'
+              )));
+   }
+
 }
 
 ?>
