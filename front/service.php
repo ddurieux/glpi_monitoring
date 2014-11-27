@@ -46,6 +46,10 @@ Session::checkCentralAccess();
 
 Html::header(__('Monitoring - dashboard (resources)', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
              "monitoring", "display");
+
+if (!isset($_GET['itemtype'])) {
+   $_GET['itemtype'] = "PluginMonitoringService";
+}
 $params = Search::manageParams("PluginMonitoringService", $_GET);
 
 /*
