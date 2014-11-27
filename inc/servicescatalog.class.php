@@ -699,9 +699,14 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
          foreach ($group['services'] as $serviceName => $service) {
             if (Session::haveRight("plugin_monitoring_service", READ)) {
                $link = $CFG_GLPI['root_doc'].
-                  "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-                     "&field[0]=2&searchtype[0]=equals&contains[0]=".$service.
-                     "&itemtype=PluginMonitoringService&start=0'";
+                  "/plugins/monitoring/front/service.php?hidesearch=1"
+//                       . "&reset=reset"
+                       . "&criteria[0][field]=2"
+                       . "&criteria[0][searchtype]=equals"
+                       . "&criteria[0][value]=".$service
+
+                       . "&itemtype=PluginMonitoringService"
+                       . "&start=0'";
                echo  '<th class="vertical">';
                echo  '<a href="'.$link.'"><div class="rotated-text"><span class="rotated-text__inner">'.$serviceName.'</span></div></a>';
                echo  '</th>';
@@ -718,9 +723,14 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
 
             if (Session::haveRight("plugin_monitoring_service", READ)) {
                $link = $CFG_GLPI['root_doc'].
-                  "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-                     "&field[0]=20&searchtype[0]=equals&contains[0]=".$host['id'].
-                     "&itemtype=PluginMonitoringService&start=0'";
+                  "/plugins/monitoring/front/service.php?hidesearch=1"
+//                       . "&reset=reset"
+                       . "&criteria[0][field]=20"
+                       . "&criteria[0][searchtype]=equals"
+                       . "&criteria[0][value]=".$host['id']
+
+                       . "&itemtype=PluginMonitoringService"
+                       . "&start=0'";
                echo  "<td class='left'><a href='".$link."'>".$host['name']."</a></td>";
             } else {
                echo  "<td class='left'>".$host['name']."</td>";

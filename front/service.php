@@ -46,6 +46,7 @@ Session::checkCentralAccess();
 
 Html::header(__('Monitoring - dashboard (resources)', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
              "monitoring", "display");
+$params = Search::manageParams("PluginMonitoringService", $_GET);
 
 /*
 // Display ressources perfdata ?
@@ -61,7 +62,6 @@ if (! isset($_SESSION['plugin_monitoring_reduced_interface'])) {
 if (isset($_POST['reduced_interface'])) {
    $_SESSION['plugin_monitoring_reduced_interface'] = $_POST['reduced_interface'];
 }
-
 $pmDisplay = new PluginMonitoringDisplay();
 $pmMessage = new PluginMonitoringMessage();
 
@@ -83,7 +83,7 @@ if (isset($_GET['glpi_tab'])) {
    unset($_GET['glpi_tab']);
 }
 //Search::manageGetValues("PluginMonitoringService");
-$_GET = Search::prepareDatasForSearch("PluginMonitoringService", $_GET);
+//$_GET = Search::prepareDatasForSearch("PluginMonitoringService", $_GET);
 if (isset($_GET['hidesearch'])) {
    echo "<table class='tab_cadre_fixe'>";
    echo "<tr class='tab_bg_1'>";
@@ -97,7 +97,7 @@ if (isset($_GET['hidesearch'])) {
    echo "</table>";
    echo "<div style='display: none;' id='searchformservices'>";
 }
-Search::showGenericSearch("PluginMonitoringService", $_GET);
+Search::showGenericSearch("PluginMonitoringService", $params);
 if (isset($_GET['hidesearch'])) {
    echo "</div>";
 }
@@ -106,7 +106,7 @@ if (isset($_GET['perfdatas'])) {
    $perfdatas=true;
 }
 
-$pmDisplay->showResourcesBoard('', $perfdatas);
+$pmDisplay->showResourcesBoard('', $perfdatas, $params);
 if (isset($_SESSION['glpisearch']['PluginMonitoringService']['reset'])) {
    unset($_SESSION['glpisearch']['PluginMonitoringService']['reset']);
 }

@@ -118,6 +118,15 @@ class PluginMonitoringService extends CommonDBTM {
       $tab[9]['name']           = __('Components catalog', 'monitoring');
       $tab[9]['datatype']       = 'itemlink';
 
+      $tab[10]['table']          = $this->getTable();
+      $tab[10]['field']          = 'name';
+      $tab[10]['name']           = __('Name');
+      $tab[10]['datatype']       = 'itemlink';
+
+      $tab[11]['table']          = 'glpi_plugin_monitoring_componentscatalogs_hosts';
+      $tab[11]['field']          = 'id';
+      $tab[11]['name']           = __('Name');
+
       $tab[20]['table']          = 'glpi_computers';
       $tab[20]['field']          = 'name';
       $tab[20]['name']           = __('Item')." > ".__('Computer');
@@ -238,7 +247,14 @@ class PluginMonitoringService extends CommonDBTM {
       if ($this->getID() == -1) return '';
 
       $link = $CFG_GLPI['root_doc'].
-         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&field[0]=20&searchtype[0]=equals&contains[0]=".$this->getComputerID()."&itemtype=PluginMonitoringService&start=0'";
+         "/plugins/monitoring/front/service.php?hidesearch=1"
+//              . "&reset=reset"
+              . "&criteria[0][field]=20"
+              . "&criteria[0][searchtype]=equals"
+              . "&criteria[0][value]=".$this->getComputerID().""
+
+              . "&itemtype=PluginMonitoringService"
+              . "&start=0'";
       if (isset($options['monitoring']) && $options['monitoring']) {
          return "<a href='$link'>".$this->getName(array('shinken'=>true, 'hostname'=>true))."</a>"."&nbsp;".$this->getComments();
       } else {

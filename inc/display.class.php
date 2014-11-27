@@ -493,9 +493,18 @@ class PluginMonitoringDisplay extends CommonDBTM {
    /**
     * Display list of services
     */
-   function showResourcesBoard($width='', $perfdatas=false) {
+   function showResourcesBoard($width='', $perfdatas=false, $params=array()) {
       global $DB,$CFG_GLPI;
 
+      $col_to_display = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
+
+      $data = Search::prepareDatasForSearch($params['itemtype'], $params, $col_to_display);
+      $data['tocompute'] = $data['toview'];
+      Search::constructSQL($data);
+//echo "<pre>";      print_r($data['sql']['search']);
+      Search::constructDatas($data);
+
+/*
       if (! isset($_SESSION['plugin_monitoring_reduced_interface'])) {
          $_SESSION['plugin_monitoring_reduced_interface'] = false;
       }
@@ -513,13 +522,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
 
       $where = '';
-/*
-      if ($limit == 'hosts') {
-         $where = "`plugin_monitoring_services_id`='0' ";
-      } else if ($limit == 'services') {
-         $where = "`plugin_monitoring_services_id`>0 ";
-      }
-*/
       if (isset($_GET['field'])) {
          foreach ($_GET['field'] as $key=>$value) {
             $wheretmp = '';
@@ -614,7 +616,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
          ".$leftjoin."
          ".$where."
          ".$ORDERQUERY;
-      // Toolbox::logInFile("pm", "Query services - $query\n");
       $result = $DB->query($query);
 
       $start = 0;
@@ -630,16 +631,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
                     'metacriteria' => Toolbox::stripslashes_deep($_GET['search']['metacriteria'])),
               '&amp;');
 
-//      $globallinkto = Search::getArrayUrlLink("field",$_GET['field']).
-//                Search::getArrayUrlLink("link",$_GET['link']).
-//                Search::getArrayUrlLink("contains",$_GET['contains']).
-//                Search::getArrayUrlLink("searchtype",$_GET['searchtype']).
-//                Search::getArrayUrlLink("field2",$_GET['field2']).
-//                Search::getArrayUrlLink("contains2",$_GET['contains2']).
-//                Search::getArrayUrlLink("itemtype2",$_GET['itemtype2']).
-//                Search::getArrayUrlLink("searchtype2",$_GET['searchtype2']).
-//                Search::getArrayUrlLink("link2",$_GET['link2']);
-
       $parameters = "sort=".$_GET['sort']."&amp;order=".$_GET['order'].$globallinkto;
       Html::printPager($start, $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/service.php", $parameters);
 
@@ -650,9 +641,46 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $query .= " LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 
       // Fred : on repose la requête sur la base une 2ème fois ... ?
-      // Toolbox::logInFile("pm", "query services - $query\n");
       $result = $DB->query($query);
+*/
 
+
+      $rand = mt_rand();
+      if (!isset($data['data']) || !isset($data['data']['totalcount'])) {
+         return false;
+      }
+      // Contruct Pager parameters
+      $globallinkto
+         = Toolbox::append_params(array('criteria'
+                                          => Toolbox::stripslashes_deep($data['search']['criteria']),
+                                        'metacriteria'
+                                          => Toolbox::stripslashes_deep($data['search']['metacriteria'])),
+                                  '&amp;');
+      $parameters = "sort=".$data['search']['sort']."&amp;order=".$data['search']['order'].'&amp;'.
+                     $globallinkto;
+
+      if (isset($_GET['_in_modal'])) {
+         $parameters .= "&amp;_in_modal=1";
+      }
+
+
+      // If the begin of the view is before the number of items
+      if ($data['data']['count'] > 0) {
+         // Display pager only for HTML
+         if ($data['display_type'] == Search::HTML_OUTPUT) {
+            $search_config_top    = "";
+            $search_config_bottom = "";
+
+            Html::printPager($data['search']['start'], $data['data']['totalcount'],
+                             $data['search']['target'], $parameters, $data['itemtype'], 0,
+                              $search_config_top);
+         }
+
+         // Define begin and end var for loop
+         // Search case
+         $begin_display = $data['data']['begin'];
+         $end_display   = $data['data']['end'];
+      }
 
       // Pour la génération des graphes ...
       echo '<div id="custom_date" style="display:none"></div>';
@@ -678,11 +706,11 @@ class PluginMonitoringDisplay extends CommonDBTM {
          // echo Search::showHeaderItem(0, __('Show counters', 'monitoring'), $num);
          echo Search::showHeaderItem(0, __('Show graphics', 'monitoring'), $num);
       }
-      $this->showHeaderItem(__('Host name', 'monitoring'), 1, $num, $start, $globallinkto, 'service.php', 'PluginMonitoringService');
-      $this->showHeaderItem(__('Component', 'monitoring'), 2, $num, $start, $globallinkto, 'service.php', 'PluginMonitoringService');
+      $this->showHeaderItem(__('Host name', 'monitoring'), 1, $num, $begin_display, $globallinkto, 'service.php', 'PluginMonitoringService');
+      $this->showHeaderItem(__('Component', 'monitoring'), 2, $num, $begin_display, $globallinkto, 'service.php', 'PluginMonitoringService');
       if (! $perfdatas) {
-         $this->showHeaderItem(__('Resource state', 'monitoring'), 3, $num, $start, $globallinkto, 'service.php', 'PluginMonitoringService');
-         $this->showHeaderItem(__('Last check', 'monitoring'), 4, $num, $start, $globallinkto, 'service.php', 'PluginMonitoringService');
+         $this->showHeaderItem(__('Resource state', 'monitoring'), 3, $num, $begin_display, $globallinkto, 'service.php', 'PluginMonitoringService');
+         $this->showHeaderItem(__('Last check', 'monitoring'), 4, $num, $begin_display, $globallinkto, 'service.php', 'PluginMonitoringService');
          echo Search::showHeaderItem(0, __('Result details', 'monitoring'), $num);
          echo Search::showHeaderItem(0, __('Check period', 'monitoring'), $num);
          if (Session::haveRight("plugin_monitoring_acknowledge", READ)) {
@@ -693,17 +721,21 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
       PluginMonitoringDisplay::$ar_counterTypes = array();
       PluginMonitoringToolbox::loadLib();
-      while ($data=$DB->fetch_array($result)) {
+//      while ($data=$DB->fetch_array($result)) {
+//echo "<pre>";      print_r($data['data']);
+      foreach ($data['data']['rows'] as $row) {
          // Reduced array or not ?
-         if ($_SESSION['plugin_monitoring_reduced_interface'] and $data['state'] == 'OK') continue;
-
+         if ($_SESSION['plugin_monitoring_reduced_interface'] and $row[2]['displayname'] == 'OK') continue;
          echo "<tr class='tab_bg_3'>";
-         $this->displayLine($data, 1, $perfdatas);
+         $this->displayLine($row, 1, $perfdatas);
          echo "</tr>";
       }
       echo "</table>";
       echo "<br/>";
-      Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/service.php", $parameters);
+      Html::printPager($data['search']['start'], $data['data']['totalcount'],
+                       $data['search']['target'], $parameters, '', 0,
+                        $search_config_bottom);
+
 
       if ($perfdatas) {
          // foreach(PluginMonitoringDisplay::$ar_counterTypes as $counter_id => $counter_name) {
@@ -997,18 +1029,19 @@ echo "
       $pMonitoringService = new PluginMonitoringService();
       $pMonitoringService->getFromDB($data['id']);
       $pMonitoringComponent = new PluginMonitoringComponent();
-      $pMonitoringComponent->getFromDB($data['plugin_monitoring_components_id']);
+      $pMonitoringComponent->getFromDB($data[1][0]['id']);
 
       $networkPort = new NetworkPort();
 
       // If host is acknowledged, force service to be displayed as unknown acknowledged.
-      if (isset($data['host_acknowledged']) && $data['host_acknowledged']) {
+      if (isset($data[7][0]['name'])
+              && $data[7][0]['name']) {
          $shortstate = 'yellowblue';
          $data['state'] = 'UNKNOWN';
       } else {
-         $shortstate = PluginMonitoringHost::getState($data['state'],
-                                      $data['state_type'],
-                                      $data['event'],
+         $shortstate = PluginMonitoringHost::getState($data[2]['displayname'],
+                                      $data[3]['displayname'],
+                                      $data[5]['displayname'],
                                       $pMonitoringService->isCurrentlyAcknowledged());
       }
 
@@ -1052,7 +1085,7 @@ echo "
 
       if ($displayhost) {
          $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
-         $pmComponentscatalog_Host->getFromDB($data["plugin_monitoring_componentscatalogs_hosts_id"]);
+         $pmComponentscatalog_Host->getFromDB($data[10]["displayname"]);
          if (isset($pmComponentscatalog_Host->fields['itemtype'])
                  AND $pmComponentscatalog_Host->fields['itemtype'] != '') {
 
@@ -1103,20 +1136,20 @@ echo "
             }
          }
       } else {
-         echo "<td class='center page foldtl resource".$data['state']." resource".$data['state_type']."'>";
+         echo "<td class='center page foldtl resource".$data[2]['displayname']." resource".$data[3]['displayname']."'>";
          echo "<div class=''>";
          echo "<div>";
-         echo $data['state'];
+         echo $data[2]['displayname'];
          echo "</div>";
          echo "</div>";
          echo "</td>";
 
          echo "<td>";
-         echo Html::convDate($data['last_check']).' '. substr($data['last_check'], 11, 8);
+         echo Html::convDate($data[4]['displayname']).' '. substr($data[4]['displayname'], 11, 8);
          echo "</td>";
 
          echo "<td>";
-         echo $data['event'];
+         echo $data[5]['displayname'];
          echo "</td>";
 
          echo "<td align='center'>";
@@ -1299,9 +1332,14 @@ echo "
       echo "<span>";
       if (Session::haveRight("plugin_monitoring_service", READ)) {
          $link = $CFG_GLPI['root_doc'].
-            "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-               "&field[0]=1&searchtype[0]=equals&contains[0]=".$data['items_id'].
-               "&itemtype=PluginMonitoringService&start=0'";
+            "/plugins/monitoring/front/service.php?hidesearch=1"
+//                 . "&reset=reset"
+                 . "&criteria[0][field]=1"
+                 . "&criteria[0][searchtype]=equals"
+                 . "&criteria[0][value]=".$data['items_id']
+
+                 . "&itemtype=PluginMonitoringService"
+                 . "&start=0'";
 
          echo '<a href="'.$link.'">'.$data['host_services_state']."</a>";
       } else {
@@ -1963,55 +2001,197 @@ Ext.onReady(function(){
       }
 
       $critical_link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-                  "&field[0]=3&searchtype[0]=contains&contains[0]=CRITICAL&link[1]=AND".
-                  "&field[1]=7&searchtype[1]=contains&contains[1]=0&link[1]=AND".
-                  "&field[2]=8&searchtype[2]=equals&contains[2]=0".
-                  "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
+               "/plugins/monitoring/front/service.php?hidesearch=1"
+//              . "&reset=reset"
+              . "&criteria[0][field]=3"
+              . "&criteria[0][searchtype]=contains"
+              . "&criteria[0][value]=CRITICAL"
+
+              . "&criteria[1][link]=AND"
+              . "&criteria[1][field]=7"
+              . "&criteria[1][searchtype]=equals"
+              . "&criteria[1][value]=0"
+
+              . "&criteria[2][link]=AND"
+              . "&criteria[2][field]=8"
+              . "&criteria[2][searchtype]=equals"
+              . "&criteria[2][value]=0"
+              . "&search=Search"
+              . "&itemtype=PluginMonitoringService"
+              . "&start=0"
+              . "&glpi_tab=3'";
+      //_glpi_csrf_token=
       $warning_link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-                  "&field[0]=3&searchtype[0]=contains&contains[0]=FLAPPING&link[1]=AND".
-                  "&field[1]=7&searchtype[1]=equals&contains[1]=0&link[2]=AND".
-                  "&field[2]=8&searchtype[2]=equals&contains[2]=0&link[2]=OR".
-                  "&field[3]=3&searchtype[3]=contains&contains[3]=RECOVERY&link[4]=AND".
-                  "&field[4]=7&searchtype[4]=equals&contains[4]=0&link[5]=AND".
-                  "&field[5]=8&searchtype[5]=equals&contains[5]=0&link[6]=OR".
-                  "&field[6]=3&searchtype[6]=contains&contains[6]=UNKNOWN&link[7]=AND".
-                  "&field[7]=7&searchtype[7]=equals&contains[7]=0&link[8]=AND".
-                  "&field[8]=8&searchtype[8]=equals&contains[8]=0&link[9]=AND".
-                  "&field[9]=3&searchtype[9]=contains&contains[9]=WARNING&link[10]=AND".
-                  "&field[10]=7&searchtype[10]=equals&contains[10]=0&link[11]=AND".
-                  "&field[11]=8&searchtype[11]=equals&contains[11]=0".
-                  "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
+               "/plugins/monitoring/front/service.php?hidesearch=1"
+//              . "&reset=reset"
+              . "&criteria[0][field]=3"
+              . "&criteria[0][searchtype]=contains"
+              . "&criteria[0][value]=FLAPPING"
+
+              . "&criteria[1][link]=AND"
+              . "&criteria[1][field]=7"
+              . "&criteria[1][searchtype]=equals"
+              . "&criteria[1][value]=0"
+
+              . "&criteria[2][link]=AND"
+              . "&criteria[2][field]=8"
+              . "&criteria[2][searchtype]=equals"
+              . "&criteria[2][value]=0"
+
+              . "&criteria[3][link]=OR"
+              . "&criteria[3][field]=3"
+              . "&criteria[3][searchtype]=contains"
+              . "&criteria[3][value]=RECOVERY"
+
+              . "&criteria[4][link]=AND"
+              . "&criteria[4][field]=7"
+              . "&criteria[4][searchtype]=equals"
+              . "&criteria[4][value]=0"
+
+              . "&criteria[5][link]=AND"
+              . "&criteria[5][field]=8"
+              . "&criteria[5][searchtype]=equals"
+              . "&criteria[5][value]=0"
+
+              . "&criteria[6][link]=OR"
+              . "&criteria[6][field]=3"
+              . "&criteria[6][searchtype]=contains"
+              . "&criteria[6][value]=UNKNOWN"
+
+              . "&criteria[7][link]=AND"
+              . "&criteria[7][field]=7"
+              . "&criteria[7][searchtype]=equals"
+              . "&criteria[7][value]=0"
+
+              . "&criteria[8][link]=AND"
+              . "&criteria[8][field]=8"
+              . "&criteria[8][searchtype]=equals"
+              . "&criteria[8][value]=0"
+
+              . "&criteria[9][link]=AND"
+              . "&criteria[9][field]=3"
+              . "&criteria[9][searchtype]=contains"
+              . "&criteria[9][value]=WARNING"
+
+              . "&criteria[10][link]=AND"
+              . "&criteria[10][field]=7"
+              . "&criteria[10][searchtype]=equals"
+              . "&criteria[10][value]=0"
+
+              . "&criteria[11][link]=AND"
+              . "&criteria[11][field]=8"
+              . "&criteria[11][searchtype]=equals"
+              . "&criteria[11][value]=0"
+
+              . "&search=Search"
+              . "&itemtype=PluginMonitoringService"
+              . "&start=0"
+              . "&glpi_tab=3'";
       $warningdata_link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-                  "&field[0]=3&searchtype[0]=contains&contains[0]=FLAPPING&link[1]=AND".
-                  "&field[1]=7&searchtype[1]=equals&contains[1]=0&link[2]=AND".
-                  "&field[2]=8&searchtype[2]=equals&contains[2]=0&link[2]=OR".
-                  "&field[3]=3&searchtype[3]=contains&contains[3]=RECOVERY&link[4]=AND".
-                  "&field[4]=7&searchtype[4]=equals&contains[4]=0&link[5]=AND".
-                  "&field[5]=8&searchtype[5]=equals&contains[5]=0&link[6]=OR".
-                  "&field[6]=3&searchtype[6]=contains&contains[6]=WARNING&link[7]=AND".
-                  "&field[7]=7&searchtype[7]=equals&contains[7]=0&link[8]=AND".
-                  "&field[8]=8&searchtype[8]=equals&contains[8]=0".
-                  "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
+               "/plugins/monitoring/front/service.php?hidesearch=1"
+//              . "&reset=reset"
+              . "&criteria[0][field]=3"
+              . "&criteria[0][searchtype]=contains"
+              . "&criteria[0][value]=FLAPPING"
+
+              . "&criteria[1][link]=AND"
+              . "&criteria[1][field]=7"
+              . "&criteria[1][searchtype]=equals"
+              . "&criteria[1][value]=0"
+
+              . "&criteria[2][link]=AND"
+              . "&criteria[2][field]=8"
+              . "&criteria[2][searchtype]=equals"
+              . "&criteria[2][value]=0"
+
+              . "&criteria[2][link]=OR"
+              . "&criteria[3][field]=3"
+              . "&criteria[3][searchtype]=contains"
+              . "&criteria[3][value]=RECOVERY"
+
+              . "&criteria[4][link]=AND"
+              . "&criteria[4][field]=7"
+              . "&criteria[4][searchtype]=equals"
+              . "&criteria[4][value]=0"
+
+              . "&criteria[5][link]=AND"
+              . "&criteria[5][field]=8"
+              . "&criteria[5][searchtype]=equals"
+              . "&criteria[5][value]=0"
+
+              . "&criteria[6][link]=OR"
+              . "&criteria[6][field]=3"
+              . "&criteria[6][searchtype]=contains"
+              . "&criteria[6][value]=WARNING"
+
+              . "&criteria[7][link]=AND"
+              . "&criteria[7][field]=7"
+              . "&criteria[7][searchtype]=equals"
+              . "&criteria[7][value]=0"
+
+              . "&criteria[8][link]=AND"
+              . "&criteria[8][field]=8"
+              . "&criteria[8][searchtype]=equals"
+              . "&criteria[8][value]=0"
+
+              . "&itemtype=PluginMonitoringService"
+              . "&start=0"
+              . "&glpi_tab=3'";
       $warningconnection_link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-                  "&field[0]=3&searchtype[0]=contains&contains[0]=UNKNOWN&link[1]=AND".
-                  "&field[1]=7&searchtype[1]=equals&contains[1]=0&link[2]=AND".
-                  "&field[2]=8&searchtype[2]=equals&contains[2]=0&link[3]=OR".
-                  "&field[3]=3&searchtype[3]=contains&contains[3]=NULL&link[4]=AND".
-                  "&field[4]=7&searchtype[4]=equals&contains[4]=0&link[5]=AND".
-                  "&field[5]=8&searchtype[5]=equals&contains[5]=0".
-                  "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
+               "/plugins/monitoring/front/service.php?hidesearch=1"
+//              . "&reset=reset"
+              . "&criteria[0][field]=3"
+              . "&criteria[0][searchtype]=contains"
+              . "&criteria[0][value]=UNKNOWN"
+
+              . "&criteria[1][link]=AND"
+              . "&criteria[1][field]=7"
+              . "&criteria[1][searchtype]=equals"
+              . "&criteria[1][value]=0"
+
+              . "&criteria[2][link]=AND"
+              . "&criteria[2][field]=8"
+              . "&criteria[2][searchtype]=equals"
+              . "&criteria[2][value]=0"
+
+              . "&criteria[3][link]=OR"
+              . "&criteria[3][field]=3"
+              . "&criteria[3][searchtype]=contains"
+              . "&criteria[3][value]=NULL"
+
+              . "&criteria[4][link]=AND"
+              . "&criteria[4][field]=7"
+              . "&criteria[4][searchtype]=equals"
+              . "&criteria[4][value]=0"
+
+              . "&criteria[5][link]=AND"
+              . "&criteria[5][field]=8"
+              . "&criteria[5][searchtype]=equals"
+              . "&criteria[5][value]=0"
+
+              . "&itemtype=PluginMonitoringService"
+              . "&start=0"
+              . "&glpi_tab=3'";
       $ok_link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&".
-                  "field[0]=3&searchtype[0]=contains&contains[0]=OK".
-                  "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
+               "/plugins/monitoring/front/service.php?hidesearch=1"
+//              . "&reset=reset"
+              . "&criteria[0][field]=3"
+              . "&criteria[0][searchtype]=contains"
+              . "&criteria[0][value]=OK"
+
+              . "&itemtype=PluginMonitoringService"
+              . "&start=0"
+              . "&glpi_tab=3'";
       $acknowledge_link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&".
-                  "field[0]=7&searchtype[0]=equals&contains[0]=1".
-                  "&itemtype=PluginMonitoringService&start=0&glpi_tab=3'";
+               "/plugins/monitoring/front/service.php?hidesearch=1"
+//              . "&reset=reset"
+              . "&criteria[0][field]=7"
+              . "&criteria[0][searchtype]=equals"
+              . "&criteria[0][value]=1"
+
+              . "&itemtype=PluginMonitoringService"
+              . "&start=0"
+              . "&glpi_tab=3'";
 
       echo "<table align='center'>";
       echo "<tr>";
@@ -2291,30 +2471,75 @@ Ext.onReady(function(){
 
 
       $down_link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/host.php?hidesearch=1&reset=reset".
-                  "&field[0]=2&searchtype[0]=contains&contains[0]=DOWN".
-                  "&field[1]=9&searchtype[1]=contains&contains[1]=0".
-                  "&itemtype=PluginMonitoringHost&start=0'";
+               "/plugins/monitoring/front/host.php?hidesearch=1"
+//              . "&reset=reset"
+              . "&criteria[0][field]=2"
+              . "&criteria[0][searchtype]=contains"
+              . "&criteria[0][value]=DOWN"
+
+              . "&criteria[1][link]=OR"
+              . "&criteria[1][field]=9"
+              . "&criteria[1][searchtype]=contains"
+              . "&criteria[1][value]=0"
+
+              . "&itemtype=PluginMonitoringHost"
+              . "&start=0'";
       $up_link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/host.php?hidesearch=1&reset=reset".
-                  "&field[0]=2&searchtype[0]=contains&contains[0]=UP".
-                  "&field[1]=9&searchtype[1]=contains&contains[1]=0".
-                  "&itemtype=PluginMonitoringHost&start=0'";
+               "/plugins/monitoring/front/host.php?hidesearch=1"
+//              . "&reset=reset"
+              . "&criteria[0][field]=2"
+              . "&criteria[0][searchtype]=contains"
+              . "&criteria[0][value]=UP"
+
+              . "&criteria[1][link]=OR"
+              . "&criteria[1][field]=9"
+              . "&criteria[1][searchtype]=contains"
+              . "&criteria[1][value]=0"
+
+              . "&itemtype=PluginMonitoringHost"
+              . "&start=0'";
       $unreachable_link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/host.php?hidesearch=1&reset=reset".
-                  "&field[0]=2&searchtype[0]=contains&contains[0]=UNREACHABLE".
-                  "&field[1]=9&searchtype[1]=contains&contains[1]=0".
-                  "&itemtype=PluginMonitoringHost&start=0'";
+               "/plugins/monitoring/front/host.php?hidesearch=1"
+//              . "&reset=reset"
+              . "&criteria[0][field]=2"
+              . "&criteria[0][searchtype]=contains"
+              . "&criteria[0][value]=UNREACHABLE"
+
+              . "&criteria[1][link]=OR"
+              . "&criteria[1][field]=9"
+              . "&criteria[1][searchtype]=contains"
+              . "&criteria[1][value]=0"
+
+              . "&itemtype=PluginMonitoringHost"
+              . "&start=0'";
       $unknown_link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/host.php?hidesearch=1&reset=reset".
-                  "&field[0]=2&searchtype[0]=contains&contains[0]=UNKNOWN&link[1]=OR".
-                  "&field[1]=2&searchtype[1]=contains&contains[1]=NULL&link[2]=AND".
-                  "&field[2]=9&searchtype[2]=contains&contains[2]=0".
-                  "&itemtype=PluginMonitoringHost&start=0'";
+               "/plugins/monitoring/front/host.php?hidesearch=1"
+//              . "&reset=reset"
+              . "&criteria[0][field]=2"
+              . "&criteria[0][searchtype]=contains"
+              . "&criteria[0][value]=UNKNOWN"
+
+              . "&criteria[1][link]=OR"
+              . "&criteria[1][field]=2"
+              . "&criteria[1][searchtype]=contains"
+              . "&criteria[1][value]=NULL"
+
+              . "&criteria[2][link]=AND"
+              . "&criteria[2][field]=9"
+              . "&criteria[2][searchtype]=contains"
+              . "&criteria[2][value]=0"
+
+              . "&itemtype=PluginMonitoringHost"
+              . "&start=0'";
       $ack_link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/host.php?hidesearch=1&reset=reset".
-                  "&field[0]=9&searchtype[0]=contains&contains[0]=1".
-                  "&itemtype=PluginMonitoringHost&start=0'";
+               "/plugins/monitoring/front/host.php?hidesearch=1"
+//              . "&reset=reset"
+              . "&criteria[0][field]=9"
+              . "&criteria[0][searchtype]=contains"
+              . "&criteria[0][value]=1"
+
+              . "&itemtype=PluginMonitoringHost"
+              . "&start=0'";
 
       echo "<table align='center' width='80%'>";
       echo "<tr>";

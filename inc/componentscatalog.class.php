@@ -433,41 +433,101 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          $count = $stateg['CRITICAL'];
          $colorclass = 'crit';
          $link = $CFG_GLPI['root_doc'].
-         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&".
-            "field[0]=3&searchtype[0]=equals&contains[0]=CRITICAL".
-            "&link[1]=AND&field[1]=9&searchtype[1]=equals&contains[1]=".$id.
-            "&itemtype=PluginMonitoringService&start=0";
+         "/plugins/monitoring/front/service.php?hidesearch=1"
+//                 . "&reset=reset&"
+                 . "criteria[0][field]=3"
+                 . "&criteria[0][searchtype]=equals"
+                 . "&criteria[0][value]=CRITICAL"
+
+                 . "&criteria[1][link]=AND"
+                 . "&criteria[1][field]=9"
+                 . "&criteris[1][searchtype]=equals"
+                 . "&criteria[1][value]=".$id
+
+                 . "&itemtype=PluginMonitoringService"
+                 . "&start=0";
       } else if ($stateg['WARNING'] > 0) {
          $count = $stateg['WARNING'];
          $colorclass = 'warn';
          $link = $CFG_GLPI['root_doc'].
-         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&".
-            "field[0]=3&searchtype[0]=equals&contains[0]=WARNING".
-            "&link[1]=AND&field[1]=9&searchtype[1]=equals&contains[1]=".$id.
-            "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=UNKNOWN".
-            "&link[3]=AND&field[3]=9&searchtype[3]=equals&contains[3]=".$id.
-            "&link[4]=OR&field[4]=3&searchtype[4]=equals&contains[4]=RECOVERY".
-            "&link[5]=AND&field[5]=9&searchtype[5]=equals&contains[5]=".$id.
-            "&link[6]=OR&field[6]=3&searchtype[6]=equals&contains[6]=FLAPPING".
-            "&link[7]=AND&field[7]=9&searchtype[7]=equals&contains[7]=".$id.
-            "&itemtype=PluginMonitoringService&start=0";
+         "/plugins/monitoring/front/service.php?hidesearch=1"
+//                 . "&reset=reset"
+                 . "&criteria[0][field]=3"
+                 . "&criteria[0][searchtype]=equals"
+                 . "&criteria[0][value]=WARNING"
+
+                 . "&criteria[1][link]=AND"
+                 . "&criteria[1][field]=9"
+                 . "&criteria[1][searchtype]=equals"
+                 . "&criteria[1][value]=".$id
+
+                 . "&criteria[2][link]=OR"
+                 . "&criteria[2][field]=3"
+                 . "&criteria[2][searchtype]=equals"
+                 . "&criteria[2][value]=UNKNOWN"
+
+                 . "&criteria[3][link]=AND"
+                 . "&criteria[3][field]=9"
+                 . "&criteria[3][searchtype]=equals"
+                 . "&criteria[3][value]=".$id
+
+                 . "&criteria[4][link]=OR"
+                 . "&criteria[4][field]=3"
+                 . "&criteria[4][searchtype]=equals"
+                 . "&criteria[4][value]=RECOVERY"
+
+                 . "&criteria[5][link]=AND"
+                 . "&criteria[5][field]=9"
+                 . "&criteria[5][searchtype]=equals"
+                 . "&criteria[5][value]=".$id
+
+                 . "&criteria[6][link]=OR"
+                 . "&criteria[6][field]=3"
+                 . "&criteria[6][searchtype]=equals"
+                 . "&criteria[6][value]=FLAPPING"
+
+                 . "&criteria[7][link]=AND"
+                 . "&criteria[7][field]=9"
+                 . "&criteria[7][searchtype]=equals"
+                 . "&criteria[7][value]=".$id
+
+                 . "&itemtype=PluginMonitoringService"
+                 . "&start=0";
       } else {
          $count = $stateg['OK'];
          $count += $stateg['ACKNOWLEDGE'];
          $count += $stateg['UNKNOWN'];
          $link = $CFG_GLPI['root_doc'].
-         "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset&".
-            "field[0]=3&searchtype[0]=equals&contains[0]=OK".
-            "&link[1]=AND&field[1]=9&searchtype[1]=equals&contains[1]=".$id.
-            "&link[2]=OR&field[2]=3&searchtype[2]=equals&contains[2]=UP".
-            "&itemtype=PluginMonitoringService&start=0";
+         "/plugins/monitoring/front/service.php?hidesearch=1"
+//                 . "&reset=reset"
+                 . "&criteria[0][field]=3"
+                 . "&criteria[0][searchtype]=equals"
+                 . "&criteria[0][value]=OK"
+
+                 . "&criteria[1][link]=AND"
+                 . "&criteria[1][field]=9"
+                 . "&criteria[1][searchtype]=equals"
+                 . "&criteria[1][value]=".$id
+
+                 . "&criteria[2][link]=OR"
+                 . "&criteria[2][field]=3"
+                 . "&criteria[2][searchtype]=equals"
+                 . "&criteria[2][value]=UP"
+
+                 . "&itemtype=PluginMonitoringService"
+                 . "&start=0";
       }
 
       if (Session::haveRight("plugin_monitoring_service", READ)) {
          $link_catalog = $CFG_GLPI['root_doc'].
-            "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset"
-               . "&field[0]=9&searchtype[0]=equals&contains[0]=".$id.
-               "&itemtype=PluginMonitoringService&start=0";
+            "/plugins/monitoring/front/service.php?hidesearch=1"
+//                 . "&reset=reset"
+                 . "&criteria[0][field]=9"
+                 . "&criteria[0][searchtype]=equals"
+                 . "&criteria[0][value]=".$id
+
+                 . "&itemtype=PluginMonitoringService"
+                 . "&start=0";
 
          echo '<br/><div class="ch-item">
             <div class="ch-info-'.$colorclass.'">
@@ -527,9 +587,14 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
 
          if (Session::haveRight("plugin_monitoring_service", READ)) {
             $link = $CFG_GLPI['root_doc'].
-               "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-                  "&field[0]=2&searchtype[0]=equals&contains[0]=".$services_ids[$services[$i]].
-                  "&itemtype=PluginMonitoringService&start=0'";
+               "/plugins/monitoring/front/service.php?hidesearch=1"
+//                    . "&reset=reset"
+                    . "&criteria[0][field]=2"
+                    . "&criteria[0][searchtype]=equals"
+                    . "&criteria[0][value]=".$services_ids[$services[$i]]
+
+                    . "&itemtype=PluginMonitoringService"
+                    . "&start=0'";
             echo '<th class="vertical">';
             echo '<a href="'.$link.'"><div class="rotated-text"><span class="rotated-text__inner">'.$services[$i].'</span></div></a>';
             echo '</th>';
@@ -577,9 +642,14 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          }
 
          $link = $CFG_GLPI['root_doc'].
-            "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-               "&field[0]=".$field_id."&searchtype[0]=equals&contains[0]=".$hosts_ids[$hosts_id]['items_id'].
-               "&itemtype=PluginMonitoringService&start=0'";
+            "/plugins/monitoring/front/service.php?hidesearch=1"
+//                 . "&reset=reset"
+                 . "&criteria[0][field]=".$field_id.""
+                 . "&criteria[0][searchtype]=equals"
+                 . "&criteria[0][value]=".$hosts_ids[$hosts_id]['items_id']
+
+                 . "&itemtype=PluginMonitoringService"
+                 . "&start=0'";
 
          if ($hosts_states[$hosts_id]) {
             echo  "<tr class='services tab_bg_2' style='display:none;'>";

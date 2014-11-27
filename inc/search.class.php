@@ -418,13 +418,17 @@ if (strstr($_SERVER['REQUEST_URI'], 'displayview_rule.form.php')) {
       echo "</td><td>";
 //      Bookmark::showSaveButton(Bookmark::SEARCH,$itemtype);
       if (strstr($_SERVER['REQUEST_URI'], 'displayview_rule.form.php')) {
-         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/displayview_rule.form.php?reset=reset&".
-            "name=".$_GET['name']."&plugin_monitoring_displayviews_id=".$_GET['plugin_monitoring_displayviews_id'].
-                 "&itemtype=".$_GET['itemtype']."' >";
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/displayview_rule.form.php?"
+                 . "reset=reset"
+                 . "&name=".$_GET['name']
+                 . "&plugin_monitoring_displayviews_id=".$_GET['plugin_monitoring_displayviews_id']
+                 . "&itemtype=".$_GET['itemtype']."' >";
       } else {
-         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog_rule.form.php?reset=reset&".
-            "name=".$_GET['name']."&plugin_monitoring_componentscalalog_id=".$_GET['plugin_monitoring_componentscalalog_id'].
-                 "&itemtype=".$_GET['itemtype']."' >";
+         echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog_rule.form.php?"
+                 . "reset=reset"
+                 . "&name=".$_GET['name']
+                 . "&plugin_monitoring_componentscalalog_id=".$_GET['plugin_monitoring_componentscalalog_id']
+                 . "&itemtype=".$_GET['itemtype']."' >";
       }
       echo "&nbsp;&nbsp;<img title=\"".__s('Blank')."\" alt=\"".__s('Blank')."\" src='".
             $CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";

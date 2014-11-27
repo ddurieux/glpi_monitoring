@@ -303,12 +303,18 @@ function plugin_monitoring_addSelect($type,$id,$num) {
    $table = $searchopt[$id]["table"];
    $field = $searchopt[$id]["field"];
 
+//   echo $table.".".$field."<br>";
    if ($type == 'Computer') {
 
       if ($table.".".$field == "glpi_plugin_monitoring_computers_deviceprocessors.count") {
-	 return " COUNT(DISTINCT `processormonit`.`id`) AS ITEM_$num,";
+         return " COUNT(DISTINCT `processormonit`.`id`) AS ITEM_$num,";
+      }
+   } else if ($type == 'PluginMonitoringService') {
+      if ($table.".".$field == 'glpi_computers.name') {
+         return " CONCAT_WS('', `glpi_computers`.`name`, `glpi_printers`.`name`, `glpi_networkequipments`.`name`) AS ITEM_$num,";
       }
    }
+
    return "";
 }
 
@@ -486,6 +492,36 @@ function plugin_monitoring_addLeftJoin($itemtype,$ref_table,$new_table,$linkfiel
              ";
           }
           break;
+
+      case 'PluginMonitoringService':
+          if ($new_table.".".$linkfield == "glpi_computers.computers_id") {
+             return "
+               LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`
+                  ON `plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
+               LEFT JOIN `glpi_computers`
+                  ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_computers`.`id`
+                        AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`='Computer'
+               LEFT JOIN `glpi_printers`
+                  ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_printers`.`id`
+                     AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`='Printer'
+               LEFT JOIN `glpi_networkequipments`
+                  ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_networkequipments`.`id`
+                     AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`='NetworkEquipment' ";
+          } else if ($new_table.".".$linkfield == 'glpi_plugin_monitoring_hosts.plugin_monitoring_hosts_id') {
+             return "
+               LEFT JOIN `glpi_plugin_monitoring_hosts`
+                  ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_plugin_monitoring_hosts`.`items_id`
+                        AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`=`glpi_plugin_monitoring_hosts`.`itemtype` ";
+          } else if ($new_table.".".$linkfield == 'glpi_plugin_monitoring_componentscatalogs.plugin_monitoring_componentscatalogs_id') {
+             return "
+               LEFT JOIN `glpi_plugin_monitoring_componentscatalogs`
+                  ON (`glpi_plugin_monitoring_componentscatalogs_hosts`.`plugin_monitoring_componentscalalog_id` = `glpi_plugin_monitoring_componentscatalogs`.`id`)";
+          } else if ($new_table.".".$linkfield == 'glpi_plugin_monitoring_componentscatalogs_hosts.plugin_monitoring_componentscatalogs_hosts_id') {
+             return " ";
+          }
+
+
+         break;
 
    }
    return "";

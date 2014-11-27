@@ -866,10 +866,19 @@ class PluginMonitoringDisplayview extends CommonDBTM {
          }
 
          $link = $CFG_GLPI['root_doc'].
-            "/plugins/monitoring/front/service.php?hidesearch=1&reset=reset".
-               "&field[0]=".$field_id."&searchtype[0]=equals&contains[0]=".$item->getID().
-               "&link[1]=AND&field[1]=2&searchtype[1]=equals&contains[1]=".$resources[$services_id]['plugin_monitoring_components_id'].
-               "&itemtype=PluginMonitoringService&start=0'";
+            "/plugins/monitoring/front/service.php?hidesearch=1"
+//                 . "&reset=reset"
+                 . "&criteria[0][field]=".$field_id.""
+                 . "&criteria[0][searchtype]=equals"
+                 . "&criteria[0][value]=".$item->getID()
+
+                 . "&criteria[1][link]=AND"
+                 . "&criteria[1][field]=2"
+                 . "&criteria[1][searchtype]=equals"
+                 . "&criteria[1][value]=".$resources[$services_id]['plugin_monitoring_components_id']
+
+                 . "&itemtype=PluginMonitoringService"
+                 . "&start=0'";
 
          echo "<tr class='tab_bg_2'>";
          echo "<td class='left'><a href='".$link."'>".$resources[$services_id]['name']."</a></td>";
