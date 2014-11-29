@@ -45,7 +45,7 @@ include ("../../../inc/includes.php");
 Session::checkRight("plugin_monitoring_displayview", READ);
 
 Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "displayview");
+             "pluginmonitoringmenu", "displayview");
 
 $pmDisplayview = new PluginMonitoringDisplayview();
 
@@ -102,7 +102,7 @@ if (isset ($_POST["add"])) {
 } else if (isset ($_POST["update"])) {
    $pmDisplayview->update($_POST);
    Html::back();
-} else if (isset ($_POST["delete"])) {
+} else if (isset ($_POST["purge"])) {
    $pmDisplayview->delete($_POST);
    $pmDisplayview->redirectToList();
 } else if (isset($_POST["update"])) {
@@ -116,11 +116,11 @@ if (isset ($_POST["add"])) {
 
 }
 
-if (isset($_GET["id"])) {
-   $pmDisplayview->showForm($_GET["id"], array('canedit' => Session::haveRight("PluginMonitoringDisplayview", UPDATE)));
-} else {
-   $pmDisplayview->showForm(0, array('canedit' => Session::haveRight("PluginMonitoringDisplayview", CREATE)));
+if (!isset($_GET["id"])) {
+   $_GET["id"] = "";
 }
+
+$pmDisplayview->display(array('id' => $_GET["id"]));
 
 Html::footer();
 

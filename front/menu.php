@@ -190,18 +190,18 @@ if (Session::haveRight("plugin_monitoring_servicescatalog", READ)
    }
    echo "</tr>";
 
-   echo "<tr class='tab_bg_1'>";
-   if (Session::haveRight("plugin_monitoring_displayview", READ)) {
-      $toDisplayArea++;
-      echo "<th align='center' height='30' width='34%'>";
-      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/customitem_gauge.php'>".PluginMonitoringCustomitem_Gauge::getTypeName()."</a>";
-      echo "</th>";
-
-      echo "<th align='center' height='30' width='34%'>";
-      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/customitem_counter.php'>".PluginMonitoringCustomitem_Counter::getTypeName()."</a>";
-      echo "</th>";
-   }
-   echo "</tr>";
+//   echo "<tr class='tab_bg_1'>";
+//   if (Session::haveRight("plugin_monitoring_displayview", READ)) {
+//      $toDisplayArea++;
+//      echo "<th align='center' height='30' width='34%'>";
+//      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/customitem_gauge.php'>".PluginMonitoringCustomitem_Gauge::getTypeName()."</a>";
+//      echo "</th>";
+//
+//      echo "<th align='center' height='30' width='34%'>";
+//      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/customitem_counter.php'>".PluginMonitoringCustomitem_Counter::getTypeName()."</a>";
+//      echo "</th>";
+//   }
+//   echo "</tr>";
    echo "</table>";
    echo "<br/>";
 }

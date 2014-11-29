@@ -220,6 +220,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
 
    function defineTabs($options=array()){
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__, $ong, $options);
       return $ong;
    }
@@ -311,17 +312,12 @@ class PluginMonitoringDisplayview extends CommonDBTM {
    *
    **/
    function showForm($items_id, $options=array()) {
-      global $DB,$CFG_GLPI;
 
-      if ($items_id!='') {
-         $this->getFromDB($items_id);
-      } else {
-         $this->getEmpty();
+      $this->initForm($items_id, $options);
+      if ($this->fields['id'] == 0) {
          $this->fields['width'] = 950;
          $this->fields['is_active'] = 1;
       }
-
-      $this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -384,7 +380,6 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       echo "</tr>";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }
