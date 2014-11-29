@@ -45,7 +45,7 @@ include ("../../../inc/includes.php");
 Session::checkRight("plugin_monitoring_perfdata", READ);
 
 Html::header(__('Monitoring - dashboard (perfdata)', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "perfdata");
+             "pluginmonitoringmenu", "perfdata");
 
 
 Search::show('PluginMonitoringPerfdata');

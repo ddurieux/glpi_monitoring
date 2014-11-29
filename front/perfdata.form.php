@@ -45,7 +45,7 @@ include ("../../../inc/includes.php");
 Session::checkRight("plugin_monitoring_perfdata", READ);
 
 Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "perfdata");
+             "pluginmonitoringmenu", "perfdata");
 
 
 $pmPerfdata = new PluginMonitoringPerfdata();
@@ -56,16 +56,16 @@ if (isset ($_POST["add"])) {
 } else if (isset ($_POST["update"])) {
    $pmPerfdata->update($_POST);
    Html::back();
-} else if (isset ($_POST["delete"])) {
+} else if (isset ($_POST["purge"])) {
    $pmPerfdata->delete($_POST);
    $pmPerfdata->redirectToList();
 }
 
-if (isset($_GET["id"])) {
-   $pmPerfdata->showForm($_GET["id"], array('canedit' => Session::haveRight("config", UPDATE)));
-} else {
-   $pmPerfdata->showForm(0);
+if (!isset($_GET["id"])) {
+   $_GET["id"] = "";
 }
+
+$pmPerfdata->display(array('id' => $_GET["id"]));
 
 Html::footer();
 

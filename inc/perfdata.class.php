@@ -1121,13 +1121,7 @@ class PluginMonitoringPerfdata extends CommonDBTM {
    **/
    function showForm($items_id, $options=array()) {
 
-      if ($items_id == '0') {
-         $this->getEmpty();
-      } else {
-         $this->getFromDB($items_id);
-      }
-
-      $this->showTabs();
+      $this->initForm($items_id, $options);
       $this->showFormHeader($options);
 
       echo "<tr>";
