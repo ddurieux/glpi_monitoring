@@ -45,7 +45,7 @@ include ("../../../inc/includes.php");
 Session::checkRight("plugin_monitoring_component", READ);
 
 Html::header(__('Monitoring - component', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "components");
+             "pluginmonitoringmenu", "component");
 
 
 $pMonitoringComponent = new PluginMonitoringComponent();
@@ -113,7 +113,7 @@ if (isset($_POST["copy"])) {
    }
    $pMonitoringComponent->update($_POST);
    Html::back();
-} else if (isset ($_POST["delete"])) {
+} else if (isset ($_POST["purge"])) {
    $pMonitoringComponent->delete($_POST);
    $pMonitoringComponent->redirectToList();
 } else if(isset($_POST['updateperfdata'])) {
@@ -154,12 +154,11 @@ if (isset($_POST["copy"])) {
    Html::back();
 }
 
-
-if (isset($_GET["id"])) {
-   $pMonitoringComponent->showForm($_GET["id"], array('canedit' => Session::haveRight("config", UPDATE)));
-} else {
-   $pMonitoringComponent->showForm(0, array('canedit' => Session::haveRight("config", UPDATE)));
+if (!isset($_GET["id"])) {
+   $_GET["id"] = "";
 }
+
+$pMonitoringComponent->display(array('id' => $_GET["id"]));
 
 Html::footer();
 

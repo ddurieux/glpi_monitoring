@@ -97,6 +97,13 @@ class PluginMonitoringMenu extends CommonGLPI {
               'links' => array(
                   'search' => '/plugins/monitoring/front/perfdata.php',
                   'add'    => '/plugins/monitoring/front/perfdata.form.php'
+              )),
+         'component' => array(
+              'title' => PluginMonitoringComponent::getTypeName(),
+              'page'  => PluginMonitoringComponent::getSearchURL(false),
+              'links' => array(
+                  'search' => '/plugins/monitoring/front/component.php',
+                  'add'    => '/plugins/monitoring/front/component.form.php'
               ))
 
 

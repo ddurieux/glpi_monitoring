@@ -73,6 +73,7 @@ class PluginMonitoringComponent extends CommonDBTM {
 
    function defineTabs($options=array()){
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab("PluginMonitoringComponent", $ong, $options);
       return $ong;
    }
@@ -94,10 +95,10 @@ class PluginMonitoringComponent extends CommonDBTM {
               AND $item->fields['graph_template'] != 0) {
 
          return array(
+               __('Graph configuration', 'monitoring'),
                __('Copy'),
-               __('Components catalog', 'monitoring'),
-               __('Graph configuration', 'monitoring')
-             );
+               __('Components catalog', 'monitoring')
+            );
       } else if ($item->getID() > 0) {
          return array(
                __('Copy'),
@@ -223,21 +224,17 @@ class PluginMonitoringComponent extends CommonDBTM {
 
       $pMonitoringCommand = new PluginMonitoringCommand();
 
-      if ($items_id == '0') {
-         $this->getEmpty();
-         $this->fields['active_checks_enabled']  = 1;
-         $this->fields['passive_checks_enabled'] = 1;
-      } else {
-         $this->getFromDB($items_id);
-      }
-
       if (count($copy) > 0) {
          foreach ($copy as $key=>$value) {
             $this->fields[$key] = stripslashes($value);
          }
       }
 
-      $this->showTabs($options);
+      $this->initForm($items_id, $options);
+      if ($this->fields['id'] == 0) {
+         $this->fields['active_checks_enabled']  = 1;
+         $this->fields['passive_checks_enabled'] = 1;
+      }
       $this->showFormHeader($options);
 
       if (isset($_SESSION['plugin_monitoring_components'])) {
@@ -518,7 +515,6 @@ class PluginMonitoringComponent extends CommonDBTM {
       }
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }
