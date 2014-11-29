@@ -61,7 +61,7 @@ if (isset($_POST["copy"])) {
    $_POST = $pMonitoringCommand->convertPostdata($_POST);
    $pMonitoringCommand->update($_POST);
    Html::back();
-} else if (isset ($_POST["delete"])) {
+} else if (isset ($_POST["purge"])) {
    $pMonitoringCommand->delete($_POST);
    $pMonitoringCommand->redirectToList();
 }
