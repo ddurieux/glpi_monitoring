@@ -42,10 +42,10 @@
 
 include ("../../../inc/includes.php");
 
-Session::checkRight("plugin_monitoring_service", READ);
+Session::checkRight("user", READ);
 
 Html::header(__('Monitoring - contact templates', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "contacttemplates");
+             "pluginmonitoringmenu", "contacttemplate");
 
 
 Search::show('PluginMonitoringContacttemplate');

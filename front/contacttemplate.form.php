@@ -42,10 +42,10 @@
 
 include ("../../../inc/includes.php");
 
-Session::checkRight("plugin_monitoring_service", READ);
+Session::checkRight("user", READ);
 
 Html::header(__('Monitoring - contact templates', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "contacttemplates");
+             "pluginmonitoringmenu", "contacttemplate");
 
 $pmContacttemplate = new PluginMonitoringContacttemplate();
 if (isset($_POST["add"])) {
@@ -57,17 +57,16 @@ if (isset($_POST["add"])) {
 } else if (isset ($_POST["update"])) {
    $pmContacttemplate->update($_POST);
    Html::back();
-} else if (isset ($_POST["delete"])) {
+} else if (isset ($_POST["purge"])) {
    $pmContacttemplate->delete($_POST);
    Html::back();
 }
 
-
-if (isset($_GET["id"])) {
-   $pmContacttemplate->showForm($_GET["id"]);
-} else {
-   $pmContacttemplate->showForm("");
+if (!isset($_GET["id"])) {
+   $_GET["id"] = "";
 }
+
+$pmContacttemplate->display(array('id' => $_GET["id"]));
 
 Html::footer();
 

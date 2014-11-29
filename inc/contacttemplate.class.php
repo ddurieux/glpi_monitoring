@@ -47,7 +47,7 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringContacttemplate extends CommonDBTM {
 
 
-   static $rightname = 'plugin_monitoring_service';
+   static $rightname = 'user';
 
    /**
    * Get name of this type
@@ -83,16 +83,8 @@ class PluginMonitoringContacttemplate extends CommonDBTM {
          }
       }
 
-      if ($items_id!='') {
-         $this->getFromDB($items_id);
-      } else {
-         $this->getEmpty();
-      }
-
-      $this->showTabs($options);
+      $this->initForm($items_id, $options);
       $this->showFormHeader($options);
-
-      $this->getFromDB($items_id);
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')."&nbsp;:</td>";

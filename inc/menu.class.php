@@ -104,7 +104,16 @@ class PluginMonitoringMenu extends CommonGLPI {
               'links' => array(
                   'search' => '/plugins/monitoring/front/component.php',
                   'add'    => '/plugins/monitoring/front/component.form.php'
+              )),
+         'contacttemplate' => array(
+              'title' => PluginMonitoringContacttemplate::getTypeName(),
+              'page'  => PluginMonitoringContacttemplate::getSearchURL(false),
+              'links' => array(
+                  'search' => '/plugins/monitoring/front/contacttemplate.php',
+                  'add'    => '/plugins/monitoring/front/contacttemplate.form.php'
               ))
+
+
 
 
 
