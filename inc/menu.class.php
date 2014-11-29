@@ -152,6 +152,13 @@ class PluginMonitoringMenu extends CommonGLPI {
               'links' => array(
                   'search' => '/plugins/monitoring/front/displayview.php',
                   'add'    => '/plugins/monitoring/front/displayview.form.php'
+              )),
+         'slider' => array(
+              'title' => PluginMonitoringSlider::getTypeName(),
+              'page'  => PluginMonitoringSlider::getSearchURL(false),
+              'links' => array(
+                  'search' => '/plugins/monitoring/front/slider.php',
+                  'add'    => '/plugins/monitoring/front/slider.form.php'
               ))
 
 
