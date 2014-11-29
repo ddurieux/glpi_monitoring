@@ -131,9 +131,14 @@ class PluginMonitoringMenu extends CommonGLPI {
               'page'  => PluginMonitoringTag::getSearchURL(false),
               'links' => array(
                   'search' => '/plugins/monitoring/front/tag.php'
+              )),
+         'servicescatalog' => array(
+              'title' => PluginMonitoringServicescatalog::getTypeName(),
+              'page'  => PluginMonitoringServicescatalog::getSearchURL(false),
+              'links' => array(
+                  'search' => '/plugins/monitoring/front/servicescatalog.php',
+                  'add'    => '/plugins/monitoring/front/servicescatalog.form.php'
               ))
-
-
 
 
 

@@ -82,6 +82,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    function defineTabs($options=array()){
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab('PluginMonitoringBusinessrulegroup', $ong, $options);
       $this->addStandardTab("PluginMonitoringServicescatalog", $ong, $options);
 
@@ -268,14 +269,12 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
 
 
    function showForm($items_id, $options=array()) {
-      if ($items_id!=''
-              AND $items_id != '-1') {
-         $this->getFromDB($items_id);
-      } else {
-         $this->getEmpty();
+
+      if ($items_id == '-1') {
+         $items_id = '';
       }
 
-      $this->showTabs($options);
+      $this->initForm($items_id, $options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -341,7 +340,6 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       echo "</tr>";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }
