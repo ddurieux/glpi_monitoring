@@ -113,7 +113,7 @@ class PluginMonitoringCheck extends CommonDBTM {
    function defineTabs($options=array()){
 
       $ong = array();
-
+      $this->addDefaultFormTab($ong);
       return $ong;
    }
 
@@ -146,13 +146,7 @@ class PluginMonitoringCheck extends CommonDBTM {
    function showForm($items_id, $options=array()) {
       global $DB,$CFG_GLPI;
 
-      if ($items_id!='') {
-         $this->getFromDB($items_id);
-      } else {
-         $this->getEmpty();
-      }
-
-      $this->showTabs($options);
+      $this->initForm($items_id, $options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -187,7 +181,6 @@ class PluginMonitoringCheck extends CommonDBTM {
       echo "</tr>";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }

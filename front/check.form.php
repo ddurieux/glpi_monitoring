@@ -45,7 +45,7 @@ include ("../../../inc/includes.php");
 Session::checkRight("config", READ);
 
 Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "checks");
+             "pluginmonitoringmenu", "check");
 
 $pMonitoringCheck = new PluginMonitoringCheck();
 
@@ -60,12 +60,11 @@ if (isset ($_POST["add"])) {
    $pMonitoringCheck->redirectToList();
 }
 
-
-if (isset($_GET["id"])) {
-   $pMonitoringCheck->showForm($_GET["id"], array('canedit' => Session::haveRight("config", UPDATE)));
-} else {
-   $pMonitoringCheck->showForm("", array('canedit' => Session::haveRight("config", UPDATE)));
+if (!isset($_GET["id"])) {
+   $_GET["id"] = "";
 }
+
+$pMonitoringCheck->display(array('id' => $_GET["id"]));
 
 Html::footer();
 
