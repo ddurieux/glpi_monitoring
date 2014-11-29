@@ -45,7 +45,7 @@ include ("../../../inc/includes.php");
 Session::checkRight("plugin_monitoring_command", READ);
 
 Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "notificationcommand");
+             "pluginmonitoringmenu", "notificationcommand");
 
 $pmNotificationcommand = new PluginMonitoringNotificationcommand();
 
@@ -59,17 +59,16 @@ if (isset($_POST["copy"])) {
 } else if (isset ($_POST["update"])) {
    $pmNotificationcommand->update($_POST);
    Html::back();
-} else if (isset ($_POST["delete"])) {
+} else if (isset ($_POST["purge"])) {
    $pmNotificationcommand->delete($_POST);
    $pmNotificationcommand->redirectToList();
 }
 
-
-if (isset($_GET["id"])) {
-   $pmNotificationcommand->showForm($_GET["id"]);
-} else {
-   $pmNotificationcommand->showForm("");
+if (!isset($_GET["id"])) {
+   $_GET["id"] = "";
 }
+
+$pmNotificationcommand->display(array('id' => $_GET["id"]));
 
 Html::footer();
 

@@ -184,13 +184,6 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
 
 
 
-   function defineTabs($options=array()){
-      $ong = array();
-      return $ong;
-   }
-
-
-
    /**
    * Display form for agent configuration
    *
@@ -203,13 +196,7 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
    function showForm($items_id, $options=array()) {
       global $DB,$CFG_GLPI;
 
-      if ($items_id!='') {
-         $this->getFromDB($items_id);
-      } else {
-         $this->getEmpty();
-      }
-
-      $this->showTabs($options);
+      $this->initForm($items_id, $options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";
@@ -254,7 +241,6 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
       echo "</tr>";
 
       $this->showFormButtons($options);
-      $this->addDivForTabs();
 
       return true;
    }
