@@ -162,6 +162,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       $params['target'] = $CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog_rule.form.php";
       $params['addhidden'] = array();
       $params['addhidden']['plugin_monitoring_componentscalalog_id'] = $_GET['plugin_monitoring_componentscalalog_id'];
+      $params['addhidden']['name'] = $_GET['name'];
       if (isset($_GET['id'])) {
          $params['addhidden']['id'] = $_GET['id'];
       }
