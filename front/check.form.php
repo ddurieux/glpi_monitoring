@@ -55,7 +55,7 @@ if (isset ($_POST["add"])) {
 } else if (isset ($_POST["update"])) {
    $pMonitoringCheck->update($_POST);
    Html::back();
-} else if (isset ($_POST["delete"])) {
+} else if (isset ($_POST["purge"])) {
    $pMonitoringCheck->delete($_POST);
    $pMonitoringCheck->redirectToList();
 }
