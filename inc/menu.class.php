@@ -118,6 +118,13 @@ class PluginMonitoringMenu extends CommonGLPI {
               'links' => array(
                   'search' => '/plugins/monitoring/front/notificationcommand.php',
                   'add'    => '/plugins/monitoring/front/notificationcommand.form.php'
+              )),
+         'realm' => array(
+              'title' => PluginMonitoringRealm::getTypeName(),
+              'page'  => PluginMonitoringRealm::getSearchURL(false),
+              'links' => array(
+                  'search' => '/plugins/monitoring/front/realm.php',
+                  'add'    => '/plugins/monitoring/front/realm.form.php'
               ))
 
 

@@ -47,7 +47,8 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringRealm extends CommonDropdown {
 
    public $first_level_menu  = "plugins";
-   public $second_level_menu = "monitoring";
+   public $second_level_menu = "pluginmonitoringmenu";
+   public $third_level_menu  = "realm";
 
    static $rightname = 'plugin_monitoring_realm';
 
