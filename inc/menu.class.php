@@ -138,6 +138,13 @@ class PluginMonitoringMenu extends CommonGLPI {
               'links' => array(
                   'search' => '/plugins/monitoring/front/servicescatalog.php',
                   'add'    => '/plugins/monitoring/front/servicescatalog.form.php'
+              )),
+         'weathermap' => array(
+              'title' => PluginMonitoringWeathermap::getTypeName(),
+              'page'  => PluginMonitoringWeathermap::getSearchURL(false),
+              'links' => array(
+                  'search' => '/plugins/monitoring/front/weathermap.php',
+                  'add'    => '/plugins/monitoring/front/weathermap.form.php'
               ))
 
 

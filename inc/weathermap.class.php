@@ -56,6 +56,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
 
    function defineTabs($options=array()){
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab(__CLASS__, $ong, $options);
       return $ong;
    }
@@ -74,7 +75,6 @@ class PluginMonitoringWeathermap extends CommonDBTM {
 
       $ong = array();
       if ($item->getID() > 0) {
-         $ong[1] = __('Weathermap', 'monitoring');
          $ong[2] = __('Nodes and links', 'monitoring');
       }
       return $ong;
@@ -95,13 +95,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
    function showForm($items_id, $options=array()) {
       global $DB,$CFG_GLPI;
 
-      if ($items_id == '0') {
-         $this->getEmpty();
-      } else {
-         $this->getFromDB($items_id);
-      }
-
-      $this->showTabs($options);
+      $this->initForm($items_id, $options);
       $options['formoptions'] = " enctype='multipart/form-data'";
       $this->showFormHeader($options);
 
@@ -154,8 +148,6 @@ class PluginMonitoringWeathermap extends CommonDBTM {
       $this->showFormButtons($options);
 
       PluginMonitoringToolbox::loadLib();
-
-      $this->addDivForTabs();
 
       return true;
    }

@@ -45,7 +45,7 @@ include ("../../../inc/includes.php");
 Session::checkRight("plugin_monitoring_weathermap", READ);
 
 Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "weathermap");
+             "pluginmonitoringmenu", "weathermap");
 
 Search::show('PluginMonitoringWeathermap');
 
