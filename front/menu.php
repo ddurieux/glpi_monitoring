@@ -45,7 +45,7 @@ include ("../../../inc/includes.php");
 Session::checkCentralAccess();
 
 Html::header(__('Monitoring - dashboard', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "menu");
+             "PluginMonitoringDashboard", "menu");
 
 $pmMessage = new PluginMonitoringMessage();
 $pmMessage->getMessages();

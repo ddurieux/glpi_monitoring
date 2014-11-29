@@ -47,7 +47,7 @@ if (Session::haveRight("plugin_monitoring_servicescatalog", PluginMonitoringServ
 
    $dropdown = new PluginMonitoringServicescatalog();
    Html::header(__('Monitoring - services catalogs', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-             "pluginmonitoringmenu", "servicescatalog");
+             "PluginMonitoringDashboard", "servicescatalog");
    
    if (isset($_GET['detail']) AND isset($_GET['id'])) {
       $dropdown->showBADetail($_GET['id']);

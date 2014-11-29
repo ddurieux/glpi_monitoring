@@ -45,7 +45,7 @@ include ("../../../inc/includes.php");
 Session::checkRight("user", READ);
 
 Html::header(__('Monitoring - contact templates', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-             "pluginmonitoringmenu", "contacttemplate");
+             "PluginMonitoringDashboard", "contacttemplate");
 
 $pmContacttemplate = new PluginMonitoringContacttemplate();
 if (isset($_POST["add"])) {

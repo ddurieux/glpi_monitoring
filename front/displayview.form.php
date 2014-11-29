@@ -45,7 +45,7 @@ include ("../../../inc/includes.php");
 Session::checkRight("plugin_monitoring_displayview", READ);
 
 Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-             "pluginmonitoringmenu", "displayview");
+             "PluginMonitoringDashboard", "displayview");
 
 $pmDisplayview = new PluginMonitoringDisplayview();
 

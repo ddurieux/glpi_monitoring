@@ -45,7 +45,7 @@ include ("../../../inc/includes.php");
 Session::checkRight("plugin_monitoring_command", READ);
 
 Html::header(__('Monitoring - commands', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-             "pluginmonitoringmenu", "command");
+             "PluginMonitoringDashboard", "command");
 
 $pMonitoringCommand = new PluginMonitoringCommand();
 

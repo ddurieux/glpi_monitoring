@@ -45,7 +45,7 @@ include ("../../../inc/includes.php");
 Session::checkCentralAccess();
 
 Html::header(__('Monitoring - dashboard', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "dashboard");
+             "PluginMonitoringDashboard", "dashboard");
 
 Session::checkRight("plugin_monitoring_dashboard", READ);
 

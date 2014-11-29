@@ -45,7 +45,7 @@ include ("../../../inc/includes.php");
 Session::checkRight("plugin_monitoring_component", READ);
 
 Html::header(__('Monitoring - components', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-             "pluginmonitoringmenu", "component");
+             "PluginMonitoringDashboard", "component");
 
 
 Search::show('PluginMonitoringComponent');

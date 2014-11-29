@@ -110,7 +110,7 @@ function plugin_init_monitoring() {
             // No menu in helpdesk interface ...
 //            $PLUGIN_HOOKS["helpdesk_menu_entry"]['monitoring'] = false;
 
-            $PLUGIN_HOOKS['menu_toadd']['monitoring'] = array('plugins' => 'PluginMonitoringMenu');
+            $PLUGIN_HOOKS['menu_toadd']['monitoring'] = array('plugins' => 'PluginMonitoringDashboard');
          }
 
          $PLUGIN_HOOKS['config_page']['monitoring'] = 'front/config.form.php';

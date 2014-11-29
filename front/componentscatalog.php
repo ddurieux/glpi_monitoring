@@ -45,7 +45,7 @@ include ("../../../inc/includes.php");
 Session::checkRight("plugin_monitoring_componentscatalog", READ);
 
 Html::header(__('Monitoring - components catalogs', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-       "pluginmonitoringmenu", "componentscatalog");
+       "PluginMonitoringDashboard", "componentscatalog");
 
 $pmMessage = new PluginMonitoringMessage();
 $pmMessage->getMessages();
