@@ -45,7 +45,7 @@ include ("../../../inc/includes.php");
 Session::checkRight("plugin_monitoring_eventhandler", READ);
 
 Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "eventhandler");
+             "pluginmonitoringmenu", "eventhandler");
 
 $pMonitoringEventhandler = new PluginMonitoringEventhandler();
 
@@ -55,17 +55,17 @@ if (isset ($_POST["add"])) {
 } else if (isset ($_POST["update"])) {
    $pMonitoringEventhandler->update($_POST);
    Html::back();
-} else if (isset ($_POST["delete"])) {
+} else if (isset ($_POST["purge"])) {
    $pMonitoringEventhandler->delete($_POST);
    $pMonitoringEventhandler->redirectToList();
 }
 
 
-if (isset($_GET["id"])) {
-   $pMonitoringEventhandler->showForm($_GET["id"], array('canedit' => Session::haveRight("config", UPDATE)));
-} else {
-   $pMonitoringEventhandler->showForm("", array('canedit' => Session::haveRight("config", UPDATE)));
+if (!isset($_GET["id"])) {
+   $_GET["id"] = "";
 }
+
+$pMonitoringEventhandler->display(array('id' => $_GET["id"]));
 
 Html::footer();
 

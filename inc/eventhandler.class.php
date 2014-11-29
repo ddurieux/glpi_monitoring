@@ -85,6 +85,7 @@ class PluginMonitoringEventhandler extends CommonDBTM {
 
    function defineTabs($options=array()){
       $ong = array();
+      $this->addDefaultFormTab($ong);
       return $ong;
    }
 
@@ -100,15 +101,6 @@ class PluginMonitoringEventhandler extends CommonDBTM {
    *
    **/
    function showForm($items_id, $options=array(), $copy=array()) {
-      global $DB,$CFG_GLPI;
-
-      if ($items_id!='') {
-         $this->getFromDB($items_id);
-      } else {
-         $this->getEmpty();
-         $this->fields['command_line'] = '/usr/local/eventhandler/command.sh $SERVICESTATE$ '
-                 .'$SERVICESTATETYPE$ $SERVICEATTEMPT$ $HOSTADDRESS$';
-      }
 
       if (count($copy) > 0) {
          foreach ($copy as $key=>$value) {
@@ -116,8 +108,13 @@ class PluginMonitoringEventhandler extends CommonDBTM {
          }
       }
 
-      $this->showTabs($options);
+      $this->initForm($items_id, $options);
+      if ($this->fields['id'] == 0) {
+         $this->fields['command_line'] = '/usr/local/eventhandler/command.sh $SERVICESTATE$ '
+                 .'$SERVICESTATETYPE$ $SERVICEATTEMPT$ $HOSTADDRESS$';
+      }
       $this->showFormHeader($options);
+
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Name')." :</td>";
