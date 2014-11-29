@@ -45,7 +45,7 @@ include ("../../../inc/includes.php");
 Session::checkRight("plugin_monitoring_tag", READ);
 
 Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "tag");
+             "pluginmonitoringmenu", "tag");
 
 $pmTag = new PluginMonitoringTag();
 
@@ -55,7 +55,7 @@ if (isset($_POST["add"])) {
 } else if (isset($_POST["update"])) {
    $pmTag->update($_POST);
    Html::back();
-} else if (isset($_POST["delete"])) {
+} else if (isset($_POST["purge"])) {
    if ($_POST['tag'] != '') {
       $pmTag->delete($_POST);
       $pmTag->redirectToList();
@@ -63,12 +63,11 @@ if (isset($_POST["add"])) {
    Html::back();
 }
 
-
-if (isset($_GET["id"])) {
-   $pmTag->showForm($_GET["id"]);
-} else {
-   $pmTag->showForm("");
+if (!isset($_GET["id"])) {
+   $_GET["id"] = "";
 }
+
+$pmTag->display(array('id' => $_GET["id"]));
 
 Html::footer();
 

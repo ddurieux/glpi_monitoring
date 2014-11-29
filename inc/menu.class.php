@@ -125,7 +125,14 @@ class PluginMonitoringMenu extends CommonGLPI {
               'links' => array(
                   'search' => '/plugins/monitoring/front/realm.php',
                   'add'    => '/plugins/monitoring/front/realm.form.php'
+              )),
+         'tag' => array(
+              'title' => PluginMonitoringTag::getTypeName(),
+              'page'  => PluginMonitoringTag::getSearchURL(false),
+              'links' => array(
+                  'search' => '/plugins/monitoring/front/tag.php'
               ))
+
 
 
 
