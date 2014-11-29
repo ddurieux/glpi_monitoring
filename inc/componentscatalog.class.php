@@ -111,7 +111,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          }
          if ($item->getID() > 0) {
             $ong = array();
-            $ong[1] = __('Components', 'monitoring');
+            $ong[1] = self::createTabEntry(__('Components', 'monitoring'), self::countForComponents($item));
             $ong[2] = self::createTabEntry(__('Static hosts', 'monitoring'), self::countForStaticHosts($item));
             $ong[3] = self::createTabEntry(_n('Rule', 'Rules', 2), self::countForRules($item));
             $ong[4] = self::createTabEntry(__('Dynamic hosts', 'monitoring'), self::countForDynamicHosts($item));
@@ -163,6 +163,18 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $restrict = "`plugin_monitoring_componentscalalog_id` = '".$item->getField('id') ."'";
 
       return countElementsInTable('glpi_plugin_monitoring_componentscatalogs_rules', $restrict);
+   }
+
+
+
+   /**
+    * @param $item PluginMonitoringComponentscatalog object
+   **/
+   static function countForComponents(PluginMonitoringComponentscatalog $item) {
+
+      $restrict = "`plugin_monitoring_componentscalalog_id` = '".$item->getField('id') ."'";
+
+      return countElementsInTable('glpi_plugin_monitoring_componentscatalogs_components', $restrict);
    }
 
 
