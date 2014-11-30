@@ -1021,6 +1021,9 @@ class PluginMonitoringShinken extends CommonDBTM {
             $notadd = 0;
             $notadddescription = '';
             $a_component = current($pmComponent->find("`id`='".$data['plugin_monitoring_components_id']."'", "", 1));
+            if (empty($a_component)) {
+               continue;
+            }
             $a_hostname = array();
             $a_hostname_type = array();
             $a_hostname_id = array();
@@ -1243,7 +1246,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
                // ** If shinken not use templates or template not defined :
                if (!isset($_SESSION['plugin_monitoring']['servicetemplates'][$a_component['id']])) {
-                     $pMonitoringCheck->getFromDB($a_component['plugin_monitoring_checks_id']);
+                  $pMonitoringCheck->getFromDB($a_component['plugin_monitoring_checks_id']);
                   $a_services[$i]['check_interval'] = $pMonitoringCheck->fields['check_interval'];
                   $a_services[$i]['retry_interval'] = $pMonitoringCheck->fields['retry_interval'];
                   $a_services[$i]['max_check_attempts'] = $pMonitoringCheck->fields['max_check_attempts'];
