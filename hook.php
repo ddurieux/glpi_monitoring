@@ -610,12 +610,6 @@ function plugin_monitoring_registerMethods() {
 							     'methodGetHostsStates');
    $WEBSERVICES_METHOD['monitoring.getServicesStates'] = array('PluginMonitoringWebservice',
 							     'methodGetServicesStates');
-   $WEBSERVICES_METHOD['monitoring.getLastCounters'] = array('PluginMonitoringWebservice',
-							     'methodGetLastCounters');
-   $WEBSERVICES_METHOD['monitoring.getStatistics'] = array('PluginMonitoringWebservice',
-							     'methodGetStatistics');
-   $WEBSERVICES_METHOD['monitoring.getDailyCounters'] = array('PluginMonitoringWebservice',
-							     'methodGetDailyCounters');
    $WEBSERVICES_METHOD['monitoring.getHostsLocations'] = array('PluginMonitoringWebservice',
 							     'methodGetHostsLocations');
    $WEBSERVICES_METHOD['monitoring.getUnavailabilities'] = array('PluginMonitoringWebservice',
