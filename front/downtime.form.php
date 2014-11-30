@@ -44,7 +44,8 @@ include ("../../../inc/includes.php");
 
 Session::checkRight("plugin_monitoring_downtime", READ);
 
-Html::header(__('Monitoring - downtimes', 'monitoring'),'', "plugins", "monitoring", "downtime");
+Html::header(__('Monitoring - downtimes', 'monitoring'),'', "plugins",
+        "PluginMonitoringDashboard", "downtime");
 
 $pmDowntime = new PluginMonitoringDowntime();
 
@@ -111,7 +112,7 @@ if (isset ($_POST["add"])) {
 } else if (isset ($_POST["update"])) {
    $pmDowntime->update($_POST);
    $pmDowntime->redirectToList();
-} else if (isset ($_POST["delete"])) {
+} else if (isset ($_POST["purge"])) {
    $pmDowntime->delete($_POST);
    $pmDowntime->redirectToList();
 }
@@ -119,7 +120,8 @@ if (isset ($_POST["add"])) {
 // Read or edit downtime ...
 if (isset($_GET['id']) || isset($_GET['host_id'])) {
    // If host_id is defined, use it ...
-   $pmDowntime->showForm((isset($_GET['id'])) ? $_GET['id'] : -1, (isset($_GET['host_id'])) ? $_GET['host_id'] : -1);
+   $pmDowntime->display(array('id' => $_GET["id"]));
+//   $pmDowntime->showForm((isset($_GET['id'])) ? $_GET['id'] : -1, (isset($_GET['host_id'])) ? $_GET['host_id'] : -1);
 }
 
 Html::footer();

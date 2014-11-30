@@ -44,7 +44,8 @@ include ("../../../inc/includes.php");
 
 Session::checkRight("plugin_monitoring_acknowledge", READ);
 
-Html::header(__('Monitoring - acknowledges', 'monitoring'),'', "plugins", "monitoring", "acknowledge");
+Html::header(__('Monitoring - acknowledges', 'monitoring'),'', "plugins",
+        "PluginMonitoringDashboard", "acknowledge");
 
 $pmAcknowledge = new PluginMonitoringAcknowledge();
 
@@ -54,7 +55,7 @@ if (isset ($_POST["add"])) {
 } else if (isset ($_POST["update"])) {
    $pmAcknowledge->update($_POST);
    $pmAcknowledge->redirectToList();
-} else if (isset ($_POST["delete"])) {
+} else if (isset ($_POST["purge"])) {
    $pmAcknowledge->delete($_POST);
    $pmAcknowledge->redirectToList();
 }
@@ -62,7 +63,7 @@ if (isset ($_POST["add"])) {
 // Read or edit acknowledge ...
 if (isset($_GET['id'])) {
    // If ack id is defined, use it ...
-   $pmAcknowledge->showForm($_GET['id']);
+   $pmAcknowledge->display(array('id' => $_GET["id"]));
 } else if (! isset($_GET['id']) && isset($_GET['itemtype']) && isset($_GET['items_id'])) {
    // If host is defined, use it ...
    $pmAcknowledge->showForm(-1, $_GET['itemtype'], $_GET['items_id']);

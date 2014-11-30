@@ -144,8 +144,7 @@ class PluginMonitoringCheck extends CommonDBTM {
    *
    **/
    function showForm($items_id, $options=array()) {
-      global $DB,$CFG_GLPI;
-
+      
       $this->initForm($items_id, $options);
       $this->showFormHeader($options);
 
