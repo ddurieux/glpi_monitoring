@@ -35,10 +35,10 @@
 
 $USEDBREPLICATE = 1;
 
-session_id($_POST['sess_id']);
-$_SESSION['glpiID'] = $_POST['glpiID'];
-$_SESSION['plugin_monitoring_securekey'] = $_POST['plugin_monitoring_securekey'];
-$_SESSION['plugin_monitoring_checktime'] = 1;
+//session_id($_POST['sess_id']);
+//$_SESSION['glpiID'] = $_POST['glpiID'];
+//$_SESSION['plugin_monitoring_securekey'] = $_POST['plugin_monitoring_securekey'];
+//$_SESSION['plugin_monitoring_checktime'] = 1;
 
 
 // Direct access to file
@@ -47,17 +47,18 @@ if (strpos($_SERVER['PHP_SELF'],"updateChart.php")) {
    header("Content-Type: text/html; charset=UTF-8");
    Html::header_nocache();
 }
+session_write_close();
 
 if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
 
-$pmSecurity = new PluginMonitoringSecurity();
-$pmSecurity->isSecure();
-PluginMonitoringSecurity::deleteCheckSessionTime();
+//$pmSecurity = new PluginMonitoringSecurity();
+//$pmSecurity->isSecure();
+//PluginMonitoringSecurity::deleteCheckSessionTime();
 
 Session::checkLoginUser();
-
+$_POST = $_GET;
 $itemtype = $_POST['itemtype'];
 $item = new $itemtype();
 if (!$item->getFromDB($_POST['items_id'])) {
@@ -86,8 +87,8 @@ if ($_POST['customdate'] == ''
                       date('d', $_POST['customdate']),
                       date('Y', $_POST['customdate']));
 }
-
-if (isset($_POST['components_id']) && !isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']])) {
+if (isset($_POST['components_id'])
+        && !isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']])) {
    PluginMonitoringToolbox::loadPreferences($_POST['components_id']);
 }
 if (! isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_POST['components_id']])) {

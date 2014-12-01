@@ -121,8 +121,8 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<th>";
-      echo "<a onClick='Ext.get(\"date_text\").toggle();Ext.get(\"date_select\").toggle();".
-              "Ext.get(\"time_text\").toggle();Ext.get(\"time_select\").toggle();'>
+      echo "<a onClick='$(\"#date_text\").toggle();$(\"#date_select\").toggle();"
+      . "$(\"#time_text\").toggle();$(\"#time_select\").toggle();'>
       <img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' />&nbsp;
          ".__('Date and time select', 'monitoring')."
       &nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' /></a>";
@@ -173,7 +173,7 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
             );
          }
       }
-
+/*
 echo "
 <script type=\"text/javascript\">
 
@@ -214,6 +214,7 @@ Ext.onReady(function(){
 
 });
 </script>";
+ */
       echo '<center><div id="custom-tip-slider"></div></center>';
       echo "</td>";
       echo "</tr>";
@@ -230,7 +231,7 @@ Ext.onReady(function(){
       $start = 0 + 86400 - 3600;
       $end = 86400 + 86400 - 3600 - 300;
       $current = mktime(date('H'), date('i'), 0, 1, 2, 1970);
-
+/*
 echo "
 <script type=\"text/javascript\">
 
@@ -271,6 +272,7 @@ Ext.onReady(function(){
 
 });
 </script>";
+ */
       echo '<center><div id="custom-tip-slider-time"></div></center>';
       echo "</td>";
       echo "</tr>";
@@ -289,7 +291,7 @@ Ext.onReady(function(){
          echo "<div id='filariane'>&nbsp;</div>";
          echo "<input type='hidden' name='updatefil' id='updatefil' value='".$id."!' />";
 
-
+/*
          echo "<script type=\"text/javascript\">
             function reloadfil() {
                Ext.get('filariane').load({
@@ -301,6 +303,7 @@ Ext.onReady(function(){
             }
             reloadfil();
          </script>";
+ */
       }
       echo "</td>";
       echo "</tr>";
@@ -312,32 +315,87 @@ Ext.onReady(function(){
       echo '<div id="custom_date" style="display:none"></div>';
       echo '<div id="custom_time" style="display:none"></div>';
 
-      echo "<div id='viewform'>";
-      echo "<script type='text/javascript'>
+      $queryitems = "SELECT * FROM `glpi_plugin_monitoring_displayviews_items`
+         WHERE `plugin_monitoring_displayviews_id`='".$id."'";
+      $resultitems = $DB->query($queryitems);
+      $a_items = array();
+      while ($dataitems=$DB->fetch_array($resultitems)) {
+//         if ($this->displayItem($dataitems, $config)) {
+            $a_items[] = $dataitems;
+//         }
+//         }
+      }
 
-        //Simple 'border layout' panel to house both grids
-        var displayPanel = new Ext.Panel({
-          id       : 'viewpanel',
-          width    : ".$pmDisplayview->fields['width'].",
-          height   : 1200,
-          layout: 'absolute',
-          renderTo : 'panel',
-          items    : []
-        });
+echo "
+<script type=\"text/javascript\">
+$(function() {
+";
+foreach ($a_items as $item) {
+   $size = $this->getSizeOfWidget($item['itemtype']);
+   echo "$( \"#draggable".$item['id']."\" ).draggable({ cursor: 'move', cursorAt: { "
+           . "top: ".($size['height']/2).", left: ".($size['width']/2).", "
+           . " }, grid: [ 5, 5 ] });";
+}
+echo "
+});
+</script>";
 
-      </script>";
+      echo "<div id='viewform' style='width: ".$pmDisplayview->fields['width']."px;height:1200px;position: relative;'>";
+
+foreach ($a_items as $item) {
+   $size = $this->getSizeOfWidget($item['itemtype']);
+   echo '<div id="draggable'.$item['id'].'" class="ui-widget-content" '
+           . 'style="width: '.$size['width'].'px; height: '.$size['height'].'px; '
+           . 'position: absolute; left: '.$item['x'].'px; top: '.$item['y'].'px;'
+           . ' padding: 0.5em; margin: 0 10px 10px 0;">';
+
+   if ($item['itemtype'] == 'PluginMonitoringService') {
+      $pmComponent = new PluginMonitoringComponent();
+      $pmService = new PluginMonitoringService();
+
+      $pmService->getFromDB($item['items_id']);
+      $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
+      $pmServicegraph = new PluginMonitoringServicegraph();
+      $pmServicegraph->displayGraph($pmComponent->fields['graph_template'],
+                                    "PluginMonitoringService",
+                                    $item['items_id'],
+                                    "0",
+                                    $item['extra_infos'],
+                                    "",
+                                    ($size['width'] - 15));
+   }
+
+   echo '</div>';
+}
+
+//      echo "<script type='text/javascript'>
+//
+//        //Simple 'border layout' panel to house both grids
+//        var displayPanel = new Ext.Panel({
+//          id       : 'viewpanel',
+//          width    : ".$pmDisplayview->fields['width'].",
+//          height   : 1200,
+//          layout: 'absolute',
+//          renderTo : 'panel',
+//          items    : []
+//        });
+//
+//      </script>";
+
+
+
 
       echo "</div>";
-      echo "<script type=\"text/javascript\">
-         function reloadview() {
-            Ext.get('viewform').load({
-                url: '".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/loadView.php',
-                scripts: true,
-                   params:'id=' + Ext.get('updateviewid').getValue() + '&config=".$config."'
-            });
-         }
-         reloadview();
-      </script>";
+//      echo "<script type=\"text/javascript\">
+//         function reloadview() {
+//            Ext.get('viewform').load({
+//                url: '".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/loadView.php',
+//                scripts: true,
+//                   params:'id=' + Ext.get('updateviewid').getValue() + '&config=".$config."'
+//            });
+//         }
+//         reloadview();
+//      </script>";
 
       echo "</td>";
       echo "</tr>";
@@ -698,6 +756,25 @@ Ext.onReady(function(){
          }
       }
       return $a_counter;
+   }
+
+
+
+   function getSizeOfWidget($itemtype) {
+
+      $size = array(
+         'width'  => 200,
+         'height' => 200);
+
+      switch ($itemtype) {
+
+         case 'PluginMonitoringService';
+            $size['width']  = 475;
+            $size['height'] = 340;
+            break;
+
+      }
+      return $size;
    }
 }
 

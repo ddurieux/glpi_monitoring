@@ -113,14 +113,27 @@ class PluginMonitoringServicegraph {
          }
          if ($part == ''
                  OR $part == 'js') {
-            echo "<script type=\"text/javascript\">
-
-            var el".$items_id.$time." = Ext.get(\"updategraph".$items_id.$time."\");
-            var mgr".$items_id.$time." = el".$items_id.$time.".getUpdateManager();
-            mgr".$items_id.$time.".loadScripts=true;
-            mgr".$items_id.$time.".showLoadIndicator=false;
-               ";
-            $this->startAutoRefresh($rrdtool_template, $itemtype, $items_id, $timezone, $time,$pmComponent->fields['id']);
+            echo "<script type=\"text/javascript\">";
+            echo "
+   (function worker() {
+     $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateChart.php"
+           ."?sess_id=".session_id()."&glpiID=".$_SESSION['glpiID']
+           ."&rrdtool_template=".$rrdtool_template."&itemtype=".$itemtype.
+                 "&items_id=".$items_id.
+                 "&timezone=".$timezone.
+                 "&time=".$time."&customdate=' + document.getElementById('custom_date').textContent + '".
+                 "&customtime' + document.getElementById('custom_time').textContent +'".
+                 "&components_id=".$pmComponent->fields['id']."', function(data) {
+       $('#updategraph".$items_id.$time."').html(data);
+       setTimeout(worker, 30000);
+     });
+   })();";
+//            var el".$items_id.$time." = Ext.get(\"updategraph".$items_id.$time."\");
+//            var mgr".$items_id.$time." = el".$items_id.$time.".getUpdateManager();
+//            mgr".$items_id.$time.".loadScripts=true;
+//            mgr".$items_id.$time.".showLoadIndicator=false;
+//               ";
+//            $this->startAutoRefresh($rrdtool_template, $itemtype, $items_id, $timezone, $time,$pmComponent->fields['id']);
             echo "
             </script>";
          }
@@ -156,7 +169,7 @@ class PluginMonitoringServicegraph {
                  "&customtime=\" + document.getElementById('custom_time').textContent + \"".
                  "&components_id=".$pmComponents_id."&sess_id=".$sess_id.
                  "&glpiID=".$_SESSION['glpiID'].
-                 "&plugin_monitoring_securekey=".$_SESSION['plugin_monitoring_securekey'].
+//                 "&plugin_monitoring_securekey=".$_SESSION['plugin_monitoring_securekey'].
                  "\", \"\", true);
                     ";
    }
