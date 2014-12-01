@@ -95,9 +95,9 @@ class PluginMonitoringComponent extends CommonDBTM {
               AND $item->fields['graph_template'] != 0) {
 
          return array(
-               __('Graph configuration', 'monitoring'),
                __('Copy'),
-               __('Components catalog', 'monitoring')
+               __('Components catalog', 'monitoring'),
+               __('Graph configuration', 'monitoring')
             );
       } else if ($item->getID() > 0) {
          return array(
