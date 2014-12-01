@@ -3469,10 +3469,6 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
    // Update crontasks
    $crontask = new CronTask();
-   if (!$crontask->getFromDBbyName('PluginMonitoringHostdailycounter', 'DailyCounters')) {
-      CronTask::Register('PluginMonitoringHostdailycounter', 'DailyCounters', '3600',
-                      array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
-   }
    if (!$crontask->getFromDBbyName('PluginMonitoringDowntime', 'DowntimesExpired')) {
       CronTask::Register('PluginMonitoringDowntime', 'DowntimesExpired', '3600',
                       array('mode' => 2, 'allowmode' => 3, 'logs_lifetime'=> 30));
@@ -3495,6 +3491,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    }
    if ($crontask->getFromDBbyName('PluginMonitoringServiceevent', 'updaterrd')) {
       $crontask->getFromDBbyName('PluginMonitoringServiceevent', 'updaterrd');
+      $crontask->delete($crontask->fields);
+   }
+   if ($crontask->getFromDBbyName('PluginMonitoringHostdailycounter', 'DailyCounters')) {
+      $crontask->getFromDBbyName('PluginMonitoringHostdailycounter', 'DailyCounters');
       $crontask->delete($crontask->fields);
    }
 
