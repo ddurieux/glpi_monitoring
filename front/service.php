@@ -92,7 +92,7 @@ if (isset($_GET['hidesearch'])) {
    echo "<table class='tab_cadre_fixe'>";
    echo "<tr class='tab_bg_1'>";
    echo "<th>";
-   echo "<a onClick='Ext.get(\"searchformservices\").toggle();'>
+   echo "<a onClick='$(\"#searchformservices\").toggle();'>
       <img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' />&nbsp;
          ".__('Display search form', 'monitoring')."
       &nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' /></a>";
