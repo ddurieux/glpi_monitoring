@@ -47,6 +47,7 @@ Session::checkCentralAccess();
 Html::header(__('Monitoring - dashboard (hosts)', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
              "monitoring", "display");
 
+$params = Search::manageParams("PluginMonitoringHost", $_GET);
 
 // Display ressources perfdata ?
 if (isset($_SESSION['plugin_monitoring']['ressources_perfdata'])) {
@@ -81,7 +82,6 @@ if (isset($_GET['reset'])) {
 if (isset($_GET['glpi_tab'])) {
    unset($_GET['glpi_tab']);
 }
-Search::manageGetValues("PluginMonitoringHost");
 if (isset($_GET['hidesearch'])) {
    echo "<table class='tab_cadre_fixe'>";
    echo "<tr class='tab_bg_1'>";
@@ -95,12 +95,12 @@ if (isset($_GET['hidesearch'])) {
    echo "</table>";
    echo "<div style='display: none;' id='searchformhosts'>";
 }
-Search::showGenericSearch("PluginMonitoringHost", $_GET);
+Search::showGenericSearch("PluginMonitoringHost", $params);
 if (isset($_GET['hidesearch'])) {
    echo "</div>";
 }
 
-$pmDisplay->showHostsBoard();
+$pmDisplay->showHostsBoard($params);
 if (isset($_SESSION['glpisearch']['PluginMonitoringHost']['reset'])) {
    unset($_SESSION['glpisearch']['PluginMonitoringHost']['reset']);
 }

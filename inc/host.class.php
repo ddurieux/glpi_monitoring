@@ -67,29 +67,20 @@ class PluginMonitoringHost extends CommonDBTM {
       $tab[0]['name']            = __('Entity');
       $tab[0]['datatype']        = 'string';
 
-      $tab[1]['table']           = $this->getTable();
+      $tab[1]['table']           = 'glpi_computers';
       $tab[1]['field']           = 'name';
       $tab[1]['name']            = __('Host name', 'monitoring');
       $tab[1]['datatype']        = 'string';
-      $tab[1]['searchtype']      = 'contains';
-      $tab[1]['itemlink_type']   = $this->getType();
-      $tab[1]['massiveaction']   = false;
 
       $tab[2]['table']           = $this->getTable();
       $tab[2]['field']           = 'state';
       $tab[2]['name']            = __('Host state', 'monitoring');
       $tab[2]['datatype']        = 'string';
-      // $tab[3]['searchtype']      = 'equals';
-      // $tab[3]['datatype']        = 'itemlink';
-      // $tab[3]['itemlink_type']   = 'PluginMonitoringService';
 
       $tab[3]['table']           = $this->getTable();
       $tab[3]['field']           = 'state_type';
       $tab[3]['name']            = __('Host state type', 'monitoring');
       $tab[3]['datatype']        = 'string';
-      // $tab[3]['searchtype']      = 'equals';
-      // $tab[3]['datatype']        = 'itemlink';
-      // $tab[3]['itemlink_type']   = 'PluginMonitoringService';
 
       // $tab[4]['table']           = $this->getTable();
       // $tab[4]['field']           = 'state';
@@ -125,8 +116,18 @@ class PluginMonitoringHost extends CommonDBTM {
       $tab[9]['name']           = __('Acknowledge', 'monitoring');
       $tab[9]['datatype']       = 'bool';
 
+      $tab[10]['table']           = $this->getTable();
+      $tab[10]['field']           = 'itemtype';
+      $tab[10]['name']            = __('Type', 'monitoring');
+      $tab[10]['datatype']        = 'string';
+
+      $tab[11]['table']           = $this->getTable();
+      $tab[11]['field']           = 'items_id';
+      $tab[11]['name']            = __('ID');
+      $tab[11]['datatype']        = 'string';
+
       $tab[20]['table']          = 'glpi_computers';
-      $tab[20]['field']          = 'name';
+      $tab[20]['field']          = 'type';
       $tab[20]['name']           = __('Item')." > ".__('Computer');
       $tab[20]['searchtype']     = 'equals';
       $tab[20]['datatype']       = 'itemlink';

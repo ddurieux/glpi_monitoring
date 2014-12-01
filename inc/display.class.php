@@ -780,139 +780,168 @@ echo "
    /**
     * Display list of hosts
     */
-   function showHostsBoard($width='', $limit='') {
+   function showHostsBoard($params, $width='', $limit='') {
       global $DB,$CFG_GLPI;
 
       if (! isset($_SESSION['plugin_monitoring_reduced_interface'])) {
          $_SESSION['plugin_monitoring_reduced_interface'] = false;
       }
 
-      if (! isset($_GET['order'])) {
-         $_GET['order'] = "ASC";
+      $col_to_display = array(0, 10, 1, 2, 3, 6, 7, 8, 9, 11);
+
+      $data = Search::prepareDatasForSearch('PluginMonitoringHost', $params, $col_to_display);
+      $data['tocompute'] = $data['toview'];
+      Search::constructSQL($data);
+//echo "<pre>";      print_r($data['sql']['search']);
+      Search::constructDatas($data);
+
+
+//      if (! isset($_GET['order'])) {
+//         $_GET['order'] = "ASC";
+//      }
+//      if (! isset($_GET['sort'])) {
+//         $_GET['sort'] = "";
+//      }
+//
+//      $order = "ASC";
+//      if (isset($_GET['order'])) {
+//         $order = $_GET['order'];
+//      }
+//      $where = '';
+//      if (isset($_GET['field'])) {
+//         foreach ($_GET['field'] as $key=>$value) {
+//            $wheretmp = '';
+//            if (isset($_GET['link'][$key])) {
+//               $wheretmp.= " ".$_GET['link'][$key]." ";
+//            }
+//            $wheretmp .= Search::addWhere(
+//                                   "",
+//                                   0,
+//                                   "PluginMonitoringHost",
+//                                   $_GET['field'][$key],
+//                                   $_GET['searchtype'][$key],
+//                                   $_GET['contains'][$key]);
+//            if (!strstr($wheretmp, "``.``")) {
+//               if ($where != ''
+//                       AND !isset($_GET['link'][$key])) {
+//                  $where .= " AND ";
+//               }
+//               $where .= $wheretmp;
+//            }
+//         }
+//      }
+//      if ($where != '') {
+//         $where = "(".$where;
+//         $where .= ") AND ";
+//      }
+//      $where .= " CONCAT_WS('', `glpi_computers`.`entities_id`, `glpi_printers`.`entities_id`, `glpi_networkequipments`.`entities_id`) IN (".$_SESSION['glpiactiveentities_string'].")";
+//
+//      if ($where != '') {
+//         $where = " WHERE ".$where;
+//         $where = str_replace("`".getTableForItemType("PluginMonitoringDisplay")."`.",
+//                 "", $where);
+//
+//      }
+//
+//      $leftjoin = "
+//         LEFT JOIN `glpi_computers`
+//            ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`
+//               AND `glpi_plugin_monitoring_hosts`.`itemtype`='Computer'
+//         LEFT JOIN `glpi_printers`
+//            ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_printers`.`id`
+//               AND `glpi_plugin_monitoring_hosts`.`itemtype`='Printer'
+//         LEFT JOIN `glpi_networkequipments`
+//            ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_networkequipments`.`id`
+//               AND `glpi_plugin_monitoring_hosts`.`itemtype`='NetworkEquipment'
+//         LEFT JOIN `glpi_entities`
+//            ON CONCAT_WS('', `glpi_computers`.`entities_id`, `glpi_printers`.`entities_id`, `glpi_networkequipments`.`entities_id`) = `glpi_entities`.`id`
+//
+//      ";
+//
+//      // * ORDER
+//      $ORDERQUERY = "ORDER BY entity_name ASC, host_name ASC";
+//      $toview = array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+//      $toviewComplete = array(
+//          'ITEM_0' => 'entity_name',
+//          'ITEM_1' => 'host_name',
+//          'ITEM_2' => 'host_state',
+//          'ITEM_3' => 'service_state',
+//          'ITEM_4' => 'last_check',
+//          'ITEM_5' => 'event',
+//          'ITEM_6' => 'perf_data',
+//          'ITEM_7' => 'is_acknowledged'
+//      );
+//      foreach ($toview as $key => $val) {
+//         if ($_GET['sort']==$val) {
+//            $ORDERQUERY = Search::addOrderBy("PluginMonitoringHost", $_GET['sort'],
+//                                             $_GET['order'], $key);
+//            foreach ($toviewComplete as $keyi=>$vali) {
+//               $ORDERQUERY= str_replace($keyi, $vali, $ORDERQUERY);
+//            }
+//         }
+//      }
+//
+////            `glpi_computers`.*
+//
+//      $query = "SELECT
+//            `glpi_entities`.`name` AS entity_name,
+//            CONCAT_WS('', `glpi_computers`.`id`, `glpi_printers`.`id`, `glpi_networkequipments`.`id`) AS idComputer,
+//            CONCAT_WS('', `glpi_computers`.`name`, `glpi_printers`.`name`, `glpi_networkequipments`.`name`) AS host_name,
+//            `glpi_plugin_monitoring_hosts`.*,
+//            `glpi_plugin_monitoring_hosts`.`state` AS host_state,
+//            `glpi_plugin_monitoring_hosts`.`is_acknowledged` AS host_acknowledged
+//         FROM `glpi_plugin_monitoring_hosts`
+//         ".$leftjoin."
+//         ".$where."
+//         ".$ORDERQUERY;
+//      // Toolbox::logInFile("pm", "Query hosts - $query\n");
+//
+//      $result = $DB->query($query);
+//
+//      if (! isset($_GET["start"])) {
+//         $_GET["start"]=0;
+//      }
+//      $start=$_GET['start'];
+//      if (! isset($_GET["order"])) {
+//         $_GET["order"]="ASC";
+//      }
+
+      $rand = mt_rand();
+      if (!isset($data['data']) || !isset($data['data']['totalcount'])) {
+         return false;
       }
-      if (! isset($_GET['sort'])) {
-         $_GET['sort'] = "";
+      // Contruct Pager parameters
+      $globallinkto
+         = Toolbox::append_params(array('criteria'
+                                          => Toolbox::stripslashes_deep($data['search']['criteria']),
+                                        'metacriteria'
+                                          => Toolbox::stripslashes_deep($data['search']['metacriteria'])),
+                                  '&amp;');
+      $parameters = "sort=".$data['search']['sort']."&amp;order=".$data['search']['order'].'&amp;'.
+                     $globallinkto;
+
+      if (isset($_GET['_in_modal'])) {
+         $parameters .= "&amp;_in_modal=1";
       }
 
-      $order = "ASC";
-      if (isset($_GET['order'])) {
-         $order = $_GET['order'];
-      }
-      $where = '';
-      if (isset($_GET['field'])) {
-         foreach ($_GET['field'] as $key=>$value) {
-            $wheretmp = '';
-            if (isset($_GET['link'][$key])) {
-               $wheretmp.= " ".$_GET['link'][$key]." ";
-            }
-            $wheretmp .= Search::addWhere(
-                                   "",
-                                   0,
-                                   "PluginMonitoringHost",
-                                   $_GET['field'][$key],
-                                   $_GET['searchtype'][$key],
-                                   $_GET['contains'][$key]);
-            if (!strstr($wheretmp, "``.``")) {
-               if ($where != ''
-                       AND !isset($_GET['link'][$key])) {
-                  $where .= " AND ";
-               }
-               $where .= $wheretmp;
-            }
+
+      // If the begin of the view is before the number of items
+      if ($data['data']['count'] > 0) {
+         // Display pager only for HTML
+         if ($data['display_type'] == Search::HTML_OUTPUT) {
+            $search_config_top    = "";
+            $search_config_bottom = "";
+
+            Html::printPager($data['search']['start'], $data['data']['totalcount'],
+                             $data['search']['target'], $parameters, $data['itemtype'], 0,
+                              $search_config_top);
          }
+
+         // Define begin and end var for loop
+         // Search case
+         $begin_display = $data['data']['begin'];
+         $end_display   = $data['data']['end'];
       }
-      if ($where != '') {
-         $where = "(".$where;
-         $where .= ") AND ";
-      }
-      $where .= " CONCAT_WS('', `glpi_computers`.`entities_id`, `glpi_printers`.`entities_id`, `glpi_networkequipments`.`entities_id`) IN (".$_SESSION['glpiactiveentities_string'].")";
-
-      if ($where != '') {
-         $where = " WHERE ".$where;
-         $where = str_replace("`".getTableForItemType("PluginMonitoringDisplay")."`.",
-                 "", $where);
-
-      }
-
-      $leftjoin = "
-         LEFT JOIN `glpi_computers`
-            ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`
-               AND `glpi_plugin_monitoring_hosts`.`itemtype`='Computer'
-         LEFT JOIN `glpi_printers`
-            ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_printers`.`id`
-               AND `glpi_plugin_monitoring_hosts`.`itemtype`='Printer'
-         LEFT JOIN `glpi_networkequipments`
-            ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_networkequipments`.`id`
-               AND `glpi_plugin_monitoring_hosts`.`itemtype`='NetworkEquipment'
-         LEFT JOIN `glpi_entities`
-            ON CONCAT_WS('', `glpi_computers`.`entities_id`, `glpi_printers`.`entities_id`, `glpi_networkequipments`.`entities_id`) = `glpi_entities`.`id`
-
-      ";
-
-      // * ORDER
-      $ORDERQUERY = "ORDER BY entity_name ASC, host_name ASC";
-      $toview = array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
-      $toviewComplete = array(
-          'ITEM_0' => 'entity_name',
-          'ITEM_1' => 'host_name',
-          'ITEM_2' => 'host_state',
-          'ITEM_3' => 'service_state',
-          'ITEM_4' => 'last_check',
-          'ITEM_5' => 'event',
-          'ITEM_6' => 'perf_data',
-          'ITEM_7' => 'is_acknowledged'
-      );
-      foreach ($toview as $key => $val) {
-         if ($_GET['sort']==$val) {
-            $ORDERQUERY = Search::addOrderBy("PluginMonitoringHost", $_GET['sort'],
-                                             $_GET['order'], $key);
-            foreach ($toviewComplete as $keyi=>$vali) {
-               $ORDERQUERY= str_replace($keyi, $vali, $ORDERQUERY);
-            }
-         }
-      }
-
-//            `glpi_computers`.*
-
-      $query = "SELECT
-            `glpi_entities`.`name` AS entity_name,
-            CONCAT_WS('', `glpi_computers`.`id`, `glpi_printers`.`id`, `glpi_networkequipments`.`id`) AS idComputer,
-            CONCAT_WS('', `glpi_computers`.`name`, `glpi_printers`.`name`, `glpi_networkequipments`.`name`) AS host_name,
-            `glpi_plugin_monitoring_hosts`.*,
-            `glpi_plugin_monitoring_hosts`.`state` AS host_state,
-            `glpi_plugin_monitoring_hosts`.`is_acknowledged` AS host_acknowledged
-         FROM `glpi_plugin_monitoring_hosts`
-         ".$leftjoin."
-         ".$where."
-         ".$ORDERQUERY;
-      // Toolbox::logInFile("pm", "Query hosts - $query\n");
-
-      $result = $DB->query($query);
-
-      if (! isset($_GET["start"])) {
-         $_GET["start"]=0;
-      }
-      $start=$_GET['start'];
-      if (! isset($_GET["order"])) {
-         $_GET["order"]="ASC";
-      }
-
-      $numrows = $DB->numrows($result);
-      $parameters = '';
-
-      $globallinkto = '';
-
-      $parameters = "sort=".$_GET['sort']."&amp;order=".$_GET['order'].$globallinkto;
-      Html::printPager($_GET['start'], $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/host.php", $parameters);
-
-      $limit = $numrows;
-      if ($_SESSION["glpilist_limit"] < $numrows) {
-         $limit = $_SESSION["glpilist_limit"];
-      }
-      $query .= " LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
-
-      // Toolbox::logInFile("pm", "Query hosts - $query\n");
-      $result = $DB->query($query);
 
       echo '<div id="custom_date" style="display:none"></div>';
       echo '<div id="custom_time" style="display:none"></div>';
@@ -929,63 +958,66 @@ echo "
          $pmCommand = new PluginMonitoringCommand();
          $a_commands = array();
          $a_list = $pmCommand->find("command_name LIKE 'host_action'");
-         foreach ($a_list as $data) {
-            $host_command_name = $data['name'];
-            $host_command_command = $data['command_line'];
+         foreach ($a_list as $dt) {
+            $host_command_name = $dt['name'];
+            $host_command_command = $dt['command_line'];
          }
       }
 
       echo "<tr class='tab_bg_1'>";
-      if (Session::haveRight("plugin_monitoring_counter", READ)) {
-         $this->showHeaderItem(__('Daily counters', 'monitoring'), 0, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
-      }
-      $this->showHeaderItem(__('Entity'), 0, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
-      $this->showHeaderItem(__('Type'), 0, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
-      $this->showHeaderItem(__('Host', 'monitoring'), 1, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
-      $this->showHeaderItem(__('Host state'), 2, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
+      $this->showHeaderItem(__('Entity'), 0, $num, $begin_display, $globallinkto, 'host.php', 'PluginMonitoringHost');
+      $this->showHeaderItem(__('Type'), 0, $num, $begin_display, $globallinkto, 'host.php', 'PluginMonitoringHost');
+      $this->showHeaderItem(__('Host', 'monitoring'), 1, $num, $begin_display, $globallinkto, 'host.php', 'PluginMonitoringHost');
+      $this->showHeaderItem(__('Host state'), 2, $num, $begin_display, $globallinkto, 'host.php', 'PluginMonitoringHost');
       if (isset($host_command_name)) {
          echo '<th>'.__('Host action', 'monitoring').'</th>';
       }
       echo '<th>'.__('Host resources state', 'monitoring').'</th>';
       echo '<th>'.__('IP address', 'monitoring').'</th>';
-      $this->showHeaderItem(__('Last check', 'monitoring'), 4, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
-      $this->showHeaderItem(__('Result details', 'monitoring'), 5, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
-      $this->showHeaderItem(__('Performance data', 'monitoring'), 6, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
+      $this->showHeaderItem(__('Last check', 'monitoring'), 4, $num, $begin_display, $globallinkto, 'host.php', 'PluginMonitoringHost');
+      $this->showHeaderItem(__('Result details', 'monitoring'), 5, $num, $begin_display, $globallinkto, 'host.php', 'PluginMonitoringHost');
+      $this->showHeaderItem(__('Performance data', 'monitoring'), 6, $num, $begin_display, $globallinkto, 'host.php', 'PluginMonitoringHost');
       if (Session::haveRight("plugin_monitoring_acknowledge", READ)
          || Session::haveRight("plugin_monitoring_downtime", READ)) {
-         $this->showHeaderItem(__('Maintenance', 'monitoring'), 7, $num, $start, $globallinkto, 'host.php', 'PluginMonitoringHost');
+         $this->showHeaderItem(__('Maintenance', 'monitoring'), 7, $num, $begin_display, $globallinkto, 'host.php', 'PluginMonitoringHost');
       }
       echo "</tr>";
 
-      while ($data=$DB->fetch_array($result)) {
+      foreach ($data['data']['rows'] as $row) {
+
          // Reduced array or not ?
-         if ($_SESSION['plugin_monitoring_reduced_interface'] and $data['state'] == 'UP') continue;
+         if ($_SESSION['plugin_monitoring_reduced_interface']
+                 && $row[3]['displayname'] == 'UP') {
+            continue;
+         }
 
          if (isset($host_command_name)) {
-            $data['host_command_name'] = $host_command_name;
-            $data['host_command_command'] = $host_command_command;
+            $row['host_command_name'] = $host_command_name;
+            $row['host_command_command'] = $host_command_command;
          }
 
          // Get all host services except if state is ok or is already acknowledged ...
-         $a_ret = PluginMonitoringHost::getServicesState($data['id'],
+         $a_ret = PluginMonitoringHost::getServicesState($row['id'],
                                                          "`glpi_plugin_monitoring_services`.`state` != 'OK'
                                                          AND `glpi_plugin_monitoring_services`.`is_acknowledged` = '0'");
-         $data['host_services_state'] = $a_ret[0];
-         $data['host_services_state_list'] = $a_ret[1];
+         $row['host_services_state'] = $a_ret[0];
+         $row['host_services_state_list'] = $a_ret[1];
 
          // Get host first IP address
-         $data['ip'] = __('Unknown IP address', 'monitoring');
-         $ip = PluginMonitoringHostaddress::getIp($data['items_id'], $data['itemtype'], '');
+         $row['ip'] = __('Unknown IP address', 'monitoring');
+         $ip = PluginMonitoringHostaddress::getIp($row[9]['displayname'], $row[1]['displayname'], '');
          if ($ip != '') {
-            $data['ip'] = $ip;
+            $row['ip'] = $ip;
          }
          echo "<tr class='tab_bg_3'>";
-         $this->displayHostLine($data);
+         $this->displayHostLine($row);
          echo "</tr>";
       }
       echo "</table>";
       echo "<br/>";
-      Html::printPager($start, $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/host.php", $parameters);
+      Html::printPager($data['search']['start'], $data['data']['totalcount'],
+                       $data['search']['target'], $parameters, '', 0,
+                        $search_config_bottom);
    }
 
 
@@ -1226,30 +1258,26 @@ echo "
 
    static function displayHostLine($data) {
       global $DB,$CFG_GLPI;
-
+      
       $pm_Host = new PluginMonitoringHost();
       $pm_Host->getFromDB($data['id']);
 
-      if ($data['state'] == '') {
-         $data['state'] = 'UNKNOWN';
-         $data['state_type'] = 'SOFT';
+      if ($data[3]['displayname'] == '') {
+         $data[3]['displayname'] = 'UNKNOWN';
+         $data[4]['displayname'] = 'SOFT';
       }
 
-      $shortstate = $pm_Host->getState($data['state'],
-                                      $data['state_type'],
-                                      $data['event'],
+      $shortstate = $pm_Host->getState($data[3]['displayname'],
+                                      $data[4]['displayname'],
+                                      $data[6]['displayname'],
                                       $pm_Host->isCurrentlyAcknowledged());
 
       echo "<td>";
-      $entity = new Entity();
-      $entity->getFromDB($data["entities_id"]);
-      // echo $entity = $entity->getName();
-      echo $data["entity_name"];
-      // echo "&nbsp;".$entity->getComments();
+      echo $data[0]['displayname'];
       echo "</td>";
 
       echo "<td>";
-      $item = new $data['itemtype'];
+      $item = new $data[1]['displayname'];
       echo $item->getTypeName();
       echo "</td>";
 
@@ -1258,10 +1286,10 @@ echo "
       echo "</td>";
 
       echo "<td class='center'>";
-      echo "<div class='page foldtl resource".$data['state']." resource".$data['state_type']."'>";
+      echo "<div class='page foldtl resource".$data[3]['displayname']." resource".$data[4]['displayname']."'>";
       echo "<div style='vertical-align:middle;'>";
       echo "<span>";
-      echo $data['state'];
+      echo $data[3]['displayname'];
       echo "</span>";
       echo "</div>";
       echo "</div>";
@@ -1269,20 +1297,20 @@ echo "
 
       if (isset($data['host_command_name'])) {
          $scriptName=$CFG_GLPI['root_doc']."/plugins/monitoring/scripts/".$data['host_command_command'];
-         $scriptArgs=$data['host_name']." ".$data['ip'];
+         $scriptArgs=$data[2]['displayname']." ".$data['ip'];
 
          echo "<td class='center'>";
          echo "<form name='form' method='post'
             action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/".$data['host_command_command'].".php'>";
 
-         echo "<input type='hidden' name='host_id' value='".$data['idComputer']."' />";
-         echo "<input type='hidden' name='host_name' value='".$data['host_name']."' />";
+         echo "<input type='hidden' name='host_id' value='".$data[9]['displayname']."' />";
+         echo "<input type='hidden' name='host_name' value='".$data[2]['displayname']."' />";
          echo "<input type='hidden' name='host_ip' value='".$data['ip']."' />";
-         echo "<input type='hidden' name='host_state' value='".$data['state']."' />";
-         echo "<input type='hidden' name='host_statetype' value='".$data['state_type']."' />";
-         echo "<input type='hidden' name='host_event' value='".$data['event']."' />";
-         echo "<input type='hidden' name='host_perfdata' value='".$data['perf_data']."' />";
-         echo "<input type='hidden' name='host_last_check' value='".$data['last_check']."' />";
+         echo "<input type='hidden' name='host_state' value='".$data[3]['displayname']."' />";
+         echo "<input type='hidden' name='host_statetype' value='".$data[4]['displayname']."' />";
+         echo "<input type='hidden' name='host_event' value='".$data[6]['displayname']."' />";
+         echo "<input type='hidden' name='host_perfdata' value='".$data[7]['displayname']."' />";
+         echo "<input type='hidden' name='host_last_check' value='".$data[5]['displayname']."' />";
          echo "<input type='hidden' name='glpi_users_id' value='".$_SESSION['glpiID']."' />";
 
          echo "<input type='submit' name='host_command' value=\"".$data['host_command_name']."\" class='submit'>";
@@ -1301,7 +1329,7 @@ echo "
 //                 . "&reset=reset"
                  . "&criteria[0][field]=1"
                  . "&criteria[0][searchtype]=equals"
-                 . "&criteria[0][value]=".$data['items_id']
+                 . "&criteria[0][value]=".$data[9]['displayname']
 
                  . "&itemtype=PluginMonitoringService"
                  . "&start=0'";
@@ -1323,15 +1351,15 @@ echo "
       echo "</td>";
 
       echo "<td>";
-      echo Html::convDate($data['last_check']).' '. substr($data['last_check'], 11, 8);
+      echo Html::convDate($data[5]['displayname']).' '. substr($data[5]['displayname'], 11, 8);
       echo "</td>";
 
       echo "<td>";
-      echo $data['event'];
+      echo $data[6]['displayname'];
       echo "</td>";
 
       echo "<td>";
-      echo $data['perf_data'];
+      echo $data[7]['displayname'];
       echo "</td>";
 
       if (Session::haveRight("plugin_monitoring_acknowledge", READ)
