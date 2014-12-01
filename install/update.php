@@ -3576,6 +3576,22 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $DB->query($queryd);
    }
 
+   /*
+    * Clean services not having valide component
+    */
+   $query = "SELECT `glpi_plugin_monitoring_services`.`id`
+      FROM `glpi_plugin_monitoring_services`
+      LEFT JOIN `glpi_plugin_monitoring_components`
+         ON (`plugin_monitoring_components_id` = `glpi_plugin_monitoring_components`.`id`)
+      WHERE (`glpi_plugin_monitoring_components`.`id` IS NULL);";
+   $result = $DB->query($query);
+   include (GLPI_ROOT . "/plugins/monitoring/inc/service.class.php");
+   $pmService = new PluginMonitoringService();
+   while ($data=$DB->fetch_array($result)) {
+      $pmService->delete($data);
+   }
+
+
    // Update hosts config
    include (GLPI_ROOT . "/plugins/monitoring/inc/hostconfig.class.php");
    $pmHostconfig = new PluginMonitoringHostconfig();
