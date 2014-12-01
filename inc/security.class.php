@@ -92,6 +92,7 @@ class PluginMonitoringSecurity extends CommonDBTM {
     * Check if security key in ajax page is same than kay of DB
     */
    function isSecure() {
+      return;
       if (isset($_POST['sess_id'])) {
          $a_data = $this->find("`users_id`='".$_SESSION['glpiID']."'"
                  . " AND `session_id`='".$_POST['sess_id']."'", '', 1);
@@ -122,7 +123,7 @@ class PluginMonitoringSecurity extends CommonDBTM {
 
    function updateSecurity() {
       global $DB, $CFG_GLPI;
-
+return;
       if (isset($_SESSION['glpiID'])
               && is_numeric($_SESSION['glpiID'])
               && $_SESSION['glpiID'] > 0) {
@@ -244,6 +245,7 @@ class PluginMonitoringSecurity extends CommonDBTM {
 
 
    static function deleteCheckSessionTime() {
+      return;
       if (isset($_SESSION['plugin_monitoring_checktime'])) {
          unset($_SESSION['plugin_monitoring_checktime']);
       }
@@ -253,7 +255,7 @@ class PluginMonitoringSecurity extends CommonDBTM {
 
    static function updateSession() {
       global $CFG_GLPI;
-
+return;
       $pmSecurity = new self();
       $a_data = $pmSecurity->find("`users_id`='".$_SESSION['glpiID']."' "
               . " AND `session_id`='".session_id()."'", '', 1);
@@ -276,7 +278,7 @@ class PluginMonitoringSecurity extends CommonDBTM {
 
 
    static function cleanforUser($parm) {
-
+return True;
       $pmSecurity = new PluginMonitoringSecurity();
 
       $a_cleans = getAllDatasFromTable(
