@@ -128,21 +128,21 @@ class PluginMonitoringService extends CommonDBTM {
       $tab[11]['name']           = __('Name');
 
       $tab[20]['table']          = 'glpi_computers';
-      $tab[20]['field']          = 'name';
+      $tab[20]['field']          = 'id';
       $tab[20]['name']           = __('Item')." > ".__('Computer');
       $tab[20]['searchtype']     = 'equals';
       $tab[20]['datatype']       = 'itemlink';
       $tab[20]['itemlink_type']  = 'Computer';
 
       $tab[21]['table']          = 'glpi_printers';
-      $tab[21]['field']          = 'name';
+      $tab[21]['field']          = 'id';
       $tab[21]['name']           = __('Item')." > ".__('Printer');
       $tab[21]['searchtype']     = 'equals';
       $tab[21]['datatype']       = 'itemlink';
       $tab[21]['itemlink_type']  = 'Printer';
 
       $tab[22]['table']          = 'glpi_networkequipments';
-      $tab[22]['field']          = 'name';
+      $tab[22]['field']          = 'id';
 //      $tab[22]['linkfield']      = 'items_id';
       $tab[22]['name']           = __('Item')." > ".__('Network device');
       $tab[22]['searchtype']     = 'equals';
@@ -619,18 +619,29 @@ class PluginMonitoringService extends CommonDBTM {
    function listByHost($itemtype, $items_id) {
       global $CFG_GLPI,$DB;
 
-      $pmComponentscatalog = new PluginMonitoringComponentscatalog();
+      $params = Search::manageParams("PluginMonitoringService", array(), false);
+      $num = 20; // Computer
+      if ($itemtype == 'Printer') {
+         $num = 21;
+      } else if ($itemtype == 'NetworkEquipment') {
+         $num = 22;
+      }
+      $params['criteria'][0] = array(
+         'field'      => $num,
+         'searchtype' => 'is',
+         'value'      => $items_id
+      );
+      $col_to_display = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
 
-      $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
-         WHERE `items_id`='".$items_id."'
-            AND `itemtype`='".$itemtype."'";
-      $result = $DB->query($query);
+      $data = Search::prepareDatasForSearch('PluginMonitoringService', $params, $col_to_display);
+      $data['tocompute'] = $data['toview'];
+      Search::constructSQL($data);
+      Search::constructDatas($data);
+
+      $pmComponentscatalog = new PluginMonitoringComponentscatalog();
 
       echo '<div id="custom_date" style="display:none"></div>';
       echo '<div id="custom_time" style="display:none"></div>';
-
-//      echo "<form name='form' method='post'
-//         action='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/service.form.php'>";
 
       echo "<table class='tab_cadre_fixe'>";
 
@@ -641,18 +652,13 @@ class PluginMonitoringService extends CommonDBTM {
       $item->getFromDB($items_id);
       echo " - ".$item->getTypeName();
       echo " - ".$item->getName();
-//      echo "&nbsp;<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/service.form.php?services_id=".$a_hosts['id']."'>
-//         <img src='".$CFG_GLPI['root_doc']."/pics/menu_add.png' /></a>";
-//
-//      echo "&nbsp;<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicedef.form.php?add_template=1'>
-//         <img src='".$CFG_GLPI['root_doc']."/pics/menu_addtemplate.png' /></a>";
       echo "</th>";
       echo "</tr>";
 
       echo "<table class='tab_cadre_fixe'>";
 
-      while ($data=$DB->fetch_array($result)) {
-         $pmComponentscatalog->getFromDB($data['plugin_monitoring_componentscalalog_id']);
+      foreach ($data['data']['rows'] as $row) {
+         $pmComponentscatalog->getFromDB($row[8][0]['id']);
 
          echo "<tr class='tab_bg_1'>";
          echo "<th colspan='14'>".$pmComponentscatalog->getTypeName()."&nbsp;:&nbsp;".$pmComponentscatalog->getLink()."</th>";
@@ -688,20 +694,20 @@ class PluginMonitoringService extends CommonDBTM {
          echo "<th>".__('Arguments', 'monitoring')."</th>";
          echo "</tr>";
 
-         $querys = "SELECT `glpi_plugin_monitoring_services`.* FROM `glpi_plugin_monitoring_services`
-            LEFT JOIN `glpi_plugin_monitoring_components`
-               on `plugin_monitoring_components_id` = `glpi_plugin_monitoring_components`.`id`
-            WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$data['id']."'
-               ORDER BY `name`";
-         $results = $DB->query($querys);
-         while ($datas=$DB->fetch_array($results)) {
-            $this->getFromDB($datas['id']);
+//         $querys = "SELECT `glpi_plugin_monitoring_services`.* FROM `glpi_plugin_monitoring_services`
+//            LEFT JOIN `glpi_plugin_monitoring_components`
+//               on `plugin_monitoring_components_id` = `glpi_plugin_monitoring_components`.`id`
+//            WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$row['id']."'
+//               ORDER BY `name`";
+//         $results = $DB->query($querys);
+//         while ($datas=$DB->fetch_array($results)) {
+//            $this->getFromDB($datas['id']);
 
             echo "<tr class='tab_bg_1'>";
-            PluginMonitoringDisplay::displayLine($datas, 0);
+            PluginMonitoringDisplay::displayLine($row, 0);
             echo "</tr>";
 
-         }
+//         }
 
          echo "<tr style='border:1px solid #ccc;background-color:#ffffff'>";
          echo "<td colspan='14' height='5'></td>";
