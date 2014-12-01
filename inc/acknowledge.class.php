@@ -49,16 +49,14 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
    static $rightname = 'plugin_monitoring_acknowledge';
 
    static function getTypeName($nb=0) {
-      return __CLASS__;
+      return __('Acknowledge', 'monitoring');
       // return _n(__('Host acknowledge', 'monitoring'),__('Host acknowledges', 'monitoring'),$nb);
    }
 
 
 
    function defineTabs($options=array()){
-
       $ong = array();
-
       return $ong;
    }
 

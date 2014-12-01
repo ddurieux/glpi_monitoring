@@ -167,6 +167,12 @@ class PluginMonitoringDashboard extends CommonGLPI {
               'links' => array(
                   'search' => '/plugins/monitoring/front/downtime.php'
               )),
+         'acknowledge' => array(
+              'title' => PluginMonitoringAcknowledge::getTypeName(),
+              'page'  => PluginMonitoringAcknowledge::getSearchURL(false),
+              'links' => array(
+                  'search' => '/plugins/monitoring/front/acknowledge.php'
+              )),
          'menu' => array(
               'title' => PluginMonitoringMenu::getTypeName(),
               'links' => array(

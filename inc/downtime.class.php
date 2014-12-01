@@ -56,9 +56,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
 
 
    function defineTabs($options=array()){
-
       $ong = array();
-
       return $ong;
    }
 
