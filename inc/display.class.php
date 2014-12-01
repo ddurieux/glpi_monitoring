@@ -1258,7 +1258,7 @@ echo "
 
    static function displayHostLine($data) {
       global $DB,$CFG_GLPI;
-      
+
       $pm_Host = new PluginMonitoringHost();
       $pm_Host->getFromDB($data['id']);
 

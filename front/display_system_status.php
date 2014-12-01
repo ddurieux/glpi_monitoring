@@ -45,7 +45,7 @@ include ("../../../inc/includes.php");
 Session::checkCentralAccess();
 
 Html::header(__('Monitoring', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "display");
+             "PluginMonitoringDashboard", "dashboard");
 
 
 echo "<table class='tab_cadre' width='950'>";

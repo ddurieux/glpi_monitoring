@@ -45,7 +45,7 @@ include ("../../../inc/includes.php");
 Session::checkCentralAccess();
 
 Html::header(__('Monitoring - dashboard (hosts)', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "display");
+             "PluginMonitoringDashboard", "dashboard");
 
 $params = Search::manageParams("PluginMonitoringHost", $_GET);
 

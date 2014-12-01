@@ -45,7 +45,7 @@ include ("../../../inc/includes.php");
 Session::checkCentralAccess();
 
 Html::header(__('Monitoring - dashboard (services catalogs)', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "display");
+             "PluginMonitoringDashboard", "dashboard");
 
 // Reduced or normal interface ?
 if (! isset($_SESSION['plugin_monitoring_reduced_interface'])) {
