@@ -1190,11 +1190,14 @@ class PluginMonitoringPerfdata extends CommonDBTM {
       $pmPerfdata       = new PluginMonitoringPerfdata();
       $pmPerfdataDetail = new PluginMonitoringPerfdataDetail();
 
-      $pmPerfdata->getFromDB($perfdatas_id);
-
       $data = array();
-      $data['command'] = $pmPerfdata->fields['name'];
       $data['parseperfdata'] = array();
+      if (!$pmPerfdata->getFromDB($perfdatas_id)) {
+         $data['command'] = '';
+         return $data;
+      }
+
+      $data['command'] = $pmPerfdata->fields['name'];
 
       $a_perfdatadetails = $pmPerfdataDetail->find("`plugin_monitoring_perfdatas_id`='".$perfdatas_id."'", "position");
       foreach ($a_perfdatadetails as $a_perfdatadetail) {
