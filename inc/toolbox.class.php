@@ -53,8 +53,7 @@ class PluginMonitoringToolbox {
    static function loadLib() {
       global $CFG_GLPI;
 
-      echo '<link href="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/nv.d3.css" rel="stylesheet" type="text/css">
-      <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/lib/d3.v2.min.js"></script>
+      echo '<script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/lib/d3.v2.min.js"></script>
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/nv.d3.min.js"></script>
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/tooltip.js"></script>
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/utils.js"></script>

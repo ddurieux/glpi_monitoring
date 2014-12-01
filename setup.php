@@ -96,7 +96,7 @@ function plugin_init_monitoring() {
 
 
          $PLUGIN_HOOKS['use_massive_action']['monitoring']=1;
-         $PLUGIN_HOOKS['add_css']['monitoring']="css/views.css";
+         $PLUGIN_HOOKS['add_css']['monitoring'] = array("css/views.css", "lib/nvd3/src/nv.d3.css");
          $PLUGIN_HOOKS['add_javascript']['monitoring'] = array(
              "lib/jscolor/jscolor.js",
              "lib/jqueryplugins/jquery-tagbox/js/jquery.tagbox.js"
