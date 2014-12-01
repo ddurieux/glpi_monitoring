@@ -50,7 +50,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
 
 
    static function getTypeName($nb=0) {
-      return __CLASS__;
+      return __('Downtime', 'monitoring');
    }
 
 
