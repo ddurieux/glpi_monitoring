@@ -156,14 +156,13 @@ class PluginMonitoringHost extends CommonDBTM {
       PluginMonitoringToolbox::loadLib();
 
       if (!$withtemplate) {
-         switch ($item->getType()) {
-            case 'Central' :
-               if (Session::haveRight("plugin_monitoring_homepage", READ)
-                       && Session::haveRight("plugin_monitoring_hoststatus", PluginMonitoringHost::HOMEPAGE)) {
-                  return array(1 => __('Hosts status', 'monitoring'));
-               } else {
-                  return '';
-               }
+         if ($item->getType() == 'Central') {
+            if (Session::haveRight("plugin_monitoring_homepage", READ)
+                    && Session::haveRight("plugin_monitoring_hoststatus", PluginMonitoringHost::HOMEPAGE)) {
+               return array(1 => __('Hosts status', 'monitoring'));
+            } else {
+               return '';
+            }
          }
          $array_ret = array();
          if ($item->getID() > 0) {
@@ -237,7 +236,7 @@ class PluginMonitoringHost extends CommonDBTM {
     **/
    function getRights($interface='central') {
 
-      $values = array();
+      $values = array(READ => __('Read'));
       $values[self::HOMEPAGE]    = __('See in homepage', 'monitoring');
       $values[self::DASHBOARD]   = __('See in dashboard', 'monitoring');
 
