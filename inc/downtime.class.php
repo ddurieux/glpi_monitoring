@@ -57,6 +57,7 @@ class PluginMonitoringDowntime extends CommonDBTM {
 
    function defineTabs($options=array()){
       $ong = array();
+      $this->addDefaultFormTab($ong);
       return $ong;
    }
 
@@ -512,9 +513,13 @@ class PluginMonitoringDowntime extends CommonDBTM {
    *@return bool true if form is ok
    *
    **/
-   function showForm($items_id=-1, $host_id=-1, $options=array()) {
+   function showForm($items_id=-1, $options=array()) {
       global $DB,$CFG_GLPI;
 
+      $host_id = -1;
+      if (isset($_GET['host_id'])) {
+         $host_id = $_GET['host_id'];
+      }
       if (($host_id == -1) && ($items_id == -1)) return false;
 
       $createDowntime = false;

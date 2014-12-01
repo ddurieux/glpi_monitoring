@@ -108,6 +108,7 @@ if (isset ($_POST["add"])) {
    } else {
       // Create new downtime without associated ticket ...
       $pmDowntime->add($_POST);
+      $pmDowntime->redirectToList();
    }
 } else if (isset ($_POST["update"])) {
    $pmDowntime->update($_POST);
@@ -120,7 +121,11 @@ if (isset ($_POST["add"])) {
 // Read or edit downtime ...
 if (isset($_GET['id']) || isset($_GET['host_id'])) {
    // If host_id is defined, use it ...
-   $pmDowntime->display(array('id' => $_GET["id"]));
+   $data = array('id' => $_GET["id"]);
+   if (isset($_GET['host_id'])) {
+      $data['host_id'] = $_GET['host_id'];
+   }
+   $pmDowntime->display($data);
 //   $pmDowntime->showForm((isset($_GET['id'])) ? $_GET['id'] : -1, (isset($_GET['host_id'])) ? $_GET['host_id'] : -1);
 }
 
