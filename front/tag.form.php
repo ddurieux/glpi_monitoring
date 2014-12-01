@@ -56,7 +56,8 @@ if (isset($_POST["add"])) {
    $pmTag->update($_POST);
    Html::back();
 } else if (isset($_POST["purge"])) {
-   if ($_POST['tag'] != '') {
+   $pmTag->getFromDB($_POST['id']);
+   if ($pmTag->fields['tag'] != '') {
       $pmTag->delete($_POST);
       $pmTag->redirectToList();
    }
