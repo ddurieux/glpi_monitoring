@@ -32,11 +32,11 @@
 // Original Author of file: David DURIEUX
 // Purpose of file:
 // ----------------------------------------------------------------------
-
-session_id($_POST['sess_id']);
-$_SESSION['glpiID'] = $_POST['glpiID'];
-$_SESSION['plugin_monitoring_securekey'] = $_POST['plugin_monitoring_securekey'];
-$_SESSION['plugin_monitoring_checktime'] = 1;
+$_POST = $_GET;
+//session_id($_POST['sess_id']);
+//$_SESSION['glpiID'] = $_POST['glpiID'];
+//$_SESSION['plugin_monitoring_securekey'] = $_POST['plugin_monitoring_securekey'];
+//$_SESSION['plugin_monitoring_checktime'] = 1;
 
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'],"updateWidgetComponentscatalog.php")) {
@@ -44,14 +44,15 @@ if (strpos($_SERVER['PHP_SELF'],"updateWidgetComponentscatalog.php")) {
    header("Content-Type: text/html; charset=UTF-8");
    Html::header_nocache();
 }
+session_write_close();
 
 if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
 
-$pmSecurity = new PluginMonitoringSecurity();
-$pmSecurity->isSecure();
-PluginMonitoringSecurity::deleteCheckSessionTime();
+//$pmSecurity = new PluginMonitoringSecurity();
+//$pmSecurity->isSecure();
+//PluginMonitoringSecurity::deleteCheckSessionTime();
 
 Session::checkLoginUser();
 
@@ -59,38 +60,38 @@ if (! isset($_SESSION['plugin_monitoring_reduced_interface'])) {
    $_SESSION['plugin_monitoring_reduced_interface'] = false;
 }
 
-      echo "
-      <script>
-         function toggleMinemap(idMinemap) {
-            Ext.select('#'+idMinemap).each(function(el) {
-               el.setDisplayed(! el.isDisplayed());
-            });
-         };
-         function toggleEntity(idEntity) {
-            Ext.select('#'+idEntity).each(function(el) {
-               var displayed = false;
-               el.select('tr.services').each(function(elTr) {
-                  elTr.setDisplayed(! elTr.isDisplayed());
-                  displayed = elTr.isDisplayed();
-               });
-               // if (! displayed) {
-                  // el.select('tr.header').each(function(elTr) {
-                     // elTr.applyStyles({'height':'10px'});
-                     // elTr.select('th').each(function(elTd) {
-                        // elTd.applyStyles({'height':'10px'});
-                     // });
-                  // });
-               // }
-               el.select('tr.header').each(function(elTr) {
-                  elTr.applyStyles(displayed ? {'height':'50px'} : {'height':'10px'});
-                  elTr.select('th').each(function(elTd) {
-                     elTd.applyStyles(displayed ? {'height':'50px'} : {'height':'10px'});
-                  });
-               });
-            });
-         };
-      </script>
-      ";
+//      echo "
+//      <script>
+//         function toggleMinemap(idMinemap) {
+//            Ext.select('#'+idMinemap).each(function(el) {
+//               el.setDisplayed(! el.isDisplayed());
+//            });
+//         };
+//         function toggleEntity(idEntity) {
+//            Ext.select('#'+idEntity).each(function(el) {
+//               var displayed = false;
+//               el.select('tr.services').each(function(elTr) {
+//                  elTr.setDisplayed(! elTr.isDisplayed());
+//                  displayed = elTr.isDisplayed();
+//               });
+//               // if (! displayed) {
+//                  // el.select('tr.header').each(function(elTr) {
+//                     // elTr.applyStyles({'height':'10px'});
+//                     // elTr.select('th').each(function(elTd) {
+//                        // elTd.applyStyles({'height':'10px'});
+//                     // });
+//                  // });
+//               // }
+//               el.select('tr.header').each(function(elTr) {
+//                  elTr.applyStyles(displayed ? {'height':'50px'} : {'height':'10px'});
+//                  elTr.select('th').each(function(elTd) {
+//                     elTd.applyStyles(displayed ? {'height':'50px'} : {'height':'10px'});
+//                  });
+//               });
+//            });
+//         };
+//      </script>
+//      ";
 
 
 $pmComponentscatalog = new PluginMonitoringComponentscatalog();

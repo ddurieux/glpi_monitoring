@@ -433,7 +433,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $ret = $this->getInfoOfCatalog($id);
       $nb_ressources = $ret[0];
       if ($nb_ressources == 0) {
-         echo '<br/><div class="ch-item">
+         echo '<div class="ch-item">
             <div>
             <h1>'.__('Nothing to display ...', 'monitoring').'</h1>
             </div>
@@ -553,7 +553,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                  . "&itemtype=PluginMonitoringService"
                  . "&start=0";
 
-         echo '<br/><div class="ch-item">
+         echo '<div class="ch-item">
             <div class="ch-info-'.$colorclass.'">
             <h1><a href="'.$link_catalog.'">'.ucfirst($data['name']);
             if ($data['comment'] != '') {
@@ -565,7 +565,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             </div>
          </div>';
       } else {
-         echo '<br/><div class="ch-item">
+         echo '<div class="ch-item">
             <div class="ch-info-'.$colorclass.'">
             <h1>'.ucfirst($data['name']);
             if ($data['comment'] != '') {

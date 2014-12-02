@@ -344,8 +344,12 @@ echo "
 
 foreach ($a_items as $item) {
    $size = $this->getSizeOfWidget($item['itemtype']);
-   echo '<div id="draggable'.$item['id'].'" class="ui-widget-content" '
-           . 'style="width: '.$size['width'].'px; height: '.$size['height'].'px; '
+   echo '<div id="draggable'.$item['id'].'" ';
+   if ($item['itemtype'] != 'PluginMonitoringServicescatalog'
+           && $item['itemtype'] != 'PluginMonitoringComponentscatalog') {
+      echo 'class="ui-widget-content" ';
+   }
+   echo  'style="width: '.$size['width'].'px; height: '.$size['height'].'px; '
            . 'position: absolute; left: '.$item['x'].'px; top: '.$item['y'].'px;'
            . ' padding: 0.5em; margin: 0 10px 10px 0;">';
 
@@ -363,6 +367,24 @@ foreach ($a_items as $item) {
                                     $item['extra_infos'],
                                     "",
                                     ($size['width'] - 15));
+   } else if ($item['itemtype'] == 'PluginMonitoringWeathermap') {
+
+   } else {
+      echo "<div id=\"update".$item['itemtype'].$item['items_id']."\"></div>";
+
+            echo "<script type=\"text/javascript\">";
+            echo "
+               (function worker() {
+                 $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateWidgetComponentscatalog.php"
+                       ."?sess_id=".session_id()."&glpiID=".$_SESSION['glpiID']
+                       ."&id=".$item['items_id']."&is_minemap=".$item['is_minemap'].
+                             "', function(data) {
+                   $('#update".$item['itemtype'].$item['items_id']."').html(data);
+                   setTimeout(worker, 30000);
+                 });
+               })();";
+            echo "</script>";
+
    }
 
    echo '</div>';
@@ -768,9 +790,24 @@ foreach ($a_items as $item) {
 
       switch ($itemtype) {
 
-         case 'PluginMonitoringService';
+         case 'PluginMonitoringService':
             $size['width']  = 480;
             $size['height'] = 340;
+            break;
+
+         case 'PluginMonitoringWeathermap':
+
+            break;
+
+         case 'PluginMonitoringServicescatalog':
+         case 'PluginMonitoringComponentscatalog':
+            $size['width']  = 180;
+            $size['height'] = 180;
+            break;
+
+         default:
+            $size['width']  = 200;
+            $size['height'] = 200;
             break;
 
       }
