@@ -334,7 +334,7 @@ foreach ($a_items as $item) {
    $size = $this->getSizeOfWidget($item['itemtype']);
    echo "$( \"#draggable".$item['id']."\" ).draggable({ cursor: 'move', cursorAt: { "
            . "top: ".($size['height']/2).", left: ".($size['width']/2).", "
-           . " }, grid: [ 5, 5 ] });";
+           . " }, grid: [ 10, 10 ] });";
 }
 echo "
 });
@@ -769,7 +769,7 @@ foreach ($a_items as $item) {
       switch ($itemtype) {
 
          case 'PluginMonitoringService';
-            $size['width']  = 475;
+            $size['width']  = 480;
             $size['height'] = 340;
             break;
 

@@ -3625,6 +3625,21 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $user->add($input);
    }
 
+   // Update items of views to be compatible with step of 10px instead 1 px
+   $query = "SELECT *
+      FROM `glpi_plugin_monitoring_displayviews_items`";
+   $result = $DB->query($query);
+   while ($data=$DB->fetch_array($result)) {
+      $x = 10 * round($data['x'] / 10);
+      $y = 10 * round($data['y'] / 10);
+
+      $DB->query("UPDATE `glpi_plugin_monitoring_displayviews_items` "
+              . "SET `x`='".$x."', `y`='".$y."' "
+              . "WHERE `id`='".$data['id']."'");
+   }
+
+
+
 
    // * Update unavailability (with table glpi_plugin_monitoring_unavailabilitystates)
 //      include (GLPI_ROOT . "/plugins/monitoring/inc/unavailabilitystate.class.php");
