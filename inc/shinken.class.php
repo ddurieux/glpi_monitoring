@@ -464,7 +464,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                   if (! empty($data['locationName'])) {
                      $string = utf8_decode(strip_tags(trim($data['locationName'])));
                      $string = preg_replace("/[\r\n]/",".",$data['locationName']);
-                     $string = preg_replace("/[^A-Za-z0-9\-_ <>\',;.:!?%*()éèàù]/",'',$string);
+                     $string = preg_replace("/[^A-Za-z0-9\-_ <>\/',;.:!?%*()éèàù]/",'',$string);
                      $a_hosts[$i][self::$shinkenParameters['glpi']['location']] =
                         $string;
                      $data['hostLocation'] = $string;
