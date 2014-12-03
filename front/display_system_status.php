@@ -47,6 +47,8 @@ Session::checkCentralAccess();
 Html::header(__('Monitoring', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
              "PluginMonitoringDashboard", "dashboard");
 
+$pmDisplay = new PluginMonitoringDisplay();
+$pmDisplay->menu();
 
 echo "<table class='tab_cadre' width='950'>";
 echo "<tr class='tab_bg_1'>";
