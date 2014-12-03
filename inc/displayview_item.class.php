@@ -290,8 +290,7 @@ foreach ($a_items as $item) {
             echo "
                (function worker() {
                  $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateWidgetComponentscatalog.php"
-                       ."?sess_id=".session_id()."&glpiID=".$_SESSION['glpiID']
-                       ."&id=".$item['items_id']."&is_minemap=".$item['is_minemap'].
+                       ."?id=".$item['items_id']."&is_minemap=".$item['is_minemap'].
                              "', function(data) {
                    $('#update".$item['itemtype'].$item['items_id']."').html(data);
                    setTimeout(worker, 30000);

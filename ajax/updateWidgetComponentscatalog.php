@@ -32,11 +32,6 @@
 // Original Author of file: David DURIEUX
 // Purpose of file:
 // ----------------------------------------------------------------------
-$_POST = $_GET;
-//session_id($_POST['sess_id']);
-//$_SESSION['glpiID'] = $_POST['glpiID'];
-//$_SESSION['plugin_monitoring_securekey'] = $_POST['plugin_monitoring_securekey'];
-//$_SESSION['plugin_monitoring_checktime'] = 1;
 
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'],"updateWidgetComponentscatalog.php")) {
@@ -96,8 +91,8 @@ if (! isset($_SESSION['plugin_monitoring_reduced_interface'])) {
 
 $pmComponentscatalog = new PluginMonitoringComponentscatalog();
 $pmComponentscatalog->showWidgetFrame(
-        $_POST['id'],
+        $_GET['id'],
         $_SESSION['plugin_monitoring_reduced_interface'],
-        $_POST['is_minemap']);
+        $_GET['is_minemap']);
 
 ?>

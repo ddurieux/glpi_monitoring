@@ -35,12 +35,6 @@
 
 $USEDBREPLICATE = 1;
 
-//session_id($_POST['sess_id']);
-//$_SESSION['glpiID'] = $_POST['glpiID'];
-//$_SESSION['plugin_monitoring_securekey'] = $_POST['plugin_monitoring_securekey'];
-//$_SESSION['plugin_monitoring_checktime'] = 1;
-
-
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'],"updateChart.php")) {
    include ("../../../inc/includes.php");
@@ -52,10 +46,6 @@ session_write_close();
 if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
-
-//$pmSecurity = new PluginMonitoringSecurity();
-//$pmSecurity->isSecure();
-//PluginMonitoringSecurity::deleteCheckSessionTime();
 
 Session::checkLoginUser();
 $_POST = $_GET;

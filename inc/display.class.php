@@ -2705,23 +2705,18 @@ Ext.onReady(function(){
       }
 
       if ($ajax == 1) {
-         $sess_id = session_id();
-         PluginMonitoringSecurity::updateSession();
-
          echo "<div id=\"updatecounter".$type."\"></div>";
-         echo "<script type=\"text/javascript\">
 
-         var elcc".$type." = Ext.get(\"updatecounter".$type."\");
-         var mgrcc".$type." = elcc".$type.".getUpdateManager();
-         mgrcc".$type.".loadScripts=true;
-         mgrcc".$type.".showLoadIndicator=false;
-         mgrcc".$type.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"].
-                 "/plugins/monitoring/ajax/updateCounter.php\","
-                 . " \"type=".$type."&sess_id=".$sess_id.
-                 "&glpiID=".$_SESSION['glpiID'].
-                 "&plugin_monitoring_securekey=".$_SESSION['plugin_monitoring_securekey'].
-                 "\", \"\", true);
-         </script>";
+            echo "<script type=\"text/javascript\">
+               (function worker() {
+                 $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateCounter.php"
+                       ."?type=".$type."', function(data) {
+                   $('#updatecounter".$type."').html(data);
+                   setTimeout(worker, 50000);
+                 });
+               })();
+            </script>";
+
       } else {
          $this->displayCounters($type);
       }
