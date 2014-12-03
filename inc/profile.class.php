@@ -162,37 +162,65 @@ class PluginMonitoringProfile extends Profile {
                 'label'     => __('Homepage', 'monitoring'),
                 'field'     => 'plugin_monitoring_homepage'
           ),
-          array('itemtype'  => 'PluginMonitoringComponent',
-                'label'     => __('Component=', 'monitoring'),
-                'field'     => 'plugin_monitoring_component'
+          array('itemtype'  => 'PluginMonitoringAcknowledge',
+                'label'     => __('Acknowledge', 'monitoring'),
+                'field'     => 'plugin_monitoring_acknowledge'
           ),
-          array('itemtype'  => 'PluginMonitoringComponentscatalog',
-                'label'     => __('Components catalog', 'monitoring'),
-                'field'     => 'plugin_monitoring_componentscatalog'
-          ),
-          array('itemtype'  => 'PluginMonitoringServicescatalog',
-                'label'     => __('Services catalog', 'monitoring'),
-                'field'     => 'plugin_monitoring_servicescatalog'
+          array('itemtype'  => 'PluginMonitoringDowntime',
+                'label'     => __('Downtime', 'monitoring'),
+                'field'     => 'plugin_monitoring_downtime'
           ),
           array('itemtype'  => 'PluginMonitoringDisplayview',
                 'label'     => __('Views', 'monitoring'),
                 'field'     => 'plugin_monitoring_displayview'
           ),
-          array('itemtype'  => 'PluginMonitoringCommand',
-                'label'     => __('Command', 'monitoring'),
-                'field'     => 'plugin_monitoring_command'
-          ),
           array('itemtype'  => 'PluginMonitoringSlider',
                 'label'     => __('Slider', 'monitoring'),
                 'field'     => 'plugin_monitoring_slider'
           ),
-          array('itemtype'  => 'PluginMonitoringService',
-                'label'     => __('Services (ressources)', 'monitoring'),
-                'field'     => 'plugin_monitoring_service'
+          array('itemtype'  => 'PluginMonitoringServicescatalog',
+                'label'     => __('Services catalog', 'monitoring'),
+                'field'     => 'plugin_monitoring_servicescatalog'
+          ),
+          array('itemtype'  => 'PluginMonitoringWeathermap',
+                'label'     => __('Weathermap', 'monitoring'),
+                'field'     => 'plugin_monitoring_weathermap'
+          ),
+          array('itemtype'  => 'PluginMonitoringComponentscatalog',
+                'label'     => __('Components catalog', 'monitoring'),
+                'field'     => 'plugin_monitoring_componentscatalog'
+          ),
+          array('itemtype'  => 'PluginMonitoringComponent',
+                'label'     => __('Component', 'monitoring'),
+                'field'     => 'plugin_monitoring_component'
+          ),
+          array('itemtype'  => 'PluginMonitoringCommand',
+                'label'     => __('Command', 'monitoring'),
+                'field'     => 'plugin_monitoring_command'
+          ),
+          array('itemtype'  => 'PluginMonitoringPerfdata',
+                'label'     => __('Graph template', 'monitoring'),
+                'field'     => 'plugin_monitoring_perfdata'
+          ),
+          array('itemtype'  => 'PluginMonitoringEventhandler',
+                'label'     => __('Event handler', 'monitoring'),
+                'field'     => 'plugin_monitoring_eventhandler'
           ),
           array('itemtype'  => 'PluginMonitoringRealm',
                 'label'     => __('Reamls', 'monitoring'),
                 'field'     => 'plugin_monitoring_realm'
+          ),
+          array('itemtype'  => 'PluginMonitoringTag',
+                'label'     => __('Tag', 'monitoring'),
+                'field'     => 'plugin_monitoring_tag'
+          ),
+          array('rights'    => array(CREATE => __('Create')),
+                'label'     => __('Restart Shinken', 'monitoring'),
+                'field'     => 'plugin_monitoring_restartshinken'
+          ),
+          array('itemtype'  => 'PluginMonitoringService',
+                'label'     => __('Services (ressources)', 'monitoring'),
+                'field'     => 'plugin_monitoring_service'
           ),
           array('itemtype'  => 'PluginMonitoringSystem',
                 'label'     => __('System status', 'monitoring'),
@@ -203,40 +231,12 @@ class PluginMonitoringProfile extends Profile {
                 'field'     => 'plugin_monitoring_hoststatus'
           ),
           array('rights'    => array(CREATE => __('Create')),
-                'label'     => __('Restart Shinken', 'monitoring'),
-                'field'     => 'plugin_monitoring_restartshinken'
-          ),
-          array('rights'    => array(CREATE => __('Create')),
                 'label'     => __('Host commands', 'monitoring'),
                 'field'     => 'plugin_monitoring_hostcommand'
-          ),
-          array('itemtype'  => 'PluginMonitoringAcknowledge',
-                'label'     => __('Acknowledge', 'monitoring'),
-                'field'     => 'plugin_monitoring_acknowledge'
-          ),
-          array('itemtype'  => 'PluginMonitoringDowntime',
-                'label'     => __('Downtime', 'monitoring'),
-                'field'     => 'plugin_monitoring_downtime'
-          ),
-          array('itemtype'  => 'PluginMonitoringWeathermap',
-                'label'     => __('Weathermap', 'monitoring'),
-                'field'     => 'plugin_monitoring_weathermap'
-          ),
-          array('itemtype'  => 'PluginMonitoringEventhandler',
-                'label'     => __('Event handler', 'monitoring'),
-                'field'     => 'plugin_monitoring_eventhandler'
-          ),
-          array('itemtype'  => 'PluginMonitoringTag',
-                'label'     => __('Tag', 'monitoring'),
-                'field'     => 'plugin_monitoring_tag'
           ),
           array('rights'    => array(READ => __('Read')),
                 'label'     => __('Unavailability', 'monitoring'),
                 'field'     => 'plugin_monitoring_unavailability'
-          ),
-          array('itemtype'  => 'PluginMonitoringPerfdata',
-                'label'     => __('Graph template', 'monitoring'),
-                'field'     => 'plugin_monitoring_perfdata'
           ),
       );
       return $rights;
