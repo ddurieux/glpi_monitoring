@@ -330,11 +330,23 @@ echo "
 <script type=\"text/javascript\">
 $(function() {
 ";
+
+
 foreach ($a_items as $item) {
+   if ($config == '1') {
+      $event = ", stop: function() {
+           pos = $('#draggable".$item['id']."').position();
+           $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/displayview_itemcoordinates.php"
+                          ."?id=".$item['id']
+                          ."&x=' + pos.left + '&y=' + pos.top);
+         }";
+   } else {
+      $event = '';
+   }
    $size = $this->getSizeOfWidget($item['itemtype']);
    echo "$( \"#draggable".$item['id']."\" ).draggable({ cursor: 'move', cursorAt: { "
            . "top: ".($size['height']/2).", left: ".($size['width']/2).", "
-           . " }, grid: [ 10, 10 ] });";
+           . " }, grid: [ 10, 10 ]".$event." } );";
 }
 echo "
 });
@@ -350,8 +362,7 @@ foreach ($a_items as $item) {
       echo 'class="ui-widget-content" ';
    }
    echo  'style="width: '.$size['width'].'px; height: '.$size['height'].'px; '
-           . 'position: absolute; left: '.$item['x'].'px; top: '.$item['y'].'px;'
-           . ' padding: 0.5em; margin: 0 10px 10px 0;">';
+           . 'position: absolute; left: '.$item['x'].'px; top: '.$item['y'].'px;">';
 
    if ($item['itemtype'] == 'PluginMonitoringService') {
       $pmComponent = new PluginMonitoringComponent();

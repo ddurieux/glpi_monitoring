@@ -47,22 +47,22 @@ Html::header_nocache();
 
 Session::checkCentralAccess();
 
-//print_r($_POST);
+//print_r($_GET);
 
-if (isset($_POST['id'])
-        AND isset($_POST['x'])
-        AND isset($_POST['y'])) {
+if (isset($_GET['id'])
+        AND isset($_GET['x'])
+        AND isset($_GET['y'])) {
 
    $pmDisplayview_item = new PluginMonitoringDisplayview_item();
-   if ($pmDisplayview_item->getFromDB($_POST['id'])) {
-      if ($_POST['x'] < 1
-              OR $_POST['y'] < 0) {
-         $pmDisplayview_item->delete(array('id' => $_POST['id']));
+   if ($pmDisplayview_item->getFromDB($_GET['id'])) {
+      if ($_GET['x'] < 1
+              OR $_GET['y'] < 0) {
+         $pmDisplayview_item->delete(array('id' => $_GET['id']));
       } else {
          $input = array();
-         $input['id'] = $_POST['id'];
-         $input['x'] = $_POST['x'];
-         $input['y'] = $_POST['y'];
+         $input['id'] = $_GET['id'];
+         $input['x'] = $_GET['x'];
+         $input['y'] = $_GET['y'];
          $pmDisplayview_item->update($input);
       }
    }
