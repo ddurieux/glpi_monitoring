@@ -57,11 +57,6 @@ if (! isset($_SESSION['plugin_monitoring_reduced_interface'])) {
 
 //      echo "
 //      <script>
-//         function toggleMinemap(idMinemap) {
-//            Ext.select('#'+idMinemap).each(function(el) {
-//               el.setDisplayed(! el.isDisplayed());
-//            });
-//         };
 //         function toggleEntity(idEntity) {
 //            Ext.select('#'+idEntity).each(function(el) {
 //               var displayed = false;

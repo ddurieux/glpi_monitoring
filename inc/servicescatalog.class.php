@@ -348,16 +348,6 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
 
    function showChecks() {
 
-      echo "
-      <script>
-         function toggleMinemap(idMinemap) {
-            Ext.select('#'+idMinemap).each(function(el) {
-               el.setDisplayed(! el.isDisplayed());
-            });
-         };
-      </script>
-      ";
-
       echo "<table class='tab_cadre' width='100%'>";
       echo "<tr class='tab_bg_4' style='background: #cececc;'>";
 
@@ -674,7 +664,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
 
       // Show a minemap if requested ...
       echo "<div class='minemapdiv' align='center'>"
-            ."<a onclick='javascript: toggleMinemap(\"minemapSC-".$id."\");'>"
+            ."<a onclick='$(\"#minemapSC-".$id."\").toggle();'>"
             .__('Minemap', 'monitoring')."</a></div>";
       if (!$is_minemap) {
          echo '<div class="minemapdiv" id="minemapSC-'.$id.'" style="display: none; z-index: 1500">';
