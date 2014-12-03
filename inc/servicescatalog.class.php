@@ -745,22 +745,15 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
    function ajaxLoad($id) {
       global $CFG_GLPI;
 
-      $sess_id = session_id();
-      PluginMonitoringSecurity::updateSession();
-
-      echo "<script type=\"text/javascript\">
-
-      var elcc".$id." = Ext.get(\"updateservicescatalog".$id."\");
-      var mgrcc".$id." = elcc".$id.".getUpdateManager();
-      mgrcc".$id.".loadScripts=true;
-      mgrcc".$id.".showLoadIndicator=false;
-      mgrcc".$id.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"].
-              "/plugins/monitoring/ajax/updateWidgetServicescatalog.php\","
-              . " \"id=".$id."&sess_id=".$sess_id.
-              "&glpiID=".$_SESSION['glpiID'].
-              "&plugin_monitoring_securekey=".$_SESSION['plugin_monitoring_securekey'].
-              "\", \"\", true);
-      </script>";
+         echo "<script type=\"text/javascript\">
+            (function worker() {
+              $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateWidgetServicescatalog.php"
+                    ."?id=".$id."', function(data) {
+                $('#updateservicescatalog".$id."').html(data);
+                setTimeout(worker, 50000);
+              });
+            })();
+         </script>";
    }
 
 

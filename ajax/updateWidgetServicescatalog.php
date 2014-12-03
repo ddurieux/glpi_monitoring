@@ -33,25 +33,17 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-session_id($_POST['sess_id']);
-$_SESSION['glpiID'] = $_POST['glpiID'];
-$_SESSION['plugin_monitoring_securekey'] = $_POST['plugin_monitoring_securekey'];
-$_SESSION['plugin_monitoring_checktime'] = 1;
-
 // Direct access to file
 if (strpos($_SERVER['PHP_SELF'],"updateWidgetServicescatalog.php")) {
    include ("../../../inc/includes.php");
    header("Content-Type: text/html; charset=UTF-8");
    Html::header_nocache();
 }
+session_write_close();
 
 if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
-
-$pmSecurity = new PluginMonitoringSecurity();
-$pmSecurity->isSecure();
-PluginMonitoringSecurity::deleteCheckSessionTime();
 
 Session::checkLoginUser();
 
@@ -61,8 +53,8 @@ if (! isset($_SESSION['plugin_monitoring_reduced_interface'])) {
 
 $pmServicescatalog = new PluginMonitoringServicescatalog();
 $pmServicescatalog->showWidgetFrame(
-        $_POST['id'],
+        $_GET['id'],
         $_SESSION['plugin_monitoring_reduced_interface'],
-        isset($_POST['is_minemap']) ? $_POST['is_minemap'] : false);
+        isset($_GET['is_minemap']) ? $_GET['is_minemap'] : false);
 
 ?>
