@@ -640,6 +640,33 @@ class PluginMonitoringService extends CommonDBTM {
 
       $pmComponentscatalog = new PluginMonitoringComponentscatalog();
 
+      $services_id = array();
+      foreach ($data['data']['rows'] as $row) {
+         $services_id[] = $row['id'];
+      }
+      $oldvalue = current(getAllDatasFromTable(
+              'glpi_plugin_monitoring_serviceevents',
+              "`plugin_monitoring_services_id` IN ('".implode("', '", $services_id)."')",
+              false,
+              'date ASC LIMIT 1'));
+      $date = new DateTime($oldvalue['date']);
+      $start = time();
+      if ($date->getTimestamp() < $start) {
+         $start = $date->getTimestamp();
+      }
+
+      $nbdays = round((date('U') - $start) / 86400);
+      echo "<script type=\"text/javascript\">
+      $(function() {
+          $( \"#custom_date\" ).datepicker({ minDate: -".$nbdays.", maxDate: \"+0D\", dateFormat:'mm/dd/yy' });
+          $( \"#custom_time\" ).timepicker();
+
+      });
+      </script>";
+
+      echo '<center><input type="text" id="custom_date" value="'.date('m/d/Y').'"> '
+              . ' <input type="text" id="custom_time" value="'.date('H:i').'"></center>';
+
       echo '<div id="custom_date" style="display:none"></div>';
       echo '<div id="custom_time" style="display:none"></div>';
 
@@ -742,8 +769,8 @@ class PluginMonitoringService extends CommonDBTM {
             AND `itemtype`='".$itemtype."'";
       $result = $DB->query($query);
 
-      echo '<div id="custom_date" style="display:none"></div>';
-      echo '<div id="custom_time" style="display:none"></div>';
+      echo '<center><input type="text" id="custom_date" value="'.date('m/d/Y').'"> '
+              . ' <input type="text" id="custom_time" value="'.date('H:i').'"></center>';
 
       echo "<table class='tab_cadre_fixe'>";
       $td = 0;
