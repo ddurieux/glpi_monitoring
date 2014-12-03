@@ -119,23 +119,13 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
       echo "</th>";
       echo "</tr>";
 
+      echo "<tr class='tab_bg_1' id='date_text'>";
+      echo "<th>";
+      echo __('Select date', 'monitoring')." - ".__('Select time', 'monitoring');
+      echo "</th>";
+      echo "</tr>";
+
       echo "<tr class='tab_bg_1'>";
-      echo "<th>";
-      echo "<a onClick='$(\"#date_text\").toggle();$(\"#date_select\").toggle();"
-      . "$(\"#time_text\").toggle();$(\"#time_select\").toggle();'>
-      <img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' />&nbsp;
-         ".__('Date and time select', 'monitoring')."
-      &nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' /></a>";
-      echo "</th>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1' id='date_text' style='display: none;'>";
-      echo "<th>";
-      echo __('Select date', 'monitoring');
-      echo "</th>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1' id='date_select' style='display: none;'>";
       echo "<td>";
 
       $query = "SELECT * FROM `glpi_plugin_monitoring_displayviews_items`
@@ -173,49 +163,18 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
             );
          }
       }
-/*
-echo "
-<script type=\"text/javascript\">
+      $nbdays = round((date('U') - $start) / 86400);
 
-Ext.onReady(function(){
+      echo "<script type=\"text/javascript\">
+      $(function() {
+          $( \"#custom_date\" ).datepicker({ minDate: -".$nbdays.", maxDate: \"+0D\", dateFormat:'mm/dd/yy' });
+          $( \"#custom_time\" ).timepicker();
 
-    var tip = new Ext.slider.Tip({
-        getText: function(thumb){
-            return String.format('<b> ' + new Date(thumb.value * 1000).format('Y-m-d') + '</b>');
-        }
-    });
+      });
+      </script>";
 
-    new Ext.Slider({
-        renderTo: 'custom-tip-slider',
-        width: 940,
-        increment: 86400,
-        minValue: ".$start.",
-        maxValue: ".$end.",
-        value: ".$end.",
-        plugins: tip,
-        listeners: {
-            dragend: function(slider, thumb, value){
-               document.getElementById('custom_date').textContent = slider.getValue();
-                  ";
-               $pmServicegraph = new PluginMonitoringServicegraph();
-               foreach ($a_items as $js_id=>$js_data) {
-                  echo "mgr".$js_data['items_id'].$js_data['time'].".stopAutoRefresh();\n";
-                  $pmServicegraph->startAutoRefresh($js_data['rrdtool_template'],
-                                                    $js_data['itemtype'],
-                                                    $js_data['items_id'],
-                                                    $js_data['timezone'],
-                                                    $js_data['time'],
-                                                    $js_data['pmComponents_id']);
-               }
-               echo "
-            }
-        }
-    });
-
-});
-</script>";
- */
-      echo '<center><div id="custom-tip-slider"></div></center>';
+      echo '<center><input type="text" id="custom_date" value="'.date('m/d/Y').'"> '
+              . ' <input type="text" id="custom_time" value="'.date('H:i').'"></center>';
       echo "</td>";
       echo "</tr>";
 
@@ -224,59 +183,6 @@ Ext.onReady(function(){
       echo __('Select time', 'monitoring');
       echo "</th>";
       echo "</tr>";
-
-      echo "<tr class='tab_bg_1' id='time_select' style='display: none;'>";
-      echo "<td>";
-
-      $start = 0 + 86400 - 3600;
-      $end = 86400 + 86400 - 3600 - 300;
-      $current = mktime(date('H'), date('i'), 0, 1, 2, 1970);
-/*
-echo "
-<script type=\"text/javascript\">
-
-Ext.onReady(function(){
-
-   var tiptime = new Ext.slider.Tip({
-        getText: function(thumb){
-            return String.format('<b> ' + new Date(thumb.value * 1000).format('H:i:s') + '</b>');
-        }
-    });
-
-    new Ext.Slider({
-        renderTo: 'custom-tip-slider-time',
-        width: 940,
-        increment: 300,
-        minValue: ".$start.",
-        maxValue: ".$end.",
-        value: ".$current.",
-        plugins: tiptime,
-        listeners: {
-            dragend: function(slider, thumb, value){
-               document.getElementById('custom_time').textContent = slider.getValue();
-                  ";
-               $pmServicegraph = new PluginMonitoringServicegraph();
-               foreach ($a_items as $js_id=>$js_data) {
-                  echo "mgr".$js_data['items_id'].$js_data['time'].".stopAutoRefresh();\n";
-                  $pmServicegraph->startAutoRefresh($js_data['rrdtool_template'],
-                                                    $js_data['itemtype'],
-                                                    $js_data['items_id'],
-                                                    $js_data['timezone'],
-                                                    $js_data['time'],
-                                                    $js_data['pmComponents_id']);
-               }
-               echo "
-            }
-        }
-    });
-
-});
-</script>";
- */
-      echo '<center><div id="custom-tip-slider-time"></div></center>';
-      echo "</td>";
-      echo "</tr>";
-
 
       echo "<tr class='tab_bg_1'>";
       echo "<th>";
@@ -311,9 +217,6 @@ Ext.onReady(function(){
 
       echo "<tr class='tab_bg_1'>";
       echo "<td height='1200' id='panel'>";
-
-      echo '<div id="custom_date" style="display:none"></div>';
-      echo '<div id="custom_time" style="display:none"></div>';
 
       $queryitems = "SELECT * FROM `glpi_plugin_monitoring_displayviews_items`
          WHERE `plugin_monitoring_displayviews_id`='".$id."'";

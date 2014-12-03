@@ -116,13 +116,15 @@ class PluginMonitoringServicegraph {
             echo "<script type=\"text/javascript\">";
             echo "
    (function worker() {
+     startDate = new Date($('#custom_date').val());
+     startTime = Date.parse('04/03/1980 ' + ($('#custom_time').val()) + ':00');
      $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateChart.php"
            ."?sess_id=".session_id()."&glpiID=".$_SESSION['glpiID']
            ."&rrdtool_template=".$rrdtool_template."&itemtype=".$itemtype.
                  "&items_id=".$items_id.
                  "&timezone=".$timezone.
-                 "&time=".$time."&customdate=' + document.getElementById('custom_date').textContent + '".
-                 "&customtime' + document.getElementById('custom_time').textContent +'".
+                 "&time=".$time."&customdate=' + (startDate.getTime()/1000.0) + '".
+                 "&customtime=' + (startTime/1000.0) + '".
                  "&components_id=".$pmComponent->fields['id']."', function(data) {
        $('#updategraph".$items_id.$time."').html(data);
        setTimeout(worker, 30000);
