@@ -51,7 +51,8 @@ Session::checkLoginUser();
 $itemtype = $_GET['itemtype'];
 $item = new $itemtype();
 if (!$item->getFromDB($_GET['items_id'])) {
-   echo __('Item not exist', 'monitoring');
+   echo json_encode(array());
+//   echo __('Item not exist', 'monitoring');
    exit;
 }
 
@@ -81,10 +82,10 @@ if (isset($_GET['components_id'])
    PluginMonitoringToolbox::loadPreferences($_GET['components_id']);
 }
 if (! isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_GET['components_id']])) {
-   echo __('No data ...', 'monitoring');
+   echo json_encode(array());
+//   echo __('No data ...', 'monitoring');
    exit;
 }
-$time_start = microtime(true);
 if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_GET['components_id']][''])) {
    unset($_SESSION['glpi_plugin_monitoring']['perfname'][$_GET['components_id']]['']);
 }
@@ -95,62 +96,9 @@ $a_ret = $pmServicegraph->generateData($_GET['rrdtool_template'],
                              $_GET['time'],
                              $enddate,
                              $_SESSION['glpi_plugin_monitoring']['perfname'][$_GET['components_id']]);
-//$time_end = microtime(true);
-//$time = $time_end - $time_start;
-//echo "Did nothing in " . $time . " <strong>seconds</strong>\n";
 
 $mydatat = $a_ret[0];
 $a_labels = $a_ret[1];
-$format = $a_ret[2];
-
-$suffix = '';
-if (isset($_GET['suffix'])) {
-   $suffix = $_GET['suffix'];
-}
-
-
-//$format = "%H:%M";
-//if ($_GET['time'] != "2h"
-//   AND $_GET['time'] != "12h"
-//   AND $_GET['time'] != "1d") {
-//   if (isset($_SESSION['glpi_plugin_monitoring']['dateformat'])) {
-//      $format = $_SESSION['glpi_plugin_monitoring']['dateformat'];
-//   } else {
-//      $format = "%Y-%m-%d %Hh";
-//   }
-//} else {
-//   $format = "(%d)%H:%M";
-//}
-
-
-
-
-$formaty = ".0f";
-$max = 0;
-$titleunit = '';
-foreach ($mydatat as $name=>$data) {
-   $display = "checked";
-   if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_GET['components_id']])) {
-      $display = "";
-   }
-   if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$_GET['components_id']][$name])) {
-      $display = $_SESSION['glpi_plugin_monitoring']['perfname'][$_GET['components_id']][$name];
-   }
-   if ($display == "checked") {
-      if ($max < max($data)) {
-         $max = max($data);
-      }
-   }
-}
-if ($max <= 2) {
-   $formaty = ".2f";
-} else if ($max <= 4) {
-   $formaty = ".1f";
-}
-
-if ($max > 2000) {
-   $formaty = "0.3s";
-}
 
 $pmComponent = new PluginMonitoringComponent();
 $pmCommand = new PluginMonitoringCommand();
@@ -158,34 +106,9 @@ $pmCommand = new PluginMonitoringCommand();
 $pmComponent->getFromDB($_GET['components_id']);
 $pmCommand->getFromDB($pmComponent->fields['plugin_monitoring_commands_id']);
 
-echo '<script type="text/javascript">
-';
+$a_data   = array();
+$a_values = array();
 
-echo 'function updategraph'.$_GET['items_id'].$_GET['time'].$suffix.'() {
-
-   var chart = nv.models.lineChart();
-
-   chart.xAxis // chart sub-models (ie. xAxis, yAxis, etc) when accessed directly, return themselves, not the partent chart, so need to chain separately
-      .tickFormat(function(d) { return d3.time.format("'.$format.'")(new Date(d)) });
-
-   chart.yAxis
-      .axisLabel("'.$pmCommand->fields['name'].$titleunit.'")
-      .tickFormat(d3.format(\''.$formaty.'\'));
-
-   //chart.forceY([-400,400]);
-   chart.forceY([0]);
-   data = getdata'.$_GET['items_id'].$_GET['time'].'();
-   d3.select("#chart'.$_GET['items_id'].$_GET['time'].$suffix.' svg")
-     .datum(data)
-     .transition().duration(50)
-     .call(chart);
-
-}
-
-
-function getdata'.$_GET['items_id'].$_GET['time'].'() {
-   var format = d3.time.format("'.$format.'");
-';
 $lab = '';
 $num = 1;
 $a_names = array();
@@ -202,7 +125,6 @@ foreach ($mydatat as $name=>$data) {
       $display = $_SESSION['glpi_plugin_monitoring']['perfname'][$_GET['components_id']][$name];
    }
    if ($display == "checked") {
-      echo "var val".$a_names[$name]." = new Array();\n";
       $i = 0;
       $datawarn=0;
       $datacrit=0;
@@ -227,17 +149,16 @@ foreach ($mydatat as $name=>$data) {
                $datacrit=max($datacrit, $data[$i]);
             }
          }
-         echo "val".$a_names[$name].".push({x: format.parse('".$label."'), y: ".$data[$i]."});\n";
+         $a_values["val".$a_names[$name]][] = array(
+            'x' => $label * 1000,
+            'y' => $data[$i]
+         );
          $i++;
          $lab = $label;
       }
    }
 }
 
-
-echo '
-  return [
-  ';
 $color = array();
 $color = PluginMonitoringServicegraph::colors();
 
@@ -290,26 +211,16 @@ foreach ($mydatat as $name=>$data) {
       } else if (strstr(strtolower($name), "crit")) {
          $area = 'false';
       }
-      if ($nSerie != 0) {
-         echo ',';
-      }
-      echo '     {
-         area: '.$area.',
-         values: val'.$a_names[$name].',
-         key: "'.$name.'",
-         color: "#'.$colordisplay.'"
-       }
-';
+      $a_data[] = array(
+         'area'   => $area,
+         'values' => $a_values['val'.$a_names[$name]],
+         'key'    => $name,
+         'color'  => '#'.$colordisplay
+      );
       $nSerie++;
    }
 }
-echo '  ];
-}
 
-updategraph'.$_GET['items_id'].$_GET['time'].$suffix.'();
-';
-echo '</script>';
-
-Html::ajaxFooter();
+echo json_encode($a_data);
 
 ?>

@@ -773,7 +773,6 @@ class PluginMonitoringService extends CommonDBTM {
               . ' <input type="text" id="custom_time" value="'.date('H:i').'"></center>';
 
       echo "<table class='tab_cadre_fixe'>";
-      $td = 0;
       while ($data=$DB->fetch_array($result)) {
          $pmComponentscatalog->getFromDB($data['plugin_monitoring_componentscalalog_id']);
 
@@ -786,13 +785,11 @@ class PluginMonitoringService extends CommonDBTM {
          while ($datas=$DB->fetch_array($results)) {
             $pmComponent->getFromDB($datas['plugin_monitoring_components_id']);
             if ($pmComponent->fields['graph_template'] != 0) {
-               if ($td == 0) {
-                  echo "<tr>";
-               }
-               echo "<td width='425'>";
+               echo "<tr>";
+               echo "<td>";
                echo "<table class='tab_cadre'>";
                echo "<tr class='tab_bg_3'>";
-               echo "<th width='475'>";
+               echo "<th>";
                echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display.form.php?itemtype=PluginMonitoringService&items_id=".$datas['id']."'>";
                echo $pmComponent->fields['name'];
                echo "</a>";
@@ -811,23 +808,16 @@ class PluginMonitoringService extends CommonDBTM {
                                              "0",
                                              "2h",
                                              "",
-                                             450);
+                                             920);
                echo "</td>";
                echo "</tr>";
                echo "</table>";
-               $td++;
                echo "</td>";
-               if ($td == 2) {
-                  echo "</tr>";
-                  $td = 0;
-               }
+               echo "</tr>";
             }
          }
       }
 
-      if ($td == 1) {
-         echo "<td></td>";
-      }
       echo "</tr>";
       echo "</table>";
 

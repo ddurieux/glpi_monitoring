@@ -103,38 +103,90 @@ class PluginMonitoringServicegraph {
       $item = new $itemtype();
       if ($item->getFromDB($items_id)) {
          $pmComponent->getFromDB($item->fields['plugin_monitoring_components_id']);
+         $ident = $items_id.$time;
+
          if ($part == ''
                  OR $part == 'div') {
-            echo '<div id="chart'.$items_id.$time.'">'.
-                '<svg style="height: 300px; width: '.$width.'px;"></svg>'.
+            echo '<div id="chart'.$ident.'">'.
+                '<svg style="width: '.$width.'px;display: block;"></svg>'.
               '</div>';
 
             echo "<div id=\"updategraph".$items_id.$time."\"></div>";
          }
          if ($part == ''
                  OR $part == 'js') {
-            echo "<script type=\"text/javascript\">";
+            if (!isset($_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->fields['id']])) {
+               PluginMonitoringToolbox::loadPreferences($pmComponent->fields['id']);
+            }
+            if (! isset($_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->fields['id']])) {
+               $format = '%H:%M';
+            } else {
+               if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->fields['id']][''])) {
+                  unset($_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->fields['id']]['']);
+               }
+               $pmServicegraph = new PluginMonitoringServicegraph();
+               $a_ret = $pmServicegraph->generateData($rrdtool_template,
+                                            $itemtype,
+                                            $items_id,
+                                            $timezone,
+                                            $time,
+                                            '',
+                                            $_SESSION['glpi_plugin_monitoring']['perfname'][$pmComponent->fields['id']]);
+               $format = $a_ret[2];
+            }
+            echo "<script>";
+            $formaty = ".0f";
+            echo '
+
+            var data'.$ident.' = [];
+            var chart'.$ident.';
+            redraw'.$ident.' = function () {
+               nv.addGraph(function() {
+                  chart'.$ident.' = nv.models.lineChart();
+
+                  chart'.$ident.'.useInteractiveGuideline(true);
+
+                  chart'.$ident.'.xAxis
+                     .tickFormat(function(d) { return d3.time.format("'.$format.'")(new Date(d)); });
+
+                  chart'.$ident.'.yAxis
+                     .axisLabel("test")
+                     .tickFormat(d3.format(\''.$formaty.'\'));
+
+                  chart'.$ident.'.forceY([0]);
+
+                  d3.select("#chart'.$ident.' svg")
+                    .attr("height", 300)
+                    .datum(data'.$ident.')
+                    .transition().duration(50)
+                    .call(chart'.$ident.');
+
+
+
+                 return chart'.$ident.';
+               });
+            };';
+
             echo "
             (function worker".$items_id.$time."() {
               startDate = new Date($('#custom_date').val());
               startTime = Date.parse('04/03/1980 ' + ($('#custom_time').val()) + ':00');
-              $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateChart.php"
+              $.getJSON('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateChart.php"
                     ."?rrdtool_template=".$rrdtool_template."&itemtype=".$itemtype.
                           "&items_id=".$items_id.
                           "&timezone=".$timezone.
                           "&time=".$time."&customdate=' + (startDate.getTime()/1000.0) + '".
                           "&customtime=' + (startTime/1000.0) + '".
                           "&components_id=".$pmComponent->fields['id']."', function(data) {
-                $('#updategraph".$items_id.$time."').html(data);
+                data".$ident." = data;
+
+                redraw".$ident."();
                 setTimeout(worker".$items_id.$time.", 30000);
               });
             })();";
             echo "
             </script>";
          }
-
-
-
 
                  }
       return;

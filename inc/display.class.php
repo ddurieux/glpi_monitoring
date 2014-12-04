@@ -1547,7 +1547,7 @@ echo "
       if (!isset($_GET['mobile'])) {
          echo "<tr class='tab_bg_1'>";
          echo "<th colspan='2'>";
-         echo "<div id='legendlink'><a onClick='Ext.get(\"options\").toggle();'>[ Options ]</a></div>";
+         echo "<div id='legendlink'><a onClick='$(\"#options\").toggle();'>[ Options ]</a></div>";
          echo "</th>";
          echo "</tr>";
 
@@ -1563,135 +1563,34 @@ echo "
          // * Display date slider
          echo "<tr class='tab_bg_1'>";
          echo "<th colspan='2'>";
-         echo __('Select date (only last 2, 12 and 24 hours)', 'monitoring');
+         echo __('Select date', 'monitoring')." - ".__('Select time', 'monitoring');
          echo "</th>";
          echo "</tr>";
 
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2'>";
-
-         $end = time();
-
+         echo "<th colspan='2'>";
+         $start = time();
          $oldvalue = current(getAllDatasFromTable('glpi_plugin_monitoring_serviceevents',
                                                   "`plugin_monitoring_services_id`='".$items_id."'",
                                                   false,
                                                   'date ASC LIMIT 1'));
          $date = new DateTime($oldvalue['date']);
-         $start = $date->getTimestamp();
-         $pmServicegraph = new PluginMonitoringServicegraph();
-echo "
-<script type=\"text/javascript\">
+         if ($date->getTimestamp() < $start) {
+            $start = $date->getTimestamp();
+         }
+         $nbdays = round((date('U') - $start) / 86400);
+         echo "<script type=\"text/javascript\">
+            $(function() {
+                $( \"#custom_date\" ).datepicker({ minDate: -".$nbdays.", maxDate: \"+0D\", dateFormat:'mm/dd/yy' });
+                $( \"#custom_time\" ).timepicker();
 
-Ext.onReady(function(){
+            });
+         </script>";
 
-    var tip = new Ext.slider.Tip({
-        getText: function(thumb){
-            return String.format('<b> ' + new Date(thumb.value * 1000).format('Y-m-d') + '</b>');
-        }
-    });
+         echo '<center><input type="text" id="custom_date" value="'.date('m/d/Y').'"> '
+                 . ' <input type="text" id="custom_time" value="'.date('H:i').'"></center>';
 
-    new Ext.Slider({
-        renderTo: 'custom-tip-slider',
-        width: 940,
-        increment: 86400,
-        minValue: ".$start.",
-        maxValue: ".$end.",
-        value: ".$end.",
-        plugins: tip,
-        listeners: {
-            dragend: function(slider, thumb, value){
-               document.getElementById('custom_date').textContent = slider.getValue();
-               mgr".$items_id."2h.stopAutoRefresh();
-               mgr".$items_id."12h.stopAutoRefresh();
-               mgr".$items_id."1d.stopAutoRefresh();
-               mgr".$items_id."1w.stopAutoRefresh();
-               mgr".$items_id."1m.stopAutoRefresh();
-               mgr".$items_id."0y6m.stopAutoRefresh();
-               mgr".$items_id."1y.stopAutoRefresh();
-                  ";
-               $a_graphlist = array('2h', '12h', '1d', '1w', '1m', '0y6m', '1y');
-               foreach ($a_graphlist as $time) {
-                  $pmServicegraph->startAutoRefresh($pmComponent->fields['graph_template'],
-                                                    $itemtype,
-                                                    $items_id,
-                                                    $timezone,
-                                                    $time,
-                                                    $pmComponent->fields['id']);
-               }
-               echo "
-            }
-        }
-    });
-
-});
-</script>";
-         echo '<center><div id="custom-tip-slider"></div></center>';
-         echo '<div id="custom_date" style="display:none"></div>';
-         echo "</td>";
-         echo "</tr>";
-
-         // * Display time slider
-         echo "<tr class='tab_bg_1'>";
-         echo "<th colspan='2'>";
-         echo __('Select time (only last 2, 12 and 24 hours)', 'monitoring');
          echo "</th>";
-         echo "</tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2'>";
-
-         $start = 0 + 86400 - 3600;
-         $end = 86400 + 86400 - 3600 - 300;
-         $current = mktime(date('H'), date('i'), 0, 1, 2, 1970);
-
-echo "
-<script type=\"text/javascript\">
-
-Ext.onReady(function(){
-
-    var tiptime = new Ext.slider.Tip({
-        getText: function(thumb){
-            return String.format('<b> ' + new Date(thumb.value * 1000).format('H:i:s') + '</b>');
-        }
-    });
-
-    new Ext.Slider({
-        renderTo: 'custom-tip-slider-time',
-        width: 940,
-        increment: 300,
-        minValue: ".$start.",
-        maxValue: ".$end.",
-        value: ".$current.",
-        plugins: tiptime,
-        listeners: {
-            dragend: function(slider, thumb, value){
-               document.getElementById('custom_time').textContent = slider.getValue();
-               mgr".$items_id."2h.stopAutoRefresh();
-               mgr".$items_id."12h.stopAutoRefresh();
-               mgr".$items_id."1d.stopAutoRefresh();
-               mgr".$items_id."1w.stopAutoRefresh();
-               mgr".$items_id."1m.stopAutoRefresh();
-               mgr".$items_id."0y6m.stopAutoRefresh();
-               mgr".$items_id."1y.stopAutoRefresh();
-                  ";
-               $a_graphlist = array('2h', '12h', '1d', '1w', '1m', '0y6m', '1y');
-               foreach ($a_graphlist as $time) {
-                  $pmServicegraph->startAutoRefresh($pmComponent->fields['graph_template'],
-                                                    $itemtype,
-                                                    $items_id,
-                                                    $timezone,
-                                                    $time,
-                                                    $pmComponent->fields['id']);
-               }
-               echo "
-            }
-        }
-    });
-});
-</script>";
-         echo '<center><div id="custom-tip-slider-time"></div></center>';
-         echo '<div id="custom_time" style="display:none"></div>';
-         echo "</td>";
          echo "</tr>";
       }
 

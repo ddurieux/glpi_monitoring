@@ -419,18 +419,19 @@ class PluginMonitoringServiceevent extends CommonDBTM {
             $previous_timestamp = $current_timestamp;
          }
          $a_perfdata = PluginMonitoringPerfdata::splitPerfdata($edata['perf_data']);
-         $a_time = explode(" ", $edata['date']);
-         $a_time2 = explode(":", $a_time[1]);
-         if ($timecomplete == 1) {
-            $a_labels[] = $a_time[0]." ".$a_time2[0].":".$a_time2[1];
-         } else {
-            $day = explode("-", $a_time[0]);
-            if ($timecomplete == 2) {
-               $a_labels[] = $day[1]."-".$day[2]." ".$a_time2[0].":".$a_time2[1];
-            } else {
-               $a_labels[] = "(".$day[2].")".$a_time2[0].":".$a_time2[1];
-            }
-         }
+         $a_labels[] = $current_timestamp;
+//         $a_time = explode(" ", $edata['date']);
+//         $a_time2 = explode(":", $a_time[1]);
+//         if ($timecomplete == 1) {
+//            $a_labels[] = $a_time[0]." ".$a_time2[0].":".$a_time2[1];
+//         } else {
+//            $day = explode("-", $a_time[0]);
+//            if ($timecomplete == 2) {
+//               $a_labels[] = $day[1]."-".$day[2]." ".$a_time2[0].":".$a_time2[1];
+//            } else {
+//               $a_labels[] = "(".$day[2].")".$a_time2[0].":".$a_time2[1];
+//            }
+//         }
          foreach ($a_perf['parseperfdata'] as $num=>$data) {
 
             if (isset($a_perfdata[$num])) {

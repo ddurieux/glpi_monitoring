@@ -53,10 +53,11 @@ class PluginMonitoringToolbox {
    static function loadLib() {
       global $CFG_GLPI;
 
-      echo '<script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/lib/d3.v2.min.js"></script>
+      echo '<script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/lib/d3.v3.js"></script>
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/nv.d3.min.js"></script>
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/tooltip.js"></script>
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/utils.js"></script>
+      <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/interactiveLayer.js"></script>
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/models/legend.js"></script>
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/models/axis.js"></script>
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/models/scatter.js"></script>
@@ -108,7 +109,9 @@ class PluginMonitoringToolbox {
               || $pmComponent->fields['perfnameinvert'] == '[]') {
          $a_perfnameinvert = FALSE;
       } else {
+         ob_start();
          $a_perfnameinvert = @unserialize($pmComponent->fields['perfnameinvert']);
+         ob_clean();
       }
       if ($a_perfnameinvert !== false) {
          foreach ($a_perfnameinvert as $perfname=>$active) {
