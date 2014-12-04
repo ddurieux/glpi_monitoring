@@ -140,7 +140,6 @@ class PluginMonitoringToolbox {
       $pmComponent = new PluginMonitoringComponent();
       $pmComponent->getFromDB($components_id);
 
-      echo "<form method='post'>";
       $a_perfnames = array();
       $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($pmComponent->fields['graph_template']);
       echo "<table class='tab_cadre_fixe'>";
@@ -158,7 +157,6 @@ class PluginMonitoringToolbox {
       }
 
       echo "<td>";
-      echo '<select id="jquery-tagbox-select-options">';
 
       $a_incremental = array();
       $a_perfdatadetails = getAllDatasFromTable('glpi_plugin_monitoring_perfdatadetails',
@@ -170,63 +168,45 @@ class PluginMonitoringToolbox {
             }
          }
       }
+      $a_list = array();
       $a_list_val = array();
       foreach ($a_perfnames as $name) {
-         $disabled = '';
+            $a_list[] = $name;
          if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$components_id][$name])) {
             $a_list_val[] = $name;
-            $disabled = 'disabled="disabled"';
          }
-         echo '<option value="'.$name.'" '.$disabled.'>'.$name.'</option>';
          if (isset($a_incremental[$name])) {
             $name .= ' | diff';
-            $disabled = '';
             if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$components_id][$name])) {
                $a_list_val[] = $name;
-               $disabled = 'disabled="disabled"';
             }
-            echo '<option value="'.$name.'" '.$disabled.'>'.$name.'</option>';
+            $a_list[] = $name;
          }
       }
-      echo '</select>
-      <input name="perfname" id="jquery-tagbox-select" type="text" value="'.implode('####', $a_list_val).'" />';
+//      <input name="perfname" id="jquery-tagbox-select" type="text" value="'.implode('####', $a_list_val).'" />';
+
+echo '      <div id="tagbox-container"></div>';
+echo "        <script>
+            $('#tagbox-container').tagbox({
+                taglist: ['".implode("', '", $a_list)."'],
+                selectedlist: ['".implode("', '", $a_list_val)."'],
+                cols: 3,
+                maxtags: 4,
+                expand: true
+            });
+
+            $('#tagbox-container').on('tagAdded', function() {
+               $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updatePerfname.php"
+                    ."?components_id=".$components_id."&db=".$loadpreferences."&perfname=' + $('.tagbox').data('selected'));
+            });
+            $('#tagbox-container').on('tagRemoved', function() {
+               $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updatePerfname.php"
+                    ."?components_id=".$components_id."&db=".$loadpreferences."&perfname=' + $('.tagbox').data('selected'));
+            });
+        </script>";
 
       echo "</td>";
       echo "</tr>";
-
-//      foreach ($a_perfnames as $name) {
-//         if ($i == 'O'
-//                 AND $j == '1') {
-//            echo "<tr>";
-//         }
-//         echo "<td>";
-//         $checked = "checked";
-//         if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$components_id])) {
-//            $checked = "";
-//         }
-//         if (isset($_SESSION['glpi_plugin_monitoring']['perfname'][$components_id][$name])) {
-//            $checked = $_SESSION['glpi_plugin_monitoring']['perfname'][$components_id][$name];
-//         }
-//         echo "<input type='checkbox' name='perfname[]' value='".$name."' ".$checked."/> ".$name;
-//         echo "</td>";
-//         $i++;
-//         if ($i == 6) {
-//            $i = 0;
-//            echo "</tr>";
-//         }
-//         $j = 1;
-//      }
-//      if ($i != 6) {
-//         echo "<td colspan='".(6-$i)."'></td>";
-//         echo "</tr>";
-//      }
-      echo "<tr class='tab_bg_3'>";
-      echo "<td colspan='9' align='center'>";
-      echo "<input type='hidden' name='id' value='".$components_id."'/>";
-      echo "<input type='submit' name='updateperfdata' value=\"".__('Save')."\" class='submit'>";
-      echo "</td>";
-      echo "</tr>";
-
       echo "</table>";
 
       if ($displayonly == 1) {

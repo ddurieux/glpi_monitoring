@@ -459,73 +459,45 @@ tr.services td.serviceState {
 }
 
 
-span.tagBox-container {
-  display: inline-block;
-  vertical-align: middle;
-}
+/***** tagBox *****/
 
-span.tagBox-list {
-  padding: 0em 0;
-  font-size: 12px;
-  line-height: 1em;
-  display: block;
-}
-
-span.tagBox-item {
-  display: inline-block;
-  margin: 0.3em 0.25em 0.15em;
-  vertical-align: middle;
-  cursor: default;
-  white-space:nowrap;
-}
-span.tagBox-item * {
-  vertical-align: middle;
-  white-space: normal;
-}
-span.tagBox-bullet {
-  display: none;
-}
-span.tagBox-item * {
-  vertical-align: middle;
-}
-
-span.tagBox-item-content {
-  display: inline-block;
-  padding: 0.417em 0.417em;
-  font-size: 1em;
-  line-height: 1.4em;
-   color: #8f5a0a;
-   background-color: #ffb94b;
-   background-image: -webkit-gradient(linear, left top, left bottom, from(#fddb6f), to(#ffb94b));
-   background-image: -webkit-linear-gradient(top, #fddb6f, #ffb94b);
-   background-image: -moz-linear-gradient(top, #fddb6f, #ffb94b);
-   background-image: -ms-linear-gradient(top, #fddb6f, #ffb94b);
-   background-image: -o-linear-gradient(top, #fddb6f, #ffb94b);
-   background-image: linear-gradient(top, #fddb6f, #ffb94b);
+.tagbox-selected-tag {
+    display: inline-block;
+    padding: 0.417em 0.417em;
+    font-size: 1em;
+    line-height: 1.4em;
+    color: #8f5a0a;
+    background-color: #ffb94b;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#fddb6f), to(#ffb94b));
+    background-image: -webkit-linear-gradient(top, #fddb6f, #ffb94b);
+    background-image: -moz-linear-gradient(top, #fddb6f, #ffb94b);
+    background-image: -ms-linear-gradient(top, #fddb6f, #ffb94b);
+    background-image: -o-linear-gradient(top, #fddb6f, #ffb94b);
+    background-image: linear-gradient(top, #fddb6f, #ffb94b);
    
-   /* For Internet Explorer 5.5 - 7 */
-   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#fddb6f, endColorstr=#ffb94b);
-   /* For Internet Explorer 8 */
-   -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#fddb6f, endColorstr=#ffb94b)";
-   border-radius: 3px;
-   -moz-border-radius: 3px;
-   -webkit-border-radius: 3px;
-   text-shadow: 0 1px 0 rgba(255,255,255,0.5);
-   -moz-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
-   -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
-   box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;    
-   border-width: 1px;
-   border-style: solid;
-   border-color: #d69e31 #e3a037 #d5982d #e3a037
+    /* For Internet Explorer 5.5 - 7 */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#fddb6f, endColorstr=#ffb94b);
+    /* For Internet Explorer 8 */
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#fddb6f, endColorstr=#ffb94b)";
+    border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+    -moz-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
+    -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;    
+    border-width: 1px;
+    border-style: solid;
+    border-color: #d69e31 #e3a037 #d5982d #e3a037
 }
 
-span.tagBox-item-content a.tagBox-remove {
+.tagbox-selected-tag-remove {
   text-decoration: none;
   display: inline-block;
   float: right;
   color: #FFF;
   text-align: center;
-  font-family: "Comic Sans MS", Arial, Helvetica, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 10px;
   font-weight: bold;
   line-height: 1em;
@@ -540,10 +512,19 @@ span.tagBox-item-content a.tagBox-remove {
   box-shadow: 0 0 3px #FFF;
 }
 
-span.tagBox-item-content a.tagBox-remove:hover {
+.tagbox-selected-tag-remove:hover {
   background-color: #ff3333;
 }
 
+.tagbox-field-input{
+  display: none;
+}
+
+.tagbox-matrix-label{
+  display: none;
+}
+
+/***** [End] tagBox *****/
 
 line.linkred {
    stroke-width: 9; 
@@ -641,3 +622,5 @@ line.linkblack {
     .tipsy-se .tipsy-arrow { bottom: 0; right: 10px; border-top-style: solid; border-bottom: none; border-left-color: transparent; border-right-color: transparent; }
   .tipsy-e .tipsy-arrow { right: 0; top: 50%; margin-top: -5px; border-left-style: solid; border-right: none; border-top-color: transparent; border-bottom-color: transparent; }
   .tipsy-w .tipsy-arrow { left: 0; top: 50%; margin-top: -5px; border-right-style: solid; border-left: none; border-top-color: transparent; border-bottom-color: transparent; }
+
+  

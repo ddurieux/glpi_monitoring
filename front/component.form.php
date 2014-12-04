@@ -49,7 +49,7 @@ Html::header(__('Monitoring - component', 'monitoring'),$_SERVER["PHP_SELF"], "p
 
 
 $pMonitoringComponent = new PluginMonitoringComponent();
-
+//echo "<pre>";print_r($_POST);exit;
 if (isset($_POST["copy"])) {
    $pMonitoringComponent->showForm(0, array(), $_POST);
    Html::footer();
@@ -118,12 +118,6 @@ if (isset($_POST["copy"])) {
    $pMonitoringComponent->redirectToList();
 } else if(isset($_POST['updateperfdata'])) {
    $a_perfname = array();
-   if (isset($_POST['perfname'])) {
-      $_POST['perfname'] = explode("####", $_POST['perfname']);
-      foreach ($_POST['perfname'] as $perfname) {
-         $a_perfname[$perfname] = '1';
-      }
-   }
 
    $a_perfnameinvert = array();
    if (isset($_POST['perfnameinvert'])) {
@@ -143,8 +137,6 @@ if (isset($_POST["copy"])) {
    }
    $input = array();
    $input['id'] = $_POST['id'];
-   // $input['perfname'] = exportArrayToDB($a_perfname);
-   $input['perfname'] = serialize($a_perfname);
    // $input['perfnameinvert'] = exportArrayToDB($a_perfnameinvert);
    $input['perfnameinvert'] = serialize($a_perfnameinvert);
    // $input['perfnamecolor'] = exportArrayToDB($a_perfnamecolor);
