@@ -648,7 +648,7 @@ class PluginMonitoringService extends CommonDBTM {
               'glpi_plugin_monitoring_serviceevents',
               "`plugin_monitoring_services_id` IN ('".implode("', '", $services_id)."')",
               false,
-              'date ASC LIMIT 1'));
+              'id ASC LIMIT 1'));
       $date = new DateTime($oldvalue['date']);
       $start = time();
       if ($date->getTimestamp() < $start) {
