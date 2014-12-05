@@ -107,7 +107,7 @@ class PluginMonitoringConfig extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".__('Logs retention (in days)', 'monitoring')."&nbsp;:</td>";
-      echo "<td align='center'>";
+      echo "<td width='100'>";
       Dropdown::showNumber("logretention", array(
                 'value' => $this->fields['logretention'],
                 'min'   => 0,
