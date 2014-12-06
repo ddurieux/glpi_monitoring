@@ -73,8 +73,8 @@ if (Session::haveRight("plugin_monitoring_restartshinken", CREATE)) {
       $shinken_commands = [
             'reload'    => [
                   'command' => 'reload',
-                  'title' => __('Reconfigure Shinken from Glpi database', 'monitoring'),
-                  'button' => __('Reconfigure Shinken', 'monitoring'),
+                  'title' => __('Reload Shinken configuration from Glpi database', 'monitoring'),
+                  'button' => __('Reload Shinken config', 'monitoring'),
             ],
             'restart'   => [
                   'command' => 'restart',
