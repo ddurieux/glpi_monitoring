@@ -1047,7 +1047,7 @@ echo "
 
 
    static function displayLine($data, $displayhost=1, $displayCounters=0, $displayGraphs=true) {
-      global $DB,$CFG_GLPI;
+      global $CFG_GLPI;
 
       $pMonitoringService = new PluginMonitoringService();
       $pMonitoringService->getFromDB($data['id']);
@@ -1241,14 +1241,18 @@ echo "
       if ($displayhost == '0') {
          echo "<td>";
          if (Session::haveRight("plugin_monitoring_componentscatalog", UPDATE)) {
-
-            $a_arg = importArrayFromDB($pMonitoringService->fields['arguments']);
-            $cnt = '';
-            if (count($a_arg) > 0) {
-               $cnt = " (".count($a_arg).")";
+            if ($pMonitoringComponent->fields['remotesystem'] == 'nrpe'
+                    && $pMonitoringComponent->fields['is_arguments'] == 0) {
+               echo __('Managed by NRPE', 'monitoring');
+            } else {
+               $a_arg = importArrayFromDB($pMonitoringService->fields['arguments']);
+               $cnt = '';
+               if (count($a_arg) > 0) {
+                  $cnt = " (".count($a_arg).")";
+               }
+               echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicearg.form.php?id=".$data['id']."'>".
+                       __('Configure', 'monitoring').$cnt."</a>";
             }
-            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicearg.form.php?id=".$data['id']."'>".
-                    __('Configure', 'monitoring').$cnt."</a>";
          }
          echo "</td>";
       }

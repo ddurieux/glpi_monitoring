@@ -617,7 +617,6 @@ class PluginMonitoringService extends CommonDBTM {
     *
     **/
    function listByHost($itemtype, $items_id) {
-      global $CFG_GLPI,$DB;
 
       $params = Search::manageParams("PluginMonitoringService", array(), false);
       $num = 20; // Computer
