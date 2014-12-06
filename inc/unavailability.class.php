@@ -196,7 +196,8 @@ class PluginMonitoringUnavailability extends CommonDBTM {
                $out .= "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/unavailability.form.php?id=".self::$currentItem->fields['id']."&scheduled=".$newValue."'>"
                   ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_checked.png'"
                   ." alt='".__('Change unavailability period schedule status', 'monitoring')."'"
-                  ." title='".__('Change unavailability period schedule status', 'monitoring')."'/>"
+                  ." title='".__('Change unavailability period schedule status', 'monitoring')."'"
+                  ." width='20' height='20'/>"
                   ."</a>";
             }
             return $out;

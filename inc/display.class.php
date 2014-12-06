@@ -1093,7 +1093,9 @@ echo "
                $div = ob_get_contents();
                ob_end_clean();
                $chart = "<table width='600' class='tab_cadre'><tr><td>".$div."</td></tr></table>";
-               Html::showToolTip($chart, array('img'=>$CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png"));
+               Html::showToolTip($chart,
+                       array(
+                          'img'=>$CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png' width='26' height='32'"));
                $pmServicegraph->displayGraph($pMonitoringComponent->fields['graph_template'],
                                              "PluginMonitoringService",
                                              $data['id'],
@@ -1208,14 +1210,16 @@ echo "
                   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?itemtype=Service&items_id=".$data['id']."'>"
                            ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_ok.png'"
                           ." alt='".htmlspecialchars(__('Modify acknowledge comment for the service', 'monitoring'), ENT_QUOTES)."'"
-                          ." title='".htmlspecialchars(__('Modify acknowledge comment for the service', 'monitoring'), ENT_QUOTES)."'/>"
+                          ." title='".htmlspecialchars(__('Modify acknowledge comment for the service', 'monitoring'), ENT_QUOTES)."'"
+                          ." width='25' height='20'/>"
                        ."</a>";
                   echo "&nbsp;&nbsp;</span>";
                } else {
                   echo "<span>";
                   echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_ok.png'"
                           ." alt='".htmlspecialchars(__('Service problem has been acknowledged', 'monitoring'), ENT_QUOTES)."'"
-                          ." title='".htmlspecialchars(__('Service problem has been acknowledged', 'monitoring'), ENT_QUOTES)."'/>";
+                          ." title='".htmlspecialchars(__('Service problem has been acknowledged', 'monitoring'), ENT_QUOTES)."'"
+                          ." width='25' height='20'/>";
                   echo "&nbsp;&nbsp;</span>";
                }
                // Display acknowledge data ...
@@ -1229,7 +1233,8 @@ echo "
                   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?itemtype=Service&items_id=".$data['id']."'>"
                            ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_ko.png'"
                           ." alt='".htmlspecialchars(__('Add an acknowledge for the service', 'monitoring'), ENT_QUOTES)."'"
-                          ." title='".htmlspecialchars(__('Add an acknowledge for the service', 'monitoring'), ENT_QUOTES)."'/>"
+                          ." title='".htmlspecialchars(__('Add an acknowledge for the service', 'monitoring'), ENT_QUOTES)."'"
+                          ." width='25' height='20'/>"
                        ."</a>";
                   echo "&nbsp;&nbsp;</span>";
                }
@@ -1418,14 +1423,16 @@ echo "
                echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?itemtype=Host&items_id=".$data['id']."'>"
                         ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_ok.png'"
                        ." alt='".htmlspecialchars(__('Modify acknowledge comment for the host', 'monitoring'), ENT_QUOTES)."'"
-                       ." title='".htmlspecialchars(__('Modify acknowledge comment for the host', 'monitoring'), ENT_QUOTES)."'/>"
+                       ." title='".htmlspecialchars(__('Modify acknowledge comment for the host', 'monitoring'), ENT_QUOTES)."'"
+                       ." width='25' height='20'/>"
                     ."</a>";
                echo "&nbsp;&nbsp;</span>";
             } else {
                echo "<span>";
                echo "<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_ok.png'"
                        ." alt='".htmlspecialchars(__('Host problem has been acknowledged', 'monitoring'), ENT_QUOTES)."'"
-                       ." title='".htmlspecialchars(__('Host problem has been acknowledged', 'monitoring'), ENT_QUOTES)."'/>";
+                       ." title='".htmlspecialchars(__('Host problem has been acknowledged', 'monitoring'), ENT_QUOTES)."'"
+                       ." width='25' height='20'/>";
                echo "&nbsp;&nbsp;</span>";
             }
             // Display acknowledge data ...
@@ -1439,7 +1446,8 @@ echo "
                echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.form.php?itemtype=Host&items_id=".$data['id']."'>"
                         ."<img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/acknowledge_ko.png'"
                        ." alt='".htmlspecialchars(__('Add an acknowledge for the host and all faulty services of the host', 'monitoring'), ENT_QUOTES)."'"
-                       ." title='".htmlspecialchars(__('Add an acknowledge for the host and all faulty services of the host', 'monitoring'), ENT_QUOTES)."'/>"
+                       ." title='".htmlspecialchars(__('Add an acknowledge for the host and all faulty services of the host', 'monitoring'), ENT_QUOTES)."'"
+                       ." width='25' height='20'/>"
                     ."</a>";
                echo "&nbsp;&nbsp;</span>";
             }
