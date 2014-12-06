@@ -135,13 +135,15 @@ class PluginMonitoringServicegraph {
                $format = $a_ret[2];
             }
             echo "<script>";
-            $formaty = ".0f";
             echo '
 
+            var formaty = ".0f";
             var data'.$ident.' = [];
             var chart'.$ident.';
             redraw'.$ident.' = function () {
                nv.addGraph(function() {
+                  formaty = data'.$ident.'[0]["formaty"];
+console.log(formaty);
                   chart'.$ident.' = nv.models.lineChart();
 
                   chart'.$ident.'.useInteractiveGuideline(true);
@@ -151,7 +153,7 @@ class PluginMonitoringServicegraph {
 
                   chart'.$ident.'.yAxis
                      .axisLabel("test")
-                     .tickFormat(d3.format(\''.$formaty.'\'));
+                     .tickFormat(d3.format(formaty));
 
                   chart'.$ident.'.forceY([0]);
 

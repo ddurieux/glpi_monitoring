@@ -112,6 +112,8 @@ $a_values = array();
 $lab = '';
 $num = 1;
 $a_names = array();
+$formaty = ".0f";
+$max = 0;
 foreach ($mydatat as $name=>$data) {
    if (!isset($a_names[$name])) {
       $a_names[$name] = $num;
@@ -156,8 +158,21 @@ foreach ($mydatat as $name=>$data) {
          $i++;
          $lab = $label;
       }
+      if ($max < max($data)) {
+         $max = max($data);
+      }
    }
 }
+
+if ($max <= 2) {
+   $formaty = ".2f";
+} else if ($max <= 4) {
+   $formaty = ".1f";
+}
+if ($max > 2000) {
+   $formaty = "0.3s";
+}
+
 
 $color = array();
 $color = PluginMonitoringServicegraph::colors();
@@ -212,10 +227,11 @@ foreach ($mydatat as $name=>$data) {
          $area = 'false';
       }
       $a_data[] = array(
-         'area'   => $area,
-         'values' => $a_values['val'.$a_names[$name]],
-         'key'    => $name,
-         'color'  => '#'.$colordisplay
+         'area'    => $area,
+         'values'  => $a_values['val'.$a_names[$name]],
+         'key'     => $name,
+         'color'   => '#'.$colordisplay,
+         'formaty' => $formaty
       );
       $nSerie++;
    }
