@@ -208,7 +208,8 @@ class PluginMonitoringHost extends CommonDBTM {
          case 'Central' :
             $pmDisplay = new PluginMonitoringDisplay();
             // $pmDisplay->showHostsCounters("Hosts", 1, 1);
-            $pmDisplay->showHostsBoard();
+            $params = Search::manageParams("PluginMonitoringHost", array());
+            $pmDisplay->showHostsBoard($params);
             return true;
 
       }
