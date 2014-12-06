@@ -683,62 +683,53 @@ class PluginMonitoringService extends CommonDBTM {
       echo "</tr>";
 
       echo "<table class='tab_cadre_fixe'>";
-
+      $previous_componentscatalog = 0;
       foreach ($data['data']['rows'] as $row) {
          $pmComponentscatalog->getFromDB($row[8][0]['id']);
 
-         echo "<tr class='tab_bg_1'>";
-         echo "<th colspan='14'>".$pmComponentscatalog->getTypeName()."&nbsp;:&nbsp;".$pmComponentscatalog->getLink()."</th>";
-         echo "</tr>";
-
-         echo "<tr class='tab_bg_1'>";
-         // echo "<th>";
-         // echo __('Show counters', 'monitoring');
-         // echo "</th>";
-         echo "<th>";
-         echo __('Show graphics', 'monitoring');
-         echo "</th>";
-         echo "<th>";
-         echo __('Component', 'monitoring');
-         echo "</th>";
-         echo "<th>";
-         echo __('Resource state', 'monitoring');
-         echo "</th>";
-         echo "<th>";
-         echo __('Last check', 'monitoring');
-         echo "</th>";
-         echo "<th>";
-         echo __('Result details', 'monitoring');
-         echo "</th>";
-         echo "<th>";
-         echo __('Check period', 'monitoring');
-         echo "</th>";
-         echo "<th>".__('Current month', 'monitoring')." ".Html::showToolTip(__('Availability', 'monitoring'), array('display'=>false))."</th>";
-         echo "<th>".__('Last month', 'monitoring')." ".Html::showToolTip(__('Availability', 'monitoring'), array('display'=>false))."</th>";
-         echo "<th>".__('Current year', 'monitoring')." ".Html::showToolTip(__('Availability', 'monitoring'), array('display'=>false))."</th>";
-         echo "<th>".__('Detail', 'monitoring')."</th>";
-         echo '<th>'.__('Acknowledge', 'monitoring').'</th>';
-         echo "<th>".__('Arguments', 'monitoring')."</th>";
-         echo "</tr>";
-
-//         $querys = "SELECT `glpi_plugin_monitoring_services`.* FROM `glpi_plugin_monitoring_services`
-//            LEFT JOIN `glpi_plugin_monitoring_components`
-//               on `plugin_monitoring_components_id` = `glpi_plugin_monitoring_components`.`id`
-//            WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$row['id']."'
-//               ORDER BY `name`";
-//         $results = $DB->query($querys);
-//         while ($datas=$DB->fetch_array($results)) {
-//            $this->getFromDB($datas['id']);
-
+         if ($row[8][0]['id'] != $previous_componentscatalog) {
+            if ($previous_componentscatalog != 0) {
+               echo "<tr style='border:1px solid #ccc;background-color:#ffffff'>";
+               echo "<td colspan='14' height='5'></td>";
+               echo "</tr>";
+            }
             echo "<tr class='tab_bg_1'>";
-            PluginMonitoringDisplay::displayLine($row, 0);
+            echo "<th colspan='14'>".$pmComponentscatalog->getTypeName()."&nbsp;:&nbsp;".$pmComponentscatalog->getLink()."</th>";
             echo "</tr>";
 
-//         }
-
-         echo "<tr style='border:1px solid #ccc;background-color:#ffffff'>";
-         echo "<td colspan='14' height='5'></td>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<th>";
+            echo __('Show graphics', 'monitoring');
+            echo "</th>";
+            echo "<th>";
+            echo __('Component', 'monitoring');
+            echo "</th>";
+            echo "<th>";
+            echo __('Resource state', 'monitoring');
+            echo "</th>";
+            echo "<th>";
+            echo __('Last check', 'monitoring');
+            echo "</th>";
+            echo "<th>";
+            echo __('Result details', 'monitoring');
+            echo "</th>";
+            echo "<th>";
+            echo __('Check period', 'monitoring');
+            echo "</th>";
+            echo "<th>".__('Current month', 'monitoring')." ".Html::showToolTip(__('Availability', 'monitoring'), array('display'=>false))."</th>";
+            echo "<th>".__('Last month', 'monitoring')." ".Html::showToolTip(__('Availability', 'monitoring'), array('display'=>false))."</th>";
+            echo "<th>".__('Current year', 'monitoring')." ".Html::showToolTip(__('Availability', 'monitoring'), array('display'=>false))."</th>";
+            echo "<th>".__('Detail', 'monitoring')."</th>";
+            echo '<th>'.__('Acknowledge', 'monitoring').'</th>';
+            echo "<th>".__('Arguments', 'monitoring')."</th>";
+            echo "</tr>";
+         }
+         echo "<tr class='tab_bg_1'>";
+         PluginMonitoringDisplay::displayLine($row, 0);
          echo "</tr>";
+
+         $previous_componentscatalog = $row[8][0]['id'];
+
       }
 
       echo "</table>";
