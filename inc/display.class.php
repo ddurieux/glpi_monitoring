@@ -674,8 +674,8 @@ class PluginMonitoringDisplay extends CommonDBTM {
       }
 
       // Pour la génération des graphes ...
-      echo '<div id="custom_date" style="display:none"></div>';
-      echo '<div id="custom_time" style="display:none"></div>';
+      echo '<div style="display:none"><input type="text" id="custom_date" value="'.date('m/d/Y').'"> '
+              . ' <input type="text" id="custom_time" value="'.date('H:i').'"></div>';
 
       echo "<br/>";
       if ($perfdatas) {
@@ -1093,9 +1093,12 @@ echo "
                $div = ob_get_contents();
                ob_end_clean();
                $chart = "<table width='600' class='tab_cadre'><tr><td>".$div."</td></tr></table>";
-               Html::showToolTip($chart,
+               $qtip = Html::showToolTip($chart,
                        array(
-                          'img'=>$CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png' width='26' height='32'"));
+                          'img'     => $CFG_GLPI['root_doc']."/plugins/monitoring/pics/stats_32.png' width='26' height='32'",
+                          'display' => false));
+               $qtip = str_replace('qtip-shadow qtip-bootstrap', 'qtip-shadow qtip-bootstrap qtip-monitoring', $qtip);
+               echo $qtip;
                $pmServicegraph->displayGraph($pMonitoringComponent->fields['graph_template'],
                                              "PluginMonitoringService",
                                              $data['id'],

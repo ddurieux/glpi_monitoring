@@ -384,8 +384,8 @@ class PluginMonitoringSlider extends CommonDBTM {
       PluginMonitoringToolbox::loadLib();
 
       $this->getFromDB($id);
-      echo '<div id="custom_date" style="display:none"></div>';
-      echo '<div id="custom_time" style="display:none"></div>';
+      echo '<div style="display:none"><input type="text" id="custom_date" value="'.date('m/d/Y').'"> '
+              . ' <input type="text" id="custom_time" value="'.date('H:i').'"></div>';
 
       echo '<script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/slider.js-14/js/jssor.slider.mini.js"></script>
 <script>

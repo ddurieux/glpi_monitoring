@@ -108,7 +108,7 @@ class PluginMonitoringServicegraph {
          if ($part == ''
                  OR $part == 'div') {
             echo '<div id="chart'.$ident.'">'.
-                '<svg style="width: '.$width.'px;display: block;"></svg>'.
+                '<svg style="width: '.$width.'px;display: block;height: 300px;"></svg>'.
               '</div>';
 
             echo "<div id=\"updategraph".$items_id.$time."\"></div>";
