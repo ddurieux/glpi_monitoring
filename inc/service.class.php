@@ -584,7 +584,9 @@ class PluginMonitoringService extends CommonDBTM {
          case 'Central' :
             $pmDisplay = new PluginMonitoringDisplay();
             // $pmDisplay->showCounters('Ressources');
-            $pmDisplay->showResourcesBoard();
+            $params = Search::manageParams("PluginMonitoringService", array());
+            $params['itemtype'] = 'PluginMonitoringService';
+            $pmDisplay->showResourcesBoard('', true, $params);
             //$pmDisplay->showResourcesBoard('', $perfdatas);
             return true;
 
