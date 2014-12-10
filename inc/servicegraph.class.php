@@ -182,6 +182,14 @@ class PluginMonitoringServicegraph {
                           "&components_id=".$pmComponent->fields['id']."', function(data) {
                 data".$ident." = data;
 
+                var newDate = $('#custom_date').val() + ' ' + $('#custom_time').val();
+                var timestamp = new Date(newDate).getTime();
+                if (timestamp > (new Date().getTime() - 3600000)) {
+                    var datenow = new Date();
+                    $('#custom_time').val(datenow.getHours() + ':' + datenow.getMinutes());
+                    $('#custom_date').val((datenow.getMonth() + 1) + '/' + datenow.getDate() + '/' + datenow.getFullYear());
+                }
+
                 redraw".$ident."();
                 setTimeout(worker".$items_id.$time.", 30000);
               });
