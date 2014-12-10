@@ -53,12 +53,13 @@ $pmDisplay = new PluginMonitoringDisplay();
 $pmDisplay->menu();
 
 // Show table sorted on day descending ...
-/*
+if (! isset($_GET['sort'])) {
+   $_GET['sort'] = 4;
+   $_GET['order'] = 'DESC';
+}
 Search::manageGetValues('PluginMonitoringHostdailycounter');
-Search::show('PluginMonitoringHostdailycounter', array(
-   'sort' => 4, 'order' => 'DESC'
-   ));
-*/
+Search::show('PluginMonitoringHostdailycounter');
+/*
 Search::manageGetValues('PluginMonitoringHostdailycounter');
 Search::showGenericSearch('PluginMonitoringHostdailycounter', array(
    'sort' => 4, 'order' => 'DESC'
@@ -66,6 +67,7 @@ Search::showGenericSearch('PluginMonitoringHostdailycounter', array(
 Search::showList('PluginMonitoringHostdailycounter', array(
    'sort' => 4, 'order' => 'DESC'
    ));
+*/
 
 PluginMonitoringHostdailycounter::runCheckCounters(
    isset($_GET['date']) ? $_GET['date'] : '', 
