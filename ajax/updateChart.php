@@ -226,13 +226,16 @@ foreach ($mydatat as $name=>$data) {
       } else if (strstr(strtolower($name), "crit")) {
          $area = 'false';
       }
-      $a_data[] = array(
-         'area'    => $area,
+      $inp = array(
          'values'  => $a_values['val'.$a_names[$name]],
          'key'     => $name,
          'color'   => '#'.$colordisplay,
          'formaty' => $formaty
       );
+      if ($area == 'true') {
+         $inp['area'] = $area;
+      }
+      $a_data[] = $inp;
       $nSerie++;
    }
 }
