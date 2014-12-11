@@ -55,15 +55,15 @@ class PluginMonitoringMessage extends CommonDBTM {
       // Display if shinken is in restart or if restarted less than 5 minutes
       echo "<div id='shikenrestart'></div>";
 
-echo "<script type=\"text/javascript\">
-(function worker() {
-  $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateshinkenrestartmessage.php"
-        ."?glpiID=".$_SESSION['glpiID']."', function(data) {
-    $('#shikenrestart').html(data);
-    setTimeout(worker, 30000);
-  });
-})();
-</script>";
+      echo "<script type=\"text/javascript\">
+      (function worker() {
+        $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateshinkenrestartmessage.php"
+              ."?glpiID=".$_SESSION['glpiID']."', function(data) {
+          $('#shikenrestart').html(data);
+          setTimeout(worker, 30000);
+        });
+      })();
+      </script>";
 
       $servicecatalog = '';
       $confchanges = '';
