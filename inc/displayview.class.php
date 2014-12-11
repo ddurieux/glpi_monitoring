@@ -649,9 +649,6 @@ class PluginMonitoringDisplayview extends CommonDBTM {
    function ajaxLoad($id) {
       global $CFG_GLPI;
 
-      $sess_id = session_id();
-      PluginMonitoringSecurity::updateSession();
-
       echo "<script type=\"text/javascript\">
 
       var elcc".$id." = Ext.get(\"updatedisplayview".$id."\");
@@ -660,9 +657,8 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       mgrcc".$id.".showLoadIndicator=false;
       mgrcc".$id.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"].
               "/plugins/monitoring/ajax/updateWidgetDisplayview.php\","
-              . " \"id=".$id."&sess_id=".$sess_id.
+              . " \"id=".$id.
               "&glpiID=".$_SESSION['glpiID'].
-              "&plugin_monitoring_securekey=".$_SESSION['plugin_monitoring_securekey'].
               "\", \"\", true);
       </script>";
    }
@@ -672,9 +668,6 @@ class PluginMonitoringDisplayview extends CommonDBTM {
    function ajaxLoad2($id, $is_minemap) {
       global $CFG_GLPI;
 
-      $sess_id = session_id();
-      PluginMonitoringSecurity::updateSession();
-
       echo "<script type=\"text/javascript\">
 
       var elcc".$id." = Ext.get(\"updatedisplayview2-".$id."\");
@@ -683,9 +676,8 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       mgrcc".$id.".showLoadIndicator=false;
       mgrcc".$id.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"].
               "/plugins/monitoring/ajax/updateWidgetDisplayview2.php\","
-              . " \"id=".$id."&is_minemap=".$is_minemap."&sess_id=".$sess_id.
+              . " \"id=".$id."&is_minemap=".$is_minemap.
               "&glpiID=".$_SESSION['glpiID'].
-              "&plugin_monitoring_securekey=".$_SESSION['plugin_monitoring_securekey'].
               "\", \"\", true);
       </script>";
    }

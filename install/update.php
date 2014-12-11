@@ -2571,43 +2571,6 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
 
     /*
-    * Table glpi_plugin_monitoring_securities
-    */
-      $a_table = array();
-      $a_table['name'] = 'glpi_plugin_monitoring_securities';
-      $a_table['oldname'] = array();
-
-      $a_table['fields']  = array(
-         'id'           => array('type'    => 'autoincrement', 'value'   => ''),
-         'users_id'
-                        => array('type'    => 'integer',       'value'   => 0),
-         'key'
-                        => array('type'    => 'string',        'value'   => NULL),
-         'session_id'
-                        => array('type'    => 'string',        'value'   => NULL),
-         'last_session_start'
-                        => array('type'    => 'datetime',      'value'   => NULL),
-         'session'
-                        => array('type'    => 'text',          'value'   => NULL),
-      );
-
-      $a_table['oldfields']  = array();
-
-      $a_table['renamefields'] = array();
-
-      $a_table['keys'] = array();
-      $a_table['keys'][] = array('field' => array("users_id", "last_session_start"),
-                                 'name' => 'users_id',
-                                 'type' => 'INDEX');
-
-      $a_table['oldkeys'] = array();
-
-      migrateTablesMonitoring($migration, $a_table);
-
-
-
-
-    /*
     * Table glpi_plugin_monitoring_servicedefs
     */
       $newTable = "glpi_plugin_monitoring_servicedefs";
@@ -3421,6 +3384,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       }
       if (TableExists("glpi_plugin_monitoring_servicegraphs")) {
          $DB->query("DROP TABLE `glpi_plugin_monitoring_servicegraphs`");
+      }
+      if (TableExists("glpi_plugin_monitoring_securities")) {
+         $DB->query("DROP TABLE `glpi_plugin_monitoring_securities`");
       }
 
 

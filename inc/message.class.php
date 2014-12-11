@@ -52,28 +52,13 @@ class PluginMonitoringMessage extends CommonDBTM {
 
       $pmMessage = new self();
 
-      $sess_id = session_id();
-//      PluginMonitoringSecurity::updateSession();
-
       // Display if shinken is in restart or if restarted less than 5 minutes
       echo "<div id='shikenrestart'></div>";
-//      echo "<script type=\"text/javascript\">
-//      var elshikenrestart = Ext.get(\"shikenrestart\");
-//      var mgrshikenrestart = elshikenrestart.getUpdateManager();
-//      mgrshikenrestart.loadScripts=true;
-//      mgrshikenrestart.showLoadIndicator=false;
-//      mgrshikenrestart.startAutoRefresh(30, \"".$CFG_GLPI["root_doc"].
-//                 "/plugins/monitoring/ajax/updateshinkenrestartmessage.php\","
-//              . " \"sess_id=".$sess_id.
-//              "&glpiID=".$_SESSION['glpiID'].
-//              "&plugin_monitoring_securekey=".$_SESSION['plugin_monitoring_securekey'].
-//              "\", \"\", true);";
-//      echo "</script>";
 
 echo "<script type=\"text/javascript\">
 (function worker() {
   $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateshinkenrestartmessage.php"
-        ."?sess_id=".$sess_id."&glpiID=".$_SESSION['glpiID']."', function(data) {
+        ."?glpiID=".$_SESSION['glpiID']."', function(data) {
     $('#shikenrestart').html(data);
     setTimeout(worker, 30000);
   });

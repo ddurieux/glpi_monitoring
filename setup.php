@@ -73,7 +73,6 @@ function plugin_init_monitoring() {
               array('addtabon' => array('Central')));
          Plugin::registerClass('PluginMonitoringProfile',
               array('addtabon' => array('Profile')));
-         Plugin::registerClass('PluginMonitoringSecurity');
          Plugin::registerClass('PluginMonitoringServicescatalog',
               array('addtabon' => array('Central')));
          Plugin::registerClass('PluginMonitoringUnavailability',
@@ -89,11 +88,6 @@ function plugin_init_monitoring() {
          Plugin::registerClass('PluginMonitoringServiceevent',
               array('addtabon' => array('Computer')));
          Plugin::registerClass('PluginMonitoringHostCounter');
-
-         include_once GLPI_ROOT.'/plugins/monitoring/inc/security.class.php';
-         $pmSecurity = new PluginMonitoringSecurity();
-         $pmSecurity->updateSecurity();
-
 
          $PLUGIN_HOOKS['use_massive_action']['monitoring']=1;
          $PLUGIN_HOOKS['add_css']['monitoring'] = array(
@@ -246,9 +240,7 @@ function plugin_init_monitoring() {
                                        'PluginMonitoringComponentscatalog_rule' =>
                                              array('PluginMonitoringComponentscatalog_rule','getItemsDynamicly'),
                                        'PluginMonitoringComponentscatalog_Host' =>
-                                             array('PluginMonitoringHost','addHost'),
-                                       'Profile_User' =>
-                                             array('PluginMonitoringSecurity','cleanforUser'));
+                                             array('PluginMonitoringHost','addHost'));
          $PLUGIN_HOOKS['item_update']['monitoring'] =
                                  array('Computer'         => $rule_check,
                                        'NetworkEquipment' => $rule_check,
@@ -263,11 +255,6 @@ function plugin_init_monitoring() {
                                  array('PluginMonitoringHostdailycounter' =>
                                              array('PluginMonitoringHostdailycounter','pre_item_update')
                                  );
-
-         $PLUGIN_HOOKS['item_delete']['monitoring'] =
-                                 array('Profile_User' =>
-                                             array('PluginMonitoringSecurity','cleanforUser'));
-
 
          $PLUGIN_HOOKS['item_purge']['monitoring'] =
                                  array('Computer'         => $rule_check,
@@ -284,9 +271,7 @@ function plugin_init_monitoring() {
                                        'PluginMonitoringComponentscatalog' =>
                                              array('PluginMonitoringComponentscatalog','removeCatalog'),
                                        'PluginMonitoringBusinessrulegroup' =>
-                                             array('PluginMonitoringBusinessrule','removeBusinessruleonDeletegroup'),
-                                       'Profile_User' =>
-                                             array('PluginMonitoringSecurity','cleanforUser'));
+                                             array('PluginMonitoringBusinessrule','removeBusinessruleonDeletegroup'));
 
          if (!isset($_SESSION['glpi_plugin_monitoring']['_refresh'])) {
             $_SESSION['glpi_plugin_monitoring']['_refresh'] = '60';

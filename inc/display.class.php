@@ -2620,9 +2620,6 @@ echo "
       }
 
       if ($ajax == 1) {
-         $sess_id = session_id();
-         PluginMonitoringSecurity::updateSession();
-
          echo "<div id=\"updatecounter".$type."\"></div>";
          echo "<script type=\"text/javascript\">
 
@@ -2632,9 +2629,8 @@ echo "
          mgrcc".$type.".showLoadIndicator=false;
          mgrcc".$type.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"].
                  "/plugins/monitoring/ajax/updateHostsCounter.php\","
-                 . " \"type=".$type."&sess_id=".$sess_id.
+                 . " \"type=".$type.
                  "&glpiID=".$_SESSION['glpiID'].
-                 "&plugin_monitoring_securekey=".$_SESSION['plugin_monitoring_securekey'].
                  "\", \"\", true);
          </script>";
       } else {

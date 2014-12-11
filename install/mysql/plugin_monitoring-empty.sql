@@ -647,21 +647,6 @@ CREATE TABLE `glpi_plugin_monitoring_profiles` (
 
 
 
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_securities`;
-
-CREATE TABLE `glpi_plugin_monitoring_securities` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `users_id` int(11) NOT NULL DEFAULT '0',
-  `key` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `session_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `last_session_start`  datetime DEFAULT NULL,
-  `session` text DEFAULT NULL COLLATE utf8_unicode_ci,
-  PRIMARY KEY (`id`),
-  KEY `users_id` (`users_id`, `last_session_start`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_servicedefs`;
 
 CREATE TABLE `glpi_plugin_monitoring_servicedefs` (
