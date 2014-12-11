@@ -255,7 +255,6 @@ echo "<script type=\"text/javascript\">
 
 
    function displayShinkenRestart() {
-      global $CFG_GLPI;
 
       $pmLog = new PluginMonitoringLog();
 
