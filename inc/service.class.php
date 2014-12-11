@@ -636,6 +636,7 @@ class PluginMonitoringService extends CommonDBTM {
 
       $data = Search::prepareDatasForSearch('PluginMonitoringService', $params, $col_to_display);
       $data['tocompute'] = $data['toview'];
+      $data['search']['export_all'] = true;
       Search::constructSQL($data);
       Search::constructDatas($data);
 
