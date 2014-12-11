@@ -60,43 +60,6 @@ class PluginMonitoringPerfdataDetail extends CommonDBTM {
 
 
 
-   function showDetail($perfdatadetails_id) {
-      $this->getFromDB($perfdatadetails_id);
-      echo "<tr class='tab_bg_1'>";
-      echo "<td><strong>";
-      echo $this->fields['name'];
-      echo "</strong></td>";
-      echo "<td>";
-      Dropdown::showYesNo('dynamic_name', $this->fields['dynamic_name']);
-      echo "</td>";
-      echo "<td>";
-      echo $this->fields['position'];
-      echo "</td>";
-      for ($i=1; $i<9; $i++) {
-         echo "<td>";
-         if ($i <= $this->fields['dsname_num']) {
-            echo "<input type='text' name='dsname".$i."' value='".$this->fields['dsname'.$i]."' />";
-            $checked = '';
-            if ($this->fields['dsnameincr'.$i] == 1) {
-               $checked = 'checked';
-            }
-            echo "<br/><input type='checkbox' name='dsnameincr".$i."' title='".__('Incremental', 'monitoring')."' $checked />";
-            echo __('Incremental', 'monitoring');
-         }
-         echo "</td>";
-      }
-
-      if (Session::haveRight("config", UPDATE)) {
-         echo "<td>";
-         echo "<input type='hidden' name='id' value='".$this->fields['id']."'/>";
-         echo "<input type='submit' class='submit' name='update' value='update'/>";
-         echo "</td>";
-      }
-      echo "</tr>";
-   }
-
-
-
    static function updateDetailForPerfdata($perfdata, $perfdatas_id) {
 
       $a_lines = array();
