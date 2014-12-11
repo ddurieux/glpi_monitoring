@@ -164,8 +164,6 @@ class PluginMonitoringServicegraph {
                     .transition().duration(50)
                     .call(chart'.$ident.');
 
-
-
                  return chart'.$ident.';
                });
             };';
@@ -192,7 +190,17 @@ class PluginMonitoringServicegraph {
                 }
 
                 redraw".$ident."();
-                setTimeout(worker".$items_id.$time.", 30000);
+                ";
+                $refresh = 30; // 30 seconds
+                if ($time == '12h') {
+                   $refresh = 240; // 4 minutes
+                } else if ($time == '1d') {
+                   $refresh = 600; // 10 minutes
+                } else if ($time == '1w') {
+                   $refresh = 1800; // 30 minutes
+                }
+                echo "
+                setTimeout(worker".$items_id.$time.", ".$refresh."000);
               });
             })();";
             echo "
