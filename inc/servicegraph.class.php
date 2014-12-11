@@ -142,8 +142,9 @@ class PluginMonitoringServicegraph {
             var chart'.$ident.';
             redraw'.$ident.' = function () {
                nv.addGraph(function() {
-                  formaty = data'.$ident.'[0]["formaty"];
-
+                  if (typeof data'.$ident.'[0] != "undefined") {
+                     formaty = data'.$ident.'[0]["formaty"];
+                  }
                   chart'.$ident.' = nv.models.lineChart();
 
                   chart'.$ident.'.useInteractiveGuideline(true);
