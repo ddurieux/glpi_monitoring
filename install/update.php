@@ -3605,6 +3605,41 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    }
 
 
+   // Udpate componentcatalog_rules with new search engine (0.85)
+   $query = "SELECT *
+      FROM `glpi_plugin_monitoring_componentscatalogs_rules`";
+   $result = $DB->query($query);
+   while ($data=$DB->fetch_array($result)) {
+      $data_array = importArrayFromDB($data['condition']);
+      if (!isset($data_array['searchtype'])) {
+         continue;
+      }
+      $criteria = array();
+      foreach ($data_array['field'] as $num=>$value) {
+         $criteria[$num]['field'] = $value;
+      }
+      unset($data_array['field']);
+      foreach ($data_array['searchtype'] as $num=>$value) {
+         $criteria[$num]['searchtype'] = $value;
+      }
+      unset($data_array['searchtype']);
+      foreach ($data_array['contains'] as $num=>$value) {
+         $criteria[$num]['value'] = $value;
+      }
+      unset($data_array['contains']);
+      if (isset($data_array['link'])) {
+         foreach ($data_array['link'] as $num=>$value) {
+            $criteria[$num]['link'] = $value;
+         }
+         unset($data_array['link']);
+      }
+      $data_array['criteria'] = $criteria;
+      unset($data_array['_glpi_csrf_token']);
+      $DB->query("UPDATE `glpi_plugin_monitoring_componentscatalogs_rules` "
+              . "SET `condition`='".exportArrayToDB($data_array)."' "
+              . "WHERE `id`='".$data['id']."'");
+   }
+
 
 
    // * Update unavailability (with table glpi_plugin_monitoring_unavailabilitystates)
