@@ -196,12 +196,12 @@ class PluginMonitoringShinken extends CommonDBTM {
    function removeAccents($str) {
       $a = array('À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ø', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'ß', 'à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', 'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ', 'Ā', 'ā', 'Ă', 'ă', 'Ą', 'ą', 'Ć', 'ć', 'Ĉ', 'ĉ', 'Ċ', 'ċ', 'Č', 'č', 'Ď', 'ď', 'Đ', 'đ', 'Ē', 'ē', 'Ĕ', 'ĕ', 'Ė', 'ė', 'Ę', 'ę', 'Ě', 'ě', 'Ĝ', 'ĝ', 'Ğ', 'ğ', 'Ġ', 'ġ', 'Ģ', 'ģ', 'Ĥ', 'ĥ', 'Ħ', 'ħ', 'Ĩ', 'ĩ', 'Ī', 'ī', 'Ĭ', 'ĭ', 'Į', 'į', 'İ', 'ı', 'Ĳ', 'ĳ', 'Ĵ', 'ĵ', 'Ķ', 'ķ', 'Ĺ', 'ĺ', 'Ļ', 'ļ', 'Ľ', 'ľ', 'Ŀ', 'ŀ', 'Ł', 'ł', 'Ń', 'ń', 'Ņ', 'ņ', 'Ň', 'ň', 'ŉ', 'Ō', 'ō', 'Ŏ', 'ŏ', 'Ő', 'ő', 'Œ', 'œ', 'Ŕ', 'ŕ', 'Ŗ', 'ŗ', 'Ř', 'ř', 'Ś', 'ś', 'Ŝ', 'ŝ', 'Ş', 'ş', 'Š', 'š', 'Ţ', 'ţ', 'Ť', 'ť', 'Ŧ', 'ŧ', 'Ũ', 'ũ', 'Ū', 'ū', 'Ŭ', 'ŭ', 'Ů', 'ů', 'Ű', 'ű', 'Ų', 'ų', 'Ŵ', 'ŵ', 'Ŷ', 'ŷ', 'Ÿ', 'Ź', 'ź', 'Ż', 'ż', 'Ž', 'ž', 'ſ', 'ƒ', 'Ơ', 'ơ', 'Ư', 'ư', 'Ǎ', 'ǎ', 'Ǐ', 'ǐ', 'Ǒ', 'ǒ', 'Ǔ', 'ǔ', 'Ǖ', 'ǖ', 'Ǘ', 'ǘ', 'Ǚ', 'ǚ', 'Ǜ', 'ǜ', 'Ǻ', 'ǻ', 'Ǽ', 'ǽ', 'Ǿ', 'ǿ', 'Ά', 'ά', 'Έ', 'έ', 'Ό', 'ό', 'Ώ', 'ώ', 'Ί', 'ί', 'ϊ', 'ΐ', 'Ύ', 'ύ', 'ϋ', 'ΰ', 'Ή', 'ή');
       $b = array('A', 'A', 'A', 'A', 'A', 'A', 'AE', 'C', 'E', 'E', 'E', 'E', 'I', 'I', 'I', 'I', 'D', 'N', 'O', 'O', 'O', 'O', 'O', 'O', 'U', 'U', 'U', 'U', 'Y', 's', 'a', 'a', 'a', 'a', 'a', 'a', 'ae', 'c', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'n', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y', 'y', 'A', 'a', 'A', 'a', 'A', 'a', 'C', 'c', 'C', 'c', 'C', 'c', 'C', 'c', 'D', 'd', 'D', 'd', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'G', 'g', 'G', 'g', 'G', 'g', 'G', 'g', 'H', 'h', 'H', 'h', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'IJ', 'ij', 'J', 'j', 'K', 'k', 'L', 'l', 'L', 'l', 'L', 'l', 'L', 'l', 'l', 'l', 'N', 'n', 'N', 'n', 'N', 'n', 'n', 'O', 'o', 'O', 'o', 'O', 'o', 'OE', 'oe', 'R', 'r', 'R', 'r', 'R', 'r', 'S', 's', 'S', 's', 'S', 's', 'S', 's', 'T', 't', 'T', 't', 'T', 't', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'W', 'w', 'Y', 'y', 'Y', 'Z', 'z', 'Z', 'z', 'Z', 'z', 's', 'f', 'O', 'o', 'U', 'u', 'A', 'a', 'I', 'i', 'O', 'o', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'A', 'a', 'AE', 'ae', 'O', 'o', 'Α', 'α', 'Ε', 'ε', 'Ο', 'ο', 'Ω', 'ω', 'Ι', 'ι', 'ι', 'ι', 'Υ', 'υ', 'υ', 'υ', 'Η', 'η');
-      
+
       return str_replace($a, $b, $str);
    }
 
    function shinkenFilter($str) {
-      
+
       return preg_replace("/[^A-Za-z0-9\-_]/","", strtolower(self::removeAccents($str)));
    }
 
@@ -351,10 +351,15 @@ class PluginMonitoringShinken extends CommonDBTM {
       $calendar      = new Calendar();
       $pmRealm       = new PluginMonitoringRealm();
       $networkEquipment = new NetworkEquipment();
-      $pmContact_Item   = new PluginMonitoringContact_Item();
-      $profile_User     = new Profile_User();
+      $pmContact_Item = new PluginMonitoringContact_Item();
+      $profile_User   = new Profile_User();
       $pmEventhandler = new PluginMonitoringEventhandler();
-      $user = new User();
+      $user           = new User();
+      $pmConfig       = new PluginMonitoringConfig();
+      $computerType   = new ComputerType();
+
+      // Get computer type contener / VM
+      $conteners = $computerType->find("`name`='BSDJail'");
 
       $a_hosts = array();
       $i=0;
@@ -533,6 +538,24 @@ class PluginMonitoringShinken extends CommonDBTM {
                // IP address
                $ip = PluginMonitoringHostaddress::getIp($data['items_id'], $data['itemtype'], $class->fields['name']);
                $a_hosts[$i]['address'] = $ip;
+
+               // use host IP of contener if activated
+                  if ($data['itemtype'] == 'Computer') {
+                     $pmConfig->getFromDB(1);
+                     if ($pmConfig->fields['nrpe_prefix_contener'] == 1) {
+                        if (isset($conteners[$class->fields['computertypes_id']])) {
+                           // get Host of contener/VM
+                           $where = "LOWER(`uuid`)".  ComputerVirtualMachine::getUUIDRestrictRequest($class->fields['uuid']);
+                           $hosts = getAllDatasFromTable('glpi_computervirtualmachines', $where);
+                           if (!empty($hosts)) {
+                              $host = current($hosts);
+                              $ip = PluginMonitoringHostaddress::getIp($host['computers_id'], 'Computer', '');
+                              $a_hosts[$i]['address'] = $ip;
+                           }
+                        }
+                     }
+                  }
+
 
                // Manage dependencies
                $parent = '';
@@ -968,10 +991,15 @@ class PluginMonitoringShinken extends CommonDBTM {
       $pmHostconfig            = new PluginMonitoringHostconfig();
       $calendar                = new Calendar();
       $user                    = new User();
-      $profile_User = new Profile_User();
+      $profile_User            = new Profile_User();
+      $pmConfig                = new PluginMonitoringConfig();
+      $computerType            = new ComputerType();
 
       $a_services = array();
       $i=0;
+
+      // Get computer type contener / VM
+      $conteners = $computerType->find("`name`='BSDJail'");
 
       // TODO: only contacts in allowed entities ...
       // Prepare individual contacts
@@ -1048,6 +1076,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             $resulth = $DB->query($queryh);
             $hostname = '';
             $plugin_monitoring_componentscatalogs_id = 0;
+            $computerTypes_id = 0;
             while ($datah=$DB->fetch_array($resulth)) {
                $itemtype = $datah['itemtype'];
                $item = new $itemtype();
@@ -1062,6 +1091,9 @@ class PluginMonitoringShinken extends CommonDBTM {
                         $a_hostname_id[] = $datah['items_id'];
                         $hostname = $item->fields['name'];
                         $plugin_monitoring_componentscatalogs_id = $datah['plugin_monitoring_componentscalalog_id'];
+                        if ($itemtype == 'Computer') {
+                           $computerTypes_id = $item->fields['computertypes_id'];
+                        }
                      }
                   // }
                }
@@ -1207,6 +1239,21 @@ class PluginMonitoringShinken extends CommonDBTM {
                         $split = explode('-', current($a_hostname));
                         $ip = PluginMonitoringHostaddress::getIp($split[1], $split[0], '');
                         $alias_command = str_replace("[[IP]]", $ip, $alias_command);
+                     }
+                     if (current($a_hostname_type) == 'Computer') {
+                        $pmConfig->getFromDB(1);
+                        if ($pmConfig->fields['nrpe_prefix_contener'] == 1) {
+                           if (isset($conteners[$computerTypes_id])) {
+                              // get Host of contener/VM
+                              $where = "LOWER(`uuid`)".  ComputerVirtualMachine::getUUIDRestrictRequest($item->fields['uuid']);
+                              $hosts = getAllDatasFromTable('glpi_computervirtualmachines', $where);
+                              if (!empty($hosts)) {
+                                 $host = current($hosts);
+//                                 $ip = PluginMonitoringHostaddress::getIp($host['computers_id'], 'Computer', '');
+                                 $alias_command = current($a_hostname)."_".$alias_command;
+                              }
+                           }
+                        }
                      }
                      $a_services[$i]['check_command'] = PluginMonitoringCommand::$command_prefix . "check_nrpe!".$alias_command;
                   } else {

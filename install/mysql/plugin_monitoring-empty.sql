@@ -229,6 +229,7 @@ CREATE TABLE `glpi_plugin_monitoring_configs` (
   `version` varchar(255) DEFAULT NULL,
   `logretention` int(5) NOT NULL DEFAULT '30',
   `extradebug` tinyint(1) NOT NULL DEFAULT '0',
+  `nrpe_prefix_contener` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
