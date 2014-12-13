@@ -200,6 +200,11 @@ class PluginMonitoringDashboard extends CommonGLPI {
               'links' => array(
                   $main_menu => '/plugins/monitoring/front/menu.php',
                   'config'   => '/plugins/monitoring/front/config.form.php'
+              )),
+         'config' => array(
+              'title' => PluginMonitoringConfig::getTypeName(),
+              'links' => array(
+                  $main_menu => '/plugins/monitoring/front/menu.php'
               ))
 
          );
