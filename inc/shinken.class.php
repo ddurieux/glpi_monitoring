@@ -361,6 +361,8 @@ class PluginMonitoringShinken extends CommonDBTM {
       // Get computer type contener / VM
       $conteners = $computerType->find("`name`='BSDJail'");
 
+      $pmConfig->getFromDB(1);
+
       $a_hosts = array();
       $i=0;
       $a_parents_found = array();
@@ -426,6 +428,9 @@ class PluginMonitoringShinken extends CommonDBTM {
                $pmHost->getFromDBByQuery("WHERE `glpi_plugin_monitoring_hosts`.`itemtype` = '" . $data['itemtype'] . "' AND `glpi_plugin_monitoring_hosts`.`items_id` = '" . $data['items_id'] . "' LIMIT 1");
 
                $a_hosts[$i]['host_name'] = self::shinkenFilter($class->fields['name']);
+               if ($pmConfig->fields['append_id_hostname'] == 1) {
+                  $a_hosts[$i]['host_name'] .= ".".$class->fields['id'];
+               }
                // Fix if hostname is not defined ...
                if (empty($a_hosts[$i]['host_name'])) {
                   continue;
@@ -541,7 +546,6 @@ class PluginMonitoringShinken extends CommonDBTM {
 
                // use host IP of contener if activated
                   if ($data['itemtype'] == 'Computer') {
-                     $pmConfig->getFromDB(1);
                      if ($pmConfig->fields['nrpe_prefix_contener'] == 1) {
                         if (isset($conteners[$class->fields['computertypes_id']])) {
                            // get Host of contener/VM
@@ -1001,6 +1005,8 @@ class PluginMonitoringShinken extends CommonDBTM {
       // Get computer type contener / VM
       $conteners = $computerType->find("`name`='BSDJail'");
 
+      $pmConfig->getFromDB(1);
+
       // TODO: only contacts in allowed entities ...
       // Prepare individual contacts
       $a_contacts_entities = array();
@@ -1086,7 +1092,11 @@ class PluginMonitoringShinken extends CommonDBTM {
 
                      // Fix if hostname is not defined ...
                      if (! empty($item->fields['name'])) {
-                        $a_hostname[] = self::shinkenFilter($item->fields['name']);
+                        $h = self::shinkenFilter($item->fields['name']);
+                        if ($pmConfig->fields['append_id_hostname'] == 1) {
+                           $h .= ".".$datah['items_id'];
+                        }
+                        $a_hostname[] = $h;
                         $a_hostname_type[] = $datah['itemtype'];
                         $a_hostname_id[] = $datah['items_id'];
                         $hostname = $item->fields['name'];
@@ -1241,7 +1251,6 @@ class PluginMonitoringShinken extends CommonDBTM {
                         $alias_command = str_replace("[[IP]]", $ip, $alias_command);
                      }
                      if (current($a_hostname_type) == 'Computer') {
-                        $pmConfig->getFromDB(1);
                         if ($pmConfig->fields['nrpe_prefix_contener'] == 1) {
                            if (isset($conteners[$computerTypes_id])) {
                               // get Host of contener/VM
