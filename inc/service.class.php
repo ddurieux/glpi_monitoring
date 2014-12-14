@@ -351,7 +351,7 @@ class PluginMonitoringService extends CommonDBTM {
       $item = new $itemtype();
       if ($item->getFromDB($pmComponentscatalog_Host->fields['items_id'])) {
          if ($pmConfig->fields['append_id_hostname'] == 1) {
-            return  $item->fields['name'].".".$item->fields['id'];
+            return  $item->fields['name']."-".$item->fields['id'];
          }
          return ($item->fields['name']);
       }

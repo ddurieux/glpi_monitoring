@@ -429,7 +429,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
                $a_hosts[$i]['host_name'] = self::shinkenFilter($class->fields['name']);
                if ($pmConfig->fields['append_id_hostname'] == 1) {
-                  $a_hosts[$i]['host_name'] .= ".".$class->fields['id'];
+                  $a_hosts[$i]['host_name'] .= "-".$class->fields['id'];
                }
                // Fix if hostname is not defined ...
                if (empty($a_hosts[$i]['host_name'])) {
@@ -1094,7 +1094,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                      if (! empty($item->fields['name'])) {
                         $h = self::shinkenFilter($item->fields['name']);
                         if ($pmConfig->fields['append_id_hostname'] == 1) {
-                           $h .= ".".$datah['items_id'];
+                           $h .= "-".$datah['items_id'];
                         }
                         $a_hostname[] = $h;
                         $a_hostname_type[] = $datah['itemtype'];
