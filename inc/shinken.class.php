@@ -1073,9 +1073,10 @@ class PluginMonitoringShinken extends CommonDBTM {
             if (empty($a_component)) {
                continue;
             }
-            $a_hostname = array();
-            $a_hostname_type = array();
-            $a_hostname_id = array();
+            $a_hostname        = array();
+            $a_hostname_single = array();
+            $a_hostname_type   = array();
+            $a_hostname_id     = array();
             $queryh = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
                WHERE `id` = '".$data['plugin_monitoring_componentscatalogs_hosts_id']."'
                LIMIT 1";
@@ -1093,6 +1094,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                      // Fix if hostname is not defined ...
                      if (! empty($item->fields['name'])) {
                         $h = self::shinkenFilter($item->fields['name']);
+                        $a_hostname_single[] = $h;
                         if ($pmConfig->fields['append_id_hostname'] == 1) {
                            $h .= "-".$datah['items_id'];
                         }
@@ -1259,7 +1261,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                               if (!empty($hosts)) {
                                  $host = current($hosts);
 //                                 $ip = PluginMonitoringHostaddress::getIp($host['computers_id'], 'Computer', '');
-                                 $alias_command = current($a_hostname)."_".$alias_command;
+                                 $alias_command = current($a_hostname_single)."_".$alias_command;
                               }
                            }
                         }
