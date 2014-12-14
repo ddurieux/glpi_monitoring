@@ -341,13 +341,18 @@ class PluginMonitoringService extends CommonDBTM {
     * Get host name for a service
     */
    function getHostName() {
-      global $DB;
 
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
+      $pmConfig                 = new PluginMonitoringConfig();
+
+      $pmConfig->getFromDB(1);
       $pmComponentscatalog_Host->getFromDB($this->fields['plugin_monitoring_componentscatalogs_hosts_id']);
       $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
       $item = new $itemtype();
       if ($item->getFromDB($pmComponentscatalog_Host->fields['items_id'])) {
+         if ($pmConfig->fields['append_id_hostname'] == 1) {
+            return  $item->fields['name'].".".$item->fields['id'];
+         }
          return ($item->fields['name']);
       }
 
