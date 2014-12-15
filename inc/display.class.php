@@ -671,6 +671,11 @@ class PluginMonitoringDisplay extends CommonDBTM {
          // Search case
          $begin_display = $data['data']['begin'];
          $end_display   = $data['data']['end'];
+      } else {
+         $search_config_top    = "";
+         $search_config_bottom = "";
+         $begin_display = 0;
+         $end_display   = 0;
       }
 
       // Pour la génération des graphes ...
