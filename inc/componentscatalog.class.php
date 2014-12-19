@@ -323,14 +323,6 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                   elTr.setDisplayed(! elTr.isDisplayed());
                   displayed = elTr.isDisplayed();
                });
-               // if (! displayed) {
-                  // el.select('tr.header').each(function(elTr) {
-                     // elTr.applyStyles({'height':'10px'});
-                     // elTr.select('th').each(function(elTd) {
-                        // elTd.applyStyles({'height':'10px'});
-                     // });
-                  // });
-               // }
                el.select('tr.header').each(function(elTr) {
                   elTr.applyStyles(displayed ? {'height':'50px'} : {'height':'10px'});
                   elTr.select('th').each(function(elTd) {
@@ -714,7 +706,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       echo '</div>';
       if ($overallServicesState != 'OK') {
          echo "<script>
-            Ext.onReady(function(){
+            $(document).ready(function(){
                toggleEntity('entity-$id-$entityId');
             });</script>";
       }

@@ -1625,7 +1625,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                            array('type' => 'integer',       'value'   => NULL),
          'plugin_monitoring_realms_id' =>
                            array('type' => 'integer',       'value'   => NULL),
-         'computers_id' => array('type' => 'integer',       'value'   => NULL)
+         'computers_id' => array('type' => 'integer',       'value'   => NULL),
+         'jetlag'       => array('type' => 'varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL',
+                                 'value'   => '0'),
       );
 
       $a_table['oldfields']  = array(
