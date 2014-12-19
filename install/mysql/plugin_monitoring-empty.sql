@@ -385,6 +385,7 @@ CREATE TABLE `glpi_plugin_monitoring_hostconfigs` (
   `plugin_monitoring_components_id` int(11) NOT NULL DEFAULT '0',
   `plugin_monitoring_realms_id` int(11) NOT NULL DEFAULT '0',
   `computers_id` int(11) NOT NULL DEFAULT '0',
+  `jetlag` varchar(10) COLLATE utf8_unicode_ci DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
