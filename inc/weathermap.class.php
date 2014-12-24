@@ -1255,7 +1255,7 @@ echo '        </script>';
 
                  'type: \'post\','.
                  'url: \''.$CFG_GLPI['root_doc'].'/plugins/monitoring/ajax/updateChart.php\','.
-                 'data: { rrdtool_template:" + d.rrdtool_template + ",itemtype:\'PluginMonitoringService\',items_id:" + d.services_id + ",timezone:0,time:\'2h\',suffix:\''.$updown.$type.$rand.'\',customdate:\'\',customtime:\'\',components_id:" + d.components_id + ",sess_id:\''.session_id().'\',glpiID:\''.$_SESSION['glpiID'].'\',plugin_monitoring_securekey:\''.$_SESSION['plugin_monitoring_securekey'].'\' },'.
+                 'data: { rrdtool_template:" + d.rrdtool_template + ",itemtype:\'PluginMonitoringService\',items_id:" + d.services_id + ",timezone:0,time:\'2h\',suffix:\''.$updown.$type.$rand.'\',customdate:\'\',customtime:\'\',components_id:" + d.components_id + ",glpiID:\''.$_SESSION['glpiID'].'\' },'.
                  'success: function(data) {'.
                  '     $(\'#updategraph" + d.services_id + "2h'.$updown.$type.$rand.'\').html(data);'.
                  '}'.

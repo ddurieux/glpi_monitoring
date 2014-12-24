@@ -47,7 +47,7 @@ switch ($_POST['itemtype']) {
               array(
                   'name'  => 'items_id',
                   'toadd' => $toadd));
-      echo "&nbsp;&nbsp;&nbsp;".__('% of the width of the frame', 'monitoring')."&nbsp: ";
+      echo "<br/>".__('% of the width of the frame', 'monitoring')."&nbsp: ";
       Dropdown::showNumber("extra_infos", array(
                       'value' => 100,
                       'min'   => 0,

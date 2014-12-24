@@ -51,27 +51,27 @@ if (!defined('GLPI_ROOT')) {
    die("Can not acces directly to this file");
 }
 
-if (!isset($_POST["id"])
-        OR !isset($_POST['extra_infos'])) {
+if (!isset($_GET["id"])
+        OR !isset($_GET['extra_infos'])) {
    exit();
 }
 
 $pmWeathermap = new PluginMonitoringWeathermap();
-$pmWeathermap->getFromDB($_POST['id']);
+$pmWeathermap->getFromDB($_GET['id']);
 
 echo "<center>";
-if ($_POST["id"] == -1) {
+if ($_GET["id"] == -1) {
    echo "<table width='100%' class='tab_cadre'>";
 } else {
    echo "<table width='100%'>";
 }
 echo "<tr>";
 echo "<th>";
-if ($_POST["id"] == -1) {
+if ($_GET["id"] == -1) {
    echo __('Weathermap legend', 'monitoring');
 } else {
    echo $pmWeathermap->getName();
-   if ($_POST['extra_infos'] < 100) {
+   if ($_GET['extra_infos'] < 100) {
       echo " <a href='".$CFG_GLPI['root_doc'].
               "/plugins/monitoring/front/weathermap_full.php?id=".$_POST["id"].
               "' target='_blank'>(".__('full 100%', 'monitoring').")</a>";
@@ -80,7 +80,7 @@ if ($_POST["id"] == -1) {
 echo "</th>";
 echo "</tr>";
 
-if ($_POST["id"] == -1) {
+if ($_GET["id"] == -1) {
    echo "<tr class='tab_bg_1'>";
    echo "<td>";
 
@@ -105,7 +105,7 @@ if ($_POST["id"] == -1) {
 echo "</table>";
 
 
-if ($_POST["id"] > 0) {
-   $pmWeathermap->drawMap($_POST["id"], $_POST['extra_infos']);
+if ($_GET["id"] > 0) {
+   $pmWeathermap->drawMap($_GET["id"], $_GET['extra_infos']);
 }
 ?>

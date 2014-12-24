@@ -178,7 +178,7 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
       echo "</td>";
       echo "</tr>";
 
-     echo "<tr class='tab_bg_1' id='time_text' style='display: none;'>";
+      echo "<tr class='tab_bg_1' id='time_text' style='display: none;'>";
       echo "<th>";
       echo __('Select time', 'monitoring');
       echo "</th>";
@@ -261,13 +261,15 @@ foreach ($a_items as $item) {
    $size = $this->getSizeOfWidget($item['itemtype']);
    echo '<div id="draggable'.$item['id'].'" ';
    if ($item['itemtype'] != 'PluginMonitoringServicescatalog'
-           && $item['itemtype'] != 'PluginMonitoringComponentscatalog') {
+           && $item['itemtype'] != 'PluginMonitoringComponentscatalog'
+           && !($item['itemtype'] == 'PluginMonitoringWeathermap'
+               && $item['items_id'] == -1)) {
       echo 'class="ui-widget-content" ';
    }
-   echo  'style="width: '.$size['width'].'px; height: '.$size['height'].'px; '
-           . 'position: absolute; left: '.$item['x'].'px; top: '.$item['y'].'px;">';
 
    if ($item['itemtype'] == 'PluginMonitoringService') {
+      echo  'style="width: '.$size['width'].'px; height: '.$size['height'].'px; '
+              . 'position: absolute; left: '.$item['x'].'px; top: '.$item['y'].'px;">';
       $pmComponent = new PluginMonitoringComponent();
       $pmService = new PluginMonitoringService();
 
@@ -282,8 +284,37 @@ foreach ($a_items as $item) {
                                     "",
                                     ($size['width'] - 15));
    } else if ($item['itemtype'] == 'PluginMonitoringWeathermap') {
-
+         if ($item['items_id'] == -1) {
+            $title = " : ".__('Legend', 'monitoring');
+            echo  'style="width: 400px; height: 51px; '
+                    . 'position: absolute; left: '.$item['x'].'px; top: '.$item['y'].'px;">';
+         } else {
+            $weathermap = new PluginMonitoringWeathermap();
+            $weathermap->getFromDB($item['items_id']);
+//            $title .= " : ".Dropdown::getDropdownName(
+//                     getTableForItemType('PluginMonitoringWeathermap'), $item['items_id']);
+            $width = (($weathermap->fields['width'] * $item['extra_infos']) / 100);
+            $height = (($weathermap->fields['height'] * $item['extra_infos']) / 100);
+            echo  'style="width: '.$width.'px; height: '.$height.'px; '
+                    . 'position: absolute; left: '.$item['x'].'px; top: '.$item['y'].'px;">';
+         }
+         echo '<div id="weathermap-'.$item['items_id'].'"></div>';
+         echo "<script type=\"text/javascript\">
+            (function worker() {
+              $.get('".$CFG_GLPI["root_doc"].
+                 "/plugins/monitoring/ajax/widgetWeathermap.php?"
+                 . "id=".$item['items_id']."&extra_infos=".
+                 $item['extra_infos'].
+                 "&glpiID=".$_SESSION['glpiID'].
+                          "', function(data) {
+                $('#weathermap-".$item['items_id']."').html(data);
+                setTimeout(worker, 50000);
+              });
+            })();
+         </script>";
    } else {
+      echo  'style="width: '.$size['width'].'px; height: '.$size['height'].'px; '
+              . 'position: absolute; left: '.$item['x'].'px; top: '.$item['y'].'px;">';
       echo "<div id=\"update".$item['itemtype'].$item['items_id']."\"></div>";
 
             echo "<script type=\"text/javascript\">";
