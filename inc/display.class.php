@@ -698,6 +698,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
       $num = 0;
 
       echo "<tr class='tab_bg_1'>";
+      if (!isset($_SESSION['plugin_monitoring_reduced_interface'])) {
+         $_SESSION['plugin_monitoring_reduced_interface'] = 0;
+      }
       if (! $_SESSION['plugin_monitoring_reduced_interface']) {
          // echo Search::showHeaderItem(0, __('Show counters', 'monitoring'), $num);
          echo Search::showHeaderItem(0, __('Show graphics', 'monitoring'), $num);
