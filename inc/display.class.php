@@ -2778,7 +2778,8 @@ echo "
                echo '</tr>';
                echo '</table>';
             }
-         }
+            echo '<br/>';
+        }
       }
    }
 }
