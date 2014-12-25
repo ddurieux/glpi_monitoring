@@ -650,16 +650,13 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       global $CFG_GLPI;
 
       echo "<script type=\"text/javascript\">
-
-      var elcc".$id." = Ext.get(\"updatedisplayview".$id."\");
-      var mgrcc".$id." = elcc".$id.".getUpdateManager();
-      mgrcc".$id.".loadScripts=true;
-      mgrcc".$id.".showLoadIndicator=false;
-      mgrcc".$id.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"].
-              "/plugins/monitoring/ajax/updateWidgetDisplayview.php\","
-              . " \"id=".$id.
-              "&glpiID=".$_SESSION['glpiID'].
-              "\", \"\", true);
+         (function worker() {
+           $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateWidgetDisplayview.php"
+                 ."?id=".$id."', function(data) {
+             $('#updatedisplayview".$id."').html(data);
+             setTimeout(worker, 50000);
+           });
+         })();
       </script>";
    }
 
@@ -669,16 +666,13 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       global $CFG_GLPI;
 
       echo "<script type=\"text/javascript\">
-
-      var elcc".$id." = Ext.get(\"updatedisplayview2-".$id."\");
-      var mgrcc".$id." = elcc".$id.".getUpdateManager();
-      mgrcc".$id.".loadScripts=true;
-      mgrcc".$id.".showLoadIndicator=false;
-      mgrcc".$id.".startAutoRefresh(50, \"".$CFG_GLPI["root_doc"].
-              "/plugins/monitoring/ajax/updateWidgetDisplayview2.php\","
-              . " \"id=".$id."&is_minemap=".$is_minemap.
-              "&glpiID=".$_SESSION['glpiID'].
-              "\", \"\", true);
+         (function worker() {
+           $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateWidgetDisplayview2.php"
+                 ."?id=".$id."&is_minemap=".$is_minemap."', function(data) {
+             $('#updatedisplayview".$id."').html(data);
+             setTimeout(worker, 50000);
+           });
+         })();
       </script>";
    }
 
@@ -731,7 +725,8 @@ class PluginMonitoringDisplayview extends CommonDBTM {
    /**
     * Display info of device
     *
-    * @global type $DB
+    * @global type $DB      Toolbox::logDebug($this->fields);
+
     * @param type $id
     */
    function showWidget2Frame($id, $is_minemap=FALSE) {

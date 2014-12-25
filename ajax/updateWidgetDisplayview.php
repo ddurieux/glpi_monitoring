@@ -55,6 +55,6 @@ if (!defined('GLPI_ROOT')) {
 Session::checkLoginUser();
 
 $pmDisplayview = new PluginMonitoringDisplayview();
-$pmDisplayview->showWidgetFrame($_POST['id']);
+$pmDisplayview->showWidgetFrame($_GET['id']);
 
 ?>

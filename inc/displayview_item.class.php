@@ -267,6 +267,11 @@ foreach ($a_items as $item) {
                && $item['items_id'] == -1)) {
       echo 'class="ui-widget-content" ';
    }
+   if ($item['itemtype'] == 'host'
+           || $item['itemtype'] == 'service') {
+      $itemtype2 = $item['itemtype'];
+      $item['itemtype'] = 'PluginMonitoringDisplayview';
+   }
 
    if ($item['itemtype'] == 'PluginMonitoringService') {
       echo  'style="width: '.$size['width'].'px; height: '.$size['height'].'px; '
@@ -313,6 +318,16 @@ foreach ($a_items as $item) {
               });
             })();
          </script>";
+   } else if($item['itemtype'] == "PluginMonitoringDisplayview") {
+      echo  'style="width: '.$size['width'].'px; height: '.$size['height'].'px; '
+              . 'position: absolute; left: '.$item['x'].'px; top: '.$item['y'].'px;">';
+      echo "<div id=\"updatedisplayview".$item['items_id']."\"></div>";
+      $pmDisplayview = new PluginMonitoringDisplayview();
+      if (isset($itemtype2)) {
+         $pmDisplayview->ajaxLoad2($item['id'], $item['is_minemap']);
+      } else {
+         $pmDisplayview->ajaxLoad($item['items_id']);
+      }
    } else {
       echo  'style="width: '.$size['width'].'px; height: '.$size['height'].'px; '
               . 'position: absolute; left: '.$item['x'].'px; top: '.$item['y'].'px;">';

@@ -55,6 +55,6 @@ if (!defined('GLPI_ROOT')) {
 Session::checkLoginUser();
 
 $pmDisplayview = new PluginMonitoringDisplayview();
-$pmDisplayview->showWidget2Frame($_POST['id'],$_POST['is_minemap']);
+$pmDisplayview->showWidget2Frame($_GET['id'],$_GET['is_minemap']);
 
 ?>
