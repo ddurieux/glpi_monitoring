@@ -818,7 +818,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       </script>";
 
       echo "<div class='minemapdiv' align='center'>"
-      ."<a onclick='Ext.get(\"minemapdisplayview2-".$id."\").toggle()'>"
+      ."<a onclick='$(\"#minemapdisplayview2-".$id."\").toggle()'>"
               ."Minemap</a></div>";
       if (!$is_minemap) {
          echo '<div class="minemapdiv" id="minemapdisplayview2-'.$id.'" style="display: none; z-index: 1500">';
