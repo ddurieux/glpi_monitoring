@@ -262,6 +262,7 @@ foreach ($a_items as $item) {
    echo '<div id="draggable'.$item['id'].'" ';
    if ($item['itemtype'] != 'PluginMonitoringServicescatalog'
            && $item['itemtype'] != 'PluginMonitoringComponentscatalog'
+           && $item['itemtype'] != 'host'
            && !($item['itemtype'] == 'PluginMonitoringWeathermap'
                && $item['items_id'] == -1)) {
       echo 'class="ui-widget-content" ';
