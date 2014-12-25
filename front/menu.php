@@ -70,15 +70,15 @@ if (Session::haveRight("plugin_monitoring_dashboard", READ)
          || Session::haveRight("plugin_monitoring_displayview", PluginMonitoringDisplayview::DASHBOARD))) {
    $toDisplayArea++;
 
-   echo "<table class='tab_cadre' width='950'>";
-   echo "<tr class='tab_bg_1'>";
-   echo "<th height='80'>";
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/dashboard.php'>".__('Dashboard', 'monitoring')."</a>";
-   echo "</th>";
-   echo "</tr>";
-   echo "</table>";
-
-   echo "<br/>";
+//   echo "<table class='tab_cadre' width='950'>";
+//   echo "<tr class='tab_bg_1'>";
+//   echo "<th height='80'>";
+//   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/dashboard.php'>".__('Dashboard', 'monitoring')."</a>";
+//   echo "</th>";
+//   echo "</tr>";
+//   echo "</table>";
+//
+//   echo "<br/>";
 }
 if (Session::haveRight("plugin_monitoring_displayview", READ)
         || Session::haveRight("plugin_monitoring_slider", READ)) {
