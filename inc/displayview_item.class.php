@@ -321,11 +321,12 @@ foreach ($a_items as $item) {
    } else if($item['itemtype'] == "PluginMonitoringDisplayview") {
       echo  'style="width: '.$size['width'].'px; height: '.$size['height'].'px; '
               . 'position: absolute; left: '.$item['x'].'px; top: '.$item['y'].'px;">';
-      echo "<div id=\"updatedisplayview".$item['items_id']."\"></div>";
       $pmDisplayview = new PluginMonitoringDisplayview();
       if (isset($itemtype2)) {
+         echo "<div id=\"updatedisplayview".$item['id']."\"></div>";
          $pmDisplayview->ajaxLoad2($item['id'], $item['is_minemap']);
       } else {
+         echo "<div id=\"updatedisplayview".$item['items_id']."\"></div>";
          $pmDisplayview->ajaxLoad($item['items_id']);
       }
    } else {
