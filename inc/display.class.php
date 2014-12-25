@@ -47,7 +47,7 @@ if (!defined('GLPI_ROOT')) {
 class PluginMonitoringDisplay extends CommonDBTM {
    static $ar_counterTypes;
 
-   function menu() {
+   function menu($refreshtype='') {
       global $CFG_GLPI;
 
       $redirect = FALSE;
@@ -255,6 +255,9 @@ class PluginMonitoringDisplay extends CommonDBTM {
             }
       }
 
+      if ($refreshtype == 'service') {
+         $this->refreshPage();
+      }
 
       echo "</td>";
       echo "</tr>";
@@ -2651,25 +2654,21 @@ echo "
 
 
    function refreshPage($onlyreduced=false) {
-
-      // Toolbox::logInFile("pm", "refreshPage : $onlyreduced\n");
       if (!$onlyreduced) {
          if (isset($_POST['_refresh'])) {
             $_SESSION['glpi_plugin_monitoring']['_refresh'] = $_POST['_refresh'];
          }
-
          echo '<meta http-equiv ="refresh" content="'.$_SESSION['glpi_plugin_monitoring']['_refresh'].'">';
       }
 
       echo "<form name='form' method='post' action='".$_SERVER["PHP_SELF"]."' >";
-      echo "<div align='right'>";
-      echo "<table class='tab_cadre_navigation' width='450'>";
+      echo "<table class='tab_cadre_fixe' width='950'>";
+      echo "<tr class='tab_bg_1'>";
       if (!$onlyreduced) {
-         echo "<tr class='tab_bg_1'>";
          echo "<td>";
          echo __('Page refresh (in seconds)', 'monitoring')." : ";
          echo "</td>";
-         echo "<td>";
+         echo "<td width='120'>";
          Dropdown::showNumber("_refresh", array(
                 'value' => $_SESSION['glpi_plugin_monitoring']['_refresh'],
                 'min'   => 30,
@@ -2677,27 +2676,19 @@ echo "
                 'step'  => 10)
          );
          echo "</td>";
-         echo "<td rowspan='2' align='center'>";
-         echo "<input type='submit' name='sessionupdate' class='submit' value=\"".__('Post')."\">";
-         echo "</td>";
-         echo "</tr>";
       }
-      echo "<tr class='tab_bg_1'>";
       echo "<td>";
       echo __('Reduced interface', 'monitoring')." : ";
       echo "</td>";
       echo "<td width='80'>";
       Dropdown::showYesNo("reduced_interface", $_SESSION['plugin_monitoring_reduced_interface']);
       echo "</td>";
-      if ($onlyreduced) {
-         echo "<td align='center'>";
-         echo "<input type='submit' name='sessionupdate' class='submit' value=\"".__('Post')."\">";
-         echo "</td>";
-      }
+      echo "<td align='center'>";
+      echo "<input type='submit' name='sessionupdate' class='submit' value=\"".__('Post')."\">";
+      echo "</td>";
       echo "</tr>";
 
       echo "</table>";
-      echo "</div>";
       Html::closeForm();
    }
 
