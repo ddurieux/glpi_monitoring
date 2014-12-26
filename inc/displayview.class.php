@@ -326,7 +326,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       echo "<input type='text' name='name' value='".$this->fields["name"]."' size='30'/>";
       echo "</td>";
 
-      echo "<td>".__('Display view in dashboard', 'monitoring')."&nbsp;:</td>";
+      echo "<td>".__('Display view in dashboard (front view)', 'monitoring')."&nbsp;:</td>";
       echo "<td>";
       Dropdown::showYesNo("is_frontview", $this->fields['is_frontview']);
       echo "</td>";

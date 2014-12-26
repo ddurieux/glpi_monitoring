@@ -258,10 +258,12 @@ echo "
       echo "<div id='viewform' style='width: ".$pmDisplayview->fields['width']."px;height:1200px;position: relative;'>";
 
 foreach ($a_items as $item) {
+   $itemtype2 = '';
    $size = $this->getSizeOfWidget($item['itemtype']);
    echo '<div id="draggable'.$item['id'].'" ';
    if ($item['itemtype'] != 'PluginMonitoringServicescatalog'
            && $item['itemtype'] != 'PluginMonitoringComponentscatalog'
+           && $item['itemtype'] != 'PluginMonitoringDisplayview'
            && $item['itemtype'] != 'host'
            && !($item['itemtype'] == 'PluginMonitoringWeathermap'
                && $item['items_id'] == -1)) {
@@ -322,7 +324,7 @@ foreach ($a_items as $item) {
       echo  'style="width: '.$size['width'].'px; height: '.$size['height'].'px; '
               . 'position: absolute; left: '.$item['x'].'px; top: '.$item['y'].'px;">';
       $pmDisplayview = new PluginMonitoringDisplayview();
-      if (isset($itemtype2)) {
+      if (!empty($itemtype2)) {
          echo "<div id=\"updatedisplayview".$item['id']."\"></div>";
          $pmDisplayview->ajaxLoad2($item['id'], $item['is_minemap']);
       } else {
