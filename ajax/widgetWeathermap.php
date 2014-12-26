@@ -73,7 +73,7 @@ if ($_GET["id"] == -1) {
    echo $pmWeathermap->getName();
    if ($_GET['extra_infos'] < 100) {
       echo " <a href='".$CFG_GLPI['root_doc'].
-              "/plugins/monitoring/front/weathermap_full.php?id=".$_POST["id"].
+              "/plugins/monitoring/front/weathermap_full.php?id=".$_GET["id"].
               "' target='_blank'>(".__('full 100%', 'monitoring').")</a>";
    }
 }
