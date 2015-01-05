@@ -136,7 +136,8 @@ function call_glpi($args) {
    $request = xmlrpc_encode_request($args['method'], $args);
    $context = stream_context_create(array('http' => array('method'  => "POST",
                                                           'header'  => $header,
-                                                          'content' => $request)));
+                                                          'content' => $request,
+                                                          'timeout' => 500)));
 
    $file = file_get_contents("http://$host/$url_session", false, $context);
    if (!$file) {
