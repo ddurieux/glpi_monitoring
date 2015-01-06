@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# David Durieux <d.durieux@siprossii.com>, 2015
 # Frédéric MOHIER <frederic.mohier@gmail.com>, 2014
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project - plugin monitoring \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-01-06 10:25+0100\n"
-"PO-Revision-Date: 2015-01-06 09:26+0000\n"
+"PO-Revision-Date: 2015-01-06 09:41+0000\n"
 "Last-Translator: David Durieux <d.durieux@siprossii.com>\n"
 "Language-Team: French (France) (http://www.transifex.com/projects/p/GLPI_monitoring/language/fr_FR/)\n"
 "MIME-Version: 1.0\n"
@@ -24,11 +25,11 @@ msgstr "Nombre de processeurs"
 
 #: hook.php:79
 msgid "Entity tag"
-msgstr ""
+msgstr "Etiquette d'entité"
 
 #: hook.php:89
 msgid "User template"
-msgstr ""
+msgstr "Gabarit utilisateur"
 
 #: hook.php:187
 msgid "Add these hosts to monitoring"
@@ -249,11 +250,11 @@ msgstr "Monitoring - acquittements"
 
 #: front/command.form.php:47 front/command.php:47
 msgid "Monitoring - commands"
-msgstr ""
+msgstr "Monitoring - commandes"
 
 #: front/component.form.php:47
 msgid "Monitoring - component"
-msgstr ""
+msgstr "Monitoring - composant"
 
 #: front/component.form.php:68 front/component.form.php:93
 msgid "Fields with asterisk are required"
@@ -261,7 +262,7 @@ msgstr "Les champs avec un astérisque sont obligatoires"
 
 #: front/component.php:47
 msgid "Monitoring - components"
-msgstr ""
+msgstr "Monitoring - composants"
 
 #: front/componentscatalog.form.php:47 front/componentscatalog.php:47
 msgid "Monitoring - components catalogs"
@@ -269,7 +270,7 @@ msgstr "Monitoring - catalogues de composants"
 
 #: front/contacttemplate.form.php:47 front/contacttemplate.php:47
 msgid "Monitoring - contact templates"
-msgstr ""
+msgstr "Monitoring - gabarits de contact"
 
 #: front/customitem_counter.form.php:47 front/customitem_counter.php:47
 msgid "Monitoring - counter"
@@ -766,14 +767,14 @@ msgstr "Communauté SNMP de l'équipement réseau ou imprimante"
 #: inc/servicescatalog.class.php:74 inc/slider.class.php:75
 #: inc/system.class.php:103
 msgid "See in homepage"
-msgstr ""
+msgstr "Voir sur la page d'accueil"
 
 #: inc/componentscatalog.class.php:76 inc/displayview.class.php:82
 #: inc/host.class.php:242 inc/perfdata.class.php:74 inc/service.class.php:210
 #: inc/servicescatalog.class.php:75 inc/slider.class.php:76
 #: inc/system.class.php:104
 msgid "See in dashboard"
-msgstr ""
+msgstr "Voir sur le dashboard"
 
 #: inc/componentscatalog.class.php:118 inc/contact_item.class.php:53
 #: inc/contact_item.class.php:75 inc/host_contact.class.php:73
@@ -796,11 +797,11 @@ msgstr "Intervalle entre 2 notifications (en minutes)"
 
 #: inc/componentscatalog.class.php:295
 msgid "hours"
-msgstr ""
+msgstr "heures"
 
 #: inc/componentscatalog.class.php:302
 msgid "minutes"
-msgstr ""
+msgstr "minutes"
 
 #: inc/componentscatalog.class.php:425
 msgid "Nothing to display ..."
@@ -900,16 +901,16 @@ msgstr "Zones de temps (pour les graphiques)"
 
 #: inc/config.class.php:175
 msgid "Extra-debug"
-msgstr ""
+msgstr "Extra-debug"
 
 #: inc/config.class.php:182
 msgid ""
 "Use container/VM name as prefix of NRPE command + use IP address of host"
-msgstr ""
+msgstr "Utilise le nom du conteneur/VM comme préfixe des commandes NRPE + utilisation de l'adresse IP de l'hôte"
 
 #: inc/config.class.php:189
 msgid "Append id to hostname when generate conf"
-msgstr ""
+msgstr "Ajouter l'id de l'équipement lors de la génération de la conf"
 
 #: inc/contact.class.php:58 inc/contact.class.php:68
 msgid "Contact"
@@ -925,15 +926,15 @@ msgstr "Gabarit par défaut"
 
 #: inc/contacttemplate.class.php:104
 msgid "Contact configuration for Shinken WebUI"
-msgstr ""
+msgstr "Configuration du contact pour la WebUI de Shinken"
 
 #: inc/contacttemplate.class.php:108
 msgid "Contact has Shinken administrator rights"
-msgstr ""
+msgstr "Contact qui a les droits d'administrateur Shinken"
 
 #: inc/contacttemplate.class.php:112
 msgid "Contact can submit Shinken commands"
-msgstr ""
+msgstr "Contact qui peut soumettre des commandes Shinken"
 
 #: inc/contacttemplate.class.php:120 inc/displayview.class.php:837
 msgid "Services"
@@ -1107,7 +1108,7 @@ msgstr "Limite (max)"
 
 #: inc/dashboard.class.php:67
 msgid "Main menu"
-msgstr ""
+msgstr "Menu principal"
 
 #: inc/display.class.php:85 inc/display.class.php:288
 #: inc/profile.class.php:230 inc/system.class.php:64
@@ -1189,7 +1190,7 @@ msgstr "Ajouter un acquittement pour le service"
 
 #: inc/display.class.php:1267
 msgid "Managed by NRPE"
-msgstr ""
+msgstr "Géré par NRPE"
 
 #: inc/display.class.php:1275
 msgid "Configure"
@@ -1279,15 +1280,15 @@ msgstr "Interface simplifiée"
 
 #: inc/display.class.php:2745
 msgid "Reload Shinken configuration from Glpi database"
-msgstr ""
+msgstr "Recharger la configuration de Shinken à partir de la base de données GLPI"
 
 #: inc/display.class.php:2746
 msgid "Reload Shinken config"
-msgstr ""
+msgstr "Recharger la config Shinken"
 
 #: inc/display.class.php:2750
 msgid "Restart all Shinken daemons"
-msgstr ""
+msgstr "Redémarrer tous les démons Shinken"
 
 #: inc/display.class.php:2751 inc/profile.class.php:222
 msgid "Restart Shinken"
@@ -1295,7 +1296,7 @@ msgstr "Redémarrer Shinken"
 
 #: inc/display.class.php:2762
 msgid "All instances"
-msgstr ""
+msgstr "Toutes les instances"
 
 #: inc/displayview.class.php:68 inc/displayview.class.php:258
 #: inc/displayview_item.class.php:189
@@ -1310,7 +1311,7 @@ msgstr "Afficher la vue dans le tableau de bord"
 
 #: inc/displayview.class.php:329
 msgid "Display view in dashboard (front view)"
-msgstr ""
+msgstr "Afficher la vue dans le dashboard (vue frontale)"
 
 #: inc/displayview.class.php:336
 msgid "Header counter (critical/warning/ok)"
@@ -1368,7 +1369,7 @@ msgstr "Rejouer toutes les règles"
 
 #: inc/downtime.class.php:53 inc/profile.class.php:170
 msgid "Downtime"
-msgstr ""
+msgstr "Temps d'arrêt"
 
 #: inc/downtime.class.php:135
 msgid "Host downtimes"
@@ -1453,7 +1454,7 @@ msgstr "Type d'état"
 
 #: inc/host.class.php:492
 msgid "Status"
-msgstr ""
+msgstr "Statut"
 
 #: inc/host.class.php:785
 msgid "Add an acknowledge for all faulty services of the host"
@@ -1513,7 +1514,7 @@ msgstr "Royaume (reaml)"
 
 #: inc/hostconfig.class.php:214
 msgid "Jet lag"
-msgstr ""
+msgstr "Décalage horaire"
 
 #: inc/log.class.php:59
 msgid "Logs"
@@ -1541,7 +1542,7 @@ msgstr "ressources supprimées"
 
 #: inc/message.class.php:200
 msgid "resources updated"
-msgstr ""
+msgstr "ressources mise à jour"
 
 #: inc/message.class.php:218
 msgid "Shinken is restarted automatically"
@@ -1553,7 +1554,7 @@ msgstr "Pas d'évènements trouvés dans les dernières minutes, donc Shinken se
 
 #: inc/message.class.php:267
 msgid "Shinken reload order has been sent at"
-msgstr ""
+msgstr "L'ordre de rechargement Shinken a été envoyé à"
 
 #: inc/message.class.php:282
 msgid "Shinken restart order has been sent at"
@@ -1565,11 +1566,11 @@ msgstr "Ports réseaux des équipements réseaux"
 
 #: inc/notificationcommand.class.php:175
 msgid "Shinken reactionner tag"
-msgstr ""
+msgstr "Etiquette reactionner Shinken"
 
 #: inc/notificationcommand.class.php:229
 msgid "Reactionner tag"
-msgstr ""
+msgstr "Etiquette reactionner"
 
 #: inc/perfdata.class.php:61 inc/profile.class.php:202
 msgid "Graph template"
@@ -1593,7 +1594,7 @@ msgstr "Incrémental"
 
 #: inc/profile.class.php:162
 msgid "Homepage"
-msgstr ""
+msgstr "Page d'accueil"
 
 #: inc/profile.class.php:178 inc/slider.class.php:63 inc/slider.class.php:187
 msgid "Slider"
@@ -1601,15 +1602,15 @@ msgstr "Slider"
 
 #: inc/profile.class.php:226
 msgid "Services (ressources)"
-msgstr ""
+msgstr "Services (ressources)"
 
 #: inc/profile.class.php:234
 msgid "Host status"
-msgstr ""
+msgstr "Statut de l'hôte"
 
 #: inc/profile.class.php:238
 msgid "Host commands"
-msgstr ""
+msgstr "Commandes de l'hôte"
 
 #: inc/profile.class.php:242 inc/unavailability.class.php:114
 msgid "Unavailability"
@@ -1617,7 +1618,7 @@ msgstr "Indisponibilité"
 
 #: inc/profile.class.php:293
 msgid "General"
-msgstr ""
+msgstr "Général"
 
 #: inc/rrdtool.class.php:256 inc/rrdtool.class.php:306
 msgid "RRDtool templates"
@@ -1769,7 +1770,7 @@ msgstr "Durée (en secondes)"
 
 #: inc/tag.class.php:87
 msgid "Shinken tag"
-msgstr ""
+msgstr "Etiquette Shinken"
 
 #: inc/tag.class.php:93 inc/tag.class.php:153
 msgid "Shinken IP address"
@@ -1785,11 +1786,11 @@ msgstr "Mot de passe (Web Service de Shinken)"
 
 #: inc/tag.class.php:108
 msgid "Lock shinken address"
-msgstr ""
+msgstr "Verrouiller l'adresse de Shinken "
 
 #: inc/tag.class.php:114 inc/tag.class.php:175
 msgid "Port"
-msgstr ""
+msgstr "Port"
 
 #: inc/tag.class.php:164
 msgid "Lock shinken IP"
