@@ -197,19 +197,15 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
          echo "<div id='filariane'>&nbsp;</div>";
          echo "<input type='hidden' name='updatefil' id='updatefil' value='".$id."!' />";
 
-/*
          echo "<script type=\"text/javascript\">
             function reloadfil() {
-               Ext.get('filariane').load({
-                   url: '".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateFilariane.php',
-                   scripts: true,
-                      params:'updatefil=' + Ext.get('updatefil').getValue() + '&id=".$id.
-                 "&currentview=' + Ext.get('updateviewid').getValue()
+              $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateFilariane.php?updatefil=' + $('#updatefil').val() + '&id=".$id."&currentview=' + $('#updateviewid').val()".
+                          "', function(data) {
+                $('#filariane').html(data);
                });
             }
             reloadfil();
          </script>";
- */
       }
       echo "</td>";
       echo "</tr>";
@@ -371,16 +367,14 @@ foreach ($a_items as $item) {
 
 
       echo "</div>";
-//      echo "<script type=\"text/javascript\">
-//         function reloadview() {
-//            Ext.get('viewform').load({
-//                url: '".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/loadView.php',
-//                scripts: true,
-//                   params:'id=' + Ext.get('updateviewid').getValue() + '&config=".$config."'
-//            });
-//         }
-//         reloadview();
-//      </script>";
+      echo "<script type=\"text/javascript\">
+         function reloadview() {
+              $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/loadView.php?id=' + $('#updateviewid').val() + '&config=".$config.
+                          "', function(data) {
+                $('#viewform').html(data);
+               });
+         }
+      </script>";
 
       echo "</td>";
       echo "</tr>";

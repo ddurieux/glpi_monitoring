@@ -707,8 +707,8 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       echo '<div class="ch-item" style="background-image:url(\'../pics/picto_view.png\');
          background-repeat:no-repeat;background-position:center center;">
          <div class="ch-info-'.$class.'">
-         <h1><a href="javascript:;" onclick="document.getElementById(\'updatefil\').value = \''.$id.'!\';'.
-              'document.getElementById(\'updateviewid\').value = \''.$id.'\';reloadfil();reloadview();"'
+         <h1><a href="javascript:;" onclick="$(\'#updatefil\').text(\''.$id.'!\');'.
+              '$(\'#updateviewid\').text(\''.$id.'\');reloadfil();reloadview();"'
               .'><span id="viewa-'.$id.'">'
               .$data['name'].'</span></a></h1>
 			<p>'.$nb_ressources.'<font style="font-size: 14px;"> / '.array_sum($a_counter).'</font></p>
