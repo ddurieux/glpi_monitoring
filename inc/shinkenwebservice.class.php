@@ -75,9 +75,9 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       }
       $ip = $pmTag->getIP($tag);
       $auth = $pmTag->getAuth($tag);
+      $port = $pmTag->getPort($tag);
 
-
-      $url = 'http://'.$ip.':7760/';
+      $url = 'http://'.$ip.':'.$port.'/';
       $action = 'acknowledge';
       $a_fields = array(
           'action'               => empty($operation) ? 'add' : $operation,
@@ -120,8 +120,9 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       }
       $ip = $pmTag->getIP($tag);
       $auth = $pmTag->getAuth($tag);
+      $port = $pmTag->getPort($tag);
 
-      $url = 'http://'.$ip.':7760/';
+      $url = 'http://'.$ip.':'.$port.'/';
       $action = 'downtime';
       $a_fields = array(
           'action'               => empty($operation) ? 'add' : $operation,
