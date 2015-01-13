@@ -163,7 +163,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             // Used if not defined in contact template
             'is_admin'              => '1',
             'can_submit_commands'   => '0',
-            // Use this password is user has an empty password
+            // Use this password if user has an empty password
             'password'              => 'ipmfrance'
          ),
       ),
@@ -191,6 +191,18 @@ class PluginMonitoringShinken extends CommonDBTM {
       $config .= "}\n";
       $config .= "\n\n";
       return $config;
+   }
+
+   function removeAccents($str) {
+      $a = array('À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ø', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'ß', 'à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', 'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ', 'Ā', 'ā', 'Ă', 'ă', 'Ą', 'ą', 'Ć', 'ć', 'Ĉ', 'ĉ', 'Ċ', 'ċ', 'Č', 'č', 'Ď', 'ď', 'Đ', 'đ', 'Ē', 'ē', 'Ĕ', 'ĕ', 'Ė', 'ė', 'Ę', 'ę', 'Ě', 'ě', 'Ĝ', 'ĝ', 'Ğ', 'ğ', 'Ġ', 'ġ', 'Ģ', 'ģ', 'Ĥ', 'ĥ', 'Ħ', 'ħ', 'Ĩ', 'ĩ', 'Ī', 'ī', 'Ĭ', 'ĭ', 'Į', 'į', 'İ', 'ı', 'Ĳ', 'ĳ', 'Ĵ', 'ĵ', 'Ķ', 'ķ', 'Ĺ', 'ĺ', 'Ļ', 'ļ', 'Ľ', 'ľ', 'Ŀ', 'ŀ', 'Ł', 'ł', 'Ń', 'ń', 'Ņ', 'ņ', 'Ň', 'ň', 'ŉ', 'Ō', 'ō', 'Ŏ', 'ŏ', 'Ő', 'ő', 'Œ', 'œ', 'Ŕ', 'ŕ', 'Ŗ', 'ŗ', 'Ř', 'ř', 'Ś', 'ś', 'Ŝ', 'ŝ', 'Ş', 'ş', 'Š', 'š', 'Ţ', 'ţ', 'Ť', 'ť', 'Ŧ', 'ŧ', 'Ũ', 'ũ', 'Ū', 'ū', 'Ŭ', 'ŭ', 'Ů', 'ů', 'Ű', 'ű', 'Ų', 'ų', 'Ŵ', 'ŵ', 'Ŷ', 'ŷ', 'Ÿ', 'Ź', 'ź', 'Ż', 'ż', 'Ž', 'ž', 'ſ', 'ƒ', 'Ơ', 'ơ', 'Ư', 'ư', 'Ǎ', 'ǎ', 'Ǐ', 'ǐ', 'Ǒ', 'ǒ', 'Ǔ', 'ǔ', 'Ǖ', 'ǖ', 'Ǘ', 'ǘ', 'Ǚ', 'ǚ', 'Ǜ', 'ǜ', 'Ǻ', 'ǻ', 'Ǽ', 'ǽ', 'Ǿ', 'ǿ', 'Ά', 'ά', 'Έ', 'έ', 'Ό', 'ό', 'Ώ', 'ώ', 'Ί', 'ί', 'ϊ', 'ΐ', 'Ύ', 'ύ', 'ϋ', 'ΰ', 'Ή', 'ή');
+      $b = array('A', 'A', 'A', 'A', 'A', 'A', 'AE', 'C', 'E', 'E', 'E', 'E', 'I', 'I', 'I', 'I', 'D', 'N', 'O', 'O', 'O', 'O', 'O', 'O', 'U', 'U', 'U', 'U', 'Y', 's', 'a', 'a', 'a', 'a', 'a', 'a', 'ae', 'c', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'n', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y', 'y', 'A', 'a', 'A', 'a', 'A', 'a', 'C', 'c', 'C', 'c', 'C', 'c', 'C', 'c', 'D', 'd', 'D', 'd', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'G', 'g', 'G', 'g', 'G', 'g', 'G', 'g', 'H', 'h', 'H', 'h', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'IJ', 'ij', 'J', 'j', 'K', 'k', 'L', 'l', 'L', 'l', 'L', 'l', 'L', 'l', 'l', 'l', 'N', 'n', 'N', 'n', 'N', 'n', 'n', 'O', 'o', 'O', 'o', 'O', 'o', 'OE', 'oe', 'R', 'r', 'R', 'r', 'R', 'r', 'S', 's', 'S', 's', 'S', 's', 'S', 's', 'T', 't', 'T', 't', 'T', 't', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'W', 'w', 'Y', 'y', 'Y', 'Z', 'z', 'Z', 'z', 'Z', 'z', 's', 'f', 'O', 'o', 'U', 'u', 'A', 'a', 'I', 'i', 'O', 'o', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'A', 'a', 'AE', 'ae', 'O', 'o', 'Α', 'α', 'Ε', 'ε', 'Ο', 'ο', 'Ω', 'ω', 'Ι', 'ι', 'ι', 'ι', 'Υ', 'υ', 'υ', 'υ', 'Η', 'η');
+
+      return str_replace($a, $b, $str);
+   }
+
+   function shinkenFilter($str) {
+
+      return preg_replace("/[^A-Za-z0-9\-_]/","", strtolower(self::removeAccents($str)));
    }
 
 
@@ -408,7 +420,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
                $pmHost->getFromDBByQuery("WHERE `glpi_plugin_monitoring_hosts`.`itemtype` = '" . $data['itemtype'] . "' AND `glpi_plugin_monitoring_hosts`.`items_id` = '" . $data['items_id'] . "' LIMIT 1");
 
-               $a_hosts[$i]['host_name'] = preg_replace("/[^A-Za-z0-9\-_]/","",$class->fields['name']);
+               $a_hosts[$i]['host_name'] = self::shinkenFilter($class->fields['name']);
                // Fix if hostname is not defined ...
                if (empty($a_hosts[$i]['host_name'])) {
                   continue;
@@ -436,7 +448,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
                if (isset(self::$shinkenParameters['glpi']['entityName'])) {
                   $a_hosts[$i][self::$shinkenParameters['glpi']['entityName']] =
-                     strtolower(preg_replace("/[^A-Za-z0-9\-_]/","",$data['entityName']));
+                     strtolower(self::shinkenFilter($data['entityName']));
                }
 
                $data['entityFullName'] = preg_replace("/ > /","#",$data['entityFullName']);
@@ -444,26 +456,24 @@ class PluginMonitoringShinken extends CommonDBTM {
                $data['entityFullName'] = preg_replace("/#/","_",$data['entityFullName']);
                if (isset(self::$shinkenParameters['glpi']['entityComplete'])) {
                   $a_hosts[$i][self::$shinkenParameters['glpi']['entityComplete']] =
-                     strtolower(preg_replace("/[^A-Za-z0-9\-_]/","",$data['entityFullName']));
+                     self::shinkenFilter ($data['entityFullName']);
                }
                $data['entityFullName'] = preg_replace("/_/",".",$data['entityFullName']);
 
                if (isset(self::$shinkenParameters['glpi']['location'])) {
                   if (! empty($data['locationName'])) {
-                     // Toolbox::logInFile("pm-shinken", " - location: ".$data['locationName']."\n");
                      $string = utf8_decode(strip_tags(trim($data['locationName'])));
-                     // $string = Toolbox::decodeFromUtf8($data['locationName']);
                      $string = preg_replace("/[\r\n]/",".",$data['locationName']);
-                     $string = preg_replace("/[^A-Za-z0-9\-_ <>\',;.:!?%*()éèàù]/",'',$string);
-                     // Toolbox::logInFile("pm-shinken", " - location: ".$string."\n");
+                     $string = preg_replace("/[^A-Za-z0-9\-_ <>\/',;.:!?%*()éèàù]/",'',$string);
                      $a_hosts[$i][self::$shinkenParameters['glpi']['location']] =
                         $string;
+                     $data['hostLocation'] = $string;
                   }
                }
 
                if (isset(self::$shinkenParameters['graphite']['prefix']['name'])) {
                   $a_hosts[$i][self::$shinkenParameters['graphite']['prefix']['name']] =
-                     strtolower(self::$shinkenParameters['graphite']['prefix']['value'] . preg_replace("/[^A-Za-z0-9\-_.]/","",$data['entityFullName']));
+                     strtolower(self::$shinkenParameters['graphite']['prefix']['value'] . self::removeAccents($data['entityFullName']));
                }
 
                if (isset(self::$shinkenParameters['glpi']['lat'])) {
@@ -486,11 +496,12 @@ class PluginMonitoringShinken extends CommonDBTM {
                }
 
                // Hostgroup name
-               $a_hosts[$i]['hostgroups'] = strtolower(preg_replace("/[^A-Za-z0-9\-_ ]/","",$data['entityName']));
+               $a_hosts[$i]['hostgroups'] = self::shinkenFilter($data['entityName']);
                $a_hosts[$i]['hostgroups'] = preg_replace("/[ ]/","_",$a_hosts[$i]['hostgroups']);
 
                // Alias
                $a_hosts[$i]['alias'] = $data['entityName']." / ". $a_hosts[$i]['host_name'];
+/*
                if (isset($class->fields['networkequipmenttypes_id'])) {
                   if ($class->fields['networkequipmenttypes_id'] > 0) {
                      $a_hosts[$i]['alias'] .= " (".Dropdown::getDropdownName("glpi_networkequipmenttypes", $class->fields['networkequipmenttypes_id']).")";
@@ -503,6 +514,10 @@ class PluginMonitoringShinken extends CommonDBTM {
                   if ($class->fields['printertypes_id'] > 0) {
                      $a_hosts[$i]['alias'] .= " (".Dropdown::getDropdownName("glpi_printertypes", $class->fields['printertypes_id']).")";
                   }
+               }
+*/
+               if (isset($data['hostLocation'])) {
+                  $a_hosts[$i]['alias'] .= " (".$data['hostLocation'].")";
                }
 
                // WebUI user interface ...
@@ -531,7 +546,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                         $networkPort->getFromDB($networkports_id);
                         if ($networkPort->fields['itemtype'] == 'NetworkEquipment') {
                            $networkEquipment->getFromDB($networkPort->fields['items_id']);
-                           $parent = preg_replace("/[^A-Za-z0-9\-_]/","",$networkEquipment->fields['name']);
+                           $parent = self::shinkenFilter($networkEquipment->fields['name']);
                            $a_parents_found[$parent] = 1;
                            $pmHost->updateDependencies($classname, $data['items_id'], 'NetworkEquipment-'.$networkPort->fields['items_id']);
                         }
@@ -648,10 +663,15 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_hosts[$i]['check_interval'] = $pmCheck->fields['check_interval'];
                $a_hosts[$i]['retry_interval'] = $pmCheck->fields['retry_interval'];
                $a_hosts[$i]['max_check_attempts'] = $pmCheck->fields['max_check_attempts'];
+
+               $timeperiodsuffix = '-'.$pmHostconfig->getValueAncestor('jetlag', $class->fields['entities_id']);
+               if ($timeperiodsuffix == '-0') {
+                  $timeperiodsuffix = '';
+               }
                if ($calendar->getFromDB($pmComponent->fields['calendars_id'])) {
-                  $a_hosts[$i]['check_period'] = $calendar->fields['name'];
+                  $a_hosts[$i]['check_period'] = $calendar->fields['name'].$timeperiodsuffix;
                } else {
-                  $a_hosts[$i]['check_period'] = self::$shinkenParameters['shinken']['hosts']['check_period'];
+                  $a_hosts[$i]['check_period'] = self::$shinkenParameters['shinken']['hosts']['check_period'].$timeperiodsuffix;
                }
                $a_hosts[$i]['active_checks_enabled'] = $a_fields['active_checks_enabled'];
                $a_hosts[$i]['passive_checks_enabled'] = $a_fields['passive_checks_enabled'];
@@ -857,7 +877,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $result = $DB->query($query);
          while ($dataEntity=$DB->fetch_array($result)) {
             // Hostgroup name : used as host name for parents ...
-            $fake_host_name = strtolower(preg_replace("/[^A-Za-z0-9\-_ ]/","",$dataEntity['entityName']));
+            $fake_host_name = self::shinkenFilter($dataEntity['entityName']);
             $fake_host_name = preg_replace("/[ ]/","_",$fake_host_name);
 
             $a_hosts[$i]['host_name'] = self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'] . $fake_host_name;
@@ -1030,6 +1050,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             $resulth = $DB->query($queryh);
             $hostname = '';
             $plugin_monitoring_componentscatalogs_id = 0;
+            $entities_id = 0;
             while ($datah=$DB->fetch_array($resulth)) {
                $itemtype = $datah['itemtype'];
                $item = new $itemtype();
@@ -1039,10 +1060,11 @@ class PluginMonitoringShinken extends CommonDBTM {
 
                      // Fix if hostname is not defined ...
                      if (! empty($item->fields['name'])) {
-                        $a_hostname[] = preg_replace("/[^A-Za-z0-9\-_]/","",$item->fields['name']);
+                        $a_hostname[] = self::shinkenFilter($item->fields['name']);
                         $a_hostname_type[] = $datah['itemtype'];
                         $a_hostname_id[] = $datah['items_id'];
                         $hostname = $item->fields['name'];
+                        $entities_id = $item->fields['entities_id'];
                         $plugin_monitoring_componentscatalogs_id = $datah['plugin_monitoring_componentscalalog_id'];
                      }
                   // }
@@ -1057,11 +1079,11 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_services[$i]['_HOSTITEMTYPE'] = implode(",", array_unique($a_hostname_type));
 
                // Define display_name / service_description
-               $a_services[$i]['service_description'] = (! empty($a_component['description'])) ? $a_component['description'] : preg_replace("/[^A-Za-z0-9\-_]/","",$a_component['name']);
+               $a_services[$i]['service_description'] = (! empty($a_component['description'])) ? $a_component['description'] : self::shinkenFilter($a_component['name']);
                // In case have multiple networkt port, may have description different, else be dropped by shinken
                if ($data['networkports_id'] > 0) {
                   $networkPort->getFromDB($data['networkports_id']);
-                  $a_services[$i]['service_description'] .= '-'.preg_replace("/[^A-Za-z0-9\-_]/", "", $networkPort->fields['name']);
+                  $a_services[$i]['service_description'] .= '-'.self::shinkenFilter($networkPort->fields['name']);
                }
                $a_services[$i]['display_name'] = $a_component['name'];
                // $a_services[$i]['_ENTITIESID'] = $item->fields['entities_id'];
@@ -1247,8 +1269,12 @@ class PluginMonitoringShinken extends CommonDBTM {
                   $a_services[$i]['check_interval'] = $pMonitoringCheck->fields['check_interval'];
                   $a_services[$i]['retry_interval'] = $pMonitoringCheck->fields['retry_interval'];
                   $a_services[$i]['max_check_attempts'] = $pMonitoringCheck->fields['max_check_attempts'];
+                  $timeperiodsuffix = '-'.$pmHostconfig->getValueAncestor('jetlag', $entities_id);
+                  if ($timeperiodsuffix == '-0') {
+                     $timeperiodsuffix = '';
+                  }
                   if ($calendar->getFromDB($a_component['calendars_id'])) {
-                     $a_services[$i]['check_period'] = $calendar->fields['name'];
+                     $a_services[$i]['check_period'] = $calendar->fields['name'].$timeperiodsuffix;
                   }
                   $a_services[$i]['notification_interval'] = '30';
                   $a_services[$i]['notification_period'] = "24x7";
@@ -1283,8 +1309,12 @@ class PluginMonitoringShinken extends CommonDBTM {
                   }
                   $a_services[$i]['notification_period'] = '24x7';
                   $a_services[$i]['check_period'] = '24x7';
+                  $timeperiodsuffix = '-'.$pmHostconfig->getValueAncestor('jetlag', $entities_id);
+                  if ($timeperiodsuffix == '-0') {
+                     $timeperiodsuffix = '';
+                  }
                   if ($calendar->getFromDB($a_component['calendars_id'])) {
-                     $a_services[$i]['check_period'] = $calendar->fields['name'];
+                     $a_services[$i]['check_period'] = $calendar->fields['name'].$timeperiodsuffix;
                   }
                }
 
@@ -1377,7 +1407,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                foreach ($a_listBR as $dataBR) {
                   if ($pmService->getFromDB($dataBR['plugin_monitoring_services_id'])) {
                      if ($pmService->getHostName() != '') {
-                        $hostname = preg_replace("/[^A-Za-z0-9\-_]/","",$pmService->getHostName());
+                        $hostname = self::shinkenFilter($pmService->getHostName());
 
                         if ($gdata['operator'] == 'and'
                                 OR $gdata['operator'] == 'or'
@@ -1392,12 +1422,12 @@ class PluginMonitoringShinken extends CommonDBTM {
                               if (strstr($gdata['operator'], ' of:')) {
                                  $a_group[$gdata['id']] = $gdata['operator'];
                               }
-                              $a_group[$gdata['id']] .= $hostname.",".preg_replace("/[^A-Za-z0-9\-_]/","",$pmService->getName(array('shinken'=>true)));
+                              $a_group[$gdata['id']] .= $hostname.",".self::shinkenFilter($pmService->getName(array('shinken'=>true)));
                            } else {
-                              $a_group[$gdata['id']] .= $operator.$hostname.",".preg_replace("/[^A-Za-z0-9\-_]/","",$pmService->getName(array('shinken'=>true)));
+                              $a_group[$gdata['id']] .= $operator.$hostname.",".self::shinkenFilter($pmService->getName(array('shinken'=>true)));
                            }
                         } else {
-                           $a_group[$gdata['id']] = $gdata['operator']." ".$hostname.",".preg_replace("/[^A-Za-z0-9\-_]/","",$item->getName());
+                           $a_group[$gdata['id']] = $gdata['operator']." ".$hostname.",".self::shinkenFilter($item->getName());
                         }
                      }
                   }
@@ -1417,7 +1447,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                }
                $a_services[$i]['host_name'] = self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'] . self::$shinkenParameters['shinken']['fake_hosts']['bp_host'];
                $a_services[$i]['business_impact'] = $dataBA['business_priority'];
-               $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9\-_]/","",$dataBA['name']);
+               $a_services[$i]['service_description'] = self::shinkenFilter($dataBA['name']);
                $a_services[$i]['_ENTITIESID'] = $dataBA['id'];
                $a_services[$i]['_ITEMSID'] = $dataBA['id'];
                $a_services[$i]['_ITEMTYPE'] = 'ServiceCatalog';
@@ -1536,7 +1566,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                   if ($pmService->getFromDB($services['serviceId'])) {
                      // Toolbox::logInFile("pm-shinken", "   - SC templated service entity : ".$services['entityId'].", service :  ".$pmService->getName(true)." on ".$pmService->getHostName()."\n");
                      if ($pmService->getHostName() != '') {
-                        $hostname = preg_replace("/[^A-Za-z0-9\-_]/","",$pmService->getHostName());
+                        $hostname = self::shinkenFilter($pmService->getHostName());
 
                         $serviceFakeId = $services['entityId'];
 
@@ -1555,12 +1585,12 @@ class PluginMonitoringShinken extends CommonDBTM {
                               if (strstr($BRoperator, ' of:')) {
                                  $a_group[$serviceFakeId] = $BRoperator;
                               }
-                              $a_group[$serviceFakeId] .= $hostname.",".preg_replace("/[^A-Za-z0-9\-_]/","",$pmService->getName(array('shinken'=>true)));
+                              $a_group[$serviceFakeId] .= $hostname.",".self::shinkenFilter($pmService->getName(array('shinken'=>true)));
                            } else {
-                              $a_group[$serviceFakeId] .= $operator.$hostname.",".preg_replace("/[^A-Za-z0-9\-_]/","",$pmService->getName(array('shinken'=>true)));
+                              $a_group[$serviceFakeId] .= $operator.$hostname.",".self::shinkenFilter($pmService->getName(array('shinken'=>true)));
                            }
                         } else {
-                           $a_group[$serviceFakeId] = $BRoperator." ".$hostname.",".preg_replace("/[^A-Za-z0-9\-_]/","",$pmService->getHostName());
+                           $a_group[$serviceFakeId] = $BRoperator." ".$hostname.",".self::shinkenFilter($pmService->getHostName());
                         }
                         // Toolbox::logInFile("pm-shinken", "   - SCT group : ".$a_group[$serviceFakeId]."\n");
                      }
@@ -1574,10 +1604,10 @@ class PluginMonitoringShinken extends CommonDBTM {
                   if ($calendar->getFromDB($a_derivatedSC['calendars_id'])) {
                      $a_services[$i]['check_period'] = $calendar->fields['name'];
                   }
-                  $a_services[$i]['host_name'] = preg_replace("/[^A-Za-z0-9\-_]/","",$a_derivatedSC['name']);
+                  $a_services[$i]['host_name'] = self::shinkenFilter($a_derivatedSC['name']);
                   $a_services[$i]['host_name'] = self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'] . self::$shinkenParameters['shinken']['fake_hosts']['bp_host'];
                   $a_services[$i]['business_impact'] = $a_derivatedSC['business_priority'];
-                  $a_services[$i]['service_description'] = preg_replace("/[^A-Za-z0-9\-_]/","",$a_derivatedSC['name']);
+                  $a_services[$i]['service_description'] = self::shinkenFilter($a_derivatedSC['name']);
                   $a_services[$i]['_ENTITIESID'] = $a_derivatedSC['entities_id'];
                   $a_services[$i]['_ITEMSID'] = $a_derivatedSC['id'];
                   $a_services[$i]['_ITEMTYPE'] = 'ServiceCatalog';
@@ -1808,7 +1838,7 @@ Nagios configuration file :
    }
 */
          // Hostgroup name
-         $hostgroup_name = strtolower(preg_replace("/[^A-Za-z0-9\-_ ]/","",$data['entityName']));
+         $hostgroup_name = strtolower(self::shinkenFilter($data['entityName']));
          $hostgroup_name = preg_replace("/[ ]/","_",$hostgroup_name);
 
          PluginMonitoringToolbox::logIfExtradebug(
@@ -1835,7 +1865,7 @@ Nagios configuration file :
 			   // Only immediate sub level are considered as hostgroup members
                if ($data['entityLevel']+1 != $pmEntity->fields['level']) continue;
 
-               $hostgroup_name = strtolower(preg_replace("/[^A-Za-z0-9\-_ ]/","",$pmEntity->getField('name')));
+               $hostgroup_name = self::shinkenFilter($pmEntity->getField('name'));
                $hostgroup_name = preg_replace("/[ ]/","_",$hostgroup_name);
 
                $a_hostgroups[$i]['hostgroup_members'] .= (! $first_member) ? ", $hostgroup_name" : "$hostgroup_name";
@@ -2140,9 +2170,18 @@ Nagios configuration file :
       $calendarSegment  = new CalendarSegment();
       $calendar_Holiday = new Calendar_Holiday();
       $holiday          = new Holiday();
+      $hostconfig       = new PluginMonitoringHostconfig();
 
       $a_timeperiods = array();
       $i=0;
+      $jetlags = array();
+      $hostconfigs = $hostconfig->find();
+      foreach ($hostconfigs as $data) {
+         if ($data['jetlag'] != '100'
+                 AND $data['jetlag'] != '0') {
+            $jetlags[$data['jetlag']] = $data['jetlag'];
+         }
+      }
 
       $a_listcalendar = $calendar->find();
       foreach ($a_listcalendar as $datacalendar) {
@@ -2200,7 +2239,103 @@ Nagios configuration file :
                    ' '.date('j', $datetime)] = '00:00-00:00';
             }
          }
+         $timeperiod_tmp = $a_timeperiods[$i];
          $i++;
+         foreach ($jetlags as $jetlag) {
+            $tmp = $timeperiod_tmp;
+            $tmp['timeperiod_name'] = $tmp['timeperiod_name']."-".$jetlag;
+            $tmp['alias'] = $tmp['alias']."-".$jetlag;
+            $days = array('sunday','monday','tuesday', 'wednesday','thursday',
+                          'friday', 'saturday');
+            $reportHours = 0;
+            $beforeday = 'saturday';
+            foreach ($days as $day) {
+               if (isset($tmp[$day])) {
+                  $splitDay = explode(',', $tmp[$day]);
+                  $toAdd = '';
+                  if ($reportHours > 0) {
+                     $toAdd = '00:00-'.sprintf("%02s", $reportHours).':00';
+                     $reportHours = 0;
+                  }
+                  foreach ($splitDay as $num=>$hourMinute) {
+                     $beginEnd = explode('-', $hourMinute);
+                     // Begin
+                     $split = explode(':', $beginEnd[0]);
+                     $split[0] = $split[0] + $jetlag;
+                     if ($split[0] > 24) {
+                        //$reportHours = $split[0] - 24;
+                        unset($splitDay[$num]);
+                     } else {
+                        if ($split[0] < 0) {
+                           $reportHours = $split[0];
+                           $split[0] = '00';
+                        }
+                        $beginEnd[0] = $split[0].':'.$split[1];
+                        // End
+                        $split = explode(':', $beginEnd[1]);
+                        if ($split[0] < 0) {
+                           unset($splitDay[$num]);
+                        } else {
+                           $split[0] = $split[0] + $jetlag;
+                           if ($split[0] > 24) {
+                              $reportHours = $split[0] - 24;
+                              $split[0] = 24;
+                           }
+                           $beginEnd[1] = sprintf("%02s", $split[0]).':'.$split[1];
+
+                           $hourMinute = implode('-', $beginEnd);
+                           $splitDay[$num] = $hourMinute;
+                        }
+                     }
+                  }
+                  if ($reportHours < 0) {
+                     if (!isset($tmp[$beforeday])) {
+                        $tmp[$beforeday] = array();
+                     }
+                     $splitBeforeDay = explode(',', $tmp[$beforeday]);
+                     $splitBeforeDay[] = sprintf("%02s", (24 + $reportHours)).':00-24:00';
+                     $tmp[$beforeday] = implode(',', $splitBeforeDay);
+                     $reportHours = 0;
+                  }
+                  if (!empty($toAdd)) {
+                     array_unshift($splitDay, $toAdd);
+                  }
+                  $tmp[$day] = implode(',', $splitDay);
+               } else if ($reportHours > 0) {
+                  $tmp[$day] = '00:00-'.$reportHours.':00';
+                  $reportHours = 0;
+               }
+               $beforeday = $day;
+            }
+            // Manage for report hours from saturday to sunday
+            if ($reportHours > 0) {
+               $splitDay = explode(',', $tmp['sunday']);
+               array_unshift($splitDay, '00:00-'.sprintf("%02s", $reportHours).':00');
+               $tmp['sunday'] = implode(',', $splitDay);
+            }
+            // concatain if need
+            foreach ($days as $day) {
+               if (isset($tmp[$day])) {
+                  $splitDay = explode(',', $tmp[$day]);
+                  $beforeHour = '';
+                  $beforeNum  = 0;
+                  foreach ($splitDay as $num=>$data) {
+                     if (substr($data, 0, 2) == $beforeHour) {
+                        $splitDay[$beforeNum] = substr($splitDay[$beforeNum], 0, 6).substr($data, 6, 5);
+                        $beforeHour = substr($data, 6, 2);
+                        unset($splitDay[$num]);
+                     } else {
+                        $beforeHour = substr($data, 6, 2);
+                        $beforeNum = $num;
+                     }
+                  }
+                  $tmp[$day] = implode(',', $splitDay);
+               }
+            }
+
+            $a_timeperiods[$i] = $tmp;
+            $i++;
+         }
       }
 
       PluginMonitoringToolbox::logIfExtradebug(

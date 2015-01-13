@@ -370,12 +370,12 @@ class PluginMonitoringWebservice {
          $start = $params['start'];
       }
 
-      // Entity
-      if (isset($params['entity'])) {
-         if (!Session::haveAccessToEntity($params['entity'])) {
+      // Entities
+      if (isset($params['entitiesList'])) {
+         if (!Session::haveAccessToAllOfEntities($params['entitiesList'])) {
             return self::Error($protocol, WEBSERVICES_ERROR_NOTALLOWED, '', 'entity');
          }
-         $where = getEntitiesRestrictRequest("WHERE", "glpi_computers", '', $params['entity']) .
+         $where = getEntitiesRestrictRequest("WHERE", "glpi_computers", '', $params['entitiesList']) .
                      $where;
       } else {
          $where = getEntitiesRestrictRequest("WHERE", "glpi_computers") .
@@ -444,9 +444,9 @@ class PluginMonitoringWebservice {
 
       $where = $join = $fields = '';
       $join .= "
-         INNER JOIN `glpi_computers`
+         LEFT JOIN `glpi_plugin_monitoring_hosts`
             ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id` AND `glpi_plugin_monitoring_hosts`.`itemtype`='Computer'
-         INNER JOIN `glpi_entities`
+         LEFT JOIN `glpi_entities`
             ON `glpi_computers`.`entities_id` = `glpi_entities`.`id`
          LEFT JOIN `glpi_locations`
             ON `glpi_locations`.`id` = `glpi_computers`.`locations_id`
@@ -462,12 +462,12 @@ class PluginMonitoringWebservice {
          $start = $params['start'];
       }
 
-      // Entity
-      if (isset($params['entity'])) {
-         if (!Session::haveAccessToEntity($params['entity'])) {
+      // Entities
+      if (isset($params['entitiesList'])) {
+         if (!Session::haveAccessToAllOfEntities($params['entitiesList'])) {
             return self::Error($protocol, WEBSERVICES_ERROR_NOTALLOWED, '', 'entity');
          }
-         $where = getEntitiesRestrictRequest("WHERE", "glpi_computers", '', $params['entity']) .
+         $where = getEntitiesRestrictRequest("WHERE", "glpi_computers", '', $params['entitiesList']) .
                      $where;
       } else {
          $where = getEntitiesRestrictRequest("WHERE", "glpi_computers") .
@@ -489,26 +489,34 @@ class PluginMonitoringWebservice {
       }
 
       // Order
-      $order = "entity_name ASC, FIELD(`glpi_plugin_monitoring_hosts`.`state`,'DOWN','PENDING','UNKNOWN','UNREACHABLE','UP')";
+      $order = "entity_name ASC, location ASC, FIELD(`glpi_plugin_monitoring_hosts`.`state`,'DOWN','PENDING','UNKNOWN','UNREACHABLE','UP')";
       if (isset($params['order'])) {
          $order = $params['order'];
       }
 
       $query = "
          SELECT
-            `glpi_entities`.`name` AS entity_name,
+            `glpi_computers`.`id` AS id,
             `glpi_computers`.`name` AS name,
+            `glpi_computers`.`serial` AS serial,
+            `glpi_computers`.`otherserial` AS inventory,
+            `glpi_computers`.`comment` AS comment,
+            `glpi_entities`.`id` AS entity_id,
+            `glpi_entities`.`name` AS entity_name,
+            `glpi_entities`.`completename` AS entity_completename,
             `glpi_locations`.`building` AS gps,
             `glpi_locations`.`name` AS short_location,
             `glpi_locations`.`completename` AS location,
+            `glpi_plugin_monitoring_hosts`.`id` as monitoring_id,
             `glpi_plugin_monitoring_hosts`.`state`,
             `glpi_plugin_monitoring_hosts`.`state_type`,
             `glpi_plugin_monitoring_hosts`.`event`,
             `glpi_plugin_monitoring_hosts`.`last_check`,
             `glpi_plugin_monitoring_hosts`.`perf_data`,
             `glpi_plugin_monitoring_hosts`.`is_acknowledged`,
+            `glpi_plugin_monitoring_hosts`.`is_acknowledgeconfirmed`,
             `glpi_plugin_monitoring_hosts`.`acknowledge_comment`
-         FROM `glpi_plugin_monitoring_hosts`
+         FROM `glpi_computers`
          $join
          $where
          ORDER BY $order
@@ -599,12 +607,12 @@ class PluginMonitoringWebservice {
          $start = $params['start'];
       }
 
-      // Entity
-      if (isset($params['entity'])) {
-         if (!Session::haveAccessToEntity($params['entity'])) {
+      // Entities
+      if (isset($params['entitiesList'])) {
+         if (!Session::haveAccessToAllOfEntities($params['entitiesList'])) {
             return self::Error($protocol, WEBSERVICES_ERROR_NOTALLOWED, '', 'entity');
          }
-         $where = getEntitiesRestrictRequest("WHERE", "glpi_computers", '', $params['entity']) .
+         $where = getEntitiesRestrictRequest("WHERE", "glpi_computers", '', $params['entitiesList']) .
                      $where;
       } else {
          $where = getEntitiesRestrictRequest("WHERE", "glpi_computers") .
@@ -616,7 +624,7 @@ class PluginMonitoringWebservice {
          if (is_array($params['servicesFilter'])) {
             $where .= " AND `glpi_plugin_monitoring_components`.`name` IN ('" . implode("','",$params['servicesFilter']) . "')";
          } else {
-            $where .= " AND `glpi_plugin_monitoring_components`.`name` = " . $params['servicesFilter'];
+            $where .= " AND `glpi_plugin_monitoring_components`.`name` = '" . $params['servicesFilter'] . "'";
          }
       }
 

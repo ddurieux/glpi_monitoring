@@ -221,7 +221,6 @@ class PluginMonitoringHost extends CommonDBTM {
             $pmHostconfig = new PluginMonitoringHostconfig();
             $pmHostconfig->showForm($item->getID(), get_class($item));
          } else if ($tabnum == 1) {
-            echo "Test de Fred";
             $pmService = new PluginMonitoringService();
             $pmService->showGraphsByHost(get_class($item), $item->fields['id']);
          }

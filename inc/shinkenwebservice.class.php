@@ -75,9 +75,9 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       }
       $ip = $pmTag->getIP($tag);
       $auth = $pmTag->getAuth($tag);
+      $port = $pmTag->getPort($tag);
 
-
-      $url = 'http://'.$ip.':7760/';
+      $url = 'http://'.$ip.':'.$port.'/';
       $action = 'acknowledge';
       $a_fields = array(
           'action'               => empty($operation) ? 'add' : $operation,
@@ -120,8 +120,9 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       }
       $ip = $pmTag->getIP($tag);
       $auth = $pmTag->getAuth($tag);
+      $port = $pmTag->getPort($tag);
 
-      $url = 'http://'.$ip.':7760/';
+      $url = 'http://'.$ip.':'.$port.'/';
       $action = 'downtime';
       $a_fields = array(
           'action'               => empty($operation) ? 'add' : $operation,
@@ -164,7 +165,14 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
                $pmLog->add($input);
             }
          } else {
-            $a_tags = $pmTag->find();
+            $a_tagsBrut = $pmTag->find();
+
+            $a_tags = array();
+            foreach ($a_tagsBrut as $data) {
+               if (!isset($a_tags[$data['ip'].':'.$data['port']])) {
+                  $a_tags[$data['ip'].':'.$data['port']] = $data;
+               }
+            }
             foreach ($a_tags as $data) {
                // TODO : should be parameters ... Shinken arbiter may use another port and may use HTTPS !
                $url = 'http://'.$data['ip'].':'.$data['port'].'/';

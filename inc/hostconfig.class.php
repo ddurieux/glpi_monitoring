@@ -133,6 +133,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
               OR $itemtype != 'Entity') {
             $this->fields['plugin_monitoring_components_id'] = -1;
             $this->fields['plugin_monitoring_realms_id'] = -1;
+            $this->fields['jetlag'] = 100;
          }
       } else {
          $data = $DB->fetch_assoc($result);
@@ -216,6 +217,70 @@ class PluginMonitoringHostconfig extends CommonDBTM {
          echo "</tr>";
       }
 
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo __('Jet lag', 'monitoring')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+
+      $elements = array(
+         '-11'       => '-11',
+         '-10'       => '-10',
+         '-9'        => '-9',
+         '-8'        => '-8',
+         '-7'        => '-7',
+         '-6'        => '-6',
+         '-5'        => '-5',
+         '-4'        => '-4',
+         '-3'        => '-3',
+         '-2'        => '-2',
+         '-1'        => '-1',
+         '0'         => '0',
+         '1'         => '+1',
+         '2'         => '+2',
+         '3'         => '+3',
+         '4'         => '+4',
+         '5'         => '+5',
+         '6'         => '+6',
+         '7'         => '+7',
+         '8'         => '+8',
+         '9'         => '+9',
+         '10'        => '+10',
+         '11'        => '+11',
+         '12'        => '+12',
+         '13'        => '+13',
+         '14'        => '+14',
+      );
+
+      if ($entities_id != '0'
+              OR $itemtype != 'Entity') {
+         $elements["100"] = __('Inheritance of the parent entity');
+      }
+      Dropdown::showFromArray('jetlag', $elements, array('value' => $this->fields['jetlag']));
+      echo "</td>";
+      echo "<td colspan='2'></td>";
+      echo "</tr>";
+
+      // Inheritance
+      if ($this->fields['jetlag'] == '100') {
+
+         echo "<tr class='tab_bg_1'>";
+         if ($this->fields['jetlag'] == '100') {
+            echo "<td colspan='2' class='green center'>";
+            echo __('Inheritance of the parent entity')."&nbsp;:&nbsp;";
+            echo $elements[$this->getValueAncestor("jetlag", $entities_id)];
+            echo "</td>";
+         } else {
+            echo "<td colspan='2'>";
+            echo "</td>";
+         }
+         echo "<td colspan='2'>";
+         echo "</td>";
+         echo "</tr>";
+      }
+
+
 /*
       if ($itemtype == 'Entity'
               AND $items_id == '0') {
@@ -268,8 +333,14 @@ class PluginMonitoringHostconfig extends CommonDBTM {
          $result = $DB->query($query);
          if ($DB->numrows($result) == '1') {
             $data = $DB->fetch_assoc($result);
-            if ($data[$fieldname] != '-1') {
-               return $data[$fieldname];
+            if ($fieldname == 'jetlag') {
+               if ($data[$fieldname] != '100') {
+                  return $data[$fieldname];
+               }
+            } else {
+               if ($data[$fieldname] != '-1') {
+                  return $data[$fieldname];
+               }
             }
          }
       }
@@ -295,8 +366,14 @@ class PluginMonitoringHostconfig extends CommonDBTM {
             $result = $DB->query($query);
             if ($DB->numrows($result) != '0') {
                $data = $DB->fetch_assoc($result);
-               if ($data[$fieldname] != '-1') {
-                  return $data[$fieldname];
+               if ($fieldname == 'jetlag') {
+                  if ($data[$fieldname] != '100') {
+                     return $data[$fieldname];
+                  }
+               } else {
+                  if ($data[$fieldname] != '-1') {
+                     return $data[$fieldname];
+                  }
                }
             }
          }
@@ -317,8 +394,14 @@ class PluginMonitoringHostconfig extends CommonDBTM {
                $result = $DB->query($query);
                if ($DB->numrows($result) != '0') {
                   $data = $DB->fetch_assoc($result);
-                  if ($data[$fieldname] != '-1') {
-                     return $data[$fieldname];
+                  if ($fieldname == 'jetlag') {
+                     if ($data[$fieldname] != '100') {
+                        return $data[$fieldname];
+                     }
+                  } else {
+                     if ($data[$fieldname] != '-1') {
+                        return $data[$fieldname];
+                     }
                   }
                }
             }
