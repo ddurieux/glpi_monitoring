@@ -1038,6 +1038,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
             ON `plugin_monitoring_weathermapnodes_id_1` = `glpi_plugin_monitoring_weathermapnodes`.`id`
          WHERE `plugin_monitoring_weathermaps_id`='".$weathermaps_id."'";
       $result = $DB->query($query);
+      $a_multipleLinks = array();
       while ($data=$DB->fetch_array($result)) {
          $pmWeathermapnode->getFromDB($data['plugin_monitoring_weathermapnodes_id_2']);
 
@@ -1101,6 +1102,13 @@ class PluginMonitoringWeathermap extends CommonDBTM {
             $upcolor = 'black';
             $downcolor = 'black';
          }
+         $position = 0;
+         if (isset($a_multipleLinks[$data['plugin_monitoring_weathermapnodes_id_1']."-".$data['plugin_monitoring_weathermapnodes_id_2']])) {
+            $a_multipleLinks[$data['plugin_monitoring_weathermapnodes_id_1']."-".$data['plugin_monitoring_weathermapnodes_id_2']]++;
+            $position = $a_multipleLinks[$data['plugin_monitoring_weathermapnodes_id_1']."-".$data['plugin_monitoring_weathermapnodes_id_2']];
+         } else {
+            $a_multipleLinks[$data['plugin_monitoring_weathermapnodes_id_1']."-".$data['plugin_monitoring_weathermapnodes_id_2']] = 0;
+         }
          $a_data['links'][] = array(
              'source'    => $a_mapping[$data['plugin_monitoring_weathermapnodes_id_1']],
              'target'    => $a_mapping[$data['plugin_monitoring_weathermapnodes_id_2']],
@@ -1110,9 +1118,10 @@ class PluginMonitoringWeathermap extends CommonDBTM {
              'downusage' => $downusage,
              'info'      => '',
              'value'     => 1,
-             'services_id' => $data['plugin_monitoring_services_id'],
-             'components_id' => $pmService->fields['plugin_monitoring_components_id'],
-             'rrdtool_template' => $pmComponent->fields['graph_template']
+             'services_id'      => $data['plugin_monitoring_services_id'],
+             'components_id'    => $pmService->fields['plugin_monitoring_components_id'],
+             'rrdtool_template' => $pmComponent->fields['graph_template'],
+             'position'  => $position
          );
          if (!isset($nodes_upusage[$a_mapping[$data['plugin_monitoring_weathermapnodes_id_1']]])) {
             $nodes_upusage[$a_mapping[$data['plugin_monitoring_weathermapnodes_id_1']]] = array();
@@ -1132,7 +1141,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          }
          $a_data['nodes'][$nodes_num]['nodeusage'] = $color;
       }
-
+//      Toolbox::logDebug($a_data);
       echo 'var jsonstr'.$rand.' = \''.json_encode($a_data).'\';';
       echo 'var json'.$rand.' = JSON.parse(jsonstr'.$rand.');
       force'.$rand.'
@@ -1193,38 +1202,97 @@ class PluginMonitoringWeathermap extends CommonDBTM {
 
     force'.$rand.'.on("tick", tick'.$rand.');
 
-    function tick'.$rand.'() {
-        linksupusage'.$rand.'.attr("x1", function(d) { return d.source.x; })
-            .attr("y1", function(d) { return d.source.y; })
-            .attr("x2", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * ((d.upusage * 97) / 100)); })
-            .attr("y2", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * ((d.upusage * 97) / 100)); });
+   function tick'.$rand.'() {
+      linksupusage'.$rand.'
+         .attr("x1", function(d) {
+                  var coordonates = {sx:d.source.x, sy:d.source.y, tx:d.target.x, ty:d.target.y, position:d.position};
+                  return weathermaptickposition(coordonates, "x", 0); })
+         .attr("y1", function(d) {
+                  var coordonates = {sx:d.source.x, sy:d.source.y, tx:d.target.x, ty:d.target.y, position:d.position};
+                  return weathermaptickposition(coordonates, "y", 0); })
+         .attr("x2", function(d) {
+                  var coordonates = {sx:d.source.x, sy:d.source.y, tx:d.target.x, ty:d.target.y, position:d.position};
+                  coordonates.sx = d.source.x + (((d.target.x - d.source.x) / 200) * ((d.upusage * 97) / 100));
+                  return weathermaptickposition(coordonates, "x", 0); })
+         .attr("y2", function(d) {
+                  var coordonates = {sx:d.source.x, sy:d.source.y, tx:d.target.x, ty:d.target.y, position:d.position};
+                  coordonates.sy = d.source.y + (((d.target.y - d.source.y) / 200) * ((d.upusage * 97) / 100));
+                  return weathermaptickposition(coordonates, "y", 0); });
 
-        linksupnotusage'.$rand.'.attr("x1", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * ((d.upusage * 97) / 100)); })
-            .attr("y1", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * ((d.upusage * 97) / 100)); })
-            .attr("x2", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 97); })
-            .attr("y2", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 97); });
+      linksupnotusage'.$rand.'
+         .attr("x1", function(d) {
+                  var coordonates = {sx:d.source.x, sy:d.source.y, tx:d.target.x, ty:d.target.y, position:d.position};
+                  coordonates.sx = d.source.x + (((d.target.x - d.source.x) / 200) * ((d.upusage * 97) / 100));
+                  return weathermaptickposition(coordonates, "x", 0); })
+         .attr("y1", function(d) {
+                  var coordonates = {sx:d.source.x, sy:d.source.y, tx:d.target.x, ty:d.target.y, position:d.position};
+                  coordonates.sy = d.source.y + (((d.target.y - d.source.y) / 200) * ((d.upusage * 97) / 100));
+                  return weathermaptickposition(coordonates, "y", 0); })
+         .attr("x2", function(d) {
+                  var coordonates = {sx:d.source.x, sy:d.source.y, tx:d.target.x, ty:d.target.y, position:d.position};
+                  coordonates.sx = d.source.x + (((d.target.x - d.source.x) / 200) * 97);
+                  return weathermaptickposition(coordonates, "x", 0); })
+         .attr("y2", function(d) {
+                  var coordonates = {sx:d.source.x, sy:d.source.y, tx:d.target.x, ty:d.target.y, position:d.position};
+                  coordonates.sy = d.source.y + (((d.target.y - d.source.y) / 200) * 97);
+                  return weathermaptickposition(coordonates, "y", 0); });
 
-        linksdownusage'.$rand.'.attr("x1", function(d) { return d.target.x; })
-            .attr("y1", function(d) { return d.target.y; })
-            .attr("x2", function(d) { return d.source.x + Math.round(((d.target.x - d.source.x) / 200) * (200 - ((d.downusage * 97) / 100))); })
-            .attr("y2", function(d) { return d.source.y + Math.round(((d.target.y - d.source.y) / 200) * (200 - ((d.downusage * 97) / 100))); });
+      linksdownusage'.$rand.'
+         .attr("x1", function(d) {
+                  var coordonates = {sx:d.target.x, sy:d.target.y, tx:d.source.x, ty:d.source.y, position:d.position};
+                  return weathermaptickposition(coordonates, "x", 1); })
+         .attr("y1", function(d) {
+                  var coordonates = {sx:d.target.x, sy:d.target.y, tx:d.source.x, ty:d.source.y, position:d.position};
+                  return weathermaptickposition(coordonates, "y", 1); })
+         .attr("x2", function(d) {
+                  var coordonates = {sx:d.target.x, sy:d.target.y, tx:d.source.x, ty:d.source.y, position:d.position};
+                  coordonates.sx = d.source.x + ((d.target.x - d.source.x) / 200) * (200 - ((d.downusage * 97) / 100));
+                  return weathermaptickposition(coordonates, "x", 1); })
+         .attr("y2", function(d) {
+                  var coordonates = {sx:d.target.x, sy:d.target.y, tx:d.source.x, ty:d.source.y, position:d.position};
+                  coordonates.sy = d.source.y + ((d.target.y - d.source.y) / 200) * (200 - ((d.downusage * 97) / 100));
+                  return weathermaptickposition(coordonates, "y", 1); })
 
-        linksdownnotusage'.$rand.'.attr("x1", function(d) { return d.source.x + Math.round(((d.target.x - d.source.x) / 200) * (200 - ((d.downusage * 97) / 100))); })
-            .attr("y1", function(d) { return d.source.y + Math.round(((d.target.y - d.source.y) / 200) * (200 - ((d.downusage * 97) / 100))); })
-            .attr("x2", function(d) { return d.source.x + Math.round(((d.target.x - d.source.x) / 200) * 103); })
-            .attr("y2", function(d) { return d.source.y + Math.round(((d.target.y - d.source.y) / 200) * 103); });
+      linksdownnotusage'.$rand.'
+         .attr("x1", function(d) {
+                  var coordonates = {sx:d.target.x, sy:d.target.y, tx:d.source.x, ty:d.source.y, position:d.position};
+                  coordonates.sx = d.source.x + Math.round(((d.target.x - d.source.x) / 200) * (200 - ((d.downusage * 97) / 100)));
+                  return weathermaptickposition(coordonates, "x", 1); })
+         .attr("y1", function(d) {
+                  var coordonates = {sx:d.target.x, sy:d.target.y, tx:d.source.x, ty:d.source.y, position:d.position};
+                  coordonates.sy = d.source.y + Math.round(((d.target.y - d.source.y) / 200) * (200 - ((d.downusage * 97) / 100)));
+                  return weathermaptickposition(coordonates, "y", 1); })
+         .attr("x2", function(d) {
+                  var coordonates = {sx:d.target.x, sy:d.target.y, tx:d.source.x, ty:d.source.y, position:d.position};
+                  coordonates.sx = d.source.x + Math.round(((d.target.x - d.source.x) / 200) * 103);
+                  return weathermaptickposition(coordonates, "x", 1); })
+         .attr("y2", function(d) {
+                  var coordonates = {sx:d.target.x, sy:d.target.y, tx:d.source.x, ty:d.source.y, position:d.position};
+                  coordonates.sy = d.source.y + Math.round(((d.target.y - d.source.y) / 200) * 103);
+                  return weathermaptickposition(coordonates, "y", 1); })
 
-        nodes'.$rand.'
-            .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
-';
+      nodes'.$rand.'
+         .attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
 
-         echo '
-   textdown'.$rand.'.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 130); })
-      .attr("y", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 130); });
+      textdown'.$rand.'
+         .attr("x", function(d) {
+                  var coordonates = {sx:d.source.x, sy:d.source.y, tx:d.target.x, ty:d.target.y, position:d.position};
+                  coordonates.sx = d.source.x + (((d.target.x - d.source.x) / 200) * 130);
+                  return weathermaptickposition(coordonates, "x", 0); })
+         .attr("y", function(d) {
+                  var coordonates = {sx:d.source.x, sy:d.source.y, tx:d.target.x, ty:d.target.y, position:d.position};
+                  coordonates.sy = d.source.y + (((d.target.y - d.source.y) / 200) * 130);
+                  return weathermaptickposition(coordonates, "y", 0); });
 
-
-   textup'.$rand.'.attr("x", function(d) { return d.source.x + (((d.target.x - d.source.x) / 200) * 70); })
-      .attr("y", function(d) { return d.source.y + (((d.target.y - d.source.y) / 200) * 70); });
+      textup'.$rand.'
+         .attr("x", function(d) {
+                  var coordonates = {sx:d.source.x, sy:d.source.y, tx:d.target.x, ty:d.target.y, position:d.position};
+                  coordonates.sx = d.source.x + (((d.target.x - d.source.x) / 200) * 70);
+                  return weathermaptickposition(coordonates, "x", 0); })
+         .attr("y", function(d) {
+                  var coordonates = {sx:d.source.x, sy:d.source.y, tx:d.target.x, ty:d.target.y, position:d.position};
+                  coordonates.sy = d.source.y + (((d.target.y - d.source.y) / 200) * 70);
+                  return weathermaptickposition(coordonates, "y", 0); });
 
      };
 ';
