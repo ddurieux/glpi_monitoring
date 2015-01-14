@@ -2247,9 +2247,10 @@ Nagios configuration file :
             $tmp['alias'] = $tmp['alias']."-".$jetlag;
             $days = array('sunday','monday','tuesday', 'wednesday','thursday',
                           'friday', 'saturday');
+            $saturday = '';
             $reportHours = 0;
             $beforeday = 'saturday';
-            foreach ($days as $day) {
+            foreach ($days as $numday=>$day) {
                if (isset($tmp[$day])) {
                   $splitDay = explode(',', $tmp[$day]);
                   $toAdd = '';
@@ -2258,25 +2259,32 @@ Nagios configuration file :
                      $reportHours = 0;
                   }
                   foreach ($splitDay as $num=>$hourMinute) {
+                     $previous_begin = 0;
                      $beginEnd = explode('-', $hourMinute);
-                     // Begin
+                     // ** Begin **
                      $split = explode(':', $beginEnd[0]);
-                     $split[0] = $split[0] + $jetlag;
+                     $split[0] += $jetlag;
                      if ($split[0] > 24) {
                         //$reportHours = $split[0] - 24;
                         unset($splitDay[$num]);
                      } else {
                         if ($split[0] < 0) {
                            $reportHours = $split[0];
+                           $previous_begin = 24 + $split[0];
                            $split[0] = '00';
                         }
-                        $beginEnd[0] = $split[0].':'.$split[1];
-                        // End
+                        $beginEnd[0] = sprintf("%02s", $split[0]).':'.$split[1];
+                        // ** End **
                         $split = explode(':', $beginEnd[1]);
+                        $split[0] += $jetlag;
                         if ($split[0] < 0) {
+                           if ($numday-1 == -1) {
+                              $saturday .= ",".sprintf("%02s", $previous_begin).":00-".sprintf("%02s", (24 + $split[0])).":00";
+                           } else {
+                              $tmp[$days[($numday-1)]] .= ",".sprintf("%02s", $previous_begin).":00-".sprintf("%02s", (24 + $split[0])).":00";
+                           }
                            unset($splitDay[$num]);
                         } else {
-                           $split[0] = $split[0] + $jetlag;
                            if ($split[0] > 24) {
                               $reportHours = $split[0] - 24;
                               $split[0] = 24;
@@ -2289,12 +2297,12 @@ Nagios configuration file :
                      }
                   }
                   if ($reportHours < 0) {
-                     if (!isset($tmp[$beforeday])) {
-                        $tmp[$beforeday] = array();
-                     }
-                     $splitBeforeDay = explode(',', $tmp[$beforeday]);
-                     $splitBeforeDay[] = sprintf("%02s", (24 + $reportHours)).':00-24:00';
-                     $tmp[$beforeday] = implode(',', $splitBeforeDay);
+//                     if (!isset($tmp[$beforeday])) {
+//                        $tmp[$beforeday] = array();
+//                     }
+//                     $splitBeforeDay = explode(',', $tmp[$beforeday]);
+//                     $splitBeforeDay[] = sprintf("%02s", (24 + $reportHours)).':00-24:00';
+//                     $tmp[$beforeday] = implode(',', $splitBeforeDay);
                      $reportHours = 0;
                   }
                   if (!empty($toAdd)) {
@@ -2302,7 +2310,7 @@ Nagios configuration file :
                   }
                   $tmp[$day] = implode(',', $splitDay);
                } else if ($reportHours > 0) {
-                  $tmp[$day] = '00:00-'.$reportHours.':00';
+                  //$tmp[$day] = '00:00-'.$reportHours.':00';
                   $reportHours = 0;
                }
                $beforeday = $day;
@@ -2312,6 +2320,10 @@ Nagios configuration file :
                $splitDay = explode(',', $tmp['sunday']);
                array_unshift($splitDay, '00:00-'.sprintf("%02s", $reportHours).':00');
                $tmp['sunday'] = implode(',', $splitDay);
+            }
+            $tmp['saturday'] .= $saturday;
+            if (empty($tmp['saturday'])) {
+               unset($tmp['saturday']);
             }
             // concatain if need
             foreach ($days as $day) {
