@@ -455,7 +455,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
     * @param type $services_id
     * @param type $period can have values 'currentmonth','lastmonth', 'currentyear'
     */
-   function parseEvents($services_id,$period, $startp='', $endp='') {
+   function parseEvents($services_id, $period, $startp='', $endp='') {
       global $DB;
 
       $timecriticalSeconds = 0;
@@ -545,10 +545,21 @@ class PluginMonitoringUnavailability extends CommonDBTM {
             // current unvaibility (not finished)
             $query = "SELECT * FROM `glpi_plugin_monitoring_unavailabilities`
                WHERE `plugin_monitoring_services_id`='".$services_id."'
+                  AND `begin_date` LIKE '".$month."%'
                   AND `end_date` IS NULL";
             $result = $DB->query($query);
             while ($data=$DB->fetch_array($result)) {
                $timestart   = strtotime($data['begin_date']);
+               $activetime = date('U')-$timestart;
+               $timecriticalSeconds += $activetime;
+            }
+            $query = "SELECT * FROM `glpi_plugin_monitoring_unavailabilities`
+               WHERE `plugin_monitoring_services_id`='".$services_id."'
+                  AND `begin_date` NOT LIKE '".$month."%'
+                  AND `end_date` IS NULL";
+            $result = $DB->query($query);
+            while ($data=$DB->fetch_array($result)) {
+               $timestart   = strtotime($begindate);
                $activetime = date('U')-$timestart;
                $timecriticalSeconds += $activetime;
             }
@@ -633,10 +644,21 @@ class PluginMonitoringUnavailability extends CommonDBTM {
             // current unvaibility (not finished)
             $query = "SELECT * FROM `glpi_plugin_monitoring_unavailabilities`
                WHERE `plugin_monitoring_services_id`='".$services_id."'
+                  AND `begin_date` LIKE '".$year."%'
                   AND `end_date` IS NULL";
             $result = $DB->query($query);
             while ($data=$DB->fetch_array($result)) {
                $timestart   = strtotime($data['begin_date']);
+               $activetime = date('U')-$timestart;
+               $timecriticalSeconds += $activetime;
+            }
+            $query = "SELECT * FROM `glpi_plugin_monitoring_unavailabilities`
+               WHERE `plugin_monitoring_services_id`='".$services_id."'
+                  AND `begin_date` NOT LIKE '".$year."%'
+                  AND `end_date` IS NULL";
+            $result = $DB->query($query);
+            while ($data=$DB->fetch_array($result)) {
+               $timestart   = strtotime($begindate);
                $activetime = date('U')-$timestart;
                $timecriticalSeconds += $activetime;
             }
