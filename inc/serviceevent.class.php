@@ -59,7 +59,9 @@ class PluginMonitoringServiceevent extends CommonDBTM {
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       if ($item->getType() == 'Computer'){
          if (self::canView()) {
-            return __('Service events', 'monitoring');
+            // No tab ... query is too heavy !
+            return '';
+            // return __('Service events', 'monitoring');
          }
       }
 
@@ -71,6 +73,9 @@ class PluginMonitoringServiceevent extends CommonDBTM {
 
       if ($item->getType()=='Computer') {
          if (self::canView()) {
+            // No tab ... query is too heavy !
+            return '';
+            
             // Show list filtered on computer, sorted on day descending ...
             $_GET = array(
                'field' => array(22),
