@@ -121,6 +121,10 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       } else if ($tabnum == 50) {
          $pmContact_Item = new PluginMonitoringContact_Item();
          $pmContact_Item->showContacts("PluginMonitoringServicescatalog", $item->getID());
+      } else {
+		Plugin::load('monitoring',true);
+		Plugin::displayAction($appliance, $_POST['glpi_tab']);
+
       }
 
       return true;
