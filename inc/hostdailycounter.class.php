@@ -294,10 +294,15 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       $tab[1]['datatype']        = 'itemlink';
       $tab[1]['massiveaction']   = false;
 
-      $tab[2]['table']           = "glpi_computers";
-      $tab[2]['field']           = 'name';
+      $tab[2]['table']           = $this->getTable();
+      $tab[2]['field']           = 'hostname';
       $tab[2]['name']            = __('Computer');
-      $tab[2]['datatype']        = 'itemlink';
+      $tab[2]['massiveaction']   = false;
+      $tab[2]['datatype']       = 'specific';
+      // $tab[2]['table']           = "glpi_computers";
+      // $tab[2]['field']           = 'name';
+      // $tab[2]['name']            = __('Computer');
+      // $tab[2]['datatype']        = 'itemlink';
 
       $tab[3]['table']           = "glpi_entities";
       $tab[3]['field']           = 'name';
@@ -320,6 +325,18 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          $i++;
       }
 
+      // $tab[$i]['table']          = 'glpi_plugin_monitoring_hosts';
+      // $tab[$i]['field']          = 'state';
+      // $tab[$i]['name']           = __('Host state', 'monitoring');
+      // $tab[$i]['datatype']       = 'specific';
+      // $i++;
+
+      // $tab[$i]['table']          = 'glpi_plugin_monitoring_hosts';
+      // $tab[$i]['field']          = 'services_state';
+      // $tab[$i]['name']           = __('Host state', 'monitoring');
+      // $tab[$i]['datatype']       = 'specific';
+      // $i++;
+
       return $tab;
    }
 
@@ -329,11 +346,30 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
       if (!is_array($values)) {
          $values = array($field => $values);
       }
+      // Toolbox::logInFile("pm", "specific $field\n");
       switch ($field) {
          case 'hostname':
             $computer = new Computer();
-            $computer->getFromDBByQuery("WHERE `hostname` = '" . $values[$field] . "' LIMIT 1");
-            return $computer->getLink();
+            $computer->getFromDBByQuery("WHERE `name` = '" . $values[$field] . "' LIMIT 1");
+            
+            if (PluginMonitoringProfile::haveRight("counters", 'w')) {
+              $pm_Host = new PluginMonitoringHost();
+              $pm_Host->getFromDBByQuery("WHERE `itemtype` = 'Computer' AND `items_id` = '" . $computer->getID() . "' LIMIT 1");
+              
+               // Get all host services except if state is ok or is already acknowledged ...
+               $a_ret = PluginMonitoringHost::getServicesState($pm_Host->getID(),
+                                                           "`glpi_plugin_monitoring_services`.`state` != 'OK'
+                                                           AND `glpi_plugin_monitoring_services`.`is_acknowledged` = '0'");
+               $host_services_state = $a_ret[0];
+               $host_services_state_list = $a_ret[1];
+               
+              return 
+                "<div class='page foldtl resource".$pm_Host->getField('state')." resource".$pm_Host->getField('state_type')."'>".$pm_Host->getLink(array ("monitoring" => "1"))."</div>" . 
+                "<br/>" .
+                "<div class='page foldtl resource".$host_services_state."'>". $host_services_state."&nbsp;".Html::showToolTip($host_services_state_list, array('display' => false))."</div>";
+            } else {
+              return $pm_Host->getLink(array ("monitoring" => "1"));
+            }
             break;
 
          default:
