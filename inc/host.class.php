@@ -419,6 +419,8 @@ class PluginMonitoringHost extends CommonDBTM {
 
       $hostData = array();
       $hostData['id'] = $this->getID();
+      $hostData['acknowledge_comment'] = $comment;
+      $hostData['is_acknowledge_confirmed'] = '0';
       $hostData['is_acknowledged'] = '1';
       $this->update($hostData);
    }
@@ -427,6 +429,8 @@ class PluginMonitoringHost extends CommonDBTM {
 
       $hostData = array();
       $hostData['id'] = $this->getID();
+      $hostData['acknowledge_comment'] = "";
+      $hostData['is_acknowledge_confirmed'] = '0';
       $hostData['is_acknowledged'] = '0';
       $this->update($hostData);
    }
