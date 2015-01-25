@@ -380,6 +380,7 @@ class PluginMonitoringService extends CommonDBTM {
       $serviceData['acknowledge_comment'] = $comment;
       $serviceData['is_acknowledge_confirmed'] = '0';
       $serviceData['is_acknowledged'] = '1';
+      $serviceData["acknowledge_users_id"] = $_SESSION['glpiID'];
       $this->update($serviceData);
    }
    function setUnacknowledged($comment='') {
@@ -390,6 +391,7 @@ class PluginMonitoringService extends CommonDBTM {
       $serviceData['acknowledge_comment'] = "";
       $serviceData['is_acknowledge_confirmed'] = '0';
       $serviceData['is_acknowledged'] = '0';
+      $serviceData["acknowledge_users_id"] = -1;
       $this->update($serviceData);
    }
 
