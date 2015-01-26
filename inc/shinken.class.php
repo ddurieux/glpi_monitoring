@@ -472,8 +472,10 @@ class PluginMonitoringShinken extends CommonDBTM {
                }
 
                if (isset(self::$shinkenParameters['graphite']['prefix']['name'])) {
-                  $a_hosts[$i][self::$shinkenParameters['graphite']['prefix']['name']] =
+                  $graphitePrefix = 
                      strtolower(self::$shinkenParameters['graphite']['prefix']['value'] . self::removeAccents($data['entityFullName']));
+                  $a_hosts[$i][self::$shinkenParameters['graphite']['prefix']['name']] =
+                     preg_replace("/ /","",$graphitePrefix);
                }
 
                if (isset(self::$shinkenParameters['glpi']['lat'])) {
