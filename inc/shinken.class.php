@@ -201,8 +201,11 @@ class PluginMonitoringShinken extends CommonDBTM {
    }
 
    function shinkenFilter($str) {
-      
       return preg_replace("/[^A-Za-z0-9\-_]/","", strtolower(self::removeAccents($str)));
+   }
+
+   function graphiteFilter($str) {
+      return preg_replace("/[^A-Za-z0-9]/","", strtolower(self::removeAccents($str)));
    }
 
 
@@ -472,10 +475,8 @@ class PluginMonitoringShinken extends CommonDBTM {
                }
 
                if (isset(self::$shinkenParameters['graphite']['prefix']['name'])) {
-                  $graphitePrefix = 
-                     strtolower(self::$shinkenParameters['graphite']['prefix']['value'] . self::removeAccents($data['entityFullName']));
                   $a_hosts[$i][self::$shinkenParameters['graphite']['prefix']['name']] =
-                     preg_replace("/ /","",$graphitePrefix);
+                     strtolower(self::$shinkenParameters['graphite']['prefix']['value'] . self::graphiteFilter($data['entityFullName']));
                }
 
                if (isset(self::$shinkenParameters['glpi']['lat'])) {
