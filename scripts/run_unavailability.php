@@ -44,6 +44,6 @@ include ("../../../inc/includes.php");
 
 $pmUnavailability = new PluginMonitoringUnavailability();
 
-$pmUnavailability->cronUnavailability(0, 0, 10000000000);
+$pmUnavailability->runUnavailability(0, 0, 10000000000);
 
 ?>
