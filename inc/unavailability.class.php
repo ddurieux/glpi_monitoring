@@ -437,9 +437,15 @@ class PluginMonitoringUnavailability extends CommonDBTM {
             $this->displayValues($data['id'], 'currentyear');
 
             echo "<td class='center'>";
-            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/unavailability.php?".
-                    "field[0]=2&searchtype[0]=equals&contains[0]=".$data['id'].
-                    "&sort=3&order=DESC&itemtype=PluginMonitoringUnavailability'>
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/unavailability.php?"
+                    . "criteria[0][field]=2"
+                    . "&criteria[0][searchtype]=equals"
+                    . "&criteria[0][value]=".$data['id']
+
+                    . "&itemtype=PluginMonitoringUnavailability"
+                    . "&start=0"
+                    . "&sort=1"
+                    . "&order=DESC'>
                <img src='".$CFG_GLPI['root_doc']."/plugins/monitoring/pics/info.png'/></a>";
             echo "</td>";
             echo "</tr>";
