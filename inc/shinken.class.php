@@ -205,7 +205,7 @@ class PluginMonitoringShinken extends CommonDBTM {
    }
 
    function graphiteFilter($str) {
-      return preg_replace("/[^A-Za-z0-9]/","", strtolower(self::removeAccents($str)));
+      return preg_replace("/[^A-Za-z0-9.]/","", strtolower(self::removeAccents($str)));
    }
 
 
