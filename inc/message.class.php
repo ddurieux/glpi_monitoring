@@ -145,7 +145,7 @@ class PluginMonitoringMessage extends CommonDBTM {
       $pmLog = new PluginMonitoringLog();
       // Get id of last Shinken restart
       $id_restart = 0;
-      $a_restarts = $pmLog->find("`action` LIKE 'restart%'", "`id` DESC", 1);
+      $a_restarts = $pmLog->find("(`action`='restart' OR `action`='restart_planned')", "`id` DESC", 1);
       if (count($a_restarts) > 0) {
          $a_restart = current($a_restarts);
          $id_restart = $a_restart['id'];
@@ -258,7 +258,7 @@ class PluginMonitoringMessage extends CommonDBTM {
 
       $pmLog = new PluginMonitoringLog();
 
-      $a_reload_planned = $pmLog->find("`action` LIKE 'reload%' AND "
+      $a_reload_planned = $pmLog->find("(`action`='reload' OR `action`='reload_planned') AND "
               ."`date_mod` > date_add(now(), interval - 10 MINUTE)", "`id` DESC", 1);
       if (count($a_reload_planned) == 1) {
          $a_reload = current($a_reload_planned);
@@ -273,7 +273,7 @@ class PluginMonitoringMessage extends CommonDBTM {
          }
       }
 
-      $a_restart_planned = $pmLog->find("`action` LIKE 'restart%' AND "
+      $a_restart_planned = $pmLog->find("(`action`='restart' OR `action`='restart_planned') AND "
               ."`date_mod` > date_add(now(), interval - 10 MINUTE)", "`id` DESC", 1);
       if (count($a_restart_planned) == 1) {
          $a_restart = current($a_restart_planned);
