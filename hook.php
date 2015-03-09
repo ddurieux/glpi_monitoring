@@ -411,13 +411,36 @@ function plugin_monitoring_addLeftJoin($itemtype,$ref_table,$new_table,$linkfiel
                )
             ";
          }
+         if ($new_table.".".$linkfield == "PluginMonitoringHostdailycounter.hostname") {
+            return "
+               INNER JOIN `glpi_computers`
+            ON (`glpi_plugin_monitoring_hostdailycounters`.`hostname` = `glpi_computers`.`name`
+               AND `glpi_computers`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
+               )
+            ";
+         }
+         if ($new_table.".".$linkfield == "glpi_plugin_monitoring_hosts.plugin_monitoring_hosts_id") {
+            return "
+               INNER JOIN `$new_table`
+                ON (`$new_table`.`items_id` = `glpi_computers`.`id` AND `$new_table`.`itemtype` = 'Computer')
+            ";
+         }
          // Join between daily counters and entities
          if ($new_table.".".$linkfield == "glpi_entities.entities_id") {
             return "
+               INNER JOIN `glpi_computers`
+            ON (`glpi_plugin_monitoring_hostdailycounters`.`hostname` = `glpi_computers`.`name`
+               AND `glpi_computers`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
+               )
                INNER JOIN `glpi_entities`
                ON (`glpi_computers`.`entities_id` = `glpi_entities`.`id`
                )
             ";
+            // return "
+               // INNER JOIN `glpi_entities`
+               // ON (`glpi_computers`.`entities_id` = `glpi_entities`.`id`
+               // )
+            // ";
          }
          break;
 

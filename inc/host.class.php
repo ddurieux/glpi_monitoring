@@ -419,7 +419,10 @@ class PluginMonitoringHost extends CommonDBTM {
 
       $hostData = array();
       $hostData['id'] = $this->getID();
+      $hostData['acknowledge_comment'] = $comment;
+      $hostData['is_acknowledge_confirmed'] = '0';
       $hostData['is_acknowledged'] = '1';
+      $hostData["acknowledge_users_id"] = $_SESSION['glpiID'];
       $this->update($hostData);
    }
    function setUnacknowledged($comment='') {
@@ -427,7 +430,10 @@ class PluginMonitoringHost extends CommonDBTM {
 
       $hostData = array();
       $hostData['id'] = $this->getID();
+      $hostData['acknowledge_comment'] = "";
+      $hostData['is_acknowledge_confirmed'] = '0';
       $hostData['is_acknowledged'] = '0';
+      $hostData["acknowledge_users_id"] = -1;
       $this->update($hostData);
    }
 
