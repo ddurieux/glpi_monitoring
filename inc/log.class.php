@@ -101,7 +101,7 @@ class PluginMonitoringLog extends CommonDBTM {
          $a_reload = current($a_reloads);
          $id_reload = $a_reload['id'];
       }
-      
+
       $pmConfig->getFromDB(1);
       $secs = $pmConfig->fields['logretention'] * DAY_TIMESTAMP;
       $query = "DELETE FROM `".$pmLog->getTable()."`
@@ -124,7 +124,7 @@ class PluginMonitoringLog extends CommonDBTM {
 
 
    function isRestartLessThanFiveMinutes() {
-      $a_restarts = $this->find("`action` LIKE 'restart%' AND `date_mod` > date_add(now(), interval - 5 MINUTE)", "`id` DESC", 1);
+      $a_restarts = $this->find("(`action`='restart' OR `action`='restart_planned') AND `date_mod` > date_add(now(), interval - 5 MINUTE)", "`id` DESC", 1);
       if (count($a_restarts) > 0) {
          return true;
       }
@@ -132,7 +132,7 @@ class PluginMonitoringLog extends CommonDBTM {
    }
 
    function isReloadLessThanFiveMinutes() {
-      $a_restarts = $this->find("`action` LIKE 'reload%' AND `date_mod` > date_add(now(), interval - 5 MINUTE)", "`id` DESC", 1);
+      $a_restarts = $this->find("(`action`='reload' OR `action`='reload_planned') AND `date_mod` > date_add(now(), interval - 5 MINUTE)", "`id` DESC", 1);
       if (count($a_restarts) > 0) {
          return true;
       }
