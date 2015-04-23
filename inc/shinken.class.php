@@ -1256,7 +1256,8 @@ class PluginMonitoringShinken extends CommonDBTM {
                      $alias_command = $a_component['alias_command'];
                      if (strstr($alias_command, '[[IP]]')) {
                         $split = explode('-', current($a_hostname));
-                        $ip = PluginMonitoringHostaddress::getIp($split[1], $split[0], '');
+                        $ip = PluginMonitoringHostaddress::getIp(
+                                $a_hostname_id[0], $a_hostname_type[0], '');
                         $alias_command = str_replace("[[IP]]", $ip, $alias_command);
                      }
                      if (current($a_hostname_type) == 'Computer') {
@@ -2383,9 +2384,7 @@ Nagios configuration file :
                $tmp['sunday'] = implode(',', $splitDay);
             }
             $tmp['saturday'] .= $saturday;
-            if (empty($tmp['saturday'])) {
-               unset($tmp['saturday']);
-            }
+
             // concatain if need
             foreach ($days as $day) {
                if (isset($tmp[$day])) {
