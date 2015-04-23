@@ -49,7 +49,7 @@ class PluginMonitoringService extends CommonDBTM {
    const HOMEPAGE         =  1024;
    const DASHBOARD        =  2048;
 
-   static $rightname = 'plugin_monitoring_service';
+   static $rightname = 'plugin_monitoring_component';
 
 
    static function getTypeName($nb=0) {
