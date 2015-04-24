@@ -446,7 +446,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          $link = $CFG_GLPI['root_doc'].
          "/plugins/monitoring/front/service.php?hidesearch=1"
 //                 . "&reset=reset&"
-                 . "criteria[0][field]=3"
+                 . "&criteria[0][field]=3"
                  . "&criteria[0][searchtype]=equals"
                  . "&criteria[0][value]=CRITICAL"
 

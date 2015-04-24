@@ -1048,7 +1048,7 @@ echo "
 
       $linkto = $CFG_GLPI['root_doc']."/plugins/monitoring/front/$page?".
               "itemtype=$itemtype&amp;sort=".$numoption."&amp;order=".
-                ($order=="ASC"?"DESC":"ASC")."&amp;start=".$start.
+                ($order=="ASC"?"DESC":"ASC")."&amp;start=".$start."&".
                 $globallinkto;
       $issort = false;
       if (isset($_GET['sort']) && $_GET['sort'] == $numoption) {
@@ -1212,7 +1212,7 @@ echo "
 
             echo "<td class='center'>";
             echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/unavailability.php?"
-                    . "criteria[0][field]=2"
+                    . "&criteria[0][field]=2"
                     . "&criteria[0][searchtype]=equals"
                     . "&criteria[0][value]=".$pMonitoringService->fields['id']
 
