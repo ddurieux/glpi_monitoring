@@ -547,7 +547,7 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
               ." AND `plugin_monitoring_displayviews_id`='".$id."'");
 
       foreach ($a_hosts as $data) {
-         $query = "SELECT * FROM `glpi_plugin_monitoring_services`"
+         $query = "SELECT `glpi_plugin_monitoring_services`.`id` FROM `glpi_plugin_monitoring_services`"
                           . " LEFT JOIN `glpi_plugin_monitoring_componentscatalogs_hosts`"
                           . "    ON `plugin_monitoring_componentscatalogs_hosts_id`="
                           . " `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`"
@@ -557,25 +557,25 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
 
          $result = $DB->query($query);
          while ($data2=$DB->fetch_array($result)) {
-            $pmService->getFromDB($data2["id"]);
-            $ret = $pmService->getShortState();
-            // $ret = PluginMonitoringHost::getState($data2['state'],
-                                                     // $data2['state_type'],
-                                                     // '',
-                                                     // $data2['is_acknowledged']);
-            if (strstr($ret, '_soft')) {
-               $a_counter['ok']++;
-            } else if ($ret == 'red') {
-               $a_counter['critical']++;
-            } else if ($ret == 'redblue') {
-               $a_counter['acknowledge']++;
-            } else if ($ret == 'orange'
-                    || $ret == 'yellow') {
-               $a_counter['warning']++;
-            } else {
-               $a_counter['ok']++;
+            if ($pmService->getFromDB($data2["id"])) {
+               $ret = $pmService->getShortState();
+               // $ret = PluginMonitoringHost::getState($data2['state'],
+                                                        // $data2['state_type'],
+                                                        // '',
+                                                        // $data2['is_acknowledged']);
+               if (strstr($ret, '_soft')) {
+                  $a_counter['ok']++;
+               } else if ($ret == 'red') {
+                  $a_counter['critical']++;
+               } else if ($ret == 'redblue') {
+                  $a_counter['acknowledge']++;
+               } else if ($ret == 'orange'
+                       || $ret == 'yellow') {
+                  $a_counter['warning']++;
+               } else {
+                  $a_counter['ok']++;
+               }
             }
-
          }
       }
       return $a_counter;

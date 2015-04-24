@@ -685,39 +685,40 @@ class PluginMonitoringDisplayview extends CommonDBTM {
     */
    function showWidgetFrame($id) {
 
-      $this->getFromDB($id);
-      $data = $this->fields;
+      if ($this->getFromDB($id)) {
+         $data = $this->fields;
 
-      $pmDisplayview_item = new PluginMonitoringDisplayview_item();
-      $a_counter = $pmDisplayview_item->getCounterOfViews($id, array('ok'          => 0,
-                                                                     'warning'     => 0,
-                                                                     'critical'    => 0,
-                                                                     'acknowledge' => 0));
-      $nb_ressources = 0;
-      $class = 'ok';
-      if ($a_counter['critical'] > 0) {
-         $nb_ressources = $a_counter['critical'];
-         $class = 'crit';
-      } else if ($a_counter['warning'] > 0) {
-         $nb_ressources = $a_counter['warning'];
-         $class = 'warn';
-      } else {
-         $nb_ressources = $a_counter['ok'];
+         $pmDisplayview_item = new PluginMonitoringDisplayview_item();
+         $a_counter = $pmDisplayview_item->getCounterOfViews($id, array('ok'          => 0,
+                                                                        'warning'     => 0,
+                                                                        'critical'    => 0,
+                                                                        'acknowledge' => 0));
+         $nb_ressources = 0;
+         $class = 'ok';
+         if ($a_counter['critical'] > 0) {
+            $nb_ressources = $a_counter['critical'];
+            $class = 'crit';
+         } else if ($a_counter['warning'] > 0) {
+            $nb_ressources = $a_counter['warning'];
+            $class = 'warn';
+         } else {
+            $nb_ressources = $a_counter['ok'];
+         }
+         echo '<div class="ch-item" style="background-image:url(\'../pics/picto_view.png\');
+            background-repeat:no-repeat;background-position:center center;">
+            <div class="ch-info-'.$class.'">
+            <h1><a href="javascript:;" onclick="$(\'#updatefil\').val(\''.$id.'!\');'.
+                 '$(\'#updateviewid\').val(\''.$id.'\');reloadfil();reloadview();"'
+                 .'><span id="viewa-'.$id.'">'
+                 .$data['name'].'</span></a></h1>
+            <p>'.$nb_ressources.'<font style="font-size: 14px;"> / '.array_sum($a_counter).'</font></p>
+            </div>
+         </div>';
+
+         echo "<script>
+            fittext('viewa-".$id."');
+         </script>";
       }
-      echo '<div class="ch-item" style="background-image:url(\'../pics/picto_view.png\');
-         background-repeat:no-repeat;background-position:center center;">
-         <div class="ch-info-'.$class.'">
-         <h1><a href="javascript:;" onclick="$(\'#updatefil\').val(\''.$id.'!\');'.
-              '$(\'#updateviewid\').val(\''.$id.'\');reloadfil();reloadview();"'
-              .'><span id="viewa-'.$id.'">'
-              .$data['name'].'</span></a></h1>
-			<p>'.$nb_ressources.'<font style="font-size: 14px;"> / '.array_sum($a_counter).'</font></p>
-         </div>
-		</div>';
-
-      echo "<script>
-         fittext('viewa-".$id."');
-      </script>";
    }
 
 
@@ -868,7 +869,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
          echo '<a href="'.$link.'" title="'.$resources[$services_id]['state'].
                  " - ".$resources[$services_id]['last_check']." - ".
                  $resources[$services_id]['event'].'">'
-                 . '<div class="service'.$resources[$services_id]['state'].'"></div></a>';
+                 . '<div class="service service'.$resources[$services_id]['state'].'"></div></a>';
          echo '</td>';
          echo '</tr>';
       }
