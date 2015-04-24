@@ -686,16 +686,17 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
             $pmComponent = new PluginMonitoringComponent();
             $pmService = new PluginMonitoringService();
 
-            $pmService->getFromDB($item['items_id']);
-            $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
-            $pmServicegraph = new PluginMonitoringServicegraph();
-            $pmServicegraph->displayGraph($pmComponent->fields['graph_template'],
-                                          "PluginMonitoringService",
-                                          $item['items_id'],
-                                          "0",
-                                          $item['extra_infos'],
-                                          "",
-                                          ($size['width'] - 15));
+            if ($pmService->getFromDB($item['items_id'])) {
+               $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
+               $pmServicegraph = new PluginMonitoringServicegraph();
+               $pmServicegraph->displayGraph($pmComponent->fields['graph_template'],
+                                             "PluginMonitoringService",
+                                             $item['items_id'],
+                                             "0",
+                                             $item['extra_infos'],
+                                             "",
+                                             ($size['width'] - 15));
+            }
          } else if ($item['itemtype'] == 'PluginMonitoringWeathermap') {
                if ($item['items_id'] == -1) {
                   $title = " : ".__('Legend', 'monitoring');
