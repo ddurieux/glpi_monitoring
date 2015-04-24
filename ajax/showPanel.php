@@ -41,7 +41,7 @@
  */
 
 // Direct access to file
-if (strpos($_SERVER['PHP_SELF'],"loadView.php")) {
+if (strpos($_SERVER['PHP_SELF'],"showPanel.php")) {
    include ("../../../inc/includes.php");
    header("Content-Type: text/html; charset=UTF-8");
    Html::header_nocache();
@@ -55,6 +55,9 @@ Session::checkLoginUser();
 
 $pmDisplayview_item = new PluginMonitoringDisplayview_item();
 
-$pmDisplayview_item->reloadView($_GET['id'], $_GET['config']);
+if (isset($_GET['id'])
+        && isset($_GET['config'])) {
+   $pmDisplayview_item->show_panel($_GET['id'], $_GET['config']);
+}
 
 ?>

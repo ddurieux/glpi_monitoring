@@ -199,8 +199,7 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
 
          echo "<script type=\"text/javascript\">
             function reloadfil() {
-              $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateFilariane.php?updatefil=' + $('#updatefil').val() + '&id=".$id."&currentview=' + $('#updateviewid').val()".
-                          "', function(data) {
+              $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateFilariane.php?updatefil=' + $('#updatefil').val() + '&id=".$id."&currentview=' + $('#updateviewid').val(), function(data) {
                 $('#filariane').html(data);
                });
             }
@@ -214,167 +213,12 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td height='1200' id='panel'>";
 
-      $queryitems = "SELECT * FROM `glpi_plugin_monitoring_displayviews_items`
-         WHERE `plugin_monitoring_displayviews_id`='".$id."'";
-      $resultitems = $DB->query($queryitems);
-      $a_items = array();
-      while ($dataitems=$DB->fetch_array($resultitems)) {
-//         if ($this->displayItem($dataitems, $config)) {
-            $a_items[] = $dataitems;
-//         }
-//         }
-      }
-
-echo "
-<script type=\"text/javascript\">
-$(function() {
-";
-
-
-foreach ($a_items as $item) {
-   if ($config == '1') {
-      $event = ", stop: function() {
-           pos = $('#draggable".$item['id']."').position();
-           $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/displayview_itemcoordinates.php"
-                          ."?id=".$item['id']
-                          ."&x=' + pos.left + '&y=' + pos.top);
-         }";
-   } else {
-      $event = '';
-   }
-   $size = $this->getSizeOfWidget($item['itemtype']);
-   echo "$( \"#draggable".$item['id']."\" ).draggable({ cursor: 'move', cursorAt: { "
-           . "top: ".($size['height']/2).", left: ".($size['width']/2).", "
-           . " }, grid: [ 10, 10 ]".$event." } );";
-}
-echo "
-});
-</script>";
-
-      echo "<div id='viewform' style='width: ".$pmDisplayview->fields['width']."px;height:1200px;position: relative;'>";
-
-foreach ($a_items as $item) {
-   $itemtype2 = '';
-   $size = $this->getSizeOfWidget($item['itemtype']);
-   echo '<div id="draggable'.$item['id'].'" ';
-   if ($item['itemtype'] != 'PluginMonitoringServicescatalog'
-           && $item['itemtype'] != 'PluginMonitoringComponentscatalog'
-           && $item['itemtype'] != 'PluginMonitoringDisplayview'
-           && $item['itemtype'] != 'host'
-           && !($item['itemtype'] == 'PluginMonitoringWeathermap'
-               && $item['items_id'] == -1)) {
-      echo 'class="ui-widget-content" ';
-   }
-   if ($item['itemtype'] == 'host'
-           || $item['itemtype'] == 'service') {
-      $itemtype2 = $item['itemtype'];
-      $item['itemtype'] = 'PluginMonitoringDisplayview';
-   }
-
-   if ($item['itemtype'] == 'PluginMonitoringService') {
-      echo  'style="width: '.$size['width'].'px; height: '.$size['height'].'px; '
-              . 'position: absolute; left: '.$item['x'].'px; top: '.$item['y'].'px;">';
-      $pmComponent = new PluginMonitoringComponent();
-      $pmService = new PluginMonitoringService();
-
-      $pmService->getFromDB($item['items_id']);
-      $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
-      $pmServicegraph = new PluginMonitoringServicegraph();
-      $pmServicegraph->displayGraph($pmComponent->fields['graph_template'],
-                                    "PluginMonitoringService",
-                                    $item['items_id'],
-                                    "0",
-                                    $item['extra_infos'],
-                                    "",
-                                    ($size['width'] - 15));
-   } else if ($item['itemtype'] == 'PluginMonitoringWeathermap') {
-         if ($item['items_id'] == -1) {
-            $title = " : ".__('Legend', 'monitoring');
-            echo  'style="width: 400px; height: 51px; '
-                    . 'position: absolute; left: '.$item['x'].'px; top: '.$item['y'].'px;">';
-         } else {
-            $weathermap = new PluginMonitoringWeathermap();
-            $weathermap->getFromDB($item['items_id']);
-//            $title .= " : ".Dropdown::getDropdownName(
-//                     getTableForItemType('PluginMonitoringWeathermap'), $item['items_id']);
-            $width = (($weathermap->fields['width'] * $item['extra_infos']) / 100);
-            $height = (($weathermap->fields['height'] * $item['extra_infos']) / 100);
-            echo  'style="width: '.$width.'px; height: '.$height.'px; '
-                    . 'position: absolute; left: '.$item['x'].'px; top: '.$item['y'].'px;">';
-         }
-         echo '<div id="weathermap-'.$item['items_id'].'"></div>';
-         echo "<script type=\"text/javascript\">
-            (function worker() {
-              $.get('".$CFG_GLPI["root_doc"].
-                 "/plugins/monitoring/ajax/widgetWeathermap.php?"
-                 . "id=".$item['items_id']."&extra_infos=".
-                 $item['extra_infos'].
-                 "&glpiID=".$_SESSION['glpiID'].
-                          "', function(data) {
-                $('#weathermap-".$item['items_id']."').html(data);
-                setTimeout(worker, 50000);
-              });
-            })();
-         </script>";
-   } else if($item['itemtype'] == "PluginMonitoringDisplayview") {
-      echo  'style="width: '.$size['width'].'px; height: '.$size['height'].'px; '
-              . 'position: absolute; left: '.$item['x'].'px; top: '.$item['y'].'px;">';
-      $pmDisplayview = new PluginMonitoringDisplayview();
-      if (!empty($itemtype2)) {
-         echo "<div id=\"updatedisplayview".$item['id']."\"></div>";
-         $pmDisplayview->ajaxLoad2($item['id'], $item['is_minemap']);
-      } else {
-         echo "<div id=\"updatedisplayview".$item['items_id']."\"></div>";
-         $pmDisplayview->ajaxLoad($item['items_id']);
-      }
-   } else {
-      echo  'style="width: '.$size['width'].'px; height: '.$size['height'].'px; '
-              . 'position: absolute; left: '.$item['x'].'px; top: '.$item['y'].'px;">';
-      echo "<div id=\"update".$item['itemtype'].$item['items_id']."\"></div>";
-
-            echo "<script type=\"text/javascript\">";
-            echo "
-               (function worker() {
-                 $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateWidgetComponentscatalog.php"
-                       ."?id=".$item['items_id']."&is_minemap=".$item['is_minemap'].
-                             "', function(data) {
-                   $('#update".$item['itemtype'].$item['items_id']."').html(data);
-                   setTimeout(worker, 30000);
-                 });
-               })();";
-            echo "</script>";
-
-   }
-
-   echo '</div>';
-}
-
-//      echo "<script type='text/javascript'>
-//
-//        //Simple 'border layout' panel to house both grids
-//        var displayPanel = new Ext.Panel({
-//          id       : 'viewpanel',
-//          width    : ".$pmDisplayview->fields['width'].",
-//          height   : 1200,
-//          layout: 'absolute',
-//          renderTo : 'panel',
-//          items    : []
-//        });
-//
-//      </script>";
-
-
-
-
-      echo "</div>";
       echo "<script type=\"text/javascript\">
-         function reloadview() {
-              $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/loadView.php?id=' + $('#updateviewid').val() + '&config=".$config.
-                          "', function(data) {
-                $('#viewform').html(data);
-               });
-         }
+           $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/showPanel.php?id=".$id."&config=".$config."', function(data) {
+             $('#panel').html(data);
+            });
       </script>";
+
 
       echo "</td>";
       echo "</tr>";
@@ -386,34 +230,38 @@ foreach ($a_items as $item) {
 
 
    function reloadView($id, $config) {
-      global $DB;
+      global $CFG_GLPI;
 
       $pmDisplayview = new PluginMonitoringDisplayview();
       $pmDisplayview->getFromDB($id);
 
-      $query = "SELECT * FROM `glpi_plugin_monitoring_displayviews_items`
-         WHERE `plugin_monitoring_displayviews_id`='".$id."'";
-      $result = $DB->query($query);
-      $a_items = array();
-      while ($data=$DB->fetch_array($result)) {
-         if ($this->displayItem($data, $config)) {
-            $a_items[] = "item".$data['id'];
-         }
-      }
+//      $query = "SELECT * FROM `glpi_plugin_monitoring_displayviews_items`
+//         WHERE `plugin_monitoring_displayviews_id`='".$id."'";
+//      $result = $DB->query($query);
+//      $a_items = array();
+//      while ($data=$DB->fetch_array($result)) {
+//         if ($this->displayItem($data, $config)) {
+//            $a_items[] = "item".$data['id'];
+//         }
+//      }
+      echo "<script type=\"text/javascript\">
+           $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/showPanel.php?id=".$id."&config=".$config."', function(data) {
+             $('#panel').html(data);
+            });
+      </script>";
 
 
-
-      echo "<script type='text/javascript'>
-
-        Ext.getCmp('viewpanel').items.each(function(c){Ext.getCmp('viewpanel').remove(c);});
-        Ext.getCmp('viewpanel').setWidth('".$pmDisplayview->fields['width']."');
-        ";
-      if (count($a_items) > 0) {
-        echo "Ext.getCmp('viewpanel').add(".implode(",", $a_items).");
-        Ext.getCmp('viewpanel').doLayout();
-        ";
-      }
-      echo "</script>";
+//      echo "<script type='text/javascript'>
+//
+//        Ext.getCmp('viewpanel').items.each(function(c){Ext.getCmp('viewpanel').remove(c);});
+//        Ext.getCmp('viewpanel').setWidth('".$pmDisplayview->fields['width']."');
+//        ";
+//      if (count($a_items) > 0) {
+//        echo "Ext.getCmp('viewpanel').add(".implode(",", $a_items).");
+//        Ext.getCmp('viewpanel').doLayout();
+//        ";
+//      }
+//      echo "</script>";
    }
 
 
@@ -765,6 +613,179 @@ foreach ($a_items as $item) {
 
       }
       return $size;
+   }
+
+
+   function show_panel($id, $config) {
+      global $DB, $CFG_GLPI;
+
+      $pmDisplayview = new PluginMonitoringDisplayview();
+
+      $pmDisplayview->getFromDB($id);
+
+      $queryitems = "SELECT * FROM `glpi_plugin_monitoring_displayviews_items`
+         WHERE `plugin_monitoring_displayviews_id`='".$id."'";
+      $resultitems = $DB->query($queryitems);
+      $a_items = array();
+      while ($dataitems=$DB->fetch_array($resultitems)) {
+//         if ($this->displayItem($dataitems, $config)) {
+            $a_items[] = $dataitems;
+//         }
+//         }
+      }
+
+      echo "
+      <script type=\"text/javascript\">
+      $(function() {
+      ";
+
+
+      foreach ($a_items as $item) {
+         if ($config == '1') {
+            $event = ", stop: function() {
+                 pos = $('#draggable".$item['id']."').position();
+                 $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/displayview_itemcoordinates.php"
+                                ."?id=".$item['id']
+                                ."&x=' + pos.left + '&y=' + pos.top);
+               }";
+         } else {
+            $event = '';
+         }
+         $size = $this->getSizeOfWidget($item['itemtype']);
+         echo "$( \"#draggable".$item['id']."\" ).draggable({ cursor: 'move', cursorAt: { "
+                 . "top: ".($size['height']/2).", left: ".($size['width']/2).", "
+                 . " }, grid: [ 10, 10 ]".$event." } );";
+      }
+      echo "
+      });
+      </script>";
+
+      echo "<div id='viewform' style='width: ".$pmDisplayview->fields['width']."px;height:1200px;position: relative;'>";
+
+      foreach ($a_items as $item) {
+         $itemtype2 = '';
+         $size = $this->getSizeOfWidget($item['itemtype']);
+         echo '<div id="draggable'.$item['id'].'" ';
+         if ($item['itemtype'] != 'PluginMonitoringServicescatalog'
+                 && $item['itemtype'] != 'PluginMonitoringComponentscatalog'
+                 && $item['itemtype'] != 'PluginMonitoringDisplayview'
+                 && $item['itemtype'] != 'host'
+                 && !($item['itemtype'] == 'PluginMonitoringWeathermap'
+                     && $item['items_id'] == -1)) {
+            echo 'class="ui-widget-content" ';
+         }
+         if ($item['itemtype'] == 'host'
+                 || $item['itemtype'] == 'service') {
+            $itemtype2 = $item['itemtype'];
+            $item['itemtype'] = 'PluginMonitoringDisplayview';
+         }
+
+         if ($item['itemtype'] == 'PluginMonitoringService') {
+            echo  'style="width: '.$size['width'].'px; height: '.$size['height'].'px; '
+                    . 'position: absolute; left: '.$item['x'].'px; top: '.$item['y'].'px;">';
+            $pmComponent = new PluginMonitoringComponent();
+            $pmService = new PluginMonitoringService();
+
+            $pmService->getFromDB($item['items_id']);
+            $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
+            $pmServicegraph = new PluginMonitoringServicegraph();
+            $pmServicegraph->displayGraph($pmComponent->fields['graph_template'],
+                                          "PluginMonitoringService",
+                                          $item['items_id'],
+                                          "0",
+                                          $item['extra_infos'],
+                                          "",
+                                          ($size['width'] - 15));
+         } else if ($item['itemtype'] == 'PluginMonitoringWeathermap') {
+               if ($item['items_id'] == -1) {
+                  $title = " : ".__('Legend', 'monitoring');
+                  echo  'style="width: 400px; height: 51px; '
+                          . 'position: absolute; left: '.$item['x'].'px; top: '.$item['y'].'px;">';
+               } else {
+                  $weathermap = new PluginMonitoringWeathermap();
+                  $weathermap->getFromDB($item['items_id']);
+      //            $title .= " : ".Dropdown::getDropdownName(
+      //                     getTableForItemType('PluginMonitoringWeathermap'), $item['items_id']);
+                  $width = (($weathermap->fields['width'] * $item['extra_infos']) / 100);
+                  $height = (($weathermap->fields['height'] * $item['extra_infos']) / 100);
+                  echo  'style="width: '.$width.'px; height: '.$height.'px; '
+                          . 'position: absolute; left: '.$item['x'].'px; top: '.$item['y'].'px;">';
+               }
+               echo '<div id="weathermap-'.$item['items_id'].'"></div>';
+               echo "<script type=\"text/javascript\">
+                  (function worker() {
+                    $.get('".$CFG_GLPI["root_doc"].
+                       "/plugins/monitoring/ajax/widgetWeathermap.php?"
+                       . "id=".$item['items_id']."&extra_infos=".
+                       $item['extra_infos'].
+                       "&glpiID=".$_SESSION['glpiID'].
+                                "', function(data) {
+                      $('#weathermap-".$item['items_id']."').html(data);
+                      setTimeout(worker, 50000);
+                    });
+                  })();
+               </script>";
+         } else if($item['itemtype'] == "PluginMonitoringDisplayview") {
+            echo  'style="width: '.$size['width'].'px; height: '.$size['height'].'px; '
+                    . 'position: absolute; left: '.$item['x'].'px; top: '.$item['y'].'px;">';
+            $pmDisplayview = new PluginMonitoringDisplayview();
+            if (!empty($itemtype2)) {
+               echo "<div id=\"updatedisplayview".$item['id']."\"></div>";
+               $pmDisplayview->ajaxLoad2($item['id'], $item['is_minemap']);
+            } else {
+               echo "<div id=\"updatedisplayview".$item['items_id']."\"></div>";
+               $pmDisplayview->ajaxLoad($item['items_id']);
+            }
+         } else {
+            echo  'style="width: '.$size['width'].'px; height: '.$size['height'].'px; '
+                    . 'position: absolute; left: '.$item['x'].'px; top: '.$item['y'].'px;">';
+            echo "<div id=\"update".$item['itemtype'].$item['items_id']."\"></div>";
+
+                  echo "<script type=\"text/javascript\">";
+                  echo "
+                     (function worker() {
+                       $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateWidgetComponentscatalog.php"
+                             ."?id=".$item['items_id']."&is_minemap=".$item['is_minemap'].
+                                   "', function(data) {
+                         $('#update".$item['itemtype'].$item['items_id']."').html(data);
+                         setTimeout(worker, 30000);
+                       });
+                     })();";
+                  echo "</script>";
+
+         }
+
+         echo '</div>';
+      }
+
+//      echo "<script type='text/javascript'>
+//
+//        //Simple 'border layout' panel to house both grids
+//        var displayPanel = new Ext.Panel({
+//          id       : 'viewpanel',
+//          width    : ".$pmDisplayview->fields['width'].",
+//          height   : 1200,
+//          layout: 'absolute',
+//          renderTo : 'panel',
+//          items    : []
+//        });
+//
+//      </script>";
+
+
+
+
+      echo "</div>";
+      echo "<script type=\"text/javascript\">
+         function reloadview() {
+              $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/loadView.php?id=' + $('#updateviewid').val() + '&config=".$config.
+                          "', function(data) {
+                $('#viewform').html(data);
+               });
+         }
+      </script>";
+
+
    }
 }
 
