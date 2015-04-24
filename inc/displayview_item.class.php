@@ -696,6 +696,8 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
                                              $item['extra_infos'],
                                              "",
                                              ($size['width'] - 15));
+            } else {
+               $this->delete($item);
             }
          } else if ($item['itemtype'] == 'PluginMonitoringWeathermap') {
                if ($item['items_id'] == -1) {
