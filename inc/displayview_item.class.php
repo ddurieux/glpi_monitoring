@@ -557,7 +557,7 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
 
          $result = $DB->query($query);
          while ($data2=$DB->fetch_array($result)) {
-            $pmService->getFromDB($dataService["id"]);
+            $pmService->getFromDB($data2["id"]);
             $ret = $pmService->getShortState();
             // $ret = PluginMonitoringHost::getState($data2['state'],
                                                      // $data2['state_type'],
