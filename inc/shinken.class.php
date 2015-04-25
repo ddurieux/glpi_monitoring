@@ -99,7 +99,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          ),
          'hosts' => array(
             // Default values
-            'use' => 'important',
+            'use' => 'pm-important',
             'check_period' => '24x7',
             'process_perf_data' => '1',
             'notification_period' => '24x7',
@@ -843,6 +843,12 @@ class PluginMonitoringShinken extends CommonDBTM {
       if (! empty(self::$shinkenParameters['shinken']['hosts']['icon_image_alt'])) $a_hosts[$i]['icon_image_alt'] = self::$shinkenParameters['shinken']['hosts']['icon_image_alt'];
       if (! empty(self::$shinkenParameters['shinken']['hosts']['vrml_image'])) $a_hosts[$i]['vrml_image'] = self::$shinkenParameters['shinken']['hosts']['vrml_image'];
       if (! empty(self::$shinkenParameters['shinken']['hosts']['statusmap_image'])) $a_hosts[$i]['statusmap_image'] = self::$shinkenParameters['shinken']['hosts']['statusmap_image'];
+      $i++;
+
+      // Add important
+      $a_hosts[$i]['name']            = 'pm-important';
+      $a_hosts[$i]['register']        = 0;
+      $a_hosts[$i]['business_impact'] = 4;
       $i++;
 
 
