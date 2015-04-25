@@ -848,8 +848,8 @@ class PluginMonitoringShinken extends CommonDBTM {
       // Add important
       $a_hosts[$i]['name']            = 'pm-important';
       $a_hosts[$i]['host_name']       = '';
-      $a_hosts[$i]['register']        = 0;
-      $a_hosts[$i]['business_impact'] = 4;
+      $a_hosts[$i]['register']        = '0';
+      $a_hosts[$i]['business_impact'] = '4';
       $i++;
 
 
