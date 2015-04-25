@@ -1253,7 +1253,7 @@ echo '        </script>';
                     '</"+"div><div id=\'updategraph" + d.services_id + "2h'.$updown.$type.$rand.'\'></"+"div>'.
             '<script>$.ajax({'.
 
-                 'type: \'post\','.
+                 'type: \'get\','.
                  'url: \''.$CFG_GLPI['root_doc'].'/plugins/monitoring/ajax/updateChart.php\','.
                  'data: { rrdtool_template:" + d.rrdtool_template + ",itemtype:\'PluginMonitoringService\',items_id:" + d.services_id + ",timezone:0,time:\'2h\',suffix:\''.$updown.$type.$rand.'\',customdate:\'\',customtime:\'\',components_id:" + d.components_id + ",glpiID:\''.$_SESSION['glpiID'].'\' },'.
                  'success: function(data) {'.
