@@ -78,7 +78,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             // Default values
             'build' => true,
             // Fake hosts tag
-            'use' => 'fake',
+            //'use' => 'fake',
             // Fake hosts name prefix
             'name_prefix' => '_fake_',
             // Hostgroup name
@@ -99,7 +99,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          ),
          'hosts' => array(
             // Default values
-            'use' => 'pm-important',
+            //'use' => 'pm-important',
             'check_period' => '24x7',
             'process_perf_data' => '1',
             'notification_period' => '24x7',
@@ -845,17 +845,17 @@ class PluginMonitoringShinken extends CommonDBTM {
       if (! empty(self::$shinkenParameters['shinken']['hosts']['statusmap_image'])) $a_hosts[$i]['statusmap_image'] = self::$shinkenParameters['shinken']['hosts']['statusmap_image'];
       $i++;
 
-      // Add important
-      $a_hosts[$i]['name']            = 'pm-important';
-      $a_hosts[$i]['host_name']       = '';
-      $a_hosts[$i]['register']        = '0';
-      $a_hosts[$i]['business_impact'] = '4';
-      $i++;
-
-      // Add fake
-      $a_hosts[$i]['name']            = 'fake';
-      $a_hosts[$i]['host_name']       = '';
-      $i++;
+//      // Add important
+//      $a_hosts[$i]['name']            = 'pm-important';
+//      $a_hosts[$i]['host_name']       = '';
+//      $a_hosts[$i]['register']        = '0';
+//      $a_hosts[$i]['business_impact'] = '4';
+//      $i++;
+//
+//      // Add fake
+//      $a_hosts[$i]['name']            = 'fake';
+//      $a_hosts[$i]['host_name']       = '';
+//      $i++;
 
       // Add one fake host for each entity
       if (self::$shinkenParameters['shinken']['fake_hosts']['build']) {
