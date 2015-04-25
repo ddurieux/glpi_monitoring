@@ -852,6 +852,10 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_hosts[$i]['business_impact'] = '4';
       $i++;
 
+      // Add fake
+      $a_hosts[$i]['name']            = 'fake';
+      $a_hosts[$i]['host_name']       = '';
+      $i++;
 
       // Add one fake host for each entity
       if (self::$shinkenParameters['shinken']['fake_hosts']['build']) {
