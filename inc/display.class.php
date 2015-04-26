@@ -84,6 +84,12 @@ class PluginMonitoringDisplay extends CommonDBTM {
             echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_system_status.php'>";
             echo __('System status', 'monitoring');
             echo "</a>";
+            $pmTag = new PluginMonitoringTag();
+            $servers = 'OK';
+            if (!$pmTag->get_servers_status()) {
+               $servers = 'CRITICAL';
+            }
+            echo "<div class='service service".$servers."' style='float : left;'></div>";
             $a_url[] = $CFG_GLPI['root_doc']."/plugins/monitoring/front/display_system_status.php";
             echo "</th>";
          } else {
