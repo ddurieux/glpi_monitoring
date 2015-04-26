@@ -2233,7 +2233,8 @@ Nagios configuration file :
 
 
 
-   function generateTimeperiodsCfg($file=0) {
+   function generateTimeperiodsCfg($file=0, $tag='') {
+      global $DB;
 
       PluginMonitoringToolbox::logIfExtradebug(
          'pm-shinken',
@@ -2244,180 +2245,237 @@ Nagios configuration file :
       $calendar_Holiday = new Calendar_Holiday();
       $holiday          = new Holiday();
       $hostconfig       = new PluginMonitoringHostconfig();
+      $pmEntity         = new PluginMonitoringEntity();
 
-      $a_timeperiods = array();
-      $i=0;
-      $jetlags = array();
-      $hostconfigs = $hostconfig->find();
-      foreach ($hostconfigs as $data) {
-         if ($data['jetlag'] != '100'
-                 AND $data['jetlag'] != '0') {
-            $jetlags[$data['jetlag']] = $data['jetlag'];
-         }
+      // Get list of entities
+      $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
+      $a_entities_list = array();
+      foreach ($a_entities_allowed as $entity) {
+         $a_entities_list = getSonsOf("glpi_entities", $entity);
+      }
+      $where = '';
+      if (!isset($a_entities_allowed['-1'])) {
+         $where = getEntitiesRestrictRequest("WHERE", "glpi_entities", '', $a_entities_list);
       }
 
-      $a_listcalendar = $calendar->find();
-      foreach ($a_listcalendar as $datacalendar) {
-         $a_timeperiods[$i]['timeperiod_name'] = $datacalendar['name'];
-         $a_timeperiods[$i]['alias'] = $datacalendar['name'];
-         $a_listsegment = $calendarSegment->find("`calendars_id`='".$datacalendar['id']."'");
-         $a_cal = array();
-         foreach ($a_listsegment as $datasegment) {
-            $begin = preg_replace("/:00$/", "", $datasegment['begin']);
-            $end = preg_replace("/:00$/", "", $datasegment['end']);
-            $day = "";
-            switch ($datasegment['day']) {
+      foreach ($a_entities_list as $entities_id) {
+         $jetlag = $hostconfig->getValueAncestor('jetlag', $entities_id);
+         $a_entities_list[$entities_id] = $jetlag;
+      }
 
-               case "0":
-                  $day = "sunday";
-                  break;
-
-               case "1":
-                  $day = "monday";
-                  break;
-
-               case "2":
-                  $day = "tuesday";
-                  break;
-
-               case "3":
-                  $day = "wednesday";
-                  break;
-
-               case "4":
-                  $day = "thursday";
-                  break;
-
-               case "5":
-                  $day = "friday";
-                  break;
-
-               case "6":
-                  $day = "saturday";
-                  break;
-
-            }
-            $a_cal[$day][] = $begin."-".$end;
+      // Get all calendars of components
+      $cals_entities = array();
+      $query = "SELECT `entities_id`, `calendars_id`
+         FROM `glpi_plugin_monitoring_services`
+         LEFT JOIN `glpi_plugin_monitoring_components`
+            ON `plugin_monitoring_components_id` = `glpi_plugin_monitoring_components`.`id` ";
+      if ($where == '') {
+         $query .= "WHERE `glpi_plugin_monitoring_components`.`id` IS NOT NULL";
+      } else {
+         $query .= $where." AND `glpi_plugin_monitoring_components`.`id` IS NOT NULL";
+      }
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         if (!isset($cals_entities[$data['entities_id']])) {
+            $cals_entities[$data['entities_id']] = array();
          }
-         foreach ($a_cal as $day=>$a_times) {
-            $a_timeperiods[$i][$day] = implode(',', $a_times);
+         $cals_entities[$data['entities_id']][$data['calendars_id']] = $data['calendars_id'];
+      }
+      // get all calendars of servciescatalog
+      $query = "SELECT `entities_id`, `calendars_id`
+         FROM `glpi_plugin_monitoring_servicescatalogs` ".$where;
+      $result = $DB->query($query);
+      while ($data=$DB->fetch_array($result)) {
+         if (!isset($cals_entities[$data['entities_id']])) {
+            $cals_entities[$data['entities_id']] = array();
          }
-         $a_cholidays = $calendar_Holiday->find("`calendars_id`='".$datacalendar['id']."'");
-         foreach ($a_cholidays as $a_choliday) {
-            $holiday->getFromDB($a_choliday['holidays_id']);
-            if ($holiday->fields['is_perpetual'] == 1
-                    && $holiday->fields['begin_date'] == $holiday->fields['end_date']) {
-               $datetime = strtotime($holiday->fields['begin_date']);
-               $a_timeperiods[$i][strtolower(date('F', $datetime)).
-                   ' '.date('j', $datetime)] = '00:00-00:00';
-            }
-         }
-         $timeperiod_tmp = $a_timeperiods[$i];
-         $i++;
-         foreach ($jetlags as $jetlag) {
-            $tmp = $timeperiod_tmp;
-            $tmp['timeperiod_name'] = $tmp['timeperiod_name']."-".$jetlag;
-            $tmp['alias'] = $tmp['alias']."-".$jetlag;
-            $days = array('sunday','monday','tuesday', 'wednesday','thursday',
-                          'friday', 'saturday');
-            $saturday = '';
-            $reportHours = 0;
-            $beforeday = 'saturday';
-            foreach ($days as $numday=>$day) {
-               if (isset($tmp[$day])) {
-                  $splitDay = explode(',', $tmp[$day]);
-                  $toAdd = '';
-                  if ($reportHours > 0) {
-                     $toAdd = '00:00-'.sprintf("%02s", $reportHours).':00';
-                     $reportHours = 0;
+         $cals_entities[$data['entities_id']][$data['calendars_id']] = $data['calendars_id'];
+      }
+      // Get all calendars of contacts TODO
+
+      $calendars_added = array();
+      $a_timeperiods = array();
+      $i=0;
+      foreach ($cals_entities as $entities_id => $calendars) {
+         foreach ($calendars as $calendars_id) {
+            $jetlag = $a_entities_list[$entities_id];
+            if (!isset($calendars_added[$calendars_id."-".$jetlag])) {
+               $calendars_added[$calendars_id."-".$jetlag] = 1;
+
+               $calendar->getFromDB($calendars_id);
+               $tmp = array();
+               $tmp['timeperiod_name'] = $calendar->fields['name'];
+               $tmp['alias'] = $calendar->fields['name'];
+               $a_listsegment = $calendarSegment->find("`calendars_id`='".$calendar->fields['id']."'");
+               $a_cal = array();
+               foreach ($a_listsegment as $datasegment) {
+                  $begin = preg_replace("/:00$/", "", $datasegment['begin']);
+                  $end = preg_replace("/:00$/", "", $datasegment['end']);
+                  $day = "";
+                  switch ($datasegment['day']) {
+
+                     case "0":
+                        $day = "sunday";
+                        break;
+
+                     case "1":
+                        $day = "monday";
+                        break;
+
+                     case "2":
+                        $day = "tuesday";
+                        break;
+
+                     case "3":
+                        $day = "wednesday";
+                        break;
+
+                     case "4":
+                        $day = "thursday";
+                        break;
+
+                     case "5":
+                        $day = "friday";
+                        break;
+
+                     case "6":
+                        $day = "saturday";
+                        break;
+
                   }
-                  foreach ($splitDay as $num=>$hourMinute) {
-                     $previous_begin = 0;
-                     $beginEnd = explode('-', $hourMinute);
-                     // ** Begin **
-                     $split = explode(':', $beginEnd[0]);
-                     $split[0] += $jetlag;
-                     if ($split[0] > 24) {
-                        //$reportHours = $split[0] - 24;
-                        unset($splitDay[$num]);
-                     } else {
-                        if ($split[0] < 0) {
-                           $reportHours = $split[0];
-                           $previous_begin = 24 + $split[0];
-                           $split[0] = '00';
-                        }
-                        $beginEnd[0] = sprintf("%02s", $split[0]).':'.$split[1];
-                        // ** End **
-                        $split = explode(':', $beginEnd[1]);
+                  $a_cal[$day][] = $begin."-".$end;
+               }
+               foreach ($a_cal as $day=>$a_times) {
+                  $tmp[$day] = implode(',', $a_times);
+               }
+               $a_cholidays = $calendar_Holiday->find("`calendars_id`='".$calendar->fields['id']."'");
+               foreach ($a_cholidays as $a_choliday) {
+                  $holiday->getFromDB($a_choliday['holidays_id']);
+                  if ($holiday->fields['is_perpetual'] == 1
+                          && $holiday->fields['begin_date'] == $holiday->fields['end_date']) {
+                     $datetime = strtotime($holiday->fields['begin_date']);
+                     $tmp[strtolower(date('F', $datetime)).
+                         ' '.date('j', $datetime)] = '00:00-00:00';
+                  }
+               }
+
+
+               if ($jetlag == 0) {
+                  $tmp['timeperiod_name'] = $tmp['timeperiod_name'];
+                  $tmp['alias'] = $tmp['alias'];
+               } else {
+                  $tmp['timeperiod_name'] = $tmp['timeperiod_name']."-".$jetlag;
+                  $tmp['alias'] = $tmp['alias']."-".$jetlag;
+               }
+               $days = array('sunday','monday','tuesday', 'wednesday','thursday',
+                             'friday', 'saturday');
+               $saturday = '';
+               $reportHours = 0;
+               $beforeday = 'saturday';
+               foreach ($days as $numday=>$day) {
+                  if (isset($tmp[$day])) {
+                     $splitDay = explode(',', $tmp[$day]);
+                     $toAdd = '';
+                     if ($reportHours > 0) {
+                        $toAdd = '00:00-'.sprintf("%02s", $reportHours).':00';
+                        $reportHours = 0;
+                     }
+                     foreach ($splitDay as $num=>$hourMinute) {
+                        $previous_begin = 0;
+                        $beginEnd = explode('-', $hourMinute);
+                        // ** Begin **
+                        $split = explode(':', $beginEnd[0]);
                         $split[0] += $jetlag;
-                        if ($split[0] < 0) {
-                           if ($numday-1 == -1) {
-                              $saturday .= ",".sprintf("%02s", $previous_begin).":00-".sprintf("%02s", (24 + $split[0])).":00";
-                           } else {
-                              $tmp[$days[($numday-1)]] .= ",".sprintf("%02s", $previous_begin).":00-".sprintf("%02s", (24 + $split[0])).":00";
-                           }
+                        if ($split[0] > 24) {
+                           //$reportHours = $split[0] - 24;
                            unset($splitDay[$num]);
                         } else {
-                           if ($split[0] > 24) {
-                              $reportHours = $split[0] - 24;
-                              $split[0] = 24;
+                           if ($split[0] < 0) {
+                              $reportHours = $split[0];
+                              $previous_begin = 24 + $split[0];
+                              $split[0] = '00';
                            }
-                           $beginEnd[1] = sprintf("%02s", $split[0]).':'.$split[1];
+                           $beginEnd[0] = sprintf("%02s", $split[0]).':'.$split[1];
+                           // ** End **
+                           $split = explode(':', $beginEnd[1]);
+                           $split[0] += $jetlag;
+                           if ($split[0] < 0) {
+                              if ($numday-1 == -1) {
+                                 $saturday .= ",".sprintf("%02s", $previous_begin).":00-".sprintf("%02s", (24 + $split[0])).":00";
+                              } else {
+                                 $tmp[$days[($numday-1)]] .= ",".sprintf("%02s", $previous_begin).":00-".sprintf("%02s", (24 + $split[0])).":00";
+                              }
+                              unset($splitDay[$num]);
+                           } else {
+                              if ($split[0] > 24) {
+                                 $reportHours = $split[0] - 24;
+                                 $split[0] = 24;
+                              }
+                              $beginEnd[1] = sprintf("%02s", $split[0]).':'.$split[1];
 
-                           $hourMinute = implode('-', $beginEnd);
-                           $splitDay[$num] = $hourMinute;
+                              $hourMinute = implode('-', $beginEnd);
+                              $splitDay[$num] = $hourMinute;
+                           }
                         }
                      }
-                  }
-                  if ($reportHours < 0) {
-//                     if (!isset($tmp[$beforeday])) {
-//                        $tmp[$beforeday] = array();
-//                     }
-//                     $splitBeforeDay = explode(',', $tmp[$beforeday]);
-//                     $splitBeforeDay[] = sprintf("%02s", (24 + $reportHours)).':00-24:00';
-//                     $tmp[$beforeday] = implode(',', $splitBeforeDay);
+                     if ($reportHours < 0) {
+   //                     if (!isset($tmp[$beforeday])) {
+   //                        $tmp[$beforeday] = array();
+   //                     }
+   //                     $splitBeforeDay = explode(',', $tmp[$beforeday]);
+   //                     $splitBeforeDay[] = sprintf("%02s", (24 + $reportHours)).':00-24:00';
+   //                     $tmp[$beforeday] = implode(',', $splitBeforeDay);
+                        $reportHours = 0;
+                     }
+                     if (!empty($toAdd)) {
+                        array_unshift($splitDay, $toAdd);
+                     }
+                     $tmp[$day] = implode(',', $splitDay);
+                  } else if ($reportHours > 0) {
+                     //$tmp[$day] = '00:00-'.$reportHours.':00';
                      $reportHours = 0;
                   }
-                  if (!empty($toAdd)) {
-                     array_unshift($splitDay, $toAdd);
-                  }
-                  $tmp[$day] = implode(',', $splitDay);
-               } else if ($reportHours > 0) {
-                  //$tmp[$day] = '00:00-'.$reportHours.':00';
-                  $reportHours = 0;
+                  $beforeday = $day;
                }
-               $beforeday = $day;
-            }
-            // Manage for report hours from saturday to sunday
-            if ($reportHours > 0) {
-               $splitDay = explode(',', $tmp['sunday']);
-               array_unshift($splitDay, '00:00-'.sprintf("%02s", $reportHours).':00');
-               $tmp['sunday'] = implode(',', $splitDay);
-            }
-            $tmp['saturday'] .= $saturday;
+               // Manage for report hours from saturday to sunday
+               if ($reportHours > 0) {
+                  $splitDay = explode(',', $tmp['sunday']);
+                  array_unshift($splitDay, '00:00-'.sprintf("%02s", $reportHours).':00');
+                  $tmp['sunday'] = implode(',', $splitDay);
+               }
+               if ($saturday != '') {
+                  if (isset($tmp['saturday'])) {
+                     $tmp['saturday'] .= $saturday;
+                  } else {
+                     $tmp['saturday'] = $saturday;
+                  }
+               }
 
-            // concatain if need
-            foreach ($days as $day) {
-               if (isset($tmp[$day])) {
-                  $splitDay = explode(',', $tmp[$day]);
-                  $beforeHour = '';
-                  $beforeNum  = 0;
-                  foreach ($splitDay as $num=>$data) {
-                     if (substr($data, 0, 2) == $beforeHour) {
-                        $splitDay[$beforeNum] = substr($splitDay[$beforeNum], 0, 6).substr($data, 6, 5);
-                        $beforeHour = substr($data, 6, 2);
-                        unset($splitDay[$num]);
-                     } else {
-                        $beforeHour = substr($data, 6, 2);
-                        $beforeNum = $num;
+               // concatain if need
+               foreach ($days as $day) {
+                  if (isset($tmp[$day])) {
+                     $splitDay = explode(',', $tmp[$day]);
+                     $beforeHour = '';
+                     $beforeNum  = 0;
+                     foreach ($splitDay as $num=>$data) {
+                        if (substr($data, 0, 2) == $beforeHour) {
+                           $splitDay[$beforeNum] = substr($splitDay[$beforeNum], 0, 6).substr($data, 6, 5);
+                           $beforeHour = substr($data, 6, 2);
+                           unset($splitDay[$num]);
+                        } else {
+                           $beforeHour = substr($data, 6, 2);
+                           $beforeNum = $num;
+                        }
                      }
+                     $tmp[$day] = implode(',', $splitDay);
                   }
-                  $tmp[$day] = implode(',', $splitDay);
                }
-            }
 
-            $a_timeperiods[$i] = $tmp;
-            $i++;
+               $a_timeperiods[$i] = $tmp;
+               $i++;
+
+
+            }
          }
       }
 
