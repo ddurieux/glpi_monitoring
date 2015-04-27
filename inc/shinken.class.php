@@ -138,7 +138,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          // Prefix
          'prefix' => array(
             'name'   => '_GRAPHITE_PRE',
-            'value'  => 'knm.kiosks.'
+            'value'  => ''
          )
       ),
       // WebUI configuration
@@ -483,7 +483,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
                if (isset(self::$shinkenParameters['graphite']['prefix']['name'])) {
                   $a_hosts[$i][self::$shinkenParameters['graphite']['prefix']['name']] =
-                     strtolower(self::$shinkenParameters['graphite']['prefix']['value'] . self::removeAccents($data['entityFullName']));
+                     strtolower(self::$shinkenParameters['graphite']['prefix']['value'] . self::shinkenFilter($data['entityFullName']));
                }
 
                if (isset(self::$shinkenParameters['glpi']['lat'])) {
