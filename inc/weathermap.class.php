@@ -1291,8 +1291,8 @@ echo '        </script>';
                           '&itemtype=PluginMonitoringService'.
                           '&items_id=" + d.services_id + "'.
                           '&timezone=0'.
-                          '&time=2h&customdate=1429538070'.
-                          '&customtime=323618070'.
+                          '&time=2h&customdate='.
+                          '&customtime='.
                           '&components_id=" + d.components_id + "\', function(data) {\n'.
                  '     data'.$updown.$type.$rand.' = data;\n'.
                  '     redraw'.$updown.$type.$rand.'();\n'.
