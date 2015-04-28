@@ -98,10 +98,13 @@ class PluginMonitoringShinken extends CommonDBTM {
             'contact_name' => 'monitoring',
          ),
          'hosts' => array(
+            // Default check_period
+            'check_period' => '24x7',
             // Default values
             'use' => 'important',
-            'check_period' => '24x7',
             'process_perf_data' => '1',
+            // What should be used instead ?
+            // Mandatory parameters in Shinken ?
             'notification_period' => '24x7',
             'notification_options' => 'd,u,r,f,s',
             'notification_interval' => '86400',
@@ -120,7 +123,13 @@ class PluginMonitoringShinken extends CommonDBTM {
          'services' => array(
             // Default check_period
             'check_period' => '24x7',
+            // Default values
             'process_perf_data' => '1',
+            // What should be used instead ?
+            // Mandatory parameters in Shinken ?
+            'notification_period' => '24x7',
+            'notification_options' => 'w,u,c,r,f,s',
+            'notification_interval' => '86400',
             // Shinken service parameters
             'notes' => '',
             'notes_url' => '',
@@ -662,7 +671,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_hosts[$i]['check_command'] = PluginMonitoringCommand::$command_prefix . $pmCommand->fields['command_name'].$args;
                // Toolbox::logInFile("pm", "check_command : ".$a_hosts[$i]['check_command']."\n");
 
-
+               // Check command / period
                $pmCheck->getFromDB($pmComponent->fields['plugin_monitoring_checks_id']);
                $a_hosts[$i]['check_interval'] = $pmCheck->fields['check_interval'];
                $a_hosts[$i]['retry_interval'] = $pmCheck->fields['retry_interval'];
@@ -755,10 +764,15 @@ class PluginMonitoringShinken extends CommonDBTM {
                $resultcont = $DB->query($querycont);
                if ($DB->numrows($resultcont) != 0) {
                   $a_componentscatalogs_hosts = $DB->fetch_assoc($resultcont);
-                  // Notification interval
+                  // Notification options / interval
                   $pmComponentscatalog = new PluginMonitoringComponentscatalog();
                   $pmComponentscatalog->getFromDB($a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']);
-                  $a_hosts[$i]['notification_interval'] = $pmComponentscatalog->fields['notification_interval'];
+                  if (isset ($pmComponentscatalog->fields['notification_interval']) ) {
+                     $a_hosts[$i]['notification_interval'] = $pmComponentscatalog->fields['notification_interval'];
+                  }
+                  if (isset ($pmComponentscatalog->fields['notification_period']) ) {
+                     $a_hosts[$i]['notification_period'] = $pmComponentscatalog->fields['notification_period'];
+                  }
 
                   $a_contacts = array();
                   $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
@@ -1228,14 +1242,6 @@ class PluginMonitoringShinken extends CommonDBTM {
                   }
                }
 
-               if (! empty(self::$shinkenParameters['shinken']['services']['process_perf_data'])) $a_services[$i]['process_perf_data'] = self::$shinkenParameters['shinken']['services']['process_perf_data'];
-
-               if (! empty(self::$shinkenParameters['shinken']['services']['notes'])) $a_services[$i]['notes'] = self::$shinkenParameters['shinken']['services']['notes'];
-               if (! empty(self::$shinkenParameters['shinken']['services']['notes_url'])) $a_services[$i]['notes_url'] = self::$shinkenParameters['shinken']['services']['notes_url'];
-               if (! empty(self::$shinkenParameters['shinken']['services']['action_url'])) $a_services[$i]['action_url'] = self::$shinkenParameters['shinken']['services']['action_url'];
-               if (! empty(self::$shinkenParameters['shinken']['services']['icon_image'])) $a_services[$i]['icon_image'] = self::$shinkenParameters['shinken']['services']['icon_image'];
-               if (! empty(self::$shinkenParameters['shinken']['services']['icon_image_alt'])) $a_services[$i]['icon_image_alt'] = self::$shinkenParameters['shinken']['services']['icon_image_alt'];
-
                // * Contacts
                $a_contacts = array();
                $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
@@ -1293,22 +1299,35 @@ class PluginMonitoringShinken extends CommonDBTM {
                      $a_services[$i]['event_handler_enabled'] = '1';
                   } else {
                      $a_services[$i]['event_handler_enabled'] = '0';
-                     // $a_services[$i]['event_handler_enabled'] = '';
                   }
                   $a_services[$i]['flap_detection_enabled'] = '1';
                   $a_services[$i]['failure_prediction_enabled'] = '1';
                   $a_services[$i]['retain_status_information'] = '1';
                   $a_services[$i]['retain_nonstatus_information'] = '1';
                   $a_services[$i]['is_volatile'] = '0';
-                  // $a_services[$i]['_httpstink'] = 'NO';
                } else {
+                  // Default parameters
+                  if (! empty(self::$shinkenParameters['shinken']['services']['process_perf_data'])) $a_services[$i]['process_perf_data'] = self::$shinkenParameters['shinken']['services']['process_perf_data'];
+                  if (! empty(self::$shinkenParameters['shinken']['services']['notification_period'])) $a_services[$i]['notification_period'] = self::$shinkenParameters['shinken']['services']['notification_period'];
+                  if (! empty(self::$shinkenParameters['shinken']['services']['notification_options'])) $a_services[$i]['notification_options'] = self::$shinkenParameters['shinken']['services']['notification_options'];
+                  if (! empty(self::$shinkenParameters['shinken']['services']['notification_interval'])) $a_services[$i]['notification_interval'] = self::$shinkenParameters['shinken']['services']['notification_interval'];
+
+                  if (! empty(self::$shinkenParameters['shinken']['services']['notes'])) $a_services[$i]['notes'] = self::$shinkenParameters['shinken']['services']['notes'];
+                  if (! empty(self::$shinkenParameters['shinken']['services']['notes_url'])) $a_services[$i]['notes_url'] = self::$shinkenParameters['shinken']['services']['notes_url'];
+                  if (! empty(self::$shinkenParameters['shinken']['services']['action_url'])) $a_services[$i]['action_url'] = self::$shinkenParameters['shinken']['services']['action_url'];
+                  if (! empty(self::$shinkenParameters['shinken']['services']['icon_image'])) $a_services[$i]['icon_image'] = self::$shinkenParameters['shinken']['services']['icon_image'];
+                  if (! empty(self::$shinkenParameters['shinken']['services']['icon_image_alt'])) $a_services[$i]['icon_image_alt'] = self::$shinkenParameters['shinken']['services']['icon_image_alt'];
+                  
                   // Notification options
-                  $a_services[$i]['notification_interval'] = '30';
+                  // $a_services[$i]['notification_interval'] = '30';
                   $pmComponentscatalog->getFromDB($plugin_monitoring_componentscatalogs_id);
-                  if ($pmComponentscatalog->fields['notification_interval'] != '30') {
+                  if (isset ($pmComponentscatalog->fields['notification_interval']) ) {
                      $a_services[$i]['notification_interval'] = $pmComponentscatalog->fields['notification_interval'];
                   }
-                  $a_services[$i]['notification_period'] = '24x7';
+                  // $a_services[$i]['notification_period'] = '24x7';
+                  if (isset ($pmComponentscatalog->fields['notification_period']) ) {
+                     $a_services[$i]['notification_period'] = $pmComponentscatalog->fields['notification_period'];
+                  }
                   $a_services[$i]['check_period'] = '24x7';
                   $timeperiodsuffix = '-'.$pmHostconfig->getValueAncestor('jetlag', $entities_id);
                   if ($timeperiodsuffix == '-0') {
