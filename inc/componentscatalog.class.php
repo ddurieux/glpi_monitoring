@@ -83,6 +83,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    function defineTabs($options=array()){
 
       $ong = array();
+      $this->addDefaultFormTab($ong);
       $this->addStandardTab("PluginMonitoringComponentscatalog", $ong, $options);
       return $ong;
    }
