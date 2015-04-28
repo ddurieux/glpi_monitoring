@@ -51,7 +51,7 @@ class PluginMonitoringShinken extends CommonDBTM {
    public static $shinkenParameters = array(
       // GLPI root entity name
       'glpi' => array(
-         'rootEntity'   => 'Entité racine',
+         'rootEntity'   => '',
          // Entity id
          'entityId' => '_ENTITIESID',
          // Entity name
@@ -454,6 +454,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                      strtolower(self::shinkenFilter($data['entityName']));
                }
 
+               self::$shinkenParameters['glpi']['rootEntity'] = __('Root entity');
                $data['entityFullName'] = preg_replace("/ > /","#",$data['entityFullName']);
                $data['entityFullName'] = preg_replace("/". self::$shinkenParameters['glpi']['rootEntity'] ."#/","",$data['entityFullName']);
                $data['entityFullName'] = preg_replace("/#/","_",$data['entityFullName']);
@@ -1089,9 +1090,6 @@ class PluginMonitoringShinken extends CommonDBTM {
                   $a_services[$i]['service_description'] .= '-'.self::shinkenFilter($networkPort->fields['name']);
                }
                $a_services[$i]['display_name'] = $a_component['name'];
-               // $a_services[$i]['_ENTITIESID'] = $item->fields['entities_id'];
-               // $a_services[$i]['_ITEMSID'] = $data['id'];
-               // $a_services[$i]['_ITEMTYPE'] = 'Service';
                PluginMonitoringToolbox::logIfExtradebug(
                   'pm-shinken',
                   " - add service ".$a_services[$i]['service_description']." on ".$a_services[$i]['host_name']."\n"
