@@ -788,6 +788,12 @@ class PluginMonitoringShinken extends CommonDBTM {
                   if (count($a_contacts) > 0) {
                      $a_contacts_unique = array_unique($a_contacts);
                      $a_hosts[$i]['contacts'] = implode(',', $a_contacts_unique);
+                  } else {
+                     if (self::$shinkenParameters['shinken']['fake_contacts']['build']) {
+                        $a_hosts[$i]['contacts'] = self::$shinkenParameters['shinken']['fake_contacts']['contact_name'];
+                     } else {
+                        $a_hosts[$i]['contacts'] = '';
+                     }
                   }
                }
 
@@ -1269,12 +1275,20 @@ class PluginMonitoringShinken extends CommonDBTM {
                   }
                }
 
-               $a_contacts_unique = array_unique($a_contacts);
-               $a_services[$i]['contacts'] = implode(',', $a_contacts_unique);
+               if (count($a_contacts) > 0) {
+                  $a_contacts_unique = array_unique($a_contacts);
+                  $a_services[$i]['contacts'] = implode(',', $a_contacts_unique);
+               } else {
+                  if (self::$shinkenParameters['shinken']['fake_contacts']['build']) {
+                     $a_services[$i]['contacts'] = self::$shinkenParameters['shinken']['fake_contacts']['contact_name'];
+                  } else {
+                     $a_services[$i]['contacts'] = '';
+                  }
+               }
 
                // ** If shinken not use templates or template not defined :
                if (!isset($_SESSION['plugin_monitoring']['servicetemplates'][$a_component['id']])) {
-                     $pMonitoringCheck->getFromDB($a_component['plugin_monitoring_checks_id']);
+                  $pMonitoringCheck->getFromDB($a_component['plugin_monitoring_checks_id']);
                   $a_services[$i]['check_interval'] = $pMonitoringCheck->fields['check_interval'];
                   $a_services[$i]['retry_interval'] = $pMonitoringCheck->fields['retry_interval'];
                   $a_services[$i]['max_check_attempts'] = $pMonitoringCheck->fields['max_check_attempts'];
