@@ -745,7 +745,8 @@ CREATE TABLE `glpi_plugin_monitoring_unavailabilities` (
    `scheduled` tinyint(1) NOT NULL DEFAULT '0',
    `details` text DEFAULT NULL COLLATE utf8_unicode_ci,
   PRIMARY KEY (`id`),
-  KEY `plugin_monitoring_services_id` (`plugin_monitoring_services_id`)
+  KEY `plugin_monitoring_services_id` (`plugin_monitoring_services_id`),
+  KEY `plugin_monitoring_services_id_2` (`plugin_monitoring_services_id`,`begin_date`,`end_date`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 

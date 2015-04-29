@@ -2863,6 +2863,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               "text DEFAULT NULL COLLATE utf8_unicode_ci");
          $migration->addKey($newTable,
                             "plugin_monitoring_services_id");
+         $migration->addKey($newTable,
+                            array('plugin_monitoring_services_id','begin_date',
+                                  'end_date'),
+                            'plugin_monitoring_services_id_2');
          $migration->migrationOneTable($newTable);
       }
 /*
