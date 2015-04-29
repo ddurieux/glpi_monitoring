@@ -103,10 +103,17 @@ class PluginMonitoringDowntime extends CommonDBTM {
       if ($item->getType()=='Ticket') {
          if (self::canView()) {
             // Show list filtered on item, sorted on day descending ...
-            Search::manageGetValues(self::getTypeName());
-            Search::showList(self::getTypeName(), array(
-               'field' => array(12), 'searchtype' => array('equals'), 'contains' => array($item->getID()),
-               'sort' => 4, 'order' => 'DESC'
+            Search::showList('PluginMonitoringDowntime', array(
+               'criteria' => array(
+                  array(
+                     'field' => 12,
+                     'searchtype' => 'equals',
+                     'value' => $item->getID()
+                  )
+               ),
+               'order' => 'DESC',
+               'sort' => 4,
+               'itemtype' => 'PluginMonitoringDowntime'
                ));
             return true;
          }
@@ -115,10 +122,17 @@ class PluginMonitoringDowntime extends CommonDBTM {
       if ($item->getType()=='Computer') {
          if (self::canView()) {
             // Show list filtered on item, sorted on day descending ...
-            Search::manageGetValues(self::getTypeName());
-            Search::showList(self::getTypeName(), array(
-               'field' => array(2), 'searchtype' => array('equals'), 'contains' => array($item->getID()),
-               'sort' => 4, 'order' => 'DESC'
+            Search::showList('PluginMonitoringDowntime', array(
+               'criteria' => array(
+                  array(
+                     'field' => 2,
+                     'searchtype' => 'equals',
+                     'value' => $item->getID()
+                  )
+               ),
+               'order' => 'DESC',
+               'sort' => 4,
+               'itemtype' => 'PluginMonitoringDowntime'
                ));
             return true;
          }
