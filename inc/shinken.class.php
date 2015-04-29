@@ -1135,23 +1135,23 @@ class PluginMonitoringShinken extends CommonDBTM {
                }
 
                // Manage freshness
-               if ($a_component['freshness_count'] == 0) {
-                  $a_services[$i]['check_freshness'] = '0';
-                  $a_services[$i]['freshness_threshold'] = '3600';
-               } else {
-                  $multiple = 1;
-                  if ($a_component['freshness_type'] == 'seconds') {
-                     $multiple = 1;
-                  } else if ($a_component['freshness_type'] == 'minutes') {
-                     $multiple = 60;
-                  } else if ($a_component['freshness_type'] == 'hours') {
-                     $multiple = 3600;
-                  } else if ($a_component['freshness_type'] == 'days') {
-                     $multiple = 86400;
-                  }
-                  $a_services[$i]['check_freshness'] = '1';
-                  $a_services[$i]['freshness_threshold'] = (string)($a_component['freshness_count'] * $multiple);
-               }
+               // if ($a_component['freshness_count'] == 0) {
+                  // $a_services[$i]['check_freshness'] = '0';
+                  // $a_services[$i]['freshness_threshold'] = '3600';
+               // } else {
+                  // $multiple = 1;
+                  // if ($a_component['freshness_type'] == 'seconds') {
+                     // $multiple = 1;
+                  // } else if ($a_component['freshness_type'] == 'minutes') {
+                     // $multiple = 60;
+                  // } else if ($a_component['freshness_type'] == 'hours') {
+                     // $multiple = 3600;
+                  // } else if ($a_component['freshness_type'] == 'days') {
+                     // $multiple = 86400;
+                  // }
+                  // $a_services[$i]['check_freshness'] = '1';
+                  // $a_services[$i]['freshness_threshold'] = (string)($a_component['freshness_count'] * $multiple);
+               // }
 
                $pMonitoringCommand->getFromDB($a_component['plugin_monitoring_commands_id']);
                // Manage arguments
@@ -1767,7 +1767,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
       $query = "SELECT * FROM `glpi_plugin_monitoring_components`
          GROUP BY `plugin_monitoring_checks_id`, `active_checks_enabled`,
-            `passive_checks_enabled`, `calendars_id`
+            `passive_checks_enabled`, `freshness_count`, `freshness_type`, `calendars_id`
          ORDER BY `id`";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
@@ -1776,25 +1776,45 @@ class PluginMonitoringShinken extends CommonDBTM {
             'pm-shinken',
             " - add template ".'template'.$data['id'].'-service'."\n"
          );
-         $a_servicetemplates[$i]['name'] = 'template'.$data['id'].'-service';
-            $pMonitoringCheck->getFromDB($data['plugin_monitoring_checks_id']);
+         $a_servicetemplates[$i]['name'] = self::shinkenFilter('servicetemplate-'.$data['id']);
          $a_servicetemplates[$i]['alias'] = $data['description'].' / '.$data['name'];
+         $pMonitoringCheck->getFromDB($data['plugin_monitoring_checks_id']);
          $a_servicetemplates[$i]['check_interval'] = $pMonitoringCheck->fields['check_interval'];
          $a_servicetemplates[$i]['retry_interval'] = $pMonitoringCheck->fields['retry_interval'];
          $a_servicetemplates[$i]['max_check_attempts'] = $pMonitoringCheck->fields['max_check_attempts'];
-         if ($calendar->getFromDB($data['calendars_id'])) {
-            $a_servicetemplates[$i]['check_period'] = $calendar->fields['name'];
-         }
-         $a_servicetemplates[$i]['notification_interval'] = '30';
-         $a_servicetemplates[$i]['notification_period'] = "24x7";
-         $a_servicetemplates[$i]['notification_options'] = 'w,u,c,r,f,s';
-         $a_servicetemplates[$i]['process_perf_data'] = '1';
+         // check_period, defined in each service ...
+         // if ($calendar->getFromDB($data['calendars_id'])) {
+            // $a_servicetemplates[$i]['check_period'] = $calendar->fields['name'];
+         // }
+         // notification parameters, defined in each service ...
+         // $a_servicetemplates[$i]['notification_interval'] = '30';
+         // $a_servicetemplates[$i]['notification_period'] = "24x7";
+         // $a_servicetemplates[$i]['notification_options'] = 'w,u,c,r,f,s';
+         // $a_servicetemplates[$i]['process_perf_data'] = '1';
          $a_servicetemplates[$i]['active_checks_enabled'] = $data['active_checks_enabled'];
          $a_servicetemplates[$i]['passive_checks_enabled'] = $data['passive_checks_enabled'];
          $a_servicetemplates[$i]['parallelize_check'] = '1';
          $a_servicetemplates[$i]['obsess_over_service'] = '1';
-         $a_servicetemplates[$i]['check_freshness'] = '1';
-         $a_servicetemplates[$i]['freshness_threshold'] = '3600';
+         // Manage freshness
+         // $a_servicetemplates[$i]['check_freshness'] = '1';
+         // $a_servicetemplates[$i]['freshness_threshold'] = '3600';
+         if ($data['freshness_count'] == 0) {
+            $a_servicetemplates[$i]['check_freshness'] = '0';
+            $a_servicetemplates[$i]['freshness_threshold'] = '3600';
+         } else {
+            $multiple = 1;
+            if ($data['freshness_type'] == 'seconds') {
+               $multiple = 1;
+            } else if ($data['freshness_type'] == 'minutes') {
+               $multiple = 60;
+            } else if ($data['freshness_type'] == 'hours') {
+               $multiple = 3600;
+            } else if ($data['freshness_type'] == 'days') {
+               $multiple = 86400;
+            }
+            $a_servicetemplates[$i]['check_freshness'] = '1';
+            $a_servicetemplates[$i]['freshness_threshold'] = (string)($data['freshness_count'] * $multiple);
+         }
          $a_servicetemplates[$i]['notifications_enabled'] = '1';
          $a_servicetemplates[$i]['event_handler_enabled'] = '0';
          $a_servicetemplates[$i]['flap_detection_enabled'] = '1';
