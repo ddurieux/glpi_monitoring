@@ -596,7 +596,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                preg_match_all("/\\$(ARG\d+)\\$/", $pmCommand->fields['command_line'], $array);
                sort($array[0]);
                $a_arguments = importArrayFromDB($pmCommand->fields['arguments']);
-               $a_argumentscustom = importArrayFromDB($pmComponent->fields['arguments']);
+               $a_argumentscustom = importArrayFromDB($a_fields['arguments']);
                foreach ($a_argumentscustom as $key=>$value) {
                   $a_arguments[$key] = $value;
                }
@@ -672,7 +672,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                // Toolbox::logInFile("pm", "check_command : ".$a_hosts[$i]['check_command']."\n");
 
                // Check command / period
-               $pmCheck->getFromDB($pmComponent->fields['plugin_monitoring_checks_id']);
+               $pmCheck->getFromDB($a_fields['plugin_monitoring_checks_id']);
                $a_hosts[$i]['check_interval'] = $pmCheck->fields['check_interval'];
                $a_hosts[$i]['retry_interval'] = $pmCheck->fields['retry_interval'];
                $a_hosts[$i]['max_check_attempts'] = $pmCheck->fields['max_check_attempts'];
@@ -682,7 +682,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                if ($timeperiodsuffix == '-0') {
                   $timeperiodsuffix = '';
                }
-               if ($calendar->getFromDB($pmComponent->fields['calendars_id'])) {
+               if ($calendar->getFromDB($a_fields['calendars_id'])) {
                   $a_hosts[$i]['check_period'] = self::shinkenFilter($calendar->fields['name'].$timeperiodsuffix);
                } else {
                   $a_hosts[$i]['check_period'] = self::$shinkenParameters['shinken']['hosts']['check_period'];
