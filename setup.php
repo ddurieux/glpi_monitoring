@@ -40,7 +40,7 @@
    ------------------------------------------------------------------------
  */
 
-define ("PLUGIN_MONITORING_VERSION","0.85+1.0");
+define ("PLUGIN_MONITORING_VERSION","0.85+1.1");
 
 define('_MPDF_TEMP_PATH', GLPI_PLUGIN_DOC_DIR.'/monitoring/pdf/');
 
@@ -92,8 +92,8 @@ function plugin_init_monitoring() {
 		if (class_exists('PluginAppliancesAppliance')) {
            PluginAppliancesAppliance::registerType('PluginMonitoringServicescatalog');
         }
-		 
-		 
+
+
          $PLUGIN_HOOKS['use_massive_action']['monitoring']=1;
          $PLUGIN_HOOKS['add_css']['monitoring'] = array(
             "lib/nvd3/src/nv.d3.css",

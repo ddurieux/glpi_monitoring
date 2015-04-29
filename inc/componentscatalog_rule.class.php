@@ -192,10 +192,6 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       $form = str_replace("</table>\n<input", $table, $form);
       echo $form;
 
-//      Search::manageGetValues($_GET['itemtype']);
-//      $pmSearch = new PluginMonitoringSearch();
-//      $pmSearch->showGenericSearch($_GET['itemtype'], $_GET);
-
       echo "<br/>";
       echo "<table class='tab_cadre_fixe'>";
 

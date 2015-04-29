@@ -105,32 +105,20 @@ if (isset($_GET['updaterule'])) {
    //Html::back();
 } else if (isset($_GET['id'])
         AND !isset($_GET['itemtype'])) {
+
    $pmDisplayview_rule->getFromDB($_GET['id']);
 
    $val = importArrayFromDB($pmDisplayview_rule->fields['condition']);
-   $nbfields = 1;
-   $nbfields = count($val['field']);
-   foreach ($val as $name=>$data) {
-      if (is_array($data)) {
-         $i =0;
-         foreach ($data as $key => $value) {
-            $val[$name."[".$key."]"] = $value;
-         }
-         unset($val[$name]);
-      }
-   }
-   $_POST = $val;
-   $_POST["glpisearchcount"] = $nbfields;
-   $_POST['id'] = $_GET['id'];
-   $_POST['name'] = 'rule';
-   $_POST['itemtype'] = $pmDisplayview_rule->fields['itemtype'];
-   $_POST['plugin_monitoring_displayviews_id'] = $pmDisplayview_rule->fields['plugin_monitoring_displayviews_id'];
-   $_SERVER['REQUEST_URI'] = str_replace("?id=".$_GET['id'], "", $_SERVER['REQUEST_URI']);
-   $_GET = $_POST;
 
+   $params = Search::manageParams($pmDisplayview_rule->fields['itemtype'], $val);
 
-   unset($_SESSION["glpisearchcount"][$_POST['itemtype']]);
-   unset($_SESSION["glpisearch"]);
+   $url = str_replace("?id=".$_GET['id'], "", $_SERVER['REQUEST_URI']);
+   $url .= "?".Toolbox::append_params($params);
+   $url .= "&plugin_monitoring_displayviews_id=".$pmDisplayview_rule->fields['plugin_monitoring_displayviews_id'];
+   $url .= "&name=".$pmDisplayview_rule->fields['name'];
+   $url .= "&id=".$_GET['id'];
+
+   Html::redirect($url);
 }
 
 if (isset($_POST['name'])) {

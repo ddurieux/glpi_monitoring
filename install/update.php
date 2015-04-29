@@ -1964,115 +1964,48 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     /*
     * Table glpi_plugin_monitoring_serviceevents
     */
-      $newTable = "glpi_plugin_monitoring_serviceevents";
-      if (!TableExists($newTable)) {
-         $query = "CREATE TABLE `".$newTable."` (
-                        `id` bigint(30) NOT NULL AUTO_INCREMENT,
-                        PRIMARY KEY (`id`)
-                     ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-         $DB->query($query);
-      }
-         // Duplicate field with event
-         $migration->dropField($newTable,
-                                 'ouput');
-      $migration->migrationOneTable($newTable);
 
-         $migration->changeField($newTable,
-                                 'id',
-                                 'id',
-                                 "bigint(30) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable,
-                                 'plugin_monitoring_services_id',
-                                 'plugin_monitoring_services_id',
-                                 "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable,
-                                 'date',
-                                 'date',
-                                 "datetime DEFAULT NULL");
-         // Event should contain up to 4096 bytes (Nagios plugin specification)
-         $migration->changeField($newTable,
-                                 'event',
-                                 'event',
-                                 "varchar(4096) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable,
-                                 'perf_data',
-                                 'perf_data',
-                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         // Duplicate field with event
-         // $migration->changeField($newTable,
-                                 // 'output',
-                                 // 'output',
-                                 // "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable,
-                                 'state',
-                                 'state',
-                                 "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable,
-                                 'state_type',
-                                 'state_type',
-                                 "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable,
-                                 'latency',
-                                 'latency',
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable,
-                                 'execution_time',
-                                 'execution_time',
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable,
-                                 'unavailability',
-                                 'unavailability',
-                                 "tinyint(1) NOT NULL DEFAULT '0'");
-      $migration->migrationOneTable($newTable);
-         $migration->addField($newTable,
-                                 'plugin_monitoring_services_id',
-                                 "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable,
-                                 'date',
-                                 "datetime DEFAULT NULL");
-         $migration->addField($newTable,
-                                 'event',
-                                 "varchar(512) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable,
-                                 'perf_data',
-                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         // Duplicate field with event
-         // $migration->addField($newTable,
-                                 // 'output',
-                                 // "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable,
-                                 'state',
-                                 "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
-         $migration->addField($newTable,
-                                 'state_type',
-                                 "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
-         $migration->addField($newTable,
-                                 'latency',
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable,
-                                 'execution_time',
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable,
-                              'unavailability',
-                              "tinyint(1) NOT NULL DEFAULT '0'");
-         $migration->addKey($newTable,
-                            "plugin_monitoring_services_id");
-         $migration->addKey($newTable,
-                            array('plugin_monitoring_services_id',
-                                  'date'),
-                            "plugin_monitoring_services_id_2");
-         $migration->addKey($newTable,
-                            array('unavailability',
-                                  'state_type',
-                                  'plugin_monitoring_services_id'),
-                            "unavailability");
-         $migration->addKey($newTable,
-                            array('plugin_monitoring_services_id',
-                                  'id'),
-                            "plugin_monitoring_services_id_3");
-      $migration->migrationOneTable($newTable);
+      $a_table = array();
+      $a_table['name'] = 'glpi_plugin_monitoring_serviceevents';
+      $a_table['oldname'] = array();
 
+      $a_table['fields']  = array(
+         'id'           => array('type'    => 'bigint(30) NOT NULL AUTO_INCREMENT',  'value'   => NULL),
+         'plugin_monitoring_services_id' => array('type'    => 'integer',       'value'   => '0'),
+         'date'         => array('type'    => 'datetime',         'value'   => NULL),
+         'event'        => array('type'    => 'varchar(4096) COLLATE utf8_unicode_ci DEFAULT NULL',  'value'   => NULL),
+         'perf_data'    => array('type'    => 'text',           'value'   => NULL),
+         'state'        => array('type'    => 'string',         'value'   => '0'),
+         'state_type'   => array('type'    => 'string',         'value'   => '0'),
+         'latency'      => array('type'    => 'string',         'value'   => NULL),
+         'execution_time' => array('type'    => 'string',         'value'   => NULL),
+         'unavailability'   => array('type'    => 'tinyint(1) NOT NULL DEFAULT "0"',  'value'   => NULL),
+      );
 
+      $a_table['oldfields']  = array();
+
+      $a_table['renamefields'] = array();
+
+      $a_table['keys'] = array(
+         array('field' => 'plugin_monitoring_services_id',
+               'name' => 'plugin_monitoring_services_id',
+               'type' => 'INDEX'),
+         array('field' => array('plugin_monitoring_services_id', 'date'),
+               'name' => 'plugin_monitoring_services_id_2',
+               'type' => 'INDEX'),
+         array('field' => array('unavailability', 'state_type', 'plugin_monitoring_services_id'),
+               'name' => 'unavailability',
+               'type' => 'INDEX'),
+         array('field' => array('plugin_monitoring_services_id', 'id'),
+               'name' => 'plugin_monitoring_services_id_3',
+               'type' => 'INDEX')
+      );
+
+      $a_table['oldkeys'] = array();
+
+      migrateTablesMonitoring($migration, $a_table);
+
+      
 
     /*
     * Table glpi_plugin_monitoring_commands
@@ -3752,6 +3685,112 @@ function migrateTablesMonitoring($migration, $a_table) {
    $migration->migrationOneTable($a_table['name']);
 
    $DB->list_fields($a_table['name'], FALSE);
+
+   // Update search rules
+//   $query = "SELECT `id`, `condition` FROM `glpi_plugin_monitoring_displayviews_rules`";
+//   foreach ($DB->request($query) as $data) {
+//      $new_values   = migrationDynamicGroupFields($data['condition']);
+//      $query_update = "UPDATE `glpi_plugin_monitoring_displayviews_rules`
+//                       SET `condition`='$new_values'
+//                       WHERE `id`='".$data['id']."'";
+//      $DB->query($query_update);
+//   }
+
+   $query = "SELECT *
+      FROM `glpi_plugin_monitoring_displayviews_rules`";
+   $result = $DB->query($query);
+   while ($data=$DB->fetch_array($result)) {
+      $data_array = importArrayFromDB($data['condition']);
+      if (!isset($data_array['searchtype'])) {
+         continue;
+      }
+      $criteria = array();
+      foreach ($data_array['field'] as $num=>$value) {
+         $criteria[$num]['field'] = $value;
+      }
+      unset($data_array['field']);
+      foreach ($data_array['searchtype'] as $num=>$value) {
+         $criteria[$num]['searchtype'] = $value;
+      }
+      unset($data_array['searchtype']);
+      foreach ($data_array['contains'] as $num=>$value) {
+         $criteria[$num]['value'] = $value;
+      }
+      unset($data_array['contains']);
+      if (isset($data_array['link'])) {
+         foreach ($data_array['link'] as $num=>$value) {
+            $criteria[$num]['link'] = $value;
+         }
+         unset($data_array['link']);
+      }
+      $data_array['criteria'] = $criteria;
+      unset($data_array['_glpi_csrf_token']);
+      $DB->query("UPDATE `glpi_plugin_monitoring_displayviews_rules` "
+              . "SET `condition`='".exportArrayToDB($data_array)."' "
+              . "WHERE `id`='".$data['id']."'");
+   }
+
+
 }
+//
+//
+//function migrationRuleSearch($fields) {
+//   $data       = json_decode($fields, true);
+//   $new_fields = array();
+//   if (!is_array($data)) {
+//      $data   = unserialize($fields);
+//   }
+//
+//   //We're still in 0.85 or higher,
+//   //no need for migration !
+//   if (isset($fields['criteria'])) {
+//      return serialize($fields);
+//   }
+//
+//   //Upgrade from 0.84
+//   if (isset($data['field'])) {
+//      $count_fields = count ($data['field']);
+//      for ($i = 0; $i < $count_fields; $i++) {
+//         $new_value = array();
+//         $new_value['value']       = $data['contains'][$i];
+//         $new_value['field']       = $data['field'][$i];
+//         $new_value['searchtype']  = $data['searchtype'][$i];
+//         $new_fields['criteria'][] = $new_value;
+//      }
+//
+//      if (isset($data['field2'])) {
+//         $count_fields = count ($data['field2']);
+//         for ($i = 0; $i < $count_fields; $i++) {
+//            $new_value = array();
+//            $new_value['value']           = $data['contains2'][$i];
+//            $new_value['field']           = $data['field2'][$i];
+//            $new_value['itemtype']        = $data['itemtype2'][$i];
+//            $new_value['searchtype']      = $data['searchtype2'][$i];
+//            $new_fields['metacriteria'][] = $new_value;
+//         }
+//      }
+//   } elseif(isset($data['itemtype']) && isset($data['name'])) {
+//      //Ugrapde from 0.83, where the number of fields to search was fixed
+//      $oldfields = array('name'                => 2,
+//                         'serial'              => 5,
+//                         'otherserial'         => 6,
+//                         'locations_id'        => 3,
+//                         'operatingsystems_id' => 45,
+//                         'room'                => 92,
+//                         'building'            => 91);
+//      foreach ($oldfields as $name => $id) {
+//         $new_value = array();
+//         if (isset($data[$name]) && $data[$name] != '') {
+//            $new_value['field']       = $id;
+//            $new_value['value']       = $data[$name];
+//            $new_value['searchtype']  = 'equals';
+//         }
+//         if (!empty($new_value)) {
+//            $new_fields['criteria'][] = $new_value;
+//         }
+//      }
+//   }
+//   return serialize($new_fields);
+//}
 
 ?>
