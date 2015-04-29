@@ -214,6 +214,7 @@ echo "        <script>
       }
       // * Invert perfname
 
+      echo "<form method='post'>";
       $a_perfnames = array();
       $a_perfnames = PluginMonitoringServicegraph::getperfdataNames($pmComponent->fields['graph_template']);
       echo "<table class='tab_cadre_fixe'>";
@@ -256,7 +257,7 @@ echo "        <script>
          }
       }
       echo '</select>
-      <input name="perfnameinvert" id="jquery-tagbox-select2" type="text" value="'.implode('####', $a_list_val2).'" />';
+      <input name="perfnameinvert" id="jquery-tagbox-select2" type="hidden" value="'.implode('####', $a_list_val2).'" />';
       echo "</td>";
 
 //      foreach ($a_perfnames as $name) {
