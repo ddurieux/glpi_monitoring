@@ -86,20 +86,36 @@ class PluginMonitoringUnavailability extends CommonDBTM {
       if ($item->getType()=='Computer') {
          if (self::canView()) {
             // Show list filtered on item, sorted on component ascending ...
-            Search::manageGetValues(PluginMonitoringUnavailability::getTypeName());
             Search::showList(PluginMonitoringUnavailability::getTypeName(), array(
-               'field' => array(22), 'searchtype' => array('equals'), 'contains' => array($item->getID()),
-               'sort' => 3, 'order' => 'DESC'
-               ));
+               'criteria' => array(
+                  array(
+                     'field' => 22,
+                     'searchtype' => 'equals',
+                     'value' => $item->getID()
+                  )
+               ),
+               'order' => 'DESC',
+               'sort' => 3,
+               'itemtype' => 'PluginMonitoringUnavailability'
+               )
+            );
+
             return true;
          }
       } else if ($item->getType()=='NetworkEquipment') {
          if (self::canView()) {
             // Show list filtered on item, sorted on component ascending ...
-            Search::manageGetValues(PluginMonitoringUnavailability::getTypeName());
             Search::showList(PluginMonitoringUnavailability::getTypeName(), array(
-               'field' => array(23), 'searchtype' => array('equals'), 'contains' => array($item->getID()),
-               'sort' => 3, 'order' => 'DESC'
+               'criteria' => array(
+                  array(
+                     'field' => 23,
+                     'searchtype' => 'equals',
+                     'value' => $item->getID()
+                  )
+               ),
+               'order' => 'DESC',
+               'sort' => 3,
+               'itemtype' => 'PluginMonitoringUnavailability'
                ));
             return true;
          }
