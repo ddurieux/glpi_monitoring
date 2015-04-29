@@ -678,8 +678,8 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_hosts[$i]['max_check_attempts'] = $pmCheck->fields['max_check_attempts'];
 
                // Host entity jetlag ...
-               $timeperiodsuffix = '-'.$pmHostconfig->getValueAncestor('jetlag', $class->fields['entities_id']);
-               if ($timeperiodsuffix == '-0') {
+               $timeperiodsuffix = '_'.$pmHostconfig->getValueAncestor('jetlag', $class->fields['entities_id']);
+               if ($timeperiodsuffix == '_0') {
                   $timeperiodsuffix = '';
                }
                if ($calendar->getFromDB($a_fields['calendars_id'])) {
