@@ -86,7 +86,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
       if ($item->getType()=='Computer') {
          if (self::canView()) {
             // Show list filtered on item, sorted on component ascending ...
-            Search::showList(PluginMonitoringUnavailability::getTypeName(), array(
+            Search::showList('PluginMonitoringUnavailability', array(
                'criteria' => array(
                   array(
                      'field' => 22,
@@ -105,7 +105,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
       } else if ($item->getType()=='NetworkEquipment') {
          if (self::canView()) {
             // Show list filtered on item, sorted on component ascending ...
-            Search::showList(PluginMonitoringUnavailability::getTypeName(), array(
+            Search::showList('PluginMonitoringUnavailability', array(
                'criteria' => array(
                   array(
                      'field' => 23,
