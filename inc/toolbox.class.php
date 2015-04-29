@@ -303,7 +303,7 @@ echo "        <script>
          }
       }
       echo "<table class='tab_cadre_fixe'>";
-      echo "<tr class='tab_bg_1'>";
+      echo "<tr class='tab_bg_3'>";
       echo "<td rowspan='".ceil(count($a_perfnames) / 4)."' width='90'>";
       echo __('Colors', 'monitoring')."&nbsp;:";
 
@@ -318,7 +318,7 @@ echo "        <script>
       foreach ($a_list_val as $name) {
          if ($i == 'O'
                  AND $j == '1') {
-            echo "<tr>";
+            echo "<tr class='tab_bg_3'>";
          }
          echo "<td>";
          echo $name."&nbsp;:";
@@ -370,7 +370,7 @@ myPicker.fromString(\''.$color.'\')
          echo "</tr>";
       }
 
-      echo "<tr>";
+      echo "<tr class='tab_bg_3'>";
       echo "<td colspan='9' align='center'>";
       echo "<input type='hidden' name='id' value='".$components_id."'/>";
       echo "<input type='submit' name='updateperfdata' value=\"".__('Save')."\" class='submit'>";
