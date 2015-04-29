@@ -738,7 +738,10 @@ class PluginMonitoringShinken extends CommonDBTM {
                if (! empty(self::$shinkenParameters['shinken']['hosts']['vrml_image'])) $a_hosts[$i]['vrml_image'] = self::$shinkenParameters['shinken']['hosts']['vrml_image'];
                if (! empty(self::$shinkenParameters['shinken']['hosts']['statusmap_image'])) $a_hosts[$i]['statusmap_image'] = self::$shinkenParameters['shinken']['hosts']['statusmap_image'];
 
-
+               // Persist host status
+               $a_hosts[$i]['retain_status_information'] = '1';
+               $a_hosts[$i]['retain_nonstatus_information'] = '1';
+               
                // For contacts, check if a component catalog contains the host associated component ...
                $a_hosts[$i]['contacts'] = '';
 
@@ -1321,9 +1324,10 @@ class PluginMonitoringShinken extends CommonDBTM {
                   }
                   $a_services[$i]['flap_detection_enabled'] = '1';
                   $a_services[$i]['failure_prediction_enabled'] = '1';
+                  
+                  // Persist service status
                   $a_services[$i]['retain_status_information'] = '1';
                   $a_services[$i]['retain_nonstatus_information'] = '1';
-                  $a_services[$i]['is_volatile'] = '0';
                } else {
                   // Default parameters
                   if (! empty(self::$shinkenParameters['shinken']['services']['process_perf_data'])) $a_services[$i]['process_perf_data'] = self::$shinkenParameters['shinken']['services']['process_perf_data'];
@@ -1529,13 +1533,12 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_services[$i]['freshness_threshold'] = '3600';
                $a_services[$i]['notifications_enabled'] = '1';
                $a_services[$i]['event_handler_enabled'] = '0';
-               //$a_services[$i]['event_handler'] = 'super_event_kill_everyone!DIE';
                $a_services[$i]['flap_detection_enabled'] = '1';
                $a_services[$i]['failure_prediction_enabled'] = '1';
+                  
+               // Persist service status
                $a_services[$i]['retain_status_information'] = '1';
                $a_services[$i]['retain_nonstatus_information'] = '1';
-               $a_services[$i]['is_volatile'] = '0';
-               // $a_services[$i]['_httpstink'] = 'NO';
 
                // * Contacts
                $a_contacts = array();
@@ -1689,13 +1692,11 @@ class PluginMonitoringShinken extends CommonDBTM {
                   $a_services[$i]['freshness_threshold'] = '3600';
                   $a_services[$i]['notifications_enabled'] = '1';
                   $a_services[$i]['event_handler_enabled'] = '0';
-                  //$a_services[$i]['event_handler'] = 'super_event_kill_everyone!DIE';
                   $a_services[$i]['flap_detection_enabled'] = '1';
                   $a_services[$i]['failure_prediction_enabled'] = '1';
+                  // Persist service status
                   $a_services[$i]['retain_status_information'] = '1';
                   $a_services[$i]['retain_nonstatus_information'] = '1';
-                  $a_services[$i]['is_volatile'] = '0';
-                  // $a_services[$i]['_httpstink'] = 'NO';
 
                   // * Contacts
                   $a_contacts = array();
@@ -1796,9 +1797,9 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_servicetemplates[$i]['freshness_threshold'] = '3600';
          $a_servicetemplates[$i]['notifications_enabled'] = '1';
          $a_servicetemplates[$i]['event_handler_enabled'] = '0';
-         //$a_servicetemplates[$i]['event_handler'] = 'super_event_kill_everyone!DIE';
          $a_servicetemplates[$i]['flap_detection_enabled'] = '1';
          $a_servicetemplates[$i]['failure_prediction_enabled'] = '1';
+         // Persist service status
          $a_servicetemplates[$i]['retain_status_information'] = '1';
          $a_servicetemplates[$i]['retain_nonstatus_information'] = '1';
          $a_servicetemplates[$i]['is_volatile'] = '0';
@@ -1809,7 +1810,6 @@ class PluginMonitoringShinken extends CommonDBTM {
             $a_servicetemplates[$i]['is_volatile'] = '0';
          }
 */
-         // $a_servicetemplates[$i]['_httpstink'] = 'NO';
          $a_servicetemplates[$i]['register'] = '0';
 
          // Manage user interface ...
@@ -2025,7 +2025,7 @@ Nagios configuration file :
             }
          }
       }
-      // Add user monitoring
+      // Add default monitoring user
       $user = new User();
       $a_monit_user = current($user->find("`name`='monitoring'", '', 1));
       if ((!isset($a_users_used[$a_monit_user['id']]))) {
