@@ -138,8 +138,13 @@ class PluginMonitoringShinken extends CommonDBTM {
             'icon_image_alt' => '',
          ),
          'contacts' => array(
-            // Default check_period
+            // Default user category
             'user_category' => 'glpi',
+            // Default user's note : this prefix + monitoring template name
+            'note' => 'Monitoring template : ',
+            // Default host/service notification period
+            'host_notification_period' => '24x7',
+            'service_notification_period' => '24x7',
          )
       ),
       // Graphite configuration
@@ -2023,7 +2028,6 @@ Nagios configuration file :
       $i=0;
 
       $query = "SELECT * FROM `glpi_plugin_monitoring_contacts_items` $where";
-      // Toolbox::logInFile("pm-shinken", "- Contacts query: $query\n");
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
          if ($data['users_id'] > 0) {
@@ -2095,11 +2099,13 @@ Nagios configuration file :
       }
       $a_contacts[$i]['contact_name'] = $user->fields['name'];
       $a_contacts[$i]['alias'] = $user->getName();
+      if (isset(self::$shinkenParameters['shinken']['contacts']['note'])) {
+         $a_contacts[$i]['note'] = self::$shinkenParameters['shinken']['contacts']['note'] . $a_pmcontact['name'];
+      }
       PluginMonitoringToolbox::logIfExtradebug(
          'pm-shinken',
          "- contact ".$user->fields['name']." - ".$user->getName()."\n"
       );
-      // Toolbox::logInFile("pm-contacts", "- contact ".serialize($user->fields)."\n");
 
       if (!isset($a_pmcontact['host_notification_period'])) {
          $a_calendars = current($calendar->find("", "", 1));
@@ -2129,18 +2135,23 @@ Nagios configuration file :
       $a_contacts[$i]['host_notifications_enabled'] = $a_pmcontact['host_notifications_enabled'];
       $a_contacts[$i]['service_notifications_enabled'] = $a_pmcontact['service_notifications_enabled'];
 
-      $calendar->getFromDB($a_pmcontact['service_notification_period']);
-      if (isset($calendar->fields['name'])) {
-         $a_contacts[$i]['service_notification_period'] = $calendar->fields['name'];
+      // Contact entity jetlag ...
+      $pmHostconfig  = new PluginMonitoringHostconfig();
+      $timeperiodsuffix = '_'.$pmHostconfig->getValueAncestor('jetlag', $user->fields['entities_id']);
+      if ($timeperiodsuffix == '_0') {
+         $timeperiodsuffix = '';
+      }
+      
+      if ($calendar->getFromDB($a_pmcontact['service_notification_period'])) {
+         $a_contacts[$i]['service_notification_period'] = self::shinkenFilter($calendar->fields['name'].$timeperiodsuffix);
       } else {
-         $a_contacts[$i]['service_notification_period'] = '24x7';
+         $a_contacts[$i]['service_notification_period'] = self::$shinkenParameters['shinken']['contacts']['service_notification_period'];
       }
 
-      $calendar->getFromDB($a_pmcontact['host_notification_period']);
-      if (isset($calendar->fields['name'])) {
-         $a_contacts[$i]['host_notification_period'] = $calendar->fields['name'];
+      if ($calendar->getFromDB($a_pmcontact['host_notification_period'])) {
+         $a_contacts[$i]['host_notification_period'] = self::shinkenFilter($calendar->fields['name'].$timeperiodsuffix);
       } else {
-         $a_contacts[$i]['host_notification_period'] = '24x7';
+         $a_contacts[$i]['host_notification_period'] = self::$shinkenParameters['shinken']['contacts']['host_notification_period'];
       }
 
       $a_servicenotif = array();
@@ -2204,6 +2215,10 @@ Nagios configuration file :
       }
       $a_contacts[$i]['pager'] = $user->fields['phone'];
 
+      // Persist contact status
+      $a_contacts[$i]['retain_status_information'] = '1';
+      $a_contacts[$i]['retain_nonstatus_information'] = '1';
+      
       if (isset($a_pmcontact['shinken_administrator'])) {
          $a_contacts[$i]['is_admin'] = $a_pmcontact['shinken_administrator'];
       } else {
