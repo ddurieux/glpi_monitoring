@@ -677,14 +677,15 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_hosts[$i]['retry_interval'] = $pmCheck->fields['retry_interval'];
                $a_hosts[$i]['max_check_attempts'] = $pmCheck->fields['max_check_attempts'];
 
+               // Host entity jetlag ...
                $timeperiodsuffix = '-'.$pmHostconfig->getValueAncestor('jetlag', $class->fields['entities_id']);
                if ($timeperiodsuffix == '-0') {
                   $timeperiodsuffix = '';
                }
                if ($calendar->getFromDB($pmComponent->fields['calendars_id'])) {
-                  $a_hosts[$i]['check_period'] = $calendar->fields['name'].$timeperiodsuffix;
+                  $a_hosts[$i]['check_period'] = self::shinkenFilter($calendar->fields['name'].$timeperiodsuffix);
                } else {
-                  $a_hosts[$i]['check_period'] = self::$shinkenParameters['shinken']['hosts']['check_period'].$timeperiodsuffix;
+                  $a_hosts[$i]['check_period'] = self::$shinkenParameters['shinken']['hosts']['check_period'];
                }
                $a_hosts[$i]['active_checks_enabled'] = $a_fields['active_checks_enabled'];
                $a_hosts[$i]['passive_checks_enabled'] = $a_fields['passive_checks_enabled'];
@@ -1292,12 +1293,14 @@ class PluginMonitoringShinken extends CommonDBTM {
                   $a_services[$i]['check_interval'] = $pMonitoringCheck->fields['check_interval'];
                   $a_services[$i]['retry_interval'] = $pMonitoringCheck->fields['retry_interval'];
                   $a_services[$i]['max_check_attempts'] = $pMonitoringCheck->fields['max_check_attempts'];
-                  $timeperiodsuffix = '-'.$pmHostconfig->getValueAncestor('jetlag', $entities_id);
-                  if ($timeperiodsuffix == '-0') {
+                  $timeperiodsuffix = '_'.$pmHostconfig->getValueAncestor('jetlag', $entities_id);
+                  if ($timeperiodsuffix == '_0') {
                      $timeperiodsuffix = '';
                   }
                   if ($calendar->getFromDB($a_component['calendars_id'])) {
-                     $a_services[$i]['check_period'] = $calendar->fields['name'].$timeperiodsuffix;
+                     $a_services[$i]['check_period'] = self::shinkenFilter($calendar->fields['name'].$timeperiodsuffix);
+                  } else {
+                     $a_services[$i]['check_period'] = self::$shinkenParameters['shinken']['services']['check_period'];
                   }
                   $a_services[$i]['notification_interval'] = '30';
                   $a_services[$i]['notification_period'] = "24x7";
@@ -1344,13 +1347,24 @@ class PluginMonitoringShinken extends CommonDBTM {
                   if (isset ($pmComponentscatalog->fields['notification_period']) ) {
                      $a_services[$i]['notification_period'] = $pmComponentscatalog->fields['notification_period'];
                   }
+                  // Calendar ...
                   $a_services[$i]['check_period'] = '24x7';
-                  $timeperiodsuffix = '-'.$pmHostconfig->getValueAncestor('jetlag', $entities_id);
-                  if ($timeperiodsuffix == '-0') {
+                  $timeperiodsuffix = '_'.$pmHostconfig->getValueAncestor('jetlag', $entities_id);
+                  if ($timeperiodsuffix == '_0') {
                      $timeperiodsuffix = '';
                   }
-                  if ($calendar->getFromDB($a_component['calendars_id'])) {
-                     $a_services[$i]['check_period'] = $calendar->fields['name'].$timeperiodsuffix;
+                  if (isset ($pmComponentscatalog->fields['calendars_id']) ) {
+                     if ($calendar->getFromDB($pmComponentscatalog->fields['calendars_id'])) {
+                        $a_services[$i]['check_period'] = self::shinkenFilter($calendar->fields['name'].$timeperiodsuffix);
+                     } else {
+                        $a_services[$i]['check_period'] = self::$shinkenParameters['shinken']['services']['check_period'];
+                     }
+                  } else {
+                     if ($calendar->getFromDB($a_component['calendars_id'])) {
+                        $a_services[$i]['check_period'] = self::shinkenFilter($calendar->fields['name'].$timeperiodsuffix);
+                     } else {
+                        $a_services[$i]['check_period'] = self::$shinkenParameters['shinken']['services']['check_period'];
+                     }
                   }
                }
 
@@ -2221,7 +2235,7 @@ Nagios configuration file :
 
       $a_listcalendar = $calendar->find();
       foreach ($a_listcalendar as $datacalendar) {
-         $a_timeperiods[$i]['timeperiod_name'] = $datacalendar['name'];
+         $a_timeperiods[$i]['timeperiod_name'] = self::shinkenFilter($datacalendar['name']);
          $a_timeperiods[$i]['alias'] = $datacalendar['name'];
          $a_listsegment = $calendarSegment->find("`calendars_id`='".$datacalendar['id']."'");
          $a_cal = array();
@@ -2279,8 +2293,8 @@ Nagios configuration file :
          $i++;
          foreach ($jetlags as $jetlag) {
             $tmp = $timeperiod_tmp;
-            $tmp['timeperiod_name'] = $tmp['timeperiod_name']."-".$jetlag;
-            $tmp['alias'] = $tmp['alias']."-".$jetlag;
+            $tmp['timeperiod_name'] = self::shinkenFilter($tmp['timeperiod_name']."_".$jetlag);
+            $tmp['alias'] = $tmp['alias']." (".$jetlag.")";
             $days = array('sunday','monday','tuesday', 'wednesday','thursday',
                           'friday', 'saturday');
             $saturday = '';
@@ -2403,7 +2417,6 @@ Nagios configuration file :
          return $a_timeperiods;
       }
    }
-
 
 }
 
