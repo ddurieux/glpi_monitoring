@@ -119,10 +119,17 @@ class PluginMonitoringAcknowledge extends CommonDBTM {
       if ($item->getType()=='Computer') {
          if (self::canView()) {
             // Show list filtered on item, sorted on day descending ...
-            Search::manageGetValues(self::getTypeName());
-            Search::showList(self::getTypeName(), array(
-               'field' => array(2), 'searchtype' => array('equals'), 'contains' => array($item->getID()),
-               'sort' => 4, 'order' => 'DESC'
+            Search::showList('PluginMonitoringAcknowledge', array(
+               'criteria' => array(
+                  array(
+                     'field' => 2,
+                     'searchtype' => 'equals',
+                     'value' => $item->getID()
+                  )
+               ),
+               'order' => 'DESC',
+               'sort' => 4,
+               'itemtype' => 'PluginMonitoringAcknowledge'
                ));
             return true;
          }
