@@ -207,7 +207,7 @@ echo "        <script>
 
       echo "</td>";
       echo "</tr>";
-      echo "</table>";
+      echo "</table><br/>";
 
       if ($displayonly == 1) {
          return;
@@ -289,7 +289,7 @@ echo "        <script>
       echo "</td>";
       echo "</tr>";
 
-      echo "</table>";
+      echo "</table><br/>";
 
 
       // * Define color of perfname

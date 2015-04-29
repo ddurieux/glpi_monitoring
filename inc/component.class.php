@@ -603,7 +603,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_3'>";
-      echo "<td>";
+      echo "<td style='background: #fff'>";
       PluginMonitoringToolbox::preferences($components_id);
       echo "</td>";
       echo "</tr>";
