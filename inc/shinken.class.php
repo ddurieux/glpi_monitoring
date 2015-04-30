@@ -427,336 +427,324 @@ class PluginMonitoringShinken extends CommonDBTM {
 
          $classname = $data['itemtype'];
          $class = new $classname;
-         if ($class->getFromDB($data['items_id'])) {
+         if (! $class->getFromDB($data['items_id'])) {
+            return;
+         }
 
-            $pmHost->getFromDBByQuery("WHERE `glpi_plugin_monitoring_hosts`.`itemtype` = '" . $data['itemtype'] . "' AND `glpi_plugin_monitoring_hosts`.`items_id` = '" . $data['items_id'] . "' LIMIT 1");
+         $pmHost->getFromDBByQuery("WHERE `glpi_plugin_monitoring_hosts`.`itemtype` = '" . $data['itemtype'] . "' AND `glpi_plugin_monitoring_hosts`.`items_id` = '" . $data['items_id'] . "' LIMIT 1");
 
-            $a_hosts[$i]['host_name'] = self::shinkenFilter($class->fields['name']);
-            // Fix if hostname is not defined ...
-            if (empty($a_hosts[$i]['host_name'])) {
-               continue;
-            }
-            $a_hosts_found[$a_hosts[$i]['host_name']] = 1;
-            PluginMonitoringToolbox::logIfExtradebug(
-               'pm-shinken',
-               " - add host ".$a_hosts[$i]['host_name']."\n"
-            );
+         $a_hosts[$i]['host_name'] = self::shinkenFilter($class->fields['name']);
+         // Fix if hostname is not defined ...
+         if (empty($a_hosts[$i]['host_name'])) {
+            continue;
+         }
+         $a_hosts_found[$a_hosts[$i]['host_name']] = 1;
+         PluginMonitoringToolbox::logIfExtradebug(
+            'pm-shinken',
+            " - add host ".$a_hosts[$i]['host_name']."\n"
+         );
 
-            $a_hosts[$i]['_HOSTID'] =
-               $pmHost->getField('id');
-            if (isset(self::$shinkenParameters['glpi']['entityId'])) {
-               $a_hosts[$i][self::$shinkenParameters['glpi']['entityId']] =
-                  $data['entityId'];
-            }
-            if (isset(self::$shinkenParameters['glpi']['itemType'])) {
-               $a_hosts[$i][self::$shinkenParameters['glpi']['itemType']] =
-                  $classname;
-            }
-            if (isset(self::$shinkenParameters['glpi']['itemId'])) {
-               $a_hosts[$i][self::$shinkenParameters['glpi']['itemId']] =
-                  $data['items_id'];
-            }
+         $a_hosts[$i]['_HOSTID'] =
+            $pmHost->getField('id');
+         if (isset(self::$shinkenParameters['glpi']['entityId'])) {
+            $a_hosts[$i][self::$shinkenParameters['glpi']['entityId']] =
+               $data['entityId'];
+         }
+         if (isset(self::$shinkenParameters['glpi']['itemType'])) {
+            $a_hosts[$i][self::$shinkenParameters['glpi']['itemType']] =
+               $classname;
+         }
+         if (isset(self::$shinkenParameters['glpi']['itemId'])) {
+            $a_hosts[$i][self::$shinkenParameters['glpi']['itemId']] =
+               $data['items_id'];
+         }
 
-            if (isset(self::$shinkenParameters['glpi']['entityName'])) {
-               $a_hosts[$i][self::$shinkenParameters['glpi']['entityName']] =
-                  strtolower(self::shinkenFilter($data['entityName']));
-            }
+         if (isset(self::$shinkenParameters['glpi']['entityName'])) {
+            $a_hosts[$i][self::$shinkenParameters['glpi']['entityName']] =
+               strtolower(self::shinkenFilter($data['entityName']));
+         }
 
-            self::$shinkenParameters['glpi']['rootEntity'] = __('Root entity');
-            $data['entityFullName'] = preg_replace("/ > /","#",$data['entityFullName']);
-            $data['entityFullName'] = preg_replace("/". self::$shinkenParameters['glpi']['rootEntity'] ."#/","",$data['entityFullName']);
-            $data['entityFullName'] = preg_replace("/#/","_",$data['entityFullName']);
-            if (isset(self::$shinkenParameters['glpi']['entityComplete'])) {
-               $a_hosts[$i][self::$shinkenParameters['glpi']['entityComplete']] =
-                  self::shinkenFilter ($data['entityFullName']);
-            }
-            $data['entityFullName'] = preg_replace("/_/",".",$data['entityFullName']);
+         self::$shinkenParameters['glpi']['rootEntity'] = __('Root entity');
+         $data['entityFullName'] = preg_replace("/ > /","#",$data['entityFullName']);
+         $data['entityFullName'] = preg_replace("/". self::$shinkenParameters['glpi']['rootEntity'] ."#/","",$data['entityFullName']);
+         $data['entityFullName'] = preg_replace("/#/","_",$data['entityFullName']);
+         if (isset(self::$shinkenParameters['glpi']['entityComplete'])) {
+            $a_hosts[$i][self::$shinkenParameters['glpi']['entityComplete']] =
+               self::shinkenFilter ($data['entityFullName']);
+         }
+         $data['entityFullName'] = preg_replace("/_/",".",$data['entityFullName']);
 
-            if (isset(self::$shinkenParameters['glpi']['location'])) {
-               if (! empty($data['locationName'])) {
-                  $string = utf8_decode(strip_tags(trim($data['locationName'])));
-                  $string = preg_replace("/[\r\n]/",".",$data['locationName']);
-                  $string = preg_replace("/[^A-Za-z0-9\-_ <>\/',;.:!?%*()éèàù]/",'',$string);
-                  $a_hosts[$i][self::$shinkenParameters['glpi']['location']] =
-                     $string;
-                  $data['hostLocation'] = $string;
+         // Graphite
+         if (isset(self::$shinkenParameters['graphite']['prefix']['name'])) {
+            $a_hosts[$i][self::$shinkenParameters['graphite']['prefix']['name']] =
+               strtolower(self::$shinkenParameters['graphite']['prefix']['value'] . self::graphiteFilter($data['entityFullName']));
+         }
+
+         // Location
+         if (isset(self::$shinkenParameters['glpi']['location'])) {
+            if (! empty($data['locationName'])) {
+               $string = utf8_decode(strip_tags(trim($data['locationName'])));
+               $string = preg_replace("/[\r\n]/",".",$data['locationName']);
+               $string = preg_replace("/[^A-Za-z0-9\-_ <>\/',;.:!?%*()éèàù]/",'',$string);
+               $a_hosts[$i][self::$shinkenParameters['glpi']['location']] =
+                  $string;
+               $data['hostLocation'] = $string;
+            }
+         }
+         if (isset(self::$shinkenParameters['glpi']['lat'])) {
+            if (! empty($data['locationGPS'])) {
+               $split = explode(',', $data['locationGPS']);
+               if (count($split) > 2) {
+                  // At least 3 elements, let us consider as GPS coordinates with altitude ...
+                  $a_hosts[$i][self::$shinkenParameters['glpi']['lat']] = $split[0];
+                  $a_hosts[$i][self::$shinkenParameters['glpi']['lng']] = $split[1];
+                  $a_hosts[$i][self::$shinkenParameters['glpi']['alt']] = $split[2];
+               } else if (count($split) > 1) {
+                  // At least 2 elements, let us consider as GPS coordinates ...
+                  $a_hosts[$i][self::$shinkenParameters['glpi']['lat']] = $split[0];
+                  $a_hosts[$i][self::$shinkenParameters['glpi']['lng']] = $split[1];
                }
             }
+         }
 
-            if (isset(self::$shinkenParameters['graphite']['prefix']['name'])) {
-               $a_hosts[$i][self::$shinkenParameters['graphite']['prefix']['name']] =
-                  strtolower(self::$shinkenParameters['graphite']['prefix']['value'] . self::graphiteFilter($data['entityFullName']));
-            }
+         // Hostgroup name
+         $a_hosts[$i]['hostgroups'] = self::shinkenFilter($data['entityName']);
+         $a_hosts[$i]['hostgroups'] = preg_replace("/[ ]/","_",$a_hosts[$i]['hostgroups']);
 
-            if (isset(self::$shinkenParameters['glpi']['lat'])) {
-               if (! empty($data['locationGPS'])) {
-                  $split = explode(',', $data['locationGPS']);
-                  if (count($split) > 2) {
-                     // At least 3 elements, let us consider as GPS coordinates with altitude ...
-                     $a_hosts[$i][self::$shinkenParameters['glpi']['lat']] = $split[0];
-                     $a_hosts[$i][self::$shinkenParameters['glpi']['lng']] = $split[1];
-                     $a_hosts[$i][self::$shinkenParameters['glpi']['alt']] = $split[2];
-                  } else if (count($split) > 1) {
-                     // At least 2 elements, let us consider as GPS coordinates ...
-                     $a_hosts[$i][self::$shinkenParameters['glpi']['lat']] = $split[0];
-                     $a_hosts[$i][self::$shinkenParameters['glpi']['lng']] = $split[1];
-                  // } else {
-                     // $a_hosts[$i]['_LOC_BUILDING'] = preg_replace("/[\r\n]/",".",$data['locationGPS']);
-                     // $a_hosts[$i]['_LOC_BUILDING'] = preg_replace("/[^A-Za-z0-9\-_]/"," / ",$a_hosts[$i]['_LOC_BUILDING']);
+         // Alias
+         $a_hosts[$i]['alias'] = $data['entityName']." / ". $a_hosts[$i]['host_name'];
+         if (isset($data['hostLocation'])) {
+            $a_hosts[$i]['alias'] .= " (".$data['hostLocation'].")";
+         }
+
+         // WebUI user interface ...
+         if (isset(self::$shinkenParameters['webui']['hostIcons']['name'])) {
+            $a_hosts[$i][self::$shinkenParameters['webui']['hostIcons']['name']] =
+               self::$shinkenParameters['webui']['hostIcons']['value'];
+         }
+         if (isset(self::$shinkenParameters['webui']['hostView']['name'])) {
+            $a_hosts[$i][self::$shinkenParameters['webui']['hostView']['name']] =
+               self::$shinkenParameters['webui']['hostView']['value'];
+         }
+
+         // IP address
+         $ip = PluginMonitoringHostaddress::getIp($data['items_id'], $data['itemtype'], $class->fields['name']);
+         $a_hosts[$i]['address'] = $ip;
+
+         // Manage dependencies
+         $parent = '';
+         if ($data['itemtype'] != 'NetworkEquipment') {
+            $networkPort = new NetworkPort();
+            $a_networkports = $networkPort->find("`itemtype`='".$data['itemtype']."'
+               AND `items_id`='".$data['items_id']."'");
+            foreach ($a_networkports as $data_n) {
+               $networkports_id = $networkPort->getContact($data_n['id']);
+               if ($networkports_id) {
+                  $networkPort->getFromDB($networkports_id);
+                  if ($networkPort->fields['itemtype'] == 'NetworkEquipment') {
+                     $networkEquipment->getFromDB($networkPort->fields['items_id']);
+                     $parent = self::shinkenFilter($networkEquipment->fields['name']);
+                     $a_parents_found[$parent] = 1;
+                     $pmHost->updateDependencies($classname, $data['items_id'], 'NetworkEquipment-'.$networkPort->fields['items_id']);
                   }
                }
             }
 
-            // Hostgroup name
-            $a_hosts[$i]['hostgroups'] = self::shinkenFilter($data['entityName']);
-            $a_hosts[$i]['hostgroups'] = preg_replace("/[ ]/","_",$a_hosts[$i]['hostgroups']);
-
-            // Alias
-            $a_hosts[$i]['alias'] = $data['entityName']." / ". $a_hosts[$i]['host_name'];
-/*
-            if (isset($class->fields['networkequipmenttypes_id'])) {
-               if ($class->fields['networkequipmenttypes_id'] > 0) {
-                  $a_hosts[$i]['alias'] .= " (".Dropdown::getDropdownName("glpi_networkequipmenttypes", $class->fields['networkequipmenttypes_id']).")";
-               }
-            } else if (isset($class->fields['computertypes_id'])) {
-               if ($class->fields['computertypes_id'] > 0) {
-                  $a_hosts[$i]['alias'] .= " (".Dropdown::getDropdownName("glpi_computertypes", $class->fields['computertypes_id']).")";
-               }
-            } else if (isset($class->fields['printertypes_id'])) {
-               if ($class->fields['printertypes_id'] > 0) {
-                  $a_hosts[$i]['alias'] .= " (".Dropdown::getDropdownName("glpi_printertypes", $class->fields['printertypes_id']).")";
+            if (empty($parent)) {
+               if (self::$shinkenParameters['shinken']['hosts']['parents'] == 'entity') {
+                  $parent = self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'] . $a_hosts[$i]['hostgroups'];
+               } else {
+                  $parent = self::$shinkenParameters['shinken']['hosts']['parents'];
                }
             }
-*/
-            if (isset($data['hostLocation'])) {
-               $a_hosts[$i]['alias'] .= " (".$data['hostLocation'].")";
-            }
+         }
+         $a_hosts[$i]['parents'] = $parent;
 
-            // WebUI user interface ...
-            if (isset(self::$shinkenParameters['webui']['hostIcons']['name'])) {
-               $a_hosts[$i][self::$shinkenParameters['webui']['hostIcons']['name']] =
-                  self::$shinkenParameters['webui']['hostIcons']['value'];
-            }
-            if (isset(self::$shinkenParameters['webui']['hostView']['name'])) {
-               $a_hosts[$i][self::$shinkenParameters['webui']['hostView']['name']] =
-                  self::$shinkenParameters['webui']['hostView']['value'];
-            }
+         // Host check command
+         $pmComponent->getFromDB($pmHostconfig->getValueAncestor('plugin_monitoring_components_id',
+                                                                  $class->fields['entities_id'],
+                                                                  $classname,
+                                                                  $class->getID()));
 
-            // IP address
-            $ip = PluginMonitoringHostaddress::getIp($data['items_id'], $data['itemtype'], $class->fields['name']);
-            $a_hosts[$i]['address'] = $ip;
+         $pmCommand->getFromDB($pmComponent->fields['plugin_monitoring_commands_id']);
 
-            // Manage dependencies
-            $parent = '';
-            if ($data['itemtype'] != 'NetworkEquipment') {
-               $networkPort = new NetworkPort();
-               $a_networkports = $networkPort->find("`itemtype`='".$data['itemtype']."'
-                  AND `items_id`='".$data['items_id']."'");
-               foreach ($a_networkports as $data_n) {
-                  $networkports_id = $networkPort->getContact($data_n['id']);
-                  if ($networkports_id) {
-                     $networkPort->getFromDB($networkports_id);
-                     if ($networkPort->fields['itemtype'] == 'NetworkEquipment') {
-                        $networkEquipment->getFromDB($networkPort->fields['items_id']);
-                        $parent = self::shinkenFilter($networkEquipment->fields['name']);
-                        $a_parents_found[$parent] = 1;
-                        $pmHost->updateDependencies($classname, $data['items_id'], 'NetworkEquipment-'.$networkPort->fields['items_id']);
+         $a_fields = $pmComponent->fields;
+
+         // Manage host check_command arguments
+         $array = array();
+         preg_match_all("/\\$(ARG\d+)\\$/", $pmCommand->fields['command_line'], $array);
+         sort($array[0]);
+         $a_arguments = importArrayFromDB($pmCommand->fields['arguments']);
+         $a_argumentscustom = importArrayFromDB($a_fields['arguments']);
+         foreach ($a_argumentscustom as $key=>$value) {
+            $a_arguments[$key] = $value;
+         }
+         foreach ($a_arguments as $key=>$value) {
+            $a_arguments[$key] = str_replace('!', '\!', html_entity_decode($value));
+         }
+         $args = '';
+         foreach ($array[0] as $arg) {
+            if ($arg != '$PLUGINSDIR$'
+                    AND $arg != '$NAGIOSPLUGINSDIR$'
+                    AND $arg != '$HOSTADDRESS$'
+                    AND $arg != '$MYSQLUSER$'
+                    AND $arg != '$MYSQLPASSWORD$') {
+               $arg = str_replace('$', '', $arg);
+               if (!isset($a_arguments[$arg])) {
+                  $args .= '!';
+               } else {
+                  if (strstr($a_arguments[$arg], "[[HOSTNAME]]")) {
+                     $a_arguments[$arg] = str_replace("[[HOSTNAME]]", $hostname, $a_arguments[$arg]);
+                  } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTDESCR]]")){
+                     if (class_exists("PluginFusioninventoryNetworkPort")) {
+                        $pfNetworkPort = new PluginFusioninventoryNetworkPort();
+                        $pfNetworkPort->loadNetworkport($data['networkports_id']);
+                        $descr = $pfNetworkPort->getValue("ifdescr");
+                        $a_arguments[$arg] = str_replace("[[NETWORKPORTDESCR]]", $descr, $a_arguments[$arg]);
                      }
-                  }
-               }
-
-               if (empty($parent)) {
-                  if (self::$shinkenParameters['shinken']['hosts']['parents'] == 'entity') {
-                     $parent = self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'] . $a_hosts[$i]['hostgroups'];
-                  } else {
-                     $parent = self::$shinkenParameters['shinken']['hosts']['parents'];
-                  }
-               }
-            }
-            $a_hosts[$i]['parents'] = $parent;
-
-            // Host check command
-            $pmComponent->getFromDB($pmHostconfig->getValueAncestor('plugin_monitoring_components_id',
-                                                                     $class->fields['entities_id'],
-                                                                     $classname,
-                                                                     $class->getID()));
-
-            $pmCommand->getFromDB($pmComponent->fields['plugin_monitoring_commands_id']);
-
-            $a_fields = $pmComponent->fields;
-
-            // Manage host check_command arguments
-            $array = array();
-            preg_match_all("/\\$(ARG\d+)\\$/", $pmCommand->fields['command_line'], $array);
-            sort($array[0]);
-            $a_arguments = importArrayFromDB($pmCommand->fields['arguments']);
-            $a_argumentscustom = importArrayFromDB($a_fields['arguments']);
-            foreach ($a_argumentscustom as $key=>$value) {
-               $a_arguments[$key] = $value;
-            }
-            foreach ($a_arguments as $key=>$value) {
-               $a_arguments[$key] = str_replace('!', '\!', html_entity_decode($value));
-            }
-            $args = '';
-            foreach ($array[0] as $arg) {
-               if ($arg != '$PLUGINSDIR$'
-                       AND $arg != '$NAGIOSPLUGINSDIR$'
-                       AND $arg != '$HOSTADDRESS$'
-                       AND $arg != '$MYSQLUSER$'
-                       AND $arg != '$MYSQLPASSWORD$') {
-                  $arg = str_replace('$', '', $arg);
-                  if (!isset($a_arguments[$arg])) {
-                     $args .= '!';
-                  } else {
-                     if (strstr($a_arguments[$arg], "[[HOSTNAME]]")) {
-                        $a_arguments[$arg] = str_replace("[[HOSTNAME]]", $hostname, $a_arguments[$arg]);
-                     } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTDESCR]]")){
-                        if (class_exists("PluginFusioninventoryNetworkPort")) {
-                           $pfNetworkPort = new PluginFusioninventoryNetworkPort();
-                           $pfNetworkPort->loadNetworkport($data['networkports_id']);
-                           $descr = $pfNetworkPort->getValue("ifdescr");
-                           $a_arguments[$arg] = str_replace("[[NETWORKPORTDESCR]]", $descr, $a_arguments[$arg]);
-                        }
-                     } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTNUM]]")){
+                  } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTNUM]]")){
+                     $networkPort = new NetworkPort();
+                     $networkPort->getFromDB($data['networkports_id']);
+                     $logicalnum = $pfNetworkPort->fields['logical_number'];
+                     $a_arguments[$arg] = str_replace("[[NETWORKPORTNUM]]", $logicalnum, $a_arguments[$arg]);
+                  } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTNAME]]")) {
+                     if (isset($data['networkports_id'])
+                             && $data['networkports_id'] > 0) {
                         $networkPort = new NetworkPort();
                         $networkPort->getFromDB($data['networkports_id']);
-                        $logicalnum = $pfNetworkPort->fields['logical_number'];
-                        $a_arguments[$arg] = str_replace("[[NETWORKPORTNUM]]", $logicalnum, $a_arguments[$arg]);
-                     } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTNAME]]")) {
-                        if (isset($data['networkports_id'])
-                                && $data['networkports_id'] > 0) {
-                           $networkPort = new NetworkPort();
-                           $networkPort->getFromDB($data['networkports_id']);
-                           $portname = $pfNetworkPort->fields['name'];
-                           $a_arguments[$arg] = str_replace("[[NETWORKPORTNAME]]", $portname, $a_arguments[$arg]);
-                        } else if ($classname == 'Computer') {
-                           // Get networkportname of networkcard defined
-                           $pmHostaddress = new PluginMonitoringHostaddress();
-                           $a_hostaddresses = $pmHostaddress->find("`itemtype`='Computer'"
-                                   . " AND  `items_id`='".$class->fields['id']."'", '', 1);
-                           if (count($a_hostaddresses) == 1) {
-                              $a_hostaddress = current($a_hostaddresses);
-                              if ($a_hostaddress['networkports_id'] > 0) {
-                                 $networkPort = new NetworkPort();
-                                 $networkPort->getFromDB($a_hostaddress['networkports_id']);
-                                 $a_arguments[$arg] = str_replace("[[NETWORKPORTNAME]]", $networkPort->fields['name'], $a_arguments[$arg]);
-                              }
+                        $portname = $pfNetworkPort->fields['name'];
+                        $a_arguments[$arg] = str_replace("[[NETWORKPORTNAME]]", $portname, $a_arguments[$arg]);
+                     } else if ($classname == 'Computer') {
+                        // Get networkportname of networkcard defined
+                        $pmHostaddress = new PluginMonitoringHostaddress();
+                        $a_hostaddresses = $pmHostaddress->find("`itemtype`='Computer'"
+                                . " AND  `items_id`='".$class->fields['id']."'", '', 1);
+                        if (count($a_hostaddresses) == 1) {
+                           $a_hostaddress = current($a_hostaddresses);
+                           if ($a_hostaddress['networkports_id'] > 0) {
+                              $networkPort = new NetworkPort();
+                              $networkPort->getFromDB($a_hostaddress['networkports_id']);
+                              $a_arguments[$arg] = str_replace("[[NETWORKPORTNAME]]", $networkPort->fields['name'], $a_arguments[$arg]);
                            }
                         }
-                     } else if (strstr($a_arguments[$arg], "[")) {
-                        $a_arguments[$arg] = PluginMonitoringService::convertArgument($data['id'], $a_arguments[$arg]);
                      }
-                     if ($a_arguments == '') {
-                        $notadd = 1;
-                        if ($notadddescription != '') {
-                           $notadddescription .= ", ";
-                        }
-                        $notadddescription .= "Argument ".$a_arguments[$arg]." Not have value";
+                  } else if (strstr($a_arguments[$arg], "[")) {
+                     $a_arguments[$arg] = PluginMonitoringService::convertArgument($data['id'], $a_arguments[$arg]);
+                  }
+                  if ($a_arguments == '') {
+                     $notadd = 1;
+                     if ($notadddescription != '') {
+                        $notadddescription .= ", ";
                      }
-                     $args .= '!'.$a_arguments[$arg];
-                     if ($a_arguments[$arg] == ''
-                             AND $a_component['alias_command'] != '') {
-                        $args .= $a_component['alias_command'];
-                     }
+                     $notadddescription .= "Argument ".$a_arguments[$arg]." Not have value";
+                  }
+                  $args .= '!'.$a_arguments[$arg];
+                  if ($a_arguments[$arg] == ''
+                          AND $a_component['alias_command'] != '') {
+                     $args .= $a_component['alias_command'];
                   }
                }
             }
+         }
 
-            $a_hosts[$i]['check_command'] = PluginMonitoringCommand::$command_prefix . $pmCommand->fields['command_name'].$args;
+         $a_hosts[$i]['check_command'] = PluginMonitoringCommand::$command_prefix . $pmCommand->fields['command_name'].$args;
 
-            // Check period
-            $pmCheck->getFromDB($a_fields['plugin_monitoring_checks_id']);
-            $a_hosts[$i]['check_interval'] = $pmCheck->fields['check_interval'];
-            $a_hosts[$i]['retry_interval'] = $pmCheck->fields['retry_interval'];
-            $a_hosts[$i]['max_check_attempts'] = $pmCheck->fields['max_check_attempts'];
+         // Check retries
+         $pmCheck->getFromDB($a_fields['plugin_monitoring_checks_id']);
+         $a_hosts[$i]['check_interval'] = $pmCheck->fields['check_interval'];
+         $a_hosts[$i]['retry_interval'] = $pmCheck->fields['retry_interval'];
+         $a_hosts[$i]['max_check_attempts'] = $pmCheck->fields['max_check_attempts'];
+         
+         $a_hosts[$i]['active_checks_enabled'] = $a_fields['active_checks_enabled'];
+         $a_hosts[$i]['passive_checks_enabled'] = $a_fields['passive_checks_enabled'];
 
-            // Host entity jetlag ...
-            $timeperiodsuffix = '_'.$pmHostconfig->getValueAncestor('jetlag', $class->fields['entities_id']);
-            if ($timeperiodsuffix == '_0') {
-               $timeperiodsuffix = '';
-            }
-            if ($calendar->getFromDB($a_fields['calendars_id'])) {
-               $a_hosts[$i]['check_period'] = self::shinkenFilter($calendar->fields['name'].$timeperiodsuffix);
-            } else {
-               $a_hosts[$i]['check_period'] = self::$shinkenParameters['shinken']['hosts']['check_period'];
-            }
-            $a_hosts[$i]['active_checks_enabled'] = $a_fields['active_checks_enabled'];
-            $a_hosts[$i]['passive_checks_enabled'] = $a_fields['passive_checks_enabled'];
+         // Check period
+         // Host entity jetlag ...
+         $timeperiodsuffix = '_'.$pmHostconfig->getValueAncestor('jetlag', $class->fields['entities_id']);
+         if ($timeperiodsuffix == '_0') {
+            $timeperiodsuffix = '';
+         }
+         if ($calendar->getFromDB($a_fields['calendars_id'])) {
+            $a_hosts[$i]['check_period'] = self::shinkenFilter($calendar->fields['name'].$timeperiodsuffix);
+         } else {
+            $a_hosts[$i]['check_period'] = self::$shinkenParameters['shinken']['hosts']['check_period'];
+         }
 
-            // Manage freshness
-            if ($a_fields['freshness_count'] == 0) {
-               $a_hosts[$i]['check_freshness'] = '0';
-               $a_hosts[$i]['freshness_threshold'] = '0';
-            } else {
+         // Manage freshness
+         if ($a_fields['freshness_count'] == 0) {
+            $a_hosts[$i]['check_freshness'] = '0';
+            $a_hosts[$i]['freshness_threshold'] = '0';
+         } else {
+            $multiple = 1;
+            if ($a_fields['freshness_type'] == 'seconds') {
                $multiple = 1;
-               if ($a_fields['freshness_type'] == 'seconds') {
-                  $multiple = 1;
-               } else if ($a_fields['freshness_type'] == 'minutes') {
-                  $multiple = 60;
-               } else if ($a_fields['freshness_type'] == 'hours') {
-                  $multiple = 3600;
-               } else if ($a_fields['freshness_type'] == 'days') {
-                  $multiple = 86400;
-               }
-               $a_hosts[$i]['check_freshness'] = '1';
-               $a_hosts[$i]['freshness_threshold'] = (string)($a_fields['freshness_count'] * $multiple);
+            } else if ($a_fields['freshness_type'] == 'minutes') {
+               $multiple = 60;
+            } else if ($a_fields['freshness_type'] == 'hours') {
+               $multiple = 3600;
+            } else if ($a_fields['freshness_type'] == 'days') {
+               $multiple = 86400;
             }
+            $a_hosts[$i]['check_freshness'] = '1';
+            $a_hosts[$i]['freshness_threshold'] = (string)($a_fields['freshness_count'] * $multiple);
+         }
 
-            // Manage event handler
-            if ($a_fields['plugin_monitoring_eventhandlers_id'] > 0) {
-               if ($a_fields->getFromDB($a_fields['plugin_monitoring_eventhandlers_id'])) {
-                  $a_hosts[$i]['event_handler'] = $pmEventhandler->fields['command_name'];
-               }
+         // Manage event handler
+         if ($a_fields['plugin_monitoring_eventhandlers_id'] > 0) {
+            if ($a_fields->getFromDB($a_fields['plugin_monitoring_eventhandlers_id'])) {
+               $a_hosts[$i]['event_handler'] = $pmEventhandler->fields['command_name'];
             }
+         }
 
-            // Realm
-            $pmRealm->getFromDB($pmHostconfig->getValueAncestor('plugin_monitoring_realms_id',
-                                                                                 $class->fields['entities_id'],
-                                                                                 $classname,
-                                                                                 $class->getID()));
-            $a_hosts[$i]['realm'] = $pmRealm->fields['name'];
+         // Realm
+         $pmRealm->getFromDB($pmHostconfig->getValueAncestor('plugin_monitoring_realms_id',
+                                                                              $class->fields['entities_id'],
+                                                                              $classname,
+                                                                              $class->getID()));
+         $a_hosts[$i]['realm'] = $pmRealm->fields['name'];
 
-            if (! empty(self::$shinkenParameters['shinken']['hosts']['use'])) $a_hosts[$i]['use'] = self::$shinkenParameters['shinken']['hosts']['use'];
+         // Extra parameters
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['use'])) $a_hosts[$i]['use'] = self::$shinkenParameters['shinken']['hosts']['use'];
 
-            if (! empty(self::$shinkenParameters['shinken']['hosts']['process_perf_data'])) $a_hosts[$i]['process_perf_data'] = self::$shinkenParameters['shinken']['hosts']['process_perf_data'];
-            if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_period'])) $a_hosts[$i]['notification_period'] = self::$shinkenParameters['shinken']['hosts']['notification_period'];
-            if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_options'])) $a_hosts[$i]['notification_options'] = self::$shinkenParameters['shinken']['hosts']['notification_options'];
-            if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_interval'])) $a_hosts[$i]['notification_interval'] = self::$shinkenParameters['shinken']['hosts']['notification_interval'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['process_perf_data'])) $a_hosts[$i]['process_perf_data'] = self::$shinkenParameters['shinken']['hosts']['process_perf_data'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_period'])) $a_hosts[$i]['notification_period'] = self::$shinkenParameters['shinken']['hosts']['notification_period'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_options'])) $a_hosts[$i]['notification_options'] = self::$shinkenParameters['shinken']['hosts']['notification_options'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_interval'])) $a_hosts[$i]['notification_interval'] = self::$shinkenParameters['shinken']['hosts']['notification_interval'];
 
-            if (! empty(self::$shinkenParameters['shinken']['hosts']['notes'])) $a_hosts[$i]['notes'] = self::$shinkenParameters['shinken']['hosts']['notes'];
-            if (! empty(self::$shinkenParameters['shinken']['hosts']['notes_url'])) $a_hosts[$i]['notes_url'] = self::$shinkenParameters['shinken']['hosts']['notes_url'];
-            if (! empty(self::$shinkenParameters['shinken']['hosts']['action_url'])) $a_hosts[$i]['action_url'] = self::$shinkenParameters['shinken']['hosts']['action_url'];
-            if (! empty(self::$shinkenParameters['shinken']['hosts']['icon_image'])) $a_hosts[$i]['icon_image'] = self::$shinkenParameters['shinken']['hosts']['icon_image'];
-            if (! empty(self::$shinkenParameters['shinken']['hosts']['icon_image_alt'])) $a_hosts[$i]['icon_image_alt'] = self::$shinkenParameters['shinken']['hosts']['icon_image_alt'];
-            if (! empty(self::$shinkenParameters['shinken']['hosts']['vrml_image'])) $a_hosts[$i]['vrml_image'] = self::$shinkenParameters['shinken']['hosts']['vrml_image'];
-            if (! empty(self::$shinkenParameters['shinken']['hosts']['statusmap_image'])) $a_hosts[$i]['statusmap_image'] = self::$shinkenParameters['shinken']['hosts']['statusmap_image'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['notes'])) $a_hosts[$i]['notes'] = self::$shinkenParameters['shinken']['hosts']['notes'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['notes_url'])) $a_hosts[$i]['notes_url'] = self::$shinkenParameters['shinken']['hosts']['notes_url'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['action_url'])) $a_hosts[$i]['action_url'] = self::$shinkenParameters['shinken']['hosts']['action_url'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['icon_image'])) $a_hosts[$i]['icon_image'] = self::$shinkenParameters['shinken']['hosts']['icon_image'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['icon_image_alt'])) $a_hosts[$i]['icon_image_alt'] = self::$shinkenParameters['shinken']['hosts']['icon_image_alt'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['vrml_image'])) $a_hosts[$i]['vrml_image'] = self::$shinkenParameters['shinken']['hosts']['vrml_image'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['statusmap_image'])) $a_hosts[$i]['statusmap_image'] = self::$shinkenParameters['shinken']['hosts']['statusmap_image'];
 
-            // Persist host status
-            $a_hosts[$i]['retain_status_information'] = '1';
-            $a_hosts[$i]['retain_nonstatus_information'] = '1';
-            
-            // For contacts, check if a component catalog contains the host associated component ...
-            $a_hosts[$i]['contacts'] = '';
+         // Persist host status
+         $a_hosts[$i]['retain_status_information'] = '1';
+         $a_hosts[$i]['retain_nonstatus_information'] = '1';
+         
+         // For contacts, check if a component catalog contains the host associated component ...
+         $a_hosts[$i]['contacts'] = '';
 
-            if (($a_fields['passive_checks_enabled'] == '1') and ($a_fields['active_checks_enabled'] == '0')) {
-               // Specific query if host is only passively checked ...
-               // Find the first component catalog in which the host is used ...
-               $querycont = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
-                  LEFT JOIN `glpi_plugin_monitoring_services`
-                     ON `plugin_monitoring_componentscatalogs_hosts_id`
-                        = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
-                  WHERE `items_id`='".$data['items_id']."' AND `itemtype`='".$data['itemtype']."'
-                  LIMIT 1";
-            } else {
-               // Find component catalog which contains the host associated component ...
-               $querycont = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
-                  LEFT JOIN `glpi_plugin_monitoring_services`
-                     ON `plugin_monitoring_componentscatalogs_hosts_id`
-                        = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
-                  WHERE `plugin_monitoring_components_id`='".$pmComponent->fields['id']."' AND
-                     `items_id`='".$data['items_id']."' AND `itemtype`='".$data['itemtype']."'
-                  LIMIT 1";
-            }
+         if (($a_fields['passive_checks_enabled'] == '1') and ($a_fields['active_checks_enabled'] == '0')) {
+            // Specific query if host is only passively checked ...
+            // Find the first component catalog in which the host is used ...
+            $querycont = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+               LEFT JOIN `glpi_plugin_monitoring_services`
+                  ON `plugin_monitoring_componentscatalogs_hosts_id`
+                     = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
+               WHERE `items_id`='".$data['items_id']."' AND `itemtype`='".$data['itemtype']."'
+               LIMIT 1";
+         } else {
+            // Find component catalog which contains the host associated component ...
+            $querycont = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
+               LEFT JOIN `glpi_plugin_monitoring_services`
+                  ON `plugin_monitoring_componentscatalogs_hosts_id`
+                     = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
+               WHERE `plugin_monitoring_components_id`='".$pmComponent->fields['id']."' AND
+                  `items_id`='".$data['items_id']."' AND `itemtype`='".$data['itemtype']."'
+               LIMIT 1";
+         }
 
             $resultcont = $DB->query($querycont);
             if ($DB->numrows($resultcont) != 0) {
@@ -771,31 +759,30 @@ class PluginMonitoringShinken extends CommonDBTM {
                   $a_hosts[$i]['notification_period'] = $pmComponentscatalog->fields['notification_period'];
                }
 
-               $a_contacts = array();
-               $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
-                  AND `items_id`='".$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']."'");
-               foreach ($a_list_contact as $data_contact) {
-                  if (isset($a_contacts_entities[$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']][$data_contact['users_id']])) {
-                     if (in_array($class->fields['entities_id'], $a_contacts_entities[$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']][$data_contact['users_id']])) {
-                        $user->getFromDB($data_contact['users_id']);
-                        $a_contacts[] = $user->fields['name'];
-                     }
-                  }
-               }
-               if (count($a_contacts) > 0) {
-                  $a_contacts_unique = array_unique($a_contacts);
-                  $a_hosts[$i]['contacts'] = implode(',', $a_contacts_unique);
-               } else {
-                  if (self::$shinkenParameters['shinken']['fake_contacts']['build']) {
-                     $a_hosts[$i]['contacts'] = self::$shinkenParameters['shinken']['fake_contacts']['contact_name'];
-                  } else {
-                     $a_hosts[$i]['contacts'] = '';
+            $a_contacts = array();
+            $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
+               AND `items_id`='".$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']."'");
+            foreach ($a_list_contact as $data_contact) {
+               if (isset($a_contacts_entities[$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']][$data_contact['users_id']])) {
+                  if (in_array($class->fields['entities_id'], $a_contacts_entities[$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']][$data_contact['users_id']])) {
+                     $user->getFromDB($data_contact['users_id']);
+                     $a_contacts[] = $user->fields['name'];
                   }
                }
             }
-
-            $i++;
+            if (count($a_contacts) > 0) {
+               $a_contacts_unique = array_unique($a_contacts);
+               $a_hosts[$i]['contacts'] = implode(',', $a_contacts_unique);
+            } else {
+               if (self::$shinkenParameters['shinken']['fake_contacts']['build']) {
+                  $a_hosts[$i]['contacts'] = self::$shinkenParameters['shinken']['fake_contacts']['contact_name'];
+               } else {
+                  $a_hosts[$i]['contacts'] = '';
+               }
+            }
          }
+
+         $i++;
       }
 
 
