@@ -809,7 +809,6 @@ class PluginMonitoringShinken extends CommonDBTM {
                      $a_hosts[$i]['notification_enabled'] = '1';
                      
                      // Notification period
-                     $a_hosts[$i]['notification_period'] = $pmComponentscatalog->fields['notification_period'];
                      if ($calendar->getFromDB($a_pmcontact['host_notification_period'])) {
                         $a_hosts[$i]['notification_period'] = self::shinkenFilter($calendar->fields['name'].$timeperiodsuffix);
                      } else {
@@ -1151,19 +1150,15 @@ class PluginMonitoringShinken extends CommonDBTM {
                $itemtype = $datah['itemtype'];
                $item = new $itemtype();
                if ($item->getFromDB($datah['items_id'])) {
-                  // if (isset($a_entities_allowed['-1'])
-                          // OR isset($a_entities_allowed[$item->fields['entities_id']])) {
-
-                     // Fix if hostname is not defined ...
-                     if (! empty($item->fields['name'])) {
-                        $a_hostname[] = self::shinkenFilter($item->fields['name']);
-                        $a_hostname_type[] = $datah['itemtype'];
-                        $a_hostname_id[] = $datah['items_id'];
-                        $hostname = $item->fields['name'];
-                        $entities_id = $item->fields['entities_id'];
-                        $plugin_monitoring_componentscatalogs_id = $datah['plugin_monitoring_componentscalalog_id'];
-                     }
-                  // }
+                  // Fix if hostname is not defined ...
+                  if (! empty($item->fields['name'])) {
+                     $a_hostname[] = self::shinkenFilter($item->fields['name']);
+                     $a_hostname_type[] = $datah['itemtype'];
+                     $a_hostname_id[] = $datah['items_id'];
+                     $hostname = $item->fields['name'];
+                     $entities_id = $item->fields['entities_id'];
+                     $plugin_monitoring_componentscatalogs_id = $datah['plugin_monitoring_componentscalalog_id'];
+                  }
                }
             }
             if (count($a_hostname) > 0) {
@@ -1199,25 +1194,6 @@ class PluginMonitoringShinken extends CommonDBTM {
                   $a_services[$i][self::$shinkenParameters['glpi']['itemId']] =
                      $data['id'];
                }
-
-               // Manage freshness
-               // if ($a_component['freshness_count'] == 0) {
-                  // $a_services[$i]['check_freshness'] = '0';
-                  // $a_services[$i]['freshness_threshold'] = '3600';
-               // } else {
-                  // $multiple = 1;
-                  // if ($a_component['freshness_type'] == 'seconds') {
-                     // $multiple = 1;
-                  // } else if ($a_component['freshness_type'] == 'minutes') {
-                     // $multiple = 60;
-                  // } else if ($a_component['freshness_type'] == 'hours') {
-                     // $multiple = 3600;
-                  // } else if ($a_component['freshness_type'] == 'days') {
-                     // $multiple = 86400;
-                  // }
-                  // $a_services[$i]['check_freshness'] = '1';
-                  // $a_services[$i]['freshness_threshold'] = (string)($a_component['freshness_count'] * $multiple);
-               // }
 
                $pMonitoringCommand->getFromDB($a_component['plugin_monitoring_commands_id']);
                // Manage arguments
@@ -1296,7 +1272,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                      }
                   }
                }
-               // End manage arguments
+
                if ($a_component['remotesystem'] == 'nrpe') {
                   if ($a_component['alias_command'] != '') {
                      $alias_command = $a_component['alias_command'];
@@ -1356,7 +1332,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                   }
                }
 
-               // ** If shinken not use templates or template not defined :
+               // ** If shinken does not use templates or template not defined :
                if (!isset($_SESSION['plugin_monitoring']['servicetemplates'][$a_component['id']])) {
                   $pMonitoringCheck->getFromDB($a_component['plugin_monitoring_checks_id']);
                   $a_services[$i]['check_interval'] = $pMonitoringCheck->fields['check_interval'];
