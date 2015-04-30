@@ -401,9 +401,6 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_contacts_entities[$data['items_id']][$data['users_id']] = $contactentities;
       }
 
-      // $query = "SELECT *
-         // FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
-         // GROUP BY `itemtype`, `items_id`";
       $query = "SELECT
          `glpi_plugin_monitoring_componentscatalogs_hosts`.*,
          `glpi_computers`.`id`,
@@ -581,8 +578,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                }
                $a_hosts[$i]['parents'] = $parent;
 
-               $a_fields = array();
-
+               // Host check command
                $pmComponent->getFromDB($pmHostconfig->getValueAncestor('plugin_monitoring_components_id',
                                                                         $class->fields['entities_id'],
                                                                         $classname,
@@ -593,10 +589,6 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_fields = $pmComponent->fields;
 
                // Manage host check_command arguments
-               // Toolbox::logInFile("pm-shinken", "Command line : ".$pmCommand->fields['command_line']."\n");
-               // Toolbox::logInFile("pm-shinken", "Arguments : ".$a_fields['arguments']."\n");
-               // Toolbox::logInFile("pm-shinken", "Arguments : ".$pmCommand->fields['arguments']."\n");
-
                $array = array();
                preg_match_all("/\\$(ARG\d+)\\$/", $pmCommand->fields['command_line'], $array);
                sort($array[0]);
@@ -674,9 +666,8 @@ class PluginMonitoringShinken extends CommonDBTM {
                }
 
                $a_hosts[$i]['check_command'] = PluginMonitoringCommand::$command_prefix . $pmCommand->fields['command_name'].$args;
-               // Toolbox::logInFile("pm", "check_command : ".$a_hosts[$i]['check_command']."\n");
 
-               // Check command / period
+               // Check period
                $pmCheck->getFromDB($a_fields['plugin_monitoring_checks_id']);
                $a_hosts[$i]['check_interval'] = $pmCheck->fields['check_interval'];
                $a_hosts[$i]['retry_interval'] = $pmCheck->fields['retry_interval'];
