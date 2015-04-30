@@ -196,8 +196,12 @@ class PluginMonitoringWebservice {
 
    static function methodShinkenContacts($params, $protocol) {
 
+      if (!isset($params['tag'])) {
+         $params['tag'] = '';
+      }
+
       $pmShinken = new PluginMonitoringShinken();
-      $array = $pmShinken->generateContactsCfg();
+      $array = $pmShinken->generateContactsCfg(0, $params['tag']);
       return $array;
    }
 
@@ -205,8 +209,12 @@ class PluginMonitoringWebservice {
 
    static function methodShinkenTimeperiods($params, $protocol) {
 
+      if (!isset($params['tag'])) {
+         $params['tag'] = '';
+      }
+
       $pmShinken = new PluginMonitoringShinken();
-      $array = $pmShinken->generateTimeperiodsCfg();
+      $array = $pmShinken->generateTimeperiodsCfg(0, $params['tag']);
       return $array;
    }
 
