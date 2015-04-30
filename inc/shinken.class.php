@@ -1373,9 +1373,9 @@ class PluginMonitoringShinken extends CommonDBTM {
                } else {
                   // Default parameters
                   if (! empty(self::$shinkenParameters['shinken']['services']['process_perf_data'])) $a_services[$i]['process_perf_data'] = self::$shinkenParameters['shinken']['services']['process_perf_data'];
-                  if (! empty(self::$shinkenParameters['shinken']['services']['notification_period'])) $a_services[$i]['notification_period'] = self::$shinkenParameters['shinken']['services']['notification_period'];
-                  if (! empty(self::$shinkenParameters['shinken']['services']['notification_options'])) $a_services[$i]['notification_options'] = self::$shinkenParameters['shinken']['services']['notification_options'];
-                  if (! empty(self::$shinkenParameters['shinken']['services']['notification_interval'])) $a_services[$i]['notification_interval'] = self::$shinkenParameters['shinken']['services']['notification_interval'];
+                  // if (! empty(self::$shinkenParameters['shinken']['services']['notification_period'])) $a_services[$i]['notification_period'] = self::$shinkenParameters['shinken']['services']['notification_period'];
+                  // if (! empty(self::$shinkenParameters['shinken']['services']['notification_options'])) $a_services[$i]['notification_options'] = self::$shinkenParameters['shinken']['services']['notification_options'];
+                  // if (! empty(self::$shinkenParameters['shinken']['services']['notification_interval'])) $a_services[$i]['notification_interval'] = self::$shinkenParameters['shinken']['services']['notification_interval'];
 
                   if (! empty(self::$shinkenParameters['shinken']['services']['notes'])) $a_services[$i]['notes'] = self::$shinkenParameters['shinken']['services']['notes'];
                   if (! empty(self::$shinkenParameters['shinken']['services']['notes_url'])) $a_services[$i]['notes_url'] = self::$shinkenParameters['shinken']['services']['notes_url'];
@@ -1383,15 +1383,102 @@ class PluginMonitoringShinken extends CommonDBTM {
                   if (! empty(self::$shinkenParameters['shinken']['services']['icon_image'])) $a_services[$i]['icon_image'] = self::$shinkenParameters['shinken']['services']['icon_image'];
                   if (! empty(self::$shinkenParameters['shinken']['services']['icon_image_alt'])) $a_services[$i]['icon_image_alt'] = self::$shinkenParameters['shinken']['services']['icon_image_alt'];
                   
-                  // Notification options
-                  // $a_services[$i]['notification_interval'] = '30';
+                  // Notification options / interval
+                  $pmComponentscatalog = new PluginMonitoringComponentscatalog();
                   $pmComponentscatalog->getFromDB($plugin_monitoring_componentscatalogs_id);
-                  if (isset ($pmComponentscatalog->fields['notification_interval']) ) {
-                     $a_services[$i]['notification_interval'] = $pmComponentscatalog->fields['notification_interval'];
-                  }
-                  // $a_services[$i]['notification_period'] = '24x7';
-                  if (isset ($pmComponentscatalog->fields['notification_period']) ) {
-                     $a_services[$i]['notification_period'] = $pmComponentscatalog->fields['notification_period'];
+                  
+                  PluginMonitoringToolbox::logIfExtradebug(
+                     'pm-shinken',
+                     "generateServicesCfg - CC, service: {$a_services[$i]['service_description']}/{$a_services[$i]['host_name']} in {$pmComponentscatalog->fields['name']}\n"
+                  );
+                  $pmContacttemplate = new PluginMonitoringContacttemplate();
+                  if ((! isset ($pmComponentscatalog->fields['servicesnotification_id']))
+                     ||  (! $pmContacttemplate->getFromDB($pmComponentscatalog->fields['servicesnotification_id']))) {
+                     // No notifications defined for service, use defaults ...
+                     if (! empty(self::$shinkenParameters['shinken']['services']['notifications_enabled'])) 
+                        $a_services[$i]['notifications_enabled'] = self::$shinkenParameters['shinken']['services']['notifications_enabled'];
+                     if (! empty(self::$shinkenParameters['shinken']['services']['notification_period'])) 
+                        $a_services[$i]['notification_period'] = self::$shinkenParameters['shinken']['services']['notification_period'];
+                     if (! empty(self::$shinkenParameters['shinken']['services']['notification_options'])) 
+                        $a_services[$i]['notification_options'] = self::$shinkenParameters['shinken']['services']['notification_options'];
+                     if (! empty(self::$shinkenParameters['shinken']['services']['notification_interval'])) 
+                        $a_services[$i]['notification_interval'] = self::$shinkenParameters['shinken']['services']['notification_interval'];
+                     
+                     PluginMonitoringToolbox::logIfExtradebug(
+                        'pm-shinken',
+                        "generateServicesCfg - CC, service: {$a_services[$i]['service_description']}/{$a_services[$i]['host_name']} in {$pmComponentscatalog->fields['name']}, no notifications.\n"
+                     );
+                  } else {
+                     $a_pmcontact = $pmContacttemplate->fields;
+                     
+                     PluginMonitoringToolbox::logIfExtradebug(
+                        'pm-shinken',
+                        "generateServicesCfg - CC, service: {$a_services[$i]['service_description']}/{$a_services[$i]['host_name']} in {$pmComponentscatalog->fields['name']}, notification template: {$a_pmcontact['name']}.\n"
+                     );
+                     
+                     if ($a_pmcontact['service_notifications_enabled'] == '0') {
+                        // No notifications for host
+                        $a_services[$i]['notification_enabled'] = '0';
+                        $a_services[$i]['notification_period'] = '24x7';
+                        $a_services[$i]['notification_options'] = '';
+                        $a_services[$i]['notification_interval'] = '0';
+                        
+                        PluginMonitoringToolbox::logIfExtradebug(
+                           'pm-shinken',
+                           "generateServicesCfg - CC, service: {$a_services[$i]['service_description']}/{$a_services[$i]['host_name']} in {$pmComponentscatalog->fields['name']}, no notifications.\n"
+                        );
+                     } else {
+                        if (! isset($a_pmcontact['service_notification_period']) || 
+                              ! $a_pmcontact['service_notifications_enabled']) {
+                           // No notifications for host
+                           $a_services[$i]['notification_enabled'] = '0';
+                           $a_services[$i]['notification_period'] = '24x7';
+                           $a_services[$i]['notification_options'] = '';
+                           $a_services[$i]['notification_interval'] = '0';
+                           
+                           PluginMonitoringToolbox::logIfExtradebug(
+                              'pm-shinken',
+                              "generateServicesCfg - CC, service: {$a_services[$i]['service_description']}/{$a_services[$i]['host_name']} in {$pmComponentscatalog->fields['name']}, no notifications.\n"
+                           );
+                        } else {
+                           // Notifications enabled for service
+                           $a_services[$i]['notification_enabled'] = '1';
+                           
+                           // Notification period
+                           if ($calendar->getFromDB($a_pmcontact['service_notification_period'])) {
+                              $a_services[$i]['notification_period'] = self::shinkenFilter($calendar->fields['name'].$timeperiodsuffix);
+                           } else {
+                              if (! empty(self::$shinkenParameters['shinken']['services']['notification_period'])) 
+                                 $a_services[$i]['notification_period'] = self::$shinkenParameters['shinken']['services']['notification_period'];
+                           }
+                           
+                           // Notification options
+                           $a_servicenotif = array();
+                           if ($a_pmcontact['service_notification_options_w'] == '1')
+                              $a_servicenotif[] = "w";
+                           if ($a_pmcontact['service_notification_options_u'] == '1')
+                              $a_servicenotif[] = "u";
+                           if ($a_pmcontact['service_notification_options_c'] == '1')
+                              $a_servicenotif[] = "c";
+                           if ($a_pmcontact['service_notification_options_r'] == '1')
+                              $a_servicenotif[] = "r";
+                           if ($a_pmcontact['service_notification_options_f'] == '1')
+                              $a_servicenotif[] = "f";
+                           if ($a_pmcontact['service_notification_options_n'] == '1')
+                              $a_servicenotif = array("n");
+                           if (count($a_servicenotif) == "0")
+                              $a_servicenotif = array("n");
+                           $a_services[$i]['notification_options'] = implode(",", $a_servicenotif);
+
+                           // Notification interval
+                           if (isset ($pmComponentscatalog->fields['notification_interval']) ) {
+                              $a_services[$i]['notification_interval'] = $pmComponentscatalog->fields['notification_interval'];
+                           } else {
+                              if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_interval'])) 
+                                 $a_services[$i]['notification_interval'] = self::$shinkenParameters['shinken']['hosts']['notification_interval'];
+                           }
+                        }
+                     }
                   }
                   // Calendar ...
                   $a_services[$i]['check_period'] = '24x7';
