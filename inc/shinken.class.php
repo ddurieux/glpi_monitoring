@@ -103,8 +103,8 @@ class PluginMonitoringShinken extends CommonDBTM {
             // Default values
             'use' => 'important',
             'process_perf_data' => '1',
-            // What should be used instead ?
-            // Mandatory parameters in Shinken ?
+            // Default hosts notifications : none !
+            'notifications_enabled' => '0',
             'notification_period' => '24x7',
             'notification_options' => 'd,u,r,f,s',
             'notification_interval' => '86400',
@@ -125,8 +125,8 @@ class PluginMonitoringShinken extends CommonDBTM {
             'check_period' => '24x7',
             // Default values
             'process_perf_data' => '1',
-            // What should be used instead ?
-            // Mandatory parameters in Shinken ?
+            // Default services notifications : none !
+            'notifications_enabled' => '0',
             'notification_period' => '24x7',
             'notification_options' => 'w,u,c,r,f,s',
             'notification_interval' => '86400',
@@ -707,9 +707,6 @@ class PluginMonitoringShinken extends CommonDBTM {
          if (! empty(self::$shinkenParameters['shinken']['hosts']['use'])) $a_hosts[$i]['use'] = self::$shinkenParameters['shinken']['hosts']['use'];
 
          if (! empty(self::$shinkenParameters['shinken']['hosts']['process_perf_data'])) $a_hosts[$i]['process_perf_data'] = self::$shinkenParameters['shinken']['hosts']['process_perf_data'];
-         if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_period'])) $a_hosts[$i]['notification_period'] = self::$shinkenParameters['shinken']['hosts']['notification_period'];
-         if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_options'])) $a_hosts[$i]['notification_options'] = self::$shinkenParameters['shinken']['hosts']['notification_options'];
-         if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_interval'])) $a_hosts[$i]['notification_interval'] = self::$shinkenParameters['shinken']['hosts']['notification_interval'];
 
          if (! empty(self::$shinkenParameters['shinken']['hosts']['notes'])) $a_hosts[$i]['notes'] = self::$shinkenParameters['shinken']['hosts']['notes'];
          if (! empty(self::$shinkenParameters['shinken']['hosts']['notes_url'])) $a_hosts[$i]['notes_url'] = self::$shinkenParameters['shinken']['hosts']['notes_url'];
@@ -746,18 +743,108 @@ class PluginMonitoringShinken extends CommonDBTM {
                LIMIT 1";
          }
 
-            $resultcont = $DB->query($querycont);
-            if ($DB->numrows($resultcont) != 0) {
-               $a_componentscatalogs_hosts = $DB->fetch_assoc($resultcont);
-               // Notification options / interval
-               $pmComponentscatalog = new PluginMonitoringComponentscatalog();
-               $pmComponentscatalog->getFromDB($a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']);
-               if (isset ($pmComponentscatalog->fields['notification_interval']) ) {
-                  $a_hosts[$i]['notification_interval'] = $pmComponentscatalog->fields['notification_interval'];
+         $resultcont = $DB->query($querycont);
+         if ($DB->numrows($resultcont) != 0) {
+            $a_componentscatalogs_hosts = $DB->fetch_assoc($resultcont);
+            
+            // Notification options / interval
+            $pmComponentscatalog = new PluginMonitoringComponentscatalog();
+            $pmComponentscatalog->getFromDB($a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']);
+            
+            PluginMonitoringToolbox::logIfExtradebug(
+               'pm-shinken',
+               "generateHostsCfg - CC, host: {$a_hosts[$i]['host_name']} in {$pmComponentscatalog->fields['name']}\n"
+            );
+            $pmContacttemplate = new PluginMonitoringContacttemplate();
+            if ((! isset ($pmComponentscatalog->fields['hostsnotification_id']))
+               ||  (! $pmContacttemplate->getFromDB($pmComponentscatalog->fields['hostsnotification_id']))) {
+               // No notifications defined for host, use defaults ...
+               if (! empty(self::$shinkenParameters['shinken']['hosts']['notifications_enabled'])) 
+                  $a_hosts[$i]['notifications_enabled'] = self::$shinkenParameters['shinken']['hosts']['notifications_enabled'];
+               if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_period'])) 
+                  $a_hosts[$i]['notification_period'] = self::$shinkenParameters['shinken']['hosts']['notification_period'];
+               if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_options'])) 
+                  $a_hosts[$i]['notification_options'] = self::$shinkenParameters['shinken']['hosts']['notification_options'];
+               if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_interval'])) 
+                  $a_hosts[$i]['notification_interval'] = self::$shinkenParameters['shinken']['hosts']['notification_interval'];
+               
+               PluginMonitoringToolbox::logIfExtradebug(
+                  'pm-shinken',
+                  "generateHostsCfg - CC, host: {$a_hosts[$i]['host_name']} in {$pmComponentscatalog->fields['name']}, no notifications.\n"
+               );
+            } else {
+               $a_pmcontact = $pmContacttemplate->fields;
+               
+               PluginMonitoringToolbox::logIfExtradebug(
+                  'pm-shinken',
+                  "generateHostsCfg - CC, host: {$a_hosts[$i]['host_name']} in {$pmComponentscatalog->fields['name']}, notification template: {$a_pmcontact['name']}.\n"
+               );
+               
+               if ($a_pmcontact['host_notifications_enabled'] == '0') {
+                  // No notifications for host
+                  $a_hosts[$i]['notification_enabled'] = '0';
+                  $a_hosts[$i]['notification_period'] = '24x7';
+                  $a_hosts[$i]['notification_options'] = '';
+                  $a_hosts[$i]['notification_interval'] = '0';
+                  
+                  PluginMonitoringToolbox::logIfExtradebug(
+                     'pm-shinken',
+                     "generateHostsCfg - CC, host: {$a_hosts[$i]['host_name']} in {$pmComponentscatalog->fields['name']}, no notifications for host.\n"
+                  );
+               } else {
+                  if (! isset($a_pmcontact['host_notification_period']) || 
+                        ! $a_pmcontact['host_notifications_enabled']) {
+                     // No notifications for host
+                     $a_hosts[$i]['notification_enabled'] = '0';
+                     $a_hosts[$i]['notification_period'] = '24x7';
+                     $a_hosts[$i]['notification_options'] = '';
+                     $a_hosts[$i]['notification_interval'] = '0';
+                     
+                     PluginMonitoringToolbox::logIfExtradebug(
+                        'pm-shinken',
+                        "generateHostsCfg - CC, host: {$a_hosts[$i]['host_name']} in {$pmComponentscatalog->fields['name']}, no notifications for host.\n"
+                     );
+                  } else {
+                     // Notifications enabled for host
+                     $a_hosts[$i]['notification_enabled'] = '1';
+                     
+                     // Notification period
+                     $a_hosts[$i]['notification_period'] = $pmComponentscatalog->fields['notification_period'];
+                     if ($calendar->getFromDB($a_pmcontact['host_notification_period'])) {
+                        $a_hosts[$i]['notification_period'] = self::shinkenFilter($calendar->fields['name'].$timeperiodsuffix);
+                     } else {
+                        if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_period'])) 
+                           $a_hosts[$i]['notification_period'] = self::$shinkenParameters['shinken']['hosts']['notification_period'];
+                     }
+                     
+                     // Notification options
+                     $a_hostnotif = array();
+                     if ($a_pmcontact['host_notification_options_d'] == '1')
+                        $a_hostnotif[] = "d";
+                     if ($a_pmcontact['host_notification_options_u'] == '1')
+                        $a_hostnotif[] = "u";
+                     if ($a_pmcontact['host_notification_options_r'] == '1')
+                        $a_hostnotif[] = "r";
+                     if ($a_pmcontact['host_notification_options_f'] == '1')
+                        $a_hostnotif[] = "f";
+                     if ($a_pmcontact['host_notification_options_s'] == '1')
+                        $a_hostnotif[] = "s";
+                     if ($a_pmcontact['host_notification_options_n'] == '1')
+                        $a_hostnotif = array("n");
+                     if (count($a_hostnotif) == "0")
+                        $a_hostnotif = array("n");
+                     $a_hosts[$i]['notification_options'] = implode(",", $a_hostnotif);
+
+                     // Notification interval
+                     if (isset ($pmComponentscatalog->fields['notification_interval']) ) {
+                        $a_hosts[$i]['notification_interval'] = $pmComponentscatalog->fields['notification_interval'];
+                     } else {
+                        if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_interval'])) 
+                           $a_hosts[$i]['notification_interval'] = self::$shinkenParameters['shinken']['hosts']['notification_interval'];
+                     }
+                  }
                }
-               if (isset ($pmComponentscatalog->fields['notification_period']) ) {
-                  $a_hosts[$i]['notification_period'] = $pmComponentscatalog->fields['notification_period'];
-               }
+            }
 
             $a_contacts = array();
             $a_list_contact = $pmContact_Item->find("`itemtype`='PluginMonitoringComponentscatalog'
