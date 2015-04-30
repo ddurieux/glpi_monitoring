@@ -35,6 +35,8 @@ CREATE TABLE `glpi_plugin_monitoring_componentscatalogs` (
    `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
    `comment` text DEFAULT NULL COLLATE utf8_unicode_ci,
    `notification_interval` int(4) NOT NULL DEFAULT '30',
+   `hostsnotification_id` int(11) DEFAULT '-1',
+   `servicesnotification_id` int(11) DEFAULT '-1',
    PRIMARY KEY (`id`),
    KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
