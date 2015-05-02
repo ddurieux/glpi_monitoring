@@ -782,7 +782,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                
                if ($a_pmcontact['host_notifications_enabled'] == '0') {
                   // No notifications for host
-                  $a_hosts[$i]['notification_enabled'] = '0';
+                  $a_hosts[$i]['notifications_enabled'] = '0';
                   $a_hosts[$i]['notification_period'] = '24x7';
                   $a_hosts[$i]['notification_options'] = '';
                   $a_hosts[$i]['notification_interval'] = '0';
@@ -795,7 +795,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                   if (! isset($a_pmcontact['host_notification_period']) || 
                         ! $a_pmcontact['host_notifications_enabled']) {
                      // No notifications for host
-                     $a_hosts[$i]['notification_enabled'] = '0';
+                     $a_hosts[$i]['notifications_enabled'] = '0';
                      $a_hosts[$i]['notification_period'] = '24x7';
                      $a_hosts[$i]['notification_options'] = '';
                      $a_hosts[$i]['notification_interval'] = '0';
@@ -806,7 +806,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                      );
                   } else {
                      // Notifications enabled for host
-                     $a_hosts[$i]['notification_enabled'] = '1';
+                     $a_hosts[$i]['notifications_enabled'] = '1';
                      
                      // Notification period
                      if ($calendar->getFromDB($a_pmcontact['host_notification_period'])) {
@@ -1418,7 +1418,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                      
                      if ($a_pmcontact['service_notifications_enabled'] == '0') {
                         // No notifications for host
-                        $a_services[$i]['notification_enabled'] = '0';
+                        $a_services[$i]['notifications_enabled'] = '0';
                         $a_services[$i]['notification_period'] = '24x7';
                         $a_services[$i]['notification_options'] = '';
                         $a_services[$i]['notification_interval'] = '0';
@@ -1431,7 +1431,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                         if (! isset($a_pmcontact['service_notification_period']) || 
                               ! $a_pmcontact['service_notifications_enabled']) {
                            // No notifications for host
-                           $a_services[$i]['notification_enabled'] = '0';
+                           $a_services[$i]['notifications_enabled'] = '0';
                            $a_services[$i]['notification_period'] = '24x7';
                            $a_services[$i]['notification_options'] = '';
                            $a_services[$i]['notification_interval'] = '0';
@@ -1442,7 +1442,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                            );
                         } else {
                            // Notifications enabled for service
-                           $a_services[$i]['notification_enabled'] = '1';
+                           $a_services[$i]['notifications_enabled'] = '1';
                            
                            // Notification period
                            if ($calendar->getFromDB($a_pmcontact['service_notification_period'])) {
