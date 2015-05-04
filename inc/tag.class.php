@@ -300,21 +300,22 @@ class PluginMonitoringTag extends CommonDBTM {
          curl_setopt($ch,CURLOPT_TIMEOUT, 4);
          $ret = curl_exec($ch);
          curl_close($ch);
-         foreach (json_decode($ret) as $module=>$dataret) {
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>";
-            echo $module;
-            echo "</td>";
-            echo "<td>";
-            if ($dataret[0]->alive == 1) {
-               echo "<div class='service serviceOK' style='float : left;'></div>";
-            } else {
-               echo "<div class='service serviceCRITICAL' style='float : left;'></div>";
+         if ($ret != '') {
+            foreach (json_decode($ret) as $module=>$dataret) {
+               echo "<tr class='tab_bg_1'>";
+               echo "<td>";
+               echo $module;
+               echo "</td>";
+               echo "<td>";
+               if ($dataret[0]->alive == 1) {
+                  echo "<div class='service serviceOK' style='float : left;'></div>";
+               } else {
+                  echo "<div class='service serviceCRITICAL' style='float : left;'></div>";
+               }
+               echo "</td>";
+               echo "</tr>";
             }
-            echo "</td>";
-            echo "</tr>";
          }
-
       }
       echo "</table>";
    }
@@ -332,10 +333,14 @@ class PluginMonitoringTag extends CommonDBTM {
          curl_setopt($ch,CURLOPT_TIMEOUT, 4);
          $ret = curl_exec($ch);
          curl_close($ch);
-         foreach (json_decode($ret) as $module=>$dataret) {
-            if ($dataret[0]->alive != 1) {
-               $ok = 0;
+         if ($ret != '') {
+            foreach (json_decode($ret) as $module=>$dataret) {
+               if ($dataret[0]->alive != 1) {
+                  $ok = false;
+               }
             }
+         } else {
+            $ok = false;
          }
       }
       return $ok;
