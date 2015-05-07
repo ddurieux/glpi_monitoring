@@ -286,7 +286,11 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             if ($ID <= 0) {
                $this->fields['hostsnotification_id'] = -1;
             }
-            Dropdown::show("PluginMonitoringContacttemplate", array(
+            // Dropdown::show("PluginMonitoringContacttemplate", array(
+                                   // 'name' =>'hostsnotification_id',
+                                    // 'value'=>$this->fields['hostsnotification_id']
+                                    // ));
+            Dropdown::show("PluginMonitoringHostnotificationtemplate", array(
                                    'name' =>'hostsnotification_id',
                                     'value'=>$this->fields['hostsnotification_id']
                                     ));
@@ -296,9 +300,13 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             if ($ID <= 0) {
                $this->fields['servicesnotification_id'] = -1;
             }
-            Dropdown::show("PluginMonitoringContacttemplate", array(
-                                   'name' =>'servicesnotification_id',
-                                    'value'=>$this->fields['servicesnotification_id']
+            // Dropdown::show("PluginMonitoringContacttemplate", array(
+                                   // 'name' =>'servicesnotification_id',
+                                    // 'value'=>$this->fields['servicesnotification_id']
+                                    // ));
+            Dropdown::show("PluginMonitoringServicenotificationtemplate", array(
+                                   'name' =>'hostsnotification_id',
+                                    'value'=>$this->fields['hostsnotification_id']
                                     ));
             break;
       }
