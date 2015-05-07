@@ -879,6 +879,48 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
 
     /*
+    * Table glpi_plugin_monitoring_hostnotificationtemplates
+    */
+      $newTable = "glpi_plugin_monitoring_hostnotificationtemplates";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                        `host_notifications_enabled` tinyint(1) NOT NULL DEFAULT '1',
+                        `host_notification_period` int(11) NOT NULL DEFAULT '0',
+                        `host_notification_options_d` tinyint(1) NOT NULL DEFAULT '1',
+                        `host_notification_options_u` tinyint(1) NOT NULL DEFAULT '1',
+                        `host_notification_options_r` tinyint(1) NOT NULL DEFAULT '1',
+                        `host_notification_options_f` tinyint(1) NOT NULL DEFAULT '0',
+                        `host_notification_options_s` tinyint(1) NOT NULL DEFAULT '1',
+                        `host_notification_options_n` tinyint(1) NOT NULL DEFAULT '0',
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+         $DB->query($query);
+      }
+
+    /*
+    * Table glpi_plugin_monitoring_servicenotificationtemplates
+    */
+      $newTable = "glpi_plugin_monitoring_servicenotificationtemplates";
+      if (!TableExists($newTable)) {
+         $query = "CREATE TABLE `".$newTable."` (
+                        `id` int(11) NOT NULL AUTO_INCREMENT,
+                        `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+                        `service_notifications_enabled` tinyint(1) NOT NULL DEFAULT '1',
+                        `service_notification_period` int(11) NOT NULL DEFAULT '0',
+                        `service_notification_options_w` tinyint(1) NOT NULL DEFAULT '1',
+                        `service_notification_options_u` tinyint(1) NOT NULL DEFAULT '1',
+                        `service_notification_options_c` tinyint(1) NOT NULL DEFAULT '1',
+                        `service_notification_options_r` tinyint(1) NOT NULL DEFAULT '1',
+                        `service_notification_options_f` tinyint(1) NOT NULL DEFAULT '0',
+                        `service_notification_options_n` tinyint(1) NOT NULL DEFAULT '0',
+                        PRIMARY KEY (`id`)
+                     ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+         $DB->query($query);
+      }
+
+    /*
     * Table glpi_plugin_monitoring_contacttemplates
     */
       $newTable = "glpi_plugin_monitoring_contacttemplates";

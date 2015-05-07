@@ -141,6 +141,12 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['contacttemplates'] = 'front/contacttemplate.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['contacttemplates'] = 'front/contacttemplate.php';
 
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['hostnotificationtemplates'] = 'front/hostnotificationtemplate.form.php?add=1';
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['hostnotificationtemplates'] = 'front/hostnotificationtemplate.php';
+
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['servicenotificationtemplates'] = 'front/servicenotificationtemplate.form.php?add=1';
+         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['servicenotificationtemplates'] = 'front/servicenotificationtemplate.php';
+
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['displayview'] = 'front/displayview.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['displayview'] = 'front/displayview.php';
 
@@ -188,6 +194,12 @@ function plugin_init_monitoring() {
 
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['contacttemplates']['title'] = __('Contact templates', 'monitoring');
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['contacttemplates']['page']  = '/plugins/monitoring/front/contacttemplate.php';
+
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['hostnotificationtemplates']['title'] = __('Hosts notifications templates', 'monitoring');
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['hostnotificationtemplates']['page']  = '/plugins/monitoring/front/hostnotificationtemplate.php';
+
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['servicenotificationtemplates']['title'] = __('Services notifications templates', 'monitoring');
+            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['servicenotificationtemplates']['page']  = '/plugins/monitoring/front/servicenotificationtemplate.php';
 
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['display']['title'] = __('Dashboard', 'monitoring');
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['display']['page']  = '/plugins/monitoring/front/display_servicescatalog.php';
