@@ -101,7 +101,8 @@ class PluginMonitoringShinken extends CommonDBTM {
             // Default check_period
             'check_period' => '24x7',
             // Default values
-            'use' => 'important',
+            // 'use' => 'important',
+            'business_impact' => '3',
             'process_perf_data' => '1',
             // Default hosts notifications : none !
             'notifications_enabled' => '0',
@@ -124,6 +125,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             // Default check_period
             'check_period' => '24x7',
             // Default values
+            'business_impact' => '3',
             'process_perf_data' => '1',
             // Default services notifications : none !
             'notifications_enabled' => '0',
@@ -703,9 +705,16 @@ class PluginMonitoringShinken extends CommonDBTM {
                                                                               $class->getID()));
          $a_hosts[$i]['realm'] = $pmRealm->fields['name'];
 
+         if (isset ($a_fields['business_priority'])) {
+            $a_hosts[$i]['business_impact'] = $a_fields['business_priority'];
+         } else {
+            if (! empty(self::$shinkenParameters['shinken']['hosts']['business_impact'])) {
+               $a_hosts[$i]['business_impact'] = self::$shinkenParameters['shinken']['hosts']['business_impact'];
+            } else {
+               $a_hosts[$i]['business_impact'] = '0';
+            }
+         }
          // Extra parameters
-         if (! empty(self::$shinkenParameters['shinken']['hosts']['use'])) $a_hosts[$i]['use'] = self::$shinkenParameters['shinken']['hosts']['use'];
-
          if (! empty(self::$shinkenParameters['shinken']['hosts']['process_perf_data'])) $a_hosts[$i]['process_perf_data'] = self::$shinkenParameters['shinken']['hosts']['process_perf_data'];
 
          if (! empty(self::$shinkenParameters['shinken']['hosts']['notes'])) $a_hosts[$i]['notes'] = self::$shinkenParameters['shinken']['hosts']['notes'];
@@ -1354,10 +1363,15 @@ class PluginMonitoringShinken extends CommonDBTM {
                   $a_services[$i]['active_checks_enabled'] = '1';
                   $a_services[$i]['passive_checks_enabled'] = '1';
                   $a_services[$i]['parallelize_check'] = '1';
-                  $a_services[$i]['obsess_over_service'] = '1';
+                  $a_services[$i]['obsess_over_service'] = '0';
                   $a_services[$i]['check_freshness'] = '1';
                   $a_services[$i]['freshness_threshold'] = '3600';
                   $a_services[$i]['notifications_enabled'] = '1';
+                  if (! empty(self::$shinkenParameters['shinken']['services']['business_impact'])) {
+                     $a_services[$i]['business_impact'] = self::$shinkenParameters['shinken']['services']['business_impact'];
+                  } else {
+                     $a_services[$i]['business_impact'] = '0';
+                  }
 
                   if (isset($a_services[$i]['event_handler'])) {
                      $a_services[$i]['event_handler_enabled'] = '1';
@@ -1657,7 +1671,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_services[$i]['active_checks_enabled'] = '1';
                $a_services[$i]['passive_checks_enabled'] = '1';
                $a_services[$i]['parallelize_check'] = '1';
-               $a_services[$i]['obsess_over_service'] = '1';
+               $a_services[$i]['obsess_over_service'] = '0';
                $a_services[$i]['check_freshness'] = '1';
                $a_services[$i]['freshness_threshold'] = '3600';
                $a_services[$i]['notifications_enabled'] = '1';
@@ -1816,7 +1830,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                   $a_services[$i]['active_checks_enabled'] = '1';
                   $a_services[$i]['passive_checks_enabled'] = '1';
                   $a_services[$i]['parallelize_check'] = '1';
-                  $a_services[$i]['obsess_over_service'] = '1';
+                  $a_services[$i]['obsess_over_service'] = '0';
                   $a_services[$i]['check_freshness'] = '1';
                   $a_services[$i]['freshness_threshold'] = '3600';
                   $a_services[$i]['notifications_enabled'] = '1';
@@ -1907,6 +1921,15 @@ class PluginMonitoringShinken extends CommonDBTM {
          );
          $a_servicetemplates[$i]['name'] = self::shinkenFilter('servicetemplate-'.$data['id']);
          $a_servicetemplates[$i]['alias'] = $data['description'].' / '.$data['name'];
+         if (isset ($data['business_priority'])) {
+            $a_servicetemplates[$i]['business_impact'] = $data['business_priority'];
+         } else {
+            if (! empty(self::$shinkenParameters['shinken']['services']['business_impact'])) {
+               $a_servicetemplates[$i]['business_impact'] = self::$shinkenParameters['shinken']['services']['business_impact'];
+            } else {
+               $a_servicetemplates[$i]['business_impact'] = '0';
+            }
+         }
          $pMonitoringCheck->getFromDB($data['plugin_monitoring_checks_id']);
          $a_servicetemplates[$i]['check_interval'] = $pMonitoringCheck->fields['check_interval'];
          $a_servicetemplates[$i]['retry_interval'] = $pMonitoringCheck->fields['retry_interval'];
@@ -1923,7 +1946,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_servicetemplates[$i]['active_checks_enabled'] = $data['active_checks_enabled'];
          $a_servicetemplates[$i]['passive_checks_enabled'] = $data['passive_checks_enabled'];
          $a_servicetemplates[$i]['parallelize_check'] = '1';
-         $a_servicetemplates[$i]['obsess_over_service'] = '1';
+         $a_servicetemplates[$i]['obsess_over_service'] = '0';
          // Manage freshness
          // $a_servicetemplates[$i]['check_freshness'] = '1';
          // $a_servicetemplates[$i]['freshness_threshold'] = '3600';
