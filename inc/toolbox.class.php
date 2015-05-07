@@ -230,7 +230,7 @@ echo "        <script>
 
       $a_incremental = array();
       $a_perfdatadetails = getAllDatasFromTable('glpi_plugin_monitoring_perfdatadetails',
-                           "plugin_monitoring_perfdatas_id='".$pmComponent->fields['graph_template']."'");
+                           "plugin_monitoring_perfdatas_id='".$pmComponent->fields['perfname']."'");
       foreach ($a_perfdatadetails as $data) {
          for ($nb=1; $nb <= 15; $nb++) {
             if ($data['dsnameincr'.$nb] == '1') {
