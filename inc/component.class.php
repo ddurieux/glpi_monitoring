@@ -188,6 +188,10 @@ class PluginMonitoringComponent extends CommonDBTM {
 		$tab[8]['name']            = __('Freshness type', 'monitoring');
       $tab[8]['datatype']        = 'specific';
 
+		$tab[9]['table']           = $this->getTable();
+		$tab[9]['field']           = 'business_priority';
+		$tab[9]['name']            = __('Business priority', 'monitoring');
+
       return $tab;
    }
 
@@ -375,6 +379,18 @@ class PluginMonitoringComponent extends CommonDBTM {
       dropdown::show("Calendar", array('name'=>'calendars_id',
                                  'value'=>$this->fields['calendars_id']));
       echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Business priority level', 'monitoring')."&nbsp;:</td>";
+      echo "<td>";
+      Dropdown::showNumber('business_priority', array(
+         'value'    => $this->fields['business_priority'],
+         'min'      => 1,
+         'max'      => 5)
+      );
+      echo "</td>";
+      echo "<td colspan='2'></td>";
       echo "</tr>";
 
       echo "<tr>";

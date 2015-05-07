@@ -600,6 +600,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable,
                               'freshness_type',
                               "varchar(255) DEFAULT 'seconds'");
+         // 0.84+1.4
+         $migration->addField($newTable,
+                              'business_priority',
+                              "tinyint(1) NOT NULL DEFAULT '3'");
 
          $migration->addKey($newTable,
                             "plugin_monitoring_commands_id");
