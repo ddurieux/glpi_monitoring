@@ -651,12 +651,24 @@ class PluginMonitoringService extends CommonDBTM {
       foreach ($data['data']['rows'] as $row) {
          $services_id[] = $row['id'];
       }
-      $oldvalue = current(getAllDatasFromTable(
-              'glpi_plugin_monitoring_serviceevents',
-              "`plugin_monitoring_services_id` IN ('".implode("', '", $services_id)."')",
-              false,
-              'id ASC LIMIT 1'));
-      $date = new DateTime($oldvalue['date']);
+      // for performances, not use IN() in the bug table
+      $datedb = '';
+      foreach ($services_id as $service_id) {
+         $oldvalue = current(getAllDatasFromTable(
+                 'glpi_plugin_monitoring_serviceevents',
+                 "`plugin_monitoring_services_id` = '".$service_id."'",
+                 false,
+                 'id ASC LIMIT 1'));
+         if ($datedb == '') {
+            $datedb = $oldvalue['date'];
+         } else {
+            if (strtotime($datedb) > $oldvalue['date']) {
+               $datedb = $oldvalue['date'];
+            }
+         }
+      }
+
+      $date = new DateTime($datedb);
       $start = time();
       if ($date->getTimestamp() < $start) {
          $start = $date->getTimestamp();
