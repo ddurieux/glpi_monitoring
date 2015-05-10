@@ -2083,151 +2083,151 @@ Nagios configuration file :
       $user                   = new User();
       $calendar               = new Calendar();
 
-      $user->getFromDB($users_id);
+      if ($user->getFromDB($users_id)) {
 
-      // Get contact template
-      $a_pmcontact = current($pmContact->find("`users_id`='".$users_id."'", "", 1));
-      if (empty($a_pmcontact) OR
-              (isset($a_pmcontact['plugin_monitoring_contacttemplates_id'])
-              AND $a_pmcontact['plugin_monitoring_contacttemplates_id'] == '0')) {
-         // Use default template
-         $a_pmcontact = current($pmContacttemplate->find("`is_default`='1'", "", 1));
-      } else {
-         // Use contact defined template
-         $a_pmcontact = current($pmContacttemplate->find("`id`='".$a_pmcontact['plugin_monitoring_contacttemplates_id']."'", "", 1));
-      }
-      $a_contacts[$i]['contact_name'] = $user->fields['name'];
-      $a_contacts[$i]['alias'] = $user->getName();
-      PluginMonitoringToolbox::logIfExtradebug(
-         'pm-shinken',
-         "- contact ".$user->fields['name']." - ".$user->getName()."\n"
-      );
-      // Toolbox::logInFile("pm-contacts", "- contact ".serialize($user->fields)."\n");
-
-      if (!isset($a_pmcontact['host_notification_period'])) {
-         $a_calendars = current($calendar->find("", "", 1));
-         $cal = '24x7';
-         if (isset($a_calendars['name'])) {
-            $cal = $a_calendars['name'];
+         // Get contact template
+         $a_pmcontact = current($pmContact->find("`users_id`='".$users_id."'", "", 1));
+         if (empty($a_pmcontact) OR
+                 (isset($a_pmcontact['plugin_monitoring_contacttemplates_id'])
+                 AND $a_pmcontact['plugin_monitoring_contacttemplates_id'] == '0')) {
+            // Use default template
+            $a_pmcontact = current($pmContacttemplate->find("`is_default`='1'", "", 1));
+         } else {
+            // Use contact defined template
+            $a_pmcontact = current($pmContacttemplate->find("`id`='".$a_pmcontact['plugin_monitoring_contacttemplates_id']."'", "", 1));
          }
-         $a_pmcontact['host_notifications_enabled'] = '0';
-         $a_pmcontact['service_notifications_enabled'] = '0';
-         $a_pmcontact['service_notification_period'] = $cal;
-         $a_pmcontact['host_notification_period'] = $cal;
-         $a_pmcontact['service_notification_options_w'] = '0';
-         $a_pmcontact['service_notification_options_u'] = '0';
-         $a_pmcontact['service_notification_options_c'] = '0';
-         $a_pmcontact['service_notification_options_r'] = '0';
-         $a_pmcontact['service_notification_options_f'] = '0';
-         $a_pmcontact['service_notification_options_n'] = '0';
-         $a_pmcontact['host_notification_options_d'] = '0';
-         $a_pmcontact['host_notification_options_u'] = '0';
-         $a_pmcontact['host_notification_options_r'] = '0';
-         $a_pmcontact['host_notification_options_f'] = '0';
-         $a_pmcontact['host_notification_options_s'] = '0';
-         $a_pmcontact['host_notification_options_n'] = '0';
-         $a_pmcontact['service_notification_commands'] = '2';
-         $a_pmcontact['host_notification_commands'] = '1';
-      }
-      $a_contacts[$i]['host_notifications_enabled'] = $a_pmcontact['host_notifications_enabled'];
-      $a_contacts[$i]['service_notifications_enabled'] = $a_pmcontact['service_notifications_enabled'];
+         $a_contacts[$i]['contact_name'] = $user->fields['name'];
+         $a_contacts[$i]['alias'] = $user->getName();
+         PluginMonitoringToolbox::logIfExtradebug(
+            'pm-shinken',
+            "- contact ".$user->fields['name']." - ".$user->getName()."\n"
+         );
+         // Toolbox::logInFile("pm-contacts", "- contact ".serialize($user->fields)."\n");
 
-      $calendar->getFromDB($a_pmcontact['service_notification_period']);
-      if (isset($calendar->fields['name'])) {
-         $a_contacts[$i]['service_notification_period'] = $calendar->fields['name'];
-      } else {
-         $a_contacts[$i]['service_notification_period'] = '24x7';
-      }
-
-      $calendar->getFromDB($a_pmcontact['host_notification_period']);
-      if (isset($calendar->fields['name'])) {
-         $a_contacts[$i]['host_notification_period'] = $calendar->fields['name'];
-      } else {
-         $a_contacts[$i]['host_notification_period'] = '24x7';
-      }
-
-      $a_servicenotif = array();
-      if ($a_pmcontact['service_notification_options_w'] == '1')
-         $a_servicenotif[] = "w";
-      if ($a_pmcontact['service_notification_options_u'] == '1')
-         $a_servicenotif[] = "u";
-      if ($a_pmcontact['service_notification_options_c'] == '1')
-         $a_servicenotif[] = "c";
-      if ($a_pmcontact['service_notification_options_r'] == '1')
-         $a_servicenotif[] = "r";
-      if ($a_pmcontact['service_notification_options_f'] == '1')
-         $a_servicenotif[] = "f";
-      if ($a_pmcontact['service_notification_options_n'] == '1')
-         $a_servicenotif = array("n");
-      if (count($a_servicenotif) == "0")
-         $a_servicenotif = array("n");
-      $a_contacts[$i]['service_notification_options'] = implode(",", $a_servicenotif);
-
-      $a_hostnotif = array();
-      if ($a_pmcontact['host_notification_options_d'] == '1')
-         $a_hostnotif[] = "d";
-      if ($a_pmcontact['host_notification_options_u'] == '1')
-         $a_hostnotif[] = "u";
-      if ($a_pmcontact['host_notification_options_r'] == '1')
-         $a_hostnotif[] = "r";
-      if ($a_pmcontact['host_notification_options_f'] == '1')
-         $a_hostnotif[] = "f";
-      if ($a_pmcontact['host_notification_options_s'] == '1')
-         $a_hostnotif[] = "s";
-      if ($a_pmcontact['host_notification_options_n'] == '1')
-         $a_hostnotif = array("n");
-      if (count($a_hostnotif) == "0")
-         $a_hostnotif = array("n");
-      $a_contacts[$i]['host_notification_options'] = implode(",", $a_hostnotif);
-
-      $pmNotificationcommand->getFromDB($a_pmcontact['service_notification_commands']);
-      if (isset($pmNotificationcommand->fields['command_name'])) {
-         $a_contacts[$i]['service_notification_commands'] = PluginMonitoringCommand::$command_prefix . $pmNotificationcommand->fields['command_name'];
-      } else {
-         $a_contacts[$i]['service_notification_commands'] = '';
-      }
-      $pmNotificationcommand->getFromDB($a_pmcontact['host_notification_commands']);
-      if (isset($pmNotificationcommand->fields['command_name'])) {
-         $a_contacts[$i]['host_notification_commands'] = PluginMonitoringCommand::$command_prefix . $pmNotificationcommand->fields['command_name'];
-      } else {
-         $a_contacts[$i]['host_notification_commands'] = '';
-      }
-
-      // Get first email
-      $a_emails = UserEmail::getAllForUser($users_id);
-      $first = 0;
-      foreach ($a_emails as $email) {
-         if ($first == 0) {
-            $a_contacts[$i]['email'] = $email;
+         if (!isset($a_pmcontact['host_notification_period'])) {
+            $a_calendars = current($calendar->find("", "", 1));
+            $cal = '24x7';
+            if (isset($a_calendars['name'])) {
+               $cal = $a_calendars['name'];
+            }
+            $a_pmcontact['host_notifications_enabled'] = '0';
+            $a_pmcontact['service_notifications_enabled'] = '0';
+            $a_pmcontact['service_notification_period'] = $cal;
+            $a_pmcontact['host_notification_period'] = $cal;
+            $a_pmcontact['service_notification_options_w'] = '0';
+            $a_pmcontact['service_notification_options_u'] = '0';
+            $a_pmcontact['service_notification_options_c'] = '0';
+            $a_pmcontact['service_notification_options_r'] = '0';
+            $a_pmcontact['service_notification_options_f'] = '0';
+            $a_pmcontact['service_notification_options_n'] = '0';
+            $a_pmcontact['host_notification_options_d'] = '0';
+            $a_pmcontact['host_notification_options_u'] = '0';
+            $a_pmcontact['host_notification_options_r'] = '0';
+            $a_pmcontact['host_notification_options_f'] = '0';
+            $a_pmcontact['host_notification_options_s'] = '0';
+            $a_pmcontact['host_notification_options_n'] = '0';
+            $a_pmcontact['service_notification_commands'] = '2';
+            $a_pmcontact['host_notification_commands'] = '1';
          }
-         $first++;
-      }
-      if (!isset($a_contacts[$i]['email'])) {
-         $a_contacts[$i]['email'] = '';
-      }
-      $a_contacts[$i]['pager'] = $user->fields['phone'];
+         $a_contacts[$i]['host_notifications_enabled'] = $a_pmcontact['host_notifications_enabled'];
+         $a_contacts[$i]['service_notifications_enabled'] = $a_pmcontact['service_notifications_enabled'];
 
-      if (isset($a_pmcontact['shinken_administrator'])) {
-         $a_contacts[$i]['is_admin'] = $a_pmcontact['shinken_administrator'];
-      } else {
-         $a_contacts[$i]['is_admin'] = self::$shinkenParameters['webui']['contacts']['is_admin'];
-      }
-      if (isset($a_pmcontact['shinken_can_submit_commands'])) {
-         $a_contacts[$i]['can_submit_commands'] = $a_pmcontact['shinken_can_submit_commands'];
-      } else {
-         $a_contacts[$i]['can_submit_commands'] = self::$shinkenParameters['webui']['contacts']['can_submit_commands'];
-      }
-      if (empty($user->fields['password'])) {
-         $a_contacts[$i]['password'] = self::$shinkenParameters['webui']['contacts']['password'];
-      } else {
-         $a_contacts[$i]['password'] = $user->fields['password'];
-      }
+         $calendar->getFromDB($a_pmcontact['service_notification_period']);
+         if (isset($calendar->fields['name'])) {
+            $a_contacts[$i]['service_notification_period'] = $calendar->fields['name'];
+         } else {
+            $a_contacts[$i]['service_notification_period'] = '24x7';
+         }
 
-      /*
-      TODO:
-      address1, address2, ..., address6 are available in Shinken
-      */
+         $calendar->getFromDB($a_pmcontact['host_notification_period']);
+         if (isset($calendar->fields['name'])) {
+            $a_contacts[$i]['host_notification_period'] = $calendar->fields['name'];
+         } else {
+            $a_contacts[$i]['host_notification_period'] = '24x7';
+         }
 
+         $a_servicenotif = array();
+         if ($a_pmcontact['service_notification_options_w'] == '1')
+            $a_servicenotif[] = "w";
+         if ($a_pmcontact['service_notification_options_u'] == '1')
+            $a_servicenotif[] = "u";
+         if ($a_pmcontact['service_notification_options_c'] == '1')
+            $a_servicenotif[] = "c";
+         if ($a_pmcontact['service_notification_options_r'] == '1')
+            $a_servicenotif[] = "r";
+         if ($a_pmcontact['service_notification_options_f'] == '1')
+            $a_servicenotif[] = "f";
+         if ($a_pmcontact['service_notification_options_n'] == '1')
+            $a_servicenotif = array("n");
+         if (count($a_servicenotif) == "0")
+            $a_servicenotif = array("n");
+         $a_contacts[$i]['service_notification_options'] = implode(",", $a_servicenotif);
+
+         $a_hostnotif = array();
+         if ($a_pmcontact['host_notification_options_d'] == '1')
+            $a_hostnotif[] = "d";
+         if ($a_pmcontact['host_notification_options_u'] == '1')
+            $a_hostnotif[] = "u";
+         if ($a_pmcontact['host_notification_options_r'] == '1')
+            $a_hostnotif[] = "r";
+         if ($a_pmcontact['host_notification_options_f'] == '1')
+            $a_hostnotif[] = "f";
+         if ($a_pmcontact['host_notification_options_s'] == '1')
+            $a_hostnotif[] = "s";
+         if ($a_pmcontact['host_notification_options_n'] == '1')
+            $a_hostnotif = array("n");
+         if (count($a_hostnotif) == "0")
+            $a_hostnotif = array("n");
+         $a_contacts[$i]['host_notification_options'] = implode(",", $a_hostnotif);
+
+         $pmNotificationcommand->getFromDB($a_pmcontact['service_notification_commands']);
+         if (isset($pmNotificationcommand->fields['command_name'])) {
+            $a_contacts[$i]['service_notification_commands'] = PluginMonitoringCommand::$command_prefix . $pmNotificationcommand->fields['command_name'];
+         } else {
+            $a_contacts[$i]['service_notification_commands'] = '';
+         }
+         $pmNotificationcommand->getFromDB($a_pmcontact['host_notification_commands']);
+         if (isset($pmNotificationcommand->fields['command_name'])) {
+            $a_contacts[$i]['host_notification_commands'] = PluginMonitoringCommand::$command_prefix . $pmNotificationcommand->fields['command_name'];
+         } else {
+            $a_contacts[$i]['host_notification_commands'] = '';
+         }
+
+         // Get first email
+         $a_emails = UserEmail::getAllForUser($users_id);
+         $first = 0;
+         foreach ($a_emails as $email) {
+            if ($first == 0) {
+               $a_contacts[$i]['email'] = $email;
+            }
+            $first++;
+         }
+         if (!isset($a_contacts[$i]['email'])) {
+            $a_contacts[$i]['email'] = '';
+         }
+         $a_contacts[$i]['pager'] = $user->fields['phone'];
+
+         if (isset($a_pmcontact['shinken_administrator'])) {
+            $a_contacts[$i]['is_admin'] = $a_pmcontact['shinken_administrator'];
+         } else {
+            $a_contacts[$i]['is_admin'] = self::$shinkenParameters['webui']['contacts']['is_admin'];
+         }
+         if (isset($a_pmcontact['shinken_can_submit_commands'])) {
+            $a_contacts[$i]['can_submit_commands'] = $a_pmcontact['shinken_can_submit_commands'];
+         } else {
+            $a_contacts[$i]['can_submit_commands'] = self::$shinkenParameters['webui']['contacts']['can_submit_commands'];
+         }
+         if (empty($user->fields['password'])) {
+            $a_contacts[$i]['password'] = self::$shinkenParameters['webui']['contacts']['password'];
+         } else {
+            $a_contacts[$i]['password'] = $user->fields['password'];
+         }
+
+         /*
+         TODO:
+         address1, address2, ..., address6 are available in Shinken
+         */
+      }
       return $a_contacts;
    }
 
