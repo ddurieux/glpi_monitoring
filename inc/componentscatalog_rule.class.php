@@ -296,6 +296,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
          }
 
          $data = Search::prepareDatasForSearch($itemtype, $params);
+         $data['search']['export_all'] = true;
          Search::constructSQL($data);
 
          $DBread = DBConnection::getReadConnection();
