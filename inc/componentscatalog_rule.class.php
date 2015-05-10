@@ -495,6 +495,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
          $params = Search::manageParams($itemtype, $condition, FALSE);
 
          $datar = Search::prepareDatasForSearch($itemtype, $params);
+         $datar['search']['export_all'] = true;
          Search::constructSQL($datar);
 
          $DBread = DBConnection::getReadConnection();
