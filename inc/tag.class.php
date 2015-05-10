@@ -333,7 +333,9 @@ class PluginMonitoringTag extends CommonDBTM {
          curl_setopt($ch,CURLOPT_TIMEOUT, 4);
          $ret = curl_exec($ch);
          curl_close($ch);
-         if ($ret != '') {
+         if (strstr($ret, 'Not found')) {
+            $ok = false;
+         } else if ($ret != '') {
             foreach (json_decode($ret) as $module=>$dataret) {
                if ($dataret[0]->alive != 1) {
                   $ok = false;
