@@ -189,7 +189,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
       echo "<table class='tab_cadre' width='100%'>";
       echo "<tr>";
       echo "<td>";
-      echo "<a onClick='Ext.get(\"weathermapform\").toggle();'>
+      echo "<a onClick='$( \"#weathermapform\" ).toggle();'>
       <img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' />&nbsp;
          ".__('Display weathermap form', 'monitoring')."
       &nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/deplier_down.png' /></a>";
