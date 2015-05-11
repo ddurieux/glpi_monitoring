@@ -94,11 +94,14 @@ function plugin_init_monitoring() {
               array('addtabon' => array('Computer')));
          Plugin::registerClass('PluginMonitoringServiceevent',
               array('addtabon' => array('Computer')));
-         Plugin::registerClass('PluginMonitoringHostCounter');
+         // Plugin::registerClass('PluginMonitoringHostCounter');
 
-         include_once GLPI_ROOT.'/plugins/monitoring/inc/security.class.php';
-         $pmSecurity = new PluginMonitoringSecurity();
-         $pmSecurity->updateSecurity();
+//         include_once GLPI_ROOT.'/plugins/monitoring/inc/security.class.php';
+//         $pmSecurity = new PluginMonitoringSecurity();
+//         $pmSecurity->updateSecurity();
+         if (class_exists('PluginAppliancesAppliance')) {
+           PluginAppliancesAppliance::registerType('PluginMonitoringServicescatalog');
+         }
 
 
          $PLUGIN_HOOKS['use_massive_action']['monitoring']=1;
@@ -127,6 +130,7 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['headings_action']['monitoring'] = 'plugin_headings_actions_monitoring';
 
          // Icons add, search...
+         // Still useful to declare all that stuff ? Menu is ok without this ...
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['command'] = 'front/command.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['command'] = 'front/command.php';
 
@@ -184,6 +188,7 @@ function plugin_init_monitoring() {
          if (isset($_SESSION["glpiname"])) {
 
             // Fil ariane
+            // Still useful to declare all that stuff ? Menu is ok without this ...
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['check']['title'] = __('Check definition', 'monitoring');
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['check']['page']  = '/plugins/monitoring/front/check.php';
 
@@ -272,10 +277,11 @@ function plugin_init_monitoring() {
                                              array('PluginMonitoringComponentscatalog','replayRulesCatalog'),
                                        'PluginMonitoringComponentscatalog_rule' =>
                                              array('PluginMonitoringComponentscatalog_rule','getItemsDynamicly'));
-         $PLUGIN_HOOKS['pre_item_update']['monitoring'] =
-                                 array('PluginMonitoringHostdailycounter' =>
-                                             array('PluginMonitoringHostdailycounter','pre_item_update')
-                                 );
+         // No more hosts counters ...
+         // $PLUGIN_HOOKS['pre_item_update']['monitoring'] =
+                                 // array('PluginMonitoringHostdailycounter' =>
+                                             // array('PluginMonitoringHostdailycounter','pre_item_update')
+                                 // );
 
          $PLUGIN_HOOKS['item_delete']['monitoring'] =
                                  array('Profile_User' =>

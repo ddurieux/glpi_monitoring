@@ -29,7 +29,7 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author Frederic Mohier
+   @co-author Frédéric Mohier
    @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
@@ -42,32 +42,12 @@
 
 include ("../../../inc/includes.php");
 
-Session::checkRight("plugin_monitoring_componentscatalog", 'r');
+Session::checkRight("config", 'r');
 
-Html::header(__('Monitoring - services notifications templates', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "servicenotificationtemplates");
+Html::header(__('Monitoring - Shinken states', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
+             "PluginMonitoringDashboard", "shinkenstate");
 
-$pmSN_template = new PluginMonitoringServicenotificationtemplate();
-if (isset($_POST["add"])) {
-   if (!isset($_POST['users_id'])
-           OR $_POST['users_id'] != "0") {
-      $pmSN_template->add($_POST);
-   }
-   Html::back();
-} else if (isset ($_POST["update"])) {
-   $pmSN_template->update($_POST);
-   Html::back();
-} else if (isset ($_POST["delete"])) {
-   $pmSN_template->delete($_POST);
-   Html::back();
-}
-
-
-if (isset($_GET["id"])) {
-   $pmSN_template->showForm($_GET["id"]);
-} else {
-   $pmSN_template->showForm("");
-}
+Search::show('PluginMonitoringShinkenState');
 
 Html::footer();
 

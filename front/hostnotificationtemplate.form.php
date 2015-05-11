@@ -29,7 +29,7 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author
+   @co-author Frederic Mohier
    @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
@@ -42,10 +42,10 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("config","r");
+Session::checkRight("plugin_monitoring_componentscatalog", 'r');
 
 Html::header(__('Monitoring - hosts notifications templates', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "hostnotificationtemplates");
+             "monitoring", "hostnotificationtemplate");
 
 $pmHN_template = new PluginMonitoringHostnotificationtemplate();
 if (isset($_POST["add"])) {

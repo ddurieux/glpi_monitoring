@@ -29,7 +29,7 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author
+   @co-author Frederic Mohier
    @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
@@ -60,13 +60,13 @@ class PluginMonitoringHostnotificationtemplate extends CommonDBTM {
 
 
    static function canCreate() {
-      return PluginMonitoringProfile::haveRight("config", 'w');
+      return PluginMonitoringProfile::haveRight("config_components_catalogs", 'w');
    }
 
 
 
    static function canView() {
-      return PluginMonitoringProfile::haveRight("config", 'r');
+      return PluginMonitoringProfile::haveRight("config_components_catalogs", 'r');
    }
 
 
@@ -245,7 +245,7 @@ class PluginMonitoringHostnotificationtemplate extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Send notifications when host or service scheduled downtime starts and ends', 'monitoring')."&nbsp;:</td>";
+      echo "<td>".__('Notify when host scheduled downtime starts and ends', 'monitoring')."&nbsp;:</td>";
       echo "<td align='center'>";
       Dropdown::showYesNo('host_notification_options_s', $this->fields['host_notification_options_s']);
       echo "</td>";
