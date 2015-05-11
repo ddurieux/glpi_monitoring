@@ -644,7 +644,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             echo "<tr class='tab_bg_1'>";
             echo "<table class='tab_cadrehov' style='height: auto;' id='entity-$id-$entityId' onClick='javascript: toggleEntity(\"entity-$id-$entityId\");'>";
             $overallServicesState = 'OK';
-            echo "<tr class='header'><th class='left' style='height:50px;' colspan='".(count($services))."'>".$pmEntity->fields['name']."</th></tr>";
+            echo "<tr class='header'><th class='left' colspan='".(count($services))."'>".$pmEntity->fields['name']."</th></tr>";
          }
          $field_id = 20;
          if ($hosts_ids[$hosts_id]['itemtype'] == 'Printer') {
@@ -664,9 +664,9 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                  . "&start=0'";
 
          if ($hosts_states[$hosts_id]) {
-            echo  "<tr class='services tab_bg_2' style='display:none;'>";
+            echo  "<tr class='services tab_bg_2'>";
          } else {
-            echo  "<tr class='services tab_bg_3' style='display:none;'>";
+            echo  "<tr class='services tab_bg_3'>";
          }
          // echo "<td><div style='width: 5px !important;'>&nbsp;</div></td>";
          if (Session::haveRight("plugin_monitoring_service", READ)) {
