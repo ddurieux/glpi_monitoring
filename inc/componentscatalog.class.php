@@ -530,7 +530,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                  . "&start=0";
       }
 
-      if (Session::haveRight("plugin_monitoring_service", READ)) {
+      if (Session::haveRight("plugin_monitoring_servicescatalog", PluginMonitoringService::DASHBOARD)) {
          $link_catalog = $CFG_GLPI['root_doc'].
             "/plugins/monitoring/front/service.php?hidesearch=1"
 //                 . "&reset=reset"
