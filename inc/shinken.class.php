@@ -1145,6 +1145,9 @@ class PluginMonitoringShinken extends CommonDBTM {
             $notadd = 0;
             $notadddescription = '';
             $a_component = current($pmComponent->find("`id`='".$data['plugin_monitoring_components_id']."'", "", 1));
+            if (empty($a_component)) {
+               continue;
+            }
             $a_hostname = array();
             $a_hostname_type = array();
             $a_hostname_id = array();
@@ -1920,6 +1923,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             " - add template ".'template'.$data['id'].'-service'."\n"
          );
          $a_servicetemplates[$i]['name'] = self::shinkenFilter('servicetemplate-'.$data['id']);
+         // Alias is not used by Shinken !
          $a_servicetemplates[$i]['alias'] = $data['description'].' / '.$data['name'];
          if (isset ($data['business_priority'])) {
             $a_servicetemplates[$i]['business_impact'] = $data['business_priority'];
@@ -2164,8 +2168,8 @@ Nagios configuration file :
       foreach ($a_entities_allowed as $entity) {
          $a_entities_list = getSonsOf("glpi_entities", $entity);
       }
-	  // Always add root entity
-      $a_entities_list[] = '0';
+	   // Do not always add root entity contacts !
+      // $a_entities_list[] = '0';
       $where = '';
       if (! isset($a_entities_allowed['-1'])) {
          $where = getEntitiesRestrictRequest("WHERE", "glpi_plugin_monitoring_contacts_items", '', $a_entities_list);
@@ -2470,11 +2474,11 @@ Nagios configuration file :
             `glpi_entities`.`entities_id`
             , `glpi_plugin_monitoring_contacttemplates`.`host_notification_period`
          FROM `glpi_plugin_monitoring_contacts_items`
-         INNER JOIN `glpidb`.`glpi_entities` 
+         INNER JOIN `glpi_entities` 
             ON (`glpi_plugin_monitoring_contacts_items`.`entities_id` = `glpi_entities`.`id`)
-         INNER JOIN `glpidb`.`glpi_plugin_monitoring_contacts` 
+         INNER JOIN `glpi_plugin_monitoring_contacts` 
             ON (`glpi_plugin_monitoring_contacts`.`users_id` = `glpi_plugin_monitoring_contacts_items`.`users_id`)
-         INNER JOIN `glpidb`.`glpi_plugin_monitoring_contacttemplates` 
+         INNER JOIN `glpi_plugin_monitoring_contacttemplates` 
             ON (`glpi_plugin_monitoring_contacts`.`plugin_monitoring_contacttemplates_id` = `glpi_plugin_monitoring_contacttemplates`.`id`)
          $where ";
       $result = $DB->query($query);

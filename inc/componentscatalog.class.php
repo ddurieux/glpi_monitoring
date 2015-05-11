@@ -305,8 +305,8 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                                     // 'value'=>$this->fields['servicesnotification_id']
                                     // ));
             Dropdown::show("PluginMonitoringServicenotificationtemplate", array(
-                                   'name' =>'hostsnotification_id',
-                                    'value'=>$this->fields['hostsnotification_id']
+                                   'name' =>'servicesnotification_id',
+                                    'value'=>$this->fields['servicesnotification_id']
                                     ));
             break;
       }
