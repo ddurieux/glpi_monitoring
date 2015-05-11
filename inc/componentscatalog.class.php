@@ -590,7 +590,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
 
       // Header with services name and link to services list ...
       echo "<tr>";
-      echo "<th colspan='2'>";
+      echo "<th>";
       echo __('Hosts', 'monitoring');
       echo "</th>";
       for ($i = 0; $i < count($services); $i++) {
@@ -628,7 +628,6 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          $pmHost->getFromDB($hosts_ids[$hosts_id]['id']);
          if ($entityId != $pmHost->fields['entities_id']) {
             if ($entityId != -1) {
-               echo "</table>";
                if ($overallServicesState != 'OK') {
                   echo "<script>
                      Ext.onReady(function(){
@@ -641,8 +640,6 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             $entityId = $pmHost->fields['entities_id'];
             $pmEntity = new Entity();
             $pmEntity->getFromDB($entityId);
-            echo "<tr class='tab_bg_1'>";
-            echo "<table class='tab_cadrehov' style='height: auto;' id='entity-$id-$entityId' onClick='javascript: toggleEntity(\"entity-$id-$entityId\");'>";
             $overallServicesState = 'OK';
             echo "<tr class='header'><th class='left' colspan='".(count($services))."'>".$pmEntity->fields['name']."</th></tr>";
          }
