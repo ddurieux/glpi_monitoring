@@ -29,7 +29,7 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author Frederic Mohier
+   @co-author Frédéric Mohier
    @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
@@ -42,32 +42,16 @@
 
 include ("../../../inc/includes.php");
 
-PluginMonitoringProfile::checkRight("config_components_catalogs","r");
-
-Html::header(__('Monitoring - services notifications templates', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "servicenotificationtemplates");
-
-$pmSN_template = new PluginMonitoringServicenotificationtemplate();
-if (isset($_POST["add"])) {
-   if (!isset($_POST['users_id'])
-           OR $_POST['users_id'] != "0") {
-      $pmSN_template->add($_POST);
-   }
-   Html::back();
-} else if (isset ($_POST["update"])) {
-   $pmSN_template->update($_POST);
-   Html::back();
-} else if (isset ($_POST["delete"])) {
-   $pmSN_template->delete($_POST);
-   Html::back();
-}
-
-
-if (isset($_GET["id"])) {
-   $pmSN_template->showForm($_GET["id"]);
+if (version_compare(GLPI_VERSION,'0.85','lt')) {
+   Session::checkRight("config", 'r');
 } else {
-   $pmSN_template->showForm("");
+   Session::checkRight("config", READ);
 }
+
+Html::header(__('Monitoring - Shinken states', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
+             "PluginMonitoringDashboard", "shinkenstate");
+
+Search::show('PluginMonitoringShinkenState');
 
 Html::footer();
 

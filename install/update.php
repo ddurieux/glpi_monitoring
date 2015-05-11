@@ -101,6 +101,51 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $unavailability_reset = 1;
    }
 
+   /*
+   * Table glpi_plugin_monitoring_shinkenstates
+   */
+   $newTable = "glpi_plugin_monitoring_shinkenstates";
+   if (!TableExists($newTable)) {
+      $query = "CREATE TABLE `".$newTable."` (
+                     `id` int(11) NOT NULL AUTO_INCREMENT,
+                     `hostname` varchar(255) DEFAULT NULL,
+                     `service` varchar(255) DEFAULT NULL,
+                     `state` varchar(255) DEFAULT NULL,
+                     `state_type` varchar(255) DEFAULT NULL,
+                     `last_check` datetime DEFAULT NULL,
+                     `last_output` text DEFAULT NULL,
+                     `last_perfdata` text DEFAULT NULL,
+                     `is_ack` tinyint(1) DEFAULT 0,
+                     PRIMARY KEY (`id`)
+                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->query($query);
+   }
+   $migration->addField($newTable,
+                        'hostname',
+                        "varchar(255) DEFAULT NULL");
+   $migration->addField($newTable,
+                        'service',
+                        "varchar(255) DEFAULT NULL");
+   $migration->addField($newTable,
+                        'state',
+                        "varchar(255) DEFAULT NULL");
+   $migration->addField($newTable,
+                        'state_type',
+                        "varchar(255) DEFAULT NULL");
+   $migration->addField($newTable,
+                        'last_check',
+                        "datetime DEFAULT NULL");
+   $migration->addField($newTable,
+                        'last_output',
+                        "text DEFAULT NULL");
+   $migration->addField($newTable,
+                        'last_perfdata',
+                        "text DEFAULT NULL");
+   $migration->addField($newTable,
+                        'is_ack',
+                        "tinyint(1) DEFAULT 0");
+   $migration->migrationOneTable($newTable);
+
     /*
     * Table glpi_plugin_monitoring_servicescatalogs
     */
@@ -600,7 +645,6 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->addField($newTable,
                               'freshness_type',
                               "varchar(255) DEFAULT 'seconds'");
-         // 0.84+1.4
          $migration->addField($newTable,
                               'business_priority',
                               "tinyint(1) NOT NULL DEFAULT '3'");
@@ -914,6 +958,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                         `service_notification_options_c` tinyint(1) NOT NULL DEFAULT '1',
                         `service_notification_options_r` tinyint(1) NOT NULL DEFAULT '1',
                         `service_notification_options_f` tinyint(1) NOT NULL DEFAULT '0',
+                        `service_notification_options_s` tinyint(1) NOT NULL DEFAULT '1',
                         `service_notification_options_n` tinyint(1) NOT NULL DEFAULT '0',
                         PRIMARY KEY (`id`)
                      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
@@ -986,6 +1031,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          $migration->changeField($newTable,
                                  'service_notification_options_f',
                                  'service_notification_options_f',
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable,
+                                 'service_notification_options_s',
+                                 'service_notification_options_s',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->changeField($newTable,
                                  'service_notification_options_n',
@@ -1062,6 +1111,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  "tinyint(1) NOT NULL DEFAULT '1'");
          $migration->addField($newTable,
                                  'service_notification_options_f',
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                                 'service_notification_options_s',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
                                  'service_notification_options_n',
@@ -1666,6 +1718,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          'computers_id' => array('type' => 'integer',       'value'   => NULL),
          'jetlag'       => array('type' => 'varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL',
                                  'value'   => '0'),
+         'graphite_prefix' =>
+                           array('type' => 'varchar(255) COLLATE utf8_unicode_ci DEFAULT ''',
+                                 'value'   => ''),
       );
 
       $a_table['oldfields']  = array(
