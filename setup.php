@@ -107,18 +107,21 @@ function plugin_init_monitoring() {
 
          $plugin = new Plugin();
          if ($plugin->isActivated('monitoring')) {
-            $PLUGIN_HOOKS['menu_toadd']['monitoring'] = array('plugins' => 'PluginMonitoringDashboard');
-            $PLUGIN_HOOKS["helpdesk_menu_entry"]['monitoring'] = '/front/dashboard.php';
-         }
-         if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-            $profile = new Profile();
-            if ($profile->getFromDB($_SESSION['glpiactiveprofile']['id'])) {
-               $prof = array();
-               foreach ($profile->fields as $rname=>$right) {
-                  if (substr($rname, 0, 18) === 'plugin_monitoring_') {
-                     $_SESSION['glpiactiveprofile'][$rname] = $right;
+            if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+               $profile = new Profile();
+               if ($profile->getFromDB($_SESSION['glpiactiveprofile']['id'])) {
+                  $prof = array();
+                  foreach ($profile->fields as $rname=>$right) {
+                     if (substr($rname, 0, 18) === 'plugin_monitoring_') {
+                        $_SESSION['glpiactiveprofile'][$rname] = $right;
+                     }
                   }
                }
+            }
+
+            $PLUGIN_HOOKS['menu_toadd']['monitoring'] = array('plugins' => 'PluginMonitoringDashboard');
+            if (Session::haveRight("plugin_monitoring_dashboard", READ)) {
+               $PLUGIN_HOOKS["helpdesk_menu_entry"]['monitoring'] = '/front/dashboard.php';
             }
          }
 
