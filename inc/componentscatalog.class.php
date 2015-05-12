@@ -257,7 +257,16 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    function getAdditionalFields() {
       return array(array('name'  => 'notification_interval',
                          'label' => __('Interval between 2 notifications (in minutes)', 'monitoring'),
-                         'type'  => 'notificationinterval'));
+                         'type'  => 'notificationinterval')
+                  ,
+                  array('name'  => 'hostsnotification_id',
+                         'label' => __('Hosts notification options', 'monitoring'),
+                         'type'  => 'hostsnotification_id')
+                  ,
+                  array('name'  => 'servicesnotification_id',
+                         'label' => __('Services notification options', 'monitoring'),
+                         'type'  => 'servicesnotification_id')
+                  );
    }
 
 
@@ -307,6 +316,34 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                 // 'max'   => 2880,
                 // 'step'  => 10)
             // );
+            break;
+            
+         case 'hostsnotification_id' :
+            if ($ID <= 0) {
+               $this->fields['hostsnotification_id'] = -1;
+            }
+            // Dropdown::show("PluginMonitoringContacttemplate", array(
+                                   // 'name' =>'hostsnotification_id',
+                                    // 'value'=>$this->fields['hostsnotification_id']
+                                    // ));
+            Dropdown::show("PluginMonitoringHostnotificationtemplate", array(
+                                   'name' =>'hostsnotification_id',
+                                    'value'=>$this->fields['hostsnotification_id']
+                                    ));
+            break;
+            
+         case 'servicesnotification_id' :
+            if ($ID <= 0) {
+               $this->fields['servicesnotification_id'] = -1;
+            }
+            // Dropdown::show("PluginMonitoringContacttemplate", array(
+                                   // 'name' =>'servicesnotification_id',
+                                    // 'value'=>$this->fields['servicesnotification_id']
+                                    // ));
+            Dropdown::show("PluginMonitoringServicenotificationtemplate", array(
+                                   'name' =>'servicesnotification_id',
+                                    'value'=>$this->fields['servicesnotification_id']
+                                    ));
             break;
       }
    }
