@@ -123,6 +123,22 @@ class PluginMonitoringDashboard extends CommonGLPI {
                   'search' => '/plugins/monitoring/front/contacttemplate.php',
                   'add'    => '/plugins/monitoring/front/contacttemplate.form.php'
               )),
+         'hostnotificationtemplate' => array(
+              'title' => PluginMonitoringHostnotificationtemplate::getTypeName(),
+              'page'  => PluginMonitoringHostnotificationtemplate::getSearchURL(false),
+              'links' => array(
+                  $main_menu => '/plugins/monitoring/front/menu.php',
+                  'search' => '/plugins/monitoring/front/hostnotificationtemplate.php',
+                  'add'    => '/plugins/monitoring/front/hostnotificationtemplate.form.php'
+              )),
+         'servicenotificationtemplate' => array(
+              'title' => PluginMonitoringServicenotificationtemplate::getTypeName(),
+              'page'  => PluginMonitoringServicenotificationtemplate::getSearchURL(false),
+              'links' => array(
+                  $main_menu => '/plugins/monitoring/front/menu.php',
+                  'search' => '/plugins/monitoring/front/servicenotificationtemplate.php',
+                  'add'    => '/plugins/monitoring/front/servicenotificationtemplate.form.php'
+              )),
          'notificationcommand' => array(
               'title' => PluginMonitoringNotificationcommand::getTypeName(),
               'page'  => PluginMonitoringNotificationcommand::getSearchURL(false),

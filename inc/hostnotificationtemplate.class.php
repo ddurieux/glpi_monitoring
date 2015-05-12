@@ -29,7 +29,7 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author
+   @co-author Frederic Mohier
    @comment
    @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
@@ -60,13 +60,19 @@ class PluginMonitoringHostnotificationtemplate extends CommonDBTM {
 
 
    static function canCreate() {
-      return Session::haveRight("plugin_monitoring_config", WRITE);
+      return Session::haveRight("plugin_monitoring_componentscatalog", CREATE);
+   }
+
+
+
+   static function canUpdate() {
+      return Session::haveRight("plugin_monitoring_componentscatalog", UPDATE);
    }
 
 
 
    static function canView() {
-      return Session::haveRight("plugin_monitoring_config", READ);
+      return Session::haveRight("plugin_monitoring_componentscatalog", READ);
    }
 
 
