@@ -87,13 +87,13 @@ function plugin_init_monitoring() {
               array('addtabon' => array('Computer')));
          Plugin::registerClass('PluginMonitoringServiceevent',
               array('addtabon' => array('Computer')));
-         Plugin::registerClass('PluginMonitoringHostCounter');
+         // Plugin::registerClass('PluginMonitoringHostCounter');
 
-		if (class_exists('PluginAppliancesAppliance')) {
+         if (class_exists('PluginAppliancesAppliance')) {
            PluginAppliancesAppliance::registerType('PluginMonitoringServicescatalog');
-        }
-
-
+         }
+       
+       
          $PLUGIN_HOOKS['use_massive_action']['monitoring']=1;
          $PLUGIN_HOOKS['add_css']['monitoring'] = array(
             "lib/nvd3/src/nv.d3.css",
@@ -106,8 +106,9 @@ function plugin_init_monitoring() {
 //             "lib/jqueryplugins/jquery-tagbox/js/jquery.tagbox.js"
              );
 
-         $plugin = new Plugin();
-         if ($plugin->isActivated('monitoring')) {
+         // Still tested ... if we are here it is because the plugin is activated !
+         // $plugin = new Plugin();
+         // if ($plugin->isActivated('monitoring')) {
 
 //            $PLUGIN_HOOKS['menu_entry']['monitoring'] = true;
 
@@ -115,7 +116,7 @@ function plugin_init_monitoring() {
 //            $PLUGIN_HOOKS["helpdesk_menu_entry"]['monitoring'] = false;
 
             $PLUGIN_HOOKS['menu_toadd']['monitoring'] = array('plugins' => 'PluginMonitoringDashboard');
-         }
+         // }
 
          $PLUGIN_HOOKS['config_page']['monitoring'] = 'front/config.form.php';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['config'] = 'front/config.form.php';
@@ -125,6 +126,7 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['headings_action']['monitoring'] = 'plugin_headings_actions_monitoring';
 
          // Icons add, search...
+         // Still useful to declare all that stuff ? Menu is ok without this ...
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['command'] = 'front/command.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['command'] = 'front/command.php';
 
@@ -182,6 +184,7 @@ function plugin_init_monitoring() {
          if (isset($_SESSION["glpiname"])) {
 
             // Fil ariane
+            // Still useful to declare all that stuff ? Menu is ok without this ...
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['check']['title'] = __('Check definition', 'monitoring');
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['check']['page']  = '/plugins/monitoring/front/check.php';
 
@@ -268,10 +271,11 @@ function plugin_init_monitoring() {
                                              array('PluginMonitoringComponentscatalog','replayRulesCatalog'),
                                        'PluginMonitoringComponentscatalog_rule' =>
                                              array('PluginMonitoringComponentscatalog_rule','getItemsDynamicly'));
-         $PLUGIN_HOOKS['pre_item_update']['monitoring'] =
-                                 array('PluginMonitoringHostdailycounter' =>
-                                             array('PluginMonitoringHostdailycounter','pre_item_update')
-                                 );
+         // No more hosts counters ...
+         // $PLUGIN_HOOKS['pre_item_update']['monitoring'] =
+                                 // array('PluginMonitoringHostdailycounter' =>
+                                             // array('PluginMonitoringHostdailycounter','pre_item_update')
+                                 // );
 
          $PLUGIN_HOOKS['item_purge']['monitoring'] =
                                  array('Computer'         => $rule_check,
