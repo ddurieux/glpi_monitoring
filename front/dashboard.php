@@ -42,10 +42,14 @@
 
 include ("../../../inc/includes.php");
 
-Session::checkCentralAccess();
-
-Html::header(__('Monitoring - dashboard', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
-             "PluginMonitoringDashboard", "dashboard");
+if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+   Session::checkCentralAccess();
+   Html::header(__('Monitoring - dashboard', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
+                "PluginMonitoringDashboard", "dashboard");
+} else {
+   Session::checkHelpdeskAccess();
+   Html::helpHeader(__('Monitoring - dashboard', 'monitoring'), $_SERVER['PHP_SELF']);
+}
 
 Session::checkRight("plugin_monitoring_dashboard", READ);
 
@@ -56,5 +60,9 @@ $pmMessage->getMessages();
 
 $pmDisplay->menu();
 
-Html::footer();
+if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+   Html::footer();
+} else {
+   Html::helpFooter();
+}
 ?>

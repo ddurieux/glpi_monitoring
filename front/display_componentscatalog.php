@@ -42,11 +42,15 @@
 
 include ("../../../inc/includes.php");
 
-Session::checkCentralAccess();
-
-Html::header(__('Monitoring - dashboard (components catalogs)', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
-             "PluginMonitoringDashboard", "dashboard");
-
+$title = __('Monitoring - dashboard (components catalogs)', 'monitoring');
+if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+   Session::checkCentralAccess();
+   Html::header($title, $_SERVER["PHP_SELF"], "plugins",
+                "PluginMonitoringDashboard", "dashboard");
+} else {
+   Session::checkHelpdeskAccess();
+   Html::helpHeader($title, $_SERVER['PHP_SELF']);
+}
 
 // Display ressources perfdata ?
 if (isset($_SESSION['plugin_monitoring']['ressources_perfdata'])) {
@@ -74,5 +78,9 @@ $pmDisplay->showCounters("Componentscatalog");
 $pmComponentscatalog = new PluginMonitoringComponentscatalog();
 $pmComponentscatalog->showChecks($_SESSION['plugin_monitoring_reduced_interface']);
 
-Html::footer();
+if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+   Html::footer();
+} else {
+   Html::helpFooter();
+}
 ?>

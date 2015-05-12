@@ -119,9 +119,7 @@ class PluginMonitoringProfile extends Profile {
 
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
-      if ($item->fields['interface'] == 'central') {
-         return self::createTabEntry('Monitoring');
-      }
+      return self::createTabEntry('Monitoring');
    }
 
 

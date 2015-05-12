@@ -110,7 +110,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
                $redirect = TRUE;
             }
          }
-         if (Session::haveRight("plugin_monitoring_servicescatalog", PluginMonitoringService::DASHBOARD)) {
+         if (Session::haveRight("plugin_monitoring_componentscatalog", PluginMonitoringService::DASHBOARD)) {
             echo "<th colspan='2'>";
             $this->displayPuce('service');
             echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/service.php'>";
@@ -1569,10 +1569,13 @@ echo "
 
          // * Display perfname
          echo "<tr class='tab_bg_1'>";
-         echo "<td colspan='2'>";
-         echo "<div id='options' style='display:none'>";
+         echo "<td colspan='2' id='options' style='display:none'>";
+         //echo "<div id='options' style='display:none'>";
+
          PluginMonitoringToolbox::preferences($pmComponent->fields['id'], 0);
-         echo "</div>";
+
+
+         //echo "</div>";
          echo "</td>";
          echo "</tr>";
 

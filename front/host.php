@@ -42,10 +42,15 @@
 
 include ("../../../inc/includes.php");
 
-Session::checkCentralAccess();
-
-Html::header(__('Monitoring - dashboard (hosts)', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
-             "PluginMonitoringDashboard", "dashboard");
+$title = __('Monitoring - dashboard (hosts)', 'monitoring');
+if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+   Session::checkCentralAccess();
+   Html::header($title, $_SERVER["PHP_SELF"], "plugins",
+                "PluginMonitoringDashboard", "dashboard");
+} else {
+   Session::checkHelpdeskAccess();
+   Html::helpHeader($title, $_SERVER['PHP_SELF']);
+}
 
 $params = Search::manageParams("PluginMonitoringHost", $_GET);
 
@@ -103,5 +108,9 @@ if (isset($_SESSION['glpisearch']['PluginMonitoringHost']['reset'])) {
    unset($_SESSION['glpisearch']['PluginMonitoringHost']['reset']);
 }
 
-Html::footer();
+if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
+   Html::footer();
+} else {
+   Html::helpFooter();
+}
 ?>
