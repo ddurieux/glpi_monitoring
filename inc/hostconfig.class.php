@@ -370,7 +370,8 @@ class PluginMonitoringHostconfig extends CommonDBTM {
          }
       } else {
          $data = $DB->fetch_assoc($result);
-         if ($data[$fieldname] != '-1') {
+         // Fix #168 ...
+         if ( ($fieldname != 'jetlag' && $data[$fieldname] != '-1') || $fieldname == 'jetlag') {
             return $data[$fieldname];
          } else {
             $entities_ancestors = getAncestorsOf("glpi_entities", $entities_id);
