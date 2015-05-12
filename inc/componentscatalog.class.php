@@ -453,7 +453,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
 
                  . "&criteria[1][link]=AND"
                  . "&criteria[1][field]=9"
-                 . "&criteris[1][searchtype]=equals"
+                 . "&criteria[1][searchtype]=equals"
                  . "&criteria[1][value]=".$id
 
                  . "&itemtype=PluginMonitoringService"
