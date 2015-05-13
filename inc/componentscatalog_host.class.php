@@ -183,7 +183,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
 
       echo "<tr>";
       echo "<td colspan='2'>";
-      echo __('Add a new component', 'monitoring')."&nbsp;:";
+      echo __('Add a new host', 'monitoring')."&nbsp;:";
       echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$componentscatalogs_id."'/>";
       echo "<input type='hidden' name='is_static' value='1'/>";
       echo "</td>";
