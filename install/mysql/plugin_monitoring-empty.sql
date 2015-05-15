@@ -69,6 +69,7 @@ CREATE TABLE `glpi_plugin_monitoring_components` (
    `plugin_monitoring_eventhandlers_id` int(11) NOT NULL DEFAULT '0',
    `freshness_count` int(6) NOT NULL DEFAULT '0',
    `freshness_type` varchar(255) DEFAULT 'seconds',
+   `business_priority` tinyint(1) DEFAULT '3',
    PRIMARY KEY (`id`),
    KEY `plugin_monitoring_commands_id` (`plugin_monitoring_commands_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
