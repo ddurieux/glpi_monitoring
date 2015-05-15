@@ -2754,18 +2754,18 @@ echo "
          }
 
          if (count($a_tags) > 0) {
-            $shinken_commands = [
-                  'reload'    => [
+            $shinken_commands = array(
+                  'reload'    => array(
                         'command' => 'reload',
-                        'title' => __('Reload Shinken configuration from Glpi database', 'monitoring'),
-                        'button' => __('Reload Shinken config', 'monitoring'),
-                  ],
-                  'restart'   => [
+                        'title'   => __('Reload Shinken configuration from Glpi database', 'monitoring'),
+                        'button'  => __('Reload Shinken config', 'monitoring'),
+                  ),
+                  'restart'   => array(
                         'command' => 'restart',
-                        'title' => __('Restart all Shinken daemons', 'monitoring'),
-                        'button' => __('Restart Shinken', 'monitoring'),
-                  ],
-            ];
+                        'title'   => __('Restart all Shinken daemons', 'monitoring'),
+                        'button'  => __('Restart Shinken', 'monitoring'),
+                  ),
+            );
 
             foreach ($shinken_commands as $command) {
                echo "<table class='tab_cadre_fixe' width='950'>";
