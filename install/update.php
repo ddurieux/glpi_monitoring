@@ -101,6 +101,51 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $unavailability_reset = 1;
    }
 
+   /*
+   * Table glpi_plugin_monitoring_shinkenstates
+   */
+   $newTable = "glpi_plugin_monitoring_shinkenstates";
+   if (!TableExists($newTable)) {
+      $query = "CREATE TABLE `".$newTable."` (
+                     `id` int(11) NOT NULL AUTO_INCREMENT,
+                     `hostname` varchar(255) DEFAULT NULL,
+                     `service` varchar(255) DEFAULT NULL,
+                     `state` varchar(255) DEFAULT NULL,
+                     `state_type` varchar(255) DEFAULT NULL,
+                     `last_check` datetime DEFAULT NULL,
+                     `last_output` text DEFAULT NULL,
+                     `last_perfdata` text DEFAULT NULL,
+                     `is_ack` tinyint(1) DEFAULT 0,
+                     PRIMARY KEY (`id`)
+                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
+      $DB->query($query);
+   }
+   $migration->addField($newTable,
+                        'hostname',
+                        "varchar(255) DEFAULT NULL");
+   $migration->addField($newTable,
+                        'service',
+                        "varchar(255) DEFAULT NULL");
+   $migration->addField($newTable,
+                        'state',
+                        "varchar(255) DEFAULT NULL");
+   $migration->addField($newTable,
+                        'state_type',
+                        "varchar(255) DEFAULT NULL");
+   $migration->addField($newTable,
+                        'last_check',
+                        "datetime DEFAULT NULL");
+   $migration->addField($newTable,
+                        'last_output',
+                        "text DEFAULT NULL");
+   $migration->addField($newTable,
+                        'last_perfdata',
+                        "text DEFAULT NULL");
+   $migration->addField($newTable,
+                        'is_ack',
+                        "tinyint(1) DEFAULT 0");
+   $migration->migrationOneTable($newTable);
+   
     /*
     * Table glpi_plugin_monitoring_servicescatalogs
     */
