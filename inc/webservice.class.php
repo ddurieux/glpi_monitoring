@@ -114,11 +114,11 @@ class PluginMonitoringWebservice {
             $output[$array[0]] = $array[1];
             $array = $pmShinken->generateContactsCfg(1, $params['tag']);
             $output[$array[0]] = $array[1];
-            $array = $pmShinken->generateTimeperiodsCfg(1, $params['tag']);
-            $output[$array[0]] = $array[1];
             $array = $pmShinken->generateTemplatesCfg(1, $params['tag']);
             $output[$array[0]] = $array[1];
             $array = $pmShinken->generateServicesCfg(1, $params['tag']);
+            $output[$array[0]] = $array[1];
+            $array = $pmShinken->generateTimeperiodsCfg(1, $params['tag']);
             $output[$array[0]] = $array[1];
             return $output;
             break;
