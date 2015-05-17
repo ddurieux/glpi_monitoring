@@ -429,6 +429,7 @@ class PluginMonitoringCommand extends CommonDBTM {
    function showForm($items_id, $options=array(), $copy=array()) {
       global $DB,$CFG_GLPI;
 
+      $this->initForm($items_id, $options);
 
       if (count($copy) > 0) {
          foreach ($copy as $key=>$value) {
@@ -436,7 +437,6 @@ class PluginMonitoringCommand extends CommonDBTM {
          }
       }
 
-      $this->initForm($items_id, $options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";

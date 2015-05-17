@@ -224,16 +224,16 @@ class PluginMonitoringComponent extends CommonDBTM {
 
       $pMonitoringCommand = new PluginMonitoringCommand();
 
-      if (count($copy) > 0) {
-         foreach ($copy as $key=>$value) {
-            $this->fields[$key] = stripslashes($value);
-         }
-      }
-
       $this->initForm($items_id, $options);
       if ($this->fields['id'] == 0) {
          $this->fields['active_checks_enabled']  = 1;
          $this->fields['passive_checks_enabled'] = 1;
+      }
+
+      if (count($copy) > 0) {
+         foreach ($copy as $key=>$value) {
+            $this->fields[$key] = stripslashes($value);
+         }
       }
       $this->showFormHeader($options);
 
