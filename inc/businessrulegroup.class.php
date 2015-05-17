@@ -111,7 +111,7 @@ class PluginMonitoringBusinessrulegroup extends CommonDBTM {
             echo "<th colspan='2' width='60%'>";
             echo __('Resources', 'monitoring');
             echo "&nbsp;";
-            echo "<img onClick=\"Ext.get('ressources".$rand."').setDisplayed('block')\"
+            echo "<img onClick=\"$('#ressources".$rand."').show()\"
                        title=\"".__('add')."\" alt=\"".__('add')."\"
                        class='pointer'  src='".$CFG_GLPI["root_doc"]."/pics/add_dropdown.png'>";
 
