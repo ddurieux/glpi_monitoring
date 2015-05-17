@@ -260,6 +260,27 @@ echo "        <script>
       <input name="perfnameinvert" id="jquery-tagbox-select2" type="hidden" value="'.implode('####', $a_list_val2).'" />';
       echo "</td>";
 
+echo '      <div id="tagboxinv-container"></div>';
+echo "        <script>
+            $('#tagboxinv-container').tagbox({
+                taglist: ['".implode("', '", $a_list_val)."'],
+                selectedlist: ['".implode("', '", $a_list_val2)."'],
+                cols: 3,
+                maxtags: 4,
+                expand: true
+            });
+
+            $('#tagboxinv-container').on('tagAdded', function() {
+               $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updatePerfnameinvert.php"
+                    ."?components_id=".$components_id."&db=".$loadpreferences."&perfname=' + $('#tagboxinv-container').find('.tagbox').data('selected'));
+            });
+            $('#tagboxinv-container').on('tagRemoved', function() {
+               $.get('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updatePerfnameinvert.php"
+                    ."?components_id=".$components_id."&db=".$loadpreferences."&perfname=' + $('#tagboxinv-container').find('.tagbox').data('selected'));
+            });
+        </script>";
+
+
 //      foreach ($a_perfnames as $name) {
 //         if ($i == 'O'
 //                 AND $j == '1') {
