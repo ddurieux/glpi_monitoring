@@ -1982,7 +1982,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          'unavailability'   => array('type'    => 'tinyint(1) NOT NULL DEFAULT "0"',  'value'   => NULL),
       );
 
-      $a_table['oldfields']  = array();
+      $a_table['oldfields']  = array('output');
 
       $a_table['renamefields'] = array();
 
@@ -2005,7 +2005,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       migrateTablesMonitoring($migration, $a_table);
 
-      
+
 
     /*
     * Table glpi_plugin_monitoring_commands
