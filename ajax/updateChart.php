@@ -240,6 +240,6 @@ foreach ($mydatat as $name=>$data) {
    }
 }
 
-echo json_encode($a_data);
+echo json_encode($a_data, JSON_NUMERIC_CHECK);
 
 ?>
