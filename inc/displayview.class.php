@@ -455,22 +455,22 @@ class PluginMonitoringDisplayview extends CommonDBTM {
          echo "</div>";
       }
       echo "<div class='spaced'>";
+      $rand = mt_rand();
       if ($canedit && $nb) {
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $paramsma = array('num_displayed'    => $nb,
-                           'specific_actions' => array('deletevisibility'
-                                                         => _x('button', 'Delete permanently')) );
+         $paramsma = array('container'     => 'mass'.__CLASS__.$rand,
+                           'num_displayed' => $nb);
 
          if ($this->fields['users_id'] != Session::getLoginUserID()) {
             $paramsma['confirm'] = __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.');
          }
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
       }
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
       if ($canedit && $nb) {
          echo "<th width='10'>";
-         echo Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+         echo Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          echo "</th>";
       }
       echo "<th>".__('Type')."</th>";
@@ -484,8 +484,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[PluginMonitoringDisplayview_User][".$data["id"]."]'
-                          value='1' >";
+                  Html::showMassiveActionCheckBox('PluginMonitoringDisplayview_User', $data["id"]);
                   echo "</td>";
                }
                echo "<td>".__('User')."</td>";
@@ -502,8 +501,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[PluginMonitoringDisplayview_Group][".$data["id"]."]'
-                         value='1'>";
+                  Html::showMassiveActionCheckBox('PluginMonitoringDisplayview_Group', $data["id"]);
                   echo "</td>";
                }
                echo "<td>".__('Group')."</td>";
@@ -586,8 +584,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       echo "</table>";
       if ($canedit && $nb) {
          $paramsma['ontop'] =false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
-         Html::closeForm();
+         Html::showMassiveActions($paramsma);
       }
 
       echo "</div>";

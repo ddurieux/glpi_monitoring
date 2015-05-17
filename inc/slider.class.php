@@ -635,21 +635,21 @@ echo '    </div>
       }
       echo "<div class='spaced'>";
       if ($canedit && $nb) {
+         $rand = mt_rand();
          Html::openMassiveActionsForm('mass'.__CLASS__.$rand);
-         $paramsma = array('num_displayed'    => $nb,
-                           'specific_actions' => array('deletevisibility'
-                                                         => _x('button', 'Delete permanently')) );
+         $paramsma = array('container'     => 'mass'.__CLASS__.$rand,
+                           'num_displayed' => $nb);
 
          if ($this->fields['users_id'] != Session::getLoginUserID()) {
             $paramsma['confirm'] = __('Caution! You are not the author of this element. Delete targets can result in loss of access to that element.');
          }
-         Html::showMassiveActions(__CLASS__, $paramsma);
+         Html::showMassiveActions($paramsma);
       }
       echo "<table class='tab_cadre_fixehov'>";
       echo "<tr>";
       if ($canedit && $nb) {
          echo "<th width='10'>";
-         echo Html::checkAllAsCheckbox('mass'.__CLASS__.$rand);
+         echo Html::getCheckAllAsCheckbox('mass'.__CLASS__.$rand);
          echo "</th>";
       }
       echo "<th>".__('Type')."</th>";
@@ -663,8 +663,7 @@ echo '    </div>
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[PluginMonitoringSlider_User][".$data["id"]."]'
-                          value='1' >";
+                  Html::showMassiveActionCheckBox('PluginMonitoringSlider_User', $data["id"]);
                   echo "</td>";
                }
                echo "<td>".__('User')."</td>";
@@ -681,8 +680,7 @@ echo '    </div>
                echo "<tr class='tab_bg_2'>";
                if ($canedit) {
                   echo "<td>";
-                  echo "<input type='checkbox' name='item[PluginMonitoringSlider_Group][".$data["id"]."]'
-                         value='1'>";
+                  Html::showMassiveActionCheckBox('PluginMonitoringSlider_Group', $data["id"]);
                   echo "</td>";
                }
                echo "<td>".__('Group')."</td>";
@@ -765,8 +763,7 @@ echo '    </div>
       echo "</table>";
       if ($canedit && $nb) {
          $paramsma['ontop'] =false;
-         Html::showMassiveActions(__CLASS__, $paramsma);
-         Html::closeForm();
+         Html::showMassiveActions($paramsma);
       }
 
       echo "</div>";
