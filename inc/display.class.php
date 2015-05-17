@@ -1192,7 +1192,7 @@ echo "
          echo "</td>";
 
          echo "<td>";
-         echo Html::convDate($data[4]['displayname']).' '. substr($data[4]['displayname'], 11, 8);
+         echo $data[4]['displayname'];
          echo "</td>";
 
          echo "<td>";
@@ -1388,7 +1388,7 @@ echo "
       echo "</td>";
 
       echo "<td>";
-      echo Html::convDate($data[5]['displayname']).' '. substr($data[5]['displayname'], 11, 8);
+      echo $data[5]['displayname'];
       echo "</td>";
 
       echo "<td>";
