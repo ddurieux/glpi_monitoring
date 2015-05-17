@@ -634,7 +634,7 @@ class PluginMonitoringService extends CommonDBTM {
       }
       $params['criteria'][0] = array(
          'field'      => $num,
-         'searchtype' => 'is',
+         'searchtype' => 'equals',
          'value'      => $items_id
       );
       $col_to_display = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
