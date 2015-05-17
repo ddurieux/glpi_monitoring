@@ -107,7 +107,9 @@ function plugin_init_monitoring() {
 
          $plugin = new Plugin();
          if ($plugin->isActivated('monitoring')) {
-            if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+            if (isset($_SESSION["glpiactiveprofile"])
+                    && isset($_SESSION["glpiactiveprofile"]["interface"])
+                    && $_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
                $profile = new Profile();
                if ($profile->getFromDB($_SESSION['glpiactiveprofile']['id'])) {
                   $prof = array();
