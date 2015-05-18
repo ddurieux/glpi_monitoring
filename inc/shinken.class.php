@@ -76,7 +76,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          // Build fake hosts for parents relationship
          'fake_hosts' => array(
             // Default values
-            'build' => true,
+            'build' => false,
             // Default check command
             'check_command' => 'check_dummy!0!Fake host is up',
             // Default check_period
@@ -856,6 +856,10 @@ class PluginMonitoringShinken extends CommonDBTM {
                      // Notifications enabled for host
                      $a_hosts[$i]['notifications_enabled'] = '1';
                      
+                     PluginMonitoringToolbox::logIfExtradebug(
+                        'pm-shinken',
+                        "generateHostsCfg - CC, host: {$a_hosts[$i]['host_name']}, host notification period : {$a_pmcontact['host_notification_period']}.\n"
+                     );
                      // Notification period
                      if ($calendar->getFromDB($a_pmcontact['host_notification_period']) && $this->_addTimeperiod($class->fields['entities_id'], $a_pmcontact['host_notification_period'])) {
                         $a_hosts[$i]['notification_period'] = self::shinkenFilter($calendar->fields['name'].$timeperiodsuffix);
@@ -2645,7 +2649,7 @@ Nagios configuration file :
       
       PluginMonitoringToolbox::logIfExtradebug(
          'pm-shinken',
-         " - building calendar '{$tmp['timeperiod_name']}' for entity: $entities_id\n"
+         " - _addTimeperiod, building calendar '{$tmp['timeperiod_name']}' for entity: $entities_id\n"
       );
       // $tmp['timeperiod_name'] = self::shinkenFilter($calendar->fields['name']);
       // $tmp['alias'] = $calendar->fields['name'];
@@ -2703,12 +2707,12 @@ Nagios configuration file :
       }
 
 
-      if ($timeperiodsuffix == 0) {
-         $tmp['timeperiod_name'] = self::shinkenFilter($tmp['timeperiod_name']);
-      } else {
-         $tmp['timeperiod_name'] = self::shinkenFilter($tmp['timeperiod_name']."_".$timeperiodsuffix);
-         $tmp['alias'] = $tmp['alias']." (".$timeperiodsuffix.")";
-      }
+      // if ($timeperiodsuffix == 0) {
+         // $tmp['timeperiod_name'] = self::shinkenFilter($tmp['timeperiod_name']);
+      // } else {
+         // $tmp['timeperiod_name'] = self::shinkenFilter($tmp['timeperiod_name']."_".$timeperiodsuffix);
+         // $tmp['alias'] = $tmp['alias']." (".$timeperiodsuffix.")";
+      // }
       $days = array('sunday','monday','tuesday', 'wednesday','thursday',
                     'friday', 'saturday');
       $saturday = '';
@@ -2817,7 +2821,7 @@ Nagios configuration file :
 
       PluginMonitoringToolbox::logIfExtradebug(
          'pm-shinken',
-         "End _addTimeperiod\n"
+         "End _addTimeperiod: {$tmp['timeperiod_name']}\n"
       );
 
       return true;
