@@ -433,8 +433,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          GROUP BY `itemtype`, `items_id`";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
-         // Toolbox::logInFile("pm-shinken", " - fetch host ".$data['itemtype']." / ".$data['items_id']."\n");
-
+         
          $classname = $data['itemtype'];
          $class = new $classname;
          if (! $class->getFromDB($data['items_id'])) {
@@ -694,12 +693,19 @@ class PluginMonitoringShinken extends CommonDBTM {
 
          // Check period
          // Host entity jetlag ...
-         $timeperiodsuffix = '_'.$pmHostconfig->getValueAncestor('jetlag', $class->fields['entities_id']);
+         $timeperiodsuffix = '_'.$pmHostconfig->getValueAncestor('jetlag', $data['entityId']);
          if ($timeperiodsuffix == '_0') {
             $timeperiodsuffix = '';
          }
+         // Use the calendar defined for the host entity ...
          $calendar = new Calendar();
-         if ($calendar->getFromDB($a_fields['calendars_id']) && $this->_addTimeperiod($class->fields['entities_id'], $a_fields['calendars_id'])) {
+         $cid = Entity::getUsedConfig('calendars_id', $data['entityId'], '', 0);
+         PluginMonitoringToolbox::logIfExtradebug(
+            'pm-shinken',
+            " - add host ".$a_hosts[$i]['host_name']." in entity ".$data['entityId']. ", calendar: ". $cid ."\n"
+         );
+         
+         if ($calendar->getFromDB($cid) && $this->_addTimeperiod($data['entityId'], $cid)) {
             $a_hosts[$i]['check_period'] = self::shinkenFilter($calendar->fields['name'].$timeperiodsuffix);
          } else {
             $a_hosts[$i]['check_period'] = self::$shinkenParameters['shinken']['hosts']['check_period'];
