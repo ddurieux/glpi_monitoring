@@ -589,7 +589,6 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
 
       $pmComponentscatalog_rule = new self();
       $pmService = new PluginMonitoringService();
-      $pmSearch  = new PluginMonitoringSearch();
 
       $a_networkports_id = array();
       if (get_class($parm) == 'PluginMonitoringNetworkport') {
@@ -614,19 +613,20 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
              $get_tmp = $_GET;
          }
          while ($data=$DB->fetch_array($result)) {
-            if (isset($_SESSION["glpisearchcount"][$data['itemtype']])) {
-               unset($_SESSION["glpisearchcount"][$data['itemtype']]);
+            $session_glpisearch = array();
+            if (isset($_SESSION['glpisearch'])) {
+               $session_glpisearch = $_SESSION['glpisearch'];
             }
-            if (isset($_SESSION["glpisearchcount2"][$data['itemtype']])) {
-               unset($_SESSION["glpisearchcount2"][$data['itemtype']]);
+            $session_glpisearchcount = array();
+            if (isset($_SESSION['glpisearchcount'])) {
+               $session_glpisearchcount = $_SESSION['glpisearchcount'];
+            }
+            $session_glpisearchcount2 = array();
+            if (isset($_SESSION['glpisearchcount2'])) {
+               $session_glpisearchcount2 = $_SESSION['glpisearchcount2'];
             }
 
             $_GET = importArrayFromDB($data['condition']);
-
-            $_GET["glpisearchcount"] = count($_GET['field']);
-            if (isset($_GET['field2'])) {
-               $_GET["glpisearchcount2"] = count($_GET['field2']);
-            }
 
             if (!isset($_SESSION['glpiactiveentities_string'])) {
                if (get_class($parm) == 'PluginMonitoringNetworkport') {
@@ -638,12 +638,18 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                }
             }
 
-            Search::manageGetValues($data['itemtype']);
+            $condition = importArrayFromDB($data['condition']);
+            $params = Search::manageParams($data['itemtype'], $condition, FALSE);
 
-            $resultr = $pmSearch->constructSQL("PluginMonitoringNetworkport",
-                                           $_GET,
-                                           $networkports_id);
-            if ($DB->numrows($resultr) > 0) {
+            $datar = Search::prepareDatasForSearch($data['itemtype'], $params);
+            $datar['search']['export_all'] = true;
+            Search::constructSQL($datar);
+
+            $DBread = DBConnection::getReadConnection();
+            $DBread->query("SET SESSION group_concat_max_len = 16384;");
+            $resultr = $DBread->query($datar['sql']['search']);
+            Toolbox::logDebug($datar['sql']['search']);
+            if ($DBread->numrows($resultr) > 0) {
                $a_find[$data['plugin_monitoring_componentscalalog_id']][$networkports_id] = 1;
             } else {
                if (!isset($a_find[$data['plugin_monitoring_componentscalalog_id']][$networkports_id])) {
