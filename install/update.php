@@ -1033,6 +1033,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'service_notification_options_f',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->changeField($newTable,
+                                 'service_notification_options_s',
+                                 'service_notification_options_s',
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable,
                                  'service_notification_options_n',
                                  'service_notification_options_n',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
@@ -1107,6 +1111,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  "tinyint(1) NOT NULL DEFAULT '1'");
          $migration->addField($newTable,
                                  'service_notification_options_f',
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                                 'service_notification_options_s',
                                  "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->addField($newTable,
                                  'service_notification_options_n',

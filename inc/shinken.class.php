@@ -1614,6 +1614,8 @@ class PluginMonitoringShinken extends CommonDBTM {
                            $a_servicenotif[] = "r";
                         if ($a_pmcontact['service_notification_options_f'] == '1')
                            $a_servicenotif[] = "f";
+                        if ($a_pmcontact['service_notification_options_s'] == '1')
+                           $a_servicenotif[] = "s";
                         if ($a_pmcontact['service_notification_options_n'] == '1')
                            $a_servicenotif = array("n");
                         if (count($a_servicenotif) == "0")
@@ -2408,6 +2410,7 @@ Nagios configuration file :
          $a_pmcontact['service_notification_options_c'] = '0';
          $a_pmcontact['service_notification_options_r'] = '0';
          $a_pmcontact['service_notification_options_f'] = '0';
+         $a_pmcontact['service_notification_options_s'] = '0';
          $a_pmcontact['service_notification_options_n'] = '0';
          $a_pmcontact['host_notification_options_d'] = '0';
          $a_pmcontact['host_notification_options_u'] = '0';
@@ -2451,6 +2454,8 @@ Nagios configuration file :
          $a_servicenotif[] = "r";
       if ($a_pmcontact['service_notification_options_f'] == '1')
          $a_servicenotif[] = "f";
+      if ($a_pmcontact['service_notification_options_s'] == '1')
+         $a_servicenotif[] = "s";
       if ($a_pmcontact['service_notification_options_n'] == '1')
          $a_servicenotif = array("n");
       if (count($a_servicenotif) == "0")
