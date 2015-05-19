@@ -805,7 +805,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
          echo $CFG_GLPI['root_doc']."/plugins/monitoring/front/displayhost.php?itemtype=".$itemtype
                  ."&items_id=".$item->getID();
       }
-         echo '">'
+         echo '" target="_blank">'
               . '<span id="devicea-'.$id.'">'.$item->getName().'</span></a></h1>
 			<p><a>'.$nb_ressources.'</a><font style="font-size: 14px;"> / '.($ok + $warning + $critical + $acknowledge).'</font></p>
          </div>
@@ -861,11 +861,11 @@ class PluginMonitoringDisplayview extends CommonDBTM {
                  . "&start=0'";
 
          echo "<tr class='tab_bg_2'>";
-         echo "<td class='left'><a href='".$link."'>".$resources[$services_id]['name']."</a></td>";
+         echo "<td class='left'><a href='".$link."'  target='_blank'>".$resources[$services_id]['name']."</a></td>";
          echo '<td>';
          echo '<a href="'.$link.'" title="'.$resources[$services_id]['state'].
                  " - ".$resources[$services_id]['last_check']." - ".
-                 $resources[$services_id]['event'].'">'
+                 $resources[$services_id]['event'].'" target="_blank">'
                  . '<div class="service service'.$resources[$services_id]['state'].'"></div></a>';
          echo '</td>';
          echo '</tr>';

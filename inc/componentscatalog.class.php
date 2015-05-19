@@ -556,12 +556,12 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
 
          echo '<div class="ch-item">
             <div class="ch-info-'.$colorclass.'">
-            <h1><a href="'.$link_catalog.'">'.ucfirst($data['name']);
+            <h1><a href="'.$link_catalog.'" target="_blank">'.ucfirst($data['name']);
             if ($data['comment'] != '') {
                echo ' '.$this->getComments();
             }
             echo '</a></h1>
-               <p><a href="'.$link.'">'.$count.'</a><font style="font-size: 14px;">/ '.
+               <p><a href="'.$link.'" target="_blank">'.$count.'</a><font style="font-size: 14px;">/ '.
                ($stateg['CRITICAL'] + $stateg['WARNING'] + $stateg['OK'] + $stateg['ACKNOWLEDGE'] + $stateg['UNKNOWN']).'</font></p>
             </div>
          </div>';
@@ -621,7 +621,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                     . "&itemtype=PluginMonitoringService"
                     . "&start=0'";
             echo '<th class="vertical">';
-            echo '<a href="'.$link.'"><div class="rotated-text"><span class="rotated-text__inner">'.$services[$i].'</span></div></a>';
+            echo '<a href="'.$link.'" target="_blank"><div class="rotated-text"><span class="rotated-text__inner">'.$services[$i].'</span></div></a>';
             echo '</th>';
          } else {
             echo '<th class="vertical">';
@@ -682,7 +682,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          if (Session::haveRight("plugin_monitoring_service", READ)) {
             $item = new $hosts_ids[$hosts_id]['itemtype'];
             $item->getFromDB($hosts_ids[$hosts_id]['items_id']);
-            echo  "<td class='left'><a href='".$link."'>".$hosts_ids[$hosts_id]['name']."</a> ".$item->getComments()."</td>";
+            echo  "<td class='left'><a href='".$link."' target='_blank'>".$hosts_ids[$hosts_id]['name']."</a> ".$item->getComments()."</td>";
          } else {
             echo  "<td class='left'>".$hosts_ids[$hosts_id]['name']."</td>";
          }
@@ -697,7 +697,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                $link_service = $link;
                $link_service .= "&link[1]=AND&field[1]=2&searchtype[1]=equals&contains[1]=".
                        $resources[$services[$i]]['plugin_monitoring_components_id'];
-               echo '<a href="'.$link_service.'">'.
+               echo '<a href="'.$link_service.'" target="_blank">'.
                         '<div title="'.$resources[$services[$i]]['state'].
                         " - ".$resources[$services[$i]]['last_check']." - ".
                         $resources[$services[$i]]['event'].

@@ -552,7 +552,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
 
       echo '<br/><div class="ch-itemup">
          <div class="ch-info-'.$colorclass.'">
-         <h1><a href="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/servicescatalog.form.php?id='.$data['id'].'&detail=1">';
+         <h1><a href="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/servicescatalog.form.php?id='.$data['id'].'&detail=1" target="_blank">';
          echo $data['name'];
          if ($data['comment'] != '') {
             echo ' '.$this->getComments();
@@ -701,7 +701,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
                        . "&itemtype=PluginMonitoringService"
                        . "&start=0'";
                echo  '<th class="vertical">';
-               echo  '<a href="'.$link.'"><div class="rotated-text"><span class="rotated-text__inner">'.$serviceName.'</span></div></a>';
+               echo  '<a href="'.$link.'" target="_blank"><div class="rotated-text"><span class="rotated-text__inner">'.$serviceName.'</span></div></a>';
                echo  '</th>';
             } else {
                echo  '<th class="vertical">';
@@ -724,7 +724,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
 
                        . "&itemtype=PluginMonitoringService"
                        . "&start=0'";
-               echo  "<td class='left'><a href='".$link."'>".$host['name']."</a></td>";
+               echo  "<td class='left'><a href='".$link."' target='_blank'>".$host['name']."</a></td>";
             } else {
                echo  "<td class='left'>".$host['name']."</td>";
             }
