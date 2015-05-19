@@ -52,7 +52,7 @@ $pmDisplayview_rule = new PluginMonitoringDisplayview_rule();
 $pmDisplayview = new PluginMonitoringDisplayview();
 
 if (isset($_GET['updaterule'])) {
-   if (!isset($_GET['contains'])
+   if (!isset($_GET['criteria'])
         AND !isset($_GET['reset'])) {
 //      $_SESSION['plugin_monitoring_rules'] = $_POST;
    } else {
@@ -76,10 +76,8 @@ if (isset($_GET['updaterule'])) {
       $pmDisplayview_rule->update($input);
       unset($_SESSION['plugin_monitoring_rules']);
       unset($_SESSION["glpisearch"][$input['itemtype']]);
-
       $pmDisplayview_rule->getItemsDynamicly($pmDisplayview_rule);
       Html::redirect($CFG_GLPI['root_doc']."/plugins/monitoring/front/displayview.form.php?id=".$input['plugin_monitoring_displayviews_id']);
-
    }
 } else if (isset($_GET['deleterule'])) {
    $_POST = $_GET;

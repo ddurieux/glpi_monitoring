@@ -251,63 +251,48 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
       $pmDisplayview_rule        = new PluginMonitoringDisplayview_rule();
       $pmDisplayview_item        = new PluginMonitoringDisplayview_item();
       $pmDisplayview             = new PluginMonitoringDisplayview();
-      $pmSearch                  = new PluginMonitoringSearch();
-      $pmService                 = new PluginMonitoringService();
 
       $devices_present = array();
       if ($pmDisplayview_rule->getFromDB($parm->fields['id'])) {
          if ($pmDisplayview->getFromDB($pmDisplayview_rule->fields['plugin_monitoring_displayviews_id'])) {
             // Load right entity
 
-               $default_entity = 0;
-               if (isset($_SESSION['glpiactive_entity'])) {
-                  $default_entity = $_SESSION['glpiactive_entity'];
-               }
-               $entities_isrecursive = 0;
-               if (isset($_SESSION['glpiactiveentities'])
-                       AND count($_SESSION['glpiactiveentities']) > 1) {
-                  $entities_isrecursive = 1;
-               }
-               Session::changeActiveEntities($pmDisplayview->fields['entities_id'],
-                                             $pmDisplayview->fields['is_recursive']);
+            $default_entity = 0;
+            if (isset($_SESSION['glpiactive_entity'])) {
+               $default_entity = $_SESSION['glpiactive_entity'];
+            }
+            $entities_isrecursive = 0;
+            if (isset($_SESSION['glpiactiveentities'])
+                    AND count($_SESSION['glpiactiveentities']) > 1) {
+               $entities_isrecursive = 1;
+            }
+            if (!isset($_SESSION['glpiactiveprofile']['entities'])) {
+               $_SESSION['glpiactiveprofile']['entities'] = array();
+            }
+            Session::changeActiveEntities($pmDisplayview->fields['entities_id'],
+                                          $pmDisplayview->fields['is_recursive']);
 
-
-            $get_tmp = '';
             $itemtype = $pmDisplayview_rule->fields['itemtype'];
-            if (isset($_GET)) {
-                $get_tmp = $_GET;
-            }
-            if (isset($_SESSION["glpisearchcount"][$pmDisplayview_rule->fields['itemtype']])) {
-               unset($_SESSION["glpisearchcount"][$pmDisplayview_rule->fields['itemtype']]);
-            }
-            if (isset($_SESSION["glpisearchcount2"][$pmDisplayview_rule->fields['itemtype']])) {
-               unset($_SESSION["glpisearchcount2"][$pmDisplayview_rule->fields['itemtype']]);
-            }
+            $condition = importArrayFromDB($pmDisplayview_rule->fields['condition']);
 
-            $_GET = importArrayFromDB($pmDisplayview_rule->fields['condition']);
-
-            $_GET["glpisearchcount"] = count($_GET['field']);
-            if (isset($_GET['field2'])) {
-               $_GET["glpisearchcount2"] = count($_GET['field2']);
-            }
-
-            $params = Search::manageParams($pmDisplayview_rule->fields['itemtype'], $_GET);
-//            Search::manageGetValues($pmDisplayview_rule->fields['itemtype']);
+            $params = Search::manageParams($itemtype, $condition);
 
             $queryd = "SELECT * FROM `glpi_plugin_monitoring_displayviews_items`
                WHERE `plugin_monitoring_displayviews_id`='".$pmDisplayview_rule->fields["plugin_monitoring_displayviews_id"]."'
                   AND `itemtype`='".$pmDisplayview_rule->fields['type']."'
-                  AND `extra_infos`='".$pmDisplayview_rule->fields['itemtype']."'";
+                  AND `extra_infos`='".$itemtype."'";
             $result = $DB->query($queryd);
             while ($data=$DB->fetch_array($result)) {
                $devices_present[$data['items_id']] = $data['id'];
             }
 
-            $glpilist_limit = $_SESSION['glpilist_limit'];
-            $_SESSION['glpilist_limit'] = 500000;
-            $result = $pmSearch->constructSQL($itemtype,
-                                           $_GET);
-            $_SESSION['glpilist_limit'] = $glpilist_limit;
+            $data = Search::prepareDatasForSearch($itemtype, $params);
+            $data['search']['export_all'] = true;
+            Search::constructSQL($data);
+
+            $DBread = DBConnection::getReadConnection();
+            $DBread->query("SET SESSION group_concat_max_len = 16384;");
+            $result = $DBread->query($data['sql']['search']);
 
             while ($data=$DB->fetch_array($result)) {
                if (!isset($devices_present[$data['id']])) {

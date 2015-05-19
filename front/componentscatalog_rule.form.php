@@ -79,7 +79,6 @@ if (isset($_GET['addrule'])) {
       unset($_SESSION['plugin_monitoring_rules']);
       unset($_SESSION["glpisearch"][$input['itemtype']]);
       Html::redirect($CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.form.php?id=".$input['plugin_monitoring_componentscalalog_id']);
-
    }
 } else if (isset($_GET['updaterule'])) {
    if (!isset($_GET['criteria'])
@@ -108,7 +107,6 @@ if (isset($_GET['addrule'])) {
       unset($_SESSION['plugin_monitoring_rules']);
       unset($_SESSION["glpisearch"][$input['itemtype']]);
       Html::redirect($CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.form.php?id=".$input['plugin_monitoring_componentscalalog_id']);
-
    }
 } else if (isset($_GET['deleterule'])) {
    $_POST = $_GET;
