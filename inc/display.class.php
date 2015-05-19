@@ -945,6 +945,8 @@ echo "
 
 
       // If the begin of the view is before the number of items
+      $begin_display = 0;
+      $search_config_bottom = "";
       if ($data['data']['count'] > 0) {
          // Display pager only for HTML
          if ($data['display_type'] == Search::HTML_OUTPUT) {
@@ -2331,7 +2333,8 @@ echo "
                      OR (`glpi_plugin_monitoring_hosts`.`state` IS NULL)
                      AND `is_acknowledged`='0'");
 
-         $unknown_soft += $this->countHostsQuery($itemtype, "(`glpi_plugin_monitoring_hosts`.`state`='UNKNOWN' AND `state_type`='SOFT')
+         $unknown_soft += $this->countHostsQuery($itemtype, "(`glpi_plugin_monitoring_hosts`.`state`='UNKNOWN'
+                     AND (`state_type`='SOFT' OR `state_type` IS NULL))
                      AND `is_acknowledged`='0'");
 
          $down += $this->countHostsQuery($itemtype, "`glpi_plugin_monitoring_hosts`.`state`='DOWN'
@@ -2386,9 +2389,9 @@ echo "
               . "&criteria[0][searchtype]=contains"
               . "&criteria[0][value]=DOWN"
 
-              . "&criteria[1][link]=OR"
+              . "&criteria[1][link]=AND"
               . "&criteria[1][field]=9"
-              . "&criteria[1][searchtype]=contains"
+              . "&criteria[1][searchtype]=equals"
               . "&criteria[1][value]=0"
 
               . "&itemtype=PluginMonitoringHost"
@@ -2400,9 +2403,9 @@ echo "
               . "&criteria[0][searchtype]=contains"
               . "&criteria[0][value]=UP"
 
-              . "&criteria[1][link]=OR"
+              . "&criteria[1][link]=AND"
               . "&criteria[1][field]=9"
-              . "&criteria[1][searchtype]=contains"
+              . "&criteria[1][searchtype]=equals"
               . "&criteria[1][value]=0"
 
               . "&itemtype=PluginMonitoringHost"
@@ -2414,9 +2417,9 @@ echo "
               . "&criteria[0][searchtype]=contains"
               . "&criteria[0][value]=UNREACHABLE"
 
-              . "&criteria[1][link]=OR"
+              . "&criteria[1][link]=AND"
               . "&criteria[1][field]=9"
-              . "&criteria[1][searchtype]=contains"
+              . "&criteria[1][searchtype]=equals"
               . "&criteria[1][value]=0"
 
               . "&itemtype=PluginMonitoringHost"
@@ -2428,15 +2431,20 @@ echo "
               . "&criteria[0][searchtype]=contains"
               . "&criteria[0][value]=UNKNOWN"
 
-              . "&criteria[1][link]=OR"
-              . "&criteria[1][field]=2"
-              . "&criteria[1][searchtype]=contains"
-              . "&criteria[1][value]=NULL"
+              . "&criteria[1][link]=AND"
+              . "&criteria[1][field]=9"
+              . "&criteria[1][searchtype]=equals"
+              . "&criteria[1][value]=0"
 
-              . "&criteria[2][link]=AND"
-              . "&criteria[2][field]=9"
+              . "&criteria[2][link]=OR"
+              . "&criteria[2][field]=2"
               . "&criteria[2][searchtype]=contains"
-              . "&criteria[2][value]=0"
+              . "&criteria[2][value]=NULL"
+
+              . "&criteria[3][link]=AND"
+              . "&criteria[3][field]=9"
+              . "&criteria[3][searchtype]=equals"
+              . "&criteria[3][value]=0"
 
               . "&itemtype=PluginMonitoringHost"
               . "&start=0'";
@@ -2444,7 +2452,7 @@ echo "
                "/plugins/monitoring/front/host.php?hidesearch=1"
 //              . "&reset=reset"
               . "&criteria[0][field]=9"
-              . "&criteria[0][searchtype]=contains"
+              . "&criteria[0][searchtype]=equals"
               . "&criteria[0][value]=1"
 
               . "&itemtype=PluginMonitoringHost"
