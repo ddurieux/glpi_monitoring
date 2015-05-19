@@ -42,7 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-Session::checkRight("plugin_monitoring_restartshinken", READ);
+Session::checkRight("plugin_monitoring_restartshinken", CREATE);
 
 $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
 if (isset($_GET["tag"])) {
