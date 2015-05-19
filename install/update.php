@@ -958,6 +958,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                         `service_notification_options_c` tinyint(1) NOT NULL DEFAULT '1',
                         `service_notification_options_r` tinyint(1) NOT NULL DEFAULT '1',
                         `service_notification_options_f` tinyint(1) NOT NULL DEFAULT '0',
+                        `service_notification_options_s` tinyint(1) NOT NULL DEFAULT '1',
                         `service_notification_options_n` tinyint(1) NOT NULL DEFAULT '0',
                         PRIMARY KEY (`id`)
                      ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";

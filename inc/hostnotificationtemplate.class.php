@@ -251,7 +251,7 @@ class PluginMonitoringHostnotificationtemplate extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Send notifications when host or service scheduled downtime starts and ends', 'monitoring')."&nbsp;:</td>";
+      echo "<td>".__('Notify when host scheduled downtime starts and ends', 'monitoring')."&nbsp;:</td>";
       echo "<td align='center'>";
       Dropdown::showYesNo('host_notification_options_s', $this->fields['host_notification_options_s']);
       echo "</td>";
