@@ -368,6 +368,22 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
       echo "</table>";
       Html::closeForm();
    }
+
+
+
+   /*
+    * Delete view items created by rule
+    */
+   function post_purgeItem() {
+      global $DB;
+
+      $query = "DELETE FROM `glpi_plugin_monitoring_displayviews_items`"
+              . " WHERE `itemtype`='host'"
+              . " AND `extra_infos`='".$this->fields['itemtype']."'"
+              . " AND `plugin_monitoring_displayviews_id`='".$this->fields['plugin_monitoring_displayviews_id']."'";
+      $DB->query($query);
+   }
+
 }
 
 ?>
