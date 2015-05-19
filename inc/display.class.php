@@ -1536,8 +1536,15 @@ echo "
       if (!isset($_GET['mobile'])) {
          echo "<form method='post'>";
          $a_timezones = PluginMonitoringConfig::getTimezones();
-          if (!isset($_SESSION['plugin_monitoring_timezone'])) {
-            $_SESSION['plugin_monitoring_timezone'] = '0';
+         if (!isset($_SESSION['plugin_monitoring_timezone'])) {
+            $pmConfig = new PluginMonitoringConfig();
+            $pmConfig->getFromDB(1);
+            $a_temp = importArrayFromDB($pmConfig->fields['timezones']);
+            if (count($a_temp) == 0) {
+               $_SESSION['plugin_monitoring_timezone'] = 0;
+            } else {
+               $_SESSION['plugin_monitoring_timezone'] = array_shift($a_temp);
+            }
          }
          $a_timezones_allowed = array();
          $pmConfig->getFromDB(1);
