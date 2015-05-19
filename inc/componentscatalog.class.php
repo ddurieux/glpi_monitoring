@@ -116,7 +116,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             $ong[2] = self::createTabEntry(__('Static hosts', 'monitoring'), self::countForStaticHosts($item));
             $ong[3] = self::createTabEntry(_n('Rule', 'Rules', 2), self::countForRules($item));
             $ong[4] = self::createTabEntry(__('Dynamic hosts', 'monitoring'), self::countForDynamicHosts($item));
-            $ong[5] = __('Contacts', 'monitoring');
+            $ong[5] = self::createTabEntry(__('Contacts', 'monitoring'), self::countForContacts($item));
             $ong[6] = __('Availability', 'monitoring');
    //         $ong[7] = __('Simple report', "monitoring");
             $ong[7] = __('Synthese', "monitoring");
@@ -176,6 +176,19 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       $restrict = "`plugin_monitoring_componentscalalog_id` = '".$item->getField('id') ."'";
 
       return countElementsInTable('glpi_plugin_monitoring_componentscatalogs_components', $restrict);
+   }
+
+
+
+   /**
+    * @param $item PluginMonitoringComponentscatalog object
+   **/
+   static function countForContacts(PluginMonitoringComponentscatalog $item) {
+
+      $restrict = "`items_id` = '".$item->getField('id') ."'"
+              . " AND `itemtype`='PluginMonitoringComponentscatalog'";
+
+      return countElementsInTable('glpi_plugin_monitoring_contacts_items', $restrict);
    }
 
 
