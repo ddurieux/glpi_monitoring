@@ -449,15 +449,15 @@ if (strstr($_SERVER['REQUEST_URI'], 'displayview_rule.form.php')) {
             echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$_GET['plugin_monitoring_componentscalalog_id']."' >";
          }
          echo "<input type='hidden' name='id' value='".$_GET['id']."' >";
-         echo "<input type='submit' name='updaterule' value=\"Update this rule\" class='submit' >";
+         echo "<input type='submit' name='updaterule' value=\"".__('Update this rule', 'monitoring')."\" class='submit' >";
          echo "</td>";
          echo "<td colspan='2' class='center'>";
-         echo "<input type='submit' name='deleterule' value=\"Delete this rule\" class='submit' >";
+         echo "<input type='submit' name='deleterule' value=\"".__('Delete this rule', 'monitoring')."\" class='submit' >";
 
       } else {
          echo "<td colspan='4' class='center'>";
          echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$_GET['plugin_monitoring_componentscalalog_id']."' >";
-         echo "<input type='submit' name='addrule' value=\"Add this rule\" class='submit' >";
+         echo "<input type='submit' name='addrule' value=\"".__('Add this rule', 'monitoring')."\" class='submit' >";
       }
       echo "</td>";
       echo "</tr>";

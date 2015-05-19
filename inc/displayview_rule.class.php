@@ -185,17 +185,17 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
       if (isset($_GET['id'])) {
          $table = "<tr class='tab_bg_1'>"
                  . "<td align='center'>"
-                 . "<input type='submit' name='updaterule' value=\"Update this rule\" class='submit' >"
+                 . "<input type='submit' name='updaterule' value=\"".__('Update this rule', 'monitoring')."\" class='submit' >"
                  . "</td>"
                  . "<td align='center'>"
-                 . "<input type='submit' name='deleterule' value=\"Delete this rule\" class='submit' >"
+                 . "<input type='submit' name='deleterule' value=\"".__('Delete this rule', 'monitoring')."\" class='submit' >"
                  . "</td>"
                  . "</tr>"
                  . "</table><input";
       } else {
          $table = "<tr class='tab_bg_1'>"
                  . "<td align='center' colspan='2'>"
-                 . "<input type='submit' name='addrule' value=\"Add this rule\" class='submit' >"
+                 . "<input type='submit' name='addrule' value=\"".__('Add this rule', 'monitoring')."\" class='submit' >"
                  . "</td>"
                  . "</tr>"
                  . "</table><input";
