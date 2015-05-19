@@ -138,6 +138,12 @@ class PluginMonitoringServicenotificationtemplate extends CommonDBTM {
       $tab[$i]['name']            = __('Service flapping', 'monitoring');
       $tab[$i]['datatype']        = 'bool';
 
+      $i++;
+      $tab[$i]['table']           = $this->getTable();
+      $tab[$i]['field']           = 'service_notification_options_s';
+      $tab[$i]['name']            = __('Service downtime', 'monitoring');
+      $tab[$i]['datatype']        = 'bool';
+
       return $tab;
    }
 
@@ -254,6 +260,13 @@ class PluginMonitoringServicenotificationtemplate extends CommonDBTM {
       echo "<td>".__('Notify when the service starts and stops flapping', 'monitoring')."&nbsp;:</td>";
       echo "<td align='center'>";
       Dropdown::showYesNo('service_notification_options_f', $this->fields['service_notification_options_f']);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Notify when service scheduled downtime starts and ends', 'monitoring')."&nbsp;:</td>";
+      echo "<td align='center'>";
+      Dropdown::showYesNo('service_notification_options_s', $this->fields['service_notification_options_s']);
       echo "</td>";
       echo "</tr>";
 
