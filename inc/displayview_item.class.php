@@ -175,9 +175,6 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
 
       echo '<center><input type="text" id="custom_date" value="'.date('m/d/Y').'"> '
               . ' <input type="text" id="custom_time" value="'.date('H:i').'"></center>';
-      echo "<script>"
-         . "globaltz = Math.floor(Date.now() / 1000) - ".time().";"
-         . "</script>";
 
       echo "</td>";
       echo "</tr>";

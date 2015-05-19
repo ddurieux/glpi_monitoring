@@ -163,10 +163,19 @@ class PluginMonitoringServicegraph {
                });
             };';
 
+            $gmt = '';
+            if (isset($_SESSION['plugin_monitoring_timezone'])
+                     && $_SESSION['plugin_monitoring_timezone'] > 0) {
+               $gmt = 'GMT+'.sprintf("%'.02d", $_SESSION['plugin_monitoring_timezone']).'00';
+            } else if (isset($_SESSION['plugin_monitoring_timezone'])
+                     && $_SESSION['plugin_monitoring_timezone'] < 0) {
+               $gmt = 'GMT-'.sprintf("%'.02d", $_SESSION['plugin_monitoring_timezone']).'00';
+            }
+
             echo "
             (function worker".$items_id.$time."() {
               startDate = new Date($('#custom_date').val());
-              startTime = Date.parse('04/03/1980 ' + ($('#custom_time').val()) + ':00') + globaltz;
+              startTime = Date.parse('04/03/1980 ' + ($('#custom_time').val()) + ':00 ".$gmt."');
               $.getJSON('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateChart.php"
                     ."?rrdtool_template=".$rrdtool_template."&itemtype=".$itemtype.
                           "&items_id=".$items_id.

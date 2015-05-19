@@ -692,10 +692,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
       // Pour la génération des graphes ...
       echo '<div style="display:none"><input type="text" id="custom_date" value="'.date('m/d/Y').'"> '
               . ' <input type="text" id="custom_time" value="'.date('H:i').'"></div>';
-      echo "<script>"
-      . "globaltz = Math.floor(Date.now() / 1000) - ".time().";"
-      . "</script>";
-
 
       echo "<br/>";
       if ($perfdatas) {
@@ -970,9 +966,6 @@ echo "
 
       echo '<div id="custom_date" style="display:none"></div>';
       echo '<div id="custom_time" style="display:none"></div>';
-      echo "<script>"
-      . "globaltz = Math.floor(Date.now() / 1000) - ".time().";"
-      . "</script>";
 
 
       if ($width == '') {
@@ -1618,10 +1611,6 @@ echo "
 
          echo '<center><input type="text" id="custom_date" value="'.date('m/d/Y').'"> '
                  . ' <input type="text" id="custom_time" value="'.date('H:i').'"></center>';
-         echo "<script>"
-         . "globaltz = Math.floor(Date.now() / 1000) - ".time().";"
-         . "</script>";
-
 
          echo "</th>";
          echo "</tr>";
