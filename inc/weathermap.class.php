@@ -198,9 +198,9 @@ class PluginMonitoringWeathermap extends CommonDBTM {
       echo"</table>";
       echo "</div>";
 
-      echo "<div style='position: fixed;top: 50px;right: 0;z-index:1000;' id='weathermapform' >";
+      echo "<div style='position: fixed;top: 50px;right: 0;z-index:1000;width:400px;' id='weathermapform' >";
       echo '<form name="pointform" method="post" action="'.$CFG_GLPI['root_doc'].'/plugins/monitoring/front/weathermapnode.form.php">';
-      echo "<table>";
+      echo "<table style='width:400px;'>";
       echo "<tr>";
       echo "<td>";
 
