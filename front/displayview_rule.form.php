@@ -82,10 +82,10 @@ if (isset($_GET['updaterule'])) {
 } else if (isset($_GET['deleterule'])) {
    $_POST = $_GET;
    $pmDisplayview_rule->delete($_POST);
-   Html::back();
-} else if (isset($_POST['deleterule'])) {
-   $pmDisplayview_rule->delete($_POST);
-   Html::back();
+   Html::redirect($CFG_GLPI['root_doc']."/plugins/monitoring/front/displayview.form.php?id=".$_POST['plugin_monitoring_displayviews_id']);
+//} else if (isset($_POST['deleterule'])) {
+//   $pmDisplayview_rule->delete($_POST);
+//   Html::back();
 } else if (isset($_POST['replayrules'])) {
    $a_rules = $pmDisplayview_rule->find("`plugin_monitoring_displayviews_id`='".$_POST['displayviews_id']."'");
    foreach ($a_rules as $data) {
