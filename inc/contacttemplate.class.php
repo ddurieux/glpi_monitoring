@@ -213,6 +213,16 @@ class PluginMonitoringContacttemplate extends CommonDBTM {
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
+      echo "<td></td>";
+      echo "<td align='center'>";
+      echo "</td>";
+      echo "<td>".__('Notify when service scheduled downtime starts and ends', 'monitoring')."&nbsp;:</td>";
+      echo "<td align='center'>";
+      Dropdown::showYesNo('service_notification_options_s', $this->fields['service_notification_options_s']);
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
       echo "<td>".__('The contact will not receive any type of host notifications', 'monitoring')."&nbsp;:</td>";
       echo "<td align='center'>";
       Dropdown::showYesNo('host_notification_options_n', $this->fields['host_notification_options_n']);
