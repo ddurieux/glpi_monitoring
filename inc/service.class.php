@@ -685,6 +685,10 @@ class PluginMonitoringService extends CommonDBTM {
 
       echo '<center><input type="text" id="custom_date" value="'.date('m/d/Y').'"> '
               . ' <input type="text" id="custom_time" value="'.date('H:i').'"></center>';
+      echo "<script>"
+         . "globaltz = Math.floor(Date.now() / 1000) - ".time().";"
+         . "</script>";
+
 
       echo '<div id="custom_date" style="display:none"></div>';
       echo '<div id="custom_time" style="display:none"></div>';
@@ -781,6 +785,9 @@ class PluginMonitoringService extends CommonDBTM {
 
       echo '<center><input type="text" id="custom_date" value="'.date('m/d/Y').'"> '
               . ' <input type="text" id="custom_time" value="'.date('H:i').'"></center>';
+      echo "<script>"
+         . "globaltz = Math.floor(Date.now() / 1000) - ".time().";"
+         . "</script>";
 
       echo "<table class='tab_cadre_fixe'>";
       while ($data=$DB->fetch_array($result)) {

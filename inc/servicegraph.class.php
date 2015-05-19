@@ -166,7 +166,7 @@ class PluginMonitoringServicegraph {
             echo "
             (function worker".$items_id.$time."() {
               startDate = new Date($('#custom_date').val());
-              startTime = Date.parse('04/03/1980 ' + ($('#custom_time').val()) + ':00');
+              startTime = Date.parse('04/03/1980 ' + ($('#custom_time').val()) + ':00') + globaltz;
               $.getJSON('".$CFG_GLPI["root_doc"]."/plugins/monitoring/ajax/updateChart.php"
                     ."?rrdtool_template=".$rrdtool_template."&itemtype=".$itemtype.
                           "&items_id=".$items_id.
