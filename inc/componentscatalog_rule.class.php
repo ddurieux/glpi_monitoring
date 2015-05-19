@@ -648,7 +648,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
             $DBread = DBConnection::getReadConnection();
             $DBread->query("SET SESSION group_concat_max_len = 16384;");
             $resultr = $DBread->query($datar['sql']['search']);
-            Toolbox::logDebug($datar['sql']['search']);
+
             if ($DBread->numrows($resultr) > 0) {
                $a_find[$data['plugin_monitoring_componentscalalog_id']][$networkports_id] = 1;
             } else {
