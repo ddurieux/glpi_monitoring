@@ -45,7 +45,7 @@ include ("../../../inc/includes.php");
 Session::checkRight("plugin_monitoring_componentscatalog", READ);
 
 Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "checks");
+             "PluginMonitoringDashboard", "componentscatalog");
 
 if (isset($_POST['itemtypen'])) {
    $_POST['itemtype'] = $_POST['itemtypen'];
