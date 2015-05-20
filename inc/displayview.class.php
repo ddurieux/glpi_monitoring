@@ -875,6 +875,15 @@ class PluginMonitoringDisplayview extends CommonDBTM {
    }
 
 
+
+   function post_purgeItem() {
+      global $DB;
+
+      $query = "DELETE FROM `glpi_plugin_monitoring_displayviews_items`
+         WHERE `itemtype`='PluginMonitoringDisplayview'
+            AND `items_id`='".$this->fields['id']."'";
+      $DB->query($query);
+   }
 }
 
 ?>
