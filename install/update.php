@@ -3510,6 +3510,22 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $pmService->delete($data);
    }
 
+   /*
+    * Clean views in views_item
+    */
+   $query = "SELECT `glpi_plugin_monitoring_displayviews_items`.`id` "
+           . " FROM `glpi_plugin_monitoring_displayviews_items`"
+           . " LEFT JOIN `glpi_plugin_monitoring_displayviews`"
+           . " ON `glpi_plugin_monitoring_displayviews`.`id` = `glpi_plugin_monitoring_displayviews_items`.`items_id`"
+           . " WHERE `glpi_plugin_monitoring_displayviews`.`id` IS NULL"
+           . " AND `glpi_plugin_monitoring_displayviews_items`.`itemtype`='PluginMonitoringDisplayview'";
+   $result = $DB->query($query);
+   include (GLPI_ROOT . "/plugins/monitoring/inc/service.class.php");
+   while ($data=$DB->fetch_array($result)) {
+      $DB->query("DELETE FROM `glpi_plugin_monitoring_displayviews_items`"
+              . " WHERE `id`='".$data['id']."'");
+   }
+
 
    // Update hosts config
    include (GLPI_ROOT . "/plugins/monitoring/inc/hostconfig.class.php");
