@@ -391,10 +391,10 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
                         scripts: true,
                         params:'id=".$data['id']."&x=' + (this.x)  + '&y=' + (this.y)
                      });\n";
-         echo "      if (this.x < 1) {
+         echo "      if (this.x < -10) {
                         this.panel.destroy();
                      }
-                     if (this.y < 0) {
+                     if (this.y < -30) {
                         this.panel.destroy();
                      }
 
