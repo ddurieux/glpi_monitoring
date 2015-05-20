@@ -663,6 +663,10 @@ class PluginMonitoringShinken extends CommonDBTM {
                                  }
                               }
                            }
+                        } else if (strstr($a_arguments[$arg], '[[IP]]')) {
+                           $ip = PluginMonitoringHostaddress::getIp(
+                                   $data['items_id'], $data['itemtype'], '');
+                           $a_arguments[$arg] = str_replace("[[IP]]", $ip, $a_arguments[$arg]);
                         } else if (strstr($a_arguments[$arg], "[")) {
                            $a_arguments[$arg] = PluginMonitoringService::convertArgument($data['id'], $a_arguments[$arg]);
                         }
@@ -1243,6 +1247,11 @@ class PluginMonitoringShinken extends CommonDBTM {
                                  }
                               }
                            }
+                        } else if (strstr($a_arguments[$arg], '[[IP]]')) {
+                           $split = explode('-', current($a_hostname));
+                           $ip = PluginMonitoringHostaddress::getIp(
+                                   $a_hostname_id[0], $a_hostname_type[0], '');
+                           $a_arguments[$arg] = str_replace("[[IP]]", $ip, $a_arguments[$arg]);
                         } else if (strstr($a_arguments[$arg], "[")) {
                            $a_arguments[$arg] = PluginMonitoringService::convertArgument($data['id'], $a_arguments[$arg]);
                         }

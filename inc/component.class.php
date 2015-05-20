@@ -556,6 +556,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       $elements = array();
       $elements[__('List of tags available', 'monitoring')] = '';
       $elements["[[HOSTNAME]]"] = __('Hostname of the device', 'monitoring');
+      $elements["[[IP]]"] = __('IP of the device', 'monitoring');
       $elements["[[NETWORKPORTNUM]]"] = __('Network port number', 'monitoring');
       $elements["[[NETWORKPORTNAME]]"] = __('Network port name', 'monitoring');
       if (class_exists("PluginFusioninventoryNetworkPort")) {
