@@ -55,8 +55,8 @@ if (isset($_GET['id'])
 
    $pmDisplayview_item = new PluginMonitoringDisplayview_item();
    if ($pmDisplayview_item->getFromDB($_GET['id'])) {
-      if ($_GET['x'] < 1
-              OR $_GET['y'] < 0) {
+      if ($_GET['x'] < -10
+              OR $_GET['y'] < -30) {
          $pmDisplayview_item->delete(array('id' => $_GET['id']));
       } else {
          $input = array();
