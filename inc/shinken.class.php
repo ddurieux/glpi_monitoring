@@ -120,6 +120,10 @@ class PluginMonitoringShinken extends CommonDBTM {
             'notification_period' => '24x7',
             'notification_options' => 'd,u,r,f,s',
             'notification_interval' => '86400',
+            'flap_detection_enabled' => '0',
+            'failure_prediction_enabled' => '0',
+            'retain_status_information' => '0',
+            'retain_nonstatus_information' => '0',
             // Set as 'entity' to use hostgroupname else use the defined value ...
             // When fake_hosts are built (see upper), use 'entity' !
             'parents' => 'entity',
@@ -143,6 +147,11 @@ class PluginMonitoringShinken extends CommonDBTM {
             'notification_period' => '24x7',
             'notification_options' => 'w,u,c,r,f,s',
             'notification_interval' => '86400',
+            'flap_detection_enabled' => '0',
+            'failure_prediction_enabled' => '0',
+            'retain_status_information' => '0',
+            'retain_nonstatus_information' => '0',
+           
             // Shinken service parameters
             'notes' => '',
             'notes_url' => '',
@@ -761,20 +770,34 @@ class PluginMonitoringShinken extends CommonDBTM {
             }
          }
          // Extra parameters
-         if (! empty(self::$shinkenParameters['shinken']['hosts']['process_perf_data'])) $a_hosts[$i]['process_perf_data'] = self::$shinkenParameters['shinken']['hosts']['process_perf_data'];
+         // Should make a loop :/P !!!!
+         if (isset(self::$shinkenParameters['shinken']['hosts']['process_perf_data'])) 
+               $a_hosts[$i]['process_perf_data'] = self::$shinkenParameters['shinken']['hosts']['process_perf_data'];
 
-         if (! empty(self::$shinkenParameters['shinken']['hosts']['notes'])) $a_hosts[$i]['notes'] = self::$shinkenParameters['shinken']['hosts']['notes'];
-         if (! empty(self::$shinkenParameters['shinken']['hosts']['notes_url'])) $a_hosts[$i]['notes_url'] = self::$shinkenParameters['shinken']['hosts']['notes_url'];
-         if (! empty(self::$shinkenParameters['shinken']['hosts']['action_url'])) $a_hosts[$i]['action_url'] = self::$shinkenParameters['shinken']['hosts']['action_url'];
-         if (! empty(self::$shinkenParameters['shinken']['hosts']['icon_image'])) $a_hosts[$i]['icon_image'] = self::$shinkenParameters['shinken']['hosts']['icon_image'];
-         if (! empty(self::$shinkenParameters['shinken']['hosts']['icon_image_alt'])) $a_hosts[$i]['icon_image_alt'] = self::$shinkenParameters['shinken']['hosts']['icon_image_alt'];
-         if (! empty(self::$shinkenParameters['shinken']['hosts']['vrml_image'])) $a_hosts[$i]['vrml_image'] = self::$shinkenParameters['shinken']['hosts']['vrml_image'];
-         if (! empty(self::$shinkenParameters['shinken']['hosts']['statusmap_image'])) $a_hosts[$i]['statusmap_image'] = self::$shinkenParameters['shinken']['hosts']['statusmap_image'];
-
-         // Persist host status
-         $a_hosts[$i]['retain_status_information'] = '1';
-         $a_hosts[$i]['retain_nonstatus_information'] = '1';
+         if (isset(self::$shinkenParameters['shinken']['hosts']['flap_detection_enabled'])) 
+               $a_hosts[$i]['flap_detection_enabled'] = self::$shinkenParameters['shinken']['hosts']['flap_detection_enabled'];
+         if (isset(self::$shinkenParameters['shinken']['hosts']['failure_prediction_enabled'])) 
+               $a_hosts[$i]['failure_prediction_enabled'] = self::$shinkenParameters['shinken']['hosts']['failure_prediction_enabled'];
+         if (isset(self::$shinkenParameters['shinken']['hosts']['retain_status_information'])) 
+               $a_hosts[$i]['retain_status_information'] = self::$shinkenParameters['shinken']['hosts']['retain_status_information'];
+         if (isset(self::$shinkenParameters['shinken']['hosts']['retain_nonstatus_information'])) 
+               $a_hosts[$i]['retain_nonstatus_information'] = self::$shinkenParameters['shinken']['hosts']['retain_nonstatus_information'];
          
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['notes'])) 
+               $a_hosts[$i]['notes'] = self::$shinkenParameters['shinken']['hosts']['notes'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['notes_url'])) 
+               $a_hosts[$i]['notes_url'] = self::$shinkenParameters['shinken']['hosts']['notes_url'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['action_url'])) 
+               $a_hosts[$i]['action_url'] = self::$shinkenParameters['shinken']['hosts']['action_url'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['icon_image'])) 
+               $a_hosts[$i]['icon_image'] = self::$shinkenParameters['shinken']['hosts']['icon_image'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['icon_image_alt'])) 
+               $a_hosts[$i]['icon_image_alt'] = self::$shinkenParameters['shinken']['hosts']['icon_image_alt'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['vrml_image'])) 
+               $a_hosts[$i]['vrml_image'] = self::$shinkenParameters['shinken']['hosts']['vrml_image'];
+         if (! empty(self::$shinkenParameters['shinken']['hosts']['statusmap_image'])) 
+               $a_hosts[$i]['statusmap_image'] = self::$shinkenParameters['shinken']['hosts']['statusmap_image'];
+
          // For contacts, check if a component catalog contains the host associated component ...
          $a_hosts[$i]['contacts'] = '';
 
@@ -1545,12 +1568,12 @@ class PluginMonitoringShinken extends CommonDBTM {
                } else {
                   $a_services[$i]['event_handler_enabled'] = '0';
                }
-               $a_services[$i]['flap_detection_enabled'] = '1';
-               $a_services[$i]['failure_prediction_enabled'] = '1';
+               // $a_services[$i]['flap_detection_enabled'] = '1';
+               // $a_services[$i]['failure_prediction_enabled'] = '1';
                
                // Persist service status
-               $a_services[$i]['retain_status_information'] = '1';
-               $a_services[$i]['retain_nonstatus_information'] = '1';
+               // $a_services[$i]['retain_status_information'] = '1';
+               // $a_services[$i]['retain_nonstatus_information'] = '1';
             } else {
                // Default parameters
                if (! empty(self::$shinkenParameters['shinken']['services']['process_perf_data'])) $a_services[$i]['process_perf_data'] = self::$shinkenParameters['shinken']['services']['process_perf_data'];
@@ -2138,11 +2161,11 @@ class PluginMonitoringShinken extends CommonDBTM {
          }
          $a_servicetemplates[$i]['notifications_enabled'] = '1';
          $a_servicetemplates[$i]['event_handler_enabled'] = '0';
-         $a_servicetemplates[$i]['flap_detection_enabled'] = '1';
-         $a_servicetemplates[$i]['failure_prediction_enabled'] = '1';
-         // Persist service status
-         $a_servicetemplates[$i]['retain_status_information'] = '1';
-         $a_servicetemplates[$i]['retain_nonstatus_information'] = '1';
+         $a_servicetemplates[$i]['flap_detection_enabled'] = self::$shinkenParameters['shinken']['services']['flap_detection_enabled'];
+         $a_servicetemplates[$i]['failure_prediction_enabled'] = self::$shinkenParameters['shinken']['services']['failure_prediction_enabled'];
+         $a_servicetemplates[$i]['retain_status_information'] = self::$shinkenParameters['shinken']['services']['retain_status_information'];
+         $a_servicetemplates[$i]['retain_nonstatus_information'] = self::$shinkenParameters['shinken']['services']['retain_nonstatus_information'];
+         
          $a_servicetemplates[$i]['is_volatile'] = '0';
 /* Fred: Previous line should be commented and this comment should be removed ... but there is a bug in Shinken notifications with volatile services !
          if ($data['passive_checks_enabled'] == '1' && $data['active_checks_enabled'] == '0') {
@@ -2243,6 +2266,7 @@ Nagios configuration file :
 
          // Custom variable are ignored for hostgroups ... simple information for debug purpose !
          $a_hostgroups[$i]['_GROUP_LEVEL'] = $data['entityLevel'];
+         $a_hostgroups[$i]['level'] = $data['entityLevel'];
 
          $a_sons_list = getSonsOf("glpi_entities", $data['entityId']);
          if (count($a_sons_list) > 1) {
@@ -2254,7 +2278,7 @@ Nagios configuration file :
 
                $pmEntity = new Entity();
                $pmEntity->getFromDB($son_entity);
-			   // Only immediate sub level are considered as hostgroup members
+               // Only immediate sub level are considered as hostgroup members
                if ($data['entityLevel']+1 != $pmEntity->fields['level']) continue;
 
                $hostgroup_name = self::shinkenFilter($pmEntity->getField('name'));
