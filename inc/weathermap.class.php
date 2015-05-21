@@ -975,12 +975,12 @@ class PluginMonitoringWeathermap extends CommonDBTM {
       while ($data=$DB->fetch_array($result)) {
          $name = $data['name'];
          $url = '';
+         $itemtype = $data['itemtype'];
+         $item = new $itemtype();
+         $item->getFromDB($data['items_id']);
+         $url = $item->getLinkURL();
          if ($name == '') {
-            $itemtype = $data['itemtype'];
-            $item = new $itemtype();
-            $item->getFromDB($data['items_id']);
             $name = $item->getName();
-            $url = $item->getLinkURL();
          }
          $a_mapping[$data['id']] = $i;
          $i++;
