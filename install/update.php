@@ -3520,7 +3520,6 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
            . " WHERE `glpi_plugin_monitoring_displayviews`.`id` IS NULL"
            . " AND `glpi_plugin_monitoring_displayviews_items`.`itemtype`='PluginMonitoringDisplayview'";
    $result = $DB->query($query);
-   include (GLPI_ROOT . "/plugins/monitoring/inc/service.class.php");
    while ($data=$DB->fetch_array($result)) {
       $DB->query("DELETE FROM `glpi_plugin_monitoring_displayviews_items`"
               . " WHERE `id`='".$data['id']."'");
