@@ -120,7 +120,17 @@ class PluginMonitoringShinken extends CommonDBTM {
             'notification_period' => '24x7',
             'notification_options' => 'd,u,r,f,s',
             'notification_interval' => '86400',
+            /* 
+            low_flap_threshold:	      This directive is used to specify the low state change threshold used in flap detection for this host. More information on flap detection can be found here. If you set this directive to a value of 0, the program-wide value specified by the low_host_flap_threshold directive will be used.
+            high_flap_threshold:	      This directive is used to specify the high state change threshold used in flap detection for this host. More information on flap detection can be found here. If you set this directive to a value of 0, the program-wide value specified by the high_host_flap_threshold directive will be used.
+            flap_detection_enabled:	   This directive is used to determine whether or not flap detection is enabled for this host. More information on flap detection can be found here. Values: 0 = disable host flap detection, 1 = enable host flap detection.
+            flap_detection_options:    This directive is used to determine what host states the flap detection logic will use for this host. Valid options are a combination of one or more of the following: o = UP states, d = DOWN states, u = UNREACHABLE states.
+            */
             'flap_detection_enabled' => '0',
+            'flap_detection_options' => 'o',
+            'low_flap_threshold' => '25',
+            'high_flap_threshold' => '50',
+            
             'failure_prediction_enabled' => '0',
             'retain_status_information' => '0',
             'retain_nonstatus_information' => '0',
@@ -147,7 +157,17 @@ class PluginMonitoringShinken extends CommonDBTM {
             'notification_period' => '24x7',
             'notification_options' => 'w,u,c,r,f,s',
             'notification_interval' => '86400',
+            /* 
+            low_flap_threshold:	      This directive is used to specify the low state change threshold used in flap detection for this host. More information on flap detection can be found here. If you set this directive to a value of 0, the program-wide value specified by the low_host_flap_threshold directive will be used.
+            high_flap_threshold:	      This directive is used to specify the high state change threshold used in flap detection for this host. More information on flap detection can be found here. If you set this directive to a value of 0, the program-wide value specified by the high_host_flap_threshold directive will be used.
+            flap_detection_enabled:	   This directive is used to determine whether or not flap detection is enabled for this host. More information on flap detection can be found here. Values: 0 = disable host flap detection, 1 = enable host flap detection.
+            flap_detection_options:	   This directive is used to determine what service states the flap detection logic will use for this service. Valid options are a combination of one or more of the following: o = OK states, w = WARNING states, c = CRITICAL states, u = UNKNOWN states.
+            */
             'flap_detection_enabled' => '0',
+            'flap_detection_options' => 'o,w,c,u',
+            'low_flap_threshold' => '25',
+            'high_flap_threshold' => '50',
+            
             'failure_prediction_enabled' => '0',
             'retain_status_information' => '0',
             'retain_nonstatus_information' => '0',
@@ -167,6 +187,8 @@ class PluginMonitoringShinken extends CommonDBTM {
             // Default host/service notification period
             'host_notification_period' => '24x7',
             'service_notification_period' => '24x7',
+            'retain_status_information' => '0',
+            'retain_nonstatus_information' => '0',
          )
       ),
       // Graphite configuration
@@ -492,6 +514,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                strtolower(self::shinkenFilter($data['entityName']));
          }
 
+         // Dynamic setup of a default parameter ...
          self::$shinkenParameters['glpi']['rootEntity'] = __('Root entity');
          $data['entityFullName'] = preg_replace("/ > /","#",$data['entityFullName']);
          $data['entityFullName'] = preg_replace("/". self::$shinkenParameters['glpi']['rootEntity'] ."#/","",$data['entityFullName']);
@@ -503,7 +526,14 @@ class PluginMonitoringShinken extends CommonDBTM {
          $data['entityFullName'] = preg_replace("/_/",".",$data['entityFullName']);
 
          // Graphite
+      PluginMonitoringToolbox::logIfExtradebug(
+         'pm-shinken',
+         "Starting generateHostsCfg ($tag) - {$pmHostconfig->getValueAncestor('graphite_prefix', $data['entityId'])}...\n"
+      );
          if (isset(self::$shinkenParameters['graphite']['prefix']['name'])) {
+            // Dynamic setup of a default parameter ...
+            self::$shinkenParameters['graphite']['prefix']['value'] = $pmHostconfig->getValueAncestor('graphite_prefix', $data['entityId']);
+            
             $a_hosts[$i][self::$shinkenParameters['graphite']['prefix']['name']] =
                strtolower(self::$shinkenParameters['graphite']['prefix']['value'] . self::graphiteFilter($data['entityFullName']));
          }
@@ -748,9 +778,14 @@ class PluginMonitoringShinken extends CommonDBTM {
 
          // Manage event handler
          if ($a_fields['plugin_monitoring_eventhandlers_id'] > 0) {
-            if ($a_fields->getFromDB($a_fields['plugin_monitoring_eventhandlers_id'])) {
-               $a_hosts[$i]['event_handler'] = $pmEventhandler->fields['command_name'];
+            if ($pmEventhandler->getFromDB($a_fields['plugin_monitoring_eventhandlers_id'])) {
+               $a_hosts[$i]['event_handler'] = PluginMonitoringCommand::$command_prefix . $pmEventhandler->fields['command_name'];
+               $a_hosts[$i]['event_handler_enabled'] = '1';
+            } else {
+               $a_hosts[$i]['event_handler_enabled'] = '1';
             }
+         } else {
+            $a_hosts[$i]['event_handler_enabled'] = '1';
          }
 
          // Realm
@@ -774,8 +809,12 @@ class PluginMonitoringShinken extends CommonDBTM {
          if (isset(self::$shinkenParameters['shinken']['hosts']['process_perf_data'])) 
                $a_hosts[$i]['process_perf_data'] = self::$shinkenParameters['shinken']['hosts']['process_perf_data'];
 
-         if (isset(self::$shinkenParameters['shinken']['hosts']['flap_detection_enabled'])) 
-               $a_hosts[$i]['flap_detection_enabled'] = self::$shinkenParameters['shinken']['hosts']['flap_detection_enabled'];
+         if (isset(self::$shinkenParameters['shinken']['hosts']['flap_detection_enabled'])) {
+            $a_hosts[$i]['flap_detection_enabled'] = self::$shinkenParameters['shinken']['hosts']['flap_detection_enabled'];
+            $a_hosts[$i]['flap_detection_options'] = self::$shinkenParameters['shinken']['hosts']['flap_detection_options'];
+            $a_hosts[$i]['low_flap_threshold'] = self::$shinkenParameters['shinken']['hosts']['low_flap_threshold'];
+            $a_hosts[$i]['high_flap_threshold'] = self::$shinkenParameters['shinken']['hosts']['high_flap_threshold'];
+         }
          if (isset(self::$shinkenParameters['shinken']['hosts']['failure_prediction_enabled'])) 
                $a_hosts[$i]['failure_prediction_enabled'] = self::$shinkenParameters['shinken']['hosts']['failure_prediction_enabled'];
          if (isset(self::$shinkenParameters['shinken']['hosts']['retain_status_information'])) 
@@ -825,9 +864,15 @@ class PluginMonitoringShinken extends CommonDBTM {
          if ($DB->numrows($resultcont) != 0) {
             $a_componentscatalogs_hosts = $DB->fetch_assoc($resultcont);
             
+            PluginMonitoringToolbox::logIfExtradebug(
+               'pm-shinken',
+               "generateHostsCfg - CC, host: {$a_hosts[$i]['host_name']} in {$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']}\n"
+            );
             // Notification options / interval
             $pmComponentscatalog = new PluginMonitoringComponentscatalog();
-            $pmComponentscatalog->getFromDB($a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']);
+            if (! $pmComponentscatalog->getFromDB($a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id'])) {
+               continue;
+            }
             
             PluginMonitoringToolbox::logIfExtradebug(
                'pm-shinken',
@@ -1491,8 +1536,13 @@ class PluginMonitoringShinken extends CommonDBTM {
             // * Manage event handler
             if ($a_component['plugin_monitoring_eventhandlers_id'] > 0) {
                if ($pmEventhandler->getFromDB($a_component['plugin_monitoring_eventhandlers_id'])) {
-                  $a_services[$i]['event_handler'] = $pmEventhandler->fields['command_name'];
+                  $a_services[$i]['event_handler'] = PluginMonitoringCommand::$command_prefix . $pmEventhandler->fields['command_name'];
+                  $a_services[$i]['event_handler_enabled'] = '1';
+               } else {
+                  $a_services[$i]['event_handler_enabled'] = '0';
                }
+            } else {
+               $a_services[$i]['event_handler_enabled'] = '0';
             }
 
             // * Contacts
@@ -2161,7 +2211,12 @@ class PluginMonitoringShinken extends CommonDBTM {
          }
          $a_servicetemplates[$i]['notifications_enabled'] = '1';
          $a_servicetemplates[$i]['event_handler_enabled'] = '0';
-         $a_servicetemplates[$i]['flap_detection_enabled'] = self::$shinkenParameters['shinken']['services']['flap_detection_enabled'];
+         if (isset(self::$shinkenParameters['shinken']['services']['flap_detection_enabled'])) {
+            $a_servicetemplates[$i]['flap_detection_enabled'] = self::$shinkenParameters['shinken']['services']['flap_detection_enabled'];
+            $a_servicetemplates[$i]['flap_detection_options'] = self::$shinkenParameters['shinken']['services']['flap_detection_options'];
+            $a_servicetemplates[$i]['low_flap_threshold'] = self::$shinkenParameters['shinken']['services']['low_flap_threshold'];
+            $a_servicetemplates[$i]['high_flap_threshold'] = self::$shinkenParameters['shinken']['services']['high_flap_threshold'];
+         }
          $a_servicetemplates[$i]['failure_prediction_enabled'] = self::$shinkenParameters['shinken']['services']['failure_prediction_enabled'];
          $a_servicetemplates[$i]['retain_status_information'] = self::$shinkenParameters['shinken']['services']['retain_status_information'];
          $a_servicetemplates[$i]['retain_nonstatus_information'] = self::$shinkenParameters['shinken']['services']['retain_nonstatus_information'];
@@ -2560,8 +2615,10 @@ Nagios configuration file :
       $a_contacts[$i]['pager'] = $user->fields['phone'];
 
       // Persist contact status
-      $a_contacts[$i]['retain_status_information'] = '1';
-      $a_contacts[$i]['retain_nonstatus_information'] = '1';
+      if (isset(self::$shinkenParameters['shinken']['contacts']['retain_status_information'])) 
+            $a_contacts[$i]['retain_status_information'] = self::$shinkenParameters['shinken']['contacts']['retain_status_information'];
+      if (isset(self::$shinkenParameters['shinken']['contacts']['retain_nonstatus_information'])) 
+            $a_contacts[$i]['retain_nonstatus_information'] = self::$shinkenParameters['shinken']['contacts']['retain_nonstatus_information'];
       
       if (isset($a_pmcontact['shinken_administrator'])) {
          $a_contacts[$i]['is_admin'] = $a_pmcontact['shinken_administrator'];
