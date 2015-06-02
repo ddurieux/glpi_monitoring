@@ -141,6 +141,9 @@ class PluginMonitoringShinkenState extends CommonDBTM {
       case 'state':
          return PluginMonitoringShinkenState::getState($values[$field]);
          break;
+      case 'is_ack':
+         return ($values[$field] == 0) ? " " : __('Acknowledged', 'monitoring');
+         break;
       }
       return parent::getSpecificValueToDisplay($field, $values, $options);
    }
