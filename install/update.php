@@ -1732,6 +1732,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          'computers_id' => array('type' => 'integer',       'value'   => NULL),
          'jetlag'       => array('type' => 'varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL',
                                  'value'   => '0'),
+         'graphite_prefix' => 
+                           array('type' => 'varchar(255) COLLATE utf8_unicode_ci DEFAULT ''',
+                                 'value'   => ''),
       );
 
       $a_table['oldfields']  = array(
