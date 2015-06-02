@@ -272,6 +272,32 @@ class PluginMonitoringHostconfig extends CommonDBTM {
       }
 
 
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>";
+      echo __('Graphite prefix', 'monitoring')."&nbsp;:";
+      echo "</td>";
+      echo "<td>";
+
+      echo "<input type='text' name='graphite_prefix' value='".$this->fields["graphite_prefix"]."' size='60'/>";
+
+      echo "</td>";
+      echo "<td colspan='2'></td>";
+      echo "</tr>";
+
+      // Inheritance
+      if (empty($this->fields['graphite_prefix'])) {
+
+         echo "<tr class='tab_bg_1'>";
+         echo "<td colspan='2' class='green center'>";
+         echo __('Inheritance of the parent entity')."&nbsp;:&nbsp;";
+         echo $this->getValueAncestor("graphite_prefix", $entities_id);
+         echo "</td>";
+         echo "<td colspan='2'>";
+         echo "</td>";
+         echo "</tr>";
+      }
+
+
 /*
       if ($itemtype == 'Entity'
               AND $items_id == '0') {
