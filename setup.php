@@ -44,6 +44,10 @@ define ("PLUGIN_MONITORING_VERSION","0.85+1.1");
 
 define('_MPDF_TEMP_PATH', GLPI_PLUGIN_DOC_DIR.'/monitoring/pdf/');
 
+// Used for use config values in 'cache'
+$PM_CONFIG = array();
+
+
 // Init the hooks of monitoring
 function plugin_init_monitoring() {
    global $PLUGIN_HOOKS;

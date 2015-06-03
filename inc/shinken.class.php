@@ -1307,6 +1307,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       }
 
       $a_components = $pmComponent->find();
+      $a_componentscatalogs = $pmComponentscatalog->find();
       $componentscatalog_hosts = $pmComponentscatalog_Host->find();
       $timeperiodsuffixes = array();
       foreach ($a_entities_list as $entities_id) {
@@ -1694,7 +1695,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
                      PluginMonitoringToolbox::logIfExtradebug(
                         'pm-shinken',
-                        "generateServicesCfg - CC, service: {$a_services[$i]['service_description']}/{$a_services[$i]['host_name']} in {$pmComponentscatalog->fields['name']}, no notifications.\n"
+                        "generateServicesCfg - CC, service: {$a_services[$i]['service_description']}/{$a_services[$i]['host_name']} in {$a_componentscatalog['name']}, no notifications.\n"
                      );
                   } else {
                      if (! isset($a_SN['service_notification_period']) ||
@@ -1707,7 +1708,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
                         PluginMonitoringToolbox::logIfExtradebug(
                            'pm-shinken',
-                           "generateServicesCfg - CC, service: {$a_services[$i]['service_description']}/{$a_services[$i]['host_name']} in {$pmComponentscatalog->fields['name']}, no notifications.\n"
+                           "generateServicesCfg - CC, service: {$a_services[$i]['service_description']}/{$a_services[$i]['host_name']} in {$a_componentscatalog['name']}, no notifications.\n"
                         );
                      } else {
                         // Notifications enabled for service
@@ -1742,8 +1743,8 @@ class PluginMonitoringShinken extends CommonDBTM {
                         $a_services[$i]['notification_options'] = implode(",", $a_servicenotif);
 
                         // Notification interval
-                        if (isset ($pmComponentscatalog->fields['notification_interval']) ) {
-                           $a_services[$i]['notification_interval'] = $pmComponentscatalog->fields['notification_interval'];
+                        if (isset ($a_componentscatalog['notification_interval']) ) {
+                           $a_services[$i]['notification_interval'] = $a_componentscatalog['notification_interval'];
                         } else {
                            if (! empty(self::$shinkenParameters['shinken']['hosts']['notification_interval']))
                               $a_services[$i]['notification_interval'] = self::$shinkenParameters['shinken']['hosts']['notification_interval'];
