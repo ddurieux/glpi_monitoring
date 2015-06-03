@@ -399,9 +399,15 @@ myPicker.fromString(\''.$color.'\')
     * Log when extra-debug is activated
     */
    static function logIfExtradebug($file, $message) {
-      $config = new PluginMonitoringConfig();
-      $config->getFromDB(1);
-      if ($config->fields['extradebug']) {
+      global $PM_CONFIG;
+
+      if (!isset($PM_CONFIG['extradebug'])) {
+         $config = new PluginMonitoringConfig();
+         $config->getFromDB(1);
+         $PM_CONFIG['extradebug'] = $config->fields['extradebug'];
+      }
+
+      if ($PM_CONFIG['extradebug']) {
          if (is_array($message)) {
             $message = print_r($message, TRUE);
          }
