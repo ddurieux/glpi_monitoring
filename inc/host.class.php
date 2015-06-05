@@ -637,7 +637,7 @@ class PluginMonitoringHost extends CommonDBTM {
     *
     */
    function getComments($id=-1) {
-      global $CFG_GLPI;
+      global $DB;
 
       if ($id == -1) {
          $pm_Host = $this;
@@ -651,92 +651,81 @@ class PluginMonitoringHost extends CommonDBTM {
       $toadd   = array();
 
       // associated computer ...
-      $item = new $pm_Host->fields['itemtype'];
-      $item->getFromDB($pm_Host->fields['items_id']);
-
       if ($pm_Host->getField('itemtype') == 'Computer') {
-         if ($item->isField('completename')) {
-            $toadd[] = array('name'  => __('Complete name'),
-                             'value' => nl2br($item->getField('completename')));
-         }
 
-         $type = new ComputerType();
-         if ($item->getField("computertypes_id")) {
-            $type->getFromDB($item->getField("computertypes_id"));
-            $type = $type->getName();
-            if (! empty($type)) {
+         $query = "SELECT "
+                 . " `glpi_computers`.`serial`,"
+                 . " `glpi_computers`.`otherserial`,"
+                 . " `glpi_computertypes`.`name` as typename,"
+                 . " `glpi_computermodels`.`name` as modelname,"
+                 . " `glpi_states`.`name` as statename,"
+                 . " `glpi_entities`.`name` as entityname,"
+                 . " `glpi_locations`.`completename` as locationname"
+                 . " FROM `glpi_computers`"
+                 . " LEFT JOIN `glpi_computertypes` "
+                 . "    ON  `glpi_computers`.`computertypes_id` = `glpi_computertypes`.`id`"
+                 . " LEFT JOIN `glpi_computermodels` "
+                 . "    ON  `glpi_computers`.`computermodels_id` = `glpi_computermodels`.`id`"
+                 . " LEFT JOIN `glpi_states` "
+                 . "    ON  `glpi_computers`.`states_id` = `glpi_states`.`id`"
+                 . " LEFT JOIN `glpi_entities` "
+                 . "    ON  `glpi_computers`.`entities_id` = `glpi_entities`.`id`"
+                 . " LEFT JOIN `glpi_locations` "
+                 . "    ON  `glpi_computers`.`locations_id` = `glpi_locations`.`id`"
+                 . "WHERE `glpi_computers`.`id`='".$pm_Host->fields['items_id']."'"
+                 . " LIMIT 1";
+         $result = $DB->query($query);
+         if ($DB->numrows($result) > 0) {
+            $data = $DB->fetch_assoc($result);
+
+            if (! empty($data['typename'])) {
                $toadd[] = array('name'  => __('Type'),
-                                'value' => nl2br($type));
+                                'value' => nl2br($data['typename']));
             }
-         } else {
-            return $comment;
-         }
 
-         $model = new ComputerModel();
-         if ($item->getField("computermodels_id")) {
-            $model->getFromDB($item->getField("computermodels_id"));
-            $model = $model->getName();
-            if (! empty($model)) {
+            if (! empty($data['modelname'])) {
                $toadd[] = array('name'  => __('Model'),
-                                'value' => nl2br($model));
+                                'value' => nl2br($data['modelname']));
             }
-         }
 
-         $state = new State();
-         $state->getFromDB($item->fields["states_id"]);
-         $state = $state->getName();
-         if (! empty($state)) {
-            $toadd[] = array('name'  => __('State'),
-                             'value' => nl2br($state));
-         }
-
-         $entity = new Entity();
-         $entity->getFromDB($item->fields["entities_id"]);
-         $entity = $entity->getName();
-         if (! empty($entity)) {
-            $toadd[] = array('name'  => __('Entity'),
-                             'value' => nl2br($entity));
-         }
-
-         $location = new Location();
-         $location->getFromDB($item->fields["locations_id"]);
-         $location = $location->getName(array('complete'  => true));
-         if (! empty($location)) {
-            $toadd[] = array('name'  => __('Location'),
-                             'value' => nl2br($location));
-         }
-
-         if (! empty($item->fields["serial"])) {
-            $toadd[] = array('name'  => __('Serial'),
-                             'value' => nl2br($item->fields["serial"]));
-         }
-         if (! empty($item->fields["otherserial"])) {
-            $toadd[] = array('name'  => __('Inventory number'),
-                             'value' => nl2br($item->fields["otherserial"]));
-         }
-
-         if (($pm_Host instanceof CommonDropdown)
-             && $pm_Host->isField('comment')) {
-            $toadd[] = array('name'  => __('Comments'),
-                             'value' => nl2br($pm_Host->getField('comment')));
-         }
-
-         if (count($toadd)) {
-            foreach ($toadd as $data) {
-               $comment .= sprintf(__('%1$s: %2$s')."<br>",
-                                   "<span class='b'>".$data['name'], "</span>".$data['value']);
+            if (! empty($data['statename'])) {
+               $toadd[] = array('name'  => __('State'),
+                                'value' => nl2br($data['statename']));
             }
-         }
-      } else {
-         $toadd[] = array('name'  => __('Host type'),
-                          'value' => nl2br($item->getTypeName()));
 
-         if ($item->isField('completename')) {
-            $toadd[] = array('name'  => __('Complete name'),
-                             'value' => nl2br($item->getField('completename')));
+            if (! empty($data['entityname'])) {
+               $toadd[] = array('name'  => __('Entity'),
+                                'value' => nl2br($data['entityname']));
+            }
+
+            if (! empty($data['locationname'])) {
+               $toadd[] = array('name'  => __('Location'),
+                                'value' => nl2br($data['locationname']));
+            }
+
+            if (! empty($data["serial"])) {
+               $toadd[] = array('name'  => __('Serial'),
+                                'value' => nl2br($data["serial"]));
+            }
+            if (! empty($data["otherserial"])) {
+               $toadd[] = array('name'  => __('Inventory number'),
+                                'value' => nl2br($data["otherserial"]));
+            }
+
+            if (($pm_Host instanceof CommonDropdown)
+                && $pm_Host->isField('comment')) {
+               $toadd[] = array('name'  => __('Comments'),
+                                'value' => nl2br($pm_Host->getField('comment')));
+            }
+
+            if (count($toadd)) {
+               foreach ($toadd as $dataval) {
+                  $comment .= sprintf(__('%1$s: %2$s')."<br>",
+                                      "<span class='b'>".$dataval['name'], "</span>".$dataval['value']);
+               }
+            }
          }
       }
-
       if (!empty($comment)) {
          return Html::showToolTip($comment, array('display' => false));
       }
