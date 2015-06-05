@@ -351,20 +351,20 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          case 'hostname':
             $computer = new Computer();
             $computer->getFromDBByQuery("WHERE `name` = '" . $values[$field] . "' LIMIT 1");
-            
+
             if (PluginMonitoringProfile::haveRight("counters", 'w')) {
               $pm_Host = new PluginMonitoringHost();
               $pm_Host->getFromDBByQuery("WHERE `itemtype` = 'Computer' AND `items_id` = '" . $computer->getID() . "' LIMIT 1");
-              
+
                // Get all host services except if state is ok or is already acknowledged ...
                $a_ret = PluginMonitoringHost::getServicesState($pm_Host->getID(),
                                                            "`glpi_plugin_monitoring_services`.`state` != 'OK'
                                                            AND `glpi_plugin_monitoring_services`.`is_acknowledged` = '0'");
                $host_services_state = $a_ret[0];
                $host_services_state_list = $a_ret[1];
-               
-              return 
-                "<div class='page foldtl resource".$pm_Host->getField('state')." resource".$pm_Host->getField('state_type')."'>".$pm_Host->getLink(array ("monitoring" => "1"))."</div>" . 
+
+              return
+                "<div class='page foldtl resource".$pm_Host->getField('state')." resource".$pm_Host->getField('state_type')."'>".$pm_Host->getLink(array ("monitoring" => "1"))."</div>" .
                 "<br/>" .
                 "<div class='page foldtl resource".$host_services_state."'>". $host_services_state."&nbsp;".Html::showToolTip($host_services_state_list, array('display' => false))."</div>";
             } else {
@@ -581,7 +581,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             }
          }
          $filter['filter'] = " dayname IN ('".implode("','", $listDays) . "')";
-         $average = PluginMonitoringHostdailycounter::getStatistics($filter);
+         $average = PluginMonitoringHostdailycounter::getStatistics($filter, True);
 
          foreach ($a_checkables as $checkable) {
             // Toolbox::logInFile("pm-checkCounters", "Counter '$key' for '".$checkable['hostname'] . "', counter : ". $checkable[$key] . " (". $value['zeroDetection']['days'] . " days / ". $value['zeroDetection']['counter'] . ")\n");
@@ -2598,20 +2598,21 @@ PluginMonitoringToolbox::logIfExtradebug(
          'currentYear'
          'lastYear'
     */
-   static function getStatistics($params) {
+   static function getStatistics($params, $light=False) {
       global $DB, $CFG_GLPI;
 
       $where = $join = $fields = '';
-      $fields = "
-         `glpi_entities`.`name` AS entity_name, `glpi_entities`.`id` AS entity_id
-      ";
-      $join .= "
-         INNER JOIN `glpi_computers`
-            ON `glpi_plugin_monitoring_hostdailycounters`.`hostname` = `glpi_computers`.`name`
-         INNER JOIN `glpi_entities`
-            ON `glpi_computers`.`entities_id` = `glpi_entities`.`id`
-      ";
-
+      if (!$light) {
+         $fields = "
+            `glpi_entities`.`name` AS entity_name, `glpi_entities`.`id` AS entity_id
+         ";
+         $join .= "
+            INNER JOIN `glpi_computers`
+               ON `glpi_plugin_monitoring_hostdailycounters`.`hostname` = `glpi_computers`.`name`
+            INNER JOIN `glpi_entities`
+               ON `glpi_computers`.`entities_id` = `glpi_entities`.`id`
+         ";
+      }
       // Start / limit
       $start = 0;
       $limit = $CFG_GLPI["list_limit_max"];
@@ -2674,7 +2675,11 @@ PluginMonitoringToolbox::logIfExtradebug(
       $group = '';
       if (isset($params['group'])) {
          $group = "GROUP BY ".$params['group'];
-         $fields .= ', '.$params['group'];
+         if ($fields == '') {
+            $fields .= $params['group'];
+         } else {
+            $fields .= ', '.$params['group'];
+         }
       }
 
       // Order
