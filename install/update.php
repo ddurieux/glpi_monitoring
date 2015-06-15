@@ -146,7 +146,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                         'is_ack',
                         "tinyint(1) DEFAULT 0");
    $migration->migrationOneTable($newTable);
-   
+
     /*
     * Table glpi_plugin_monitoring_servicescatalogs
     */
@@ -1733,8 +1733,8 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          'computers_id' => array('type' => 'integer',       'value'   => NULL),
          'jetlag'       => array('type' => "varchar(10) COLLATE utf8_unicode_ci DEFAULT '0'",
                                  'value'   => '0'),
-         'graphite_prefix' => 
-                           array('type' => 'varchar(255) COLLATE utf8_unicode_ci DEFAULT ''',
+         'graphite_prefix' =>
+                           array('type' => "varchar(255) COLLATE utf8_unicode_ci DEFAULT ''",
                                  'value'   => ''),
       );
 
@@ -2111,7 +2111,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       $a_table['oldkeys'] = array();
 
-      migrateTablesMonitoring($migration, $a_table);
+//      migrateTablesMonitoring($migration, $a_table);
 
 
 
