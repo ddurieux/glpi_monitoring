@@ -96,8 +96,8 @@ function plugin_init_monitoring() {
          if (class_exists('PluginAppliancesAppliance')) {
            PluginAppliancesAppliance::registerType('PluginMonitoringServicescatalog');
          }
-       
-       
+
+
          $PLUGIN_HOOKS['use_massive_action']['monitoring']=1;
          $PLUGIN_HOOKS['add_css']['monitoring'] = array(
             "lib/nvd3/src/nv.d3.css",
