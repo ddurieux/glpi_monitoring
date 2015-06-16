@@ -3262,7 +3262,14 @@ Nagios configuration file :
          return false;
       }
       // Jetlag for required entity ...
-      $timeperiodsuffix = $hostconfig->getValueAncestor('jetlag', $entities_id);
+      if (!isset($_SESSION['plugin_monitoring']['jetlag'])) {
+         $_SESSION['plugin_monitoring']['jetlag'] = array();
+      }
+      if (!isset($_SESSION['plugin_monitoring']['jetlag'][$entities_id])) {
+         $_SESSION['plugin_monitoring']['jetlag'][$entities_id] =
+                        $hostconfig->getValueAncestor('jetlag', $entities_id);
+      }
+      $timeperiodsuffix = $_SESSION['plugin_monitoring']['jetlag'][$entities_id];
       if ($timeperiodsuffix == '_0') {
          $timeperiodsuffix = '';
       }
