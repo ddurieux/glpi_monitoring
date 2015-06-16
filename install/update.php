@@ -1344,6 +1344,14 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'logretention',
                                  'logretention',
                                  "int(5) NOT NULL DEFAULT '30'");
+         $migration->changeField($newTable,
+                                 'nrpe_prefix_contener',
+                                 'nrpe_prefix_contener',
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->changeField($newTable,
+                                 'append_id_hostname',
+                                 'append_id_hostname',
+                                 "tinyint(1) NOT NULL DEFAULT '0'");
          $migration->dropField($newTable,
                               'phppath');
          $migration->dropField($newTable,
@@ -1360,6 +1368,12 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               "int(5) NOT NULL DEFAULT '30'");
          $migration->addField($newTable,
                               'extradebug',
+                              "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'nrpe_prefix_contener',
+                              "tinyint(1) NOT NULL DEFAULT '0'");
+         $migration->addField($newTable,
+                              'append_id_hostname',
                               "tinyint(1) NOT NULL DEFAULT '0'");
       $migration->migrationOneTable($newTable);
 
