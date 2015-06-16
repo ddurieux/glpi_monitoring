@@ -3239,7 +3239,6 @@ Nagios configuration file :
 
 
    function _addTimeperiod($entities_id=-1, $calendars_id=-1) {
-      global $DB;
 
       if (! isset($_SESSION['plugin_monitoring']['timeperiods'])) {
          $_SESSION['plugin_monitoring']['timeperiods'] = array();
