@@ -1114,7 +1114,9 @@ class PluginMonitoringShinken extends CommonDBTM {
       }
 
       // Fake host for business rules
-      if (self::$shinkenParameters['shinken']['fake_bp_hosts']['build']) {
+      $pmServicescatalog = new PluginMonitoringServicescatalog();
+      $a_listBA = $pmServicescatalog->find("`is_generic`='0'");
+      if (count($a_listBA) > 0) {
          PluginMonitoringToolbox::logIfExtradebug(
             'pm-shinken',
             " - add host_for_bp\n"
@@ -2129,11 +2131,9 @@ class PluginMonitoringShinken extends CommonDBTM {
 
       // --------------------------------------------------
       // Business rules services ...
-      $pmService = new PluginMonitoringService();
       $pmServicescatalog = new PluginMonitoringServicescatalog();
       $pmBusinessrulegroup = new PluginMonitoringBusinessrulegroup();
       $pmBusinessrule = new PluginMonitoringBusinessrule();
-      $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
       $pmBusinessrule_component = new PluginMonitoringBusinessrule_component();
       // Prepare individual contacts
       $a_contacts_entities = array();
@@ -2234,7 +2234,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                              'check_period', $a_services[$i]);
                   }
                   $a_services[$i] = $this->add_value_type(
-                          self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'] . self::$shinkenParameters['shinken']['fake_hosts']['bp_host'],
+                          self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'] . self::$shinkenParameters['shinken']['fake_bp_hosts']['hostname'],
                           'host_name', $a_services[$i]);
                   $a_services[$i] = $this->add_value_type(
                           $dataBA['business_priority'],
@@ -3188,7 +3188,6 @@ Nagios configuration file :
 
 
    function generateTimeperiodsCfg($file=0, $tag='') {
-      global $DB;
 
       if (!isset($_SESSION['plugin_monitoring'])) {
          $_SESSION['plugin_monitoring'] = array();
