@@ -96,9 +96,9 @@ function plugin_init_monitoring() {
               array('addtabon' => array('Computer')));
          // Plugin::registerClass('PluginMonitoringHostCounter');
 
-//         include_once GLPI_ROOT.'/plugins/monitoring/inc/security.class.php';
-//         $pmSecurity = new PluginMonitoringSecurity();
-//         $pmSecurity->updateSecurity();
+         include_once GLPI_ROOT.'/plugins/monitoring/inc/security.class.php';
+         $pmSecurity = new PluginMonitoringSecurity();
+         $pmSecurity->updateSecurity();
          if (class_exists('PluginAppliancesAppliance')) {
            PluginAppliancesAppliance::registerType('PluginMonitoringServicescatalog');
          }

@@ -2053,57 +2053,56 @@ class PluginMonitoringShinken extends CommonDBTM {
                }
             }
 
-               // Calendar ...
-               $a_services[$i]['check_period'] = '24x7';
-               $timeperiodsuffix = $timeperiodsuffixes[$entities_id];
-               if ($timeperiodsuffix == '_0') {
-                  $timeperiodsuffix = '';
-               }
-               if (isset ($a_componentscatalog['calendars_id']) ) {
-                 if (isset($a_calendars[$a_componentscatalog['calendars_id']])
-                         && $this->_addTimeperiod($entities_id, $a_componentscatalog['calendars_id'])) {
-                     $a_services[$i] = $this->add_value_type(
-                             self::shinkenFilter($a_calendars[$a_componentscatalog['calendars_id']]['name'].$timeperiodsuffix),
-                             'check_period', $a_services[$i]);
-                  } else {
-                     $a_services[$i] = $this->add_value_type(
-                             self::$shinkenParameters['shinken']['services']['check_period'],
-                             'check_period', $a_services[$i]);
-                  }
+            // Calendar ...
+            $a_services[$i]['check_period'] = '24x7';
+            $timeperiodsuffix = $timeperiodsuffixes[$entities_id];
+            if ($timeperiodsuffix == '_0') {
+               $timeperiodsuffix = '';
+            }
+            if (isset ($a_componentscatalog['calendars_id']) ) {
+              if (isset($a_calendars[$a_componentscatalog['calendars_id']])
+                      && $this->_addTimeperiod($entities_id, $a_componentscatalog['calendars_id'])) {
+                  $a_services[$i] = $this->add_value_type(
+                          self::shinkenFilter($a_calendars[$a_componentscatalog['calendars_id']]['name'].$timeperiodsuffix),
+                          'check_period', $a_services[$i]);
                } else {
-                  if (isset($a_calendars[$a_component['calendars_id']])
-                          && $this->_addTimeperiod($entities_id, $a_component['calendars_id'])) {
-                     $a_services[$i] = $this->add_value_type(
-                             self::shinkenFilter($a_calendars[$a_component['calendars_id']]['name'].$timeperiodsuffix),
-                             'check_period', $a_services[$i]);
-                  } else {
-                     $a_services[$i] = $this->add_value_type(
-                             self::$shinkenParameters['shinken']['services']['check_period'],
-                             'check_period', $a_services[$i]);
-                  }
+                  $a_services[$i] = $this->add_value_type(
+                          self::$shinkenParameters['shinken']['services']['check_period'],
+                          'check_period', $a_services[$i]);
+               }
+            } else {
+               if (isset($a_calendars[$a_component['calendars_id']])
+                       && $this->_addTimeperiod($entities_id, $a_component['calendars_id'])) {
+                  $a_services[$i] = $this->add_value_type(
+                          self::shinkenFilter($a_calendars[$a_component['calendars_id']]['name'].$timeperiodsuffix),
+                          'check_period', $a_services[$i]);
+               } else {
+                  $a_services[$i] = $this->add_value_type(
+                          self::$shinkenParameters['shinken']['services']['check_period'],
+                          'check_period', $a_services[$i]);
                }
             }
+         }
 
-            // WebUI user interface ...
-            if (isset(self::$shinkenParameters['webui']['serviceIcons']['name'])) {
-               $a_services[$i] = $this->add_value_type(
-                       self::$shinkenParameters['webui']['serviceIcons']['value'],
-                       self::$shinkenParameters['webui']['serviceIcons']['name'],
-                       $a_services[$i]);
-            }
+         // WebUI user interface ...
+         if (isset(self::$shinkenParameters['webui']['serviceIcons']['name'])) {
+            $a_services[$i] = $this->add_value_type(
+                    self::$shinkenParameters['webui']['serviceIcons']['value'],
+                    self::$shinkenParameters['webui']['serviceIcons']['name'],
+                    $a_services[$i]);
+         }
 
-            if ($notadd == '1') {
-               unset($a_services[$i]);
-               $input = array();
-               $input['id'] = $data['id'];
-               $input['event'] = $notadddescription;
-               $input['state'] = "CRITICAL";
-               $input['state_type'] = "HARD";
-               $pmService->update($input);
-            } else {
-               $a_services[$i] = $this->properties_list_to_string($a_services[$i]);
-               $i++;
-            }
+         if ($notadd == '1') {
+            unset($a_services[$i]);
+            $input = array();
+            $input['id'] = $data['id'];
+            $input['event'] = $notadddescription;
+            $input['state'] = "CRITICAL";
+            $input['state_type'] = "HARD";
+            $pmService->update($input);
+         } else {
+            $a_services[$i] = $this->properties_list_to_string($a_services[$i]);
+            $i++;
          }
       }
 
@@ -3555,238 +3554,6 @@ Nagios configuration file :
    }
 
 
-   function _addTimeperiod($entities_id=-1, $calendars_id=-1) {
-      global $DB;
-
-      if (! isset($_SESSION['plugin_monitoring']['timeperiods'])) {
-         $_SESSION['plugin_monitoring']['timeperiods'] = array();
-      }
-      PluginMonitoringToolbox::logIfExtradebug(
-         'pm-shinken',
-         "Starting _addTimeperiod: $entities_id / $calendars_id ...\n"
-      );
-      $calendar         = new Calendar();
-      $calendarSegment  = new CalendarSegment();
-      $calendar_Holiday = new Calendar_Holiday();
-      $holiday          = new Holiday();
-      $hostconfig       = new PluginMonitoringHostconfig();
-      $entity           = new Entity();
-
-      if (! $entity->getFromDB($entities_id)) {
-         PluginMonitoringToolbox::logIfExtradebug(
-            'pm-shinken',
-            " - invalid entity: $entities_id\n"
-         );
-         return false;
-      }
-      // Jetlag for required entity ...
-      $timeperiodsuffix = $hostconfig->getValueAncestor('jetlag', $entities_id);
-      if ($timeperiodsuffix == '_0') {
-         $timeperiodsuffix = '';
-      }
-      PluginMonitoringToolbox::logIfExtradebug(
-         'pm-shinken',
-         " - entity: $entities_id, jetlag: $timeperiodsuffix\n"
-      );
-
-      if (! $calendar->getFromDB($calendars_id)) {
-         PluginMonitoringToolbox::logIfExtradebug(
-            'pm-shinken',
-            " - invalid calendar: $calendars_id ...\n"
-         );
-         return false;
-      }
-
-      $tmp = array();
-      if ($timeperiodsuffix == 0) {
-         $tmp['timeperiod_name'] = self::shinkenFilter($calendar->fields['name']);
-         $tmp['alias'] = $calendar->fields['name'];
-      } else {
-         $tmp['timeperiod_name'] = self::shinkenFilter($calendar->fields['name']."_".$timeperiodsuffix);
-         $tmp['alias'] = $calendar->fields['name']." (".$timeperiodsuffix.")";
-      }
-
-      // If timeperiod already exists in memory ...
-      if (isset($_SESSION['plugin_monitoring']['timeperiods'][ $tmp['timeperiod_name'] ])) {
-         return true;
-      }
-
-      PluginMonitoringToolbox::logIfExtradebug(
-         'pm-shinken',
-         " - _addTimeperiod, building calendar '{$tmp['timeperiod_name']}' for entity: $entities_id\n"
-      );
-      // $tmp['timeperiod_name'] = self::shinkenFilter($calendar->fields['name']);
-      // $tmp['alias'] = $calendar->fields['name'];
-      $a_listsegment = $calendarSegment->find("`calendars_id`='".$calendar->fields['id']."'");
-      $a_cal = array();
-      foreach ($a_listsegment as $datasegment) {
-         $begin = preg_replace("/:00$/", "", $datasegment['begin']);
-         $end = preg_replace("/:00$/", "", $datasegment['end']);
-         $day = "";
-         switch ($datasegment['day']) {
-
-            case "0":
-               $day = "sunday";
-               break;
-
-            case "1":
-               $day = "monday";
-               break;
-
-            case "2":
-               $day = "tuesday";
-               break;
-
-            case "3":
-               $day = "wednesday";
-               break;
-
-            case "4":
-               $day = "thursday";
-               break;
-
-            case "5":
-               $day = "friday";
-               break;
-
-            case "6":
-               $day = "saturday";
-               break;
-
-         }
-         $a_cal[$day][] = $begin."-".$end;
-      }
-      foreach ($a_cal as $day=>$a_times) {
-         $tmp[$day] = implode(',', $a_times);
-      }
-      $a_cholidays = $calendar_Holiday->find("`calendars_id`='".$calendar->fields['id']."'");
-      foreach ($a_cholidays as $a_choliday) {
-         $holiday->getFromDB($a_choliday['holidays_id']);
-         if ($holiday->fields['is_perpetual'] == 1
-                 && $holiday->fields['begin_date'] == $holiday->fields['end_date']) {
-            $datetime = strtotime($holiday->fields['begin_date']);
-            $tmp[strtolower(date('F', $datetime)).
-                ' '.date('j', $datetime)] = '00:00-00:00';
-         }
-      }
-
-
-      // if ($timeperiodsuffix == 0) {
-         // $tmp['timeperiod_name'] = self::shinkenFilter($tmp['timeperiod_name']);
-      // } else {
-         // $tmp['timeperiod_name'] = self::shinkenFilter($tmp['timeperiod_name']."_".$timeperiodsuffix);
-         // $tmp['alias'] = $tmp['alias']." (".$timeperiodsuffix.")";
-      // }
-      $days = array('sunday','monday','tuesday', 'wednesday','thursday',
-                    'friday', 'saturday');
-      $saturday = '';
-      $reportHours = 0;
-      $beforeday = 'saturday';
-      foreach ($days as $numday=>$day) {
-         if (isset($tmp[$day])) {
-            $splitDay = explode(',', $tmp[$day]);
-            $toAdd = '';
-            if ($reportHours > 0) {
-               $toAdd = '00:00-'.sprintf("%02s", $reportHours).':00';
-               $reportHours = 0;
-            }
-            foreach ($splitDay as $num=>$hourMinute) {
-               $previous_begin = 0;
-               $beginEnd = explode('-', $hourMinute);
-               // ** Begin **
-               $split = explode(':', $beginEnd[0]);
-               $split[0] += $timeperiodsuffix;
-               if ($split[0] > 24) {
-                  //$reportHours = $split[0] - 24;
-                  unset($splitDay[$num]);
-               } else {
-                  if ($split[0] < 0) {
-                     $reportHours = $split[0];
-                     $previous_begin = 24 + $split[0];
-                     $split[0] = '00';
-                  }
-                  $beginEnd[0] = sprintf("%02s", $split[0]).':'.$split[1];
-                  // ** End **
-                  $split = explode(':', $beginEnd[1]);
-                  $split[0] += $timeperiodsuffix;
-                  if ($split[0] < 0) {
-                     if ($numday-1 == -1) {
-                        $saturday .= ",".sprintf("%02s", $previous_begin).":00-".sprintf("%02s", (24 + $split[0])).":00";
-                     } else {
-                        $tmp[$days[($numday-1)]] .= ",".sprintf("%02s", $previous_begin).":00-".sprintf("%02s", (24 + $split[0])).":00";
-                     }
-                     unset($splitDay[$num]);
-                  } else {
-                     if ($split[0] > 24) {
-                        $reportHours = $split[0] - 24;
-                        $split[0] = 24;
-                     }
-                     $beginEnd[1] = sprintf("%02s", $split[0]).':'.$split[1];
-
-                     $hourMinute = implode('-', $beginEnd);
-                     $splitDay[$num] = $hourMinute;
-                  }
-               }
-            }
-            if ($reportHours < 0) {
-//                     if (!isset($tmp[$beforeday])) {
-//                        $tmp[$beforeday] = array();
-//                     }
-//                     $splitBeforeDay = explode(',', $tmp[$beforeday]);
-//                     $splitBeforeDay[] = sprintf("%02s", (24 + $reportHours)).':00-24:00';
-//                     $tmp[$beforeday] = implode(',', $splitBeforeDay);
-               $reportHours = 0;
-            }
-            if (!empty($toAdd)) {
-               array_unshift($splitDay, $toAdd);
-            }
-            $tmp[$day] = implode(',', $splitDay);
-         } else if ($reportHours > 0) {
-            //$tmp[$day] = '00:00-'.$reportHours.':00';
-            $reportHours = 0;
-         }
-         $beforeday = $day;
-      }
-      // Manage for report hours from saturday to sunday
-      if ($reportHours > 0) {
-         $splitDay = explode(',', $tmp['sunday']);
-         array_unshift($splitDay, '00:00-'.sprintf("%02s", $reportHours).':00');
-         $tmp['sunday'] = implode(',', $splitDay);
-      }
-      if ($saturday != '') {
-         if (isset($tmp['saturday'])) {
-            $tmp['saturday'] .= $saturday;
-         } else {
-            $tmp['saturday'] = $saturday;
-         }
-      }
-
-      // concatenate if needed
-      foreach ($days as $day) {
-         if (isset($tmp[$day])) {
-            $splitDay = explode(',', $tmp[$day]);
-            $beforeHour = '';
-            $beforeNum  = 0;
-            foreach ($splitDay as $num=>$data) {
-               if (substr($data, 0, 2) == $beforeHour) {
-                  $splitDay[$beforeNum] = substr($splitDay[$beforeNum], 0, 6).substr($data, 6, 5);
-                  $beforeHour = substr($data, 6, 2);
-                  unset($splitDay[$num]);
-               } else {
-                  $beforeHour = substr($data, 6, 2);
-                  $beforeNum = $num;
-               }
-            }
-            $tmp[$day] = implode(',', $splitDay);
-         }
-      }
-
-      $_SESSION['plugin_monitoring']['timeperiods'][ $tmp['timeperiod_name'] ] = $tmp;
-
-      PluginMonitoringToolbox::logIfExtradebug(
-         'pm-shinken',
-         "End _addTimeperiod: {$tmp['timeperiod_name']}\n"
-      );
 
    function is_property_list($key) {
 
