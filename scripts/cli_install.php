@@ -40,10 +40,6 @@
    ------------------------------------------------------------------------
  */
 
-if (in_array('--help', $_SERVER['argv'])) {
-   die("usage: ".$_SERVER['argv'][0]." [--as-user USER] [--optimize]\n");
-}
-
 chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
 
 include ("../../../inc/includes.php");
