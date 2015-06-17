@@ -19,6 +19,7 @@ before_install:
  - sudo cp -r . /var/www/monit_testsuite/glpi/plugins/monitoring/
  - sudo chown -R travis:www-data /var/www/monit_testsuite
  - sudo chmod -R g+w /var/www/monit_testsuite
+ - cd /var/www/monit_testsuite && ant -Dclearsavepoint='true' -Dbasedir=. -f ./glpi/plugins/monitoring/phpunit/build.xml composer
 
-script: cd /var/www/monit_testsuite/glpi/plugins/monitoring/phpunit && phpunit ./
+script: cd /var/www/monit_testsuite && ant -Dclearsavepoint='true' -Dbasedir=. -f ./glpi/plugins/monitoring/phpunit/build.xml phpunit.all
 
