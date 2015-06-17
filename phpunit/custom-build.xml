@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name='plugin-monitoring-custom'>
+  <include file='build.xml' />
+  <property name="tests.directory" value='${basedir}/glpi/plugins/monitoring/phpunit' />
+  <target name="phpunit.unit.install" depends='plugin-monitoring.prepare' description="Run unit tests with PHPUnit">
+   <antcall target="plugin-monitoring.phpunit.install"/>
+ </target>
+  <target name="phpunit.unit.custom" depends='plugin-monitoring.prepare' description="Run unit tests with PHPUnit">
+   <phpunit.run type="custom" configuration='${monitoring.directory}/phpunit/testsuites_unit.xml'>
+     <testfile>
+       <arg path='${tests.directory}/1_Unit/NetworkEquipmentUpdateTest.php' />
+     </testfile>
+   </phpunit.run>
+   <fail>
+     <condition>
+       <isfailure code='${phpunit.returncode.custom}' />
+     </condition>
+   </fail>
+ </target>
+ <target name='format.testlog'>
+  <format.testlog />
+ </target>
+</project>

@@ -1,9 +1,0 @@
-run phpunits with this command:
-
-cd [...]/plugins/monitoring/phpunit/ && phpunit ./
-
-
-
-============ NOTE ============
-
-Works with phpunit 3.1.7

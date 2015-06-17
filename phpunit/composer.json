@@ -1,0 +1,19 @@
+{
+    "name": "monitoring/monitoring_unittests_dependencies",
+    "description" : "Monitoring plugin's unittests dependencies",
+    "license" : "AGPL-3.0",
+
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*",
+        "phploc/phploc": "*",
+        "pdepend/pdepend" : "1.1.0",
+        "theseer/phpdox" : "*",
+        "phpmd/phpmd" : "*",
+        "squizlabs/php_codesniffer" : "*",
+        "sebastian/phpcpd": "*"
+    },
+
+    "config": {
+        "cache-dir": "./composer.cache"
+    }
+}
