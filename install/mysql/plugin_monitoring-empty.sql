@@ -1014,8 +1014,7 @@ CREATE TABLE `glpi_plugin_monitoring_shinkenstates` (
   `last_output` text DEFAULT NULL,
   `last_perfdata` text DEFAULT NULL,
   `is_ack` tinyint(1) DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `hostname` (`hostname`,`service`)
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
