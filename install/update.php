@@ -116,8 +116,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                      `last_output` text DEFAULT NULL,
                      `last_perfdata` text DEFAULT NULL,
                      `is_ack` tinyint(1) DEFAULT 0,
-                     PRIMARY KEY (`id`),
-                     KEY `hostname` (`hostname`,`service`)
+                     PRIMARY KEY (`id`)
                   ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
       $DB->query($query);
    }
@@ -2111,7 +2110,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       $a_table['oldkeys'] = array();
 
-//      migrateTablesMonitoring($migration, $a_table);
+      migrateTablesMonitoring($migration, $a_table);
 
 
 
@@ -2948,11 +2947,11 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $a_table['oldname'] = array();
 
       $a_table['fields']  = array(
-         'id'           => array('type'    => 'autoincrement',  'value'   => ''),
+         'id'           => array('type' => 'integer', 'value' => 0),
          'plugin_monitoring_services_id'
-                        => array('type'    => 'integer',        'value'   => 0),
+                        => array('type' => 'integer', 'value' => 0),
          'plugin_monitoring_serviceevents_id'
-                        => array('type'    => 'integer',        'value'   => 0),
+                        => array('type' => 'integer', 'value' => 0),
       );
 
       $a_table['oldfields']  = array();

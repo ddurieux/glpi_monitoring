@@ -145,9 +145,9 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       $input['action'] = "add";
       $input['value'] = "New service catalog ".$DB->escape($this->fields['name']);
       $pmLog->add($input);
-
       // Generic services catalogs only ...
-      if ($this->getField('is_generic')) {
+      if (isset($this->fields['is_generic'])
+              && $this->fields['is_generic']) {
          $this->updateGenericServicesCatalogs();
       }
    }
@@ -158,7 +158,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       // Toolbox::logInFile("pm", "  post_updateItem : ".$this->getID()." : ".$this->getField('is_generic')."\n");
 
       // Generic services catalogs only ...
-      if ($this->getField('is_generic')) {
+      if ($this->fields['is_generic']) {
          $this->updateGenericServicesCatalogs();
       }
    }
@@ -185,9 +185,9 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
       $pmLog->add($input);
 
       // Generic services catalogs only ...
-      if (! $this->getField('is_generic')) return;
-
-      $this->updateGenericServicesCatalogs('delete');
+      if ($this->fields['is_generic']) {
+         $this->updateGenericServicesCatalogs('delete');
+      }
    }
 
 

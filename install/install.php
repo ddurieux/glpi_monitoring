@@ -53,28 +53,28 @@ function pluginMonitoringInstall($version) {
       if (!empty($sql_line)) $DB->query($sql_line);
    }
 
-   include (GLPI_ROOT . "/plugins/monitoring/inc/profile.class.php");
+   require_once GLPI_ROOT . "/plugins/monitoring/inc/profile.class.php";
    $pmProfile = new PluginMonitoringProfile();
    $pmProfile->initProfile();
-   include (GLPI_ROOT . "/plugins/monitoring/inc/command.class.php");
+   require_once GLPI_ROOT . "/plugins/monitoring/inc/command.class.php";
    $pmCommand = new PluginMonitoringCommand();
    $pmCommand->initCommands();
-   include (GLPI_ROOT . "/plugins/monitoring/inc/notificationcommand.class.php");
+   require_once GLPI_ROOT . "/plugins/monitoring/inc/notificationcommand.class.php";
    $pmNotificationcommand = new PluginMonitoringNotificationcommand();
    $pmNotificationcommand->initCommands();
-   include (GLPI_ROOT . "/plugins/monitoring/inc/check.class.php");
+   require_once GLPI_ROOT . "/plugins/monitoring/inc/check.class.php";
    $pmCheck = new PluginMonitoringCheck();
    $pmCheck->initChecks();
 
-   include (GLPI_ROOT . "/plugins/monitoring/inc/perfdata.class.php");
-   include (GLPI_ROOT . "/plugins/monitoring/inc/perfdatadetail.class.php");
+   require_once GLPI_ROOT . "/plugins/monitoring/inc/perfdata.class.php";
+   require_once GLPI_ROOT . "/plugins/monitoring/inc/perfdatadetail.class.php";
    PluginMonitoringPerfdata::initDB();
 
-   include (GLPI_ROOT . "/plugins/monitoring/inc/hostconfig.class.php");
+   require_once GLPI_ROOT . "/plugins/monitoring/inc/hostconfig.class.php";
    $pmHostconfig = new PluginMonitoringHostconfig();
    $pmHostconfig->initConfig();
 
-   include (GLPI_ROOT . "/plugins/monitoring/inc/config.class.php");
+   require_once GLPI_ROOT . "/plugins/monitoring/inc/config.class.php";
    $pmConfig = new PluginMonitoringConfig();
    $pmConfig->initConfig();
    $query = "UPDATE `glpi_plugin_monitoring_configs`

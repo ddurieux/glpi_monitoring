@@ -1,19 +1,19 @@
 <?php
 
-class PerfdataForGraph extends PHPUnit_Framework_TestCase {
+class PerfdataforgraphTest extends RestoreDatabase_TestCase {
 
 
+   /**
+    * @test
+    */
    public function testTcp() {
       global $DB;
 
-      $DB->connect();
-
-         Plugin::loadLang('monitoring');
-         $pmComponent = new PluginMonitoringComponent();
-         $pmComponent->add(array(
-             'name' => 'check',
-             'plugin_monitoring_checks_id' => '2'
-         ));
+      $pmComponent = new PluginMonitoringComponent();
+      $pmComponent->add(array(
+          'name' => 'check',
+          'plugin_monitoring_checks_id' => '2'
+      ));
 
       $pmServiceevent = new PluginMonitoringServiceevent();
 
@@ -48,10 +48,11 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
 
 
 
+   /**
+    * @test
+    */
    public function testLoad() {
       global $DB;
-
-      $DB->connect();
 
       $DB->query('TRUNCATE TABLE `glpi_plugin_monitoring_serviceevents`');
 
@@ -95,10 +96,11 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
 
 
 
+   /**   
+    * @test   
+    */
    public function testPf() {
       global $DB;
-
-      $DB->connect();
 
       $DB->query('TRUNCATE TABLE `glpi_plugin_monitoring_serviceevents`');
 
@@ -135,10 +137,11 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
 
 
 
+   /**   
+    * @test   
+    */
    public function testDisk() {
       global $DB;
-
-      $DB->connect();
 
       $DB->query('TRUNCATE TABLE `glpi_plugin_monitoring_serviceevents`');
 
@@ -175,10 +178,11 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
 
 
 
+   /**   
+    * @test   
+    */
    public function testMySQLTmpdisktable() {
       global $DB;
-
-      $DB->connect();
 
       $DB->query('TRUNCATE TABLE `glpi_plugin_monitoring_serviceevents`');
 
@@ -214,10 +218,11 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
 
 
 
+   /**   
+    * @test   
+    */
    public function testCpuusage() {
       global $DB;
-
-      $DB->connect();
 
       $DB->query('TRUNCATE TABLE `glpi_plugin_monitoring_serviceevents`');
 
@@ -254,10 +259,11 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
 
 
 
+   /**   
+    * @test   
+    */
    public function testHTTP() {
       global $DB;
-
-      $DB->connect();
 
       $DB->query('TRUNCATE TABLE `glpi_plugin_monitoring_serviceevents`');
 
@@ -297,10 +303,11 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
 
 
 
+   /**   
+    * @test   
+    */
    public function testIostatBSD() {
       global $DB;
-
-      $DB->connect();
 
       $DB->query('TRUNCATE TABLE `glpi_plugin_monitoring_serviceevents`');
 
@@ -350,10 +357,11 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
 
 
 
+   /**   
+    * @test   
+    */
    public function testNginxstatus() {
       global $DB;
-
-      $DB->connect();
 
       $DB->query('TRUNCATE TABLE `glpi_plugin_monitoring_serviceevents`');
 
@@ -413,10 +421,11 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
 
 
 
+   /**   
+    * @test   
+    */
    public function testIftraffic41() {
       global $DB;
-
-      $DB->connect();
 
       $DB->query('TRUNCATE TABLE `glpi_plugin_monitoring_serviceevents`');
 
@@ -457,10 +466,11 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
 
 
 
+   /**   
+    * @test   
+    */
    public function testNoData() {
       global $DB;
-
-      $DB->connect();
 
       $DB->query('TRUNCATE TABLE `glpi_plugin_monitoring_serviceevents`');
 
@@ -492,10 +502,11 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
 
 
 
+   /**   
+    * @test   
+    */
    public function testMissNewData() {
       global $DB;
-
-      $DB->connect();
 
       $DB->query('TRUNCATE TABLE `glpi_plugin_monitoring_serviceevents`');
 
@@ -533,10 +544,11 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
 // inUsage=0.06%;85;98 outUsage=0.50%;85;98 inBandwidth=580585.00bps outBandwidth=5010017.19bps inAbsolut=58697810111 outAbsolut=125801495656
 
 
+   /**   
+    * @test   
+    */
    public function testSplitPerfdataNbSessions() {
       global $DB;
-
-      $DB->connect();
 
       $perfdata = "'Nb de sessions actives'=2;15;20;";
 
@@ -551,10 +563,11 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
 
 
 
+   /**   
+    * @test   
+    */
    public function testSplitPerfdataDisk() {
       global $DB;
-
-      $DB->connect();
 
       $perfdata = "'C: %'=3%;25;75 'C:'=14.32G;116.416;349.247;0;465.662";
 
@@ -570,10 +583,11 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
 
 
 
+   /**   
+    * @test   
+    */
    public function testSplitPerfdataPrinter() {
       global $DB;
-
-      $DB->connect();
 
       $perfdata = "'Cut pages'=15c 'Retracted pages'=3c";
 
@@ -587,17 +601,6 @@ class PerfdataForGraph extends PHPUnit_Framework_TestCase {
       $this->assertEquals($a_reference, $a_perfdata);
    }
 
-}
-
-
-
-class PerfdataForGraph_AllTests  {
-
-   public static function suite() {
-
-      $suite = new PHPUnit_Framework_TestSuite('PerfdataForGraph');
-      return $suite;
-   }
 }
 
 ?>

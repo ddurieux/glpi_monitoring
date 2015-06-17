@@ -40,13 +40,27 @@
    ------------------------------------------------------------------------
  */
 
-if (in_array('--help', $_SERVER['argv'])) {
-   die("usage: ".$_SERVER['argv'][0]." [ --optimize ]\n");
-}
-
 chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
 
 include ("../../../inc/includes.php");
+
+include ("./docopt.php");
+
+$doc = <<<DOC
+cli_install.php
+
+Usage:
+   cli_install.php [--force-upgrade] [--as-user USER] [--optimize]
+
+Options:
+   --force-upgrade      Force upgrade.
+   --as-user USER       Do install/upgrade as specified USER.
+   --optimize           Optimize tables.
+
+DOC;
+
+$docopt = new \Docopt\Handler();
+$args = $docopt->handle($doc);
 
 // Init debug variable
 $_SESSION['glpi_use_mode'] = Session::DEBUG_MODE;
@@ -98,6 +112,7 @@ class CliMigration extends Migration {
       }
       echo str_pad($msg, 100)."\n";
    }
+
 }
 
 /*---------------------------------------------------------------------*/
@@ -129,6 +144,7 @@ $migration = new CliMigration($current_version);
    // To prevent problem of execution time
    ini_set("max_execution_time", "0");
    ini_set("memory_limit", "-1");
+   ini_set("session.use_cookies","0");
 
    $mess = '';
    if (($current_version != PLUGIN_MONITORING_VERSION)
@@ -141,6 +157,20 @@ $migration = new CliMigration($current_version);
    }
 
    $migration->displayWarning($mess);
+
+   if ($args['--force-upgrade']) {
+      define('FORCE_UPGRADE', TRUE);
+   }
+
+   if ( !is_null($args['--as-user']) ) {
+      $user = new User();
+      $user->getFromDBbyName($args['--as-user']);
+      $auth = new Auth();
+      $auth->auth_succeded = true;
+      $auth->user = $user;
+      Session::init($auth);
+   }
+
 
    $plugin->getFromDBbyDir("monitoring");
    print("Installing Plugin...\n");

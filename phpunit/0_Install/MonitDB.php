@@ -1,25 +1,26 @@
 <?php
 
+class MonitDB extends PHPUnit_Framework_Assert{
 
-class MonitoringInstall extends PHPUnit_Framework_TestCase {
-
-   public function testDB($pluginname='', $when='') {
+   public function checkInstall($pluginname='', $when='') {
       global $DB;
+
 
       if ($pluginname == '') {
          return;
       }
 
-      $comparaisonSQLFile = "plugin_monitoring-empty.sql";
+      $comparaisonSQLFile = "plugin_".$pluginname."-empty.sql";
       // See http://joefreeman.co.uk/blog/2009/07/php-script-to-compare-mysql-database-schemas/
 
-      $file_content = file_get_contents("../../".$pluginname."/install/mysql/".$comparaisonSQLFile);
+      $file_content = file_get_contents(GLPI_ROOT."/plugins/".$pluginname."/install/mysql/".$comparaisonSQLFile);
       $a_lines = explode("\n", $file_content);
 
       $a_tables_ref = array();
       $current_table = '';
       foreach ($a_lines as $line) {
-         if (strstr($line, "CREATE TABLE ")) {
+         if (strstr($line, "CREATE TABLE ")
+                 OR strstr($line, "CREATE VIEW")) {
             $matches = array();
             preg_match("/`(.*)`/", $line, $matches);
             $current_table = $matches[1];
@@ -42,7 +43,7 @@ class MonitoringInstall extends PHPUnit_Framework_TestCase {
      $query = "SHOW TABLES";
      $result = $DB->query($query);
      while ($data=$DB->fetch_array($result)) {
-        if (strstr($data[0], "monitoring")) {
+        if (strstr($data[0], "monitoring")){
 
             $data[0] = str_replace(" COLLATE utf8_unicode_ci", "", $data[0]);
             $data[0] = str_replace("( ", "(", $data[0]);
@@ -58,7 +59,8 @@ class MonitoringInstall extends PHPUnit_Framework_TestCase {
             $a_lines = explode("\n", $data['Create Table']);
 
             foreach ($a_lines as $line) {
-               if (strstr($line, "CREATE TABLE ")) {
+               if (strstr($line, "CREATE TABLE ")
+                       OR strstr($line, "CREATE VIEW")) {
                   $matches = array();
                   preg_match("/`(.*)`/", $line, $matches);
                   $current_table = $matches[1];
@@ -126,24 +128,8 @@ class MonitoringInstall extends PHPUnit_Framework_TestCase {
               'Cron cleanlogs not created');
       $this->assertTrue($crontask->getFromDBbyName('PluginMonitoringDisplayview_rule', 'replayallviewrules'),
               'Cron replayallviewrules not created');
-   }
-}
 
-require_once 'Install/AllTests.php';
-require_once 'Update/AllTests.php';
 
-class MonitoringInstall_AllTests  {
-
-   public static function suite() {
-
-      $suite = new PHPUnit_Framework_TestSuite('MonitoringInstall');
-      $suite->addTest(Install_AllTests::suite());
-      if (!(isset($_SERVER['argv'])
-              && isset($_SERVER['argv'][2])
-              && !isset($_SERVER['argv'][3]))) {
-         $suite->addTest(Update_AllTests::suite());
-      }
-      return $suite;
    }
 }
 

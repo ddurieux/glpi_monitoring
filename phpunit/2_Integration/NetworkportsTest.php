@@ -1,21 +1,16 @@
 <?php
 
-class NetworkPorts extends PHPUnit_Framework_TestCase {
+class NetworkportsTest extends RestoreDatabase_TestCase {
 
    /*
     * We test add service and so add a host
     * We test too when remove all services of a host, je host may be deleted
     */
 
+   /**
+    * @test
+    */
    public function testAddNetworkport() {
-      global $DB;
-
-      $DB->connect();
-
-      $_SESSION["glpiname"] = 'glpi';
-      Plugin::load('monitoring');
-
-      Plugin::loadLang('monitoring');
 
       $networkEquipment             = new NetworkEquipment();
       $networkPort                  = new NetworkPort();
@@ -117,15 +112,11 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
 
 
 
+   /**
+    * @test
+    */
+/* TODO
    public function testUncheckNetworkport() {
-      global $DB;
-
-      $DB->connect();
-
-      $_SESSION["glpiname"] = 'glpi';
-      Plugin::load('monitoring');
-
-      Plugin::loadLang('monitoring');
 
       $pmNetworkport                = new PluginMonitoringNetworkport();
 
@@ -147,19 +138,14 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
                  countElementsInTable('glpi_plugin_monitoring_componentscatalogs_hosts'),
                  "May have one entrie in glpi_plugin_monitoring_componentscatalogs_hosts");
    }
+*/
 
 
-
+   /**
+    * @test
+    */
+/* TODO
    public function testDeleteNetworkport() {
-      global $DB;
-
-      $DB->connect();
-
-      $_SESSION["glpiname"] = 'glpi';
-      Plugin::load('monitoring');
-
-      Plugin::loadLang('monitoring');
-
       $networkport                = new Networkport();
 
       // Delete the second port in switch
@@ -175,18 +161,8 @@ class NetworkPorts extends PHPUnit_Framework_TestCase {
                  countElementsInTable('glpi_plugin_monitoring_componentscatalogs_hosts'),
                  "May have one entrie in glpi_plugin_monitoring_componentscatalogs_hosts");
    }
+*/
 
-}
-
-
-
-class NetworkPorts_AllTests  {
-
-   public static function suite() {
-
-      $suite = new PHPUnit_Framework_TestSuite('NetworkPorts');
-      return $suite;
-   }
 }
 
 ?>
