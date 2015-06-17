@@ -120,7 +120,7 @@ function plugin_monitoring_install() {
       AND ($version_detected == PLUGIN_MONITORING_VERSION)) {
       // Yet at right version
    } else {
-      include (GLPI_ROOT . "/plugins/monitoring/install/install.php");
+      require_once GLPI_ROOT . "/plugins/monitoring/install/install.php";
       pluginMonitoringInstall(PLUGIN_MONITORING_VERSION);
    }
    unset($_SESSION['plugin_monitoring_installation']);
