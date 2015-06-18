@@ -42,11 +42,7 @@
 
 include ("../../../inc/includes.php");
 
-if (version_compare(GLPI_VERSION,'0.85','lt')) {
-   Session::checkRight("config", 'r');
-} else {
-   Session::checkRight("config", READ);
-}
+Session::checkRight("config", 'r');
 
 Html::header(__('Monitoring - Shinken states', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
              "PluginMonitoringDashboard", "shinkenstate");

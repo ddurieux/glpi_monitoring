@@ -1719,7 +1719,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          'jetlag'       => array('type' => 'varchar(10) COLLATE utf8_unicode_ci DEFAULT NULL',
                                  'value'   => '0'),
          'graphite_prefix' =>
-                           array('type' => 'varchar(255) COLLATE utf8_unicode_ci DEFAULT ''',
+                           array('type' => "varchar(255) COLLATE utf8_unicode_ci DEFAULT ''",
                                  'value'   => ''),
       );
 
@@ -2070,100 +2070,45 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'ouput');
       $migration->migrationOneTable($newTable);
 
-         $migration->changeField($newTable,
-                                 'id',
-                                 'id',
-                                 "bigint(30) NOT NULL AUTO_INCREMENT");
-         $migration->changeField($newTable,
-                                 'plugin_monitoring_services_id',
-                                 'plugin_monitoring_services_id',
-                                 "int(11) NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable,
-                                 'date',
-                                 'date',
-                                 "datetime DEFAULT NULL");
-         // Event should contain up to 4096 bytes (Nagios plugin specification)
-         $migration->changeField($newTable,
-                                 'event',
-                                 'event',
-                                 "varchar(4096) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable,
-                                 'perf_data',
-                                 'perf_data',
-                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         // Duplicate field with event
-         // $migration->changeField($newTable,
-                                 // 'output',
-                                 // 'output',
-                                 // "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable,
-                                 'state',
-                                 'state',
-                                 "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable,
-                                 'state_type',
-                                 'state_type',
-                                 "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
-         $migration->changeField($newTable,
-                                 'latency',
-                                 'latency',
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable,
-                                 'execution_time',
-                                 'execution_time',
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->changeField($newTable,
-                                 'unavailability',
-                                 'unavailability',
-                                 "tinyint(1) NOT NULL DEFAULT '0'");
-      $migration->migrationOneTable($newTable);
-         $migration->addField($newTable,
-                                 'plugin_monitoring_services_id',
-                                 "int(11) NOT NULL DEFAULT '0'");
-         $migration->addField($newTable,
-                                 'date',
-                                 "datetime DEFAULT NULL");
-         $migration->addField($newTable,
-                                 'event',
-                                 "varchar(512) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable,
-                                 'perf_data',
-                                 "text DEFAULT NULL COLLATE utf8_unicode_ci");
-         // Duplicate field with event
-         // $migration->addField($newTable,
-                                 // 'output',
-                                 // "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable,
-                                 'state',
-                                 "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
-         $migration->addField($newTable,
-                                 'state_type',
-                                 "varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0'");
-         $migration->addField($newTable,
-                                 'latency',
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable,
-                                 'execution_time',
-                                 "varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL");
-         $migration->addField($newTable,
-                              'unavailability',
-                              "tinyint(1) NOT NULL DEFAULT '0'");
-         $migration->addKey($newTable,
-                            "plugin_monitoring_services_id");
-         $migration->addKey($newTable,
-                            array('plugin_monitoring_services_id',
-                                  'date'),
-                            "plugin_monitoring_services_id_2");
-         $migration->addKey($newTable,
-                            array('unavailability',
-                                  'state_type',
-                                  'plugin_monitoring_services_id'),
-                            "unavailability");
-         $migration->addKey($newTable,
-                            array('plugin_monitoring_services_id',
-                                  'id'),
-                            "plugin_monitoring_services_id_3");
-      $migration->migrationOneTable($newTable);
+      $a_table = array();
+      $a_table['name'] = 'glpi_plugin_monitoring_serviceevents';
+      $a_table['oldname'] = array();
+
+      $a_table['fields']  = array(
+         'id'           => array('type'    => 'bigint(30) NOT NULL AUTO_INCREMENT',  'value'   => NULL),
+         'plugin_monitoring_services_id' => array('type'    => 'integer',       'value'   => '0'),
+         'date'         => array('type'    => 'datetime',         'value'   => NULL),
+         'event'        => array('type'    => 'varchar(4096) COLLATE utf8_unicode_ci DEFAULT NULL',  'value'   => NULL),
+         'perf_data'    => array('type'    => 'text',           'value'   => NULL),
+         'state'        => array('type'    => 'string',         'value'   => '0'),
+         'state_type'   => array('type'    => 'string',         'value'   => '0'),
+         'latency'      => array('type'    => 'string',         'value'   => NULL),
+         'execution_time' => array('type'    => 'string',         'value'   => NULL),
+         'unavailability'   => array('type'    => 'tinyint(1) NOT NULL DEFAULT "0"',  'value'   => NULL),
+      );
+
+      $a_table['oldfields']  = array('output');
+
+      $a_table['renamefields'] = array();
+
+      $a_table['keys'] = array(
+         array('field' => 'plugin_monitoring_services_id',
+               'name' => 'plugin_monitoring_services_id',
+               'type' => 'INDEX'),
+         array('field' => array('plugin_monitoring_services_id', 'date'),
+               'name' => 'plugin_monitoring_services_id_2',
+               'type' => 'INDEX'),
+         array('field' => array('unavailability', 'state_type', 'plugin_monitoring_services_id'),
+               'name' => 'unavailability',
+               'type' => 'INDEX'),
+         array('field' => array('plugin_monitoring_services_id', 'id'),
+               'name' => 'plugin_monitoring_services_id_3',
+               'type' => 'INDEX')
+      );
+
+      $a_table['oldkeys'] = array();
+
+//      migrateTablesMonitoring($migration, $a_table);
 
 
 

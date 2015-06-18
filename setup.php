@@ -99,6 +99,9 @@ function plugin_init_monitoring() {
          include_once GLPI_ROOT.'/plugins/monitoring/inc/security.class.php';
          $pmSecurity = new PluginMonitoringSecurity();
          $pmSecurity->updateSecurity();
+         if (class_exists('PluginAppliancesAppliance')) {
+           PluginAppliancesAppliance::registerType('PluginMonitoringServicescatalog');
+         }
 
          if (class_exists('PluginAppliancesAppliance')) {
            PluginAppliancesAppliance::registerType('PluginMonitoringServicescatalog');

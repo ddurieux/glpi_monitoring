@@ -45,7 +45,7 @@ include ("../../../inc/includes.php");
 PluginMonitoringProfile::checkRight("config_components_catalogs","r");
 
 Html::header(__('Monitoring - hosts notifications templates', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
-             "monitoring", "hostnotificationtemplates");
+             "monitoring", "hostnotificationtemplate");
 
 $pmHN_template = new PluginMonitoringHostnotificationtemplate();
 if (isset($_POST["add"])) {

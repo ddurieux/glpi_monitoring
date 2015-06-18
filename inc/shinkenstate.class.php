@@ -62,8 +62,8 @@ class PluginMonitoringShinkenState extends CommonDBTM {
    static function getTable() {
       return 'glpi_plugin_monitoring_shinkenstates';
    }
-   
-   
+
+
    function getSearchOptions() {
       $tab = array();
       $i = 1;
@@ -126,7 +126,7 @@ class PluginMonitoringShinkenState extends CommonDBTM {
       $tab[$i]['name']            = __('Acknowledged', 'monitoring');
       $tab[$i]['datatype']        = 'boolean';
       $tab[$i]['massiveaction']   = false;
-      
+
       return $tab;
    }
 
@@ -160,7 +160,7 @@ class PluginMonitoringShinkenState extends CommonDBTM {
     */
    static function getState($state) {
       $returned_state = '~';
-      
+
       switch($state) {
          case 0:
             $returned_state = 'OK';
