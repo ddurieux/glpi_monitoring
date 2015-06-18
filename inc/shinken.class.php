@@ -580,7 +580,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             if (! empty($data['locationName'])) {
                $string = utf8_decode(strip_tags(trim($data['locationName'])));
                $string = preg_replace("/[\r\n]/",".",$data['locationName']);
-               $string = preg_replace("/[^A-Za-z0-9\-_ <>\/',;.:!?%*()��������]/",'',$string);
+               $string = $this->shinkenFilter($string);
                $a_hosts[$i] = $this->add_value_type(
                        $string,
                        self::$shinkenParameters['glpi']['location'], $a_hosts[$i]);
@@ -619,11 +619,11 @@ class PluginMonitoringShinken extends CommonDBTM {
                  'hostgroups', $a_hosts[$i]);
          // Alias
          $a_hosts[$i] = $this->add_value_type(
-                 $data['entityName']." / ". $a_hosts[$i]['host_name'],
+                 $this->shinkenFilter($data['entityName'])." / ". $a_hosts[$i]['host_name'],
                  'alias', $a_hosts[$i]);
          if (isset($data['hostLocation'])) {
             $hn = array();
-            $hn = $this->add_value_type(" (".$data['hostLocation'].")", 'alias', $hn);
+            $hn = $this->add_value_type(" (".$this->shinkenFilter($data['hostLocation']).")", 'alias', $hn);
             $a_hosts[$i]['alias'] .= "-".$hn['alias'];
          }
 
@@ -1316,7 +1316,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                      PluginMonitoringCommand::$command_prefix . self::$shinkenParameters['shinken']['fake_hosts']['check_command'],
                     'check_command', $a_hosts[$i]);
             $a_hosts[$i] = $this->add_value_type(
-                    $dataEntity['entityName'], 'alias', $a_hosts[$i]);
+                    $this->shinkenFilter($dataEntity['entityName']), 'alias', $a_hosts[$i]);
             // $a_hosts[$i]['_HOSTID'] = '0';
             // $a_hosts[$i]['_ITEMSID'] = '0';
             // $a_hosts[$i]['_ITEMTYPE'] = 'Computer';
@@ -1629,7 +1629,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                        , 'service_description', $hn);
                $a_services[$i]['service_description'] .= "-".$hn['service_description'];
             }
-            $a_services[$i]['display_name'] = $a_component['name'];
+            $a_services[$i]['display_name'] = $this->shinkenFilter($a_component['name']);
             PluginMonitoringToolbox::logIfExtradebug(
                'pm-shinken',
                " - add service ".$a_services[$i]['service_description']." on ".$a_services[$i]['host_name']."\n"
