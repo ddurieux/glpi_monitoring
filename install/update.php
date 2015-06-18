@@ -3665,23 +3665,23 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
 
    // * Update unavailability (with table glpi_plugin_monitoring_unavailabilitystates)
-      include (GLPI_ROOT . "/plugins/monitoring/inc/unavailabilitystate.class.php");
-      $pmUnavailabilityState = new PluginMonitoringUnavailabilityState();
-      $query = "SELECT * FROM `glpi_plugin_monitoring_services`";
-      $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
-         if ($pmUnavailabilityState->getLastID($data['id']) == 0) {
-            $query2 = "SELECT id FROM `glpi_plugin_monitoring_serviceevents`
-               WHERE `plugin_monitoring_services_id`='".$data['id']."'
-                  AND `unavailability`='1'
-               ORDER BY id DESC
-               LIMIT 1";
-            $result2 = $DB->query($query2);
-            while ($data2=$DB->fetch_array($result2)) {
-               $pmUnavailabilityState->setLastID($data['id'], $data2['id']);
-            }
-         }
-      }
+//      include (GLPI_ROOT . "/plugins/monitoring/inc/unavailabilitystate.class.php");
+//      $pmUnavailabilityState = new PluginMonitoringUnavailabilityState();
+//      $query = "SELECT * FROM `glpi_plugin_monitoring_services`";
+//      $result = $DB->query($query);
+//      while ($data=$DB->fetch_array($result)) {
+//         if ($pmUnavailabilityState->getLastID($data['id']) == 0) {
+//            $query2 = "SELECT id FROM `glpi_plugin_monitoring_serviceevents`
+//               WHERE `plugin_monitoring_services_id`='".$data['id']."'
+//                  AND `unavailability`='1'
+//               ORDER BY id DESC
+//               LIMIT 1";
+//            $result2 = $DB->query($query2);
+//            while ($data2=$DB->fetch_array($result2)) {
+//               $pmUnavailabilityState->setLastID($data['id'], $data2['id']);
+//            }
+//         }
+//      }
 
 
    $query = "UPDATE `glpi_plugin_monitoring_configs`
