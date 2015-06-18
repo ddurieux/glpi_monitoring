@@ -40,7 +40,7 @@
    ------------------------------------------------------------------------
  */
 
-define ("PLUGIN_MONITORING_VERSION","0.84+2.0b");
+define ("PLUGIN_MONITORING_VERSION","0.84+2.1");
 
 define('_MPDF_TEMP_PATH', GLPI_PLUGIN_DOC_DIR.'/monitoring/pdf/');
 
