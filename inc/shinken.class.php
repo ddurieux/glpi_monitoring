@@ -1467,10 +1467,14 @@ class PluginMonitoringShinken extends CommonDBTM {
       $pmHostconfig            = new PluginMonitoringHostconfig();
       $calendar                = new Calendar();
       $user                    = new User();
-      $profile_User = new Profile_User();
+      $profile_User            = new Profile_User();
+      $pmConfig                = new PluginMonitoringConfig();
+
 
       $a_services = array();
       $i=0;
+
+      $pmConfig->getFromDB(1);
 
       // TODO: only contacts in allowed entities ...
       // Prepare individual contacts
@@ -1998,9 +2002,9 @@ class PluginMonitoringShinken extends CommonDBTM {
                                 '1', 'notifications_enabled', $a_services[$i]);
 
                         // Notification period
-                        if (isset($a_calendars[$a_pmcontact['service_notification_period']]) && $this->_addTimeperiod($entities_id, $a_SN['service_notification_period'])) {
+                        if (isset($a_calendars[$a_SN['service_notification_period']]) && $this->_addTimeperiod($entities_id, $a_SN['service_notification_period'])) {
                            $a_services[$i] = $this->add_value_type(
-                                   self::shinkenFilter($a_calendars[$a_pmcontact['service_notification_period']]['name'].$timeperiodsuffix),
+                                   self::shinkenFilter($a_calendars[$a_SN['service_notification_period']]['name'].$timeperiodsuffix),
                                    'notification_period', $a_services[$i]);
                         } else {
                            if (! empty(self::$shinkenParameters['shinken']['services']['notification_period']))
