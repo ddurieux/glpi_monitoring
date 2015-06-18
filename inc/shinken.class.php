@@ -1121,6 +1121,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             'pm-shinken',
             " - add host_for_bp\n"
          );
+         $a_hosts[$i] = array();
          $a_hosts[$i] = $this->add_value_type(
                  self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'] . self::$shinkenParameters['shinken']['fake_bp_hosts']['hostname'],
                  'host_name', $a_hosts[$i]);
