@@ -278,19 +278,6 @@ if (PluginMonitoringProfile::haveRight("config", 'r')) {
    echo "</th>";
    echo "</tr>";
 
-   echo "<th>";
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/notificationcommand.php'>".__('Notification commands', 'monitoring')."</a>";
-   echo "</th>";
-
-   echo "<th>";
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/realm.php'>".__('Reamls', 'monitoring')."</a>";
-   echo "</th>";
-
-   echo "<th>";
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/tag.php'>".__('Tag', 'monitoring')."</a>";
-   echo "</th>";
-   echo "</tr>";
-
    echo "</table>";
 }
 
