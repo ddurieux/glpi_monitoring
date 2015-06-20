@@ -386,7 +386,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       echo "<td>";
       Dropdown::showNumber('business_priority', array(
          'value'    => $this->fields['business_priority'],
-         'min'      => 1,
+         'min'      => 0,
          'max'      => 5)
       );
       echo "</td>";
