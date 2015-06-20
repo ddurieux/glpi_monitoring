@@ -2795,8 +2795,8 @@ Nagios configuration file :
 
          $a_sons_list = getSonsOf("glpi_entities", $data['entityId']);
          if (count($a_sons_list) > 1) {
-            $a_hostgroups[$i] = $this->add_value_type(
-                    '', 'hostgroup_members', $a_hostgroups[$i]);
+            // $a_hostgroups[$i] = $this->add_value_type(
+                    // '', 'hostgroup_members', $a_hostgroups[$i]);
             $first_member = true;
             foreach ($a_sons_list as $son_entity) {
                if ($son_entity == $data['entityId']) continue;
