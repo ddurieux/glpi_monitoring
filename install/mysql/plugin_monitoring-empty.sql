@@ -1006,8 +1006,8 @@ DROP TABLE IF EXISTS `glpi_plugin_monitoring_shinkenstates`;
 
 CREATE TABLE `glpi_plugin_monitoring_shinkenstates` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `hostname` varchar(255) DEFAULT NULL,
-  `service` varchar(255) DEFAULT NULL,
+  `hostname` varchar(249) DEFAULT NULL,
+  `service` varchar(249) DEFAULT NULL,
   `state` varchar(255) DEFAULT NULL,
   `state_type` varchar(255) DEFAULT NULL,
   `last_check` datetime DEFAULT NULL,

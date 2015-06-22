@@ -108,8 +108,8 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    if (!TableExists($newTable)) {
       $query = "CREATE TABLE `".$newTable."` (
                      `id` int(11) NOT NULL AUTO_INCREMENT,
-                     `hostname` varchar(255) DEFAULT NULL,
-                     `service` varchar(255) DEFAULT NULL,
+                     `hostname` varchar(249) DEFAULT NULL,
+                     `service` varchar(249) DEFAULT NULL,
                      `state` varchar(255) DEFAULT NULL,
                      `state_type` varchar(255) DEFAULT NULL,
                      `last_check` datetime DEFAULT NULL,
@@ -123,10 +123,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    }
    $migration->addField($newTable,
                         'hostname',
-                        "varchar(255) DEFAULT NULL");
+                        "varchar(249) DEFAULT NULL");
    $migration->addField($newTable,
                         'service',
-                        "varchar(255) DEFAULT NULL");
+                        "varchar(249) DEFAULT NULL");
    $migration->addField($newTable,
                         'state',
                         "varchar(255) DEFAULT NULL");
@@ -145,6 +145,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    $migration->addField($newTable,
                         'is_ack',
                         "tinyint(1) DEFAULT 0");
+   $migration->addKey($newTable,
+                      array('hostname','service'),
+                      'hostname');
    $migration->migrationOneTable($newTable);
 
     /*
