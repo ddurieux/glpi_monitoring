@@ -1,7 +1,7 @@
 # GLPI, plugin Monitoring
 
 [![Build Status](https://travis-ci.org/ddurieux/glpi_monitoring.svg?branch=master)](https://travis-ci.org/ddurieux/glpi_monitoring)
-image:https://coveralls.io/repos/ddurieux/glpi_monitoring/badge.svg["Coverage Status", link="https://coveralls.io/r/ddurieux/glpi_monitoring"]
+[![Coverage Status](https://coveralls.io/repos/ddurieux/glpi_monitoring/badge.svg)](https://coveralls.io/r/ddurieux/glpi_monitoring)
 
 A Glpi plugin to monitor computers, network equipments and printers with Shinken
 
