@@ -648,7 +648,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               "varchar(255) DEFAULT 'seconds'");
          $migration->addField($newTable,
                               'business_priority',
-                              "tinyint(1) NOT NULL DEFAULT '2'");
+                              "tinyint(1) NOT NULL DEFAULT '3'");
 
          $migration->addKey($newTable,
                             "plugin_monitoring_commands_id");
