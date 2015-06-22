@@ -244,7 +244,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               "int(4) NOT NULL DEFAULT '30'");
          $migration->addField($newTable,
                               'business_priority',
-                              "tinyint(1) NOT NULL DEFAULT '2'");
+                              "tinyint(1) NOT NULL DEFAULT '1'");
          $migration->addField($newTable,
                               'is_generic',
                               "tinyint(1) NOT NULL DEFAULT '0'");
