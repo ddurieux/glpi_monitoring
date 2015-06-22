@@ -147,8 +147,8 @@ class PluginMonitoringShinken extends CommonDBTM {
             'statusmap_image' => '',
          ),
          'services' => array(
-            // Default check_period
-            'check_period'          => '24x7',
+            // Default check_period - leave empty to use check period defined fo the host.
+            'check_period'          => '',
             // Default values
             'business_impact'       => 3,
             'process_perf_data'     => 1,
@@ -2066,36 +2066,48 @@ class PluginMonitoringShinken extends CommonDBTM {
                }
             }
 
-            // Calendar ...
-            $a_services[$i]['check_period'] = '24x7';
-            $timeperiodsuffix = $timeperiodsuffixes[$entities_id];
-            if ($timeperiodsuffix == '_0') {
-               $timeperiodsuffix = '';
-            }
-            if (isset ($a_componentscatalog['calendars_id']) ) {
-              if (isset($a_calendars[$a_componentscatalog['calendars_id']])
-                      && $this->_addTimeperiod($entities_id, $a_componentscatalog['calendars_id'])) {
+               // Calendar ...
+               $a_services[$i]['check_period'] = '24x7';
+               $timeperiodsuffix = $timeperiodsuffixes[$entities_id];
+               if ($timeperiodsuffix == '_0') {
+                  $timeperiodsuffix = '';
+               }
+               // Use the calendar defined for the service (host) entity ...
+               $calendar = new Calendar();
+               $cid = Entity::getUsedConfig('calendars_id', $item->fields['entities_id'], '', 0);
+               if ($calendar->getFromDB($cid) && $this->_addTimeperiod($item->fields['entities_id'], $cid)) {
                   $a_services[$i] = $this->add_value_type(
-                          self::shinkenFilter($a_calendars[$a_componentscatalog['calendars_id']]['name'].$timeperiodsuffix),
-                          'check_period', $a_services[$i]);
-               } else {
-                  $a_services[$i] = $this->add_value_type(
-                          self::$shinkenParameters['shinken']['services']['check_period'],
+                          self::shinkenFilter($calendar->fields['name'].$timeperiodsuffix),
                           'check_period', $a_services[$i]);
                }
-            } else {
-               if (isset($a_calendars[$a_component['calendars_id']])
-                       && $this->_addTimeperiod($entities_id, $a_component['calendars_id'])) {
-                  $a_services[$i] = $this->add_value_type(
-                          self::shinkenFilter($a_calendars[$a_component['calendars_id']]['name'].$timeperiodsuffix),
-                          'check_period', $a_services[$i]);
-               } else {
-                  $a_services[$i] = $this->add_value_type(
-                          self::$shinkenParameters['shinken']['services']['check_period'],
-                          'check_period', $a_services[$i]);
+               // @mohierf@ : test, service get its host check period ... when default timeperiod is empty !
+               if (self::$shinkenParameters['shinken']['services']['check_period'] != '') {
+                  // @mohierf@ : service get its own check period ...
+                  if (isset ($a_componentscatalog['calendars_id']) ) {
+                    if (isset($a_calendars[$a_componentscatalog['calendars_id']])
+                            && $this->_addTimeperiod($entities_id, $a_componentscatalog['calendars_id'])) {
+                        $a_services[$i] = $this->add_value_type(
+                                self::shinkenFilter($a_calendars[$a_componentscatalog['calendars_id']]['name'].$timeperiodsuffix),
+                                'check_period', $a_services[$i]);
+                     } else {
+                        $a_services[$i] = $this->add_value_type(
+                                self::$shinkenParameters['shinken']['services']['check_period'],
+                                'check_period', $a_services[$i]);
+                     }
+                  } else {
+                     if (isset($a_calendars[$a_component['calendars_id']])
+                             && $this->_addTimeperiod($entities_id, $a_component['calendars_id'])) {
+                        $a_services[$i] = $this->add_value_type(
+                                self::shinkenFilter($a_calendars[$a_component['calendars_id']]['name'].$timeperiodsuffix),
+                                'check_period', $a_services[$i]);
+                     } else {
+                        $a_services[$i] = $this->add_value_type(
+                                self::$shinkenParameters['shinken']['services']['check_period'],
+                                'check_period', $a_services[$i]);
+                     }
+                  }
                }
             }
-         }
 
          // WebUI user interface ...
          if (isset(self::$shinkenParameters['webui']['serviceIcons']['name'])) {
