@@ -3562,9 +3562,9 @@ Nagios configuration file :
             case "snapshot_interval":
             case "timeout":
             case "time_to_orphanage":
-            case "_ENTITIESID":
-            case "_HOSTID":
-            case "_ITEMSID":
+            // case "_ENTITIESID":
+            // case "_HOSTID":
+            // case "_ITEMSID":
                $data[$key] = (int)$val;
                break;
 
