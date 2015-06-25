@@ -272,7 +272,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
             // Show list filtered on item, sorted on day descending ...
             Search::manageGetValues(self::getTypeName());
             Search::showList(self::getTypeName(), array(
-               'field' => array(2), 'searchtype' => array('equals'), 'contains' => array($item->getID()),
+               'field' => array(2), 'searchtype' => array('equals'), 'contains' => array($item->getName()),
                'sort' => 4, 'order' => 'DESC'
                ));
             return true;
