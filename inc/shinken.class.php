@@ -138,7 +138,6 @@ class PluginMonitoringShinken extends CommonDBTM {
             // When fake_hosts are built (see upper), use 'entity' !
             'parents' => 'entity',
             // Shinken host parameters
-            'notes' => '',
             'notes_url' => '',
             'action_url' => '',
             'icon_image' => '',
@@ -562,10 +561,10 @@ class PluginMonitoringShinken extends CommonDBTM {
          $data['entityFullName'] = preg_replace("/_/",".",$data['entityFullName']);
 
          // Graphite
-      PluginMonitoringToolbox::logIfExtradebug(
-         'pm-shinken',
-         "Starting generateHostsCfg ($tag) - {$pmHostconfig->getValueAncestor('graphite_prefix', $data['entityId'])}...\n"
-      );
+         PluginMonitoringToolbox::logIfExtradebug(
+            'pm-shinken',
+            "Starting generateHostsCfg ($tag) - {$pmHostconfig->getValueAncestor('graphite_prefix', $data['entityId'])}...\n"
+         );
          if (isset(self::$shinkenParameters['graphite']['prefix']['name'])) {
             // Dynamic setup of a default parameter ...
             self::$shinkenParameters['graphite']['prefix']['value'] = $pmHostconfig->getValueAncestor('graphite_prefix', $data['entityId']);
@@ -623,7 +622,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                  'alias', $a_hosts[$i]);
          if (isset($data['hostLocation'])) {
             $hn = array();
-            $hn = $this->add_value_type(" (".$this->shinkenFilter($data['hostLocation']).")", 'alias', $hn);
+            $hn = $this->add_value_type(" (".$data['hostLocation'].")", 'alias', $hn);
             $a_hosts[$i]['alias'] .= "-".$hn['alias'];
          }
 
@@ -905,6 +904,36 @@ class PluginMonitoringShinken extends CommonDBTM {
                        '0', 'business_impact', $a_hosts[$i]);
             }
          }
+         
+         // Additional information in host note
+         /* Shinken WebUI notes definition: 
+         
+            # Define a simple classic note
+               #notes                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin et leo gravida, lobortis nunc nec, imperdiet odio. Vivamus quam velit, scelerisque nec egestas et, semper ut massa. Vestibulum id tincidunt lacus. Ut in arcu at ex egestas vestibulum eu non sapien. Nulla facilisi. Aliquam non blandit tellus, non luctus tortor. Mauris tortor libero, egestas quis rhoncus in, sollicitudin et tortor.
+
+               # Define a classic note with a title
+               #notes                KB1023::note with a title
+
+               # Define a note with a title and an icon (from font-awesome icons)
+               #notes                KB1023,,tag::<strong>Lorem ipsum dolor sit amet</strong>, consectetur adipiscing elit. Proin et leo gravida, lobortis nunc nec, imperdiet odio. Vivamus quam velit, scelerisque nec egestas et, semper ut massa. Vestibulum id tincidunt lacus. Ut in arcu at ex egestas vestibulum eu non sapien. Nulla facilisi. Aliquam non blandit tellus, non luctus tortor. Mauris tortor libero, egestas quis rhoncus in, sollicitudin et tortor.
+
+               # Define two notes with a title and an icon
+               #notes                KB1023,,tag::<strong>Lorem ipsum dolor sit amet</strong>, consectetur adipiscing elit. Proin et leo gravida, lobortis nunc nec, imperdiet odio. Vivamus quam velit, scelerisque nec egestas et, semper ut massa. Vestibulum id tincidunt lacus. Ut in arcu at ex egestas vestibulum eu non sapien. Nulla facilisi. Aliquam non blandit tellus, non luctus tortor. Mauris tortor libero, egestas quis rhoncus in, sollicitudin et tortor.|KB1024,,tag::<strong>Lorem ipsum dolor sit amet</strong>, consectetur adipiscing elit. Proin et leo gravida, lobortis nunc nec, imperdiet odio. Vivamus quam velit, scelerisque nec egestas et, semper ut massa. Vestibulum id tincidunt lacus. Ut in arcu at ex egestas vestibulum eu non sapien. Nulla facilisi. Aliquam non blandit tellus, non luctus tortor. Mauris tortor libero, egestas quis rhoncus in, sollicitudin et tortor.
+
+               notes_url            http://www.my-KB.fr?host=$HOSTADDRESS$|http://www.my-KB.fr?host=$HOSTNAME$
+
+         */
+         // Location in notes ...
+         // PluginMonitoringToolbox::logIfExtradebug(
+            // 'pm-shinken',
+            // " - location:{$data['locationName']} - {$data['locationComment']}\n"
+         // );
+         if (isset(self::$shinkenParameters['glpi']['location']) && isset($data['locationName']) && isset($data['locationComment'])) {
+            $location = "Location,,home::<strong>{$data['locationName']}</strong><br/>{$data['locationComment']}";
+            $a_hosts[$i] = $this->add_value_type(
+                    $location, 'notes', $a_hosts[$i]);
+         }
+         
          // Extra parameters
          // Should make a loop :/P !!!!
          $extrapram = array(
@@ -916,7 +945,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             'failure_prediction_enabled',
             'retain_status_information',
             'retain_nonstatus_information',
-            'notes',
+            // 'notes',
             'notes_url',
             'action_url',
             'icon_image',
@@ -925,7 +954,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             'statusmap_image'
          );
          foreach ($extrapram as $parm) {
-            if (!empty($default_host[$parm])) {
+            if (isset($default_host[$parm])) {
                $a_hosts[$i] = $this->add_value_type(
                        $default_host[$parm], $parm, $a_hosts[$i]);
             }
@@ -983,7 +1012,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                   'notification_interval'
                );
                foreach ($extrapram as $parm) {
-                  if (!empty($default_host[$parm])) {
+                  if (isset($default_host[$parm])) {
                      $a_hosts[$i] = $this->add_value_type(
                              $default_host[$parm], $parm, $a_hosts[$i]);
                   }
@@ -1214,7 +1243,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             'statusmap_image'
          );
          foreach ($extrapram as $parm) {
-            if (!empty($default_host[$parm])) {
+            if (isset($default_host[$parm])) {
                $a_hosts[$i] = $this->add_value_type(
                        $default_host[$parm], $parm, $a_hosts[$i]);
             }
@@ -1299,7 +1328,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             'statusmap_image'
          );
          foreach ($extrapram as $parm) {
-            if (!empty($default_host[$parm])) {
+            if (isset($default_host[$parm])) {
                $a_hosts[$i] = $this->add_value_type(
                        $default_host[$parm], $parm, $a_hosts[$i]);
             }
@@ -1399,7 +1428,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                'statusmap_image'
             );
             foreach ($extrapram as $parm) {
-               if (!empty($default_host[$parm])) {
+               if (isset($default_host[$parm])) {
                   $a_hosts[$i] = $this->add_value_type(
                           $default_host[$parm], $parm, $a_hosts[$i]);
                }
@@ -1922,7 +1951,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                   'icon_image_alt'
                );
                foreach ($extrapram as $parm) {
-                  if (!empty($default_service[$parm])) {
+                  if (isset($default_service[$parm])) {
                      $a_services[$i] = $this->add_value_type(
                              $default_service[$parm], $parm, $a_services[$i]);
                   }
@@ -1946,7 +1975,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                      'notification_interval'
                   );
                   foreach ($extrapram as $parm) {
-                     if (!empty($default_service[$parm])) {
+                     if (isset($default_service[$parm])) {
                         $a_services[$i] = $this->add_value_type(
                                 $default_service[$parm], $parm, $a_services[$i]);
                      }
