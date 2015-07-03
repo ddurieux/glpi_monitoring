@@ -113,7 +113,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             'check_period' => '24x7',
             // Default values
             // 'use' => 'important',
-            'business_impact' => '3',
+            'business_impact' => 3,
             'process_perf_data' => '1',
             // Default hosts notifications : none !
             'notifications_enabled' => '0',
@@ -147,8 +147,8 @@ class PluginMonitoringShinken extends CommonDBTM {
             'statusmap_image' => '',
          ),
          'services' => array(
-            // Default check_period
-            'check_period'          => '24x7',
+            // Default check_period - leave empty to use check period defined fo the host.
+            'check_period'          => '',
             // Default values
             'business_impact'       => 3,
             'process_perf_data'     => 1,
@@ -875,7 +875,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                  $pmRealm->fields['name'], 'realm', $a_hosts[$i]);
 
          if (isset ($a_fields['business_priority'])) {
-         $a_hosts[$i] = $this->add_value_type(
+            $a_hosts[$i] = $this->add_value_type(
                  $a_fields['business_priority'],
                  'business_impact', $a_hosts[$i]);
          } else {
@@ -1578,7 +1578,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
             PluginMonitoringToolbox::logIfExtradebug(
                'pm-shinken',
-               " - fetching service: {$data['id']} - {$datah['itemtype']} - {$datah['items_id']} -> {$item->fields['name']}\n"
+               " - fetching service: {$data['id']} ({$a_component['name']} - {$a_component['id']}) - {$datah['itemtype']} - {$datah['items_id']} -> {$item->fields['name']}\n"
             );
             $h = self::shinkenFilter($item->fields['name']);
             $a_hostname_single[] = $h;
@@ -1850,7 +1850,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                $timeperiodsuffix = '';
             }
             // ** If service template has not been defined :
-            if (!isset($_SESSION['plugin_monitoring']['servicetemplates'][$a_component['id']])) {
+            if (! isset($_SESSION['plugin_monitoring']['servicetemplates'][$a_component['id']])) {
                $a_check = $a_checks[$a_component['plugin_monitoring_checks_id']];
                $a_services[$i] = $this->add_value_type(
                        $a_check['check_interval'], 'check_interval',
@@ -2072,27 +2072,39 @@ class PluginMonitoringShinken extends CommonDBTM {
                if ($timeperiodsuffix == '_0') {
                   $timeperiodsuffix = '';
                }
-               if (isset ($a_componentscatalog['calendars_id']) ) {
-                 if (isset($a_calendars[$a_componentscatalog['calendars_id']])
-                         && $this->_addTimeperiod($entities_id, $a_componentscatalog['calendars_id'])) {
-                     $a_services[$i] = $this->add_value_type(
-                             self::shinkenFilter($a_calendars[$a_componentscatalog['calendars_id']]['name'].$timeperiodsuffix),
-                             'check_period', $a_services[$i]);
+               // Use the calendar defined for the service (host) entity ...
+               $calendar = new Calendar();
+               $cid = Entity::getUsedConfig('calendars_id', $item->fields['entities_id'], '', 0);
+               if ($calendar->getFromDB($cid) && $this->_addTimeperiod($item->fields['entities_id'], $cid)) {
+                  $a_services[$i] = $this->add_value_type(
+                          self::shinkenFilter($calendar->fields['name'].$timeperiodsuffix),
+                          'check_period', $a_services[$i]);
+               }
+               // @mohierf@ : test, service get its host check period ... when default timeperiod is empty !
+               if (self::$shinkenParameters['shinken']['services']['check_period'] != '') {
+                  // @mohierf@ : service get its own check period ...
+                  if (isset ($a_componentscatalog['calendars_id']) ) {
+                    if (isset($a_calendars[$a_componentscatalog['calendars_id']])
+                            && $this->_addTimeperiod($entities_id, $a_componentscatalog['calendars_id'])) {
+                        $a_services[$i] = $this->add_value_type(
+                                self::shinkenFilter($a_calendars[$a_componentscatalog['calendars_id']]['name'].$timeperiodsuffix),
+                                'check_period', $a_services[$i]);
+                     } else {
+                        $a_services[$i] = $this->add_value_type(
+                                self::$shinkenParameters['shinken']['services']['check_period'],
+                                'check_period', $a_services[$i]);
+                     }
                   } else {
-                     $a_services[$i] = $this->add_value_type(
-                             self::$shinkenParameters['shinken']['services']['check_period'],
-                             'check_period', $a_services[$i]);
-                  }
-               } else {
-                  if (isset($a_calendars[$a_component['calendars_id']])
-                          && $this->_addTimeperiod($entities_id, $a_component['calendars_id'])) {
-                     $a_services[$i] = $this->add_value_type(
-                             self::shinkenFilter($a_calendars[$a_component['calendars_id']]['name'].$timeperiodsuffix),
-                             'check_period', $a_services[$i]);
-                  } else {
-                     $a_services[$i] = $this->add_value_type(
-                             self::$shinkenParameters['shinken']['services']['check_period'],
-                             'check_period', $a_services[$i]);
+                     if (isset($a_calendars[$a_component['calendars_id']])
+                             && $this->_addTimeperiod($entities_id, $a_component['calendars_id'])) {
+                        $a_services[$i] = $this->add_value_type(
+                                self::shinkenFilter($a_calendars[$a_component['calendars_id']]['name'].$timeperiodsuffix),
+                                'check_period', $a_services[$i]);
+                     } else {
+                        $a_services[$i] = $this->add_value_type(
+                                self::$shinkenParameters['shinken']['services']['check_period'],
+                                'check_period', $a_services[$i]);
+                     }
                   }
                }
             }
@@ -2565,11 +2577,14 @@ class PluginMonitoringShinken extends CommonDBTM {
       $i=0;
       $a_templatesdef = array();
 
+      // Build a Shinken service template for each declare component ...
+      // Fix service template association bug: #191
+      $query = "SELECT * FROM `glpi_plugin_monitoring_components` ORDER BY `id`";
       // Select components with some grouping ...
-      $query = "SELECT * FROM `glpi_plugin_monitoring_components`
-         GROUP BY `plugin_monitoring_checks_id`, `active_checks_enabled`,
-            `passive_checks_enabled`, `freshness_count`, `freshness_type`, `calendars_id`, `business_priority`
-         ORDER BY `id`";
+      // $query = "SELECT * FROM `glpi_plugin_monitoring_components`
+         // GROUP BY `plugin_monitoring_checks_id`, `active_checks_enabled`,
+            // `passive_checks_enabled`, `freshness_count`, `freshness_type`, `calendars_id`, `business_priority`
+         // ORDER BY `id`";
       $result = $DB->query($query);
       if ($DB->numrows($result) != 0) {
       while ($data=$DB->fetch_array($result)) {
@@ -2579,8 +2594,12 @@ class PluginMonitoringShinken extends CommonDBTM {
             'pm-shinken',
             " - add template ".'template'.$data['id'].'-service'."\n"
          );
+         // Fix service template association bug: #191
+         // $a_servicetemplates[$i] = $this->add_value_type(
+                 // self::shinkenFilter('stag-'.$data['id']),
+                 // 'name', $a_servicetemplates[$i]);
          $a_servicetemplates[$i] = $this->add_value_type(
-                 self::shinkenFilter('stag-'.$data['id']),
+                 self::shinkenFilter($data['name']),
                  'name', $a_servicetemplates[$i]);
          // Alias is not used by Shinken !
          $a_servicetemplates[$i] = $this->add_value_type(
@@ -2698,15 +2717,19 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_servicetemplates[$i] = $this->add_value_type(
                  'service', 'icon_set', $a_servicetemplates[$i]);
 
-         $queryc = "SELECT * FROM `glpi_plugin_monitoring_components`
-            WHERE `plugin_monitoring_checks_id`='".$data['plugin_monitoring_checks_id']."'
-               AND `active_checks_enabled`='".$data['active_checks_enabled']."'
-               AND `passive_checks_enabled`='".$data['passive_checks_enabled']."'
-               AND `calendars_id`='".$data['calendars_id']."'";
-         $resultc = $DB->query($queryc);
-         while ($datac=$DB->fetch_array($resultc)) {
-            $a_templatesdef[$datac['id']] = $a_servicetemplates[$i]['name'];
-         }
+         // Fix service template association bug: #191
+         // And simplify code !
+         // $queryc = "SELECT * FROM `glpi_plugin_monitoring_components`
+            // WHERE `plugin_monitoring_checks_id`='".$data['plugin_monitoring_checks_id']."'
+               // AND `active_checks_enabled`='".$data['active_checks_enabled']."'
+               // AND `passive_checks_enabled`='".$data['passive_checks_enabled']."'
+               // AND `calendars_id`='".$data['calendars_id']."'";
+         // $resultc = $DB->query($queryc);
+         // while ($datac=$DB->fetch_array($resultc)) {
+            // $a_templatesdef[$datac['id']] = $a_servicetemplates[$i]['name'];
+         // }
+         $a_templatesdef[$data['id']] = $a_servicetemplates[$i]['name'];
+         
          $a_servicetemplates[$i] = $this->properties_list_to_string($a_servicetemplates[$i]);
          $i++;
       }
