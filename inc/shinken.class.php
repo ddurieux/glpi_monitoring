@@ -480,7 +480,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
       $query = "SELECT
          `glpi_plugin_monitoring_componentscatalogs_hosts`.*,
-         `glpi_computers`.`id`,
+         `glpi_computers`.`id`, `glpi_computers`.`comment`, 
          `glpi_entities`.`id` AS entityId, `glpi_entities`.`name` AS entityName, `glpi_entities`.`completename` AS entityFullName,
          `glpi_locations`.`id`, `glpi_locations`.`completename` AS locationName,
          `glpi_locations`.`comment` AS locationComment, `glpi_locations`.`building` AS locationGPS,
@@ -891,7 +891,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                  $pmRealm->fields['name'], 'realm', $a_hosts[$i]);
 
          if (isset ($a_fields['business_priority'])) {
-         $a_hosts[$i] = $this->add_value_type(
+            $a_hosts[$i] = $this->add_value_type(
                  $a_fields['business_priority'],
                  'business_impact', $a_hosts[$i]);
          } else {
@@ -928,10 +928,17 @@ class PluginMonitoringShinken extends CommonDBTM {
             // 'pm-shinken',
             // " - location:{$data['locationName']} - {$data['locationComment']}\n"
          // );
+         $notes = [];
          if (isset(self::$shinkenParameters['glpi']['location']) && isset($data['locationName']) && isset($data['locationComment'])) {
-            $location = "Location,,home::<strong>{$data['locationName']}</strong><br/>{$data['locationComment']}";
+            $notes[] = "Location,,home::<strong>{$data['locationName']}</strong><br/>{$data['locationComment']}";
+         }
+         if (isset($data['comment'])) {
+            $comment = str_replace("\r\n", "<br/>", $data['comment']);
+            $notes[] = "Comment,,comment::{$comment}";
+         }
+         if (count($notes) > 0) {
             $a_hosts[$i] = $this->add_value_type(
-                    $location, 'notes', $a_hosts[$i]);
+                    implode("|", $notes), 'notes', $a_hosts[$i]);
          }
          
          // Extra parameters
