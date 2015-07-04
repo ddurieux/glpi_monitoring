@@ -2815,6 +2815,9 @@ class PluginMonitoringShinken extends CommonDBTM {
 
       $query = "SELECT
          `glpi_entities`.`id` AS entityId, `glpi_entities`.`name` AS entityName, `glpi_entities`.`level` AS entityLevel
+         , `glpi_entities`.`comment` AS comment 
+         , `glpi_entities`.`address` AS address , `glpi_entities`.`postcode` AS postcode, `glpi_entities`.`town` AS town, `glpi_entities`.`state` AS state, `glpi_entities`.`country` AS country
+         , `glpi_entities`.`website` AS website , `glpi_entities`.`fax` AS fax, `glpi_entities`.`email` AS email, `glpi_entities`.`phonenumber` AS phonenumber
          FROM `glpi_entities` $where";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
@@ -2846,11 +2849,12 @@ Nagios configuration file :
                  $data['entityName'], 'alias', $a_hostgroups[$i]);
 
          // Custom variable are ignored for hostgroups ... simple information for debug purpose !
-         $a_hostgroups[$i] = $this->add_value_type(
-                 $data['entityLevel'], '_GROUP_LEVEL', $a_hostgroups[$i]);
-         $a_hostgroups[$i] = $this->add_value_type(
-                 $data['entityLevel'], 'level', $a_hostgroups[$i]);
+         // $a_hostgroups[$i] = $this->add_value_type(
+                 // $data['entityLevel'], '_GROUP_LEVEL', $a_hostgroups[$i]);
+         // $a_hostgroups[$i] = $this->add_value_type(
+                 // $data['entityLevel'], 'level', $a_hostgroups[$i]);
 
+         // Host group members
          $a_sons_list = getSonsOf("glpi_entities", $data['entityId']);
          if (count($a_sons_list) > 1) {
             // $a_hostgroups[$i] = $this->add_value_type(
@@ -2873,6 +2877,53 @@ Nagios configuration file :
                if ($first_member) $first_member = false;
             }
          }
+
+         // Comments in notes ...
+         // PluginMonitoringToolbox::logIfExtradebug(
+            // 'pm-shinken',
+            // " - location:{$data['locationName']} - {$data['locationComment']}\n"
+         // );
+         $notes = [];
+         if (isset($data['comment'])) {
+            $comment = str_replace("\r\n", "<br/>", $data['comment']);
+            $notes[] = "Comment,,comment::{$comment}";
+         }
+         if (isset($data['address'])) {
+            $address  = str_replace("\r\n", "<br/>", $data['address']);
+            if (! empty($data['postcode']) && ! empty($data['town'])) {
+               $address .= "<br/>" . $data['postcode'] . " " . $data['town'];
+            } else if (! empty($data['postcode'])) {
+               $address .= "<br/>" . $data['postcode'];
+            } else if (! empty($data['town'])) {
+               $address .= "<br/>" . $data['town'];
+            }
+            if (! empty($data['state']) && ! empty($data['country'])) {
+               $address .= "<br/>" . $data['state'] . " - " . $data['country'];
+            } else if (! empty($data['state'])) {
+               $address .= "<br/>" . $data['state'];
+            } else if (! empty($data['country'])) {
+               $address .= "<br/>" . $data['country'];
+            }
+            $address .= "<br/>";
+            if (! empty($data['phonenumber'])) {
+               $address .= "<br/><i class='fa fa-phone'></i>&nbsp;: " . $data['phonenumber'];
+            }
+            if (! empty($data['fax'])) {
+               $address .= "<br/><i class='fa fa-fax'></i>&nbsp;: " . $data['fax'];
+            }
+            if (! empty($data['email'])) {
+               $address .= "<br/><i class='fa fa-envelope'></i>&nbsp;: " . $data['email'];
+            }
+            if (! empty($data['website'])) {
+               $address .= "<br/><i class='fa fa-globe'></i>&nbsp;: " . $data['website'];
+            }
+            $notes[] = "Address,,envelope::{$address}";
+         }
+         if (count($notes) > 0) {
+            $a_hostgroups[$i] = $this->add_value_type(
+                    implode("|", $notes), 'notes', $a_hostgroups[$i]);
+         }
+         
          $a_hostgroups[$i] = $this->properties_list_to_string($a_hostgroups[$i]);
          $i++;
       }
