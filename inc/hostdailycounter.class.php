@@ -368,7 +368,7 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
                 "<br/>" .
                 "<div class='page foldtl resource".$host_services_state."'>". $host_services_state."&nbsp;".Html::showToolTip($host_services_state_list, array('display' => false))."</div>";
             } else {
-              return $pm_Host->getLink(array ("monitoring" => "1"));
+              return $computer->getLink(array ("monitoring" => "1"));
             }
             break;
 
