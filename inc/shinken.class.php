@@ -914,7 +914,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             // 'pm-shinken',
             // " - location:{$data['locationName']} - {$data['locationComment']}\n"
          // );
-         $notes = [];
+         $notes = array();
          if (isset(self::$shinkenParameters['glpi']['location']) && isset($data['locationName']) && isset($data['locationComment'])) {
             $notes[] = "Location,,home::<strong>{$data['locationName']}</strong><br/>{$data['locationComment']}";
          }
@@ -2892,7 +2892,7 @@ Nagios configuration file :
             // 'pm-shinken',
             // " - location:{$data['locationName']} - {$data['locationComment']}\n"
          // );
-         $notes = [];
+         $notes = array();
          if (isset($data['comment'])) {
             $comment = str_replace("\r\n", "<br/>", $data['comment']);
             $notes[] = "Comment,,comment::{$comment}";
