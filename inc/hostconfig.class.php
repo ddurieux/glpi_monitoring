@@ -425,9 +425,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
             }
          }
       }
-
    }
-
 }
 
 ?>
