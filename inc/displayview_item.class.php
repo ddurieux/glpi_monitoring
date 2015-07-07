@@ -649,13 +649,13 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
                                 ."?id=".$item['id']
                                 ."&x=' + pos.left + '&y=' + pos.top);
                }";
+            $size = $this->getSizeOfWidget($item['itemtype']);
+            echo "$( \"#draggable".$item['id']."\" ).draggable({ cursor: 'move', cursorAt: { "
+                    . "top: ".($size['height']/2).", left: ".($size['width']/2).", "
+                    . " }, grid: [ 10, 10 ]".$event." } );";
          } else {
             $event = '';
          }
-         $size = $this->getSizeOfWidget($item['itemtype']);
-         echo "$( \"#draggable".$item['id']."\" ).draggable({ cursor: 'move', cursorAt: { "
-                 . "top: ".($size['height']/2).", left: ".($size['width']/2).", "
-                 . " }, grid: [ 10, 10 ]".$event." } );";
       }
       echo "
       });
