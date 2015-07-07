@@ -113,7 +113,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             'check_period' => '24x7',
             // Default values
             // 'use' => 'important',
-            'business_impact' => '3',
+            'business_impact' => 3,
             'process_perf_data' => '1',
             // Default hosts notifications : none !
             'notifications_enabled' => '0',
@@ -138,7 +138,6 @@ class PluginMonitoringShinken extends CommonDBTM {
             // When fake_hosts are built (see upper), use 'entity' !
             'parents' => 'entity',
             // Shinken host parameters
-            'notes' => '',
             'notes_url' => '',
             'action_url' => '',
             'icon_image' => '',
@@ -147,8 +146,8 @@ class PluginMonitoringShinken extends CommonDBTM {
             'statusmap_image' => '',
          ),
          'services' => array(
-            // Default check_period
-            'check_period'          => '24x7',
+            // Default check_period - leave empty to use check period defined fo the host.
+            'check_period'          => '',
             // Default values
             'business_impact'       => 3,
             'process_perf_data'     => 1,
@@ -481,7 +480,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
       $query = "SELECT
          `glpi_plugin_monitoring_componentscatalogs_hosts`.*,
-         `glpi_computers`.`id`,
+         `glpi_computers`.`id`, `glpi_computers`.`comment`, 
          `glpi_entities`.`id` AS entityId, `glpi_entities`.`name` AS entityName, `glpi_entities`.`completename` AS entityFullName,
          `glpi_locations`.`id`, `glpi_locations`.`completename` AS locationName,
          `glpi_locations`.`comment` AS locationComment, `glpi_locations`.`building` AS locationGPS,
@@ -562,10 +561,10 @@ class PluginMonitoringShinken extends CommonDBTM {
          $data['entityFullName'] = preg_replace("/_/",".",$data['entityFullName']);
 
          // Graphite
-      PluginMonitoringToolbox::logIfExtradebug(
-         'pm-shinken',
-         "Starting generateHostsCfg ($tag) - {$pmHostconfig->getValueAncestor('graphite_prefix', $data['entityId'])}...\n"
-      );
+         PluginMonitoringToolbox::logIfExtradebug(
+            'pm-shinken',
+            "Starting generateHostsCfg ($tag) - {$pmHostconfig->getValueAncestor('graphite_prefix', $data['entityId'])}...\n"
+         );
          if (isset(self::$shinkenParameters['graphite']['prefix']['name'])) {
             // Dynamic setup of a default parameter ...
             self::$shinkenParameters['graphite']['prefix']['value'] = $pmHostconfig->getValueAncestor('graphite_prefix', $data['entityId']);
@@ -623,7 +622,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                  'alias', $a_hosts[$i]);
          if (isset($data['hostLocation'])) {
             $hn = array();
-            $hn = $this->add_value_type(" (".$this->shinkenFilter($data['hostLocation']).")", 'alias', $hn);
+            $hn = $this->add_value_type(" (".$data['hostLocation'].")", 'alias', $hn);
             $a_hosts[$i]['alias'] .= "-".$hn['alias'];
          }
 
@@ -875,7 +874,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                  $pmRealm->fields['name'], 'realm', $a_hosts[$i]);
 
          if (isset ($a_fields['business_priority'])) {
-         $a_hosts[$i] = $this->add_value_type(
+            $a_hosts[$i] = $this->add_value_type(
                  $a_fields['business_priority'],
                  'business_impact', $a_hosts[$i]);
          } else {
@@ -888,6 +887,43 @@ class PluginMonitoringShinken extends CommonDBTM {
                        '0', 'business_impact', $a_hosts[$i]);
             }
          }
+         
+         // Additional information in host note
+         /* Shinken WebUI notes definition: 
+         
+            # Define a simple classic note
+               #notes                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin et leo gravida, lobortis nunc nec, imperdiet odio. Vivamus quam velit, scelerisque nec egestas et, semper ut massa. Vestibulum id tincidunt lacus. Ut in arcu at ex egestas vestibulum eu non sapien. Nulla facilisi. Aliquam non blandit tellus, non luctus tortor. Mauris tortor libero, egestas quis rhoncus in, sollicitudin et tortor.
+
+               # Define a classic note with a title
+               #notes                KB1023::note with a title
+
+               # Define a note with a title and an icon (from font-awesome icons)
+               #notes                KB1023,,tag::<strong>Lorem ipsum dolor sit amet</strong>, consectetur adipiscing elit. Proin et leo gravida, lobortis nunc nec, imperdiet odio. Vivamus quam velit, scelerisque nec egestas et, semper ut massa. Vestibulum id tincidunt lacus. Ut in arcu at ex egestas vestibulum eu non sapien. Nulla facilisi. Aliquam non blandit tellus, non luctus tortor. Mauris tortor libero, egestas quis rhoncus in, sollicitudin et tortor.
+
+               # Define two notes with a title and an icon
+               #notes                KB1023,,tag::<strong>Lorem ipsum dolor sit amet</strong>, consectetur adipiscing elit. Proin et leo gravida, lobortis nunc nec, imperdiet odio. Vivamus quam velit, scelerisque nec egestas et, semper ut massa. Vestibulum id tincidunt lacus. Ut in arcu at ex egestas vestibulum eu non sapien. Nulla facilisi. Aliquam non blandit tellus, non luctus tortor. Mauris tortor libero, egestas quis rhoncus in, sollicitudin et tortor.|KB1024,,tag::<strong>Lorem ipsum dolor sit amet</strong>, consectetur adipiscing elit. Proin et leo gravida, lobortis nunc nec, imperdiet odio. Vivamus quam velit, scelerisque nec egestas et, semper ut massa. Vestibulum id tincidunt lacus. Ut in arcu at ex egestas vestibulum eu non sapien. Nulla facilisi. Aliquam non blandit tellus, non luctus tortor. Mauris tortor libero, egestas quis rhoncus in, sollicitudin et tortor.
+
+               notes_url            http://www.my-KB.fr?host=$HOSTADDRESS$|http://www.my-KB.fr?host=$HOSTNAME$
+
+         */
+         // Location in notes ...
+         // PluginMonitoringToolbox::logIfExtradebug(
+            // 'pm-shinken',
+            // " - location:{$data['locationName']} - {$data['locationComment']}\n"
+         // );
+         $notes = [];
+         if (isset(self::$shinkenParameters['glpi']['location']) && isset($data['locationName']) && isset($data['locationComment'])) {
+            $notes[] = "Location,,home::<strong>{$data['locationName']}</strong><br/>{$data['locationComment']}";
+         }
+         if (isset($data['comment'])) {
+            $comment = str_replace("\r\n", "<br/>", $data['comment']);
+            $notes[] = "Comment,,comment::{$comment}";
+         }
+         if (count($notes) > 0) {
+            $a_hosts[$i] = $this->add_value_type(
+                    implode("|", $notes), 'notes', $a_hosts[$i]);
+         }
+         
          // Extra parameters
          // Should make a loop :/P !!!!
          $extrapram = array(
@@ -899,7 +935,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             'failure_prediction_enabled',
             'retain_status_information',
             'retain_nonstatus_information',
-            'notes',
+            // 'notes',
             'notes_url',
             'action_url',
             'icon_image',
@@ -908,7 +944,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             'statusmap_image'
          );
          foreach ($extrapram as $parm) {
-            if (!empty($default_host[$parm])) {
+            if (isset($default_host[$parm])) {
                $a_hosts[$i] = $this->add_value_type(
                        $default_host[$parm], $parm, $a_hosts[$i]);
             }
@@ -966,7 +1002,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                   'notification_interval'
                );
                foreach ($extrapram as $parm) {
-                  if (!empty($default_host[$parm])) {
+                  if (isset($default_host[$parm])) {
                      $a_hosts[$i] = $this->add_value_type(
                              $default_host[$parm], $parm, $a_hosts[$i]);
                   }
@@ -1197,7 +1233,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             'statusmap_image'
          );
          foreach ($extrapram as $parm) {
-            if (!empty($default_host[$parm])) {
+            if (isset($default_host[$parm])) {
                $a_hosts[$i] = $this->add_value_type(
                        $default_host[$parm], $parm, $a_hosts[$i]);
             }
@@ -1282,7 +1318,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             'statusmap_image'
          );
          foreach ($extrapram as $parm) {
-            if (!empty($default_host[$parm])) {
+            if (isset($default_host[$parm])) {
                $a_hosts[$i] = $this->add_value_type(
                        $default_host[$parm], $parm, $a_hosts[$i]);
             }
@@ -1382,7 +1418,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                'statusmap_image'
             );
             foreach ($extrapram as $parm) {
-               if (!empty($default_host[$parm])) {
+               if (isset($default_host[$parm])) {
                   $a_hosts[$i] = $this->add_value_type(
                           $default_host[$parm], $parm, $a_hosts[$i]);
                }
@@ -1578,7 +1614,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
             PluginMonitoringToolbox::logIfExtradebug(
                'pm-shinken',
-               " - fetching service: {$data['id']} - {$datah['itemtype']} - {$datah['items_id']} -> {$item->fields['name']}\n"
+               " - fetching service: {$data['id']} ({$a_component['name']} - {$a_component['id']}) - {$datah['itemtype']} - {$datah['items_id']} -> {$item->fields['name']}\n"
             );
             $h = self::shinkenFilter($item->fields['name']);
             $a_hostname_single[] = $h;
@@ -1850,7 +1886,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                $timeperiodsuffix = '';
             }
             // ** If service template has not been defined :
-            if (!isset($_SESSION['plugin_monitoring']['servicetemplates'][$a_component['id']])) {
+            if (! isset($_SESSION['plugin_monitoring']['servicetemplates'][$a_component['id']])) {
                $a_check = $a_checks[$a_component['plugin_monitoring_checks_id']];
                $a_services[$i] = $this->add_value_type(
                        $a_check['check_interval'], 'check_interval',
@@ -1922,7 +1958,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                   'icon_image_alt'
                );
                foreach ($extrapram as $parm) {
-                  if (!empty($default_service[$parm])) {
+                  if (isset($default_service[$parm])) {
                      $a_services[$i] = $this->add_value_type(
                              $default_service[$parm], $parm, $a_services[$i]);
                   }
@@ -1946,7 +1982,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                      'notification_interval'
                   );
                   foreach ($extrapram as $parm) {
-                     if (!empty($default_service[$parm])) {
+                     if (isset($default_service[$parm])) {
                         $a_services[$i] = $this->add_value_type(
                                 $default_service[$parm], $parm, $a_services[$i]);
                      }
@@ -2072,27 +2108,39 @@ class PluginMonitoringShinken extends CommonDBTM {
                if ($timeperiodsuffix == '_0') {
                   $timeperiodsuffix = '';
                }
-               if (isset ($a_componentscatalog['calendars_id']) ) {
-                 if (isset($a_calendars[$a_componentscatalog['calendars_id']])
-                         && $this->_addTimeperiod($entities_id, $a_componentscatalog['calendars_id'])) {
-                     $a_services[$i] = $this->add_value_type(
-                             self::shinkenFilter($a_calendars[$a_componentscatalog['calendars_id']]['name'].$timeperiodsuffix),
-                             'check_period', $a_services[$i]);
+               // Use the calendar defined for the service (host) entity ...
+               $calendar = new Calendar();
+               $cid = Entity::getUsedConfig('calendars_id', $item->fields['entities_id'], '', 0);
+               if ($calendar->getFromDB($cid) && $this->_addTimeperiod($item->fields['entities_id'], $cid)) {
+                  $a_services[$i] = $this->add_value_type(
+                          self::shinkenFilter($calendar->fields['name'].$timeperiodsuffix),
+                          'check_period', $a_services[$i]);
+               }
+               // @mohierf@ : test, service get its host check period ... when default timeperiod is empty !
+               if (self::$shinkenParameters['shinken']['services']['check_period'] != '') {
+                  // @mohierf@ : service get its own check period ...
+                  if (isset ($a_componentscatalog['calendars_id']) ) {
+                    if (isset($a_calendars[$a_componentscatalog['calendars_id']])
+                            && $this->_addTimeperiod($entities_id, $a_componentscatalog['calendars_id'])) {
+                        $a_services[$i] = $this->add_value_type(
+                                self::shinkenFilter($a_calendars[$a_componentscatalog['calendars_id']]['name'].$timeperiodsuffix),
+                                'check_period', $a_services[$i]);
+                     } else {
+                        $a_services[$i] = $this->add_value_type(
+                                self::$shinkenParameters['shinken']['services']['check_period'],
+                                'check_period', $a_services[$i]);
+                     }
                   } else {
-                     $a_services[$i] = $this->add_value_type(
-                             self::$shinkenParameters['shinken']['services']['check_period'],
-                             'check_period', $a_services[$i]);
-                  }
-               } else {
-                  if (isset($a_calendars[$a_component['calendars_id']])
-                          && $this->_addTimeperiod($entities_id, $a_component['calendars_id'])) {
-                     $a_services[$i] = $this->add_value_type(
-                             self::shinkenFilter($a_calendars[$a_component['calendars_id']]['name'].$timeperiodsuffix),
-                             'check_period', $a_services[$i]);
-                  } else {
-                     $a_services[$i] = $this->add_value_type(
-                             self::$shinkenParameters['shinken']['services']['check_period'],
-                             'check_period', $a_services[$i]);
+                     if (isset($a_calendars[$a_component['calendars_id']])
+                             && $this->_addTimeperiod($entities_id, $a_component['calendars_id'])) {
+                        $a_services[$i] = $this->add_value_type(
+                                self::shinkenFilter($a_calendars[$a_component['calendars_id']]['name'].$timeperiodsuffix),
+                                'check_period', $a_services[$i]);
+                     } else {
+                        $a_services[$i] = $this->add_value_type(
+                                self::$shinkenParameters['shinken']['services']['check_period'],
+                                'check_period', $a_services[$i]);
+                     }
                   }
                }
             }
@@ -2565,11 +2613,14 @@ class PluginMonitoringShinken extends CommonDBTM {
       $i=0;
       $a_templatesdef = array();
 
+      // Build a Shinken service template for each declare component ...
+      // Fix service template association bug: #191
+      $query = "SELECT * FROM `glpi_plugin_monitoring_components` ORDER BY `id`";
       // Select components with some grouping ...
-      $query = "SELECT * FROM `glpi_plugin_monitoring_components`
-         GROUP BY `plugin_monitoring_checks_id`, `active_checks_enabled`,
-            `passive_checks_enabled`, `freshness_count`, `freshness_type`, `calendars_id`, `business_priority`
-         ORDER BY `id`";
+      // $query = "SELECT * FROM `glpi_plugin_monitoring_components`
+         // GROUP BY `plugin_monitoring_checks_id`, `active_checks_enabled`,
+            // `passive_checks_enabled`, `freshness_count`, `freshness_type`, `calendars_id`, `business_priority`
+         // ORDER BY `id`";
       $result = $DB->query($query);
       if ($DB->numrows($result) != 0) {
       while ($data=$DB->fetch_array($result)) {
@@ -2579,8 +2630,12 @@ class PluginMonitoringShinken extends CommonDBTM {
             'pm-shinken',
             " - add template ".'template'.$data['id'].'-service'."\n"
          );
+         // Fix service template association bug: #191
+         // $a_servicetemplates[$i] = $this->add_value_type(
+                 // self::shinkenFilter('stag-'.$data['id']),
+                 // 'name', $a_servicetemplates[$i]);
          $a_servicetemplates[$i] = $this->add_value_type(
-                 self::shinkenFilter('stag-'.$data['id']),
+                 self::shinkenFilter($data['name']),
                  'name', $a_servicetemplates[$i]);
          // Alias is not used by Shinken !
          $a_servicetemplates[$i] = $this->add_value_type(
@@ -2698,15 +2753,19 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_servicetemplates[$i] = $this->add_value_type(
                  'service', 'icon_set', $a_servicetemplates[$i]);
 
-         $queryc = "SELECT * FROM `glpi_plugin_monitoring_components`
-            WHERE `plugin_monitoring_checks_id`='".$data['plugin_monitoring_checks_id']."'
-               AND `active_checks_enabled`='".$data['active_checks_enabled']."'
-               AND `passive_checks_enabled`='".$data['passive_checks_enabled']."'
-               AND `calendars_id`='".$data['calendars_id']."'";
-         $resultc = $DB->query($queryc);
-         while ($datac=$DB->fetch_array($resultc)) {
-            $a_templatesdef[$datac['id']] = $a_servicetemplates[$i]['name'];
-         }
+         // Fix service template association bug: #191
+         // And simplify code !
+         // $queryc = "SELECT * FROM `glpi_plugin_monitoring_components`
+            // WHERE `plugin_monitoring_checks_id`='".$data['plugin_monitoring_checks_id']."'
+               // AND `active_checks_enabled`='".$data['active_checks_enabled']."'
+               // AND `passive_checks_enabled`='".$data['passive_checks_enabled']."'
+               // AND `calendars_id`='".$data['calendars_id']."'";
+         // $resultc = $DB->query($queryc);
+         // while ($datac=$DB->fetch_array($resultc)) {
+            // $a_templatesdef[$datac['id']] = $a_servicetemplates[$i]['name'];
+         // }
+         $a_templatesdef[$data['id']] = $a_servicetemplates[$i]['name'];
+         
          $a_servicetemplates[$i] = $this->properties_list_to_string($a_servicetemplates[$i]);
          $i++;
       }
@@ -2757,6 +2816,9 @@ class PluginMonitoringShinken extends CommonDBTM {
 
       $query = "SELECT
          `glpi_entities`.`id` AS entityId, `glpi_entities`.`name` AS entityName, `glpi_entities`.`level` AS entityLevel
+         , `glpi_entities`.`comment` AS comment 
+         , `glpi_entities`.`address` AS address , `glpi_entities`.`postcode` AS postcode, `glpi_entities`.`town` AS town, `glpi_entities`.`state` AS state, `glpi_entities`.`country` AS country
+         , `glpi_entities`.`website` AS website , `glpi_entities`.`fax` AS fax, `glpi_entities`.`email` AS email, `glpi_entities`.`phonenumber` AS phonenumber
          FROM `glpi_entities` $where";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
@@ -2788,11 +2850,12 @@ Nagios configuration file :
                  $data['entityName'], 'alias', $a_hostgroups[$i]);
 
          // Custom variable are ignored for hostgroups ... simple information for debug purpose !
-         $a_hostgroups[$i] = $this->add_value_type(
-                 $data['entityLevel'], '_GROUP_LEVEL', $a_hostgroups[$i]);
-         $a_hostgroups[$i] = $this->add_value_type(
-                 $data['entityLevel'], 'level', $a_hostgroups[$i]);
+         // $a_hostgroups[$i] = $this->add_value_type(
+                 // $data['entityLevel'], '_GROUP_LEVEL', $a_hostgroups[$i]);
+         // $a_hostgroups[$i] = $this->add_value_type(
+                 // $data['entityLevel'], 'level', $a_hostgroups[$i]);
 
+         // Host group members
          $a_sons_list = getSonsOf("glpi_entities", $data['entityId']);
          if (count($a_sons_list) > 1) {
             // $a_hostgroups[$i] = $this->add_value_type(
@@ -2815,6 +2878,53 @@ Nagios configuration file :
                if ($first_member) $first_member = false;
             }
          }
+
+         // Comments in notes ...
+         // PluginMonitoringToolbox::logIfExtradebug(
+            // 'pm-shinken',
+            // " - location:{$data['locationName']} - {$data['locationComment']}\n"
+         // );
+         $notes = [];
+         if (isset($data['comment'])) {
+            $comment = str_replace("\r\n", "<br/>", $data['comment']);
+            $notes[] = "Comment,,comment::{$comment}";
+         }
+         if (isset($data['address'])) {
+            $address  = str_replace("\r\n", "<br/>", $data['address']);
+            if (! empty($data['postcode']) && ! empty($data['town'])) {
+               $address .= "<br/>" . $data['postcode'] . " " . $data['town'];
+            } else if (! empty($data['postcode'])) {
+               $address .= "<br/>" . $data['postcode'];
+            } else if (! empty($data['town'])) {
+               $address .= "<br/>" . $data['town'];
+            }
+            if (! empty($data['state']) && ! empty($data['country'])) {
+               $address .= "<br/>" . $data['state'] . " - " . $data['country'];
+            } else if (! empty($data['state'])) {
+               $address .= "<br/>" . $data['state'];
+            } else if (! empty($data['country'])) {
+               $address .= "<br/>" . $data['country'];
+            }
+            $address .= "<br/>";
+            if (! empty($data['phonenumber'])) {
+               $address .= "<br/><i class='fa fa-phone'></i>&nbsp;: " . $data['phonenumber'];
+            }
+            if (! empty($data['fax'])) {
+               $address .= "<br/><i class='fa fa-fax'></i>&nbsp;: " . $data['fax'];
+            }
+            if (! empty($data['email'])) {
+               $address .= "<br/><i class='fa fa-envelope'></i>&nbsp;: " . $data['email'];
+            }
+            if (! empty($data['website'])) {
+               $address .= "<br/><i class='fa fa-globe'></i>&nbsp;: " . $data['website'];
+            }
+            $notes[] = "Address,,envelope::{$address}";
+         }
+         if (count($notes) > 0) {
+            $a_hostgroups[$i] = $this->add_value_type(
+                    implode("|", $notes), 'notes', $a_hostgroups[$i]);
+         }
+         
          $a_hostgroups[$i] = $this->properties_list_to_string($a_hostgroups[$i]);
          $i++;
       }
@@ -3555,9 +3665,9 @@ Nagios configuration file :
             case "snapshot_interval":
             case "timeout":
             case "time_to_orphanage":
-            case "_ENTITIESID":
-            case "_HOSTID":
-            case "_ITEMSID":
+            // case "_ENTITIESID":
+            // case "_HOSTID":
+            // case "_ITEMSID":
                $data[$key] = (int)$val;
                break;
 
