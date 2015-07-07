@@ -253,7 +253,7 @@ class PluginMonitoringShinken extends CommonDBTM {
    function removeAccents($str) {
       $a = array('À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ø', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'ß', 'à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', 'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ', 'Ā', 'ā', 'Ă', 'ă', 'Ą', 'ą', 'Ć', 'ć', 'Ĉ', 'ĉ', 'Ċ', 'ċ', 'Č', 'č', 'Ď', 'ď', 'Đ', 'đ', 'Ē', 'ē', 'Ĕ', 'ĕ', 'Ė', 'ė', 'Ę', 'ę', 'Ě', 'ě', 'Ĝ', 'ĝ', 'Ğ', 'ğ', 'Ġ', 'ġ', 'Ģ', 'ģ', 'Ĥ', 'ĥ', 'Ħ', 'ħ', 'Ĩ', 'ĩ', 'Ī', 'ī', 'Ĭ', 'ĭ', 'Į', 'į', 'İ', 'ı', 'Ĳ', 'ĳ', 'Ĵ', 'ĵ', 'Ķ', 'ķ', 'Ĺ', 'ĺ', 'Ļ', 'ļ', 'Ľ', 'ľ', 'Ŀ', 'ŀ', 'Ł', 'ł', 'Ń', 'ń', 'Ņ', 'ņ', 'Ň', 'ň', 'ŉ', 'Ō', 'ō', 'Ŏ', 'ŏ', 'Ő', 'ő', 'Œ', 'œ', 'Ŕ', 'ŕ', 'Ŗ', 'ŗ', 'Ř', 'ř', 'Ś', 'ś', 'Ŝ', 'ŝ', 'Ş', 'ş', 'Š', 'š', 'Ţ', 'ţ', 'Ť', 'ť', 'Ŧ', 'ŧ', 'Ũ', 'ũ', 'Ū', 'ū', 'Ŭ', 'ŭ', 'Ů', 'ů', 'Ű', 'ű', 'Ų', 'ų', 'Ŵ', 'ŵ', 'Ŷ', 'ŷ', 'Ÿ', 'Ź', 'ź', 'Ż', 'ż', 'Ž', 'ž', 'ſ', 'ƒ', 'Ơ', 'ơ', 'Ư', 'ư', 'Ǎ', 'ǎ', 'Ǐ', 'ǐ', 'Ǒ', 'ǒ', 'Ǔ', 'ǔ', 'Ǖ', 'ǖ', 'Ǘ', 'ǘ', 'Ǚ', 'ǚ', 'Ǜ', 'ǜ', 'Ǻ', 'ǻ', 'Ǽ', 'ǽ', 'Ǿ', 'ǿ', 'Ά', 'ά', 'Έ', 'έ', 'Ό', 'ό', 'Ώ', 'ώ', 'Ί', 'ί', 'ϊ', 'ΐ', 'Ύ', 'ύ', 'ϋ', 'ΰ', 'Ή', 'ή');
       $b = array('A', 'A', 'A', 'A', 'A', 'A', 'AE', 'C', 'E', 'E', 'E', 'E', 'I', 'I', 'I', 'I', 'D', 'N', 'O', 'O', 'O', 'O', 'O', 'O', 'U', 'U', 'U', 'U', 'Y', 's', 'a', 'a', 'a', 'a', 'a', 'a', 'ae', 'c', 'e', 'e', 'e', 'e', 'i', 'i', 'i', 'i', 'n', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u', 'u', 'u', 'y', 'y', 'A', 'a', 'A', 'a', 'A', 'a', 'C', 'c', 'C', 'c', 'C', 'c', 'C', 'c', 'D', 'd', 'D', 'd', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'E', 'e', 'G', 'g', 'G', 'g', 'G', 'g', 'G', 'g', 'H', 'h', 'H', 'h', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'I', 'i', 'IJ', 'ij', 'J', 'j', 'K', 'k', 'L', 'l', 'L', 'l', 'L', 'l', 'L', 'l', 'l', 'l', 'N', 'n', 'N', 'n', 'N', 'n', 'n', 'O', 'o', 'O', 'o', 'O', 'o', 'OE', 'oe', 'R', 'r', 'R', 'r', 'R', 'r', 'S', 's', 'S', 's', 'S', 's', 'S', 's', 'T', 't', 'T', 't', 'T', 't', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'W', 'w', 'Y', 'y', 'Y', 'Z', 'z', 'Z', 'z', 'Z', 'z', 's', 'f', 'O', 'o', 'U', 'u', 'A', 'a', 'I', 'i', 'O', 'o', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'U', 'u', 'A', 'a', 'AE', 'ae', 'O', 'o', 'Α', 'α', 'Ε', 'ε', 'Ο', 'ο', 'Ω', 'ω', 'Ι', 'ι', 'ι', 'ι', 'Υ', 'υ', 'υ', 'υ', 'Η', 'η');
-      
+
       return str_replace($a, $b, $str);
    }
 
@@ -480,7 +480,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
       $query = "SELECT
          `glpi_plugin_monitoring_componentscatalogs_hosts`.*,
-         `glpi_computers`.`id`, `glpi_computers`.`comment`, 
+         `glpi_computers`.`id`, `glpi_computers`.`comment`,
          `glpi_entities`.`id` AS entityId, `glpi_entities`.`name` AS entityName, `glpi_entities`.`completename` AS entityFullName,
          `glpi_locations`.`id`, `glpi_locations`.`completename` AS locationName,
          `glpi_locations`.`comment` AS locationComment, `glpi_locations`.`building` AS locationGPS,
@@ -887,10 +887,10 @@ class PluginMonitoringShinken extends CommonDBTM {
                        '0', 'business_impact', $a_hosts[$i]);
             }
          }
-         
+
          // Additional information in host note
-         /* Shinken WebUI notes definition: 
-         
+         /* Shinken WebUI notes definition:
+
             # Define a simple classic note
                #notes                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin et leo gravida, lobortis nunc nec, imperdiet odio. Vivamus quam velit, scelerisque nec egestas et, semper ut massa. Vestibulum id tincidunt lacus. Ut in arcu at ex egestas vestibulum eu non sapien. Nulla facilisi. Aliquam non blandit tellus, non luctus tortor. Mauris tortor libero, egestas quis rhoncus in, sollicitudin et tortor.
 
@@ -923,7 +923,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             $a_hosts[$i] = $this->add_value_type(
                     implode("|", $notes), 'notes', $a_hosts[$i]);
          }
-         
+
          // Extra parameters
          // Should make a loop :/P !!!!
          $extrapram = array(
@@ -1763,6 +1763,11 @@ class PluginMonitoringShinken extends CommonDBTM {
                            }
                            $notadddescription .= "Argument ".$a_arguments[$arg]." do not have value";
                         }
+                     } else if (strstr($a_arguments[$arg], '[[IP]]')) {
+                        $split = explode('-', current($a_hostname));
+                        $ip = PluginMonitoringHostaddress::getIp(
+                                $a_hostname_id[0], $a_hostname_type[0], '');
+                        $a_arguments[$arg] = str_replace("[[IP]]", $ip, $a_arguments[$arg]);
                      } else if (strstr($a_arguments[$arg], "[")) {
                         $a_arguments[$arg] = PluginMonitoringService::convertArgument($data['id'], $a_arguments[$arg]);
                      }
@@ -2765,7 +2770,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             // $a_templatesdef[$datac['id']] = $a_servicetemplates[$i]['name'];
          // }
          $a_templatesdef[$data['id']] = $a_servicetemplates[$i]['name'];
-         
+
          $a_servicetemplates[$i] = $this->properties_list_to_string($a_servicetemplates[$i]);
          $i++;
       }
@@ -2816,7 +2821,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
       $query = "SELECT
          `glpi_entities`.`id` AS entityId, `glpi_entities`.`name` AS entityName, `glpi_entities`.`level` AS entityLevel
-         , `glpi_entities`.`comment` AS comment 
+         , `glpi_entities`.`comment` AS comment
          , `glpi_entities`.`address` AS address , `glpi_entities`.`postcode` AS postcode, `glpi_entities`.`town` AS town, `glpi_entities`.`state` AS state, `glpi_entities`.`country` AS country
          , `glpi_entities`.`website` AS website , `glpi_entities`.`fax` AS fax, `glpi_entities`.`email` AS email, `glpi_entities`.`phonenumber` AS phonenumber
          FROM `glpi_entities` $where";
@@ -2924,7 +2929,7 @@ Nagios configuration file :
             $a_hostgroups[$i] = $this->add_value_type(
                     implode("|", $notes), 'notes', $a_hostgroups[$i]);
          }
-         
+
          $a_hostgroups[$i] = $this->properties_list_to_string($a_hostgroups[$i]);
          $i++;
       }
