@@ -80,7 +80,7 @@ class PluginMonitoringRedirecthome extends CommonDBTM {
       foreach ($profiles as $profiles_id) {
          $profile->getFromDB($profiles_id);
          if ($profile->fields['interface'] == 'helpdesk') {
-            $array_ret[] = self::createTabEntry(__('Home redirect', 'monitoring'));
+            $array_ret[] = self::createTabEntry(__('Redirect home (monitoring)', 'monitoring'));
             return $array_ret;
          }
       }
