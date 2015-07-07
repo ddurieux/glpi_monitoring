@@ -40,7 +40,7 @@
    ------------------------------------------------------------------------
  */
 
-define ("PLUGIN_MONITORING_VERSION","0.85+1.2");
+define ("PLUGIN_MONITORING_VERSION","0.85+1.3");
 
 define('_MPDF_TEMP_PATH', GLPI_PLUGIN_DOC_DIR.'/monitoring/pdf/');
 
@@ -91,6 +91,8 @@ function plugin_init_monitoring() {
               array('addtabon' => array('Computer')));
          Plugin::registerClass('PluginMonitoringServiceevent',
               array('addtabon' => array('Computer')));
+         Plugin::registerClass('PluginMonitoringRedirecthome',
+              array('addtabon' => array('User')));
          // Plugin::registerClass('PluginMonitoringHostCounter');
 
          if (class_exists('PluginAppliancesAppliance')) {
@@ -311,7 +313,7 @@ function plugin_init_monitoring() {
             $_SESSION['glpi_plugin_monitoring']['_refresh'] = '60';
          }
 //      }
-
+         $PLUGIN_HOOKS['post_init']['monitoring'] = 'plugin_monitoring_postinit';
       $PLUGIN_HOOKS['webservices']['monitoring'] = 'plugin_monitoring_registerMethods';
 
    }

@@ -750,4 +750,24 @@ function plugin_monitoring_ReplayRulesForItem($args) {
    $item->getFromDB($items_id);
    PluginMonitoringComponentscatalog_rule::isThisItemCheckRule($item);
 }
+
+
+function plugin_monitoring_postinit() {
+   global $CFG_GLPI;
+
+   if (isset($_SESSION['glpiactiveprofile']['interface'])
+           && $_SESSION['glpiactiveprofile']['interface'] == 'helpdesk') {
+      if (strstr($_SERVER['PHP_SELF'], "/helpdesk.public.php")){
+         if (count($_GET) == 0
+                 && count($_POST) == 0) {
+            $pmredirecthome = new PluginMonitoringRedirecthome();
+            if ($pmredirecthome->is_redirect($_SESSION['glpiID'])) {
+               Html::redirect($CFG_GLPI["root_doc"]."/plugins/monitoring/front/dashboard.php");
+               exit;
+            }
+         }
+      }
+   }
+}
+
 ?>

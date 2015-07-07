@@ -454,6 +454,17 @@ DROP TABLE IF EXISTS `glpi_plugin_monitoring_realms`;
 
 CREATE TABLE  `glpi_plugin_monitoring_realms` (
    `id` int(11) NOT NULL AUTO_INCREMENT,
+   `users_id` int(11) NOT NULL DEFAULT '0',
+
+   PRIMARY KEY (`id`)
+) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_unicode_ci AUTO_INCREMENT=1;
+
+
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_redirecthomes`;
+
+CREATE TABLE  `glpi_plugin_monitoring_redirecthomes` (
+   `id` int(11) NOT NULL AUTO_INCREMENT,
    `name` varchar(255) DEFAULT NULL,
    `comment` text DEFAULT NULL COLLATE utf8_unicode_ci,
    `date_mod` datetime DEFAULT NULL,

@@ -3580,6 +3580,30 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $migration->migrationOneTable($newTable);
 
 
+    /*
+     * glpi_plugin_monitoring_redirecthomes
+     */
+      $a_table = array();
+      $a_table['name'] = 'glpi_plugin_monitoring_redirecthomes';
+      $a_table['oldname'] = array();
+
+      $a_table['fields']  = array(
+         'id'            => array('type' => 'autoincrement', 'value'   => ''),
+         'users_id'      => array('type' => 'integer',       'value'   => 0),
+         'is_redirected' => array('type' => 'bool',          'value'   => 0),
+      );
+
+      $a_table['oldfields']  = array();
+
+      $a_table['renamefields'] = array();
+
+      $a_table['keys'] = array(array('field' => 'users_id', 'name' => '', 'type' => 'INDEX'));
+
+      $a_table['oldkeys'] = array();
+
+      migrateTablesMonitoring($migration, $a_table);
+      
+
    /*
     * Table Delete old table not used
     */
