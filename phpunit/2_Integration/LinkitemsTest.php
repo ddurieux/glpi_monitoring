@@ -12,6 +12,8 @@ class LinkitemsTest extends RestoreDatabase_TestCase {
     */
    public function testAddService() {
 
+      self::restore_database();
+
       $pmComponent = new PluginMonitoringComponent();
       $pmComponentscatalog = new PluginMonitoringComponentscatalog();
       $pmComponentscatalog_Component = new PluginMonitoringComponentscatalog_Component();
@@ -120,6 +122,23 @@ class LinkitemsTest extends RestoreDatabase_TestCase {
     */
    public function testDeleteHost() {
       $this->assertEquals(0, countElementsInTable('glpi_plugin_monitoring_hosts'), "The host may be deleted (no service in this host)");
+   }
+
+
+   /**
+    * @test
+    * @depends testAddService
+    */
+   public function testDeleteComputer() {
+
+      $this->assertEquals(1, countElementsInTable('glpi_plugin_monitoring_businessrules'), "May have one service in services catalog");
+
+      $computer = new Computer();
+      $computer->delete(array('id' => 1), true);
+
+      $this->assertEquals(0, countElementsInTable('glpi_plugin_monitoring_services'), "The service may be deleted");
+      $this->assertEquals(0, countElementsInTable('glpi_plugin_monitoring_componentscatalogs_hosts'), "The components catalog host may be deleted");
+      $this->assertEquals(0, countElementsInTable('glpi_plugin_monitoring_hosts'), "The host may be deleted");
    }
 }
 
