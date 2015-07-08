@@ -501,6 +501,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $classname = $data['itemtype'];
          $class = new $classname;
          if (! $class->getFromDB($data['items_id'])) {
+            Toolbox::logDebug('[Monitoring] Host item not found: '.print_r($data, true));
             return;
          }
 
@@ -1440,7 +1441,8 @@ class PluginMonitoringShinken extends CommonDBTM {
          if (!isset($a_hosts_found[$host])) {
             // Delete parents not added in hosts config
             foreach ($a_hosts as $id=>$data) {
-               if ($data['parents'] == $host) {
+               if (isset($data['parents'])
+                       && $data['parents'] == $host) {
                   $a_hosts[$id] = $this->add_value_type(
                           '', 'parents', $a_hosts[$id]);
                }
