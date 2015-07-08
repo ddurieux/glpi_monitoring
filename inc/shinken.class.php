@@ -739,15 +739,22 @@ class PluginMonitoringShinken extends CommonDBTM {
                      }
                   } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTNUM]]")){
                      $networkPort = new NetworkPort();
-                     $networkPort->getFromDB($data['networkports_id']);
-                     $logicalnum = $pfNetworkPort->fields['logical_number'];
-                     $a_arguments[$arg] = str_replace("[[NETWORKPORTNUM]]", $logicalnum, $a_arguments[$arg]);
+                     if (isset($data['networkports_id'])
+                             && $data['networkports_id'] > 0) {
+                        $networkPort->getFromDB($data['networkports_id']);
+                     } else if ($classname == 'Computer') {
+                        $networkPort = PluginMonitoringHostaddress::getNetworkport($class->fields['id'], $classname);
+                     }
+                     if ($networkPort->getID() > 0) {
+                        $logicalnum = $networkPort->fields['logical_number'];
+                        $a_arguments[$arg] = str_replace("[[NETWORKPORTNUM]]", $logicalnum, $a_arguments[$arg]);
+                     }
                   } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTNAME]]")) {
                      if (isset($data['networkports_id'])
                              && $data['networkports_id'] > 0) {
                         $networkPort = new NetworkPort();
                         $networkPort->getFromDB($data['networkports_id']);
-                        $portname = $pfNetworkPort->fields['name'];
+                        $portname = $networkPort->fields['name'];
                         $a_arguments[$arg] = str_replace("[[NETWORKPORTNAME]]", $portname, $a_arguments[$arg]);
                      } else if ($classname == 'Computer') {
                         // Get networkportname of networkcard defined
@@ -1730,15 +1737,24 @@ class PluginMonitoringShinken extends CommonDBTM {
                         }
                      } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTNUM]]")){
                         $networkPort = new NetworkPort();
-                        $networkPort->getFromDB($data['networkports_id']);
-                        $logicalnum = $pfNetworkPort->fields['logical_number'];
-                        $a_arguments[$arg] = str_replace("[[NETWORKPORTNUM]]", $logicalnum, $a_arguments[$arg]);
+                        if (isset($data['networkports_id'])
+                                && $data['networkports_id'] > 0) {
+                           $networkPort->getFromDB($data['networkports_id']);
+                        } else if ($a_services[$i]['_HOSTITEMTYPE'] == 'Computer') {
+                           $networkPort = PluginMonitoringHostaddress::getNetworkport(
+                                   $a_services[$i]['_HOSTITEMSID'],
+                                   $a_services[$i]['_HOSTITEMTYPE']);
+                        }
+                        if ($networkPort->getID() > 0) {
+                           $logicalnum = $networkPort->fields['logical_number'];
+                           $a_arguments[$arg] = str_replace("[[NETWORKPORTNUM]]", $logicalnum, $a_arguments[$arg]);
+                        }
                      } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTNAME]]")){
                         if (isset($data['networkports_id'])
                                 && $data['networkports_id'] > 0) {
                            $networkPort = new NetworkPort();
                            $networkPort->getFromDB($data['networkports_id']);
-                           $portname = $pfNetworkPort->fields['name'];
+                           $portname = $networkPort->fields['name'];
                            $a_arguments[$arg] = str_replace("[[NETWORKPORTNAME]]", $portname, $a_arguments[$arg]);
                         } else if ($a_services[$i]['_HOSTITEMTYPE'] == 'Computer') {
                            // Get networkportname of networkcard defined

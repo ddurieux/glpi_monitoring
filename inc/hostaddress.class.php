@@ -219,6 +219,52 @@ class PluginMonitoringHostaddress extends CommonDBTM {
       }
       return $hostname;
    }
+
+
+
+   static function getNetworkport($items_id, $itemtype) {
+      global $DB;
+
+      $networkPort   = new NetworkPort();
+      $networkName   = new NetworkName();
+      $iPAddress     = new IPAddress();
+      $pmHostaddress = new PluginMonitoringHostaddress();
+
+      $query = "SELECT * FROM `".$pmHostaddress->getTable()."`
+      WHERE `items_id`='".$items_id."'
+         AND `itemtype`='".$itemtype."'
+      LIMIT 1";
+      $result = $DB->query($query);
+      if ($DB->numrows($result) == '1') {
+         $data = $DB->fetch_assoc($result);
+
+         $networkPort->getFromDB($data['networkports_id']);
+         return $networkPort;
+      }
+
+      $a_listnetwork = $networkPort->find("`itemtype`='".$itemtype."'
+         AND `items_id`='".$items_id."'", "`id`");
+
+      foreach ($a_listnetwork as $networkports_id=>$datanetwork) {
+         $a_networknames_find = current($networkName->find("`items_id`='".$networkports_id."'
+                                                            AND `itemtype`='NetworkPort'", "", 1));
+         if (isset($a_networknames_find['id'])) {
+            $networknames_id = $a_networknames_find['id'];
+            $a_ips_fromDB = $iPAddress->find("`itemtype`='NetworkName'
+                                              AND `items_id`='".$networknames_id."'");
+            foreach ($a_ips_fromDB as $data) {
+               if ($data['name'] != ''
+                       && $data['name'] != '127.0.0.1'
+                       && $data['name'] != '::1') {
+
+                  $networkPort->getFromDB($networkports_id);
+                  return $networkPort;
+               }
+            }
+         }
+      }
+      return $networkPort;
+   }
 }
 
 ?>

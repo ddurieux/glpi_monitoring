@@ -4,12 +4,15 @@ class ConfigDynamictagTest extends RestoreDatabase_TestCase {
 
    function prepare($dyntag) {
 
-      $pmComponent = new PluginMonitoringComponent();
+      $pmComponent         = new PluginMonitoringComponent();
       $pmComponentscatalog = new PluginMonitoringComponentscatalog();
       $pmComponentscatalog_Component = new PluginMonitoringComponentscatalog_Component();
       $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
-      $computer = new Computer();
-      $pmCommand = new PluginMonitoringCommand();
+      $computer    = new Computer();
+      $pmCommand   = new PluginMonitoringCommand();
+      $networkport = new NetworkPort();
+      $networkName = new NetworkName();
+      $iPAddress   = new IPAddress();
 
       $commands = $pmCommand->find("`name`='Check a DNS entry'", '', 1);
       $this->assertEquals(1, count($commands), "DNS command not found");
@@ -26,6 +29,47 @@ class ConfigDynamictagTest extends RestoreDatabase_TestCase {
       $computer->add(array(
           'name'        => 'computer 1',
           'entities_id' => '0'
+      ));
+
+      // Management port
+      $managementports_id = $networkport->add(array(
+         'itemtype'          => 'Computer',
+         'instantiation_type'=> 'NetworkPortEthernet',
+         'items_id'          => 1,
+         'entities_id'       => 0,
+         'name'              => 'rl0',
+         'logical_number'    => '1'
+      ));
+      $networknames_id = $networkName->add(array(
+         'entities_id' => 0,
+         'itemtype'    => 'NetworkPort',
+         'items_id'    => $managementports_id
+      ));
+      $iPAddress->add(array(
+         'entities_id' => 0,
+         'itemtype' => 'NetworkName',
+         'items_id' => $networknames_id,
+         'name' => '192.168.200.124'
+      ));
+
+      $managementports_id = $networkport->add(array(
+         'itemtype'          => 'Computer',
+         'instantiation_type'=> 'NetworkPortEthernet',
+         'items_id'          => 1,
+         'entities_id'       => 0,
+         'name'              => 'rl1',
+         'logical_number'    => '2'
+      ));
+      $networknames_id = $networkName->add(array(
+         'entities_id' => 0,
+         'itemtype'    => 'NetworkPort',
+         'items_id'    => $managementports_id
+      ));
+      $iPAddress->add(array(
+         'entities_id' => 0,
+         'itemtype' => 'NetworkName',
+         'items_id' => $networknames_id,
+         'name' => '192.168.200.200'
       ));
 
       $pmComponentscatalog->add(array(
@@ -69,16 +113,70 @@ class ConfigDynamictagTest extends RestoreDatabase_TestCase {
     * @test
     */
    public function testArgumentServiceHOSTNAME() {
-      self::restore_database();
-      $this->prepare('[[HOSTNAME]]');
 
-      // Generate host and we see result
+      // Generate services and we see result
       $pmShinken = new PluginMonitoringShinken();
       $services = $pmShinken->generateServicesCfg();
       $this->assertEquals("pm-check_dig!h_computer 1", $services[0]['check_command'], "May have hostname converted");
    }
 
 
+
+   /**
+    * @test
+    */
+   public function testArgumentHostIP() {
+
+      self::restore_database();
+      $this->prepare('[[IP]]');
+
+      // Generate host and we see result
+      $pmShinken = new PluginMonitoringShinken();
+      $hosts = $pmShinken->generateHostsCfg();
+      $this->assertEquals("pm-check_dig!h_192.168.200.124", $hosts[0]['check_command'], "May have IP converted");
+   }
+
+
+
+   /**
+    * @test
+    */
+   public function testArgumentServiceIP() {
+
+      // Generate services and we see result
+      $pmShinken = new PluginMonitoringShinken();
+      $services = $pmShinken->generateServicesCfg();
+      $this->assertEquals("pm-check_dig!h_192.168.200.124", $services[0]['check_command'], "May have IP converted");
+   }
+
+
+
+   /**
+    * @test
+    */
+   public function testArgumentHostComputerNETWORKPORTNUM() {
+
+      self::restore_database();
+      $this->prepare('[[NETWORKPORTNUM]]');
+
+      // Generate host and we see result
+      $pmShinken = new PluginMonitoringShinken();
+      $hosts = $pmShinken->generateHostsCfg();
+      $this->assertEquals("pm-check_dig!h_1", $hosts[0]['check_command'], "May have NETWORKPORTNUM converted");
+   }
+
+
+
+   /**
+    * @test
+    */
+   public function testArgumentServiceComputerNETWORKPORTNUM() {
+
+      // Generate services and we see result
+      $pmShinken = new PluginMonitoringShinken();
+      $services = $pmShinken->generateServicesCfg();
+      $this->assertEquals("pm-check_dig!h_1", $services[0]['check_command'], "May have NETWORKPORTNUM converted");
+   }
 
 }
 
