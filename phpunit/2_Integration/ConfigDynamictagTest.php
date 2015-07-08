@@ -178,6 +178,35 @@ class ConfigDynamictagTest extends RestoreDatabase_TestCase {
       $this->assertEquals("pm-check_dig!h_1", $services[0]['check_command'], "May have NETWORKPORTNUM converted");
    }
 
+
+
+   /**
+    * @test
+    */
+   public function testArgumentHostComputerNETWORKPORTNAME() {
+
+      self::restore_database();
+      $this->prepare('[[NETWORKPORTNAME]]');
+
+      // Generate host and we see result
+      $pmShinken = new PluginMonitoringShinken();
+      $hosts = $pmShinken->generateHostsCfg();
+      $this->assertEquals("pm-check_dig!h_rl0", $hosts[0]['check_command'], "May have NETWORKPORTNAME converted");
+   }
+
+
+
+   /**
+    * @test
+    */
+   public function testArgumentServiceComputerNETWORKPORTNAME() {
+
+      // Generate services and we see result
+      $pmShinken = new PluginMonitoringShinken();
+      $services = $pmShinken->generateServicesCfg();
+      $this->assertEquals("pm-check_dig!h_rl0", $services[0]['check_command'], "May have NETWORKPORTNAME converted");
+   }
+
 }
 
 ?>

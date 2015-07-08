@@ -750,25 +750,16 @@ class PluginMonitoringShinken extends CommonDBTM {
                         $a_arguments[$arg] = str_replace("[[NETWORKPORTNUM]]", $logicalnum, $a_arguments[$arg]);
                      }
                   } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTNAME]]")) {
+                     $networkPort = new NetworkPort();
                      if (isset($data['networkports_id'])
                              && $data['networkports_id'] > 0) {
-                        $networkPort = new NetworkPort();
                         $networkPort->getFromDB($data['networkports_id']);
+                     } else if ($classname == 'Computer') {
+                        $networkPort = PluginMonitoringHostaddress::getNetworkport($class->fields['id'], $classname);
+                     }
+                     if ($networkPort->getID() > 0) {
                         $portname = $networkPort->fields['name'];
                         $a_arguments[$arg] = str_replace("[[NETWORKPORTNAME]]", $portname, $a_arguments[$arg]);
-                     } else if ($classname == 'Computer') {
-                        // Get networkportname of networkcard defined
-                        $pmHostaddress = new PluginMonitoringHostaddress();
-                        $a_hostaddresses = $pmHostaddress->find("`itemtype`='Computer'"
-                                . " AND  `items_id`='".$class->fields['id']."'", '', 1);
-                        if (count($a_hostaddresses) == 1) {
-                           $a_hostaddress = current($a_hostaddresses);
-                           if ($a_hostaddress['networkports_id'] > 0) {
-                              $networkPort = new NetworkPort();
-                              $networkPort->getFromDB($a_hostaddress['networkports_id']);
-                              $a_arguments[$arg] = str_replace("[[NETWORKPORTNAME]]", $networkPort->fields['name'], $a_arguments[$arg]);
-                           }
-                        }
                      }
                   } else if (strstr($a_arguments[$arg], '[[IP]]')) {
                      $ip = PluginMonitoringHostaddress::getIp(
@@ -1750,39 +1741,19 @@ class PluginMonitoringShinken extends CommonDBTM {
                            $a_arguments[$arg] = str_replace("[[NETWORKPORTNUM]]", $logicalnum, $a_arguments[$arg]);
                         }
                      } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTNAME]]")){
+                        $networkPort = new NetworkPort();
                         if (isset($data['networkports_id'])
                                 && $data['networkports_id'] > 0) {
                            $networkPort = new NetworkPort();
                            $networkPort->getFromDB($data['networkports_id']);
-                           $portname = $networkPort->fields['name'];
-                           $a_arguments[$arg] = str_replace("[[NETWORKPORTNAME]]", $portname, $a_arguments[$arg]);
                         } else if ($a_services[$i]['_HOSTITEMTYPE'] == 'Computer') {
-                           // Get networkportname of networkcard defined
-                           $pmHostaddress = new PluginMonitoringHostaddress();
-                           $a_hostaddresses = $pmHostaddress->find("`itemtype`='Computer'"
-                                   . " AND  `items_id`='".$a_services[$i]['_HOSTITEMSID']."'", '', 1);
-                           if (count($a_hostaddresses) == 1) {
-                              $a_hostaddress = current($a_hostaddresses);
-                              if ($a_hostaddress['networkports_id'] > 0) {
-                                 $networkPort = new NetworkPort();
-                                 $networkPort->getFromDB($a_hostaddress['networkports_id']);
-                                 $a_arguments[$arg] = str_replace("[[NETWORKPORTNAME]]", $networkPort->fields['name'], $a_arguments[$arg]);
-                              }
-                           }
-                        } else if (strstr($a_arguments[$arg], '[[IP]]')) {
-                           $split = explode('-', current($a_hostname));
-                           $ip = PluginMonitoringHostaddress::getIp(
-                                   $a_hostname_id[0], $a_hostname_type[0], '');
-                           $a_arguments[$arg] = str_replace("[[IP]]", $ip, $a_arguments[$arg]);
-                        } else if (strstr($a_arguments[$arg], "[")) {
-                           $a_arguments[$arg] = PluginMonitoringService::convertArgument($data['id'], $a_arguments[$arg]);
+                           $networkPort = PluginMonitoringHostaddress::getNetworkport(
+                                   $a_services[$i]['_HOSTITEMSID'],
+                                   $a_services[$i]['_HOSTITEMTYPE']);
                         }
-                        if ($a_arguments == '') {
-                           $notadd = 1;
-                           if ($notadddescription != '') {
-                              $notadddescription .= ", ";
-                           }
-                           $notadddescription .= "Argument ".$a_arguments[$arg]." do not have value";
+                        if ($networkPort->getID() > 0) {
+                          $portname = $networkPort->fields['name'];
+                          $a_arguments[$arg] = str_replace("[[NETWORKPORTNAME]]", $portname, $a_arguments[$arg]);
                         }
                      } else if (strstr($a_arguments[$arg], '[[IP]]')) {
                         $split = explode('-', current($a_hostname));
