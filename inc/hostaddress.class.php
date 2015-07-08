@@ -186,8 +186,8 @@ class PluginMonitoringHostaddress extends CommonDBTM {
       if ($DB->numrows($result) == '1') {
          $data = $DB->fetch_assoc($result);
 
-         if ($data['ipaddresses_id'] > 0) {
-            $iPAddress->getFromDB($data['ipaddresses_id']);
+         if ($data['ipaddresses_id'] > 0
+                 && $iPAddress->getFromDB($data['ipaddresses_id'])) {
             return $iPAddress->fields['name'];
          } else {
             $networkports_id = $data['networkports_id'];
