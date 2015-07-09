@@ -59,7 +59,7 @@ class UpdateTest extends RestoreDatabase_TestCase {
       $output = array();
       $returncode = 0;
       exec(
-         "php -f ".MONIT_ROOT."/scripts/cli_install.php -- --as-user 'glpi'",
+         "php -f ".MONIT_ROOT."/scripts/cli_install.php -- --as-user 'glpi' --serviceevents",
          $output,
          $returncode
       );

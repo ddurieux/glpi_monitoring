@@ -2254,8 +2254,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       $a_table['oldkeys'] = array();
 
-      migrateTablesMonitoring($migration, $a_table);
-
+      if (defined('SERVICEEVENTS')) {
+         migrateTablesMonitoring($migration, $a_table);
+      }
 
 
     /*
@@ -3602,7 +3603,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       $a_table['oldkeys'] = array();
 
       migrateTablesMonitoring($migration, $a_table);
-      
+
 
    /*
     * Table Delete old table not used
