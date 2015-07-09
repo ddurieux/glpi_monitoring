@@ -284,6 +284,37 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
 
 
 
+   /**
+    * Get search function for the class
+    *
+    * @return array of search option
+   **/
+   function getSearchOptions() {
+
+      $tab                 = parent::getSearchOptions();
+
+      $tab[10]['table']          = PluginMonitoringComponentscatalog::getTable();
+      $tab[10]['field']          = 'notification_interval';
+      $tab[10]['name']           = __('Interval between 2 notifications (in minutes)', 'monitoring');
+      $tab[10]['datatype']       = 'integer';
+
+      $tab[11]['table']          = PluginMonitoringHostnotificationtemplate::getTable();
+      $tab[11]['field']          = 'name';
+      $tab[11]['linkfield']      = 'hostsnotification_id';
+      $tab[11]['name']           = __('Hosts notification options', 'monitoring');
+      $tab[11]['datatype']       = 'itemlink';
+
+      $tab[12]['table']          = PluginMonitoringServicenotificationtemplate::getTable();
+      $tab[12]['field']          = 'name';
+      $tab[12]['linkfield']      = 'servicesnotification_id';
+      $tab[12]['name']           = __('Services notification options', 'monitoring');
+      $tab[12]['datatype']       = 'itemlink';
+
+      return $tab;
+   }
+
+
+
    function prepareInputForUpdate($input) {
 
       if (isset($input["notification_interval_hours"])
@@ -330,7 +361,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                 // 'step'  => 10)
             // );
             break;
-            
+
          case 'hostsnotification_id' :
             if ($ID <= 0) {
                $this->fields['hostsnotification_id'] = -1;
@@ -344,7 +375,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                                     'value'=>$this->fields['hostsnotification_id']
                                     ));
             break;
-            
+
          case 'servicesnotification_id' :
             if ($ID <= 0) {
                $this->fields['servicesnotification_id'] = -1;
