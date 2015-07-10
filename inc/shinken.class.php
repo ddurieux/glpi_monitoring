@@ -569,6 +569,9 @@ class PluginMonitoringShinken extends CommonDBTM {
          if (isset(self::$shinkenParameters['graphite']['prefix']['name'])) {
             // Dynamic setup of a default parameter ...
             self::$shinkenParameters['graphite']['prefix']['value'] = $pmHostconfig->getValueAncestor('graphite_prefix', $data['entityId']);
+            if (self::$shinkenParameters['graphite']['prefix']['value'] != '') {
+               self::$shinkenParameters['graphite']['prefix']['value'] .= '.';
+            }
 
             $a_hosts[$i] = $this->add_value_type(
                     strtolower(self::$shinkenParameters['graphite']['prefix']['value'] . self::graphiteFilter($data['entityFullName'])),

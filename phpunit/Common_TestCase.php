@@ -65,12 +65,25 @@ abstract class Common_TestCase extends PHPUnit_Framework_TestCase {
       global $CFG_GLPI,$DB;
       $DB = new DB();
       // Force profile in session to SuperAdmin
-      $_SESSION['glpiprofiles'] = array('4' => array('entities' => 0));
+      $_SESSION['glpiprofiles'] = array(
+         '4' => array(
+            'name'     => 'super-admin',
+            'entities' => array(
+               array(
+                  'id'           => '0',
+                  'name'         => 'Root entity',
+                  'is_recursive' => 1
+               )
+            ))
+         );
 
-      $_SESSION['glpiactiveentities'] = array(0, 1);
+      $_SESSION['glpiactiveentities'] = array(0);
+      $_SESSION['glpiactiveentities_string'] = "'0'";
 
       $_SESSION['glpi_use_mode'] = Session::NORMAL_MODE;
       $_SESSION['glpiname'] = 'glpi';
+      $_SESSION['glpiID'] = 2;
+      $_SESSION['glpiactiveprofile']['entity'] = 3199;
 
       require (GLPI_ROOT . "/inc/includes.php");
 
