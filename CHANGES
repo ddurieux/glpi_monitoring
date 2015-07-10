@@ -1,0 +1,76 @@
+Changelog
+=========
+
+Here you can see the full list of changes between each release.
+
+In Development
+--------------
+
+Version 0.85+1.3
+~~~~~~~~~~~
+
+- Fix: Return of the Travis for unit tests.
+- Fix: errors on install / update plugin (php errors, SQL errors)
+- Fix: PHP errors in servicescatalogs
+- Fix: errors in shinken configuration generator
+- Fix: buniness piority in components and servicescatalogs from 0 to 5 
+  instead 1 to 5
+- Fix: problem with component argument contain '[[IP]]' string (not converted)
+- Fix: compatibility of plugin for PHP 5.3
+- Enhanced: Better performances to generate shinken configuration
+- Enhanced: install script in cli
+- Enhanced: add option in user form to redirect home (when log in GLPI) to 
+  monitoring dashboard (end-user interface only)
+- Enhanced: disable items move in dashboard views when not in edit mode
+- Enhanced: add columns in componentscatalogs and possibility to modify them
+  in massive actions
+
+Version 0.85+1.2
+~~~~~~~~~~~
+
+- Fix: save button in preferences for graph form
+- Fix: PHP errors when GLPI try to communicate with Shinken on port 7760
+- Fix: Bug in limit of componentscatalogs rules (not get all elements in put 
+  them in monitoring)
+- Fix: Errors in some cases when generate shinken configuration
+- Fix: javascript problem in weathermap configuration
+- Fix: javascript in servicecatalogs
+- Fix: minemap for components catalogs
+- Fix: right to have link in counters of components catalogs
+- Fix: rights and display monitoring in simplified interface
+- Fix: massive action in target tab of view and sliders
+- Fix: invert values in graphs
+- Fix: graphs with min and max values
+- Fix: date format in lists of dashboards (hosts status, resources status)
+- Fix: copy components and commands.
+- Fix: cron added 2 times insome cases (when update)
+- Fix: fatal error on check networkport of switch for monitoring
+- Fix: timezone of graphs for browsers under Windows
+- Fix: rules of view && delete button
+- Fix: fil d'ariane in rules page (componentcatalogs and views)
+- Fix: right for restart Shinken
+- Fix: delete item in view
+- Fix: link of node in weathermap
+- Fix: fatal error when update plugin
+- Fix: use host entity calendar for host check_period
+- Fix: problem with business rules (servicescatalogs)
+- Enhanced: display preferences for graph
+- Enhanced: performances to list hosts status in dashboard
+- Enhanced: add counter of contacts in tab in componentscatalogs
+- Enhanced: all links in view opened now in new tab
+- Enhanced: reduce number of MySQL queries when display monitoring messages
+- Enhanced: add notifications options for host and componentcatalogs
+- Enhanced: Add business priority for components
+- Enhanced: recoded shinken configuration generator
+- Enhanced: add Shinken state table
+- Enhanced: Get all timeperiods in end when generate configuration
+- Enhanced: add graphite prefix
+- Enhanced: add script to create a GLPI ticket from Shinken
+- Enhanced: Add code to write all key=>value of data to send to shinken in 
+  the right type (so better config generated)
+- Enhanced: Add business priority for components
+
+
+
+Version 0.85+1.1
+~~~~~~~~~~~
