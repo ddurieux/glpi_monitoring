@@ -480,14 +480,36 @@ class PluginMonitoringShinken extends CommonDBTM {
 
       $query = "SELECT
          `glpi_plugin_monitoring_componentscatalogs_hosts`.*,
-         `glpi_computers`.`id`, `glpi_computers`.`comment`,
-         `glpi_entities`.`id` AS entityId, `glpi_entities`.`name` AS entityName, `glpi_entities`.`completename` AS entityFullName,
+         CONCAT_WS('', `glpi_computers`.`id`, `glpi_printers`.`id`, `glpi_networkequipments`.`id`) AS id,
+         CONCAT_WS('', `glpi_computers`.`entities_id`, `glpi_printers`.`entities_id`, `glpi_networkequipments`.`id`) AS device_entities_id,
+         CONCAT_WS('', `glpi_computers`.`comment`, `glpi_printers`.`comment`, `glpi_networkequipments`.`comment`) AS comment,
+         `glpi_entities`.`id` AS entityId, `glpi_entities`.`name` AS entityName,
+         `glpi_entities`.`completename` AS entityFullName,
          `glpi_locations`.`id`, `glpi_locations`.`completename` AS locationName,
          `glpi_locations`.`comment` AS locationComment, `glpi_locations`.`building` AS locationGPS,
          `glpi_plugin_monitoring_services`.`networkports_id`
          FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
-         LEFT JOIN `glpi_computers` ON `glpi_computers`.`id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`
-         LEFT JOIN `glpi_entities` ON `glpi_computers`.`entities_id` = `glpi_entities`.`id`
+         LEFT JOIN `glpi_computers`
+            ON `glpi_computers`.`id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`
+               AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`='Computer'
+         LEFT JOIN `glpi_printers`
+            ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_printers`.`id`
+               AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`='Printer'
+         LEFT JOIN `glpi_networkequipments`
+            ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_networkequipments`.`id`
+               AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`='NetworkEquipment'
+
+         LEFT JOIN `glpi_entities`
+            ON ((`glpi_computers`.`entities_id` = `glpi_entities`.`id`
+                  AND `glpi_computers`.`id` IS NOT NULL)
+                OR
+                (`glpi_printers`.`entities_id` = `glpi_entities`.`id`
+                  AND `glpi_printers`.`id` IS NOT NULL)
+                OR
+                (`glpi_networkequipments`.`entities_id` = `glpi_entities`.`id`
+                  AND `glpi_networkequipments`.`id` IS NOT NULL)
+                )
+
          LEFT JOIN `glpi_locations` ON `glpi_locations`.`id` = `glpi_computers`.`locations_id`
          LEFT JOIN `glpi_plugin_monitoring_services`
             ON `glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id`
