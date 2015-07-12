@@ -7,70 +7,70 @@ In Development
 --------------
 
 Version 0.85+1.3
-~~~~~~~~~~~
+~~~~~~~~~~~~~~~~
 
 - Fix: Return of the Travis for unit tests.
-- Fix: errors on install / update plugin (PHP errors, SQL errors)
-- Fix: PHP errors in servicecatalogs
-- Fix: errors in shinken configuration generator
-- Fix: business piority in components and servicescatalogs from 0 to 5 
+- Fix: Errors on install / update plugin (PHP errors, SQL errors)
+- Fix: Compatibility of plugin for PHP 5.3
+- Fix: PHP errors in services catalogs
+- Fix: Business priority in components and services catalogs from 0 to 5 
   instead 1 to 5
-- Fix: problem with component argument contain '[[IP]]' string (not converted)
-- Fix: compatibility of plugin for PHP 5.3
+- Fix: Errors in Shinken configuration generator
+- Fix: Problem with component argument contain '[[IP]]' string (not converted)
 - Enhanced: Better performances to generate shinken configuration
-- Enhanced: install script in CLI
-- Enhanced: add option in user form to redirect home (when log in GLPI) to 
+- Enhanced: Add many tests for Shinken configuration generator
+- Enhanced: Install script in CLI
+- Enhanced: Add option in user form to redirect home (when log in GLPI) to 
   monitoring dashboard (end-user interface only)
-- Enhanced: disable items move in dashboard views when not in edit mode
-- Enhanced: add columns in componentscatalogs and possibility to modify them
+- Enhanced: Disable move action of items in dashboard views when not in 
+  edit mode
+- Enhanced: Add columns in components catalogs and possibility to modify them
   in massive actions
-- Enhanced: add many tests for shinken config generator
+
 
 Version 0.85+1.2
-~~~~~~~~~~~
+~~~~~~~~~~~~~~~~
 
-- Fix: save button in preferences for graph form
+- Fix: Save button in preferences for graph form
+- Fix: Invert values in graphs
+- Fix: Graphs with min and max values
+- Fix: Timezone of graphs for browsers under Windows
+- Fix: Bug in limit of components catalogs rules (not get all elements to put 
+  in monitoring)
+- Fix: Minemap for components catalogs
+- Fix: Right to have link in counters of components catalogs
+- Fix: Fil d'ariane in rules page (components catalogs and views)
+- Fix: Massive actions in target tab of view and sliders
+- Fix: Rules of view && delete button
+- Fix: Delete item in view
+- Fix: Copy components and commands.
+- Fix: Javascript in services catalogs
+- Fix: Problem with business rules (services catalogs)
 - Fix: PHP errors when GLPI try to communicate with Shinken on port 7760
-- Fix: Bug in limit of componentscatalogs rules (not get all elements in put 
-  them in monitoring)
-- Fix: Errors in some cases when generate shinken configuration
-- Fix: javascript problem in weathermap configuration
-- Fix: javascript in servicecatalogs
-- Fix: minemap for components catalogs
-- Fix: right to have link in counters of components catalogs
-- Fix: rights and display monitoring in simplified interface
-- Fix: massive action in target tab of view and sliders
-- Fix: invert values in graphs
-- Fix: graphs with min and max values
-- Fix: date format in lists of dashboards (hosts status, resources status)
-- Fix: copy components and commands.
-- Fix: cron added 2 times insome cases (when update)
-- Fix: fatal error on check networkport of switch for monitoring
-- Fix: timezone of graphs for browsers under Windows
-- Fix: rules of view && delete button
-- Fix: fil d'ariane in rules page (componentcatalogs and views)
-- Fix: right for restart Shinken
-- Fix: delete item in view
-- Fix: link of node in weathermap
-- Fix: fatal error when update plugin
-- Fix: use host entity calendar for host check_period
-- Fix: problem with business rules (servicescatalogs)
-- Enhanced: display preferences for graph
-- Enhanced: performances to list hosts status in dashboard
-- Enhanced: add counter of contacts in tab in componentscatalogs
-- Enhanced: all links in view opened now in new tab
-- Enhanced: reduce number of MySQL queries when display monitoring messages
-- Enhanced: add notifications options for host and componentcatalogs
+- Fix: Errors in some cases when generate Shinken configuration
+- Fix: Right for restart Shinken
+- Fix: Javascript problem in Weathermap configuration
+- Fix: Link of node in Weathermap
+- Fix: Fatal error when update plugin
+- Fix: Use host entity calendar for host check_period
+- Fix: Rights and display monitoring in simplified interface
+- Fix: Date format in lists of dashboards (hosts status, resources status)
+- Fix: Cron added 2 times in some cases (when update)
+- Fix: Fatal error on check networkport of switch for monitoring
+- Enhanced: Add counter of contacts in tab in components catalogs
+- Enhanced: Add notifications options for host and components catalogs
+- Enhanced: Recoded Shinken configuration generator
+- Enhanced: Add Shinken state table
+- Enhanced: Add script to create a GLPI ticket from Shinken
+- Enhanced: Add code to write all key=>value of data to send to Shinken in 
+  the right type (so better configuration generation)
+- Enhanced: Display preferences for graph
+- Enhanced: Reduce number of MySQL queries when display monitoring messages
+- Enhanced: Add graphite prefix
 - Enhanced: Add business priority for components
-- Enhanced: recoded shinken configuration generator
-- Enhanced: add Shinken state table
+- Enhanced: Performances to list hosts status in dashboard
+- Enhanced: All links in view opened now in new tab
 - Enhanced: Get all timeperiods in end when generate configuration
-- Enhanced: add graphite prefix
-- Enhanced: add script to create a GLPI ticket from Shinken
-- Enhanced: Add code to write all key=>value of data to send to shinken in 
-  the right type (so better config generated)
-- Enhanced: Add business priority for components
-
 
 
 Version 0.85+1.1
