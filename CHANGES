@@ -6,6 +6,8 @@ Here you can see the full list of changes between each release.
 In Development
 --------------
 
+- Fix: PHP notice on Shinken generator
+
 Version 0.85+1.3
 ~~~~~~~~~~~~~~~~
 
