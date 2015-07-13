@@ -371,6 +371,10 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_list = $pmEventhandler->find("`is_active`='1'");
       foreach ($a_list as $data) {
          if ($data['command_name'] != "bp_rule") {
+            if (!isset($a_commands[$i])) {
+               $a_commands[$i] = array();
+            }
+            
             $a_commands[$i] = $this->add_value_type($data['name'], 'name', $a_commands[$i]);
             $a_commands[$i] = $this->add_value_type(
                     PluginMonitoringCommand::$command_prefix . $data['command_name'],
