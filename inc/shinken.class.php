@@ -947,11 +947,13 @@ class PluginMonitoringShinken extends CommonDBTM {
                  && isset($data['locationName'])
                  && isset($data['locationComment'])) {
             $comment = str_replace("\r\n", "<br/>", $data['locationComment']);
-            $comment = $this->shinkenFilter($comment);
+            $comment = preg_replace('/[[:cntrl:]]/', '§', $comment);
             $notes[] = "Location,,home::<strong>{$data['locationName']}</strong><br/>{$comment}";
          }
+         // Computer comment in notes ...
          if (isset($data['comment'])) {
             $comment = str_replace("\r\n", "<br/>", $data['comment']);
+            $comment = preg_replace('/[[:cntrl:]]/', '§', $comment);
             $notes[] = "Comment,,comment::{$comment}";
          }
          if (count($notes) > 0) {
