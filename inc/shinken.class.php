@@ -374,7 +374,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             if (!isset($a_commands[$i])) {
                $a_commands[$i] = array();
             }
-            
+
             $a_commands[$i] = $this->add_value_type($data['name'], 'name', $a_commands[$i]);
             $a_commands[$i] = $this->add_value_type(
                     PluginMonitoringCommand::$command_prefix . $data['command_name'],
@@ -943,8 +943,12 @@ class PluginMonitoringShinken extends CommonDBTM {
             // " - location:{$data['locationName']} - {$data['locationComment']}\n"
          // );
          $notes = array();
-         if (isset(self::$shinkenParameters['glpi']['location']) && isset($data['locationName']) && isset($data['locationComment'])) {
-            $notes[] = "Location,,home::<strong>{$data['locationName']}</strong><br/>{$data['locationComment']}";
+         if (isset(self::$shinkenParameters['glpi']['location'])
+                 && isset($data['locationName'])
+                 && isset($data['locationComment'])) {
+            $comment = str_replace("\r\n", "<br/>", $data['locationComment']);
+            $comment = $this->shinkenFilter($comment);
+            $notes[] = "Location,,home::<strong>{$data['locationName']}</strong><br/>{$comment}";
          }
          if (isset($data['comment'])) {
             $comment = str_replace("\r\n", "<br/>", $data['comment']);
@@ -3575,7 +3579,7 @@ Nagios configuration file :
       return $tmp['timeperiod_name'];
    }
 
-   
+
    function _addTimeperiod($entities_id=-1, $calendars_id=-1) {
 
       if (! isset($_SESSION['plugin_monitoring']['timeperiods'])) {
