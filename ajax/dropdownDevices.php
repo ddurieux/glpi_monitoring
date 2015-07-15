@@ -3,7 +3,7 @@
  * @version $Id: dropdownValue.php 15573 2011-09-01 10:10:06Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2011 by the INDEPNET Development Team.
+ Copyright (C) 2003-2015 by the INDEPNET Development Team.
 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
