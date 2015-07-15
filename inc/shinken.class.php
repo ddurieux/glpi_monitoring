@@ -3,7 +3,7 @@
 /*
    ------------------------------------------------------------------------
    Plugin Monitoring for GLPI
-   Copyright (C) 2011-2014 by the Plugin Monitoring for GLPI Development Team.
+   Copyright (C) 2011-2015 by the Plugin Monitoring for GLPI Development Team.
 
    https://forge.indepnet.net/projects/monitoring/
    ------------------------------------------------------------------------
@@ -29,9 +29,9 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author
+   @co-author Frédéric Mohier
    @comment
-   @copyright Copyright (c) 2011-2014 Plugin Monitoring for GLPI team
+   @copyright Copyright (c) 2011-2015 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
@@ -505,6 +505,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $classname = $data['itemtype'];
          $class = new $classname;
          if (! $class->getFromDB($data['items_id'])) {
+            Toolbox::logDebug('[Monitoring] Host item not found: '.print_r($data, true));
             return;
          }
 
@@ -572,6 +573,9 @@ class PluginMonitoringShinken extends CommonDBTM {
          if (isset(self::$shinkenParameters['graphite']['prefix']['name'])) {
             // Dynamic setup of a default parameter ...
             self::$shinkenParameters['graphite']['prefix']['value'] = $pmHostconfig->getValueAncestor('graphite_prefix', $data['entityId']);
+            if (self::$shinkenParameters['graphite']['prefix']['value'] != '') {
+               self::$shinkenParameters['graphite']['prefix']['value'] .= '.';
+            }
 
             $a_hosts[$i] = $this->add_value_type(
                     strtolower(self::$shinkenParameters['graphite']['prefix']['value'] . self::graphiteFilter($data['entityFullName'])),
@@ -746,7 +750,10 @@ class PluginMonitoringShinken extends CommonDBTM {
                   $args .= '!';
                } else {
                   if (strstr($a_arguments[$arg], "[[HOSTNAME]]")) {
-                     $a_arguments[$arg] = str_replace("[[HOSTNAME]]", $hostname, $a_arguments[$arg]);
+                     $a_arguments[$arg] = str_replace(
+                             "[[HOSTNAME]]",
+                             $class->fields['name'],
+                             $a_arguments[$arg]);
                   } elseif (strstr($a_arguments[$arg], "[[NETWORKPORTDESCR]]")){
                      if (class_exists("PluginFusioninventoryNetworkPort")) {
                         $pfNetworkPort = new PluginFusioninventoryNetworkPort();
@@ -932,16 +939,18 @@ class PluginMonitoringShinken extends CommonDBTM {
             // 'pm-shinken',
             // " - location:{$data['locationName']} - {$data['locationComment']}\n"
          // );
-         $notes = [];
+         $notes = array();
          if (isset(self::$shinkenParameters['glpi']['location'])
                  && isset($data['locationName'])
                  && isset($data['locationComment'])) {
             $comment = str_replace("\r\n", "<br/>", $data['locationComment']);
-            $comment = $this->shinkenFilter($comment);
+            $comment = preg_replace('/[[:cntrl:]]/', '§', $comment);
             $notes[] = "Location,,home::<strong>{$data['locationName']}</strong><br/>{$comment}";
          }
+         // Computer comment in notes ...
          if (isset($data['comment'])) {
             $comment = str_replace("\r\n", "<br/>", $data['comment']);
+            $comment = preg_replace('/[[:cntrl:]]/', '§', $comment);
             $notes[] = "Comment,,comment::{$comment}";
          }
          if (count($notes) > 0) {
@@ -1462,7 +1471,8 @@ class PluginMonitoringShinken extends CommonDBTM {
          if (!isset($a_hosts_found[$host])) {
             // Delete parents not added in hosts config
             foreach ($a_hosts as $id=>$data) {
-               if ($data['parents'] == $host) {
+               if (isset($data['parents'])
+                       && $data['parents'] == $host) {
                   $a_hosts[$id] = $this->add_value_type(
                           '', 'parents', $a_hosts[$id]);
                }
@@ -2038,7 +2048,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
                         PluginMonitoringToolbox::logIfExtradebug(
                            'pm-shinken',
-                           "generateServicesCfg - CC, service: {$a_services[$i]['service_description']}/{$a_services[$i]['host_name']} in {$pmComponentscatalog->fields['name']}, no notifications.\n"
+                           "generateServicesCfg - CC, service: {$a_services[$i]['service_description']}/{$a_services[$i]['host_name']} in {$a_componentscatalog['name']}, no notifications.\n"
                         );
                      } else {
                         // Notifications enabled for service
@@ -2153,13 +2163,13 @@ class PluginMonitoringShinken extends CommonDBTM {
                }
             }
 
-         // WebUI user interface ...
-         if (isset(self::$shinkenParameters['webui']['serviceIcons']['name'])) {
-            $a_services[$i] = $this->add_value_type(
-                    self::$shinkenParameters['webui']['serviceIcons']['value'],
-                    self::$shinkenParameters['webui']['serviceIcons']['name'],
-                    $a_services[$i]);
-         }
+            // WebUI user interface ...
+            if (isset(self::$shinkenParameters['webui']['serviceIcons']['name'])) {
+               $a_services[$i] = $this->add_value_type(
+                       self::$shinkenParameters['webui']['serviceIcons']['value'],
+                       self::$shinkenParameters['webui']['serviceIcons']['name'],
+                       $a_services[$i]);
+            }
 
          if ($notadd == '1') {
             unset($a_services[$i]);
@@ -2891,7 +2901,7 @@ Nagios configuration file :
             // 'pm-shinken',
             // " - location:{$data['locationName']} - {$data['locationComment']}\n"
          // );
-         $notes = [];
+         $notes = array();
          if (isset($data['comment'])) {
             $comment = str_replace("\r\n", "<br/>", $data['comment']);
             $notes[] = "Comment,,comment::{$comment}";
