@@ -79,13 +79,13 @@ class PluginMonitoringCommand extends CommonDBTM {
       // - restart/reload Shinken
       // - same command_name as default Shinken's
       $input = array();
-      $input['name'] = "Shinken (2.0) restart";
+      $input['name'] = "Shinken (2.x) restart";
       $input['command_name'] = "restart-shinken";
       $input['command_line'] = $DB->escape("nohup sh -c '/etc/init.d/shinken restart'  > /dev/null 2>&1 &");
       $this->add($input);
 
       $input = array();
-      $input['name'] = "Shinken (2.0) reload";
+      $input['name'] = "Shinken (2.x) reload";
       $input['command_name'] = "reload-shinken";
       $input['command_line'] = $DB->escape("nohup sh -c '/etc/init.d/shinken reload'  > /dev/null 2>&1 &");
       $this->add($input);
@@ -365,11 +365,11 @@ class PluginMonitoringCommand extends CommonDBTM {
       $tab['common'] = __('Commands', 'monitoring');
 
       $i=1;
-		$tab[$i]['table'] = $this->getTable();
-		$tab[$i]['field'] = 'name';
-		$tab[$i]['linkfield'] = 'name';
-		$tab[$i]['name'] = __('Name');
-		$tab[$i]['datatype'] = 'itemlink';
+      $tab[$i]['table'] = $this->getTable();
+      $tab[$i]['field'] = 'name';
+      $tab[$i]['linkfield'] = 'name';
+      $tab[$i]['name'] = __('Name');
+      $tab[$i]['datatype'] = 'itemlink';
 
       $i++;
       $tab[$i]['table']     = $this->getTable();

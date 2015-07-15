@@ -51,7 +51,7 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
 
 
 /*
-   Shinken 2.0 defines:
+   Shinken 2.x defines:
       # Nagios legacy macros
       $USER1$=$NAGIOSPLUGINSDIR$
       $NAGIOSPLUGINSDIR$=/usr/lib/nagios/plugins
@@ -63,12 +63,18 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
    function initCommands() {
       global $DB;
 
-      // Shinken 2.0 default commands
+      // Shinken 2.x default commands
       // Host notifications
       $input = array();
       $input['name'] = 'Host : mail notification';
       $input['command_name'] = 'notify-host-by-email';
       $input['command_line'] = $DB->escape('/usr/bin/printf "%b" "Shinken Notification\n\nType:$NOTIFICATIONTYPE$\nHost: $HOSTNAME$\nState: $HOSTSTATE$\nAddress: $HOSTADDRESS$\nInfo: $HOSTOUTPUT$\nDate/Time: $DATE$ $TIME$\n" | /usr/bin/mail -s "Host $HOSTSTATE$ alert for $HOSTNAME$" $CONTACTEMAIL$');
+      $this->add($input);
+
+      $input = array();
+      $input['name'] = 'Host : mail notification (python)';
+      $input['command_name'] = 'notify-host-by-email-py';
+      $input['command_line'] = $DB->escape('$PLUGINSDIR$/send_mail_host.py -n "$NOTIFICATIONTYPE$" -H "$HOSTALIAS$" -a "$HOSTADDRESS$" -i "$SHORTDATETIME$" -o "$HOSTOUTPUT$" -t "$CONTACTEMAIL$" -r "$HOSTSTATE$" -S shinken@localhost');
       $this->add($input);
 
       $input = array();
@@ -88,6 +94,12 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
       $input['name'] = 'Service : mail notification';
       $input['command_name'] = 'notify-service-by-email';
       $input['command_line'] = $DB->escape('/usr/bin/printf "%b" "Shinken Notification\n\nNotification Type: $NOTIFICATIONTYPE$\n\nService: $SERVICEDESC$\nHost: $HOSTNAME$\nAddress: $HOSTADDRESS$\nState: $SERVICESTATE$\n\nDate/Time: $DATE$ $TIME$\nAdditional Info : $SERVICEOUTPUT$\n" | /usr/bin/mail -s "** $NOTIFICATIONTYPE$ alert - $HOSTNAME$/$SERVICEDESC$ is $SERVICESTATE$ **" $CONTACTEMAIL$');
+      $this->add($input);
+
+      $input = array();
+      $input['name'] = 'Service : mail notification (python)';
+      $input['command_name'] = 'notify-service-by-email-py';
+      $input['command_line'] = $DB->escape('$PLUGINSDIR$/send_mail_service.py -s "$SERVICEDESC$" -n "$NOTIFICATIONTYPE$" -H "$HOSTALIAS$" -a "$HOSTADDRESS$" -i "$SHORTDATETIME$" -o "$SERVICEOUTPUT$" -t "$CONTACTEMAIL$" -r "$SERVICESTATE$" -S shinken@localhost');
       $this->add($input);
 
       $input = array();
@@ -146,11 +158,11 @@ class PluginMonitoringNotificationcommand extends CommonDBTM {
       $tab['common'] = __('Notification commands', 'monitoring');
 
       $i=1;
-		$tab[$i]['table'] = $this->getTable();
-		$tab[$i]['field'] = 'name';
-		$tab[$i]['linkfield'] = 'name';
-		$tab[$i]['name'] = __('Name');
-		$tab[$i]['datatype'] = 'itemlink';
+      $tab[$i]['table'] = $this->getTable();
+      $tab[$i]['field'] = 'name';
+      $tab[$i]['linkfield'] = 'name';
+      $tab[$i]['name'] = __('Name');
+      $tab[$i]['datatype'] = 'itemlink';
 
       $i++;
       $tab[$i]['table']     = $this->getTable();
