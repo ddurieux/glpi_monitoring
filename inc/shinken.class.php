@@ -3887,7 +3887,7 @@ Nagios configuration file :
             case "snapshot_enabled":
             case "trigger_broker_raise_enabled":
                $data[$key] = (bool)$val;
-               if ($data[$key] == ') {
+               if ($data[$key] == '') {
                   $data[$key] = 0;
                }
                break;
