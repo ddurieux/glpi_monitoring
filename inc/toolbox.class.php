@@ -53,6 +53,9 @@ class PluginMonitoringToolbox {
    static function loadLib() {
       global $CFG_GLPI;
 
+      echo '<script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/scripts-1.js"></script>';
+
+      /*
       echo '<script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/lib/d3.v3.min.js"></script>
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/nv.d3.min.js"></script>
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/tooltip.js"></script>
@@ -67,6 +70,7 @@ class PluginMonitoringToolbox {
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/jqueryplugins/tooltipsy/tooltipsy.min.js"></script>
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/jqueryplugins/tooltipsy/jquery.tipsy.min.js"></script>
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/jqueryplugins/jquery-ui/jquery-ui.min.js"></script>';
+      */
    }
 
 
