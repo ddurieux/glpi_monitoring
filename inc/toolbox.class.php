@@ -53,7 +53,7 @@ class PluginMonitoringToolbox {
    static function loadLib() {
       global $CFG_GLPI;
 
-      echo '<script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/lib/d3.v3.js"></script>
+      echo '<script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/lib/d3.v3.min.js"></script>
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/nv.d3.min.js"></script>
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/tooltip.js"></script>
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/utils.js"></script>
@@ -63,9 +63,9 @@ class PluginMonitoringToolbox {
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/models/scatter.js"></script>
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/models/line.js"></script>
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/nvd3/src/models/lineChart.js"></script>
-      <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/gauge.js"></script>
+      <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/gauge.min.js"></script>
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/jqueryplugins/tooltipsy/tooltipsy.min.js"></script>
-      <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/jqueryplugins/tooltipsy/jquery.tipsy.js"></script>
+      <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/jqueryplugins/tooltipsy/jquery.tipsy.min.js"></script>
       <script src="'.$CFG_GLPI["root_doc"].'/plugins/monitoring/lib/jqueryplugins/jquery-ui/jquery-ui.min.js"></script>';
    }
 

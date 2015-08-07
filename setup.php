@@ -107,8 +107,8 @@ function plugin_init_monitoring() {
             "css/views.css"
             );
          $PLUGIN_HOOKS['add_javascript']['monitoring'] = array(
-             "lib/jscolor/jscolor.js",
-             "lib/jqueryplugins/tagbox/js/jquery.tagbox.js"
+             "lib/jscolor/jscolor.min.js",
+             "lib/jqueryplugins/tagbox/js/jquery.tagbox.min.js"
              );
 
          $plugin = new Plugin();
