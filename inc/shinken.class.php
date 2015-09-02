@@ -901,6 +901,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_hosts[$i] = $this->add_value_type(
                  $pmRealm->fields['name'], 'realm', $a_hosts[$i]);
 
+         // Business impact
          if (isset ($a_fields['business_priority'])) {
             $a_hosts[$i] = $this->add_value_type(
                  $a_fields['business_priority'],
@@ -1015,6 +1016,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                'pm-shinken',
                "generateHostsCfg - CC, host: {$a_hosts[$i]['host_name']} in {$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']}\n"
             );
+            
             // Notification options / interval
             $pmComponentscatalog = new PluginMonitoringComponentscatalog();
             if (! $pmComponentscatalog->getFromDB($a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id'])) {
@@ -1025,6 +1027,12 @@ class PluginMonitoringShinken extends CommonDBTM {
                'pm-shinken',
                "generateHostsCfg - CC, host: {$a_hosts[$i]['host_name']} in {$pmComponentscatalog->fields['name']}\n"
             );
+            // Host template/tag is CC name
+            $a_hosts[$i] = $this->add_value_type(
+                    $pmComponentscatalog->fields['name'],
+                    'use', $a_hosts[$i]);
+
+            // Hosts notification
             $pmHNTemplate = new PluginMonitoringHostnotificationtemplate();
             if ((! isset ($pmComponentscatalog->fields['hostsnotification_id']))
                ||  (! $pmHNTemplate->getFromDB($pmComponentscatalog->fields['hostsnotification_id']))) {
