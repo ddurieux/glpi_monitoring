@@ -29,7 +29,7 @@
 
    @package   Plugin Monitoring for GLPI
    @author    David Durieux
-   @co-author
+   @co-author Frédéric Mohier
    @comment
    @copyright Copyright (c) 2011-2015 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
@@ -551,6 +551,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             " - add host ".$a_hosts[$i]['host_name']."\n"
          );
 
+         // Host customs variables
          $a_hosts[$i] = $this->add_value_type(
                  $pmHost->getField('id'), '_HOSTID', $a_hosts[$i]);
          if (isset(self::$shinkenParameters['glpi']['entityId'])) {
@@ -904,6 +905,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_hosts[$i] = $this->add_value_type(
                  $pmRealm->fields['name'], 'realm', $a_hosts[$i]);
 
+         // Business impact
          if (isset ($a_fields['business_priority'])) {
             $a_hosts[$i] = $this->add_value_type(
                  $a_fields['business_priority'],
@@ -1028,6 +1030,12 @@ class PluginMonitoringShinken extends CommonDBTM {
                'pm-shinken',
                "generateHostsCfg - CC, host: {$a_hosts[$i]['host_name']} in {$pmComponentscatalog->fields['name']}\n"
             );
+            // Host template/tag is CC name
+            $a_hosts[$i] = $this->add_value_type(
+                    $pmComponentscatalog->fields['name'],
+                    'use', $a_hosts[$i]);
+
+            // Hosts notification
             $pmHNTemplate = new PluginMonitoringHostnotificationtemplate();
             if ((! isset ($pmComponentscatalog->fields['hostsnotification_id']))
                ||  (! $pmHNTemplate->getFromDB($pmComponentscatalog->fields['hostsnotification_id']))) {
