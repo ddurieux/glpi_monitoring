@@ -128,6 +128,62 @@ class PluginMonitoringWebservice {
 
 
 
+   static function methodShinkenTags($params, $protocol) {
+      if (!isset($params['tag'])) {
+         return array();
+      }
+
+      $tag = $params['tag'];
+      PluginMonitoringToolbox::logIfExtradebug(
+         'pm-shinken',
+         " - shinkenTags, get tags for: $tag\n"
+      );
+      
+      $a_tags = array();
+      
+      // Get list of entities tagged with the tag ...
+      $pmEntity = new PluginMonitoringEntity();
+      $Entity = new Entity();
+      $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
+      if (! isset($a_entities_allowed['-1'])) {
+         $a_entities_list = array();
+         foreach ($a_entities_allowed as $idEntity) {
+            PluginMonitoringToolbox::logIfExtradebug(
+               'pm-shinken',
+               " - shinkenTags, found entity: $idEntity\n"
+            );
+            
+            foreach ($Entity->find("entities_id='$idEntity'") as $son) {
+               PluginMonitoringToolbox::logIfExtradebug(
+                  'pm-shinken',
+               " - shinkenTags, found son entity: {$son['id']}\n"
+               );
+               $a_entities_list[] = $son['id'];
+            }
+         }
+         foreach ($a_entities_list as $idEntity) {
+            PluginMonitoringToolbox::logIfExtradebug(
+               'pm-shinken',
+               " - shinkenTags, search tags for entity: $idEntity\n"
+            );
+            
+            $tag = $pmEntity->getTagByEntities($idEntity);
+            if (! empty($tag)) {
+               $a_tags[] = $tag;
+            }
+         }
+      }
+      
+      PluginMonitoringToolbox::logIfExtradebug(
+         'pm-shinken',
+         " - shinkenTags, tags: ".serialize($a_tags)."\n"
+      );
+      
+      return $a_tags;
+   }
+
+
+
    static function methodShinkenCommands($params, $protocol) {
 
       $pmShinken = new PluginMonitoringShinken();
