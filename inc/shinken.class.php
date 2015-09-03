@@ -466,6 +466,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
       $a_entities_list = array();
       foreach ($a_entities_allowed as $entity) {
+         // @ddurieux: should array_merge ($a_entities_list and getSonsOf("glpi_entities", $entity)) ?
          $a_entities_list = getSonsOf("glpi_entities", $entity);
       }
       $where = '';
@@ -533,6 +534,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             " - add host ".$a_hosts[$i]['host_name']."\n"
          );
 
+         // Host customs variables
          $a_hosts[$i] = $this->add_value_type(
                  $pmHost->getField('id'), '_HOSTID', $a_hosts[$i]);
          if (isset(self::$shinkenParameters['glpi']['entityId'])) {
@@ -1375,6 +1377,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
          $a_entities_list = array();
          foreach ($a_entities_allowed as $entity) {
+            // @ddurieux: should array_merge ($a_entities_list and getSonsOf("glpi_entities", $entity)) ?
             $a_entities_list = getSonsOf("glpi_entities", $entity);
          }
          $where = '';
@@ -1581,6 +1584,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
       $a_entities_list = array();
       foreach ($a_entities_allowed as $entity) {
+         // @ddurieux: should array_merge ($a_entities_list and getSonsOf("glpi_entities", $entity)) ?
          $a_entities_list = getSonsOf("glpi_entities", $entity);
       }
       $where = '';
@@ -2840,6 +2844,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
       $a_entities_list = array();
       foreach ($a_entities_allowed as $entity) {
+         // @ddurieux: should array_merge ($a_entities_list and getSonsOf("glpi_entities", $entity)) ?
          $a_entities_list = getSonsOf("glpi_entities", $entity);
       }
       $where = '';
@@ -3026,6 +3031,7 @@ Nagios configuration file :
       $a_entities_allowed = $pmEntity->getEntitiesByTag($tag);
       $a_entities_list = array();
       foreach ($a_entities_allowed as $entity) {
+         // @ddurieux: should array_merge ($a_entities_list and getSonsOf("glpi_entities", $entity)) ?
          $a_entities_list = getSonsOf("glpi_entities", $entity);
       }
       // Always add root entity contacts
