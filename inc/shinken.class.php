@@ -131,6 +131,8 @@ class PluginMonitoringShinken extends CommonDBTM {
             'low_flap_threshold' => '25',
             'high_flap_threshold' => '50',
 
+            'stalking_options' => '',
+            
             'failure_prediction_enabled' => '0',
             'retain_status_information' => '0',
             'retain_nonstatus_information' => '0',
@@ -166,6 +168,8 @@ class PluginMonitoringShinken extends CommonDBTM {
             'flap_detection_options' => 'o,w,c,u',
             'low_flap_threshold'     => 25,
             'high_flap_threshold'    => 50,
+
+            'stalking_options' => '',
 
             'failure_prediction_enabled'   => 0,
             'retain_status_information'    => 0,
@@ -965,6 +969,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             'process_perf_data',
             'flap_detection_enabled',
             'flap_detection_options',
+            'stalking_options',
             'low_flap_threshold',
             'high_flap_threshold',
             'failure_prediction_enabled',
@@ -1016,7 +1021,6 @@ class PluginMonitoringShinken extends CommonDBTM {
                'pm-shinken',
                "generateHostsCfg - CC, host: {$a_hosts[$i]['host_name']} in {$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']}\n"
             );
-            
             // Notification options / interval
             $pmComponentscatalog = new PluginMonitoringComponentscatalog();
             if (! $pmComponentscatalog->getFromDB($a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id'])) {
@@ -2738,6 +2742,10 @@ class PluginMonitoringShinken extends CommonDBTM {
                  '1', 'notifications_enabled', $a_servicetemplates[$i]);
          $a_servicetemplates[$i] = $this->add_value_type(
                  '0', 'event_handler_enabled', $a_servicetemplates[$i]);
+         $a_servicetemplates[$i] = $this->add_value_type(
+                 self::$shinkenParameters['shinken']['services']['stalking_options'],
+                 'stalking_options', $a_servicetemplates[$i]);
+                 
          if (isset(self::$shinkenParameters['shinken']['services']['flap_detection_enabled'])) {
             $a_servicetemplates[$i] = $this->add_value_type(
                     self::$shinkenParameters['shinken']['services']['flap_detection_enabled'],
