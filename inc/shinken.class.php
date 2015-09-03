@@ -572,10 +572,6 @@ class PluginMonitoringShinken extends CommonDBTM {
          $data['entityFullName'] = preg_replace("/_/",".",$data['entityFullName']);
 
          // Graphite
-         PluginMonitoringToolbox::logIfExtradebug(
-            'pm-shinken',
-            "Starting generateHostsCfg ($tag) - {$pmHostconfig->getValueAncestor('graphite_prefix', $data['entityId'])}...\n"
-         );
          if (isset(self::$shinkenParameters['graphite']['prefix']['name'])) {
             // Dynamic setup of a default parameter ...
             self::$shinkenParameters['graphite']['prefix']['value'] = $pmHostconfig->getValueAncestor('graphite_prefix', $data['entityId']);
