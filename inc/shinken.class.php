@@ -132,7 +132,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             'high_flap_threshold' => '50',
 
             'stalking_options' => '',
-            
+
             'failure_prediction_enabled' => '0',
             'retain_status_information' => '0',
             'retain_nonstatus_information' => '0',
@@ -2760,7 +2760,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_servicetemplates[$i] = $this->add_value_type(
                  self::$shinkenParameters['shinken']['services']['stalking_options'],
                  'stalking_options', $a_servicetemplates[$i]);
-                 
+
          if (isset(self::$shinkenParameters['shinken']['services']['flap_detection_enabled'])) {
             $a_servicetemplates[$i] = $this->add_value_type(
                     self::$shinkenParameters['shinken']['services']['flap_detection_enabled'],
@@ -3906,7 +3906,7 @@ Nagios configuration file :
             case "trigger_broker_raise_enabled":
                $data[$key] = (bool)$val;
                if ($data[$key] == '') {
-                  $data[$key] = 0;
+                  $data[$key] = (bool)0;
                }
                break;
 
