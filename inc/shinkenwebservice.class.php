@@ -147,15 +147,19 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       $pmTag = new PluginMonitoringTag();
       $pmLog = new PluginMonitoringLog();
 
+      Toolbox::logInFile("pm-restart", "sendRestartArbiter, command : $command, tag: $tag, force: $force\n");
       if (!$pmLog->isRestartLessThanFiveMinutes()
               || $force) {
          if ($tag > 0) {
             $pmTag->getFromDB($tag);
 
+            Toolbox::logInFile("pm-restart", "sendRestartArbiter, tag specified: " . $pmTag->fields['tag'] . "\n");
             $url = 'http://'.$pmTag->fields['ip'].':'.$pmTag->fields['port'].'/';
+            Toolbox::logInFile("pm-restart", "sendRestartArbiter, shinken url: $url\n");
 
             $auth = $pmTag->getAuth($pmTag->fields['tag']);
             if ($this->sendCommand($url, $command, array(), '', $auth)) {
+               Toolbox::logInFile("pm-restart", "sendRestartArbiter, command sent to shinken\n");
                $input = array();
                $input['user_name'] = $_SESSION['glpifirstname'].' '.$_SESSION['glpirealname'].
                        ' ('.$_SESSION['glpiname'].')';
@@ -163,8 +167,11 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
                $input['date_mod']  = date("Y-m-d H:i:s");
                $input['value']     = $pmTag->fields['tag'];
                $pmLog->add($input);
+            } else {
+               Toolbox::logInFile("pm-restart", "sendRestartArbiter, failed sending command to shinken!\n");
             }
          } else {
+            Toolbox::logInFile("pm-restart", "sendRestartArbiter, no tag specified\n");
             $a_tagsBrut = $pmTag->find();
 
             $a_tags = array();
@@ -176,9 +183,11 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
             foreach ($a_tags as $data) {
                // TODO : should be parameters ... Shinken arbiter may use another port and may use HTTPS !
                $url = 'http://'.$data['ip'].':'.$data['port'].'/';
+               Toolbox::logInFile("pm-restart", "sendRestartArbiter, shinken url: $url\n");
 
                $auth = $pmTag->getAuth($data['tag']);
                if ($this->sendCommand($url, $command, array(), '', $auth)) {
+                  Toolbox::logInFile("pm-restart", "sendRestartArbiter, command sent to shinken\n");
                   $input = array();
                   $input['user_name'] = $_SESSION['glpifirstname'].' '.$_SESSION['glpirealname'].
                           ' ('.$_SESSION['glpiname'].')';
@@ -186,9 +195,13 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
                   $input['date_mod']  = date("Y-m-d H:i:s");
                   $input['value']     = $data['tag'];
                   $pmLog->add($input);
+               } else {
+                  Toolbox::logInFile("pm-restart", "sendRestartArbiter, failed sending command to shinken!\n");
                }
             }
          }
+      } else {
+         Toolbox::logInFile("pm-shinken", "sendRestartArbiter, no restart sent to Shinken, previous was too recent!\n");
       }
    }
 
