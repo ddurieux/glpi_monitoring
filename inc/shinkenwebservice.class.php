@@ -148,7 +148,7 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
       $pmLog = new PluginMonitoringLog();
 
       Toolbox::logInFile("pm-restart", "sendRestartArbiter, command : $command, tag: $tag, force: $force\n");
-      if (!$pmLog->isRestartLessThanFiveMinutes()
+      if (!$pmLog->isRestartRecent()
               || $force) {
          if ($tag > 0) {
             $pmTag->getFromDB($tag);

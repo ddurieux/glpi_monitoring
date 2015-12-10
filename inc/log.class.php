@@ -113,8 +113,8 @@ class PluginMonitoringLog extends CommonDBTM {
 
 
 
-   function isRestartLessThanFiveMinutes() {
-      $date5min = date("Y-m-d H:i:s", (date("U")-300))."\n";
+   function isRestartRecent($delay=1200) {
+      $date5min = date("Y-m-d H:i:s", (date("U") - $delay))."\n";
       $a_restarts = $this->find("(`action`='restart' OR `action`='restart_planned') "
               . "AND `date_mod` > '".$date5min."'", "`id` DESC", 1);
       if (count($a_restarts) > 0) {
@@ -123,8 +123,8 @@ class PluginMonitoringLog extends CommonDBTM {
       return false;
    }
 
-   function isReloadLessThanFiveMinutes() {
-      $date5min = date("Y-m-d H:i:s", (date("U")-300))."\n";
+   function isReloadRecent($delay=1200) {
+      $date5min = date("Y-m-d H:i:s", (date("U") - $delay))."\n";
       $a_restarts = $this->find("(`action`='reload' OR `action`='reload_planned') "
               . "AND `date_mod` > '".$date5min."'", "`id` DESC", 1);
       if (count($a_restarts) > 0) {
