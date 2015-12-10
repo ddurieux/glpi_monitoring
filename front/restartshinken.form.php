@@ -47,7 +47,7 @@ Session::checkRight("plugin_monitoring_restartshinken", CREATE);
 $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
 if (isset($_GET["tag"])) {
    Toolbox::logInFile("pm-restart", "call sendRestartArbiter, tag: " . $_GET["tag"] . "\n");
-   $pmShinkenwebservice->sendRestartArbiter(1, $_GET["tag"], isset($_GET["action"]) ? $_GET["action"] : 'reload');
+   $pmShinkenwebservice->sendRestartArbiter(1, $_GET["tag"], isset($_GET["action"]) ? $_GET["action"] : 'restart');
 } else {
    Toolbox::logInFile("pm-restart", "call sendRestartArbiter, no tag\n");
    $pmShinkenwebservice->sendRestartArbiter(1);

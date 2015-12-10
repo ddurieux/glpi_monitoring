@@ -220,7 +220,6 @@ class PluginMonitoringMessage extends CommonDBTM {
          // Try to restart Shinken via webservice
          $pmShinkenwebservice = new PluginMonitoringShinkenwebservice();
          $pmShinkenwebservice->sendRestartArbiter();
-         Toolbox::logInFile("pm-restart", "sendRestartArbiter, command : $command, tag: $tag, force: $force\n");
          $input .= __('Shinken is restarted automatically', 'monitoring');
          //$input .= __('Restart Shinken to reload this new configuration', 'monitoring');
       }

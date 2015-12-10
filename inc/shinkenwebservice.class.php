@@ -142,12 +142,14 @@ class PluginMonitoringShinkenwebservice extends CommonDBTM {
    }
 
 
-   function sendRestartArbiter($force=0, $tag=0, $command='reload') {
+   function sendRestartArbiter($force=0, $tag=0, $command='restart') {
 
       $pmTag = new PluginMonitoringTag();
       $pmLog = new PluginMonitoringLog();
 
       Toolbox::logInFile("pm-restart", "sendRestartArbiter, command : $command, tag: $tag, force: $force\n");
+      // We should specify delay instead of default 20 minutes ...
+      // if (!$pmLog->isRestartRecent(1200)
       if (!$pmLog->isRestartRecent()
               || $force) {
          if ($tag > 0) {
