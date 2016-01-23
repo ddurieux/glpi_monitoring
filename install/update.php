@@ -918,6 +918,8 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                             'plugin_monitoring_componentscatalogs_hosts_id');
          $migration->addKey($newTable,
                             'last_check');
+         $migration->addKey($newTable,
+                            'name');
       $migration->migrationOneTable($newTable);
 
 
