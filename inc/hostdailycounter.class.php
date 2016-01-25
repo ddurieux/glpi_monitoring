@@ -2359,9 +2359,9 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
          `glpi_entities`.`name` AS entity_name
       ";
       $join .= "
-         INNER JOIN `glpi_computers`
+         LEFT JOIN `glpi_computers`
             ON `glpi_plugin_monitoring_hostdailycounters`.`hostname` = `glpi_computers`.`name`
-         INNER JOIN `glpi_entities`
+         LEFT JOIN `glpi_entities`
             ON `glpi_computers`.`entities_id` = `glpi_entities`.`id`
       ";
 
@@ -2502,11 +2502,11 @@ class PluginMonitoringHostdailycounter extends CommonDBTM {
 
       $where = $join = '';
       $join .= "
-         INNER JOIN `glpi_computers`
+         LEFT JOIN `glpi_computers`
             ON `glpi_plugin_monitoring_hostdailycounters`.`hostname` = `glpi_computers`.`name`
-         INNER JOIN `glpi_entities`
+         LEFT JOIN `glpi_entities`
             ON `glpi_computers`.`entities_id` = `glpi_entities`.`id`
-         INNER JOIN (
+         LEFT JOIN (
             SELECT hostname, MAX(DAY) AS max_day
             FROM `glpi_plugin_monitoring_hostdailycounters`
             GROUP BY hostname
@@ -2607,9 +2607,9 @@ PluginMonitoringToolbox::logIfExtradebug(
             `glpi_entities`.`name` AS entity_name, `glpi_entities`.`id` AS entity_id
          ";
          $join .= "
-            INNER JOIN `glpi_computers`
+            LEFT JOIN `glpi_computers`
                ON `glpi_plugin_monitoring_hostdailycounters`.`hostname` = `glpi_computers`.`name`
-            INNER JOIN `glpi_entities`
+            LEFT JOIN `glpi_entities`
                ON `glpi_computers`.`entities_id` = `glpi_entities`.`id`
          ";
       }
@@ -2698,6 +2698,16 @@ PluginMonitoringToolbox::logIfExtradebug(
       }
 
       // Check out average printed pages on each kiosk per each day type ... only for the current and next 3 days.
+      // $query = "
+         // SELECT
+         // $fields
+         // FROM `glpi_plugin_monitoring_hostdailycounters`
+         // $join
+         // $where
+         // $group
+         // $order
+         // LIMIT $start,$limit
+      // ";
       $query = "
          SELECT
          $fields
@@ -2706,7 +2716,6 @@ PluginMonitoringToolbox::logIfExtradebug(
          $where
          $group
          $order
-         LIMIT $start,$limit
       ";
       // Toolbox::logInFile("pm-ws", "getStatistics, query : $query\n");
       // Toolbox::logInFile("pm-checkCounters", "getStatistics, query : $query\n");
