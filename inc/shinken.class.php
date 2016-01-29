@@ -132,7 +132,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             'high_flap_threshold' => '50',
 
             'stalking_options' => '',
-            
+
             'failure_prediction_enabled' => '0',
             'retain_status_information' => '0',
             'retain_nonstatus_information' => '0',
@@ -246,7 +246,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       foreach ($array as $key => $value) {
          $c = 35;
          $c = $c - strlen($key);
-         $config .= "       ".$key;
+         $config .= " ".$key." ";
          for ($t=0; $t < $c; $t++) {
             $config .= " ";
          }
@@ -2745,7 +2745,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_servicetemplates[$i] = $this->add_value_type(
                  self::$shinkenParameters['shinken']['services']['stalking_options'],
                  'stalking_options', $a_servicetemplates[$i]);
-                 
+
          if (isset(self::$shinkenParameters['shinken']['services']['flap_detection_enabled'])) {
             $a_servicetemplates[$i] = $this->add_value_type(
                     self::$shinkenParameters['shinken']['services']['flap_detection_enabled'],
@@ -3889,7 +3889,11 @@ Nagios configuration file :
             case "service_notifications_enabled":
             case "snapshot_enabled":
             case "trigger_broker_raise_enabled":
-               $data[$key] = (bool)$val;
+               if ($val == 1) {
+                  $data[$key] = "1";
+               } else {
+                  $data[$key] = "0";
+               }
                break;
 
             case "business_impact": // int
@@ -3915,7 +3919,11 @@ Nagios configuration file :
             // case "_ENTITIESID":
             // case "_HOSTID":
             // case "_ITEMSID":
-               $data[$key] = (int)$val;
+               if ($val > 0) {
+                  $data[$key] = (int)$val;
+               } else {
+                  $data[$key] = "0";
+               }
                break;
 
            default: // string
