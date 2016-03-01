@@ -46,7 +46,7 @@ define('_MPDF_TEMP_PATH', GLPI_PLUGIN_DOC_DIR.'/monitoring/pdf/');
 
 // Used for use config values in 'cache'
 $PM_CONFIG = array();
-
+$PM_EXPORTFOMAT = 'boolean';
 
 // Init the hooks of monitoring
 function plugin_init_monitoring() {

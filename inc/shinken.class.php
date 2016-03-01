@@ -3904,9 +3904,16 @@ Nagios configuration file :
             case "service_notifications_enabled":
             case "snapshot_enabled":
             case "trigger_broker_raise_enabled":
-               $data[$key] = (bool)$val;
-               if ($data[$key] == '') {
-                  $data[$key] = (bool)0;
+               if ($PM_EXPORTFOMAT == 'boolean') {
+                  $data[$key] = (bool)$val;
+                  if ($data[$key] == '') {
+                     $data[$key] = (bool)0;
+                  }
+               } else {
+                  $data[$key] = (int)$val;
+                  if ($data[$key] == '') {
+                     $data[$key] = (int)0;
+                  }
                }
                break;
 

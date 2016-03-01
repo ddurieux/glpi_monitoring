@@ -176,6 +176,7 @@ $args['session'] = $session;
 $args['method'] = $method;
 $args['file'] = $file;
 $args['tags'] = $tags;
+$args['format'] = 'integer';
 
 $tags = explode(',', $args['tags']);
 if (count($tags) > 1) {

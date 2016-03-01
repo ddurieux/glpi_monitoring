@@ -56,11 +56,16 @@ class PluginMonitoringWebservice {
 
       if (isset ($params['help'])) {
          return array('file'  => 'config filename to get : commands.cfg, hosts.cfg, ... use all to get all files.',
-                      'help'  => 'bool,optional');
+                      'help'  => 'bool,optional',
+                      'format' => 'boolean (true, false) or integer (0, 1). Default boolean');
       }
 
       if (!isset($params['tag'])) {
          $params['tag'] = '';
+      }
+
+      if (isset($params['format']) && $params['format'] == 'integer') {
+          $PM_EXPORTFOMAT = 'integer';
       }
 
       ini_set("max_execution_time", "0");
@@ -138,9 +143,9 @@ class PluginMonitoringWebservice {
          'pm-shinken',
          " - shinkenTags, get tags for: $tag\n"
       );
-      
+
       $a_tags = array();
-      
+
       // Get list of entities tagged with the tag ...
       $pmEntity = new PluginMonitoringEntity();
       $Entity = new Entity();
@@ -152,7 +157,7 @@ class PluginMonitoringWebservice {
                'pm-shinken',
                " - shinkenTags, found entity: $idEntity\n"
             );
-            
+
             foreach ($Entity->find("entities_id='$idEntity'") as $son) {
                PluginMonitoringToolbox::logIfExtradebug(
                   'pm-shinken',
@@ -166,19 +171,19 @@ class PluginMonitoringWebservice {
                'pm-shinken',
                " - shinkenTags, search tags for entity: $idEntity\n"
             );
-            
+
             $tag = $pmEntity->getTagByEntities($idEntity);
             if (! empty($tag)) {
                $a_tags[] = $tag;
             }
          }
       }
-      
+
       PluginMonitoringToolbox::logIfExtradebug(
          'pm-shinken',
          " - shinkenTags, tags: ".serialize($a_tags)."\n"
       );
-      
+
       return $a_tags;
    }
 
