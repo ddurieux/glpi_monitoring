@@ -336,8 +336,8 @@ function plugin_version_monitoring() {
 // Optional : check prerequisites before install : may print errors or add to message after redirect
 function plugin_monitoring_check_prerequisites() {
 
-   if (version_compare(GLPI_VERSION,'0.85','lt') || version_compare(GLPI_VERSION,'0.91','ge')) {
-      echo "error, require GLPI 0.85.x or 0.90.x";
+   if (version_compare(GLPI_VERSION,'0.85','lt') || version_compare(GLPI_VERSION,'0.92','ge')) {
+      echo "error, require GLPI 0.85.x or 0.90.x or 0.91.x";
    } else {
       return true;
    }
