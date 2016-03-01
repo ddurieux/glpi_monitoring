@@ -17,6 +17,8 @@ class ConfigDifferentItemtypesTest extends RestoreDatabase_TestCase {
       $pmCommand   = new PluginMonitoringCommand();
       $entity      = new Entity();
 
+      $PM_EXPORTFOMAT = 'integer';
+
       $commands = $pmCommand->find("`name`='Check a DNS entry'", '', 1);
       $this->assertEquals(1, count($commands), "DNS command not found");
       $command = current($commands);
