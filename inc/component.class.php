@@ -232,6 +232,7 @@ class PluginMonitoringComponent extends CommonDBTM {
       if ($this->fields['id'] == 0) {
          $this->fields['active_checks_enabled']  = 1;
          $this->fields['passive_checks_enabled'] = 1;
+         $this->fields['business_priority'] = 3;
       }
 
       if (count($copy) > 0) {
