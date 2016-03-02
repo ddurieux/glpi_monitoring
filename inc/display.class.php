@@ -158,10 +158,19 @@ class PluginMonitoringDisplay extends CommonDBTM {
          echo "</tr>";
          echo "</table>";
          if (PluginMonitoringProfile::haveRight("counters", 'r')) {
+         /*
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_1'>";
             echo "<th>";
             echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/hostdailycounter.php'>".__('Daily counters', 'monitoring')."</a>";
+            echo "</th>";
+            echo "</tr>";
+            echo "</table>";
+         */
+            echo "<table class='tab_cadre_fixe'>";
+            echo "<tr class='tab_bg_1'>";
+            echo "<th>";
+            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/kiosks/front/monitoringcnam.php?from_monitoring=1'>".__('Daily counters', 'monitoring')."</a>";
             echo "</th>";
             echo "</tr>";
             echo "</table>";
