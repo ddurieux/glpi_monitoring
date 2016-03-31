@@ -14,7 +14,7 @@ addons:
 
 before_install:
  - cd ..
- - git clone git://github.com/fusioninventory/glpi.git glpi
+ - git clone git://github.com/glpi-project/glpi.git glpi
  - cd glpi 
  - git checkout -b 0.90/bugfixes origin/0.90/bugfixes
  - cd ..
