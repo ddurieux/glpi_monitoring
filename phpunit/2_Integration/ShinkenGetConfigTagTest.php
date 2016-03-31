@@ -2,10 +2,7 @@
 
 class ShinkenGetConfigTagTest extends RestoreDatabase_TestCase {
 
-   /**
-    * @test
-    */
-   public function testPrepare() {
+   public function prepare() {
 
       $entity   = new Entity();
       $pmEntity = new PluginMonitoringEntity();
@@ -112,7 +109,7 @@ class ShinkenGetConfigTagTest extends RestoreDatabase_TestCase {
 
 
    /**
-    * @depends testPrepare
+    * @depends prepare
     */
    public function testGetHosts_tagA() {
 
@@ -124,7 +121,7 @@ class ShinkenGetConfigTagTest extends RestoreDatabase_TestCase {
    }
 
    /**
-    * @depends testPrepare
+    * @depends prepare
     */
    public function testGetHosts_tagNotExist() {
 
