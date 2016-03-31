@@ -104,48 +104,32 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    /*
    * Table glpi_plugin_monitoring_shinkenstates
    */
-   $newTable = "glpi_plugin_monitoring_shinkenstates";
-   if (!TableExists($newTable)) {
-      $query = "CREATE TABLE `".$newTable."` (
-                     `id` int(11) NOT NULL AUTO_INCREMENT,
-                     `hostname` varchar(255) DEFAULT NULL,
-                     `service` varchar(255) DEFAULT NULL,
-                     `state` varchar(255) DEFAULT NULL,
-                     `state_type` varchar(255) DEFAULT NULL,
-                     `last_check` datetime DEFAULT NULL,
-                     `last_output` text DEFAULT NULL,
-                     `last_perfdata` text DEFAULT NULL,
-                     `is_ack` tinyint(1) DEFAULT 0,
-                     PRIMARY KEY (`id`),
-                     KEY `hostname` (`hostname`(160),`service`(160))
-                  ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
-      $DB->query($query);
-   }
-   $migration->addField($newTable,
-                        'hostname',
-                        "varchar(249) DEFAULT NULL");
-   $migration->addField($newTable,
-                        'service',
-                        "varchar(249) DEFAULT NULL");
-   $migration->addField($newTable,
-                        'state',
-                        "varchar(255) DEFAULT NULL");
-   $migration->addField($newTable,
-                        'state_type',
-                        "varchar(255) DEFAULT NULL");
-   $migration->addField($newTable,
-                        'last_check',
-                        "datetime DEFAULT NULL");
-   $migration->addField($newTable,
-                        'last_output',
-                        "text DEFAULT NULL");
-   $migration->addField($newTable,
-                        'last_perfdata',
-                        "text DEFAULT NULL");
-   $migration->addField($newTable,
-                        'is_ack',
-                        "tinyint(1) DEFAULT 0");
-   $migration->migrationOneTable($newTable);
+      $a_table = array();
+      $a_table['name'] = 'glpi_plugin_monitoring_shinkenstates';
+      $a_table['oldname'] = array();
+
+      $a_table['fields']  = array(
+         'id'            => array('type'    => 'autoincrement', 'value'   => ''),
+         'hostname'      => array('type'    => 'string',        'value'   => NULL),
+         'service'       => array('type'    => 'string',        'value'   => NULL),
+         'state'         => array('type'    => 'string',        'value'   => NULL),
+         'state_type'    => array('type'    => 'string',        'value'   => NULL),
+         'last_check'    => array('type'    => 'datetime',      'value'   => NULL),
+         'last_output'   => array('type'    => 'text',          'value'   => NULL),
+         'last_perfdata' => array('type'    => 'text',          'value'   => NULL),
+         'is_ack'        => array('type'    => 'bool',          'value'   => 0)
+      );
+
+      $a_table['oldfields']  = array();
+
+      $a_table['renamefields'] = array();
+
+      $a_table['keys']   = array(array('field' => 'hostname,service', 'name' => 'hostname', 'type' => 'INDEX', 'len' => 160));
+
+      $a_table['oldkeys'] = array();
+
+      migrateTablesMonitoring($migration, $a_table);
+
 
     /*
     * Table glpi_plugin_monitoring_servicescatalogs
@@ -3968,10 +3952,14 @@ function migrateTablesMonitoring($migration, $a_table) {
    $migration->migrationOneTable($a_table['name']);
 
    foreach ($a_table['keys'] as $data) {
+      if (!isset($data['len'])) {
+         $data['len'] = 0;
+      }
       $migration->addKey($a_table['name'],
                          $data['field'],
                          $data['name'],
-                         $data['type']);
+                         $data['type'],
+                         $data['len']);
    }
    $migration->migrationOneTable($a_table['name']);
 
