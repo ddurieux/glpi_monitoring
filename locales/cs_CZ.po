@@ -3,15 +3,16 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
+# David Stepan <stepand@tiscali.cz>, 2015
 # Ondrej Krejcik <ondra@tachec.org>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project - plugin monitoring \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-05-21 13:06+0200\n"
-"PO-Revision-Date: 2015-05-21 11:08+0000\n"
-"Last-Translator: David Durieux <d.durieux@siprossii.com>\n"
-"Language-Team: Czech (Czech Republic) (http://www.transifex.com/projects/p/GLPI_monitoring/language/cs_CZ/)\n"
+"PO-Revision-Date: 2015-11-11 17:05+0000\n"
+"Last-Translator: David Stepan <stepand@tiscali.cz>\n"
+"Language-Team: Czech (Czech Republic) (http://www.transifex.com/ddurieux/GLPI_monitoring/language/cs_CZ/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -41,7 +42,7 @@ msgstr ""
 #: hook.php:644 front/menu.php:113 inc/display.class.php:143
 #: inc/servicescatalog.class.php:104
 msgid "Services catalogs"
-msgstr ""
+msgstr "Katalog služeb"
 
 #: hook.php:645
 msgid "Check definitions"
@@ -56,7 +57,7 @@ msgstr "Příkazy"
 
 #: hook.php:647 inc/componentscatalog.class.php:108 inc/display.class.php:156
 msgid "Components catalogs"
-msgstr ""
+msgstr "Katalog komponent"
 
 #: hook.php:648 setup.php:201 front/menu.php:163
 #: inc/contacttemplate.class.php:59
@@ -156,11 +157,11 @@ msgstr ""
 #: setup.php:228 inc/unavailability.class.php:76
 #: inc/unavailability.class.php:130
 msgid "Unavailabilities"
-msgstr ""
+msgstr "Nedostupnosti"
 
 #: setup.php:231 inc/display.class.php:172 inc/downtime.class.php:82
 msgid "Downtimes"
-msgstr ""
+msgstr "Výpadky"
 
 #: setup.php:234 inc/acknowledge.class.php:99 inc/display.class.php:175
 msgid "Acknowledges"
@@ -168,7 +169,7 @@ msgstr ""
 
 #: setup.php:237 front/menu.php:200
 msgid "Graph templates"
-msgstr ""
+msgstr "Šablony grafu"
 
 #: setup.php:240 front/menu.php:96 inc/slider.class.php:237
 #: inc/slider_item.class.php:59
@@ -183,7 +184,7 @@ msgstr ""
 #: ajax/dropdownDisplayviewItemtype.php:49 inc/displayview_item.class.php:310
 #: inc/displayview_item.class.php:705
 msgid "Legend"
-msgstr ""
+msgstr "Legenda"
 
 #: ajax/dropdownDisplayviewItemtype.php:55
 #, php-format
@@ -204,32 +205,32 @@ msgstr "Hostitel"
 
 #: ajax/dropdownWnode.php:62 inc/weathermap.class.php:250
 msgid "Center"
-msgstr ""
+msgstr "Uprostřed"
 
 #: ajax/dropdownWnode.php:63 inc/weathermap.class.php:251
 msgid "Right"
-msgstr ""
+msgstr "Vpravo"
 
 #: ajax/dropdownWnode.php:64 inc/weathermap.class.php:252
 msgid "Left"
-msgstr ""
+msgstr "Vlevo"
 
 #: ajax/dropdownWnode.php:66 inc/weathermap.class.php:246
 msgid "Position of label"
-msgstr ""
+msgstr "Pozice popisku"
 
 #: ajax/updatePerfdata.php:61 inc/customitem_counter.class.php:269
 msgid "First value"
-msgstr ""
+msgstr "První hodnota"
 
 #: ajax/updatePerfdata.php:62 inc/customitem_counter.class.php:267
 #: inc/customitem_gauge.class.php:267
 msgid "Last value"
-msgstr ""
+msgstr "Poslední hodnota"
 
 #: ajax/updatePerfdata.php:66
 msgid "Difference"
-msgstr ""
+msgstr "Rozdíl"
 
 #: ajax/updatePerfdata.php:140
 msgid "Counters : registered values"
@@ -293,11 +294,11 @@ msgstr ""
 
 #: front/downtime.form.php:47 front/downtime.php:47
 msgid "Monitoring - downtimes"
-msgstr ""
+msgstr "Monitoring - výpadky"
 
 #: front/downtime.form.php:60
 msgid "Scheduled downtime"
-msgstr ""
+msgstr "Plánované výpadky"
 
 #: front/host.php:45
 msgid "Monitoring - dashboard (hosts)"
@@ -318,7 +319,7 @@ msgstr "Příznak"
 
 #: front/menu.php:211
 msgid "Sorry, your profile does not allow any views in the Monitoring"
-msgstr ""
+msgstr "Promiňte, váš profil nedovoluje žádné pohledy v Monitoringu"
 
 #: front/perfdata.php:47
 msgid "Monitoring - dashboard (perfdata)"
@@ -390,12 +391,12 @@ msgstr ""
 #: inc/acknowledge.class.php:166 inc/acknowledge.class.php:615
 #: inc/downtime.class.php:177 inc/downtime.class.php:586
 msgid "Start time"
-msgstr ""
+msgstr "Čas začítku"
 
 #: inc/acknowledge.class.php:172 inc/acknowledge.class.php:639
 #: inc/downtime.class.php:183 inc/downtime.class.php:610
 msgid "End time"
-msgstr ""
+msgstr "Čas ukončení"
 
 #: inc/acknowledge.class.php:178
 msgid "Sticky"
@@ -412,12 +413,12 @@ msgstr ""
 #: inc/acknowledge.class.php:196 inc/acknowledge.class.php:663
 #: inc/downtime.class.php:199 inc/downtime.class.php:651
 msgid "Comment"
-msgstr ""
+msgstr "Komentář"
 
 #: inc/acknowledge.class.php:202 inc/acknowledge.class.php:676
 #: inc/downtime.class.php:206 inc/downtime.class.php:664
 msgid "User"
-msgstr ""
+msgstr "Uživatel"
 
 #: inc/acknowledge.class.php:207 inc/downtime.class.php:211
 msgid "Notified to monitoring system"
@@ -479,7 +480,7 @@ msgstr "2 z"
 
 #: inc/businessrule.class.php:71 inc/businessrulegroup.class.php:132
 msgid "3 of"
-msgstr "3z"
+msgstr "3 z"
 
 #: inc/businessrule.class.php:72 inc/businessrulegroup.class.php:133
 msgid "4 of"
@@ -561,7 +562,7 @@ msgstr ""
 
 #: inc/canvas.class.php:372 inc/display.class.php:308
 msgid "Dependencies;"
-msgstr ""
+msgstr "Závislosti"
 
 #: inc/check.class.php:124 inc/check.class.php:156
 msgid "Max check attempts (number of retries)"
@@ -577,7 +578,7 @@ msgstr "Čas v minutách mezi 2 opakováními"
 
 #: inc/command.class.php:378 inc/notificationcommand.class.php:159
 msgid "Active"
-msgstr ""
+msgstr "Aktivní"
 
 #: inc/command.class.php:384 inc/command.class.php:447
 #: inc/componentscatalog_component.class.php:87 inc/eventhandler.class.php:124
@@ -660,22 +661,22 @@ msgstr ""
 #: inc/component.class.php:201 inc/component.class.php:343
 #: inc/downtime.class.php:244 inc/downtime.class.php:634
 msgid "Second(s)"
-msgstr ""
+msgstr "Sekunda(y)"
 
 #: inc/component.class.php:202 inc/component.class.php:344
 #: inc/downtime.class.php:245 inc/downtime.class.php:635
 msgid "Minute(s)"
-msgstr ""
+msgstr "Minuta(y)"
 
 #: inc/component.class.php:203 inc/component.class.php:345
 #: inc/downtime.class.php:246 inc/downtime.class.php:636
 msgid "Hour(s)"
-msgstr ""
+msgstr "Hodina(y)"
 
 #: inc/component.class.php:204 inc/component.class.php:346
 #: inc/downtime.class.php:247 inc/downtime.class.php:637
 msgid "Day(s)"
-msgstr ""
+msgstr "Den(dny)"
 
 #: inc/component.class.php:304 inc/profile.class.php:196
 #: inc/service.class.php:926 inc/servicedef.class.php:155
@@ -740,7 +741,7 @@ msgstr "Jméno počítače tohoto zařízení"
 
 #: inc/component.class.php:559
 msgid "IP of the device"
-msgstr ""
+msgstr "IP adresa zařízení"
 
 #: inc/component.class.php:560
 msgid "Network port number"
@@ -797,11 +798,11 @@ msgstr "Interval mezi posláním 2 upozornění (v minutách)"
 
 #: inc/componentscatalog.class.php:309
 msgid "hours"
-msgstr ""
+msgstr "hodiny"
 
 #: inc/componentscatalog.class.php:316
 msgid "minutes"
-msgstr ""
+msgstr "minuty"
 
 #: inc/componentscatalog.class.php:439
 msgid "Nothing to display ..."
@@ -818,15 +819,15 @@ msgstr "Hostů"
 
 #: inc/componentscatalog.class.php:970
 msgid "Simple report"
-msgstr ""
+msgstr "Základní report"
 
 #: inc/componentscatalog.class.php:1018
 msgid "Generate the report"
-msgstr ""
+msgstr "Generovat report"
 
 #: inc/componentscatalog.class.php:1124
 msgid "Use for report"
-msgstr ""
+msgstr "Použít pro report"
 
 #: inc/componentscatalog.class.php:1164
 msgid "Best is high value"
@@ -834,35 +835,35 @@ msgstr ""
 
 #: inc/componentscatalog.class.php:1195
 msgid "Generate PDF"
-msgstr ""
+msgstr "Generovat PDF"
 
 #: inc/componentscatalog.class.php:1257
 msgid "Trend"
-msgstr ""
+msgstr "Trend"
 
 #: inc/componentscatalog.class.php:1260 inc/componentscatalog.class.php:1412
 msgid "Avaibility"
-msgstr ""
+msgstr "Dostupnost"
 
 #: inc/componentscatalog.class.php:1271
 msgid "%"
-msgstr ""
+msgstr "%"
 
 #: inc/componentscatalog.class.php:1274
 msgid "Time"
-msgstr ""
+msgstr "Čas"
 
 #: inc/componentscatalog.class.php:1278
 msgid "Min"
-msgstr ""
+msgstr "Min"
 
 #: inc/componentscatalog.class.php:1281
 msgid "Avg"
-msgstr ""
+msgstr "Průměr"
 
 #: inc/componentscatalog.class.php:1284
 msgid "Max"
-msgstr ""
+msgstr "Max"
 
 #: inc/componentscatalog_component.class.php:76
 msgid "Associated components"
@@ -875,26 +876,26 @@ msgstr "Přidat novou komponentu"
 
 #: inc/componentscatalog_host.class.php:78
 msgid "No associated hosts"
-msgstr ""
+msgstr "Nepřiřazení hosté"
 
 #: inc/componentscatalog_host.class.php:80
 msgid "Associated hosts"
-msgstr ""
+msgstr "Přiřazení hosté"
 
 #: inc/componentscatalog_rule.class.php:177 inc/displayview_rule.class.php:188
 #: inc/search.class.php:452
 msgid "Update this rule"
-msgstr ""
+msgstr "Aktualizovat toto pravidlo"
 
 #: inc/componentscatalog_rule.class.php:180 inc/displayview_rule.class.php:191
 #: inc/search.class.php:455
 msgid "Delete this rule"
-msgstr ""
+msgstr "Smazat toto pravidlo"
 
 #: inc/componentscatalog_rule.class.php:187 inc/displayview_rule.class.php:198
 #: inc/search.class.php:460
 msgid "Add this rule"
-msgstr ""
+msgstr "Přidat pravidlo"
 
 #: inc/componentscatalog_rule.class.php:200
 #: inc/customitem_counter.class.php:248 inc/customitem_gauge.class.php:248
@@ -1018,39 +1019,39 @@ msgstr "Daný kontakt nebude dostávat žádný typ upozornění o službách"
 
 #: inc/customitem_common.class.php:52
 msgid "Last day (last 24 hours)"
-msgstr ""
+msgstr "Poslední den (posledních 24 hodin)"
 
 #: inc/customitem_common.class.php:53
 msgid "Last day (since midnight)"
-msgstr ""
+msgstr "Poslední den (od půlnoci)"
 
 #: inc/customitem_common.class.php:54
 msgid "Last week (last 7 days)"
-msgstr ""
+msgstr "Poslední týden (posledních 7 dní)"
 
 #: inc/customitem_common.class.php:55
 msgid "Last week (since Monday)"
-msgstr ""
+msgstr "Poslední týden (od pondělí)"
 
 #: inc/customitem_common.class.php:56
 msgid "Last week (since Sunday)"
-msgstr ""
+msgstr "Poslední týden (od neděle)"
 
 #: inc/customitem_common.class.php:57
 msgid "Last month (last 30 days)"
-msgstr ""
+msgstr "Poslední měsíc (posledních 30 dní)"
 
 #: inc/customitem_common.class.php:58
 msgid "Last month (since first day of month)"
-msgstr ""
+msgstr "Poslední měsíc (od 1.dne v měsíci)"
 
 #: inc/customitem_common.class.php:59
 msgid "Last year (365 days)"
-msgstr ""
+msgstr "Poslední rok (365 dní)"
 
 #: inc/customitem_common.class.php:60
 msgid "Last year (since first January)"
-msgstr ""
+msgstr "Poslední rok (od 1.ledna)"
 
 #: inc/customitem_counter.class.php:59 inc/customitem_gauge.class.php:59
 msgid "Custom item"
@@ -1058,12 +1059,12 @@ msgstr ""
 
 #: inc/customitem_counter.class.php:59
 msgid "Counter"
-msgstr ""
+msgstr "Počítadlo"
 
 #: inc/customitem_counter.class.php:114 inc/customitem_gauge.class.php:114
 #: inc/host.class.php:121
 msgid "Type"
-msgstr ""
+msgstr "Typ"
 
 #: inc/customitem_counter.class.php:122 inc/customitem_gauge.class.php:122
 msgid "Time (not used for `last value` type)"
@@ -1071,11 +1072,11 @@ msgstr ""
 
 #: inc/customitem_counter.class.php:127 inc/customitem_gauge.class.php:127
 msgid "Calendar"
-msgstr ""
+msgstr "Kalendář"
 
 #: inc/customitem_counter.class.php:147
 msgid "Add counter"
-msgstr ""
+msgstr "Přidat počítadlo"
 
 #: inc/customitem_counter.class.php:268
 msgid "Last value (diff for incremental)"
@@ -1083,7 +1084,7 @@ msgstr ""
 
 #: inc/customitem_counter.class.php:270 inc/customitem_gauge.class.php:269
 msgid "Average"
-msgstr ""
+msgstr "Průměr"
 
 #: inc/customitem_counter.class.php:271 inc/customitem_gauge.class.php:270
 msgid "Median"
@@ -1093,7 +1094,7 @@ msgstr ""
 #: inc/perfdatadetail.class.php:156 inc/perfdatadetail.class.php:171
 #: inc/perfdatadetail.class.php:186 inc/perfdatadetail.class.php:199
 msgid "Value"
-msgstr ""
+msgstr "Hodnota"
 
 #: inc/customitem_gauge.class.php:59
 msgid "Gauge"
@@ -1119,16 +1120,16 @@ msgstr "Kritický"
 
 #: inc/customitem_gauge.class.php:780
 msgid "Limit (max)"
-msgstr ""
+msgstr "Limit (max)"
 
 #: inc/dashboard.class.php:67
 msgid "Main menu"
-msgstr ""
+msgstr "Hlavní menu"
 
 #: inc/display.class.php:85 inc/display.class.php:294
 #: inc/profile.class.php:228 inc/system.class.php:64
 msgid "System status"
-msgstr ""
+msgstr "Stav systému"
 
 #: inc/display.class.php:104 inc/display.class.php:297 inc/host.class.php:162
 msgid "Hosts status"
@@ -1142,11 +1143,11 @@ msgstr "Všechny zdroje"
 #: inc/display.class.php:130 inc/display.class.php:1001 inc/host.class.php:111
 #: inc/service.class.php:190
 msgid "Performance data"
-msgstr ""
+msgstr "Údaje o výkonu"
 
 #: inc/display.class.php:699
 msgid "Global counters"
-msgstr ""
+msgstr "Globální počítadla"
 
 #: inc/display.class.php:717 inc/service.class.php:721
 msgid "Show graphics"
@@ -1154,12 +1155,12 @@ msgstr ""
 
 #: inc/display.class.php:719 inc/host.class.php:72
 msgid "Host name"
-msgstr ""
+msgstr "Jméno hosta"
 
 #: inc/display.class.php:722 inc/service.class.php:81
 #: inc/service.class.php:727
 msgid "Resource state"
-msgstr ""
+msgstr "Stav zdroje"
 
 #: inc/display.class.php:723 inc/display.class.php:999 inc/host.class.php:100
 #: inc/service.class.php:97 inc/service.class.php:730
@@ -1169,7 +1170,7 @@ msgstr "Poslední kontrola"
 #: inc/display.class.php:724 inc/display.class.php:1000 inc/host.class.php:105
 #: inc/service.class.php:102 inc/service.class.php:733
 msgid "Result details"
-msgstr ""
+msgstr "Detaily výsledku"
 
 #: inc/display.class.php:995
 msgid "Host action"
@@ -1181,15 +1182,15 @@ msgstr ""
 
 #: inc/display.class.php:998
 msgid "IP address"
-msgstr ""
+msgstr "IP adresa"
 
 #: inc/display.class.php:1004
 msgid "Maintenance"
-msgstr ""
+msgstr "Údržba"
 
 #: inc/display.class.php:1029
 msgid "Unknown IP address"
-msgstr ""
+msgstr "Neznámá IP adresa"
 
 #: inc/display.class.php:1243 inc/display.class.php:1244
 msgid "Modify acknowledge comment for the service"
@@ -1238,28 +1239,28 @@ msgstr ""
 
 #: inc/display.class.php:1595 inc/displayview_item.class.php:124
 msgid "Select date"
-msgstr ""
+msgstr "Vybrat datum"
 
 #: inc/display.class.php:1595 inc/displayview_item.class.php:124
 #: inc/displayview_item.class.php:184
 msgid "Select time"
-msgstr ""
+msgstr "Vybrat čas"
 
 #: inc/display.class.php:1627
 msgid "Last 2 hours"
-msgstr ""
+msgstr "Poslední 2 hodiny"
 
 #: inc/display.class.php:1628
 msgid "Last 12 hours"
-msgstr ""
+msgstr "Posledních 12 hodin"
 
 #: inc/display.class.php:1629
 msgid "Last 24 hours"
-msgstr ""
+msgstr "Posledních 24 hodin"
 
 #: inc/display.class.php:1630
 msgid "Last 7 days (average)"
-msgstr ""
+msgstr "Posledních 7 dní (průměr)"
 
 #: inc/display.class.php:2204 inc/display.class.php:2206
 msgid "Warning (connection)"
@@ -1275,11 +1276,11 @@ msgstr ""
 
 #: inc/display.class.php:2501
 msgid "Unreachable"
-msgstr ""
+msgstr "Nedostupný"
 
 #: inc/display.class.php:2523
 msgid "Unknown"
-msgstr ""
+msgstr "Neznámý"
 
 #: inc/display.class.php:2545
 msgid "Up"
@@ -1317,8 +1318,8 @@ msgstr ""
 #: inc/displayview_item.class.php:190
 msgid "View"
 msgid_plural "Views"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Zobrazení"
+msgstr[1] "Zobrazení"
 msgstr[2] ""
 
 #: inc/displayview.class.php:208
@@ -1351,12 +1352,12 @@ msgstr "Prvek pro zobrazení"
 
 #: inc/displayview_item.class.php:498
 msgid "Host (info)"
-msgstr ""
+msgstr "Host (info)"
 
 #: inc/displayview_item.class.php:499 inc/host.class.php:174
 #: inc/slider_item.class.php:138
 msgid "Resources (graph)"
-msgstr ""
+msgstr "Zdroje (graf)"
 
 #: inc/displayview_rule.class.php:69
 msgid "Replay all views rules"
@@ -1442,11 +1443,11 @@ msgstr ""
 
 #: inc/downtime.class.php:743
 msgid "Ticket type:"
-msgstr ""
+msgstr "Typ požadavku:"
 
 #: inc/downtime.class.php:765
 msgid "Ticket category:"
-msgstr ""
+msgstr "Kategorie požadavku:"
 
 #: inc/downtime.class.php:781
 msgid "No associated ticket for this downtime"
@@ -1462,15 +1463,15 @@ msgstr "Nastavit příznak pro spojení entity s konkrétním Shinken serverem"
 
 #: inc/host.class.php:77
 msgid "Host state"
-msgstr ""
+msgstr "Stav hosta"
 
 #: inc/host.class.php:82
 msgid "Host state type"
-msgstr ""
+msgstr "Typ stavu hosta"
 
 #: inc/host.class.php:493
 msgid "Status"
-msgstr ""
+msgstr "Stav"
 
 #: inc/host.class.php:786
 msgid "Add an acknowledge for all faulty services of the host"
@@ -1490,7 +1491,7 @@ msgstr ""
 
 #: inc/host.class.php:850
 msgid "Host is down"
-msgstr ""
+msgstr "Host je dole"
 
 #: inc/host.class.php:852
 msgid "Add an acknowledge for host and create a ticket"
@@ -1514,11 +1515,11 @@ msgstr ""
 
 #: inc/hostaddress.class.php:147
 msgid "First IP"
-msgstr ""
+msgstr "První IP"
 
 #: inc/hostconfig.class.php:87 inc/profile.class.php:216
 msgid "Host configuration"
-msgstr ""
+msgstr "Konfigurace hosta"
 
 #: inc/hostconfig.class.php:141
 msgid "Hosts configuration"
@@ -1590,7 +1591,7 @@ msgstr ""
 
 #: inc/perfdata.class.php:61 inc/profile.class.php:200
 msgid "Graph template"
-msgstr ""
+msgstr "Šablona grafu"
 
 #: inc/perfdata.class.php:1137
 msgid "A perfdata for this check"
@@ -1602,15 +1603,15 @@ msgstr ""
 
 #: inc/perfdatadetail.class.php:180
 msgid "Position"
-msgstr ""
+msgstr "Pozice"
 
 #: inc/perfdatadetail.class.php:222 inc/perfdatadetail.class.php:223
 msgid "Incremental"
-msgstr ""
+msgstr "Přírůstkový"
 
 #: inc/profile.class.php:160
 msgid "Homepage"
-msgstr ""
+msgstr "Domovská stránka"
 
 #: inc/profile.class.php:176 inc/slider.class.php:63 inc/slider.class.php:187
 msgid "Slider"
@@ -1630,11 +1631,11 @@ msgstr ""
 
 #: inc/profile.class.php:240 inc/unavailability.class.php:130
 msgid "Unavailability"
-msgstr ""
+msgstr "Nedostupnost"
 
 #: inc/profile.class.php:291
 msgid "General"
-msgstr ""
+msgstr "Obecný"
 
 #: inc/rrdtool.class.php:256 inc/rrdtool.class.php:306
 msgid "RRDtool templates"
@@ -1670,7 +1671,7 @@ msgstr "Aktuální rok"
 
 #: inc/service.class.php:741 inc/unavailability.class.php:422
 msgid "Detail"
-msgstr ""
+msgstr "Detail"
 
 #: inc/service.class.php:921
 msgid "No type associated"
@@ -1710,11 +1711,11 @@ msgstr ""
 
 #: inc/servicedef.class.php:236
 msgid "By ssh"
-msgstr ""
+msgstr "Pomocí SSH"
 
 #: inc/servicedef.class.php:249
 msgid "Use arguments (Only for NRPE)"
-msgstr ""
+msgstr "Použijte argumenty (pouze pro NRPE)"
 
 #: inc/servicedef.class.php:263
 msgid "Alias command if required (Only for NRPE)"
@@ -1734,7 +1735,7 @@ msgstr ""
 
 #: inc/serviceevent.class.php:153
 msgid "Date"
-msgstr ""
+msgstr "Datum"
 
 #: inc/serviceevent.class.php:159
 msgid "Event output"
@@ -1746,7 +1747,7 @@ msgstr ""
 
 #: inc/serviceevent.class.php:169
 msgid "Service state"
-msgstr ""
+msgstr "Stav služby"
 
 #: inc/servicescatalog.class.php:312
 msgid "Interval between 2 notifications"
@@ -1782,11 +1783,11 @@ msgstr ""
 
 #: inc/slider.class.php:312
 msgid "Duration (in seconds)"
-msgstr ""
+msgstr "Trvání (v sekundách)"
 
 #: inc/system.class.php:82
 msgid "Sorry, this content is not yet available in the Monitoring"
-msgstr ""
+msgstr "Promiňte, tento obsah dosud není dostupný v Monitoringu"
 
 #: inc/tag.class.php:87
 msgid "Shinken tag"
@@ -1810,7 +1811,7 @@ msgstr ""
 
 #: inc/tag.class.php:114 inc/tag.class.php:175
 msgid "Port"
-msgstr ""
+msgstr "Port"
 
 #: inc/tag.class.php:164
 msgid "Lock shinken IP"
@@ -1818,7 +1819,7 @@ msgstr ""
 
 #: inc/toolbox.class.php:148
 msgid "Display"
-msgstr ""
+msgstr "Zobrazit"
 
 #: inc/toolbox.class.php:223
 msgid "Invert values"
@@ -1826,27 +1827,27 @@ msgstr ""
 
 #: inc/toolbox.class.php:330
 msgid "Colors"
-msgstr ""
+msgstr "Barvy"
 
 #: inc/unavailability.class.php:139
 msgid "Ressource"
-msgstr ""
+msgstr "Zdroj"
 
 #: inc/unavailability.class.php:161
 msgid "Unavailability start"
-msgstr ""
+msgstr "Začátek nedostupnosti"
 
 #: inc/unavailability.class.php:166
 msgid "Unavailability end"
-msgstr ""
+msgstr "Konec nedostupnosti"
 
 #: inc/unavailability.class.php:177
 msgid "Unavailability details"
-msgstr ""
+msgstr "Detaily nedostupnosti"
 
 #: inc/unavailability.class.php:182
 msgid "Scheduled unavailability"
-msgstr ""
+msgstr "Plánovaná nedostupnost"
 
 #: inc/unavailability.class.php:214 inc/unavailability.class.php:215
 msgid "Change unavailability period schedule status"
@@ -1910,4 +1911,4 @@ msgstr "Smazat odkaz"
 
 #: inc/weathermap.class.php:641
 msgid "Link"
-msgstr ""
+msgstr "Odkaz"

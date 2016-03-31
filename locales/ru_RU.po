@@ -3,72 +3,73 @@
 # This file is distributed under the same license as the PACKAGE package.
 # 
 # Translators:
-# David Durieux <d.durieux@siprossii.com>, 2015
-# Frédéric MOHIER, 2014
+# Cryon <mishkewitch@gmail.com>, 2015
+# Matjaž Mozetič <m.mozetic@matmoz.si>, 2015
+# Rudolf Schnapka <rs@techno-flex.de>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: GLPI Project - plugin monitoring \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-05-21 13:06+0200\n"
-"PO-Revision-Date: 2015-07-09 12:02+0000\n"
+"PO-Revision-Date: 2016-03-31 20:57+0000\n"
 "Last-Translator: David Durieux <d.durieux@siprossii.com>\n"
-"Language-Team: French (France) (http://www.transifex.com/ddurieux/GLPI_monitoring/language/fr_FR/)\n"
+"Language-Team: Russian (Russia) (http://www.transifex.com/ddurieux/GLPI_monitoring/language/ru_RU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: fr_FR\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: ru_RU\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
 
 #: hook.php:69
 msgid "Processor number"
-msgstr "Nombre de processeurs"
+msgstr "Номер процесора"
 
 #: hook.php:79
 msgid "Entity tag"
-msgstr "Etiquette d'entité"
+msgstr "Введеный тег"
 
 #: hook.php:89
 msgid "User template"
-msgstr "Gabarit utilisateur"
+msgstr "Пользовательский шаблон"
 
 #: hook.php:187
 msgid "Add these hosts to monitoring"
-msgstr "Ajouter des hôtes à superviser"
+msgstr "Добавить хост в наблюдаемые"
 
 #: hook.php:193 hook.php:199
 msgid "Force play rules"
-msgstr "Rejouer les règles"
+msgstr "Намеренно проиграть правила"
 
 #: hook.php:644 front/menu.php:113 inc/display.class.php:143
 #: inc/servicescatalog.class.php:104
 msgid "Services catalogs"
-msgstr "Catalogues de services"
+msgstr "Каталог сервисов"
 
 #: hook.php:645
 msgid "Check definitions"
-msgstr "Définitions des contrôles"
+msgstr "Проверить определения"
 
 #: hook.php:646 setup.php:192 front/menu.php:182 inc/command.class.php:356
 #: inc/command.class.php:365 inc/customitem_counter.class.php:68
 #: inc/customitem_gauge.class.php:68 inc/eventhandler.class.php:67
 #: inc/tag.class.php:82
 msgid "Commands"
-msgstr "Commandes"
+msgstr "Команды"
 
 #: hook.php:647 inc/componentscatalog.class.php:108 inc/display.class.php:156
 msgid "Components catalogs"
-msgstr "Catalogues de composants"
+msgstr "Каталог компонентов"
 
 #: hook.php:648 setup.php:201 front/menu.php:163
 #: inc/contacttemplate.class.php:59
 msgid "Contact templates"
-msgstr "Gabarits de contact"
+msgstr "Шаблоны контактов"
 
 #: hook.php:649 setup.php:195 front/menu.php:159 inc/component.class.php:59
 #: inc/component.class.php:142 inc/componentscatalog.class.php:115
 #: inc/componentscatalog_component.class.php:52
 msgid "Components"
-msgstr "Composants"
+msgstr "Компоненты"
 
 #: index.php:45 front/businessrule.form.php:47
 #: front/businessrule_component.form.php:47
@@ -95,14 +96,14 @@ msgstr "Composants"
 #: front/weathermapnode.form.php:47 inc/contact.class.php:68
 #: inc/entity.class.php:69
 msgid "Monitoring"
-msgstr "Monitoring"
+msgstr "Мониторинг"
 
 #: setup.php:189 front/menu.php:186 inc/check.class.php:91
 #: inc/check.class.php:100 inc/component.class.php:262
 #: inc/componentscatalog_component.class.php:88 inc/service.class.php:946
 #: inc/servicedef.class.php:173 inc/servicescatalog.class.php:290
 msgid "Check definition"
-msgstr "Définition d'un contrôle"
+msgstr "Проверьте определение"
 
 #: setup.php:198 front/menu.php:145 inc/businessrulegroup.class.php:165
 #: inc/component.class.php:99 inc/component.class.php:105
@@ -112,737 +113,739 @@ msgstr "Définition d'un contrôle"
 #: inc/profile.class.php:188 inc/service.class.php:118
 #: inc/slider_item.class.php:139
 msgid "Components catalog"
-msgstr "Catalogue de composants"
+msgstr "Каталог компонентов"
 
 #: setup.php:204 setup.php:243 inc/profile.class.php:156
 msgid "Dashboard"
-msgstr "Tableau de bord"
+msgstr "Панель управления"
 
 #: setup.php:207 front/menu.php:91 inc/displayview.class.php:197
 #: inc/displayview_item.class.php:59 inc/displayview_item.class.php:495
 #: inc/profile.class.php:172 inc/slider_item.class.php:136
 msgid "Views"
-msgstr "Vues"
+msgstr "Виды"
 
 #: setup.php:210 front/menu.php:171 inc/profile.class.php:208
 #: inc/realm.class.php:56
 msgid "Reamls"
-msgstr "Royaumes (realms)"
+msgstr "Реалмы"
 
 #: setup.php:213 inc/display.class.php:300 inc/profile.class.php:180
 #: inc/servicescatalog.class.php:61
 msgid "Services catalog"
-msgstr "Catalogue de services"
+msgstr "Каталог сервисов"
 
 #: setup.php:216 inc/component.class.php:478
 #: inc/displayview_item.class.php:501 inc/profile.class.php:184
 #: inc/slider_item.class.php:140 inc/weathermap.class.php:52
 msgid "Weathermap"
-msgstr "Weathermap"
+msgstr "Карта состояния"
 
 #: setup.php:219 front/menu.php:196 inc/component.class.php:356
 #: inc/eventhandler.class.php:58 inc/profile.class.php:204
 msgid "Event handler"
-msgstr "Gestionnaire d'évènement (event handler)"
+msgstr "Обработчик события"
 
 #: setup.php:222 front/menu.php:167 inc/notificationcommand.class.php:138
 #: inc/notificationcommand.class.php:146
 msgid "Notification commands"
-msgstr "Commandes de notifications"
+msgstr "Команды уведомлений"
 
 #: setup.php:225
 msgid "Host daily counters"
-msgstr "Compteurs quotidiens"
+msgstr "Ежедневные данные хоста"
 
 #: setup.php:228 inc/unavailability.class.php:76
 #: inc/unavailability.class.php:130
 msgid "Unavailabilities"
-msgstr "Indisponibilités"
+msgstr "Недоступные"
 
 #: setup.php:231 inc/display.class.php:172 inc/downtime.class.php:82
 msgid "Downtimes"
-msgstr "Maintenances"
+msgstr "Выключенные"
 
 #: setup.php:234 inc/acknowledge.class.php:99 inc/display.class.php:175
 msgid "Acknowledges"
-msgstr "Acquittements"
+msgstr "Подтвержденные"
 
 #: setup.php:237 front/menu.php:200
 msgid "Graph templates"
-msgstr "Modèles de graphique"
+msgstr "Шаблоны графиков"
 
 #: setup.php:240 front/menu.php:96 inc/slider.class.php:237
 #: inc/slider_item.class.php:59
 msgid "Carrousel / slider"
-msgstr "Carrousel"
+msgstr "Карусель / слайдер"
 
 #: ajax/dropdownDisplayviewItemtype.php:17
 #: ajax/dropdownDisplayviewItemtype.php:95
 msgid "Display minemap"
-msgstr "Afficher la minemap"
+msgstr "Показать миникарту"
 
 #: ajax/dropdownDisplayviewItemtype.php:49 inc/displayview_item.class.php:310
 #: inc/displayview_item.class.php:705
 msgid "Legend"
-msgstr "Légende"
+msgstr "Легенда"
 
 #: ajax/dropdownDisplayviewItemtype.php:55
 #, php-format
 msgid "% of the width of the frame"
-msgstr "% de la largeur de la page"
+msgstr "% ширины фрейма"
 
 #: ajax/dropdownWlink.php:52 inc/weathermap.class.php:558
 msgid "Max bandwidth input"
-msgstr "Bande passante entrante (in)"
+msgstr "Максимальная полоса пропускания(входящие)"
 
 #: ajax/dropdownWlink.php:55 inc/weathermap.class.php:567
 msgid "Max bandwidth output"
-msgstr "Bande passante sortante (out)"
+msgstr "Максимальная полоса пропускания (исходящие)"
 
 #: ajax/dropdownWnode.php:52 inc/display.class.php:992 inc/host.class.php:56
 msgid "Host"
-msgstr "Hôte"
+msgstr "Хост"
 
 #: ajax/dropdownWnode.php:62 inc/weathermap.class.php:250
 msgid "Center"
-msgstr "Centré"
+msgstr "Центр"
 
 #: ajax/dropdownWnode.php:63 inc/weathermap.class.php:251
 msgid "Right"
-msgstr "A droite"
+msgstr "Право"
 
 #: ajax/dropdownWnode.php:64 inc/weathermap.class.php:252
 msgid "Left"
-msgstr "A gauche"
+msgstr "Лево"
 
 #: ajax/dropdownWnode.php:66 inc/weathermap.class.php:246
 msgid "Position of label"
-msgstr "Position du label"
+msgstr "Расположение метки"
 
 #: ajax/updatePerfdata.php:61 inc/customitem_counter.class.php:269
 msgid "First value"
-msgstr "Première valeur"
+msgstr "Первое значение"
 
 #: ajax/updatePerfdata.php:62 inc/customitem_counter.class.php:267
 #: inc/customitem_gauge.class.php:267
 msgid "Last value"
-msgstr "Dernière valeur"
+msgstr "Последнее значение"
 
 #: ajax/updatePerfdata.php:66
 msgid "Difference"
-msgstr "Différence"
+msgstr "Различия"
 
 #: ajax/updatePerfdata.php:140
 msgid "Counters : registered values"
-msgstr "Compteurs : valeurs enregistrées"
+msgstr "Счетчики : зарегстрированные значения"
 
 #: ajax/widgetWeathermap.php:71
 msgid "Weathermap legend"
-msgstr "Légende de la weathermap"
+msgstr "Метка карты состояния"
 
 #: ajax/widgetWeathermap.php:77
 msgid "full 100%"
-msgstr "100%"
+msgstr "Полный 100%"
 
 #: front/acknowledge.form.php:47 front/acknowledge.php:47
 msgid "Monitoring - acknowledges"
-msgstr "Monitoring - acquittements"
+msgstr "Мониторинг - подтвержденные"
 
 #: front/command.form.php:47 front/command.php:47
 msgid "Monitoring - commands"
-msgstr "Monitoring - commandes"
+msgstr "Мониторинг - команды"
 
 #: front/component.form.php:47
 msgid "Monitoring - component"
-msgstr "Monitoring - composant"
+msgstr "Мониторинг - компонент"
 
 #: front/component.form.php:68 front/component.form.php:93
 msgid "Fields with asterisk are required"
-msgstr "Les champs avec un astérisque sont obligatoires"
+msgstr "Поля обязательные для Asterisk"
 
 #: front/component.php:47
 msgid "Monitoring - components"
-msgstr "Monitoring - composants"
+msgstr "Мониторинг - компоненты"
 
 #: front/componentscatalog.form.php:47 front/componentscatalog.php:47
 msgid "Monitoring - components catalogs"
-msgstr "Monitoring - catalogues de composants"
+msgstr "Мониторинг - каталог компонентов"
 
 #: front/contacttemplate.form.php:47 front/contacttemplate.php:47
 msgid "Monitoring - contact templates"
-msgstr "Monitoring - gabarits de contact"
+msgstr "Мониторинг - шаблоны контактов"
 
 #: front/customitem_counter.form.php:47 front/customitem_counter.php:47
 msgid "Monitoring - counter"
-msgstr "Monitoring - compteur"
+msgstr "Мониторинг - счетчики"
 
 #: front/customitem_gauge.form.php:47 front/customitem_gauge.php:47
 msgid "Monitoring - gauge"
-msgstr "Monitoring - jauge"
+msgstr "Мониторинг - датчики"
 
 #: front/dashboard.php:47 front/dashboard.php:51 front/menu.php:47
 msgid "Monitoring - dashboard"
-msgstr "Monitoring - tableau de bord"
+msgstr "Мониторинг - панель управления"
 
 #: front/display_componentscatalog.php:45
 msgid "Monitoring - dashboard (components catalogs)"
-msgstr "Monitoring - tableau de bord catalogues de composants"
+msgstr "Мониторинг - Панель управления(каталог компонентов)"
 
 #: front/display_servicescatalog.php:45
 msgid "Monitoring - dashboard (services catalogs)"
-msgstr "Monitoring - tableau de bord catalogues de services"
+msgstr "Мониторинг - Панель управления (каталог сервисов)"
 
 #: front/downtime.form.php:47 front/downtime.php:47
 msgid "Monitoring - downtimes"
-msgstr "Monitoring - maintenances"
+msgstr "Мониторинг - выключенные"
 
 #: front/downtime.form.php:60
 msgid "Scheduled downtime"
-msgstr "Maintenance programmée"
+msgstr "Запланированное выключение"
 
 #: front/host.php:45
 msgid "Monitoring - dashboard (hosts)"
-msgstr "Monitoring - tableau de bord hôtes"
+msgstr "Мониторинг - Панель управления (хосты)"
 
 #: front/host.php:94 front/service.php:100
 msgid "Display search form"
-msgstr "Afficher le formulaire de recherche"
+msgstr "Показать форму поиска"
 
 #: front/menu.php:120
 msgid "Weathermaps"
-msgstr "Weathermaps"
+msgstr "Карты состояний"
 
 #: front/menu.php:175 inc/entity.class.php:126 inc/profile.class.php:212
 #: inc/tag.class.php:59 inc/tag.class.php:142
 msgid "Tag"
-msgstr "Etiquette"
+msgstr "Теги"
 
 #: front/menu.php:211
 msgid "Sorry, your profile does not allow any views in the Monitoring"
-msgstr "Désolé, mais votre profil ne permet pas cette visualisation."
+msgstr "Извините. Вы не не имеете доступ к Мониторингу"
 
 #: front/perfdata.php:47
 msgid "Monitoring - dashboard (perfdata)"
-msgstr "Monitoring - tableau de bord métriques"
+msgstr "Мониторинг - Панель управления(Производительность)"
 
 #: front/restart_host.php:62
 msgid "Missing computer id in parameters !"
-msgstr "Paramètre id de l'ordinateur manquant !"
+msgstr "Ошибка ИД компьютера в параметре"
 
 #: front/restart_host.php:67
 msgid "Missing computer name in parameters !"
-msgstr "Paramètre nom de l'ordinateur manquant !"
+msgstr "Ошибка имени компьютера в параметре"
 
 #: front/restart_host.php:77
 msgid "Missing host command in parameters !"
-msgstr "Paramètre commande de l'hôte manquant !"
+msgstr "Ошибка команды хоста в параметре"
 
 #: front/restart_host.php:85
 msgid "Host command task not found : "
-msgstr "Tâche host command non trouvée !"
+msgstr "Команда хоста не найдена"
 
 #: front/restart_host.php:115
 msgid "Host command '"
-msgstr "Commande de l'hôte '"
+msgstr "Команда хоста"
 
 #: front/restart_host.php:115
 msgid "' requested for the host '"
-msgstr " demandée pour l'hôte "
+msgstr "' запрос хоста'"
 
 #: front/service.php:45
 msgid "Monitoring - dashboard (resources)"
-msgstr "Monitoring - tableau de bord ressources"
+msgstr "Мониторинг - Панель управления (Ресурсы)"
 
 #: front/serviceevent.php:47
 msgid "Monitoring - resources events"
-msgstr "Monitoring - événements"
+msgstr ""
 
 #: front/servicescatalog.form.php:49
 msgid "Monitoring - services catalogs"
-msgstr "Monitoring - catalogues de services"
+msgstr "Мониторинг - каталог сервисов"
 
 #: front/unavailability.form.php:47 front/unavailability.php:47
 msgid "Monitoring - unavailabilities"
-msgstr "Monitoring - indisponibilités"
+msgstr "Мониторинг - недоступных"
 
 #: inc/acknowledge.class.php:52 inc/display.class.php:727
 #: inc/display.class.php:2269 inc/display.class.php:2271
 #: inc/display.class.php:2568 inc/host.class.php:116 inc/profile.class.php:164
 #: inc/service.class.php:108 inc/service.class.php:742
 msgid "Acknowledge"
-msgstr "Acquittement"
+msgstr "Подтвержденные"
 
 #: inc/acknowledge.class.php:76
 msgid "Acknowledged by: "
-msgstr "Par : "
+msgstr "Подтвержденные по:"
 
 #: inc/acknowledge.class.php:77
 msgid "Acknowledge started: "
-msgstr "Heure de début de l'acquittement"
+msgstr "Подтвержденные начинаются: "
 
 #: inc/acknowledge.class.php:79
 msgid "Modify acknowledge comment"
-msgstr "Modifier le commentaire de l'acquittement"
+msgstr "Изменен комментарий подтверждения"
 
 #: inc/acknowledge.class.php:146
 msgid "Host acknowledges"
-msgstr "Acquittements des hôtes"
+msgstr "Подтвержденные устройства"
 
 #: inc/acknowledge.class.php:166 inc/acknowledge.class.php:615
 #: inc/downtime.class.php:177 inc/downtime.class.php:586
 msgid "Start time"
-msgstr "Heure de début"
+msgstr "Начало"
 
 #: inc/acknowledge.class.php:172 inc/acknowledge.class.php:639
 #: inc/downtime.class.php:183 inc/downtime.class.php:610
 msgid "End time"
-msgstr "Heure de fin"
+msgstr "Конец"
 
 #: inc/acknowledge.class.php:178
 msgid "Sticky"
-msgstr "Epinglé"
+msgstr "Записка"
 
 #: inc/acknowledge.class.php:184
 msgid "Notify"
-msgstr "Notification par mail"
+msgstr "Уведомление"
 
 #: inc/acknowledge.class.php:190
 msgid "Persistent"
-msgstr "Persistent"
+msgstr "Постоянный"
 
 #: inc/acknowledge.class.php:196 inc/acknowledge.class.php:663
 #: inc/downtime.class.php:199 inc/downtime.class.php:651
 msgid "Comment"
-msgstr "Commentaire"
+msgstr "Комментарий"
 
 #: inc/acknowledge.class.php:202 inc/acknowledge.class.php:676
 #: inc/downtime.class.php:206 inc/downtime.class.php:664
 msgid "User"
-msgstr "Utilisateur"
+msgstr "Пользователь"
 
 #: inc/acknowledge.class.php:207 inc/downtime.class.php:211
 msgid "Notified to monitoring system"
-msgstr "Notifié au système de supervision"
+msgstr "Уведомление системе мониторинга"
 
 #: inc/acknowledge.class.php:213
 msgid "Expired"
-msgstr "Expiré"
+msgstr "Истекший"
 
 #: inc/acknowledge.class.php:346
 msgid "Acknowledge period has already expired!"
-msgstr "La période d'acquittement a déjà expiré !"
+msgstr "Подтверждение истечения срока"
 
 #: inc/acknowledge.class.php:407
 msgid "Acknowledge notified to the monitoring application for the host"
-msgstr "L'acquittement de l'hôte a été notifié à l'application de supervision"
+msgstr "Подтверждение уведомления в систему мониторинга от устройства"
 
 #: inc/acknowledge.class.php:410
 msgid ""
 "Acknowledge has not been accepted by the monitoring application for the host"
-msgstr "L'acquittement de l'hôte n'a pas été accepté par l'application de supervision "
+msgstr "Подтверждение не принятия системой мониторинга устройсва"
 
 #: inc/acknowledge.class.php:431
 msgid "Acknowledge notified to the monitoring application:"
-msgstr "L'acquittement a été notifié à l'application de supervision"
+msgstr ""
 
 #: inc/acknowledge.class.php:434
 msgid "Acknowledge has not been accepted by the monitoring application:"
-msgstr "L'acquittement n'a pas été accepté par l'application de supervision"
+msgstr ""
 
 #: inc/acknowledge.class.php:512 inc/acknowledge.class.php:531
 msgid "Acknowledge deletion notified to the monitoring application:"
-msgstr "La suppression de l'acquittement a été notifié à l'application de supervision"
+msgstr ""
 
 #: inc/acknowledge.class.php:515 inc/acknowledge.class.php:534
 msgid ""
 "Acknowledge deletion has not been accepted by the monitoring application:"
-msgstr "La suppression de l'acquittement n'a pas été accepté par l'application de supervision"
+msgstr ""
 
 #: inc/acknowledge.class.php:603
 msgid "Sticky ?"
-msgstr "Epinglé ?"
+msgstr "Записка ?"
 
 #: inc/acknowledge.class.php:627
 msgid "Persistent ?"
-msgstr "Persistent ?"
+msgstr "Постоянный ?"
 
 #: inc/acknowledge.class.php:651
 msgid "Notify ?"
-msgstr "Notification ?"
+msgstr "Уведомление ? "
 
 #: inc/acknowledge.class.php:682 inc/downtime.class.php:670
 msgid "Expired ?"
-msgstr "Expiré ?"
+msgstr "Истекает ?"
 
 #: inc/businessrule.class.php:70 inc/businessrulegroup.class.php:131
 msgid "2 of"
-msgstr "2 sur"
+msgstr "2 из"
 
 #: inc/businessrule.class.php:71 inc/businessrulegroup.class.php:132
 msgid "3 of"
-msgstr "3 sur"
+msgstr "3 из"
 
 #: inc/businessrule.class.php:72 inc/businessrulegroup.class.php:133
 msgid "4 of"
-msgstr " 4 sur"
+msgstr "4 из"
 
 #: inc/businessrule.class.php:73 inc/businessrulegroup.class.php:134
 msgid "5 of"
-msgstr "5 sur"
+msgstr "5 из "
 
 #: inc/businessrule.class.php:74 inc/businessrulegroup.class.php:135
 msgid "6 of"
-msgstr "6 sur"
+msgstr " 6 из"
 
 #: inc/businessrule.class.php:75 inc/businessrulegroup.class.php:136
 msgid "7 of"
-msgstr "7 sur"
+msgstr "7 из"
 
 #: inc/businessrule.class.php:76 inc/businessrulegroup.class.php:137
 msgid "8 of"
-msgstr "8 sur"
+msgstr "8 из"
 
 #: inc/businessrule.class.php:77 inc/businessrulegroup.class.php:138
 msgid "9 of"
-msgstr "9 sur"
+msgstr "9 из"
 
 #: inc/businessrule.class.php:78 inc/businessrulegroup.class.php:139
 msgid "10 of"
-msgstr "10 sur"
+msgstr "10 из"
 
 #: inc/businessrule.class.php:227 inc/businessrulegroup.class.php:52
 msgid "Group"
 msgid_plural "Groups"
-msgstr[0] ""
-msgstr[1] "Groupe"
+msgstr[0] "Группа"
+msgstr[1] "Группы"
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/businessrule.class.php:233 inc/unavailability.class.php:418
 msgid "Resource"
-msgstr "Ressource"
+msgstr "Ресурсы"
 
 #: inc/businessrule.class.php:274 inc/display.class.php:1523
 #: inc/displayview_item.class.php:293 inc/service.class.php:234
 msgid "on"
-msgstr "sur"
+msgstr "вкл"
 
 #: inc/businessrulegroup.class.php:112 inc/display.class.php:1160
 #: inc/displayview.class.php:342 inc/host.class.php:171
 #: inc/service.class.php:56 inc/service.class.php:696
 #: inc/servicedef.class.php:79
 msgid "Resources"
-msgstr "Ressources"
+msgstr "Ресурсы"
 
 #: inc/businessrulegroup.class.php:167 inc/display.class.php:720
 #: inc/hostconfig.class.php:147 inc/profile.class.php:192
 #: inc/service.class.php:75 inc/service.class.php:724
 #: inc/serviceevent.class.php:114 inc/unavailability.class.php:143
 msgid "Component"
-msgstr "Composant"
+msgstr "Компоненты"
 
 #: inc/businessrulegroup.class.php:168
 msgid "Dynamic"
-msgstr "Dynamique"
+msgstr "Динамика"
 
 #: inc/businessrulegroup.class.php:202 inc/componentscatalog.class.php:116
 msgid "Static hosts"
-msgstr "Hôtes statiques"
+msgstr "Статические хосты"
 
 #: inc/businessrulegroup.class.php:222
 msgid "Resource deleted"
-msgstr "Ressource supprimée"
+msgstr "Удаленые ресурсы"
 
 #: inc/businessrulegroup.class.php:241 inc/componentscatalog.class.php:118
 msgid "Dynamic hosts"
-msgstr "Hôtes dynamiques"
+msgstr "Динамические хосты"
 
 #: inc/businessrulegroup.class.php:287
 msgid "Dynamic hosts list will be defined during Shinken configuration build."
-msgstr "La liste des hôtes concernés sera déterminé lors de la configuration Shinken."
+msgstr "Список динамических хостов будет определен в ходе сборки конфигурации Shinken"
 
 #: inc/canvas.class.php:372 inc/display.class.php:308
 msgid "Dependencies;"
-msgstr "Dépendances;"
+msgstr "Зависимости;"
 
 #: inc/check.class.php:124 inc/check.class.php:156
 msgid "Max check attempts (number of retries)"
-msgstr "Nombre  maximum de tentatives (nombre d'essais)"
+msgstr "Максимальное количество проверок (число попыток)"
 
 #: inc/check.class.php:125 inc/check.class.php:166
 msgid "Time in minutes between 2 checks"
-msgstr "Temps en minutes entre 2 contrôles"
+msgstr "Время в минутах между 2 проверками"
 
 #: inc/check.class.php:126 inc/check.class.php:173
 msgid "Time in minutes between 2 retries"
-msgstr "Temps en minutes entre 2 essais"
+msgstr "Время в минутах между 2 запросами"
 
 #: inc/command.class.php:378 inc/notificationcommand.class.php:159
 msgid "Active"
-msgstr "Actif"
+msgstr "Активный"
 
 #: inc/command.class.php:384 inc/command.class.php:447
 #: inc/componentscatalog_component.class.php:87 inc/eventhandler.class.php:124
 #: inc/notificationcommand.class.php:165 inc/notificationcommand.class.php:207
 msgid "Command name"
-msgstr "Nom de commande"
+msgstr "Имя команды"
 
 #: inc/command.class.php:389 inc/command.class.php:477
 #: inc/eventhandler.class.php:131 inc/notificationcommand.class.php:170
 #: inc/notificationcommand.class.php:237
 msgid "Command line"
-msgstr "Ligne de commande"
+msgstr "Командная строка"
 
 #: inc/command.class.php:394 inc/component.class.php:431
 #: inc/service.class.php:743 inc/servicedef.class.php:310
 msgid "Arguments"
-msgstr "Arguments"
+msgstr "Аргументы"
 
 #: inc/command.class.php:400
 msgid "Shinken poller tag"
-msgstr "Tag du poller de Shinken"
+msgstr "Тег регистратора Shinken"
 
 #: inc/command.class.php:405 inc/notificationcommand.class.php:180
 msgid "Shinken module type"
-msgstr "Type de module de Shinken"
+msgstr "Тип модуля Shinken"
 
 #: inc/command.class.php:454 inc/notificationcommand.class.php:214
 msgid "Active ?"
-msgstr "Actif ?"
+msgstr "Активное ?"
 
 #: inc/command.class.php:466 inc/notificationcommand.class.php:225
 msgid "Module type"
-msgstr "Type de module"
+msgstr "Тип модуля"
 
 #: inc/command.class.php:470
 msgid "Poller tag"
-msgstr "Tag du poller"
+msgstr "Тег регистратора"
 
 #: inc/command.class.php:484
 msgid "Arguments description"
-msgstr "Description des arguments"
+msgstr "Описание аргумента"
 
 #: inc/command.class.php:523 inc/component.class.php:544
 msgid "copy"
-msgstr "Copier"
+msgstr "копировать"
 
 #: inc/component.class.php:100
 msgid "Graph configuration"
-msgstr "Configuration des graphiques"
+msgstr "Настройка графиков"
 
 #: inc/component.class.php:157 inc/component.class.php:273
 msgid "Alias (Shinken service_description)"
-msgstr "Alias (attribut service_description pour Shinken)"
+msgstr "Алиас (Shinken service_description )"
 
 #: inc/component.class.php:161 inc/component.class.php:294
 #: inc/service.class.php:960
 msgid "Active check"
-msgstr "Contrôle actif"
+msgstr "Активная проверка"
 
 #: inc/component.class.php:166 inc/component.class.php:315
 #: inc/service.class.php:974
 msgid "Passive check"
-msgstr "Contrôle passif"
+msgstr "Пассивная проверка"
 
 #: inc/component.class.php:171 inc/component.class.php:364
 #: inc/componentscatalog_component.class.php:89 inc/display.class.php:725
 #: inc/service.class.php:736 inc/service.class.php:984
 #: inc/servicedef.class.php:211 inc/servicescatalog.class.php:303
 msgid "Check period"
-msgstr "Période de contrôle"
+msgstr "Период проверки"
 
 #: inc/component.class.php:176
 msgid "Freshness count"
-msgstr "Durée de fraîcheur"
+msgstr ""
 
 #: inc/component.class.php:180
 msgid "Freshness type"
-msgstr "Type"
+msgstr ""
 
 #: inc/component.class.php:201 inc/component.class.php:343
 #: inc/downtime.class.php:244 inc/downtime.class.php:634
 msgid "Second(s)"
-msgstr "Seconde(s)"
+msgstr "Секунда(ы)"
 
 #: inc/component.class.php:202 inc/component.class.php:344
 #: inc/downtime.class.php:245 inc/downtime.class.php:635
 msgid "Minute(s)"
-msgstr "Minute(s)"
+msgstr "Минута(ы)"
 
 #: inc/component.class.php:203 inc/component.class.php:345
 #: inc/downtime.class.php:246 inc/downtime.class.php:636
 msgid "Hour(s)"
-msgstr "Heure(s)"
+msgstr "Час(ов)"
 
 #: inc/component.class.php:204 inc/component.class.php:346
 #: inc/downtime.class.php:247 inc/downtime.class.php:637
 msgid "Day(s)"
-msgstr "Jour(s)"
+msgstr "День(Дней)"
 
 #: inc/component.class.php:304 inc/profile.class.php:196
 #: inc/service.class.php:926 inc/servicedef.class.php:155
 msgid "Command"
-msgstr "Commande"
+msgstr "Комманда"
 
 #: inc/component.class.php:324 inc/service.class.php:1050
 msgid "Template (for graphs generation)"
-msgstr "Gabarit (pour la génération des graphiques)"
+msgstr "Шаблон (Для генерации графиков)"
 
 #: inc/component.class.php:332
 msgid "Freshness (for passive mode)"
-msgstr "Freshness/fraîcheur (pour le mode passif)"
+msgstr ""
 
 #: inc/component.class.php:372 inc/componentscatalog_component.class.php:90
 #: inc/service.class.php:1001 inc/servicedef.class.php:225
 msgid "Remote check"
-msgstr "Contrôle distant"
+msgstr "Удаленная проверка"
 
 #: inc/component.class.php:378 inc/service.class.php:1007
 #: inc/servicedef.class.php:231
 msgid "Utility used for remote check"
-msgstr "Système utilisé pour le contrôle à distance"
+msgstr "Утилита используемая при удаленной проверке"
 
 #: inc/component.class.php:392 inc/service.class.php:1025
 msgid "Use arguments (NRPE only)"
-msgstr "Utilisation d'arguments (seulement pour NRPE)"
+msgstr "Использовать аргументы (только NRPE)"
 
 #: inc/component.class.php:402 inc/service.class.php:1039
 msgid "Alias command if required (NRPE only)"
-msgstr "L'alias de commande si requis (seulement pour NRPE)"
+msgstr "Обязателен алиас команды (только NRPE)"
 
 #: inc/component.class.php:441 inc/service.class.php:1098
 #: inc/service.class.php:1289 inc/service.class.php:1351
 #: inc/servicedef.class.php:320
 msgid "Argument"
-msgstr "Argument"
+msgstr "Аргумент"
 
 #: inc/component.class.php:483
 msgid "Use this component for Weathermap"
-msgstr "Utiliser ce composant pour Weathermap"
+msgstr "Использовать этот компонент на Карте состояний"
 
 #: inc/component.class.php:489 inc/component.class.php:506
 msgid "Example"
-msgstr "Exemple"
+msgstr "Пример"
 
 #: inc/component.class.php:491 inc/component.class.php:493
 msgid "Regex bandwidth input"
-msgstr "Regex passante entrante (in)"
+msgstr "Регулярное выражение входящей пропускной способности"
 
 #: inc/component.class.php:508 inc/component.class.php:510
 msgid "Regex bandwidth output"
-msgstr "Regex passante sortante (out)"
+msgstr "Регулярное выражение исходящей пропускной способности"
 
 #: inc/component.class.php:557 inc/service.class.php:1279
 msgid "List of tags available"
-msgstr "Liste des tags disponibles"
+msgstr "Список доступных тегов"
 
 #: inc/component.class.php:558
 msgid "Hostname of the device"
-msgstr "Nom du matériel"
+msgstr "Наименование хоста "
 
 #: inc/component.class.php:559
 msgid "IP of the device"
-msgstr "IP du matériel"
+msgstr "IP устройства"
 
 #: inc/component.class.php:560
 msgid "Network port number"
-msgstr "Numéro de port réseau"
+msgstr "Номер сетевого порта"
 
 #: inc/component.class.php:561
 msgid "Network port name"
-msgstr "Nom de port réseau"
+msgstr "Имя сетевого порта "
 
 #: inc/component.class.php:563
 msgid "Network port ifDescr of networking devices"
-msgstr "Port réseau ifDescr des matériels réseaux"
+msgstr "Сетевой порт ifDescr сетевого устройства"
 
 #: inc/component.class.php:564
 msgid "SNMP version of network equipment or printer"
-msgstr "Version SNMP de l'équipement réseau ou imprimante"
+msgstr "SNMP версия сетевого оборудования или принтера"
 
 #: inc/component.class.php:565
 msgid "SNMP community of network equipment or printer"
-msgstr "Communauté SNMP de l'équipement réseau ou imprimante"
+msgstr "SNMP community сетевого оборудования или принтера"
 
 #: inc/componentscatalog.class.php:75 inc/displayview.class.php:81
 #: inc/host.class.php:242 inc/perfdata.class.php:73 inc/service.class.php:209
 #: inc/servicescatalog.class.php:74 inc/slider.class.php:75
 #: inc/system.class.php:103
 msgid "See in homepage"
-msgstr "Voir sur la page d'accueil"
+msgstr "Смотрите на домашней странице"
 
 #: inc/componentscatalog.class.php:76 inc/displayview.class.php:82
 #: inc/host.class.php:243 inc/perfdata.class.php:74 inc/service.class.php:210
 #: inc/servicescatalog.class.php:75 inc/slider.class.php:76
 #: inc/system.class.php:104
 msgid "See in dashboard"
-msgstr "Voir sur le dashboard"
+msgstr "Смотрите в Панели управления"
 
 #: inc/componentscatalog.class.php:119 inc/contact_item.class.php:53
 #: inc/contact_item.class.php:75 inc/host_contact.class.php:73
 #: inc/servicescatalog.class.php:99
 msgid "Contacts"
-msgstr "Contacts"
+msgstr "Контакты"
 
 #: inc/componentscatalog.class.php:120 inc/service.class.php:738
 #: inc/service.class.php:739 inc/service.class.php:740
 msgid "Availability"
-msgstr "Disponibilité"
+msgstr "Доступность"
 
 #: inc/componentscatalog.class.php:122
 msgid "Synthese"
-msgstr "Synthèse"
+msgstr "Синтезированное"
 
 #: inc/componentscatalog.class.php:272
 msgid "Interval between 2 notifications (in minutes)"
-msgstr "Intervalle entre 2 notifications (en minutes)"
+msgstr "Интервал между 2 уведомлениями (в минутах)"
 
 #: inc/componentscatalog.class.php:309
 msgid "hours"
-msgstr "heures"
+msgstr "часов"
 
 #: inc/componentscatalog.class.php:316
 msgid "minutes"
-msgstr "minutes"
+msgstr "минут"
 
 #: inc/componentscatalog.class.php:439
 msgid "Nothing to display ..."
-msgstr "Rien à voir ..."
+msgstr "Уведомление на экран ..."
 
 #: inc/componentscatalog.class.php:595 inc/servicescatalog.class.php:673
 msgid "Minemap"
-msgstr "Minemap"
+msgstr "Миникарта"
 
 #: inc/componentscatalog.class.php:607 inc/componentscatalog_host.class.php:52
 #: inc/contacttemplate.class.php:119 inc/servicescatalog.class.php:690
 msgid "Hosts"
-msgstr "Hôtes"
+msgstr "Хосты"
 
 #: inc/componentscatalog.class.php:970
 msgid "Simple report"
-msgstr "Rapport simple"
+msgstr "Простой отчет"
 
 #: inc/componentscatalog.class.php:1018
 msgid "Generate the report"
-msgstr "Générer le rapport"
+msgstr "Генерировать отчет"
 
 #: inc/componentscatalog.class.php:1124
 msgid "Use for report"
-msgstr "Utiliser dans les rapports"
+msgstr "Использовать для отчета"
 
 #: inc/componentscatalog.class.php:1164
 msgid "Best is high value"
-msgstr "Valeur la plus grande"
+msgstr "Лучше большее"
 
 #: inc/componentscatalog.class.php:1195
 msgid "Generate PDF"
-msgstr "Générer en PDF"
+msgstr "Генерировать PDF"
 
 #: inc/componentscatalog.class.php:1257
 msgid "Trend"
-msgstr "Tendance"
+msgstr ""
 
 #: inc/componentscatalog.class.php:1260 inc/componentscatalog.class.php:1412
 msgid "Avaibility"
-msgstr "Disponibilité"
+msgstr "Доступность"
 
 #: inc/componentscatalog.class.php:1271
 msgid "%"
@@ -850,1063 +853,1065 @@ msgstr "%"
 
 #: inc/componentscatalog.class.php:1274
 msgid "Time"
-msgstr "Temps"
+msgstr "Время"
 
 #: inc/componentscatalog.class.php:1278
 msgid "Min"
-msgstr "Min"
+msgstr "Мин"
 
 #: inc/componentscatalog.class.php:1281
 msgid "Avg"
-msgstr "Moy"
+msgstr "Срд"
 
 #: inc/componentscatalog.class.php:1284
 msgid "Max"
-msgstr "Max"
+msgstr "Макс"
 
 #: inc/componentscatalog_component.class.php:76
 msgid "Associated components"
-msgstr "Composants associés"
+msgstr "Ассоциированные компоненты"
 
 #: inc/componentscatalog_component.class.php:157
 #: inc/componentscatalog_host.class.php:186
 msgid "Add a new component"
-msgstr "Ajout d'un nouveau composant"
+msgstr "Добавить новый компонент"
 
 #: inc/componentscatalog_host.class.php:78
 msgid "No associated hosts"
-msgstr "Pas d'hôte associés"
+msgstr "Нет ассоциированных устройств"
 
 #: inc/componentscatalog_host.class.php:80
 msgid "Associated hosts"
-msgstr "Hôtes associés"
+msgstr "Ассоциированные устройства"
 
 #: inc/componentscatalog_rule.class.php:177 inc/displayview_rule.class.php:188
 #: inc/search.class.php:452
 msgid "Update this rule"
-msgstr "Sauvegarder cette règle"
+msgstr "Обновить это правило"
 
 #: inc/componentscatalog_rule.class.php:180 inc/displayview_rule.class.php:191
 #: inc/search.class.php:455
 msgid "Delete this rule"
-msgstr "Supprimer cette règle"
+msgstr "Удалить это правило"
 
 #: inc/componentscatalog_rule.class.php:187 inc/displayview_rule.class.php:198
 #: inc/search.class.php:460
 msgid "Add this rule"
-msgstr "Ajouter cette règle"
+msgstr "Добавить это правило"
 
 #: inc/componentscatalog_rule.class.php:200
 #: inc/customitem_counter.class.php:248 inc/customitem_gauge.class.php:248
 #: inc/displayview_rule.class.php:211
 msgid "Preview"
-msgstr "Prévisualisation"
+msgstr "Предпросмотр"
 
 #: inc/config.class.php:59
 msgid "Configuration"
-msgstr "Configuration"
+msgstr "Конфигурация"
 
 #: inc/config.class.php:109
 msgid "Logs retention (in days)"
-msgstr "Rétention des logs (en jours)"
+msgstr "Хранить логи (в днях)"
 
 #: inc/config.class.php:118
 msgid "Timezones (for graph)"
-msgstr "Zones de temps (pour les graphiques)"
+msgstr "Временная зона (для графиков)"
 
 #: inc/config.class.php:175
 msgid "Extra-debug"
-msgstr "Extra-debug"
+msgstr "Экстра-отладка"
 
 #: inc/config.class.php:182
 msgid ""
 "Use container/VM name as prefix of NRPE command + use IP address of host"
-msgstr "Utilise le nom du conteneur/VM comme préfixe des commandes NRPE + utilisation de l'adresse IP de l'hôte"
+msgstr "Используйте имя контейнера /ВМ как префикс NRPE команды + используйте IP адрес устройства"
 
 #: inc/config.class.php:189
 msgid "Append id to hostname when generate conf"
-msgstr "Ajouter l'id de l'équipement lors de la génération de la conf"
+msgstr "Добавте ID к устройству при генерации конфигурации"
 
 #: inc/contact.class.php:58 inc/contact.class.php:68
 msgid "Contact"
-msgstr "Contact"
+msgstr "Контакт"
 
 #: inc/contact.class.php:135
 msgid "Manage this user for monitoring system"
-msgstr "Gérer cet utilisateur dans le système de monitoring"
+msgstr "Исправите права пользователя для доступа к системе мониторинга"
 
 #: inc/contacttemplate.class.php:97
 msgid "Default template"
-msgstr "Gabarit par défaut"
+msgstr "Основной шаблон"
 
 #: inc/contacttemplate.class.php:104
 msgid "Contact configuration for Shinken WebUI"
-msgstr "Configuration du contact pour la WebUI de Shinken"
+msgstr "Конфигурации контактов для Shinken WebUI"
 
 #: inc/contacttemplate.class.php:108
 msgid "Contact has Shinken administrator rights"
-msgstr "Contact qui a les droits d'administrateur Shinken"
+msgstr "Контакт имеет права администратора Shinken "
 
 #: inc/contacttemplate.class.php:112
 msgid "Contact can submit Shinken commands"
-msgstr "Contact qui peut soumettre des commandes Shinken"
+msgstr "Контакт может использовать команды Shinken"
 
 #: inc/contacttemplate.class.php:120 inc/displayview.class.php:835
 msgid "Services"
-msgstr "Services"
+msgstr "Сервисы"
 
 #: inc/contacttemplate.class.php:124 inc/contacttemplate.class.php:128
 msgid "Notifications"
-msgstr "Notifications"
+msgstr "Уведомления"
 
 #: inc/contacttemplate.class.php:135 inc/contacttemplate.class.php:140
 msgid "Notification command"
-msgstr "Commande de notification"
+msgstr "Команды уведомлений"
 
 #: inc/contacttemplate.class.php:148 inc/contacttemplate.class.php:153
 msgid "Period"
-msgstr "Période"
+msgstr "Период"
 
 #: inc/contacttemplate.class.php:161
 msgid "Notify on DOWN host states"
-msgstr "Notifier quant l'état d'un hôte devient DOWN"
+msgstr "Уведомить о ВЫКЛ состоянии устройств"
 
 #: inc/contacttemplate.class.php:165
 msgid "Notify on WARNING service states"
-msgstr "Notifier quant l'état de service devient WARNING"
+msgstr "Уведомить об ОШИБКАХ в состоянии сервиса"
 
 #: inc/contacttemplate.class.php:172
 msgid "Notify on UNREACHABLE host states"
-msgstr "Notifier quant l'état d'un hôte devient UNREACHABLE"
+msgstr "Уведомить о НЕДОСТУПНЫХ устройствах"
 
 #: inc/contacttemplate.class.php:176
 msgid "Notify on UNKNOWN service states"
-msgstr "Notifier quant l'état d'un service devient UNKNOWN"
+msgstr "Уведомить о НЕИЗВЕСТНОМ состоянии устройства"
 
 #: inc/contacttemplate.class.php:183
 msgid "Notify on host recoveries (UP states)"
-msgstr "Notifier quant un hôte redevient normal (état OK)"
+msgstr "Уведомить о восстановлении устройства (ВКЛ состоянии)"
 
 #: inc/contacttemplate.class.php:187
 msgid "Notify on CRITICAL service states"
-msgstr "Notifier quant l'état d'un service devient CRITICAL"
+msgstr "Уведомить о КРИТИЧЕСКОМ состоянии сервиса"
 
 #: inc/contacttemplate.class.php:194
 msgid "Notify when the host starts and stops flapping"
-msgstr "Notifier quand l'état des hôtes commencent et arrêtent d'osciller"
+msgstr "Уведомить о нестабильном поведении устройства(старт-стоп)"
 
 #: inc/contacttemplate.class.php:198
 msgid "Notify on service recoveries (OK states)"
-msgstr "Notifier quand le service redevient normal (état OK)"
+msgstr "Уведомить о восстановлении устройства (ОК состоянии)"
 
 #: inc/contacttemplate.class.php:205
 msgid ""
 "Send notifications when host or service scheduled downtime starts and ends"
-msgstr "Envoi de notifications quand l'arrêt programmé d'un hôte ou d'un service programmé démarre et s'arrête"
+msgstr "Послать уведомление когда устройство или сервис будет недоступен, начало и конец"
 
 #: inc/contacttemplate.class.php:209
 msgid "Notify when the service starts and stops flapping"
-msgstr "Notifier quand l'état des services commencent et arrêtent d'osciller"
+msgstr "Уведомить о нестабильном поведении сервиса(старт-стоп)"
 
 #: inc/contacttemplate.class.php:216
 msgid "The contact will not receive any type of host notifications"
-msgstr "L'utilisateur ne va pas recevoir de notifications de type hôte"
+msgstr "Контакт не получал любых уведомлений от устройства"
 
 #: inc/contacttemplate.class.php:220
 msgid "The contact will not receive any type of service notifications"
-msgstr "L'utilisateur ne va pas recevoir de notifications de type service"
+msgstr "Контакт не получал любых уведомлений от сервиса"
 
 #: inc/customitem_common.class.php:52
 msgid "Last day (last 24 hours)"
-msgstr "Dernière journée (24 dernières heures)"
+msgstr "Последний день (последние 24 часа)"
 
 #: inc/customitem_common.class.php:53
 msgid "Last day (since midnight)"
-msgstr "Dernière journée (depuis minuit)"
+msgstr "Последний день (с полуночи)"
 
 #: inc/customitem_common.class.php:54
 msgid "Last week (last 7 days)"
-msgstr "Dernière semaine (7 derniers jours)"
+msgstr "Последняя неделя (последние 7 дней)"
 
 #: inc/customitem_common.class.php:55
 msgid "Last week (since Monday)"
-msgstr "Dernière semaine (depuis Lundi)"
+msgstr "Последняя неделя (с Понедельника)"
 
 #: inc/customitem_common.class.php:56
 msgid "Last week (since Sunday)"
-msgstr "Dernière semaine (depuis Dimanche)"
+msgstr "Последняя неделя (с Субботы)"
 
 #: inc/customitem_common.class.php:57
 msgid "Last month (last 30 days)"
-msgstr "Dernier mois (30 derniers jours)"
+msgstr "Последний месяц (последние 30 дней)"
 
 #: inc/customitem_common.class.php:58
 msgid "Last month (since first day of month)"
-msgstr "Dernier mois (depuis le 1er jour)"
+msgstr "Последний месяц(с 1 числа)"
 
 #: inc/customitem_common.class.php:59
 msgid "Last year (365 days)"
-msgstr "Dernière année (365 derniers jours)"
+msgstr "Последний год (356 дней)"
 
 #: inc/customitem_common.class.php:60
 msgid "Last year (since first January)"
-msgstr "Dernière année (depuis 1er Janvier)"
+msgstr "Последний год (с 1 Января)"
 
 #: inc/customitem_counter.class.php:59 inc/customitem_gauge.class.php:59
 msgid "Custom item"
-msgstr "Elément personnalisé"
+msgstr "Настроиваемый пункт"
 
 #: inc/customitem_counter.class.php:59
 msgid "Counter"
-msgstr "Compteur"
+msgstr "Счетчик"
 
 #: inc/customitem_counter.class.php:114 inc/customitem_gauge.class.php:114
 #: inc/host.class.php:121
 msgid "Type"
-msgstr "Type"
+msgstr "Тип"
 
 #: inc/customitem_counter.class.php:122 inc/customitem_gauge.class.php:122
 msgid "Time (not used for `last value` type)"
-msgstr "Temps (non utilisé pour le type 'dernière valeur')"
+msgstr "Время (не использовать для типа `Последнее значение`)"
 
 #: inc/customitem_counter.class.php:127 inc/customitem_gauge.class.php:127
 msgid "Calendar"
-msgstr "Calendrier"
+msgstr "Календарь"
 
 #: inc/customitem_counter.class.php:147
 msgid "Add counter"
-msgstr "Ajouter un compteur"
+msgstr "Добавить счетчик"
 
 #: inc/customitem_counter.class.php:268
 msgid "Last value (diff for incremental)"
-msgstr "Dernière valeur (différence pour incrémental)"
+msgstr "Последние значение(Различия для инкрементных)"
 
 #: inc/customitem_counter.class.php:270 inc/customitem_gauge.class.php:269
 msgid "Average"
-msgstr "Moyenne"
+msgstr "В среднем"
 
 #: inc/customitem_counter.class.php:271 inc/customitem_gauge.class.php:270
 msgid "Median"
-msgstr "Médiane"
+msgstr "Медиана"
 
 #: inc/customitem_counter.class.php:728 inc/customitem_gauge.class.php:706
 #: inc/perfdatadetail.class.php:156 inc/perfdatadetail.class.php:171
 #: inc/perfdatadetail.class.php:186 inc/perfdatadetail.class.php:199
 msgid "Value"
-msgstr "Valeur"
+msgstr "Значение"
 
 #: inc/customitem_gauge.class.php:59
 msgid "Gauge"
-msgstr "Jauge"
+msgstr "Датчик"
 
 #: inc/customitem_gauge.class.php:147
 msgid "Add gauge"
-msgstr "Ajouter une jauge"
+msgstr "Добавить датчик"
 
 #: inc/customitem_gauge.class.php:268
 msgid "Last value(diff for incremantal)"
-msgstr "Dernière valeur (différence pour un incrémental)"
+msgstr "Последние значение(Различия для инкрементных)"
 
 #: inc/customitem_gauge.class.php:736 inc/display.class.php:2163
 #: inc/display.class.php:2167 inc/display.class.php:2169
 msgid "Warning"
-msgstr "Avertissement"
+msgstr "Предупреждение"
 
 #: inc/customitem_gauge.class.php:758 inc/display.class.php:2127
 #: inc/display.class.php:2129
 msgid "Critical"
-msgstr "Critique"
+msgstr "Критичный"
 
 #: inc/customitem_gauge.class.php:780
 msgid "Limit (max)"
-msgstr "Limite (max)"
+msgstr "Лимит (макс)"
 
 #: inc/dashboard.class.php:67
 msgid "Main menu"
-msgstr "Menu principal"
+msgstr "Главное меню"
 
 #: inc/display.class.php:85 inc/display.class.php:294
 #: inc/profile.class.php:228 inc/system.class.php:64
 msgid "System status"
-msgstr "Etat du système"
+msgstr "Статус системы"
 
 #: inc/display.class.php:104 inc/display.class.php:297 inc/host.class.php:162
 msgid "Hosts status"
-msgstr "Etat des machines"
+msgstr "Статус хостов"
 
 #: inc/display.class.php:117 inc/display.class.php:306
 #: inc/service.class.php:186
 msgid "All resources"
-msgstr "Ressources"
+msgstr "Все ресурсы"
 
 #: inc/display.class.php:130 inc/display.class.php:1001 inc/host.class.php:111
 #: inc/service.class.php:190
 msgid "Performance data"
-msgstr "Métriques"
+msgstr "Данные производительности"
 
 #: inc/display.class.php:699
 msgid "Global counters"
-msgstr "Compteurs cumulés"
+msgstr "Глобальные счетчики"
 
 #: inc/display.class.php:717 inc/service.class.php:721
 msgid "Show graphics"
-msgstr "Graphes"
+msgstr "Показать графики"
 
 #: inc/display.class.php:719 inc/host.class.php:72
 msgid "Host name"
-msgstr "Hôte"
+msgstr "Имя хоста"
 
 #: inc/display.class.php:722 inc/service.class.php:81
 #: inc/service.class.php:727
 msgid "Resource state"
-msgstr "Etat de la ressource"
+msgstr "Состояние ресурса"
 
 #: inc/display.class.php:723 inc/display.class.php:999 inc/host.class.php:100
 #: inc/service.class.php:97 inc/service.class.php:730
 msgid "Last check"
-msgstr "Dernier contrôle"
+msgstr "Последняя проверка"
 
 #: inc/display.class.php:724 inc/display.class.php:1000 inc/host.class.php:105
 #: inc/service.class.php:102 inc/service.class.php:733
 msgid "Result details"
-msgstr "Résultat"
+msgstr "Детали"
 
 #: inc/display.class.php:995
 msgid "Host action"
-msgstr "Action"
+msgstr "Действие устройства"
 
 #: inc/display.class.php:997
 msgid "Host resources state"
-msgstr "Etat des ressources"
+msgstr "Состояние ресурсов устройства"
 
 #: inc/display.class.php:998
 msgid "IP address"
-msgstr "Adresse IP"
+msgstr "IP адрес"
 
 #: inc/display.class.php:1004
 msgid "Maintenance"
-msgstr "Maintenance"
+msgstr "Обслуживание"
 
 #: inc/display.class.php:1029
 msgid "Unknown IP address"
-msgstr "Adresse IP inconnue"
+msgstr "Неизвестный IP адрес"
 
 #: inc/display.class.php:1243 inc/display.class.php:1244
 msgid "Modify acknowledge comment for the service"
-msgstr "Modifier le commentaire d'acquittement"
+msgstr "Изменить подтверждающий комментарий для сервиса"
 
 #: inc/display.class.php:1251 inc/display.class.php:1252
 msgid "Service problem has been acknowledged"
-msgstr "Le problème a été acquitté"
+msgstr "Проблема сервиса подтверждена"
 
 #: inc/display.class.php:1266 inc/display.class.php:1267
 msgid "Add an acknowledge for the service"
-msgstr "Ajouter un acquittement pour le service"
+msgstr "Добавить подтверждение для сервиса"
 
 #: inc/display.class.php:1282
 msgid "Managed by NRPE"
-msgstr "Géré par NRPE"
+msgstr "Управление NRPE"
 
 #: inc/display.class.php:1290
 msgid "Configure"
-msgstr "Configurer"
+msgstr "Настройка"
 
 #: inc/display.class.php:1421 inc/display.class.php:1422
 msgid "Edit the downtime scheduled for the host"
-msgstr "Modifier la maintenance programmée pour l'hôte"
+msgstr "Изменить расписание выключения хоста"
 
 #: inc/display.class.php:1430 inc/display.class.php:1431
 msgid "A downtime is scheduled for the host"
-msgstr "Une maintenance est programmée pour l'hôte"
+msgstr "Выключение хоста по расписанию"
 
 #: inc/display.class.php:1441 inc/display.class.php:1442
 msgid "Schedule a downtime for the host"
-msgstr "Programmer une maintenance pour l'hôte"
+msgstr "Расписание выключения хоста"
 
 #: inc/display.class.php:1456 inc/display.class.php:1457
 msgid "Modify acknowledge comment for the host"
-msgstr "Modifier le commentaire d'acquittement"
+msgstr "Изменить подтверждающий комментарий для хоста"
 
 #: inc/display.class.php:1464 inc/display.class.php:1465
 msgid "Host problem has been acknowledged"
-msgstr "Le problème a été acquitté"
+msgstr "Проблема на хосте подтверждена"
 
 #: inc/display.class.php:1479 inc/display.class.php:1480
 #: inc/host.class.php:788
 msgid "Add an acknowledge for the host and all faulty services of the host"
-msgstr "Acquitter l'hôte et tous les services en défaut"
+msgstr "Добавить подтверждение для хоста и всех проблемных сервисов на устройстве"
 
 #: inc/display.class.php:1595 inc/displayview_item.class.php:124
 msgid "Select date"
-msgstr "Sélection de la date"
+msgstr "Выберите дату"
 
 #: inc/display.class.php:1595 inc/displayview_item.class.php:124
 #: inc/displayview_item.class.php:184
 msgid "Select time"
-msgstr "Sélection de l'heure"
+msgstr "Выберите время"
 
 #: inc/display.class.php:1627
 msgid "Last 2 hours"
-msgstr "2 dernières heures"
+msgstr "Последние 2 часа"
 
 #: inc/display.class.php:1628
 msgid "Last 12 hours"
-msgstr "12 dernières heures"
+msgstr "Последние 12 часов"
 
 #: inc/display.class.php:1629
 msgid "Last 24 hours"
-msgstr "24 dernières heures"
+msgstr "Последние 24 часа"
 
 #: inc/display.class.php:1630
 msgid "Last 7 days (average)"
-msgstr "7 derniers jours (moyenne)"
+msgstr "Последние 7 дней (среднее)"
 
 #: inc/display.class.php:2204 inc/display.class.php:2206
 msgid "Warning (connection)"
-msgstr "Warning (connexion)"
+msgstr "Предупреждене (подключения)"
 
 #: inc/display.class.php:2237 inc/display.class.php:2239
 msgid "OK"
-msgstr "OK"
+msgstr "ОК"
 
 #: inc/display.class.php:2479
 msgid "Down"
-msgstr "Down"
+msgstr "Выключить"
 
 #: inc/display.class.php:2501
 msgid "Unreachable"
-msgstr "Injoignable"
+msgstr "Недоступное"
 
 #: inc/display.class.php:2523
 msgid "Unknown"
-msgstr "Inconnu"
+msgstr "Неизвестное"
 
 #: inc/display.class.php:2545
 msgid "Up"
-msgstr "Up"
+msgstr "Включить"
 
 #: inc/display.class.php:2700
 msgid "Page refresh (in seconds)"
-msgstr "Rechargement de la page (en secondes)"
+msgstr "Обновить страницу (в секундах)"
 
 #: inc/display.class.php:2712
 msgid "Reduced interface"
-msgstr "Interface simplifiée"
+msgstr "Пониженный интерфейс"
 
 #: inc/display.class.php:2776
 msgid "Reload Shinken configuration from Glpi database"
-msgstr "Recharger la configuration de Shinken à partir de la base de données GLPI"
+msgstr "Перезагрузить конфигурацию Shinken из базы GLPI"
 
 #: inc/display.class.php:2777
 msgid "Reload Shinken config"
-msgstr "Recharger la config Shinken"
+msgstr "Перезагрузить конфигурацию Shinken"
 
 #: inc/display.class.php:2781
 msgid "Restart all Shinken daemons"
-msgstr "Redémarrer tous les démons Shinken"
+msgstr "Рестарт всех Shinken демонов"
 
 #: inc/display.class.php:2782 inc/profile.class.php:220
 msgid "Restart Shinken"
-msgstr "Redémarrer Shinken"
+msgstr "Рестарт Shinken"
 
 #: inc/display.class.php:2793
 msgid "All instances"
-msgstr "Toutes les instances"
+msgstr "Все инстансы"
 
 #: inc/displayview.class.php:68 inc/displayview.class.php:258
 #: inc/displayview_item.class.php:190
 msgid "View"
 msgid_plural "Views"
-msgstr[0] "Vues"
-msgstr[1] "Vues"
+msgstr[0] "Просмотр"
+msgstr[1] "Просмотры"
+msgstr[2] ""
+msgstr[3] ""
 
 #: inc/displayview.class.php:208
 msgid "Display view in dashboard"
-msgstr "Afficher la vue dans le tableau de bord"
+msgstr "Показать виды в панели управления "
 
 #: inc/displayview.class.php:329
 msgid "Display view in dashboard (front view)"
-msgstr "Afficher la vue dans le dashboard (vue frontale)"
+msgstr "Показать виды в панели управления (прямой просмотр)"
 
 #: inc/displayview.class.php:336
 msgid "Header counter (critical/warning/ok)"
-msgstr "Compteurs en titre (critique/warning/ok)"
+msgstr "Заголовок счетчика (критичные/предупреждения/ок)"
 
 #: inc/displayview.class.php:340 inc/servicedef.class.php:100
 msgid "Business rules"
-msgstr "Règles métier"
+msgstr "Бизнес правила"
 
 #: inc/displayview.class.php:347 inc/slider.class.php:323
 msgid "Display in GLPI home page"
-msgstr "Afficher sur la page d'accueil de GLPI"
+msgstr "Показать на главной странице GLPI"
 
 #: inc/displayview.class.php:356 inc/weathermap.class.php:111
 msgid "Width"
-msgstr "Longueur"
+msgstr "Ширина"
 
 #: inc/displayview_item.class.php:491 inc/slider_item.class.php:132
 msgid "Element to display"
-msgstr "Element à afficher"
+msgstr "Показать элементов"
 
 #: inc/displayview_item.class.php:498
 msgid "Host (info)"
-msgstr "Hôte (info)"
+msgstr "Хост (информация)"
 
 #: inc/displayview_item.class.php:499 inc/host.class.php:174
 #: inc/slider_item.class.php:138
 msgid "Resources (graph)"
-msgstr "Ressources (graphique)"
+msgstr "Ресурсы (График)"
 
 #: inc/displayview_rule.class.php:69
 msgid "Replay all views rules"
-msgstr "Rejouer toutes les règles"
+msgstr "Переиграть все правила вида"
 
 #: inc/displayview_rule.class.php:96 inc/displayview_rule.class.php:141
 msgid "Host rule"
-msgstr "Règle hôte"
+msgstr "Правила хоста"
 
 #: inc/displayview_rule.class.php:104
 msgid "Resource rule"
-msgstr "Règle ressource"
+msgstr "Правила ресурса"
 
 #: inc/displayview_rule.class.php:149
 msgid "Edit rule"
-msgstr "Modifier la règle"
+msgstr "Изменить правило"
 
 #: inc/displayview_rule.class.php:358
 msgid "Replay all rules"
-msgstr "Rejouer toutes les règles"
+msgstr "Переиграть все правила"
 
 #: inc/displayview_rule.class.php:365
 msgctxt "button"
 msgid "Replay all rules"
-msgstr "Rejouer toutes les règles"
+msgstr "Переиграть"
 
 #: inc/downtime.class.php:53 inc/profile.class.php:168
 msgid "Downtime"
-msgstr "Temps d'arrêt"
+msgstr "Время простоя"
 
 #: inc/downtime.class.php:149
 msgid "Host downtimes"
-msgstr "Maintenances de l'hôte"
+msgstr "Время простоя устройства"
 
 #: inc/downtime.class.php:171
 msgid "Flexible downtime"
-msgstr "Maintenance flexible"
+msgstr "Настраиваемое выключение"
 
 #: inc/downtime.class.php:189 inc/downtime.class.php:622
 #: inc/unavailability.class.php:171
 msgid "Duration"
-msgstr "Durée"
+msgstr "Продолжительность"
 
 #: inc/downtime.class.php:194
 msgid "Duration type"
-msgstr "Type de durée"
+msgstr "Тип продолжительности"
 
 #: inc/downtime.class.php:217
 msgid "Period expired"
-msgstr "Période expirée"
+msgstr "Время окончания"
 
 #: inc/downtime.class.php:376
 msgid "Downtime period has already expired!"
-msgstr "La période de maintenance a déjà expiré"
+msgstr "Время простоя истекло!"
 
 #: inc/downtime.class.php:461
 msgid "Downtime notified to the monitoring application:"
-msgstr "La maintenance a été notifiée à l'application de supervision"
+msgstr "Уведомлении в приложение мониторинга о времени простоя"
 
 #: inc/downtime.class.php:464
 msgid "Downtime has not been accepted by the monitoring application:"
-msgstr "La maintenance n'a pas été acceptée par l'application de supervision"
+msgstr "Выключение не принято приложением мониторинга"
 
 #: inc/downtime.class.php:508
 msgid "Downtime deletion notified to the monitoring application:"
-msgstr "La suppression de la maintenance a été notifiée à l'application de supervision"
+msgstr "Удаление уведомления о выключении в приложении мониторинга"
 
 #: inc/downtime.class.php:511
 msgid "Downtime deletion has not been accepted by the monitoring application:"
-msgstr "La suppression de la maintenance n'a pas été acceptée par l'application de supervision"
+msgstr "Удаление выключения не принято приложением мониторинга"
 
 #: inc/downtime.class.php:598
 msgid "Flexible ?"
-msgstr "Flexible ?"
+msgstr "Настраиваемый"
 
 #: inc/downtime.class.php:683
 msgid "Downtime associated ticket"
-msgstr "Ticket associé"
+msgstr "Заявка ассоциированная с простоем"
 
 #: inc/downtime.class.php:714
 msgid "Associated ticket (no declared category implies no ticket created):"
-msgstr "Ticket associé (pas de catégorie déclarée signifie pas de ticket créé) :"
+msgstr "Связанная заявка (без категории)"
 
 #: inc/downtime.class.php:743
 msgid "Ticket type:"
-msgstr "Type de ticket :"
+msgstr "Тип заявки"
 
 #: inc/downtime.class.php:765
 msgid "Ticket category:"
-msgstr "Catégorie du ticket : "
+msgstr "Категория заявки"
 
 #: inc/downtime.class.php:781
 msgid "No associated ticket for this downtime"
-msgstr "Pas de ticket associé à cette maintenance"
+msgstr "Нет запросов по проблеме выключения"
 
 #: inc/downtime.class.php:799
 msgid "Update downtimes expiration"
-msgstr "Mise à jour des expirations des maintenances."
+msgstr "Обновить срок выключения"
 
 #: inc/entity.class.php:121
 msgid "Set tag to link entity with a specific Shinken server"
-msgstr "Définir l'étiquette pour lier une entité avec un serveur Shinken"
+msgstr "Назначить тег на ссылку объекта с определенным Shinken сервером"
 
 #: inc/host.class.php:77
 msgid "Host state"
-msgstr "Etat de l'hôte"
+msgstr "Состояние хоста"
 
 #: inc/host.class.php:82
 msgid "Host state type"
-msgstr "Type d'état"
+msgstr "Тип статуса устройства"
 
 #: inc/host.class.php:493
 msgid "Status"
-msgstr "Statut"
+msgstr "Статус"
 
 #: inc/host.class.php:786
 msgid "Add an acknowledge for all faulty services of the host"
-msgstr "Acquitter toutes les ressources en défaut pour l'hôte"
+msgstr "Добавить подтверждение для всех сбойных сервисов на устройстве"
 
 #: inc/host.class.php:805
 msgid "All these services will be acknowledged"
-msgstr "Tous ces services vont être acquittés"
+msgstr "Все сервисы могут быть подтверждены"
 
 #: inc/host.class.php:829 inc/host.class.php:897 inc/service.class.php:1533
 msgid "Acknowledge comment"
-msgstr "Commentaire"
+msgstr "Подтверждающий комментарий"
 
 #: inc/host.class.php:843
 msgid "Add an acknowledge for host"
-msgstr "Ajouter un acquittement pour l'hôte"
+msgstr "Добавить подтверждение на устройства"
 
 #: inc/host.class.php:850
 msgid "Host is down"
-msgstr "L'hôte est DOWN"
+msgstr "Устройство выключено"
 
 #: inc/host.class.php:852
 msgid "Add an acknowledge for host and create a ticket"
-msgstr "Ajouter un acquittement pour l'hôte et créer un ticket"
+msgstr "Добавить подтверждение для устройства и создать запрос"
 
 #: inc/host.class.php:891
 msgid "Modify acknowledge for the host"
-msgstr "Modifier l'acquittement pour l'hôte"
+msgstr "Изменить подтверждение для устройства"
 
 #: inc/host.class.php:912 inc/service.class.php:1548
 msgid "Acknowledge user"
-msgstr "Par"
+msgstr "Подтвержденный пользователь"
 
 #: inc/host.class.php:923 inc/service.class.php:1559
 msgid "Update acknowledge comment"
-msgstr "Mettre à jour le commentaire de l'acquittement"
+msgstr "Обновить подтверждающий комментарий"
 
 #: inc/hostaddress.class.php:92
 msgid "Interface and IP to use for checks (only if have many IPs)"
-msgstr "Interface et IP à utiliser pour les contrôles (uniquement s'il y a plusieurs IP)"
+msgstr "Интерфейс или IP используемый для проверок (только если имеет много IP)"
 
 #: inc/hostaddress.class.php:147
 msgid "First IP"
-msgstr "Première IP"
+msgstr "Первый IP"
 
 #: inc/hostconfig.class.php:87 inc/profile.class.php:216
 msgid "Host configuration"
-msgstr "Configuration de l'hôte"
+msgstr "Конфигурация устройства"
 
 #: inc/hostconfig.class.php:141
 msgid "Hosts configuration"
-msgstr "Configuration des hôtes"
+msgstr "Конфигурация устройств"
 
 #: inc/hostconfig.class.php:165
 msgid "Reaml"
-msgstr "Royaume (reaml)"
+msgstr "Реалм"
 
 #: inc/hostconfig.class.php:214
 msgid "Jet lag"
-msgstr "Décalage horaire"
+msgstr "Рассинхронизация"
 
 #: inc/log.class.php:59
 msgid "Logs"
-msgstr "Logs"
+msgstr "Логи"
 
 #: inc/log.class.php:69
 msgid "Clean monitoring logs"
-msgstr "Nettoyer les logs de monitoring"
+msgstr "Очистить логи мониторинга"
 
 #: inc/message.class.php:130
 msgid "Services catalog with resources not available"
-msgstr "Catalogue de services ayant des ressources non disponibles"
+msgstr "Каталог сервисов с ресурсами не доступен"
 
 #: inc/message.class.php:164
 msgid "The configuration has changed"
-msgstr "La configuration a changé"
+msgstr "Конфигурация изменена"
 
 #: inc/message.class.php:166
 msgid "resources added"
-msgstr "ressources ajoutées"
+msgstr "ресурс добавлен"
 
 #: inc/message.class.php:183
 msgid "resources deleted"
-msgstr "ressources supprimées"
+msgstr "ресурс удален"
 
 #: inc/message.class.php:200
 msgid "resources updated"
-msgstr "ressources mise à jour"
+msgstr "ресурс обновлен"
 
 #: inc/message.class.php:218
 msgid "Shinken is restarted automatically"
-msgstr "Shinken redémarre automatiquement"
+msgstr "Shinken перезапущен автоматически"
 
 #: inc/message.class.php:249
 msgid "No events found in last minutes, so Shinken seems stopped"
-msgstr "Pas d'évènements trouvés dans les dernières minutes, donc Shinken semble arrêté"
+msgstr "Не найдено событий за последнюю минуту, Проверте состояние сервиса Shinken"
 
 #: inc/message.class.php:267
 msgid "Shinken reload order has been sent at"
-msgstr "L'ordre de rechargement Shinken a été envoyé à"
+msgstr "Обновление запроса Shinken отослано"
 
 #: inc/message.class.php:282
 msgid "Shinken restart order has been sent at"
-msgstr "L'ordre de redémarrage de Shinken a été envoyé"
+msgstr "Перезапуск запроса Shinken отослано "
 
 #: inc/networkport.class.php:58 inc/networkport.class.php:66
 msgid "Network ports of networking devices"
-msgstr "Ports réseaux des équipements réseaux"
+msgstr "Сетевые порты устройств"
 
 #: inc/notificationcommand.class.php:175
 msgid "Shinken reactionner tag"
-msgstr "Etiquette reactionner Shinken"
+msgstr "Метка реакционера Shinken"
 
 #: inc/notificationcommand.class.php:229
 msgid "Reactionner tag"
-msgstr "Etiquette reactionner"
+msgstr "Метка реакционера"
 
 #: inc/perfdata.class.php:61 inc/profile.class.php:200
 msgid "Graph template"
-msgstr "Modèle de graphique"
+msgstr "Шаблон графика"
 
 #: inc/perfdata.class.php:1137
 msgid "A perfdata for this check"
-msgstr "Exemple de perfdata pour ce contrôle"
+msgstr "Данные производительности для данной проверки"
 
 #: inc/perfdatadetail.class.php:165
 msgid "Is name dynamic"
-msgstr "Nom dynamique ?"
+msgstr "Имя динамическое"
 
 #: inc/perfdatadetail.class.php:180
 msgid "Position"
-msgstr "Position"
+msgstr "Позиция"
 
 #: inc/perfdatadetail.class.php:222 inc/perfdatadetail.class.php:223
 msgid "Incremental"
-msgstr "Incrémental"
+msgstr "Инкрементный"
 
 #: inc/profile.class.php:160
 msgid "Homepage"
-msgstr "Page d'accueil"
+msgstr "Домашняя страница"
 
 #: inc/profile.class.php:176 inc/slider.class.php:63 inc/slider.class.php:187
 msgid "Slider"
-msgstr "Slider"
+msgstr "Слайдер"
 
 #: inc/profile.class.php:224
 msgid "Services (ressources)"
-msgstr "Services (ressources)"
+msgstr "Сервисы (ресурсы)"
 
 #: inc/profile.class.php:232
 msgid "Host status"
-msgstr "Statut de l'hôte"
+msgstr "Статус хоста"
 
 #: inc/profile.class.php:236
 msgid "Host commands"
-msgstr "Commandes de l'hôte"
+msgstr "Команды хоста"
 
 #: inc/profile.class.php:240 inc/unavailability.class.php:130
 msgid "Unavailability"
-msgstr "Indisponibilité"
+msgstr "Недоступность"
 
 #: inc/profile.class.php:291
 msgid "General"
-msgstr "Général"
+msgstr "Главный"
 
 #: inc/rrdtool.class.php:256 inc/rrdtool.class.php:306
 msgid "RRDtool templates"
-msgstr "Gabarits RRDtool"
+msgstr "Шаблоны RRDtool"
 
 #: inc/rrdtool.class.php:306
 msgid "Find files on"
-msgstr "Vous trouverez les fichier sur"
+msgstr "Файл найден"
 
 #: inc/rrdtool.class.php:313
 msgid "Upload perfdata and graph files"
-msgstr "Charger les fichiers perfdata et graph"
+msgstr "Загрузить данные производительности и файлы графиков"
 
 #: inc/service.class.php:89 inc/serviceevent.class.php:174
 msgid "Service state type"
-msgstr "Type d'état"
+msgstr "Тип состояния сервиса"
 
 #: inc/service.class.php:113
 msgid "Host acknowledge"
-msgstr "Acquittement de l'hôte"
+msgstr "Хост подтвержден"
 
 #: inc/service.class.php:738 inc/unavailability.class.php:419
 msgid "Current month"
-msgstr "Mois en cours"
+msgstr "Текущий месяц"
 
 #: inc/service.class.php:739 inc/unavailability.class.php:420
 msgid "Last month"
-msgstr "Dernier mois"
+msgstr "Последний месяц"
 
 #: inc/service.class.php:740 inc/unavailability.class.php:421
 msgid "Current year"
-msgstr "Année en cours"
+msgstr "Текущий год"
 
 #: inc/service.class.php:741 inc/unavailability.class.php:422
 msgid "Detail"
-msgstr "Détail"
+msgstr "Подробно"
 
 #: inc/service.class.php:921
 msgid "No type associated"
-msgstr "Pas de type associé"
+msgstr "Нет связанного типа"
 
 #: inc/service.class.php:1088
 msgid "Argument ([text:text] is used to get values dynamically)"
-msgstr "Argument ([text:text] est utilisé pour récupérer les valeurs automatiquement)"
+msgstr "Аргумент ([text:text] используется для динамического получение данных )"
 
 #: inc/service.class.php:1278
 msgid "Component arguments"
-msgstr "Arguments du composant"
+msgstr "Аргументы компонента"
 
 #: inc/service.class.php:1326
 msgid "Custom arguments for this resource (empty : inherit)"
-msgstr "Arguments personalisés pour cette ressource (vide = hérité)"
+msgstr "Пользовательские аргументы для данного ресурса (пустой : наследуемый)"
 
 #: inc/service.class.php:1474
 msgid "Add an acknowledge for a service "
-msgstr "Ajouter un acquittement pour le service"
+msgstr "Добавить подтверждение для сервиса"
 
 #: inc/service.class.php:1494
 msgid "Add an acknowledge"
-msgstr "Ajouter un acquittement"
+msgstr "Добавить подтверждение"
 
 #: inc/service.class.php:1525
 msgid "Modify acknowledge for the service"
-msgstr "Modifier l'acquittement du service"
+msgstr "Изменить подтверждение для сервиса"
 
 #: inc/servicedef.class.php:187
 msgid "Active checks enable"
-msgstr "Activer les contrôles actifs"
+msgstr "Активные проверки включены"
 
 #: inc/servicedef.class.php:201
 msgid "Passive checks enable"
-msgstr "Activer les contrôles passifs"
+msgstr "Пассивные проверки включены"
 
 #: inc/servicedef.class.php:236
 msgid "By ssh"
-msgstr "Par SSH"
+msgstr "Через ssh"
 
 #: inc/servicedef.class.php:249
 msgid "Use arguments (Only for NRPE)"
-msgstr "Utiliser des arguments (uniquement pour NRPE)"
+msgstr "Использовать аргументы (только для NRPE)"
 
 #: inc/servicedef.class.php:263
 msgid "Alias command if required (Only for NRPE)"
-msgstr "Commande alias si requise (uniquement pour NRPE)"
+msgstr "Алиас команды, если обязателен(только для NRPE)"
 
 #: inc/servicedef.class.php:273
 msgid "Command link (used for graphs generation)"
-msgstr "Liaison de la commande (utilisé pour la génération des graphiques)"
+msgstr "Ссылка на команду (используется для генерации графиков)"
 
 #: inc/serviceevent.class.php:60 inc/serviceevent.class.php:94
 msgid "Service events"
-msgstr "Evénement d'une ressource"
+msgstr "События сервиса"
 
 #: inc/serviceevent.class.php:106
 msgid "Service instance"
-msgstr "Instance de service"
+msgstr "Экземпляр службы"
 
 #: inc/serviceevent.class.php:153
 msgid "Date"
-msgstr "Date"
+msgstr "Дата"
 
 #: inc/serviceevent.class.php:159
 msgid "Event output"
-msgstr "Message"
+msgstr "События выхода"
 
 #: inc/serviceevent.class.php:164
 msgid "Event performance data"
-msgstr "Données de comptage"
+msgstr "События производительности"
 
 #: inc/serviceevent.class.php:169
 msgid "Service state"
-msgstr "Etat du service"
+msgstr "Состояние сервиса"
 
 #: inc/servicescatalog.class.php:312
 msgid "Interval between 2 notifications"
-msgstr "Intervalle entre deux notifications"
+msgstr "Интервал между 2 оповещениями"
 
 #: inc/servicescatalog.class.php:325
 msgid "Business priority level"
-msgstr "Niveau de priorité"
+msgstr "Уровень бизнес приоритета"
 
 #: inc/servicescatalog.class.php:337
 msgid "Services catalog template ?"
-msgstr "Modèle de catalogue de services ?"
+msgstr "Шаблон каталога сервисов ?"
 
 #: inc/servicescatalog.class.php:662
 msgid "Degraded mode"
-msgstr "Mode dégradé"
+msgstr "Режим ухудшения"
 
 #: inc/servicescatalog.class.php:685
 msgid "Business rules group"
-msgstr "Groupe de règles"
+msgstr "Группы бизнес правил"
 
 #: inc/shinkenwebservice.class.php:221 inc/shinkenwebservice.class.php:227
 msgid "Shinken communication failed:"
-msgstr "La communication avec Shinken a échoué : "
+msgstr "Подключение Shinken провалено : "
 
 #: inc/shinkenwebservice.class.php:233
 msgid "Shinken communication succeeded:"
-msgstr "La communication avec Shinken fonctionne parfaitement :"
+msgstr "Подключение Shinken успешно"
 
 #: inc/slider.class.php:304
 msgid "Display carrousel / slider in dashboard"
-msgstr "Voir le carrousel dans le tableau de bord"
+msgstr "Показать карусель/слайдет в панели управления"
 
 #: inc/slider.class.php:312
 msgid "Duration (in seconds)"
-msgstr "Durée (en secondes)"
+msgstr "Продолжительность (в секундах)"
 
 #: inc/system.class.php:82
 msgid "Sorry, this content is not yet available in the Monitoring"
-msgstr "Désolé, mais ce contenu n'est pas encore disponible !"
+msgstr "Извините, Эти данные не доступны больше в Мониторинге"
 
 #: inc/tag.class.php:87
 msgid "Shinken tag"
-msgstr "Etiquette Shinken"
+msgstr "Shinken теги"
 
 #: inc/tag.class.php:93 inc/tag.class.php:153
 msgid "Shinken IP address"
-msgstr "Adresse IP de Shinken"
+msgstr "Shinken IP адрес"
 
 #: inc/tag.class.php:98 inc/tag.class.php:146
 msgid "Username (Shinken webservice)"
-msgstr "Login (Web Service de Shinken)"
+msgstr "Имя пользователя (вебсервиса Shinken)"
 
 #: inc/tag.class.php:103 inc/tag.class.php:157
 msgid "Password (Shinken webservice)"
-msgstr "Mot de passe (Web Service de Shinken)"
+msgstr "Пароль (Вебсервиса Shinken)"
 
 #: inc/tag.class.php:108
 msgid "Lock shinken address"
-msgstr "Verrouiller l'adresse de Shinken "
+msgstr "закрепить адрес shinken"
 
 #: inc/tag.class.php:114 inc/tag.class.php:175
 msgid "Port"
-msgstr "Port"
+msgstr "Порт"
 
 #: inc/tag.class.php:164
 msgid "Lock shinken IP"
-msgstr "Verrouiller l'adresse IP de Shinken"
+msgstr "Закрепить IP shinken"
 
 #: inc/toolbox.class.php:148
 msgid "Display"
-msgstr "Affichage"
+msgstr "Монитор"
 
 #: inc/toolbox.class.php:223
 msgid "Invert values"
-msgstr "Inverser les valeurs"
+msgstr "Инвертировать значения"
 
 #: inc/toolbox.class.php:330
 msgid "Colors"
-msgstr "Couleurs"
+msgstr "Цвета"
 
 #: inc/unavailability.class.php:139
 msgid "Ressource"
-msgstr "Ressource"
+msgstr "Ресурс"
 
 #: inc/unavailability.class.php:161
 msgid "Unavailability start"
-msgstr "Début d'indisponibilité"
+msgstr "Недоступные начало"
 
 #: inc/unavailability.class.php:166
 msgid "Unavailability end"
-msgstr "Fin d'indisponibilité"
+msgstr "Недоступные конец"
 
 #: inc/unavailability.class.php:177
 msgid "Unavailability details"
-msgstr "Détails de l'indisponibilité"
+msgstr "Недоступные детали"
 
 #: inc/unavailability.class.php:182
 msgid "Scheduled unavailability"
-msgstr "Indisponibilité programmée"
+msgstr "Расписание недоступных"
 
 #: inc/unavailability.class.php:214 inc/unavailability.class.php:215
 msgid "Change unavailability period schedule status"
-msgstr "Changer l'état"
+msgstr "Настройить период перехода в недоступные"
 
 #: inc/unavailability.class.php:230
 msgid "Update unavailability periods"
-msgstr "Mettre à jour les périodes d'indisponibilité"
+msgstr "Обновить период недоступных"
 
 #: inc/weathermap.class.php:78 inc/weathermap.class.php:175
 msgid "Nodes and links"
-msgstr "Noeuds et liens"
+msgstr "Ноды и ссылки"
 
 #: inc/weathermap.class.php:124
 msgid "Background image"
-msgstr "Image de fond"
+msgstr "Фоновое изображение"
 
 #: inc/weathermap.class.php:136
 msgid "Height"
-msgstr "Hauteur"
+msgstr "Высота"
 
 #: inc/weathermap.class.php:194
 msgid "Display weathermap form"
-msgstr "Afficher le formulaire weathermap"
+msgstr "Показать форму карты состояния"
 
 #: inc/weathermap.class.php:222
 msgid "Add a node"
-msgstr "Ajouter un noeud"
+msgstr "Добавить ноду"
 
 #: inc/weathermap.class.php:228
 msgid "Node"
-msgstr "Noeud"
+msgstr "Нода"
 
 #: inc/weathermap.class.php:268
 msgid "Edit a node"
-msgstr "Modifier un noeud"
+msgstr "Редактировать ноду"
 
 #: inc/weathermap.class.php:320
 msgid "Delete a node"
-msgstr "Supprimer un noeud"
+msgstr "Удалить ноду"
 
 #: inc/weathermap.class.php:368
 msgid "Add a link"
-msgstr "Ajouter un lien"
+msgstr "Добавить ссылку"
 
 #: inc/weathermap.class.php:374
 msgid "Source"
-msgstr "Source"
+msgstr "Источник"
 
 #: inc/weathermap.class.php:528
 msgid "Destination"
-msgstr "Destination"
+msgstr "Назначение"
 
 #: inc/weathermap.class.php:583
 msgid "Edit a link"
-msgstr "Modifier un lien"
+msgstr "Редактировать ссылку"
 
 #: inc/weathermap.class.php:635
 msgid "Delete a link"
-msgstr "Supprimer un lien"
+msgstr "Удалить ссылку"
 
 #: inc/weathermap.class.php:641
 msgid "Link"
-msgstr "Liaison"
+msgstr "Ссылка"
