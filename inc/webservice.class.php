@@ -48,6 +48,7 @@ class PluginMonitoringWebservice {
 
 
    static function methodShinkenGetConffiles($params, $protocol) {
+      global $PM_EXPORTFOMAT;
 
       PluginMonitoringToolbox::logIfExtradebug(
          'pm-shinken',
@@ -65,7 +66,9 @@ class PluginMonitoringWebservice {
       }
 
       if (isset($params['format']) && $params['format'] == 'integer') {
-          $PM_EXPORTFOMAT = 'integer';
+         $PM_EXPORTFOMAT = 'integer';
+      } else {
+         $PM_EXPORTFOMAT = 'boolean';
       }
 
       ini_set("max_execution_time", "0");
@@ -134,8 +137,16 @@ class PluginMonitoringWebservice {
 
 
    static function methodShinkenTags($params, $protocol) {
+      global $PM_EXPORTFOMAT;
+
       if (!isset($params['tag'])) {
          return array();
+      }
+
+      if (isset($params['format']) && $params['format'] == 'integer') {
+         $PM_EXPORTFOMAT = 'integer';
+      } else {
+         $PM_EXPORTFOMAT = 'boolean';
       }
 
       $tag = $params['tag'];
@@ -190,6 +201,13 @@ class PluginMonitoringWebservice {
 
 
    static function methodShinkenCommands($params, $protocol) {
+      global $PM_EXPORTFOMAT;
+
+      if (isset($params['format']) && $params['format'] == 'integer') {
+         $PM_EXPORTFOMAT = 'integer';
+      } else {
+         $PM_EXPORTFOMAT = 'boolean';
+      }
 
       $pmShinken = new PluginMonitoringShinken();
       $array = $pmShinken->generateCommandsCfg();
@@ -199,8 +217,16 @@ class PluginMonitoringWebservice {
 
 
    static function methodShinkenHosts($params, $protocol) {
+      global $PM_EXPORTFOMAT;
+
       if (!isset($params['tag'])) {
          $params['tag'] = '';
+      }
+
+      if (isset($params['format']) && $params['format'] == 'integer') {
+         $PM_EXPORTFOMAT = 'integer';
+      } else {
+         $PM_EXPORTFOMAT = 'boolean';
       }
 
       // Update ip with Tag
@@ -217,9 +243,16 @@ class PluginMonitoringWebservice {
 
 
    static function methodShinkenHostgroups($params, $protocol) {
+      global $PM_EXPORTFOMAT;
 
       if (!isset($params['tag'])) {
          $params['tag'] = '';
+      }
+
+      if (isset($params['format']) && $params['format'] == 'integer') {
+         $PM_EXPORTFOMAT = 'integer';
+      } else {
+         $PM_EXPORTFOMAT = 'boolean';
       }
 
       $pmShinken = new PluginMonitoringShinken();
@@ -230,9 +263,16 @@ class PluginMonitoringWebservice {
 
 
    static function methodShinkenServices($params, $protocol) {
+      global $PM_EXPORTFOMAT;
 
       if (!isset($params['tag'])) {
          $params['tag'] = '';
+      }
+
+      if (isset($params['format']) && $params['format'] == 'integer') {
+         $PM_EXPORTFOMAT = 'integer';
+      } else {
+         $PM_EXPORTFOMAT = 'boolean';
       }
 
       $pmShinken = new PluginMonitoringShinken();
@@ -243,9 +283,16 @@ class PluginMonitoringWebservice {
 
 
    static function methodShinkenTemplates($params, $protocol) {
+      global $PM_EXPORTFOMAT;
 
       if (!isset($params['tag'])) {
          $params['tag'] = '';
+      }
+
+      if (isset($params['format']) && $params['format'] == 'integer') {
+         $PM_EXPORTFOMAT = 'integer';
+      } else {
+         $PM_EXPORTFOMAT = 'boolean';
       }
 
       $pmShinken = new PluginMonitoringShinken();
@@ -256,9 +303,16 @@ class PluginMonitoringWebservice {
 
 
    static function methodShinkenContacts($params, $protocol) {
+      global $PM_EXPORTFOMAT;
 
       if (!isset($params['tag'])) {
          $params['tag'] = '';
+      }
+
+      if (isset($params['format']) && $params['format'] == 'integer') {
+         $PM_EXPORTFOMAT = 'integer';
+      } else {
+         $PM_EXPORTFOMAT = 'boolean';
       }
 
       $pmShinken = new PluginMonitoringShinken();
@@ -269,9 +323,16 @@ class PluginMonitoringWebservice {
 
 
    static function methodShinkenTimeperiods($params, $protocol) {
+      global $PM_EXPORTFOMAT;
 
       if (!isset($params['tag'])) {
          $params['tag'] = '';
+      }
+
+      if (isset($params['format']) && $params['format'] == 'integer') {
+         $PM_EXPORTFOMAT = 'integer';
+      } else {
+         $PM_EXPORTFOMAT = 'boolean';
       }
 
       $pmShinken = new PluginMonitoringShinken();

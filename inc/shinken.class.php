@@ -3863,6 +3863,7 @@ Nagios configuration file :
     * Add value with the right type (str, int, bool, float)
     */
    function add_value_type($val, $key, $data) {
+      global $PM_EXPORTFOMAT;
 
       if ($this->is_property_list($key)) {
          if (!isset($data[$key])) {
