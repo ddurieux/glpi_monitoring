@@ -1317,8 +1317,7 @@ echo "
       echo "</td>";
 
       echo "<td>";
-      $item = new $data[1]['displayname'];
-      echo $item->getTypeName();
+      echo  $data[1]['displayname'];
       echo "</td>";
 
       echo "<td>";
