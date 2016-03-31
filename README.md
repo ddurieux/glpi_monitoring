@@ -2,8 +2,8 @@
 
 [![Build Status](https://travis-ci.org/ddurieux/glpi_monitoring.svg?branch=master)](https://travis-ci.org/ddurieux/glpi_monitoring)
 [![Coverage Status](https://coveralls.io/repos/ddurieux/glpi_monitoring/badge.svg)](https://coveralls.io/r/ddurieux/glpi_monitoring)
-[github downloads](https://img.shields.io/github/downloads/ddurieux/glpi_monitoring/total.svg)
-[Redmine downloads](image:https://img.shields.io/badge/downloads%20redmine-36k total-brightgreen.svg)
+![github downloads](https://img.shields.io/github/downloads/ddurieux/glpi_monitoring/total.svg)
+![Redmine downloads](image:https://img.shields.io/badge/downloads%20redmine-36k total-brightgreen.svg)
 
 A Glpi plugin to monitor computers, network equipments and printers with Shinken
 
