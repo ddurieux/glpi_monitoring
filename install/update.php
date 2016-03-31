@@ -124,7 +124,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
       $a_table['renamefields'] = array();
 
-      $a_table['keys']   = array(array('field' => 'hostname,service', 'name' => 'hostname', 'type' => 'INDEX'));
+      $a_table['keys']   = array(array('field' => array('hostname', 'service'), 'name' => 'hostname', 'type' => 'INDEX', 'len' => 160));
 
       $a_table['oldkeys'] = array();
 
@@ -3952,10 +3952,12 @@ function migrateTablesMonitoring($migration, $a_table) {
    $migration->migrationOneTable($a_table['name']);
 
    foreach ($a_table['keys'] as $data) {
+
       $migration->addKey($a_table['name'],
                          $data['field'],
                          $data['name'],
-                         $data['type']);
+                         $data['type'],
+                         $data['len']);
    }
    $migration->migrationOneTable($a_table['name']);
 
