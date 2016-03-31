@@ -1,32 +1,23 @@
 sudo: false
 language: php
 php:
-  - 5.3
   - 5.4
   - 5.5
   - 5.6
+  - 7.0
 
 addons:
   apt:
     packages:
-    - libapache2-mod-php5
-    - php5-cli
-    - php5-mysql
-    - php5-xmlrpc
-    - php5-xsl
-    - php5-ldap
-    - php5-json
-    - php5-intl
-    - php5-imap
-    - php5-gd
-    - php5-curl
     - ant
     - xsltproc
 
 before_install:
  - cd ..
  - git clone git://github.com/fusioninventory/glpi.git glpi
- - cd glpi && git reset --hard 2e446ba0ca1d91c1b853e28aa750f43476a42f30 && cd ..
+ - cd glpi 
+ - git checkout -b 0.90/bugfixes origin/0.90/bugfixes
+ - cd ..
  - mysql -u root -e "SET PASSWORD FOR 'travis'@'localhost' = PASSWORD('travis')"
  - mysql -u root -e "GRANT ALL PRIVILEGES ON glpi.* TO 'travis'@'localhost';"
  - mysql -u root -e "FLUSH PRIVILEGES;"

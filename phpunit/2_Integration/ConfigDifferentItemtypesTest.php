@@ -163,7 +163,9 @@ class ConfigDifferentItemtypesTest extends RestoreDatabase_TestCase {
          'notifications_enabled'        => 0,
          'notification_period'          => '24x7',
          'notification_options'         => 'd,u,r,f,s',
-         'notification_interval'        => 86400
+         'notification_interval'        => 86400,
+         'stalking_options'             => '',
+         'use'                          => 'Check DNS'
       );
       $this->assertEquals(
               $elements,
