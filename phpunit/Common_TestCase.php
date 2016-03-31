@@ -63,6 +63,9 @@ abstract class Common_TestCase extends PHPUnit_Framework_TestCase {
 
    protected function setUp() {
       global $CFG_GLPI,$DB;
+
+      if (self::$is_depends) return;
+
       $DB = new DB();
       // Force profile in session to SuperAdmin
       $_SESSION['glpiprofiles'] = array(
