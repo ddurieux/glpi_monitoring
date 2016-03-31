@@ -3,7 +3,7 @@
 /*
    ------------------------------------------------------------------------
    Plugin Monitoring for GLPI
-   Copyright (C) 2011-2015 by the Plugin Monitoring for GLPI Development Team.
+   Copyright (C) 2011-2016 by the Plugin Monitoring for GLPI Development Team.
 
    https://forge.indepnet.net/projects/monitoring/
    ------------------------------------------------------------------------
@@ -31,7 +31,7 @@
    @author    David Durieux
    @co-author
    @comment
-   @copyright Copyright (c) 2011-2015 Plugin Monitoring for GLPI team
+   @copyright Copyright (c) 2011-2016 Plugin Monitoring for GLPI team
    @license   AGPL License 3.0 or (at your option) any later version
               http://www.gnu.org/licenses/agpl-3.0-standalone.html
    @link      https://forge.indepnet.net/projects/monitoring/
@@ -327,7 +327,7 @@ function plugin_version_monitoring() {
                 'version'        => PLUGIN_MONITORING_VERSION,
                 'license'        => 'AGPLv3+',
                 'author'         =>'<a href="mailto:d.durieux@siprossii.com">David DURIEUX</a>',
-                'homepage'       =>'https://forge.indepnet.net/projects/monitoring/',
+                'homepage'       =>'https://github.com/ddurieux/glpi_monitoring',
                 'minGlpiVersion' => '0.85'
    );
 }
