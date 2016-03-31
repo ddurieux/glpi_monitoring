@@ -3952,7 +3952,9 @@ function migrateTablesMonitoring($migration, $a_table) {
    $migration->migrationOneTable($a_table['name']);
 
    foreach ($a_table['keys'] as $data) {
-
+      if (!isset($data['len'])) {
+         $data['len'] = 0;
+      }
       $migration->addKey($a_table['name'],
                          $data['field'],
                          $data['name'],
