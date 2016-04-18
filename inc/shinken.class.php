@@ -623,8 +623,14 @@ class PluginMonitoringShinken extends CommonDBTM {
          }
 
          // Hostgroup name
+         // $a_hosts[$i] = $this->add_value_type(
+                 // preg_replace("/[ ]/","_", self::shinkenFilter($data['entityName'])),
+                 // 'hostgroups', $a_hosts[$i]);
+         // Fix multiple entities with the same name: include id in hostgroup_name field
          $a_hosts[$i] = $this->add_value_type(
-                 preg_replace("/[ ]/","_", self::shinkenFilter($data['entityName'])),
+                 preg_replace("/[ ]/","_", self::shinkenFilter(
+                    $data['entityName'] . "_" . $data['entityId']
+                 )),
                  'hostgroups', $a_hosts[$i]);
          // Alias
          $a_hosts[$i] = $this->add_value_type(
@@ -2870,8 +2876,15 @@ Nagios configuration file :
 */
          $a_hostgroups[$i] = array();
          // Hostgroup name
-         $hostgroup_name = strtolower(self::shinkenFilter($data['entityName']));
-         $hostgroup_name = preg_replace("/[ ]/","_",$hostgroup_name);
+         // $hostgroup_name = strtolower(self::shinkenFilter($data['entityName']));
+         // $hostgroup_name = preg_replace("/[ ]/","_",$hostgroup_name);
+         // Fix multiple entities with the same name: include id in hostgroup_name field
+         $hostgroup_name = preg_replace("/[ ]/","_",self::shinkenFilter(
+            $data['entityName'] . "_" . $data['entityId']
+         ));
+
+         // For an host:
+         // preg_replace("/[ ]/","_", self::shinkenFilter($data['entityName']))
 
          PluginMonitoringToolbox::logIfExtradebug(
             'pm-shinken',
@@ -2904,7 +2917,10 @@ Nagios configuration file :
                // Only immediate sub level are considered as hostgroup members
                if ($data['entityLevel']+1 != $pmEntity->fields['level']) continue;
 
-               $hostgroup_name = self::shinkenFilter($pmEntity->getField('name'));
+               //$hostgroup_name = self::shinkenFilter($pmEntity->getField('name'));
+               // Fix multiple entities with the same name: include id in hostgroup_name field
+               $hostgroup_name = self::shinkenFilter(
+               );
                $hostgroup_name = preg_replace("/[ ]/","_",$hostgroup_name);
 
                $a_hostgroups[$i] = $this->add_value_type(
