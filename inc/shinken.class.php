@@ -2920,6 +2920,7 @@ Nagios configuration file :
                //$hostgroup_name = self::shinkenFilter($pmEntity->getField('name'));
                // Fix multiple entities with the same name: include id in hostgroup_name field
                $hostgroup_name = self::shinkenFilter(
+                  $pmEntity->getField('name') . "_" . $pmEntity->getID()
                );
                $hostgroup_name = preg_replace("/[ ]/","_",$hostgroup_name);
 
