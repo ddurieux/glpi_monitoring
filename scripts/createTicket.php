@@ -81,6 +81,18 @@ $url = "/glpi/plugins/webservices/xmlrpc.php";
 $host = '127.0.0.1';
 $glpi_user  = "shinken";
 $glpi_pass  = "shinken";
+$eventval=array();
+	if ($argv>1) {
+	   for ($i=1 ; $i<count($argv) ; $i++) {
+		  $it = explode("=",$argv[$i],2);
+		  $it[0] = preg_replace('/^--/','',$it[0]);
+		  $eventval[$it[0]] = (isset($it[1]) ? $it[1] : true);
+	   }
+	}
+$service=$eventval['service'];
+$serviceoutput=$eventval['serviceoutput'];
+$servicestate=$eventval['servicestate'];
+$eventhost=$eventval['eventhost'];
 
 /*
 * PARAMETERS
@@ -243,13 +255,17 @@ if ($verbose) {
    _ENTITY                            desk1
 
  */
+// service="$SERVICEDISPLAYNAME$"
+// eventhost="$HOSTDISPLAYNAME$"
+// serviceoutput="$SERVICEOUTPUT$"
+// servicestate="$SERVICESTATE$"
 $args['session']     = $session;
 $args['method']      = "kiosks.createTicket";
 if ($debug){
    $args['debug']    = true;
 }
-$args['title']       = "Titre du ticket ...";
-$args['content']     = "Contenu du ticket ...";
+$args['title']       = "$service on $eventhost is $servicestate";
+$args['content']     = "$serviceoutput";
 $args['source']      = "Shinken";
 // Entity: _ENTITIESID
 $args['entity']      = (int)$entity;
