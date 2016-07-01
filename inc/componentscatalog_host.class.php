@@ -294,37 +294,52 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
 
 
 
+   /**
+    * The componentscatalog_host is deleted, so we need remove the template(s)
+    * configured in the componentscatalog.
+    *
+    * @param type $parm
+    */
    static function unlinkComponentsToItem($parm) {
       global $DB, $PM_CONFIG;
 
       $abc = new Alignak_Backend_Client($PM_CONFIG['alignak_backend_url']);
-      $abc->login('admin', 'admin');
+      PluginMonitoringUser::my_token($abc);
 
       $pmHost = new PluginMonitoringHost();
+      $pmC_Host = new PluginMonitoringComponentscatalog_Host();
+      $pmC_Component = new PluginMonitoringComponentscatalog_Component();
       $ourhost = current($pmHost->find("`itemtype`='".$parm->fields['itemtype']."' "
               . "AND `items_id`='".$parm->fields['items_id']."'", "", 1));
       if (count($ourhost) > 0) {
          $backend_host_id = $ourhost['backend_host_id'];
 
-//         $backend_host = $abc->get('host/'.$backend_host_id);
-//         if (!in_array($backend_host['_templates'], $data['backend_host_template'])) {
-//            array_push($data['_templates'], $backend_host['_templates']);
-//            $update_data = array(
-//                '_templates' => $data['_templates']
-//            );
-//            $abc->patch("host/".$backend_host_id, $update_data, array(), True);
-//         }
-      }
+         // search where this host is in componentscatalogs and get all templates
+         // it must have and after update 'templates' field in backend
+         $componentscatalogs = array();
+         $componentscatalog_hosts = $pmC_Host->find(
+                 "`itemtype`='".$parm->fields['itemtype']."' "
+                 . "AND `items_id`='".$parm->fields['items_id']."'");
+         foreach ($componentscatalog_hosts as $c_hosts) {
+            $componentscatalogs[] = $c_hosts['plugin_monitoring_componentscalalog_id'];
+         }
+         $componentscatalogs = array_unique($componentscatalogs);
+         if (count($componentscatalogs) > 0) {
+            $components = $pmC_Component->find("`plugin_monitoring_componentscalalog_id` in (".  implode("', ''", $componentscatalogs)."')");
+            $templates = array();
+            foreach ($components as $component) {
+               $templates[] = $component['backend_host_template'];
+            }
+            $templates = array_unique($templates);
 
-
-      $pmService  = new PluginMonitoringService();
-
-      $query = "SELECT * FROM `glpi_plugin_monitoring_services`
-         WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$parm->fields['id']."'";
-      $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
-         $_SESSION['plugin_monitoring_hosts'] = $parm->fields;
-         $pmService->delete(array('id'=>$data['id']));
+            $update_data = array(
+                '_templates' => $templates
+            );
+            $abc->patch("host/".$backend_host_id, $update_data, array(), True);
+         } else {
+            // The host not have template but he can have services added manually,
+            // so this host in backend can be only removed manually
+         }
       }
    }
 

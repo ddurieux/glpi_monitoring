@@ -248,31 +248,9 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                $pmComponentscatalog_Host->showHosts($item->getID(), 0);
                break;
 
-            case 5 :
-               $pmContact_Item = new PluginMonitoringContact_Item();
-               $pmContact_Item->showContacts("PluginMonitoringComponentscatalog", $item->getID());
-               break;
-
-            case 6:
-               $pmUnavailability = new PluginMonitoringUnavailability();
-               $pmUnavailability->displayComponentscatalog($item->getID());
-               break;
-
-            case 7:
-               $pmPluginMonitoringComponentscatalog = new PluginMonitoringComponentscatalog();
-               $pmPluginMonitoringComponentscatalog->showSimpleReport($item->getID());
-               break;
-
-            case 8:
-               $pmPluginMonitoringComponentscatalog = new PluginMonitoringComponentscatalog();
-               $pmPluginMonitoringComponentscatalog->showSyntheseReport($item->getID());
-               break;
-
-
             default :
 
          }
-
       }
       return true;
    }
