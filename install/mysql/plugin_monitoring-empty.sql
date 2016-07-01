@@ -12,39 +12,6 @@ CREATE TABLE `glpi_plugin_monitoring_componentscatalogs` (
 
 
 
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_components`;
-
-CREATE TABLE `glpi_plugin_monitoring_components` (
-   `id` int(11) NOT NULL AUTO_INCREMENT,
-   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-   `description` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-   `plugin_monitoring_commands_id` int(11) NOT NULL DEFAULT '0',
-   `arguments` text DEFAULT NULL COLLATE utf8_unicode_ci,
-   `plugin_monitoring_checks_id` int(11) NOT NULL DEFAULT '0',
-   `active_checks_enabled` tinyint(1) NOT NULL DEFAULT '1',
-   `passive_checks_enabled` tinyint(1) NOT NULL DEFAULT '1',
-   `calendars_id` int(11) NOT NULL DEFAULT '0',
-   `remotesystem` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-   `is_arguments` tinyint(1) NOT NULL DEFAULT '0',
-   `alias_command` text DEFAULT NULL COLLATE utf8_unicode_ci,
-   `graph_template` int(11) NOT NULL DEFAULT '0',
-   `link` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-   `is_weathermap` tinyint(1) NOT NULL DEFAULT '0',
-   `weathermap_regex_in` text DEFAULT NULL COLLATE utf8_unicode_ci,
-   `weathermap_regex_out` text DEFAULT NULL COLLATE utf8_unicode_ci,
-   `perfname` text DEFAULT NULL COLLATE utf8_unicode_ci,
-   `perfnameinvert` text DEFAULT NULL COLLATE utf8_unicode_ci,
-   `perfnamecolor` text DEFAULT NULL COLLATE utf8_unicode_ci,
-   `plugin_monitoring_eventhandlers_id` int(11) NOT NULL DEFAULT '0',
-   `freshness_count` int(6) NOT NULL DEFAULT '0',
-   `freshness_type` varchar(255) DEFAULT 'seconds',
-   `business_priority` tinyint(1) NOT NULL DEFAULT '3',
-   PRIMARY KEY (`id`),
-   KEY `plugin_monitoring_commands_id` (`plugin_monitoring_commands_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_componentscatalogs_components`;
 
 CREATE TABLE `glpi_plugin_monitoring_componentscatalogs_components` (
@@ -568,69 +535,6 @@ CREATE TABLE `glpi_plugin_monitoring_servicedefs` (
 
 
 
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_sliders`;
-
-CREATE TABLE `glpi_plugin_monitoring_sliders` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `entities_id` int(11) NOT NULL DEFAULT '0',
-  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-  `is_active` tinyint(1) NOT NULL DEFAULT '0',
-  `in_central` tinyint(1) NOT NULL DEFAULT '0',
-  `is_frontview` tinyint(1) NOT NULL DEFAULT '0',
-  `users_id` int(11) NOT NULL DEFAULT '0',
-  `comment` text DEFAULT NULL COLLATE utf8_unicode_ci,
-  `duration` int(11) NOT NULL DEFAULT '2',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_sliders_groups`;
-
-CREATE TABLE `glpi_plugin_monitoring_sliders_groups` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `pluginmonitoringsliders_id` int(11) NOT NULL DEFAULT '0',
-  `groups_id` int(11) NOT NULL DEFAULT '0',
-  `entities_id` int(11) NOT NULL DEFAULT '-1',
-  `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `pluginmonitoringsliders_id` (`pluginmonitoringsliders_id`),
-  KEY `groups_id` (`groups_id`),
-  KEY `entities_id` (`entities_id`),
-  KEY `is_recursive` (`is_recursive`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_sliders_users`;
-
-CREATE TABLE `glpi_plugin_monitoring_sliders_users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `pluginmonitoringsliders_id` int(11) NOT NULL DEFAULT '0',
-  `users_id` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `pluginmonitoringsliders_id` (`pluginmonitoringsliders_id`),
-  KEY `groups_id` (`users_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_sliders_items`;
-
-CREATE TABLE `glpi_plugin_monitoring_sliders_items` (
-   `id` int(11) NOT NULL AUTO_INCREMENT,
-   `plugin_monitoring_sliders_id` int(11) NOT NULL DEFAULT '0',
-   `items_id` int(11) NOT NULL DEFAULT '0',
-   `itemtype` varchar(100) DEFAULT NULL,
-   `extra_infos` varchar(255) DEFAULT NULL,
-   `is_minemap` tinyint(1) NOT NULL DEFAULT '0',
-   PRIMARY KEY (`id`),
-   KEY `plugin_monitoring_sliders_id` (`plugin_monitoring_sliders_id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_unavailabilities`;
 
 CREATE TABLE `glpi_plugin_monitoring_unavailabilities` (
@@ -851,22 +755,4 @@ CREATE TABLE `glpi_plugin_monitoring_hostcounters` (
 	KEY `hostname` (`hostname`),
 	KEY `updated` (`hostname`, `date`, `updated`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_shinkenstates`;
-
-CREATE TABLE `glpi_plugin_monitoring_shinkenstates` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `hostname` varchar(255) DEFAULT NULL,
-  `service` varchar(255) DEFAULT NULL,
-  `state` varchar(255) DEFAULT NULL,
-  `state_type` varchar(255) DEFAULT NULL,
-  `last_check` datetime DEFAULT NULL,
-  `last_output` text DEFAULT NULL,
-  `last_perfdata` text DEFAULT NULL,
-  `is_ack` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `hostname` (`hostname`(160),`service`(160))
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

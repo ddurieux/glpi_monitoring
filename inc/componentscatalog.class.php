@@ -130,16 +130,10 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          }
          if ($item->getID() > 0) {
             $ong = array();
-            $ong[1] = self::createTabEntry(__('Components', 'monitoring'), self::countForComponents($item));
+            $ong[1] = self::createTabEntry(__('Templates', 'monitoring'), self::countForComponents($item));
             $ong[2] = self::createTabEntry(__('Static hosts', 'monitoring'), self::countForStaticHosts($item));
             $ong[3] = self::createTabEntry(_n('Rule', 'Rules', 2), self::countForRules($item));
             $ong[4] = self::createTabEntry(__('Dynamic hosts', 'monitoring'), self::countForDynamicHosts($item));
-            $ong[5] = self::createTabEntry(__('Contacts', 'monitoring'), self::countForContacts($item));
-            $ong[6] = __('Availability', 'monitoring');
-   //         $ong[7] = __('Simple report', "monitoring");
-            $ong[7] = __('Synthese', "monitoring");
-            //$ong[7] = __('Report');
-
             return $ong;
          }
       }

@@ -64,9 +64,23 @@ class PluginMonitoringWebui {
       require GLPI_ROOT.'/plugins/monitoring/lib/vendor/autoload.php';
 
       $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
-          $r->addRoute('GET', '/users', 'get_all_users');
-          // {id} must be a number (\d+)
+          $r->addRoute('GET', '/users', 'handler');
           $r->addRoute('GET', '/user/{id:[0-9a-f]+}', 'handler');
+          $r->addRoute('GET', '/commands', 'handler');
+          $r->addRoute('GET', '/command/{id:[0-9a-f]+}', 'handler');
+          $r->addRoute('GET', '/hosts', 'handler');
+          $r->addRoute('GET', '/host/{id:[0-9a-f]+}', 'handler');
+          $r->addRoute('GET', '/services', 'handler');
+          $r->addRoute('GET', '/service/{id:[0-9a-f]+}', 'handler');
+          $r->addRoute('GET', '/realms', 'handler');
+          $r->addRoute('GET', '/realm/{id:[0-9a-f]+}', 'handler');
+          $r->addRoute('GET', '/hostgroups', 'handler');
+          $r->addRoute('GET', '/hostgroup/{id:[0-9a-f]+}', 'handler');
+          $r->addRoute('GET', '/servicegroups', 'handler');
+          $r->addRoute('GET', '/servicegroup/{id:[0-9a-f]+}', 'handler');
+          $r->addRoute('GET', '/timeperiods', 'handler');
+          $r->addRoute('GET', '/timeperiod/{id:[0-9a-f]+}', 'handler');
+          $r->addRoute('GET', '/timeperiods', 'handler');
       });
 
       //$httpMethod = $_SERVER['REQUEST_METHOD'];

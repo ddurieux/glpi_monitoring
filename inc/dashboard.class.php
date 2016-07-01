@@ -83,14 +83,6 @@ class PluginMonitoringDashboard extends CommonGLPI {
                   'search' => '/plugins/monitoring/front/perfdata.php',
                   'add'    => '/plugins/monitoring/front/perfdata.form.php'
               )),
-         'component' => array(
-              'title' => PluginMonitoringComponent::getTypeName(),
-              'page'  => PluginMonitoringComponent::getSearchURL(false),
-              'links' => array(
-                  $main_menu => '/plugins/monitoring/front/menu.php',
-                  'search' => '/plugins/monitoring/front/component.php',
-                  'add'    => '/plugins/monitoring/front/component.form.php'
-              )),
          'realm' => array(
               'title' => PluginMonitoringRealm::getTypeName(),
               'page'  => PluginMonitoringRealm::getSearchURL(false),
@@ -120,14 +112,6 @@ class PluginMonitoringDashboard extends CommonGLPI {
               'links' => array(
                   'search' => '/plugins/monitoring/front/displayview.php',
                   'add'    => '/plugins/monitoring/front/displayview.form.php'
-              )),
-         'slider' => array(
-              'title' => PluginMonitoringSlider::getTypeName(),
-              'page'  => PluginMonitoringSlider::getSearchURL(false),
-              'links' => array(
-                  $main_menu => '/plugins/monitoring/front/menu.php',
-                  'search' => '/plugins/monitoring/front/slider.php',
-                  'add'    => '/plugins/monitoring/front/slider.form.php'
               )),
          'menu' => array(
               'title' => PluginMonitoringMenu::getTypeName(),

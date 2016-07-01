@@ -77,8 +77,29 @@ if (Session::haveRight("plugin_monitoring_dashboard", READ)
    echo "</tr>";
 
    echo "<tr class='tab_bg_1'>";
+   echo "<td height='30' align='center'>";
+   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.php'>".__('Components catalog (templates + rules)', 'monitoring')."</a>";
+   echo "</td>";
+   echo "</tr>";
+
+   echo "<tr class='tab_bg_1'>";
    echo "<td>";
    echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/command.php'>".__('Commands', 'monitoring')."</a>";
+   echo "
+livestate
+logs
+hosts
+services
+realms
+hostgroups
+servicegroups
+users
+timeperiod
+commands
+worldmap
+minemap
+
+   ";
    echo "</td>";
    echo "</tr>";
    echo "</table>";
@@ -106,8 +127,7 @@ if (Session::haveRight("plugin_monitoring_dashboard", READ)
 //
 //   echo "<br/>";
 }
-if (Session::haveRight("plugin_monitoring_displayview", READ)
-        || Session::haveRight("plugin_monitoring_slider", READ)) {
+if (Session::haveRight("plugin_monitoring_displayview", READ)) {
 
    echo "<table class='tab_cadre' width='950'>";
    echo "<tr class='tab_bg_1'>";
@@ -115,11 +135,6 @@ if (Session::haveRight("plugin_monitoring_displayview", READ)
       $toDisplayArea++;
       echo "<th align='center' height='40' width='34%'>";
       echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/displayview.php'>".__('Views', 'monitoring')."</a>";
-      echo "</th>";
-   }
-   if (Session::haveRight("plugin_monitoring_slider", READ)) {
-      echo "<th align='center' height='40' width='34%'>";
-      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/slider.php'>".__('Carrousel / slider', 'monitoring')."</a>";
       echo "</th>";
    }
    echo "</tr>";
@@ -157,39 +172,10 @@ if (Session::haveRight("plugin_monitoring_weathermap", READ)
    echo "<br/>";
 }
 
-if (Session::haveRight("plugin_monitoring_componentscatalog", READ)) {
-   $toDisplayArea++;
-   echo "<table class='tab_cadre' width='950'>";
-   echo "<th height='30'>";
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.php'>".__('Components catalog', 'monitoring')."</a>";
-   echo "</th>";
-   echo "</tr>";
-   echo "</table>";
-
-   echo "<br/>";
-}
-
 if (Session::haveRight("config", READ)) {
 
    $toDisplayArea++;
    echo "<table class='tab_cadre' width='950'>";
-   echo "<tr class='tab_bg_1'>";
-   echo "<th colspan='5' height='30' width='55%'>";
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/component.php'>".__('Components', 'monitoring')."</a>";
-   echo "</th>";
-
-   echo "<th width='11%'>";
-   echo "</th>";
-
-   echo "<th width='11%'>";
-   echo "</th>";
-
-   echo "<th width='11%'>";
-   echo "</th>";
-
-   echo "</tr>";
-
-
    echo "<tr class='tab_bg_1'>";
    echo "<th width='11%' height='25'>";
    echo "</th>";

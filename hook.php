@@ -649,8 +649,7 @@ function plugin_monitoring_getDropdown(){
       'PluginMonitoringComponentscatalog'             => __('Components catalogs', 'monitoring'),
       'PluginMonitoringContacttemplate'               => __('Contact templates', 'monitoring'),
       'PluginMonitoringHostnotificationtemplate'      => __('Host notification templates', 'monitoring'),
-      'PluginMonitoringServicenotificationtemplate'   => __('Service notification templates', 'monitoring'),
-      'PluginMonitoringComponent'                     => __('Components', 'monitoring'));
+      'PluginMonitoringServicenotificationtemplate'   => __('Service notification templates', 'monitoring'));
 }
 
 function plugin_monitoring_searchOptionsValues($item) {

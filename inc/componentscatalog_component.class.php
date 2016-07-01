@@ -49,7 +49,7 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
    static $rightname = 'plugin_monitoring_componentscatalog';
 
    static function getTypeName($nb=0) {
-      return __('Components', 'monitoring');
+      return __('Template', 'monitoring');
    }
 
 
@@ -71,7 +71,7 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
 
       echo "<tr>";
       echo "<th>";
-      echo __('Associated components', 'monitoring');
+      echo __('Associated templates', 'monitoring');
       echo "</th>";
       echo "</tr>";
 
@@ -121,7 +121,7 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
 
       echo "<tr>";
       echo "<td colspan='2'>";
-      echo __('Add a new component', 'monitoring')."&nbsp;:";
+      echo __('Add a new template', 'monitoring')."&nbsp;:";
       echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$componentscatalogs_id."'/>";
       echo "</td>";
       echo "<td colspan='2'>";

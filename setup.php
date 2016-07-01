@@ -66,7 +66,6 @@ function plugin_init_monitoring() {
 
          Plugin::registerClass('PluginMonitoringEntity',
               array('addtabon' => array('Entity')));
-         Plugin::registerClass('PluginMonitoringComponent');
          //Plugin::registerClass('PluginMonitoringComponentscatalog');
          Plugin::registerClass('PluginMonitoringComponentscatalog',
               array('addtabon' => array('Central')));
@@ -152,9 +151,6 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['componentscatalog'] = 'front/componentscatalog.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['componentscatalog'] = 'front/componentscatalog.php';
 
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['components'] = 'front/component.form.php?add=1';
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['components'] = 'front/component.php';
-
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['displayview'] = 'front/displayview.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['displayview'] = 'front/displayview.php';
 
@@ -173,9 +169,6 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['customitem_counter'] = 'front/customitem_counter.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['customitem_counter'] = 'front/customitem_counter.php';
 
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['slider'] = 'front/slider.form.php?add=1';
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['slider'] = 'front/slider.php';
-
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['service'] = 'front/display.php';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['service'] = 'front/host.php';
 
@@ -183,9 +176,6 @@ function plugin_init_monitoring() {
 
             // Fil ariane
             // Still useful to declare all that stuff ? Menu is ok without this ...
-            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['components']['title'] = __('Components', 'monitoring');
-            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['components']['page']  = '/plugins/monitoring/front/component.php';
-
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['componentscatalog']['title'] = __('Components catalog', 'monitoring');
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['componentscatalog']['page']  = '/plugins/monitoring/front/componentscatalog.php';
 
@@ -209,9 +199,6 @@ function plugin_init_monitoring() {
 
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['perfdata']['title'] = __('Graph templates', 'monitoring');
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['perfdata']['page']  = '/plugins/monitoring/front/perfdata.php';
-
-            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['slider']['title'] = __('Carrousel / slider', 'monitoring');
-            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['slider']['page']  = '/plugins/monitoring/front/slider.php';
 
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['dashboard']['title'] = __('Dashboard', 'monitoring');
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['dashboard']['page']  = '/plugins/monitoring/front/dashboard.php';
