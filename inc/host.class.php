@@ -49,7 +49,7 @@ class PluginMonitoringHost extends CommonDBTM {
    const HOMEPAGE         =  1024;
    const DASHBOARD        =  2048;
 
-   static $rightname = 'plugin_monitoring_hoststatus';
+   static $rightname = 'config';
 
 
    static function getTypeName($nb=0) {
@@ -216,9 +216,11 @@ class PluginMonitoringHost extends CommonDBTM {
       if ($item->getID() > 0) {
          if ($tabnum == 0) {
             PluginMonitoringToolbox::loadLib();
+            $pmHost    = new PluginMonitoringHost();
             $pmService    = new PluginMonitoringService();
             $pmHostconfig = new PluginMonitoringHostconfig();
 
+            $pmHost->showForm(get_class($item), $item->fields['id']);
             $pmService->manageServices(get_class($item), $item->fields['id']);
             $pmHostconfig->showForm($item->getID(), get_class($item));
          } else if ($tabnum == 1) {
@@ -456,6 +458,7 @@ class PluginMonitoringHost extends CommonDBTM {
    function getEntityID($options = array()) {
       if ($this->getID() == -1) return -1;
 
+      return 0;
       $itemtype = $this->getField("itemtype");
       $item = new $itemtype();
       $item->getFromDB($this->getField("items_id"));
@@ -918,6 +921,76 @@ class PluginMonitoringHost extends CommonDBTM {
       Html::closeForm();
    }
 
+
+
+   function showForm($itemtype, $items_id, $options=array()) {
+      global $DB, $PM_CONFIG;
+
+      $query = "SELECT * FROM `".$this->getTable()."`
+         WHERE `items_id`='".$items_id."'
+            AND `itemtype`='".$itemtype."'
+         LIMIT 1";
+
+      $writeable = False;
+      $result = $DB->query($query);
+      if ($DB->numrows($result) == '0') {
+         $this->getEmpty();
+         $writeable = True;
+      } else {
+         $data = $DB->fetch_assoc($result);
+         $this->getFromDB($data['id']);
+         if (!$this->fields['backend_host_id_auto']) {
+            $writeable = True;
+         }
+      }
+
+      $this->showFormHeader($options);
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td width='350'>".__('id of this host in Alignak backend', 'monitoring')."&nbsp;:</td>";
+      echo "<td colspan='2'>";
+      Echo Html::hidden('items_id', array('value' => $items_id));
+      Echo Html::hidden('itemtype', array('value' => $itemtype));
+      $abc = new Alignak_Backend_Client($PM_CONFIG['alignak_backend_url']);
+      PluginMonitoringUser::my_token($abc);
+      if ($writeable) {
+         $backend_hosts = array();
+         $hosts = $abc->get_all('host');
+         foreach ($hosts['_items'] as $host) {
+            $name = $host['name'];
+            if (isset($host['alias'])
+                    && !empty($host['alias'])
+                    && $host['name'] != $host['alias']) {
+               $name .= " (".$host['alias'].")";
+            }
+            $backend_hosts[$host['_id']] = $name;
+         }
+         $glpi_hosts = $this->find();
+         foreach ($glpi_hosts as $host) {
+            if (isset($backend_hosts[$host['backend_host_id']])) {
+               unset($backend_hosts[$host['backend_host_id']]);
+            }
+         }
+         natcasesort($backend_hosts);
+         Dropdown::showFromArray('backend_host_id', $backend_hosts);
+      } else {
+         $host = $abc->get('host/'.$this->fields['backend_host_id']);
+         $name = $host['name'];
+         if (isset($host['alias'])
+                 && !empty($host['alias'])
+                 && $host['name'] != $host['alias']) {
+            $name .= " (".$host['alias'].")";
+         }
+         echo $name;
+      }
+      echo "</td>";
+      echo "</tr>";
+
+      if ($writeable) {
+         $this->showFormButtons($options);
+      }
+      return true;
+   }
 }
 
 ?>

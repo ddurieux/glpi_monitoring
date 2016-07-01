@@ -61,94 +61,108 @@ class PluginMonitoringService extends CommonDBTM {
       $tab = array();
       $tab['common'] = _n('Resource characteristic', 'Resource characteristics', 2);
 
-      $tab[1]['table']           = 'glpi_computers';
-      $tab[1]['field']           = 'name';
-      $tab[1]['name']            = __('Host name');
-      $tab[1]['datatype']        = 'itemlink';
-      $tab[1]['itemlink_type']   = $this->getType();
-      $tab[1]['massiveaction']   = false; // implicit key==1
-      $tab[1]['nosearch']        = TRUE;
+      if (PLUGIN_MONITORING_SYSTEM == 'shinken') {
+         $tab[1]['table']           = 'glpi_computers';
+         $tab[1]['field']           = 'name';
+         $tab[1]['name']            = __('Host name');
+         $tab[1]['datatype']        = 'itemlink';
+         $tab[1]['itemlink_type']   = $this->getType();
+         $tab[1]['massiveaction']   = false; // implicit key==1
+         $tab[1]['nosearch']        = TRUE;
 
-      $tab[2]['table']           = "glpi_plugin_monitoring_components";
-      $tab[2]['field']           = 'name';
-      $tab[2]['linkfield']       = 'plugin_monitoring_components_id';
-      $tab[2]['name']            = __('Component', 'monitoring');
-      $tab[2]['datatype']        = 'itemlink';
-      $tab[2]['itemlink_type']   = 'PluginMonitoringComponent';
+         $tab[2]['table']           = "glpi_plugin_monitoring_components";
+         $tab[2]['field']           = 'name';
+         $tab[2]['linkfield']       = 'plugin_monitoring_components_id';
+         $tab[2]['name']            = __('Component', 'monitoring');
+         $tab[2]['datatype']        = 'itemlink';
+         $tab[2]['itemlink_type']   = 'PluginMonitoringComponent';
 
-      $tab[3]['table']           = $this->getTable();
-      $tab[3]['field']           = 'state';
-      $tab[3]['name']            = __('Resource state', 'monitoring');
-      $tab[3]['datatype']        = 'string';
-      // $tab[3]['searchtype']      = 'equals';
-      // $tab[3]['datatype']        = 'itemlink';
-      // $tab[3]['itemlink_type']   = 'PluginMonitoringService';
+         $tab[3]['table']           = $this->getTable();
+         $tab[3]['field']           = 'state';
+         $tab[3]['name']            = __('Resource state', 'monitoring');
+         $tab[3]['datatype']        = 'string';
+         // $tab[3]['searchtype']      = 'equals';
+         // $tab[3]['datatype']        = 'itemlink';
+         // $tab[3]['itemlink_type']   = 'PluginMonitoringService';
 
-      $tab[4]['table']           = $this->getTable();
-      $tab[4]['field']           = 'state_type';
-      $tab[4]['name']            = __('Service state type', 'monitoring');
-      $tab[4]['datatype']        = 'string';
-      // $tab[4]['searchtype']      = 'equals';
-      // $tab[4]['datatype']        = 'itemlink';
-      // $tab[4]['itemlink_type']   = 'PluginMonitoringService';
+         $tab[4]['table']           = $this->getTable();
+         $tab[4]['field']           = 'state_type';
+         $tab[4]['name']            = __('Service state type', 'monitoring');
+         $tab[4]['datatype']        = 'string';
+         // $tab[4]['searchtype']      = 'equals';
+         // $tab[4]['datatype']        = 'itemlink';
+         // $tab[4]['itemlink_type']   = 'PluginMonitoringService';
 
-      $tab[5]['table']           = $this->getTable();
-      $tab[5]['field']           = 'last_check';
-      $tab[5]['name']            = __('Last check', 'monitoring');
-      $tab[5]['datatype']        = 'datetime';
+         $tab[5]['table']           = $this->getTable();
+         $tab[5]['field']           = 'last_check';
+         $tab[5]['name']            = __('Last check', 'monitoring');
+         $tab[5]['datatype']        = 'datetime';
 
-      $tab[6]['table']           = $this->getTable();
-      $tab[6]['field']           = 'event';
-      $tab[6]['name']            = __('Result details', 'monitoring');
-      $tab[6]['datatype']        = 'string';
-      $tab[6]['massiveaction']   = false;
+         $tab[6]['table']           = $this->getTable();
+         $tab[6]['field']           = 'event';
+         $tab[6]['name']            = __('Result details', 'monitoring');
+         $tab[6]['datatype']        = 'string';
+         $tab[6]['massiveaction']   = false;
 
-      $tab[7]['table']          = $this->getTable();
-      $tab[7]['field']          = 'is_acknowledged';
-      $tab[7]['name']           = __('Acknowledge', 'monitoring');
-      $tab[7]['datatype']       = 'bool';
+         $tab[7]['table']          = $this->getTable();
+         $tab[7]['field']          = 'is_acknowledged';
+         $tab[7]['name']           = __('Acknowledge', 'monitoring');
+         $tab[7]['datatype']       = 'bool';
 
-      $tab[8]['table']          = 'glpi_plugin_monitoring_hosts';
-      $tab[8]['field']          = 'is_acknowledged';
-      $tab[8]['name']           = __('Host acknowledge', 'monitoring');
-      $tab[8]['datatype']       = 'bool';
+         $tab[8]['table']          = 'glpi_plugin_monitoring_hosts';
+         $tab[8]['field']          = 'is_acknowledged';
+         $tab[8]['name']           = __('Host acknowledge', 'monitoring');
+         $tab[8]['datatype']       = 'bool';
 
-      $tab[9]['table']          = "glpi_plugin_monitoring_componentscatalogs";
-      $tab[9]['field']          = 'name';
-      $tab[9]['name']           = __('Components catalog', 'monitoring');
-      $tab[9]['datatype']       = 'itemlink';
+         $tab[9]['table']          = "glpi_plugin_monitoring_componentscatalogs";
+         $tab[9]['field']          = 'name';
+         $tab[9]['name']           = __('Components catalog', 'monitoring');
+         $tab[9]['datatype']       = 'itemlink';
 
-      $tab[10]['table']          = $this->getTable();
-      $tab[10]['field']          = 'name';
-      $tab[10]['name']           = __('Name');
-      $tab[10]['datatype']       = 'itemlink';
+         $tab[10]['table']          = $this->getTable();
+         $tab[10]['field']          = 'name';
+         $tab[10]['name']           = __('Name');
+         $tab[10]['datatype']       = 'itemlink';
 
-      $tab[11]['table']          = 'glpi_plugin_monitoring_componentscatalogs_hosts';
-      $tab[11]['field']          = 'id';
-      $tab[11]['name']           = __('Name');
+         $tab[11]['table']          = 'glpi_plugin_monitoring_componentscatalogs_hosts';
+         $tab[11]['field']          = 'id';
+         $tab[11]['name']           = __('Name');
 
-      $tab[20]['table']          = 'glpi_computers';
-      $tab[20]['field']          = 'id';
-      $tab[20]['name']           = __('Item')." > ".__('Computer');
-      $tab[20]['searchtype']     = 'equals';
-      $tab[20]['datatype']       = 'itemlink';
-      $tab[20]['itemlink_type']  = 'Computer';
+         $tab[20]['table']          = 'glpi_computers';
+         $tab[20]['field']          = 'id';
+         $tab[20]['name']           = __('Item')." > ".__('Computer');
+         $tab[20]['searchtype']     = 'equals';
+         $tab[20]['datatype']       = 'itemlink';
+         $tab[20]['itemlink_type']  = 'Computer';
 
-      $tab[21]['table']          = 'glpi_printers';
-      $tab[21]['field']          = 'id';
-      $tab[21]['name']           = __('Item')." > ".__('Printer');
-      $tab[21]['searchtype']     = 'equals';
-      $tab[21]['datatype']       = 'itemlink';
-      $tab[21]['itemlink_type']  = 'Printer';
+         $tab[21]['table']          = 'glpi_printers';
+         $tab[21]['field']          = 'id';
+         $tab[21]['name']           = __('Item')." > ".__('Printer');
+         $tab[21]['searchtype']     = 'equals';
+         $tab[21]['datatype']       = 'itemlink';
+         $tab[21]['itemlink_type']  = 'Printer';
 
-      $tab[22]['table']          = 'glpi_networkequipments';
-      $tab[22]['field']          = 'id';
-//      $tab[22]['linkfield']      = 'items_id';
-      $tab[22]['name']           = __('Item')." > ".__('Network device');
-      $tab[22]['searchtype']     = 'equals';
-      $tab[22]['datatype']       = 'itemlink';
-      $tab[22]['itemlink_type']  = 'NetworkEquipment';
-
+         $tab[22]['table']          = 'glpi_networkequipments';
+         $tab[22]['field']          = 'id';
+   //      $tab[22]['linkfield']      = 'items_id';
+         $tab[22]['name']           = __('Item')." > ".__('Network device');
+         $tab[22]['searchtype']     = 'equals';
+         $tab[22]['datatype']       = 'itemlink';
+         $tab[22]['itemlink_type']  = 'NetworkEquipment';
+      } else if (PLUGIN_MONITORING_SYSTEM == 'alignak') {
+         $pma = new PluginMonitoringAlignak('livestate');
+         $properties = $pma->getPropertiesDefinition('only');
+         $i=0;
+         foreach ($properties as $prop) {
+            $i++;
+            $tab[$i]['table'] = $this->getTable();
+            $tab[$i]['field'] = $prop['name'];
+            $tab[$i]['name'] = $prop['ui']['title'];
+            if ($prop['type'] == 'boolean') {
+               $tab[$i]['datatype']  = 'bool';
+            }
+         }
+      }
 
       // TODO : ...
       // $tab[12]['table']          = 'glpi_plugin_monitoring_componentscatalogs_hosts';
@@ -610,8 +624,8 @@ class PluginMonitoringService extends CommonDBTM {
             $pmHostaddress->showForm($items_id, $itemtype);
          }
       }
-      $pmServices = new PluginMonitoringService();
-      $pmServices->listByHost($itemtype, $items_id);
+//      $pmServices = new PluginMonitoringService();
+//      $pmServices->listByHost($itemtype, $items_id);
    }
 
 

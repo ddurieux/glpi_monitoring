@@ -73,7 +73,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
       if (Session::haveRight("plugin_monitoring_systemstatus", PluginMonitoringSystem::DASHBOARD)
               || Session::haveRight("plugin_monitoring_hoststatus", PluginMonitoringHost::DASHBOARD)
-              || Session::haveRight("plugin_monitoring_servicescatalog", PluginMonitoringService::DASHBOARD)
               || Session::haveRight("plugin_monitoring_componentscatalog", PluginMonitoringComponentscatalog::DASHBOARD)
               || Session::haveRight("plugin_monitoring_service", PluginMonitoringService::DASHBOARD)) {
          echo "<table class='tab_cadre_fixe'>";
@@ -136,19 +135,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
                $redirect = TRUE;
             }
          }
-         if (Session::haveRight("plugin_monitoring_servicescatalog", PluginMonitoringService::DASHBOARD)) {
-            echo "<th colspan='2'>";
-            $this->displayPuce('display_servicescatalog');
-            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/display_servicescatalog.php'>";
-            echo __('Services catalogs', 'monitoring');
-            echo "</a>";
-            $a_url[] = $CFG_GLPI['root_doc']."/plugins/monitoring/front/display_servicescatalog.php";
-            echo "</th>";
-         } else {
-            if (basename($_SERVER['PHP_SELF']) == 'display_servicescatalog.php') {
-               $redirect = TRUE;
-            }
-         }
          if (Session::haveRight("plugin_monitoring_componentscatalog", PluginMonitoringComponentscatalog::DASHBOARD)) {
             echo "<th colspan='2'>";
             $this->displayPuce('display_componentscatalog');
@@ -164,19 +150,6 @@ class PluginMonitoringDisplay extends CommonDBTM {
          }
          echo "</tr>";
          echo "</table>";
-         if (Session::haveRight("plugin_monitoring_acknowledge", READ)
-              || Session::haveRight("plugin_monitoring_downtime", READ)) {
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_1'>";
-            echo "<th>";
-            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/downtime.php'>".__('Downtimes', 'monitoring')."</a>";
-            echo "</th>";
-            echo "<th>";
-            echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/acknowledge.php'>".__('Acknowledges', 'monitoring')."</a>";
-            echo "</th>";
-            echo "</tr>";
-            echo "</table>";
-         }
       } else {
          if (basename($_SERVER['PHP_SELF']) == 'display_servicescatalog.php') {
             $redirect = TRUE;
@@ -499,153 +472,18 @@ class PluginMonitoringDisplay extends CommonDBTM {
       global $DB,$CFG_GLPI;
 
       $col_to_display = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11);
-
-      $data = Search::prepareDatasForSearch($params['itemtype'], $params, $col_to_display);
-      $data['tocompute'] = $data['toview'];
-      Search::constructSQL($data);
-//echo "<pre>";      print_r($data['sql']['search']);
-      Search::constructDatas($data);
-
-/*
-      if (! isset($_SESSION['plugin_monitoring_reduced_interface'])) {
-         $_SESSION['plugin_monitoring_reduced_interface'] = false;
+      if (PLUGIN_MONITORING_SYSTEM == 'shinken') {
+         $data = Search::prepareDatasForSearch($params['itemtype'], $params, $col_to_display);
+         $data['tocompute'] = $data['toview'];
+         Search::constructSQL($data);
+   //echo "<pre>";      print_r($data['sql']['search']);
+         Search::constructDatas($data);
+      } else if (PLUGIN_MONITORING_SYSTEM == 'alignak') {
+         $pma = new PluginMonitoringAlignak('livestate');
+         $params = Search::manageParams('PluginMonitoringService', $_GET);
+         $data = Search::prepareDatasForSearch('PluginMonitoringCommand', $params, $col_to_display);
+         $pma->constructDatas($data);
       }
-
-      if (! isset($_GET['order'])) {
-         $_GET['order'] = "ASC";
-      }
-      if (! isset($_GET['sort'])) {
-         $_GET['sort'] = "";
-      }
-
-      $order = "ASC";
-      if (isset($_GET['order'])) {
-         $order = $_GET['order'];
-      }
-
-      $where = '';
-      if (isset($_GET['field'])) {
-         foreach ($_GET['field'] as $key=>$value) {
-            $wheretmp = '';
-            if (isset($_GET['link'][$key])) {
-               $wheretmp.= " ".$_GET['link'][$key]." ";
-            }
-            $wheretmp .= Search::addWhere(
-                                   "",
-                                   0,
-                                   "PluginMonitoringService",
-                                   $_GET['field'][$key],
-                                   $_GET['searchtype'][$key],
-                                   $_GET['contains'][$key]);
-            if (!strstr($wheretmp, "``.``")) {
-               if ($where != ''
-                       AND !isset($_GET['link'][$key])) {
-                  $where .= " AND ";
-               }
-               $where .= $wheretmp;
-            }
-         }
-      }
-      if ($where != '') {
-         $where = "(".$where;
-         $where .= ") AND ";
-      }
-      $where .= ' `glpi_plugin_monitoring_services`.`entities_id` IN ('.$_SESSION['glpiactiveentities_string'].')';
-
-      if ($where != '') {
-         $where = " WHERE ".$where;
-         $where = str_replace("`".getTableForItemType("PluginMonitoringDisplay")."`.",
-                 "", $where);
-
-      }
-
-      $leftjoin = "
-         INNER JOIN `glpi_plugin_monitoring_services`
-            ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_componentscatalogs_hosts_id` = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`)
-         INNER JOIN `glpi_plugin_monitoring_hosts`
-            ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_plugin_monitoring_hosts`.`items_id`
-            AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype` = `glpi_plugin_monitoring_hosts`.`itemtype`
-         INNER JOIN `glpi_plugin_monitoring_componentscatalogs`
-            ON `plugin_monitoring_componentscalalog_id` = `glpi_plugin_monitoring_componentscatalogs`.`id`
-         INNER JOIN `glpi_plugin_monitoring_components`
-            ON (`glpi_plugin_monitoring_services`.`plugin_monitoring_components_id` = `glpi_plugin_monitoring_components`.`id`)
-         INNER JOIN `glpi_entities`
-            ON (`glpi_plugin_monitoring_services`.`entities_id` = `glpi_entities`.`id`)
-      ";
-
-      $leftjoin .= " LEFT JOIN `glpi_computers`
-         ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` =
-               `glpi_computers`.`id`
-               AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`='Computer'";
-      $leftjoin .= " LEFT JOIN `glpi_printers`
-         ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` =
-               `glpi_printers`.`id`
-               AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`='Printer'";
-      $leftjoin .= " LEFT JOIN `glpi_networkequipments`
-         ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` =
-               `glpi_networkequipments`.`id`
-               AND `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`='NetworkEquipment'";
-
-
-      // * ORDER
-      $ORDERQUERY = "ORDER BY `glpi_plugin_monitoring_services`.`name` ASC";
-      $toview = array(1, 2, 3, 4, 5);
-      $toviewComplete = array(
-          'ITEM_0' => 'host_name',
-          'ITEM_1' => 'component_name',
-          'ITEM_2' => 'state',
-          'ITEM_3' => 'last_check',
-          'ITEM_4' => 'event'
-      );
-      foreach ($toview as $key => $val) {
-         if ($_GET['sort']==$val) {
-            $ORDERQUERY = Search::addOrderBy("PluginMonitoringService", $_GET['sort'],
-                                             $_GET['order'], $key);
-            foreach ($toviewComplete as $keyi=>$vali) {
-               $ORDERQUERY= str_replace($keyi, $vali, $ORDERQUERY);
-            }
-         }
-      }
-
-      $query = "SELECT
-         `glpi_plugin_monitoring_services`.*,
-         CONCAT_WS('', `glpi_computers`.`name`, `glpi_printers`.`name`, `glpi_networkequipments`.`name`) AS host_name,
-         `glpi_plugin_monitoring_componentscatalogs_hosts`.`itemtype`,
-         `glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id`,
-         `glpi_plugin_monitoring_hosts`.`id` AS host_id, `glpi_plugin_monitoring_hosts`.`state` AS host_state, `glpi_plugin_monitoring_hosts`.`is_acknowledged` AS host_acknowledged,
-         `glpi_plugin_monitoring_components`.`id` AS component_id, `glpi_plugin_monitoring_components`.`name` AS component_name
-         FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
-         ".$leftjoin."
-         ".$where."
-         ".$ORDERQUERY;
-      $result = $DB->query($query);
-
-      $start = 0;
-      if (isset($_GET["start"])) {
-         $start = $_GET["start"];
-      }
-
-      $numrows = $DB->numrows($result);
-      $parameters = '';
-
-      $globallinkto = Toolbox::append_params(
-              array('criteria'     => Toolbox::stripslashes_deep($_GET['search']['criteria']),
-                    'metacriteria' => Toolbox::stripslashes_deep($_GET['search']['metacriteria'])),
-              '&amp;');
-
-      $parameters = "sort=".$_GET['sort']."&amp;order=".$_GET['order'].$globallinkto;
-      Html::printPager($start, $numrows, $CFG_GLPI['root_doc']."/plugins/monitoring/front/service.php", $parameters);
-
-      $limit = $numrows;
-      if ($_SESSION["glpilist_limit"] < $numrows) {
-         $limit = $_SESSION["glpilist_limit"];
-      }
-      $query .= " LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
-
-      // Fred : on repose la requête sur la base une 2ème fois ... ?
-      $result = $DB->query($query);
-*/
-
 
       $rand = mt_rand();
       if (!isset($data['data']) || !isset($data['data']['totalcount'])) {
@@ -813,117 +651,6 @@ echo "
       Search::constructSQL($data);
 //echo "<pre>";      print_r($data['sql']['search']);
       Search::constructDatas($data);
-
-
-//      if (! isset($_GET['order'])) {
-//         $_GET['order'] = "ASC";
-//      }
-//      if (! isset($_GET['sort'])) {
-//         $_GET['sort'] = "";
-//      }
-//
-//      $order = "ASC";
-//      if (isset($_GET['order'])) {
-//         $order = $_GET['order'];
-//      }
-//      $where = '';
-//      if (isset($_GET['field'])) {
-//         foreach ($_GET['field'] as $key=>$value) {
-//            $wheretmp = '';
-//            if (isset($_GET['link'][$key])) {
-//               $wheretmp.= " ".$_GET['link'][$key]." ";
-//            }
-//            $wheretmp .= Search::addWhere(
-//                                   "",
-//                                   0,
-//                                   "PluginMonitoringHost",
-//                                   $_GET['field'][$key],
-//                                   $_GET['searchtype'][$key],
-//                                   $_GET['contains'][$key]);
-//            if (!strstr($wheretmp, "``.``")) {
-//               if ($where != ''
-//                       AND !isset($_GET['link'][$key])) {
-//                  $where .= " AND ";
-//               }
-//               $where .= $wheretmp;
-//            }
-//         }
-//      }
-//      if ($where != '') {
-//         $where = "(".$where;
-//         $where .= ") AND ";
-//      }
-//      $where .= " CONCAT_WS('', `glpi_computers`.`entities_id`, `glpi_printers`.`entities_id`, `glpi_networkequipments`.`entities_id`) IN (".$_SESSION['glpiactiveentities_string'].")";
-//
-//      if ($where != '') {
-//         $where = " WHERE ".$where;
-//         $where = str_replace("`".getTableForItemType("PluginMonitoringDisplay")."`.",
-//                 "", $where);
-//
-//      }
-//
-//      $leftjoin = "
-//         LEFT JOIN `glpi_computers`
-//            ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_computers`.`id`
-//               AND `glpi_plugin_monitoring_hosts`.`itemtype`='Computer'
-//         LEFT JOIN `glpi_printers`
-//            ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_printers`.`id`
-//               AND `glpi_plugin_monitoring_hosts`.`itemtype`='Printer'
-//         LEFT JOIN `glpi_networkequipments`
-//            ON `glpi_plugin_monitoring_hosts`.`items_id` = `glpi_networkequipments`.`id`
-//               AND `glpi_plugin_monitoring_hosts`.`itemtype`='NetworkEquipment'
-//         LEFT JOIN `glpi_entities`
-//            ON CONCAT_WS('', `glpi_computers`.`entities_id`, `glpi_printers`.`entities_id`, `glpi_networkequipments`.`entities_id`) = `glpi_entities`.`id`
-//
-//      ";
-//
-//      // * ORDER
-//      $ORDERQUERY = "ORDER BY entity_name ASC, host_name ASC";
-//      $toview = array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
-//      $toviewComplete = array(
-//          'ITEM_0' => 'entity_name',
-//          'ITEM_1' => 'host_name',
-//          'ITEM_2' => 'host_state',
-//          'ITEM_3' => 'service_state',
-//          'ITEM_4' => 'last_check',
-//          'ITEM_5' => 'event',
-//          'ITEM_6' => 'perf_data',
-//          'ITEM_7' => 'is_acknowledged'
-//      );
-//      foreach ($toview as $key => $val) {
-//         if ($_GET['sort']==$val) {
-//            $ORDERQUERY = Search::addOrderBy("PluginMonitoringHost", $_GET['sort'],
-//                                             $_GET['order'], $key);
-//            foreach ($toviewComplete as $keyi=>$vali) {
-//               $ORDERQUERY= str_replace($keyi, $vali, $ORDERQUERY);
-//            }
-//         }
-//      }
-//
-////            `glpi_computers`.*
-//
-//      $query = "SELECT
-//            `glpi_entities`.`name` AS entity_name,
-//            CONCAT_WS('', `glpi_computers`.`id`, `glpi_printers`.`id`, `glpi_networkequipments`.`id`) AS idComputer,
-//            CONCAT_WS('', `glpi_computers`.`name`, `glpi_printers`.`name`, `glpi_networkequipments`.`name`) AS host_name,
-//            `glpi_plugin_monitoring_hosts`.*,
-//            `glpi_plugin_monitoring_hosts`.`state` AS host_state,
-//            `glpi_plugin_monitoring_hosts`.`is_acknowledged` AS host_acknowledged
-//         FROM `glpi_plugin_monitoring_hosts`
-//         ".$leftjoin."
-//         ".$where."
-//         ".$ORDERQUERY;
-//      // Toolbox::logInFile("pm", "Query hosts - $query\n");
-//
-//      $result = $DB->query($query);
-//
-//      if (! isset($_GET["start"])) {
-//         $_GET["start"]=0;
-//      }
-//      $start=$_GET['start'];
-//      if (! isset($_GET["order"])) {
-//         $_GET["order"]="ASC";
-//      }
 
       $rand = mt_rand();
       if (!isset($data['data']) || !isset($data['data']['totalcount'])) {
@@ -1680,77 +1407,140 @@ echo "
       $play_sound = 0;
 
       if ($type == 'Ressources') {
-         $ok = $this->countServicesQuery("
-            `glpi_plugin_monitoring_services`.`state_type`='HARD'
-            AND `glpi_plugin_monitoring_services`.`state`='OK'
-            AND `glpi_plugin_monitoring_hosts`.`is_acknowledged`='0'
-            AND `glpi_plugin_monitoring_services`.`is_acknowledged`='0'");
+         if (PLUGIN_MONITORING_SYSTEM == 'shinken') {
+            $ok = $this->countServicesQuery("
+               `glpi_plugin_monitoring_services`.`state_type`='HARD'
+               AND `glpi_plugin_monitoring_services`.`state`='OK'
+               AND `glpi_plugin_monitoring_hosts`.`is_acknowledged`='0'
+               AND `glpi_plugin_monitoring_services`.`is_acknowledged`='0'");
 
-         $warningdata = $this->countServicesQuery("
-            `glpi_plugin_monitoring_services`.`state_type`='HARD'
-            AND (
-                  (`glpi_plugin_monitoring_services`.`state`='WARNING' AND `glpi_plugin_monitoring_services`.`event` IS NOT NULL AND `glpi_plugin_monitoring_services`.`event` <> '') OR
-                  (`glpi_plugin_monitoring_services`.`state`='RECOVERY') OR
-                  (`glpi_plugin_monitoring_services`.`state`='FLAPPING')
-            )
-            AND `glpi_plugin_monitoring_hosts`.`is_acknowledged`='0'
-            AND `glpi_plugin_monitoring_services`.`is_acknowledged`='0'");
+            $warningdata = $this->countServicesQuery("
+               `glpi_plugin_monitoring_services`.`state_type`='HARD'
+               AND (
+                     (`glpi_plugin_monitoring_services`.`state`='WARNING' AND `glpi_plugin_monitoring_services`.`event` IS NOT NULL AND `glpi_plugin_monitoring_services`.`event` <> '') OR
+                     (`glpi_plugin_monitoring_services`.`state`='RECOVERY') OR
+                     (`glpi_plugin_monitoring_services`.`state`='FLAPPING')
+               )
+               AND `glpi_plugin_monitoring_hosts`.`is_acknowledged`='0'
+               AND `glpi_plugin_monitoring_services`.`is_acknowledged`='0'");
 
-         $warningconnection = $this->countServicesQuery("
-            `glpi_plugin_monitoring_services`.`state_type`='HARD'
-            AND (
-                  (`glpi_plugin_monitoring_services`.`state`='WARNING' AND `glpi_plugin_monitoring_services`.`event` IS NULL) OR
-                  (`glpi_plugin_monitoring_services`.`state`='UNKNOWN') OR
-                  (`glpi_plugin_monitoring_services`.`state` IS NULL)
-            )
-            AND `glpi_plugin_monitoring_hosts`.`is_acknowledged`='0'
-            AND `glpi_plugin_monitoring_services`.`is_acknowledged`='0'");
+            $warningconnection = $this->countServicesQuery("
+               `glpi_plugin_monitoring_services`.`state_type`='HARD'
+               AND (
+                     (`glpi_plugin_monitoring_services`.`state`='WARNING' AND `glpi_plugin_monitoring_services`.`event` IS NULL) OR
+                     (`glpi_plugin_monitoring_services`.`state`='UNKNOWN') OR
+                     (`glpi_plugin_monitoring_services`.`state` IS NULL)
+               )
+               AND `glpi_plugin_monitoring_hosts`.`is_acknowledged`='0'
+               AND `glpi_plugin_monitoring_services`.`is_acknowledged`='0'");
 
-         $critical = $this->countServicesQuery("
-            `glpi_plugin_monitoring_services`.`state_type`='HARD'
-            AND `glpi_plugin_monitoring_services`.`state`='CRITICAL'
-            AND `glpi_plugin_monitoring_hosts`.`is_acknowledged`='0'
-            AND `glpi_plugin_monitoring_services`.`is_acknowledged`='0'");
-
-
-         $ok_soft = $this->countServicesQuery("
-            `glpi_plugin_monitoring_services`.`state_type`!='HARD'
-            AND `glpi_plugin_monitoring_services`.`state`='OK'
-            AND `glpi_plugin_monitoring_hosts`.`is_acknowledged`='0'
-            AND `glpi_plugin_monitoring_services`.`is_acknowledged`='0'");
-
-         $warningdata_soft = $this->countServicesQuery("
-            `glpi_plugin_monitoring_services`.`state_type`!='HARD'
-            AND (
-                  (`glpi_plugin_monitoring_services`.`state`='WARNING' AND `glpi_plugin_monitoring_services`.`event` IS NOT NULL) OR
-                  (`glpi_plugin_monitoring_services`.`state`='RECOVERY') OR
-                  (`glpi_plugin_monitoring_services`.`state`='FLAPPING')
-            )
-            AND `glpi_plugin_monitoring_hosts`.`is_acknowledged`='0'
-            AND `glpi_plugin_monitoring_services`.`is_acknowledged`='0'");
-
-         $warningconnection_soft = $this->countServicesQuery("
-            `glpi_plugin_monitoring_services`.`state_type`!='HARD'
-            AND (
-                  (`glpi_plugin_monitoring_services`.`state`='WARNING' AND `glpi_plugin_monitoring_services`.`event` IS NULL) OR
-                  (`glpi_plugin_monitoring_services`.`state`='UNKNOWN') OR
-                  (`glpi_plugin_monitoring_services`.`state` IS NULL)
-            )
-            AND `glpi_plugin_monitoring_hosts`.`is_acknowledged`='0'
-            AND `glpi_plugin_monitoring_services`.`is_acknowledged`='0'");
-
-         $critical_soft = $this->countServicesQuery("
-            `glpi_plugin_monitoring_services`.`state_type`!='HARD'
-            AND `glpi_plugin_monitoring_services`.`state`='CRITICAL'
-            AND `glpi_plugin_monitoring_hosts`.`is_acknowledged`='0'
-            AND `glpi_plugin_monitoring_services`.`is_acknowledged`='0'");
+            $critical = $this->countServicesQuery("
+               `glpi_plugin_monitoring_services`.`state_type`='HARD'
+               AND `glpi_plugin_monitoring_services`.`state`='CRITICAL'
+               AND `glpi_plugin_monitoring_hosts`.`is_acknowledged`='0'
+               AND `glpi_plugin_monitoring_services`.`is_acknowledged`='0'");
 
 
-         $acknowledge = $this->countServicesQuery("
-            `glpi_plugin_monitoring_services`.`is_acknowledged`='1'");
-            // `glpi_plugin_monitoring_hosts`.`is_acknowledged`='1'
-            // OR `glpi_plugin_monitoring_services`.`is_acknowledged`='1'");
+            $ok_soft = $this->countServicesQuery("
+               `glpi_plugin_monitoring_services`.`state_type`!='HARD'
+               AND `glpi_plugin_monitoring_services`.`state`='OK'
+               AND `glpi_plugin_monitoring_hosts`.`is_acknowledged`='0'
+               AND `glpi_plugin_monitoring_services`.`is_acknowledged`='0'");
 
+            $warningdata_soft = $this->countServicesQuery("
+               `glpi_plugin_monitoring_services`.`state_type`!='HARD'
+               AND (
+                     (`glpi_plugin_monitoring_services`.`state`='WARNING' AND `glpi_plugin_monitoring_services`.`event` IS NOT NULL) OR
+                     (`glpi_plugin_monitoring_services`.`state`='RECOVERY') OR
+                     (`glpi_plugin_monitoring_services`.`state`='FLAPPING')
+               )
+               AND `glpi_plugin_monitoring_hosts`.`is_acknowledged`='0'
+               AND `glpi_plugin_monitoring_services`.`is_acknowledged`='0'");
+
+            $warningconnection_soft = $this->countServicesQuery("
+               `glpi_plugin_monitoring_services`.`state_type`!='HARD'
+               AND (
+                     (`glpi_plugin_monitoring_services`.`state`='WARNING' AND `glpi_plugin_monitoring_services`.`event` IS NULL) OR
+                     (`glpi_plugin_monitoring_services`.`state`='UNKNOWN') OR
+                     (`glpi_plugin_monitoring_services`.`state` IS NULL)
+               )
+               AND `glpi_plugin_monitoring_hosts`.`is_acknowledged`='0'
+               AND `glpi_plugin_monitoring_services`.`is_acknowledged`='0'");
+
+            $critical_soft = $this->countServicesQuery("
+               `glpi_plugin_monitoring_services`.`state_type`!='HARD'
+               AND `glpi_plugin_monitoring_services`.`state`='CRITICAL'
+               AND `glpi_plugin_monitoring_hosts`.`is_acknowledged`='0'
+               AND `glpi_plugin_monitoring_services`.`is_acknowledged`='0'");
+
+
+            $acknowledge = $this->countServicesQuery("
+               `glpi_plugin_monitoring_services`.`is_acknowledged`='1'");
+               // `glpi_plugin_monitoring_hosts`.`is_acknowledged`='1'
+               // OR `glpi_plugin_monitoring_services`.`is_acknowledged`='1'");
+         } else if (PLUGIN_MONITORING_SYSTEM == 'alignak') {
+            $pma = new PluginMonitoringAlignak('livestate');
+            $param = array(
+                'where' => '{"state":"OK","type":"service","state_type":"HARD","acknowledged":false}'
+            );
+            $res = $pma->abc->get('livestate', $param);
+            $ok = $res['_meta']['total'];
+
+            $param = array(
+                'where' => '{"$or": [{"state":"WARNING","type":"service","state_type":"HARD","acknowledged":false,"output":{"$ne":""}},'
+                . '{"state":"RECOVERY","type":"service","state_type":"HARD","acknowledged":false},'
+                . '{"state":"FLAPPING","type":"service","state_type":"HARD","acknowledged":false}]}'
+            );
+            $res = $pma->abc->get('livestate', $param);
+            $warningdata = $res['_meta']['total'];
+
+            $param = array(
+                'where' => '{"$or": [{"state":"WARNING","type":"service","state_type":"HARD","acknowledged":false,"output":""},'
+                . '{"state":"UNKNOWN","type":"service","state_type":"HARD","acknowledged":false}]}'
+            );
+            $res = $pma->abc->get('livestate', $param);
+            $warningconnection = $res['_meta']['total'];
+
+            $param = array(
+                'where' => '{"state":"CRITICAL","type":"service","state_type":"HARD","acknowledged":false}'
+            );
+            $res = $pma->abc->get('livestate', $param);
+            $critical = $res['_meta']['total'];
+
+            $param = array(
+                'where' => '{"state":"OK","type":"service","state_type":"SOFT","acknowledged":false}'
+            );
+            $res = $pma->abc->get('livestate', $param);
+            $ok_soft = $res['_meta']['total'];
+
+            $param = array(
+                'where' => '{"$or": [{"state":"WARNING","type":"service","state_type":"SOFT","acknowledged":false,"output":{"$ne":""}},'
+                . '{"state":"RECOVERY","type":"service","state_type":"SOFT","acknowledged":false},'
+                . '{"state":"FLAPPING","type":"service","state_type":"SOFT","acknowledged":false}]}'
+            );
+            $res = $pma->abc->get('livestate', $param);
+            $warningdata_soft = $res['_meta']['total'];
+
+            $param = array(
+                'where' => '{"$or": [{"state":"WARNING","type":"service","state_type":"SOF","acknowledged":false,"output":""},'
+                . '{"state":"UNKNOWN","type":"service","state_type":"SOFT","acknowledged":false}]}'
+            );
+            $res = $pma->abc->get('livestate', $param);
+            $warningconnection_soft = $res['_meta']['total'];
+
+            $param = array(
+                'where' => '{"state":"CRITICAL","type":"service","state_type":"SOFT","acknowledged":false}'
+            );
+            $res = $pma->abc->get('livestate', $param);
+            $critical_soft = $res['_meta']['total'];
+
+            $param = array(
+                'where' => '{"type":"service","acknowledged":true}'
+            );
+            $res = $pma->abc->get('livestate', $param);
+            $acknowledge = $res['_meta']['total'];
+
+         }
          // ** Manage play sound if critical increase since last refresh
             if (isset($_SESSION['plugin_monitoring_dashboard_Ressources'])) {
                if ($critical > $_SESSION['plugin_monitoring_dashboard_Ressources']) {

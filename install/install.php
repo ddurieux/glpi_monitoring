@@ -56,9 +56,9 @@ function pluginMonitoringInstall($version) {
    require_once GLPI_ROOT . "/plugins/monitoring/inc/profile.class.php";
    $pmProfile = new PluginMonitoringProfile();
    $pmProfile->initProfile();
-   require_once GLPI_ROOT . "/plugins/monitoring/inc/command.class.php";
-   $pmCommand = new PluginMonitoringCommand();
-   $pmCommand->initCommands();
+//   require_once GLPI_ROOT . "/plugins/monitoring/inc/command.class.php";
+//   $pmCommand = new PluginMonitoringCommand();
+//   $pmCommand->initCommands();
    require_once GLPI_ROOT . "/plugins/monitoring/inc/notificationcommand.class.php";
    $pmNotificationcommand = new PluginMonitoringNotificationcommand();
    $pmNotificationcommand->initCommands();
@@ -196,6 +196,10 @@ function pluginMonitoringUninstall() {
          $query_delete = "DROP TABLE `".$data[0]."`;";
          $DB->query($query_delete) or die($DB->error());
       }
+   }
+
+   if (isset($_SESSION['glpi_plugin_monitoring'])) {
+      unset($_SESSION['glpi_plugin_monitoring']);
    }
    return true;
 }

@@ -114,10 +114,32 @@ class PluginMonitoringConfig extends CommonDBTM {
                 'max'   => 1000)
       );
       echo "</td>";
-      echo "<td rowspan='4'>";
+      echo "<td>".__('Alignak webui url', 'monitoring')." :</td>";
+      echo "<td>";
+      Html::autocompletionTextField($this, 'alignak_webui_url', array('value' => $this->fields['alignak_webui_url']));
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Extra-debug', 'monitoring')." :</td>";
+      echo "<td>";
+      Dropdown::showYesNo("extradebug", $this->fields['extradebug']);
+      echo "</td>";
+      echo "<td>".__('Alignak backend url', 'monitoring')." :</td>";
+      echo "<td>";
+      Html::autocompletionTextField($this, 'alignak_backend_url', array('value' => $this->fields['alignak_backend_url']));
+      echo "</td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".__('Use container/VM name as prefix of NRPE command + use IP address of host', 'monitoring')." :</td>";
+      echo "<td>";
+      Dropdown::showYesNo("nrpe_prefix_contener", $this->fields['nrpe_prefix_contener']);
+      echo "</td>";
+      echo "<td rowspan='2'>";
       echo __('Timezones (for graph)', 'monitoring')."&nbsp:";
       echo "</td>";
-      echo "<td rowspan='4'>";
+      echo "<td rowspan='2'>";
          $a_timezones = $this->getTimezones();
 
          $a_timezones_selected = importArrayFromDB($this->fields['timezones']);
@@ -168,20 +190,6 @@ class PluginMonitoringConfig extends CommonDBTM {
          echo "</td>";
          echo "</tr>";
          echo "</table>";
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Extra-debug', 'monitoring')." :</td>";
-      echo "<td>";
-      Dropdown::showYesNo("extradebug", $this->fields['extradebug']);
-      echo "</td>";
-      echo "</tr>";
-
-      echo "<tr class='tab_bg_1'>";
-      echo "<td>".__('Use container/VM name as prefix of NRPE command + use IP address of host', 'monitoring')." :</td>";
-      echo "<td>";
-      Dropdown::showYesNo("nrpe_prefix_contener", $this->fields['nrpe_prefix_contener']);
       echo "</td>";
       echo "</tr>";
 
@@ -257,6 +265,17 @@ class PluginMonitoringConfig extends CommonDBTM {
         reset($objects);
         rmdir($dir);
       }
+   }
+
+
+
+   static function load_alignak_url() {
+      global $PM_CONFIG;
+
+      $config = new PluginMonitoringConfig();
+      $config->getFromDB(1);
+      $PM_CONFIG['alignak_webui_url'] = $config->fields['alignak_webui_url'];
+      $PM_CONFIG['alignak_backend_url'] = $config->fields['alignak_backend_url'];
    }
 
 }

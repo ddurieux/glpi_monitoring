@@ -78,6 +78,9 @@ function pluginMonitoringGetCurrentVersion($version) {
 function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    global $DB;
 
+   include (GLPI_ROOT . "/plugins/monitoring/inc/commondbtm.class.php");
+   include (GLPI_ROOT . "/plugins/monitoring/inc/alignak.class.php");
+
    $migration = new $migrationname($current_version);
 
    if (!is_dir(GLPI_PLUGIN_DOC_DIR.'/monitoring')) {

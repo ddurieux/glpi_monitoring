@@ -65,28 +65,15 @@ class PluginMonitoringMessage extends CommonDBTM {
       })();
       </script>";
 
-      $servicecatalog = '';
       $confchanges = '';
 
-      if (session::haveRight("plugin_monitoring_servicescatalog", READ)) {
-         $servicecatalog = $pmMessage->servicescatalogMessage();
-      }
       $confchanges = $pmMessage->configurationchangesMessage();
       $runningshinken = $pmMessage->ShinkennotrunMessage();
       $i = 0;
-      if ($servicecatalog != ''
-              OR $confchanges != '') {
+      if ($confchanges != '') {
          echo "<div class='msgboxmonit msgboxmonit-orange'>";
          if ($confchanges != '') {
             echo $confchanges;
-            $i++;
-         }
-         if ($servicecatalog != '') {
-            if($i > 0) {
-               echo "</div>";
-               echo "<div class='msgboxmonit msgboxmonit-orange'>";
-            }
-            echo $servicecatalog;
             $i++;
          }
          if ($runningshinken != '') {

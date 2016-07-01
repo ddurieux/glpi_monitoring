@@ -1,0 +1,88 @@
+/*  Flat color palette downloaded from
+ *  http://htmlcolorcodes.com/color-charts/
+ *
+ * Items states classes used to colour icons ...
+ */
+
+/* Teals */
+.item_realm,
+.turquoise { color: #1abc9c; }
+.item_user,
+.green-sea { color: #16a085; }
+
+/* Greens */
+.item_active,
+.emerald { color: #2ecc71; }
+.item_open,
+.item_hostUp,
+.item_serviceOk,
+.item_livestateUp,
+.item_livestateOk,
+.nephritis { color: #27ae60; }
+
+/* Blues */
+.item_unknown,
+.peter-river { color: #3498db; }
+.item_hostUnknown,
+.item_serviceUnknown,
+.item_livestateUnknown,
+.belize-hole { color: #2980b9; }
+
+/* Purples */
+.item_hostDowntime,
+.item_serviceDowntime,
+.item_livestateDowntime,
+.item_historyCheckRequest,
+.item_historyCheckRequested,
+.item_historyAckAdd,
+.item_historyAckProcessed,
+.item_historyAckDelete,
+.amethyst { color: #9b59b6; }
+.item_historyDowntimeAdd,
+.item_historyDowntimeProcessed,
+.item_historyDowntimeDelete,
+.wisteria { color: #8e44ad; }
+
+/* Blacks */
+.item_command,
+.item_timeperiod,
+.wet-asphalt { color: #34495e; }
+.midnight-blue { color: #2c3e50; }
+
+/* Yellows */
+.sunflower,
+.item_historyCheckResult
+ { color: #f1c40f; }
+.orange { color: #f39c12; }
+
+/* Oranges */
+.item_close,
+.item_inactive,
+.carrot { color: #e67e22; }
+.item_hostUnreachable,
+.item_serviceWarning,
+.item_livestateUnreachable,
+.item_livestateWarning,
+.pumpkin { color: #d35400; }
+
+/* Reds */
+.item_hostDown,
+.item_serviceCritical,
+.item_livestateDown,
+.item_livestateCritical,
+.alizarin { color: #e74c3c; }
+.pomegranate { color: #c0392b; }
+
+/* Whites */
+.clouds { color: #ecf0f1; }
+.silver { color: #bdc3c7; }
+
+/* Grays */
+.item_hostAck,
+.item_serviceAck,
+.concrete { color: #95a5a6; }
+.asbestos { color: #7f8c8d; }
+
+/*  Want more? Get the full flat color palette at
+ *  http://htmlcolorcodes.com/color-charts/
+ */

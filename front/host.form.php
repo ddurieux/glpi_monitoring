@@ -49,52 +49,9 @@ Html::header(__('Monitoring', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
 
 $pmHost = new PluginMonitoringHost();
 if (isset($_POST["add"])) {
-   if (((isset($_POST['items_id']) AND $_POST['items_id'] != "0") AND ($_POST['items_id'] != ""))
-         OR (isset($_POST['is_template']) AND ($_POST['is_template'] == "1"))) {
-
-      if (isset($_POST['template_id']) AND $_POST['template_id'] > 0) {
-         $pmHost->getFromDB($_POST['template_id']);
-         $_POST['parenttype'] = $pmHost->fields['parenttype'];
-         $_POST['plugin_monitoring_commands_id'] = $pmHost->fields['plugin_monitoring_commands_id'];
-         $_POST['plugin_monitoring_checks_id'] = $pmHost->fields['plugin_monitoring_checks_id'];
-         $_POST['active_checks_enabled'] = $pmHost->fields['active_checks_enabled'];
-         $_POST['passive_checks_enabled'] = $pmHost->fields['passive_checks_enabled'];
-         $_POST['calendars_id'] = $pmHost->fields['calendars_id'];
-      }
-
-      $hosts_id = $pmHost->add($_POST);
-
-      if (isset($_POST['template_id']) AND $_POST['template_id'] > 0) {
-         // Add parents
-         $pmHost_Host = new PluginMonitoringHost_Host();
-         $a_list = $pmHost_Host->find("`plugin_monitoring_hosts_id_1`='".$_POST['template_id']."'");
-         foreach ($a_list as $data) {
-            $input = array();
-            $input['plugin_monitoring_hosts_id_1'] = $hosts_id;
-            $input['plugin_monitoring_hosts_id_2'] = $data['plugin_monitoring_hosts_id_2'];
-            $pmHost_Host->add($input);
-         }
-
-         // Add contacts
-         $pmHost_Contact = new PluginMonitoringHost_Contact();
-         $a_list = $pmHost_Contact->find("`plugin_monitoring_hosts_id`='".$_POST['template_id']."'");
-         foreach ($a_list as $data) {
-            $input = array();
-            $input['plugin_monitoring_hosts_id'] = $hosts_id;
-            $input['plugin_monitoring_contacts_id'] = $data['plugin_monitoring_contacts_id'];
-            $pmHost_Contact->add($input);
-         }
-      }
-      if (isset($_POST['is_template']) AND ($_POST['is_template'] == "1")) {
-         Html::redirect($_SERVER['HTTP_REFERER']."&id=".$hosts_id);
-      }
-   }
+   $hosts_id = $pmHost->add($_POST);
    Html::back();
 } else if (isset ($_POST["update"])) {
-
-   if ($_POST['parenttype'] == '0' OR $_POST['parenttype'] == '2') {
-      $_POST['parents'] = "";
-   }
    $pmHost->update($_POST);
    Html::back();
 } else if (isset ($_POST["delete"])) {

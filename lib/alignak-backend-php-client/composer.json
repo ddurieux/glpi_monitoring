@@ -1,0 +1,22 @@
+{
+    "name": "alignak/backendapiclient",
+    "type": "library",
+    "description": "API client to request to Alignak backend",
+    "keywords": ["alignak","backend"],
+    "require": {
+        "php": ">=5.4.0",
+        "guzzlehttp/guzzle": "~5.2|~6.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4"
+    },
+    "license": "AGPL-3.0",
+    "authors": [
+        {
+            "name": "David Durieux",
+            "email": "david@durieux.family",
+            "homepage": "http://david.durieux.family",
+            "role": "Developer"
+        }
+    ]
+}

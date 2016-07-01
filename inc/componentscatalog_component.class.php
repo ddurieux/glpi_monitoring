@@ -55,16 +55,14 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
 
 
    function showComponents($componentscatalogs_id) {
-      global $DB,$CFG_GLPI;
+      global $DB, $CFG_GLPI, $PM_CONFIG;
 
       $this->addComponent($componentscatalogs_id);
 
       $rand = mt_rand();
 
-      $pmComponent = new PluginMonitoringComponent();
-      $pmCommand   = new PluginMonitoringCommand();
-      $pmCheck     = new PluginMonitoringCheck();
-      $calendar    = new Calendar();
+      $abc = new Alignak_Backend_Client($PM_CONFIG['alignak_backend_url']);
+      $abc->login('admin', 'admin');
 
       echo "<form method='post' name='componentscatalog_component_form$rand' id='componentscatalog_component_form$rand' action=\"".
                 $CFG_GLPI["root_doc"]."/plugins/monitoring/front/componentscatalog_component.form.php\">";
@@ -84,10 +82,6 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
       echo "<tr>";
       echo "<th width='10'>&nbsp;</th>";
       echo "<th>".__('Name')."</th>";
-      echo "<th>".__('Command name', 'monitoring')."</th>";
-      echo "<th>".__('Check definition', 'monitoring')."</th>";
-      echo "<th>".__('Check period', 'monitoring')."</th>";
-      echo "<th>".__('Remote check', 'monitoring')."</th>";
       echo "</tr>";
 
       $used = array();
@@ -95,35 +89,14 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
-         $used[] = $data['plugin_monitoring_components_id'];
-         $pmComponent->getFromDB($data['plugin_monitoring_components_id']);
          echo "<tr>";
          echo "<td>";
          echo "<input type='checkbox' name='item[".$data["id"]."]' value='1'>";
          echo "</td>";
          echo "<td class='center'>";
-         echo $pmComponent->getLink(1);
+         $template_info = $abc->get('host/'.$data['backend_host_template']);
+         echo $template_info['name'];
          echo "</td>";
-         echo "<td class='center'>";
-         $pmCommand->getFromDB($pmComponent->fields['plugin_monitoring_commands_id']);
-         echo $pmCommand->getLink();
-         echo "</td>";
-         echo "<td class='center'>";
-         $pmCheck->getFromDB($pmComponent->fields['plugin_monitoring_checks_id']);
-         echo $pmCheck->getLink();
-         echo "</td>";
-         echo "<td class='center'>";
-         $calendar->getFromDB($pmComponent->fields['calendars_id']);
-         echo $calendar->getLink();
-         echo "</td>";
-         echo "<td class='center'>";
-         if ($pmComponent->fields['remotesystem'] == '') {
-            echo "-";
-         } else {
-            echo $pmComponent->fields['remotesystem'];
-         }
-         echo "</td>";
-
          echo "</tr>";
       }
 
@@ -136,21 +109,15 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
 
 
    function addComponent($componentscatalogs_id) {
-      global $DB;
+      global $DB, $PM_CONFIG;
 
-      if (! Session::haveRight("plugin_monitoring_componentscatalog", UPDATE)) return;
+      if (!Session::haveRight("plugin_monitoring_componentscatalog", UPDATE)) {
+         return;
+      }
 
       $this->getEmpty();
 
       $this->showFormHeader();
-
-      $used = array();
-      $query = "SELECT * FROM `".$this->getTable()."`
-         WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
-      $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
-         $used[] = $data['plugin_monitoring_components_id'];
-      }
 
       echo "<tr>";
       echo "<td colspan='2'>";
@@ -158,8 +125,14 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
       echo "<input type='hidden' name='plugin_monitoring_componentscalalog_id' value='".$componentscatalogs_id."'/>";
       echo "</td>";
       echo "<td colspan='2'>";
-      Dropdown::show("PluginMonitoringComponent", array('name'=>'plugin_monitoring_components_id',
-                                                        'used'=>$used));
+      $abc = new Alignak_Backend_Client($PM_CONFIG['alignak_backend_url']);
+      $abc->login('admin', 'admin');
+      $hosts = $abc->get('host', array('where' => '{"_is_template": true}'));
+      $elements = array();
+      foreach ($hosts['_items'] as $key => $value) {
+         $elements[$value['_id']] = $value['name'];
+      }
+      Dropdown::showFromArray('backend_host_template', $elements);
       echo "</td>";
       echo "</tr>";
 

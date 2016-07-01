@@ -1,31 +1,3 @@
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_servicescatalogs`;
-
-CREATE TABLE `glpi_plugin_monitoring_servicescatalogs` (
-   `id` int(11) NOT NULL AUTO_INCREMENT,
-   `name` varchar(255) DEFAULT NULL,
-   `entities_id` int(11) NOT NULL DEFAULT '0',
-   `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
-   `comment` text DEFAULT NULL COLLATE utf8_unicode_ci,
-   `last_check` datetime DEFAULT NULL,
-   `event` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-   `state` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
-   `state_type` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '0',
-   `plugin_monitoring_checks_id` int(11) NOT NULL DEFAULT '0',
-   `calendars_id` int(11) NOT NULL DEFAULT '0',
-   `is_acknowledged` tinyint(1) NOT NULL DEFAULT '0',
-   `is_acknowledgeconfirmed` tinyint(1) NOT NULL DEFAULT '0',
-   `acknowledge_comment` text DEFAULT NULL COLLATE utf8_unicode_ci,
-   `acknowledge_users_id` int(11) NOT NULL DEFAULT '0',
-   `notification_interval` int(4) NOT NULL DEFAULT '30',
-   `business_priority` tinyint(1) NOT NULL DEFAULT '1',
-   `is_generic` tinyint(1) NOT NULL DEFAULT '0',
-   `plugin_monitoring_servicescatalogs_id` int(11) NOT NULL DEFAULT '0',
-   PRIMARY KEY (`id`),
-   KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_componentscatalogs`;
 
 CREATE TABLE `glpi_plugin_monitoring_componentscatalogs` (
@@ -34,9 +6,6 @@ CREATE TABLE `glpi_plugin_monitoring_componentscatalogs` (
    `entities_id` int(11) NOT NULL DEFAULT '0',
    `is_recursive` tinyint(1) NOT NULL DEFAULT '0',
    `comment` text DEFAULT NULL COLLATE utf8_unicode_ci,
-   `notification_interval` int(4) NOT NULL DEFAULT '30',
-   `hostsnotification_id` int(11) DEFAULT '-1',
-   `servicesnotification_id` int(11) DEFAULT '-1',
    PRIMARY KEY (`id`),
    KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -81,9 +50,9 @@ DROP TABLE IF EXISTS `glpi_plugin_monitoring_componentscatalogs_components`;
 CREATE TABLE `glpi_plugin_monitoring_componentscatalogs_components` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `plugin_monitoring_componentscalalog_id` int(11) NOT NULL DEFAULT '0',
-  `plugin_monitoring_components_id` int(11) NOT NULL DEFAULT '0',
+  `backend_host_template` varchar(50) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `unicity` (`plugin_monitoring_componentscalalog_id`,`plugin_monitoring_components_id`),
+  UNIQUE KEY `unicity` (`plugin_monitoring_componentscalalog_id`,`backend_host_template`),
   KEY `plugin_monitoring_componentscalalog_id` (`plugin_monitoring_componentscalalog_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -97,6 +66,7 @@ CREATE TABLE `glpi_plugin_monitoring_componentscatalogs_hosts` (
   `is_static` tinyint(1) NOT NULL DEFAULT '1',
   `items_id` int(11) NOT NULL DEFAULT '0',
   `itemtype` varchar(100) DEFAULT NULL,
+  `plugin_monitoring_hosts_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `itemtype` (`itemtype`,`items_id`),
   KEY `plugin_monitoring_componentscalalog_id` (`plugin_monitoring_componentscalalog_id`)
@@ -144,44 +114,25 @@ CREATE TABLE `glpi_plugin_monitoring_services` (
 
 
 
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_contacttemplates`;
-
-CREATE TABLE `glpi_plugin_monitoring_contacttemplates` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `is_default` tinyint(1) NOT NULL DEFAULT '0',
-  `shinken_administrator` tinyint(1) NOT NULL DEFAULT '0',
-  `shinken_can_submit_commands` tinyint(1) NOT NULL DEFAULT '0',
-  `host_notifications_enabled` tinyint(1) NOT NULL DEFAULT '1',
-  `service_notifications_enabled` tinyint(1) NOT NULL DEFAULT '1',
-  `service_notification_period` int(11) NOT NULL DEFAULT '0',
-  `host_notification_period` int(11) NOT NULL DEFAULT '0',
-  `service_notification_options_w` tinyint(1) NOT NULL DEFAULT '1',
-  `service_notification_options_u` tinyint(1) NOT NULL DEFAULT '1',
-  `service_notification_options_c` tinyint(1) NOT NULL DEFAULT '1',
-  `service_notification_options_r` tinyint(1) NOT NULL DEFAULT '1',
-  `service_notification_options_f` tinyint(1) NOT NULL DEFAULT '0',
-  `service_notification_options_s` tinyint(1) NOT NULL DEFAULT '0',
-  `service_notification_options_n` tinyint(1) NOT NULL DEFAULT '0',
-  `host_notification_options_d` tinyint(1) NOT NULL DEFAULT '1',
-  `host_notification_options_u` tinyint(1) NOT NULL DEFAULT '1',
-  `host_notification_options_r` tinyint(1) NOT NULL DEFAULT '1',
-  `host_notification_options_f` tinyint(1) NOT NULL DEFAULT '0',
-  `host_notification_options_s` tinyint(1) NOT NULL DEFAULT '0',
-  `host_notification_options_n` tinyint(1) NOT NULL DEFAULT '0',
-  `service_notification_commands` int(11) NOT NULL DEFAULT '0',
-  `host_notification_commands` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_contacts`;
 
 CREATE TABLE `glpi_plugin_monitoring_contacts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `users_id` int(11) NOT NULL DEFAULT '0',
   `plugin_monitoring_contacttemplates_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+
+DROP TABLE IF EXISTS `glpi_plugin_monitoring_users`;
+
+CREATE TABLE `glpi_plugin_monitoring_users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `users_id` int(11) NOT NULL DEFAULT '0',
+  `backend_login` varchar(255) DEFAULT NULL,
+  `backend_password` varchar(255) DEFAULT NULL,
+  `backend_token` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -235,6 +186,8 @@ CREATE TABLE `glpi_plugin_monitoring_configs` (
   `extradebug` tinyint(1) NOT NULL DEFAULT '0',
   `nrpe_prefix_contener` tinyint(1) NOT NULL DEFAULT '0',
   `append_id_hostname` tinyint(1) NOT NULL DEFAULT '0',
+  `alignak_webui_url` varchar(255) DEFAULT 'http://127.0.0.1:5001',
+  `alignak_backend_url` varchar(255) DEFAULT 'http://127.0.0.1:5000',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -405,18 +358,8 @@ CREATE TABLE `glpi_plugin_monitoring_hosts` (
   `items_id` int(11) NOT NULL DEFAULT '0',
   `entities_id` int(11) NOT NULL DEFAULT '0',
   `itemtype` varchar(100) DEFAULT NULL,
-  `event` varchar(4096) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `state` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `state_type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `last_check` datetime DEFAULT NULL,
-  `dependencies` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `perf_data` text DEFAULT NULL COLLATE utf8_unicode_ci,
-  `latency` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `execution_time` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `is_acknowledged` tinyint(1) NOT NULL DEFAULT '0',
-  `is_acknowledgeconfirmed` tinyint(1) NOT NULL DEFAULT '0',
-  `acknowledge_comment` text DEFAULT NULL COLLATE utf8_unicode_ci,
-  `acknowledge_users_id` int(11) NOT NULL DEFAULT '0',
+  `backend_host_id` varchar(50) NOT NULL DEFAULT '0',
+  `backend_host_id_auto` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `itemtype` (`itemtype`,`items_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -496,37 +439,6 @@ CREATE TABLE `glpi_plugin_monitoring_serviceevents` (
 
 
 
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_commands`;
-
-CREATE TABLE `glpi_plugin_monitoring_commands` (
-   `id` int(11) NOT NULL AUTO_INCREMENT,
-   `is_active` tinyint(1) NOT NULL DEFAULT '1',
-   `name` varchar(255) DEFAULT NULL,
-   `command_name` varchar(255) DEFAULT NULL,
-   `command_line` text DEFAULT NULL COLLATE utf8_unicode_ci,
-   `poller_tag` varchar(255) DEFAULT NULL,
-   `module_type` varchar(255) DEFAULT NULL,
-   `arguments` text DEFAULT NULL COLLATE utf8_unicode_ci,
-   PRIMARY KEY (`id`),
-   KEY `name` (`name`),
-   KEY `command_name` (`command_name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_checks`;
-
-CREATE TABLE `glpi_plugin_monitoring_checks` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `max_check_attempts` int(2) NOT NULL DEFAULT '1',
-  `check_interval` int(5) NOT NULL DEFAULT '1',
-  `retry_interval` int(5) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_businessrules`;
 
 CREATE TABLE `glpi_plugin_monitoring_businessrules` (
@@ -559,37 +471,6 @@ CREATE TABLE `glpi_plugin_monitoring_businessrulegroups` (
    `plugin_monitoring_servicescatalogs_id` int(11) NOT NULL DEFAULT '0',
    `operator` varchar(255) DEFAULT NULL,
    PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_eventhandlers`;
-
-CREATE TABLE `glpi_plugin_monitoring_eventhandlers` (
-   `id` int(11) NOT NULL AUTO_INCREMENT,
-   `is_active` tinyint(1) NOT NULL DEFAULT '1',
-   `name` varchar(255) DEFAULT NULL,
-   `command_name` varchar(255) DEFAULT NULL,
-   `command_line` text DEFAULT NULL COLLATE utf8_unicode_ci,
-   PRIMARY KEY (`id`),
-   KEY `name` (`name`),
-   KEY `command_name` (`command_name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_notificationcommands`;
-
-CREATE TABLE `glpi_plugin_monitoring_notificationcommands` (
-   `id` int(11) NOT NULL AUTO_INCREMENT,
-   `is_active` tinyint(1) NOT NULL DEFAULT '1',
-   `name` varchar(255) DEFAULT NULL,
-   `command_name` varchar(255) DEFAULT NULL,
-   `command_line` text DEFAULT NULL COLLATE utf8_unicode_ci,
-   `reactionner_tag` varchar(255) DEFAULT NULL,
-   `module_type` varchar(255) DEFAULT NULL,
-   PRIMARY KEY (`id`),
-   KEY `name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -879,47 +760,6 @@ CREATE TABLE `glpi_plugin_monitoring_perfdatas` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_downtimes`;
-
-CREATE TABLE `glpi_plugin_monitoring_downtimes` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `plugin_monitoring_hosts_id` int(11) NOT NULL DEFAULT '0',
-  `flexible` tinyint(1) DEFAULT '0',
-  `start_time` datetime NOT NULL DEFAULT '2014-01-01 00:00:00',
-  `end_time` datetime NOT NULL DEFAULT '2014-01-01 00:00:00',
-  `duration` int(1) DEFAULT '24',
-  `duration_type` varchar(64) COLLATE utf8_unicode_ci DEFAULT 'days',
-  `comment` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `services` tinyint(1) DEFAULT '0',
-  `users_id` int(11) DEFAULT '-1',
-  `tickets_id` int(11) DEFAULT '0',
-  `notified` tinyint(1) DEFAULT '0',
-  `expired` tinyint(1) DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `plugin_monitoring_hosts_id` (`plugin_monitoring_hosts_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_acknowledges`;
-
-CREATE TABLE `glpi_plugin_monitoring_acknowledges` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `itemtype` varchar(100) DEFAULT 'Host',
-  `items_id` int(11) NOT NULL DEFAULT '0',
-  `start_time` datetime NOT NULL DEFAULT '2014-01-01 00:00:00',
-  `end_time` datetime NOT NULL DEFAULT '2014-01-01 00:00:00',
-  `sticky` tinyint(1) DEFAULT '1',
-  `persistent` tinyint(1) DEFAULT '1',
-  `notify` tinyint(1) DEFAULT '1',
-  `comment` varchar(1024) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `users_id` int(11) DEFAULT '-1',
-  `notified` tinyint(1) DEFAULT '0',
-  `expired` tinyint(1) DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `itemtype` (`itemtype`,`items_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
 DROP TABLE IF EXISTS `glpi_plugin_monitoring_perfdatadetails`;
 
 CREATE TABLE `glpi_plugin_monitoring_perfdatadetails` (
@@ -1030,39 +870,3 @@ CREATE TABLE `glpi_plugin_monitoring_shinkenstates` (
   KEY `hostname` (`hostname`(160),`service`(160))
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-
-
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_hostnotificationtemplates`;
-
-CREATE TABLE `glpi_plugin_monitoring_hostnotificationtemplates` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `host_notifications_enabled` tinyint(1) NOT NULL DEFAULT '1',
-  `host_notification_period` int(11) NOT NULL DEFAULT '0',
-  `host_notification_options_d` tinyint(1) NOT NULL DEFAULT '1',
-  `host_notification_options_u` tinyint(1) NOT NULL DEFAULT '1',
-  `host_notification_options_r` tinyint(1) NOT NULL DEFAULT '1',
-  `host_notification_options_f` tinyint(1) NOT NULL DEFAULT '0',
-  `host_notification_options_s` tinyint(1) NOT NULL DEFAULT '1',
-  `host_notification_options_n` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-
-
-DROP TABLE IF EXISTS `glpi_plugin_monitoring_servicenotificationtemplates`;
-
-CREATE TABLE `glpi_plugin_monitoring_servicenotificationtemplates` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `service_notifications_enabled` tinyint(1) NOT NULL DEFAULT '1',
-  `service_notification_period` int(11) NOT NULL DEFAULT '0',
-  `service_notification_options_w` tinyint(1) NOT NULL DEFAULT '1',
-  `service_notification_options_u` tinyint(1) NOT NULL DEFAULT '1',
-  `service_notification_options_c` tinyint(1) NOT NULL DEFAULT '1',
-  `service_notification_options_r` tinyint(1) NOT NULL DEFAULT '1',
-  `service_notification_options_f` tinyint(1) NOT NULL DEFAULT '0',
-  `service_notification_options_s` tinyint(1) NOT NULL DEFAULT '1',
-  `service_notification_options_n` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

@@ -64,11 +64,37 @@ if (Session::haveRight("plugin_monitoring_dashboard", READ)
          Session::haveRight("plugin_monitoring_restartshinken", CREATE)
          || Session::haveRight("plugin_monitoring_systemstatus", PluginMonitoringSystem::DASHBOARD)
          || Session::haveRight("plugin_monitoring_hoststatus", PluginMonitoringHost::DASHBOARD)
-         || Session::haveRight("plugin_monitoring_servicescatalog", PluginMonitoringServicescatalog::DASHBOARD)
          || Session::haveRight("plugin_monitoring_componentscatalog", PluginMonitoringComponentscatalog::DASHBOARD)
          || Session::haveRight("plugin_monitoring_service", PluginMonitoringService::DASHBOARD)
          || Session::haveRight("plugin_monitoring_displayview", PluginMonitoringDisplayview::DASHBOARD))) {
    $toDisplayArea++;
+
+   echo "<table class='tab_cadre' width='950'>";
+   echo "<tr class='tab_bg_1'>";
+   echo "<th>";
+   echo "NEW MENU ALIGNAK";
+   echo "</th>";
+   echo "</tr>";
+
+   echo "<tr class='tab_bg_1'>";
+   echo "<td>";
+   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/command.php'>".__('Commands', 'monitoring')."</a>";
+   echo "</td>";
+   echo "</tr>";
+   echo "</table>";
+
+   echo "<br/>";
+
+
+
+
+
+
+
+
+
+
+
 
 //   echo "<table class='tab_cadre' width='950'>";
 //   echo "<tr class='tab_bg_1'>";
@@ -102,17 +128,10 @@ if (Session::haveRight("plugin_monitoring_displayview", READ)
 }
 
 
-if (Session::haveRight("plugin_monitoring_servicescatalog", READ)
-      || Session::haveRight("plugin_monitoring_weathermap", READ)
+if (Session::haveRight("plugin_monitoring_weathermap", READ)
       || Session::haveRight("plugin_monitoring_displayview", READ)) {
    echo "<table class='tab_cadre' width='950'>";
    echo "<tr class='tab_bg_1'>";
-   if (Session::haveRight("plugin_monitoring_servicescatalog", READ)) {
-      $toDisplayArea++;
-      echo "<th align='center' height='30' width='33%'>";
-      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicescatalog.php'>".__('Services catalogs', 'monitoring')."</a>";
-      echo "</th>";
-   }
 
    if (Session::haveRight("plugin_monitoring_weathermap", READ)) {
       $toDisplayArea++;
@@ -160,15 +179,12 @@ if (Session::haveRight("config", READ)) {
    echo "</th>";
 
    echo "<th width='11%'>";
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/contacttemplate.php'>".__('Contact templates', 'monitoring')."</a>";
    echo "</th>";
 
    echo "<th width='11%'>";
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/hostnotificationtemplate.php'>".__('Hosts notifications templates', 'monitoring')."</a>";
    echo "</th>";
 
    echo "<th width='11%'>";
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/servicenotificationtemplate.php'>".__('Services notifications templates', 'monitoring')."</a>";
    echo "</th>";
 
    echo "</tr>";
@@ -176,21 +192,15 @@ if (Session::haveRight("config", READ)) {
 
    echo "<tr class='tab_bg_1'>";
    echo "<th width='11%' height='25'>";
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/command.php'>".__('Commands', 'monitoring')."</a>";
    echo "</th>";
 
    echo "<th width='11%'>";
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/check.php'>".__('Check definition', 'monitoring')."</a>";
    echo "</th>";
 
    echo "<th width='11%'>";
-   if (Session::haveRight('calendar', READ)) {
-      echo "<a href='".$CFG_GLPI['root_doc']."/front/calendar.php'>".__('Calendar')."</a>";
-   }
    echo "</th>";
 
    echo "<th width='11%'>";
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/eventhandler.php'>".__('Event handler', 'monitoring')."</a>";
    echo "</th>";
 
    echo "<th width='11%'>";
@@ -198,7 +208,6 @@ if (Session::haveRight("config", READ)) {
    echo "</th>";
 
    echo "<th>";
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/notificationcommand.php'>".__('Notification commands', 'monitoring')."</a>";
    echo "</th>";
 
    echo "<th>";
@@ -211,6 +220,9 @@ if (Session::haveRight("config", READ)) {
    echo "</tr>";
 
    echo "</table>";
+
+
+
 }
 
 if ($toDisplayArea <= 0) {

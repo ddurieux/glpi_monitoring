@@ -47,31 +47,47 @@ Session::checkRight("plugin_monitoring_command", READ);
 Html::header(__('Monitoring - commands', 'monitoring'),$_SERVER["PHP_SELF"], "plugins",
              "PluginMonitoringDashboard", "command");
 
-$pMonitoringCommand = new PluginMonitoringCommand();
+if (PLUGIN_MONITORING_SYSTEM == 'shinken') {
+   $pMonitoringCommand = new PluginMonitoringCommand();
 
-if (isset($_POST["copy"])) {
-   $pMonitoringCommand->showForm("", array(), $_POST);
-   Html::footer();
-   exit;
-} else if (isset ($_POST["add"])) {
-   $_POST = $pMonitoringCommand->convertPostdata($_POST);
-   $pMonitoringCommand->add($_POST);
-   Html::back();
-} else if (isset ($_POST["update"])) {
-   $_POST = $pMonitoringCommand->convertPostdata($_POST);
-   $pMonitoringCommand->update($_POST);
-   Html::back();
-} else if (isset ($_POST["purge"])) {
-   $pMonitoringCommand->delete($_POST);
-   $pMonitoringCommand->redirectToList();
+   if (isset($_POST["copy"])) {
+      $pMonitoringCommand->showForm("", array(), $_POST);
+      Html::footer();
+      exit;
+   } else if (isset ($_POST["add"])) {
+      $_POST = $pMonitoringCommand->convertPostdata($_POST);
+      $pMonitoringCommand->add($_POST);
+      Html::back();
+   } else if (isset ($_POST["update"])) {
+      $_POST = $pMonitoringCommand->convertPostdata($_POST);
+      $pMonitoringCommand->update($_POST);
+      Html::back();
+   } else if (isset ($_POST["purge"])) {
+      $pMonitoringCommand->delete($_POST);
+      $pMonitoringCommand->redirectToList();
+   }
+
+   if (!isset($_GET["id"])) {
+      $_GET["id"] = "";
+   }
+
+   $pMonitoringCommand->display(array('id' => $_GET["id"]));
+} else if (PLUGIN_MONITORING_SYSTEM == 'alignak') {
+   $pma = new PluginMonitoringAlignak('command');
+   if (isset($_POST["add"])) {
+      $pma->addItem($_POST);
+   } else if (isset($_POST['update'])) {
+
+   } else if (isset($_POST['purge'])) {
+      $pma->delItem($_POST["_id"], $_POST['_etag']);
+   }
+
+   if (!isset($_GET["id"])) {
+      $_GET["id"] = "";
+   }
+   $pma->showForm('command', $_GET['id']);
+
 }
-
-if (!isset($_GET["id"])) {
-   $_GET["id"] = "";
-}
-
-$pMonitoringCommand->display(array('id' => $_GET["id"]));
-
 Html::footer();
 
 ?>

@@ -45,7 +45,25 @@ if (!defined('GLPI_ROOT')) {
 }
 
 class PluginMonitoringComponentscatalog extends CommonDropdown {
-
+/*
+ * TODO for alignak!!!
+ *
+ * Associate a catalog with host/service templates of the backend
+ * We can only associate a host template who have services templates.
+ * Like this it's more simple.
+ *
+ * for test use templates :
+ * host_http_template      => http
+ *                            https
+ * host_disk_root_template => check /
+ * host_standard           => cpu
+ *                         => memory
+ *                         => load
+ *                         => ssh
+ *                         => user
+ *                         => process
+ *                         => disk io
+ */
 
    const HOMEPAGE         =  1024;
    const DASHBOARD        =  2048;
@@ -267,23 +285,6 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
 
 
 
-   function getAdditionalFields() {
-      return array(array('name'  => 'notification_interval',
-                         'label' => __('Interval between 2 notifications (in minutes)', 'monitoring'),
-                         'type'  => 'notificationinterval')
-                  ,
-                  array('name'  => 'hostsnotification_id',
-                         'label' => __('Hosts notification options', 'monitoring'),
-                         'type'  => 'hostsnotification_id')
-                  ,
-                  array('name'  => 'servicesnotification_id',
-                         'label' => __('Services notification options', 'monitoring'),
-                         'type'  => 'servicesnotification_id')
-                  );
-   }
-
-
-
    /**
     * Get search function for the class
     *
@@ -292,104 +293,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    function getSearchOptions() {
 
       $tab                 = parent::getSearchOptions();
-
-      $tab[10]['table']          = PluginMonitoringComponentscatalog::getTable();
-      $tab[10]['field']          = 'notification_interval';
-      $tab[10]['name']           = __('Interval between 2 notifications (in minutes)', 'monitoring');
-      $tab[10]['datatype']       = 'integer';
-
-      $tab[11]['table']          = PluginMonitoringHostnotificationtemplate::getTable();
-      $tab[11]['field']          = 'name';
-      $tab[11]['linkfield']      = 'hostsnotification_id';
-      $tab[11]['name']           = __('Hosts notification options', 'monitoring');
-      $tab[11]['datatype']       = 'itemlink';
-
-      $tab[12]['table']          = PluginMonitoringServicenotificationtemplate::getTable();
-      $tab[12]['field']          = 'name';
-      $tab[12]['linkfield']      = 'servicesnotification_id';
-      $tab[12]['name']           = __('Services notification options', 'monitoring');
-      $tab[12]['datatype']       = 'itemlink';
-
       return $tab;
-   }
-
-
-
-   function prepareInputForUpdate($input) {
-
-      if (isset($input["notification_interval_hours"])
-              && isset($input['notification_interval_minutes'])) {
-         $input['notification_interval'] = $input["notification_interval_hours"]*60 + $input['notification_interval_minutes'];
-         unset($input["notification_interval_hours"]);
-         unset($input['notification_interval_minutes']);
-      }
-
-      return $input;
-   }
-
-
-   function displaySpecificTypeField($ID, $field=array()) {
-
-
-      switch ($field['type']) {
-         case 'notificationinterval' :
-            if ($ID > 0) {
-//               $this->fields['notification_interval'];
-            } else {
-               $this->fields['notification_interval'] = 30;
-            }
-            $hours = (int)($this->fields['notification_interval'] / 60);
-            $minutes = (int)($this->fields['notification_interval'] % 60);
-            Dropdown::showNumber('notification_interval_hours', array(
-                'value' => $hours,
-                'min'   => 0,
-                'max'   => 168,
-                'step'  => 1)
-            );
-            echo "&nbsp;".__('hours', 'monitoring');
-            Dropdown::showNumber('notification_interval_minutes', array(
-                'value' => $minutes,
-                'min'   => 0,
-                'max'   => 59,
-                'step'  => 1)
-            );
-            echo "&nbsp;".__('minutes', 'monitoring');
-            // Dropdown::showNumber('notification_interval', array(
-                // 'value' => $this->fields['notification_interval'],
-                // 'min'   => 0,
-                // 'max'   => 2880,
-                // 'step'  => 10)
-            // );
-            break;
-
-         case 'hostsnotification_id' :
-            if ($ID <= 0) {
-               $this->fields['hostsnotification_id'] = -1;
-            }
-            // Dropdown::show("PluginMonitoringContacttemplate", array(
-                                   // 'name' =>'hostsnotification_id',
-                                    // 'value'=>$this->fields['hostsnotification_id']
-                                    // ));
-            Dropdown::show("PluginMonitoringHostnotificationtemplate", array(
-                                   'name' =>'hostsnotification_id',
-                                    'value'=>$this->fields['hostsnotification_id']
-                                    ));
-            break;
-
-         case 'servicesnotification_id' :
-            if ($ID <= 0) {
-               $this->fields['servicesnotification_id'] = -1;
-            }
-            // Dropdown::show("PluginMonitoringContacttemplate", array(
-                                   // 'name' =>'servicesnotification_id',
-                                    // 'value'=>$this->fields['servicesnotification_id']
-                                    // ));
-            Dropdown::show("PluginMonitoringServicenotificationtemplate", array(
-                                   'name' =>'servicesnotification_id',
-                                    'value'=>$this->fields['servicesnotification_id']
-                                    ));
-            break;
-      }
    }
 
 
@@ -1638,6 +1542,185 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          $content = PluginMonitoringReport::endCapture();
          PluginMonitoringReport::generatePDF($content, 'L');
       }
+   }
+
+
+
+   function create_default_templates() {
+      global $PM_CONFIG;
+      /*
+       * for test use templates :
+       * host_http_template      => http
+       *                            https
+       * host_standard           => cpu
+       *                         => memory
+       *                         => load
+       *                         => ssh
+       */
+      $abc = new Alignak_Backend_Client($PM_CONFIG['alignak_backend_url']);
+      $abc->login('admin', 'admin');
+
+      $abc->delete('command');
+      $abc->delete('host');
+      $abc->delete('service');
+
+      $realms = $abc->get('realm');
+      foreach ($realms['_items'] as $data) {
+         $realm = $data['_id'];
+      }
+
+      $data = array(
+          'name'         => 'check_ping',
+          'command_line' => '$PLUGINSDIR$/check_icmp -H $HOSTADDRESS$ -w 3000,100% -c 5000,100% -p 10',
+          '_realm'       => $realm
+      );
+      $cmd_check_ping = $abc->post('command', $data);
+
+      $data = array(
+          'name'         => 'check_http',
+          'command_line' => '$PLUGINSDIR$/check_http -H $HOSTADDRESS$',
+          '_realm'       => $realm
+      );
+      $cmd_check_http = $abc->post('command', $data);
+
+      $data = array(
+          'name'         => 'check_https',
+          'command_line' => '$PLUGINSDIR$/check_http -H $HOSTADDRESS$ -S --sni',
+          '_realm'       => $realm
+      );
+      $cmd_check_https = $abc->post('command', $data);
+
+      $data = array(
+          'name'         => 'check_snmp_cpu',
+          'command_line' => '$PLUGINSDIR$/check_snmp_load.pl -H $HOSTADDRESS$ -C public -f -w 75 -c 80',
+          '_realm'       => $realm
+      );
+      $cmd_check_cpu = $abc->post('command', $data);
+
+      $data = array(
+          'name'         => 'check_snmp_memory',
+          'command_line' => '$PLUGINSDIR$/check_snmp_mem.pl -w 80 -c 90 -- -v 2c -c public $HOSTADDRESS$',
+          '_realm'       => $realm
+      );
+      $cmd_check_mem = $abc->post('command', $data);
+
+      $data = array(
+          'name'         => 'check_snmp_load',
+          'command_line' => '$PLUGINSDIR$/check_snmp_load.pl -H $HOSTADDRESS$ -C public -f -w 0.8 -c 1 -T netsl',
+          '_realm'       => $realm
+      );
+      $cmd_check_load = $abc->post('command', $data);
+
+      $data = array(
+          'name'         => 'check_ssh',
+          'command_line' => '$PLUGINSDIR$/check_tcp -H $HOSTADDRESS$ -p 22',
+          '_realm'       => $realm
+      );
+      $cmd_check_ssh = $abc->post('command', $data);
+
+
+      // Add standard host //
+      $data = array(
+          'name'               => 'standard_template',
+          '_is_template'       => True,
+          'retry_interval'     => 1,
+          'check_interval'     => 3,
+          'check_command'      => $cmd_check_ping['_id'],
+          'max_check_attempts' => 2,
+          '_realm'             => $realm
+      );
+      $standard_host = $abc->post('host', $data);
+
+      $data = array(
+          'name'               => 'check_cpu',
+          '_is_template'       => True,
+          '_templates_from_host_template' => True,
+          'retry_interval'     => 1,
+          'check_interval'     => 5,
+          'check_command'      => $cmd_check_cpu['_id'],
+          'max_check_attempts' => 2,
+          '_realm'             => $realm,
+          'host'               => $standard_host['_id']
+      );
+      $standard_service_cpu = $abc->post('service', $data);
+
+      $data = array(
+          'name'               => 'check_memory',
+          '_is_template'       => True,
+          '_templates_from_host_template' => True,
+          'retry_interval'     => 1,
+          'check_interval'     => 5,
+          'check_command'      => $cmd_check_mem['_id'],
+          'max_check_attempts' => 2,
+          '_realm'             => $realm,
+          'host'               => $standard_host['_id']
+      );
+      $standard_service_memory = $abc->post('service', $data);
+
+      $data = array(
+          'name'               => 'check_load',
+          '_is_template'       => True,
+          '_templates_from_host_template' => True,
+          'retry_interval'     => 1,
+          'check_interval'     => 5,
+          'check_command'      => $cmd_check_load['_id'],
+          'max_check_attempts' => 2,
+          '_realm'             => $realm,
+          'host'               => $standard_host['_id']
+      );
+      $standard_service_load = $abc->post('service', $data);
+
+      $data = array(
+          'name'               => 'check_ssh',
+          '_is_template'       => True,
+          '_templates_from_host_template' => True,
+          'retry_interval'     => 1,
+          'check_interval'     => 5,
+          'check_command'      => $cmd_check_ssh['_id'],
+          'max_check_attempts' => 2,
+          '_realm'             => $realm,
+          'host'               => $standard_host['_id']
+      );
+      $standard_service_ssh = $abc->post('service', $data);
+
+
+      // Add http host //
+      $data = array(
+          'name'               => 'http_template',
+          '_is_template'       => True,
+          'retry_interval'     => 1,
+          'check_interval'     => 3,
+          'check_command'      => $cmd_check_ping['_id'],
+          'max_check_attempts' => 2,
+          '_realm'             => $realm
+      );
+      $http_host = $abc->post('host', $data);
+
+      $data = array(
+          'name'               => 'check_http',
+          '_is_template'       => True,
+          '_templates_from_host_template' => True,
+          'retry_interval'     => 1,
+          'check_interval'     => 5,
+          'check_command'      => $cmd_check_http['_id'],
+          'max_check_attempts' => 2,
+          '_realm'             => $realm,
+          'host'               => $http_host['_id']
+      );
+      $http_service_http = $abc->post('service', $data);
+
+      $data = array(
+          'name'               => 'check_https',
+          '_is_template'       => True,
+          '_templates_from_host_template' => True,
+          'retry_interval'     => 1,
+          'check_interval'     => 5,
+          'check_command'      => $cmd_check_https['_id'],
+          'max_check_attempts' => 2,
+          '_realm'             => $realm,
+          'host'               => $http_host['_id']
+      );
+      $http_service_https = $abc->post('service', $data);
    }
 }
 

@@ -198,10 +198,11 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
 
 
    function linkComponentsToItem($componentscatalogs_id, $componentscatalogs_hosts_id, $networkports_id=0) {
-      global $DB;
+      global $DB, $PM_CONFIG;
 
       $pmService                 = new PluginMonitoringService();
       $pmComponentscatalog_Host  = new PluginMonitoringComponentscatalog_Host();
+      $pmHost                    = new PluginMonitoringHost();
 
       $pmComponentscatalog_Host->getFromDB($componentscatalogs_hosts_id);
 
@@ -210,19 +211,60 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
 
-         $input = array();
          $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
          $item = new $itemtype();
          $item->getFromDB($pmComponentscatalog_Host->fields['items_id']);
 
          if ($networkports_id == 0) {
-            $input['entities_id'] =  $item->fields['entities_id'];
-            $input['plugin_monitoring_componentscatalogs_hosts_id'] = $componentscatalogs_hosts_id;
-            $input['plugin_monitoring_components_id'] = $data['plugin_monitoring_components_id'];
-            $input['name'] = Dropdown::getDropdownName("glpi_plugin_monitoring_components", $data['plugin_monitoring_components_id']);
-            $input['state'] = 'WARNING';
-            $input['state_type'] = 'HARD';
-            $pmService->add($input);
+            $abc = new Alignak_Backend_Client($PM_CONFIG['alignak_backend_url']);
+            $abc->login('admin', 'admin');
+
+            $realms = $abc->get('realm');
+            foreach ($realms['_items'] as $datar) {
+               $realm = $datar['_id'];
+            }
+
+            // Get in glpi_plugin_monitoring_hosts if the host has yet added
+            // in the backend
+            $backend_host_id = '';
+            $ourhost = current($pmHost->find("`itemtype`='".$pmComponentscatalog_Host->fields['itemtype']."' "
+                    . "AND `items_id`='".$pmComponentscatalog_Host->fields['items_id']."'", "", 1));
+            if (count($ourhost) > 0) {
+               $backend_host_id = $ourhost['backend_host_id'];
+            }
+            if ($backend_host_id == '') {
+               $datap = array(
+                   'name'       => $item->fields['name'],
+                   'address'    => '127.0.0.1',
+                   '_templates' => array($data['backend_host_template']),
+                   '_realm'     => $realm,
+                   '_templates_with_services' => True
+               );
+               try {
+                  $response = $abc->post('host', $datap);
+               } catch (\Exception $e) {
+                  // have yet host with this name, so add -id of glpi in name
+                  $datap['name'] .= "-".$item->fields['id'];
+                  $response = $abc->post('host', $datap);
+               }
+               $datap = array(
+                   'itemtype' => $pmComponentscatalog_Host->fields['itemtype'],
+                   'items_id' => $pmComponentscatalog_Host->fields['items_id'],
+                   'entities_id' => 0,
+                   'backend_host_id' => $response['_id'],
+                   'backend_host_id_auto' => 1
+               );
+               $pmHost->add($datap);
+            } else {
+               $backend_host = $abc->get('host/'.$backend_host_id);
+               if (!in_array($backend_host['_templates'], $data['backend_host_template'])) {
+                  array_push($data['_templates'], $backend_host['_templates']);
+                  $update_data = array(
+                      '_templates' => $data['_templates']
+                  );
+                  $abc->patch("host/".$backend_host_id, $update_data, array(), True);
+               }
+            }
          } else if ($networkports_id > 0) {
             $a_services = $pmService->find("`plugin_monitoring_components_id`='".$data['plugin_monitoring_components_id']."'
                AND `plugin_monitoring_componentscatalogs_hosts_id`='".$componentscatalogs_hosts_id."'
@@ -253,7 +295,27 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
 
 
    static function unlinkComponentsToItem($parm) {
-      global $DB;
+      global $DB, $PM_CONFIG;
+
+      $abc = new Alignak_Backend_Client($PM_CONFIG['alignak_backend_url']);
+      $abc->login('admin', 'admin');
+
+      $pmHost = new PluginMonitoringHost();
+      $ourhost = current($pmHost->find("`itemtype`='".$parm->fields['itemtype']."' "
+              . "AND `items_id`='".$parm->fields['items_id']."'", "", 1));
+      if (count($ourhost) > 0) {
+         $backend_host_id = $ourhost['backend_host_id'];
+
+//         $backend_host = $abc->get('host/'.$backend_host_id);
+//         if (!in_array($backend_host['_templates'], $data['backend_host_template'])) {
+//            array_push($data['_templates'], $backend_host['_templates']);
+//            $update_data = array(
+//                '_templates' => $data['_templates']
+//            );
+//            $abc->patch("host/".$backend_host_id, $update_data, array(), True);
+//         }
+      }
+
 
       $pmService  = new PluginMonitoringService();
 

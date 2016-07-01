@@ -53,12 +53,26 @@ if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
 
 Session::checkRight("plugin_monitoring_dashboard", READ);
 
+$pm = new PluginMonitoringComponentscatalog();
+//$pm->create_default_templates();
+
 $pmDisplay = new PluginMonitoringDisplay();
 $pmMessage = new PluginMonitoringMessage();
 
 $pmMessage->getMessages();
 
 $pmDisplay->menu();
+
+
+$abc = new Alignak_Backend_Client($PM_CONFIG['alignak_backend_url']);
+PluginMonitoringUser::my_token($abc);
+
+$pmWebui = new PluginMonitoringWebui();
+$pmWebui->authentication($abc->token);
+
+$page = $PM_CONFIG['alignak_webui_url']."/external/widget/livestate_table?widget_id=test&widget_template=livestate_table_widget";
+$pmWebui->load_page('webui', $page);
+
 
 if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
    Html::footer();

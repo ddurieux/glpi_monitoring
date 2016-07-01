@@ -50,7 +50,9 @@ $PM_EXPORTFOMAT = 'boolean';
 
 // Init the hooks of monitoring
 function plugin_init_monitoring() {
-   global $PLUGIN_HOOKS;
+   global $PLUGIN_HOOKS, $PM_CONFIG;
+
+   define("PLUGIN_MONITORING_SYSTEM", "alignak");
 
    $PLUGIN_HOOKS['csrf_compliant']['monitoring'] = true;
 
@@ -59,15 +61,16 @@ function plugin_init_monitoring() {
    $Plugin = new Plugin();
    if ($Plugin->isActivated('monitoring')) {
 
+      include GLPI_ROOT.'/plugins/monitoring/lib/alignak-backend-php-client/src/Client.php';
+
+
          Plugin::registerClass('PluginMonitoringEntity',
               array('addtabon' => array('Entity')));
-         Plugin::registerClass('PluginMonitoringCommmand');
-         Plugin::registerClass('PluginMonitoringEventhandler');
          Plugin::registerClass('PluginMonitoringComponent');
          //Plugin::registerClass('PluginMonitoringComponentscatalog');
          Plugin::registerClass('PluginMonitoringComponentscatalog',
               array('addtabon' => array('Central')));
-         Plugin::registerClass('PluginMonitoringContact',
+         Plugin::registerClass('PluginMonitoringUser',
               array('addtabon' => array('User')));
          Plugin::registerClass('PluginMonitoringDisplayview',
               array('addtabon' => array('Central')));
@@ -77,16 +80,10 @@ function plugin_init_monitoring() {
               array('addtabon' => array('Central')));
          Plugin::registerClass('PluginMonitoringProfile',
               array('addtabon' => array('Profile')));
-         Plugin::registerClass('PluginMonitoringServicescatalog',
-              array('addtabon' => array('Central')));
          Plugin::registerClass('PluginMonitoringUnavailability',
               array('addtabon' => array('Computer', 'NetworkEquipment')));
          Plugin::registerClass('PluginMonitoringSystem',
               array('addtabon' => array('Central')));
-         Plugin::registerClass('PluginMonitoringDowntime',
-              array('addtabon' => array('Computer', 'Ticket')));
-         Plugin::registerClass('PluginMonitoringAcknowledge',
-              array('addtabon' => array('Computer')));
          Plugin::registerClass('PluginMonitoringHostdailycounter',
               array('addtabon' => array('Computer')));
          Plugin::registerClass('PluginMonitoringServiceevent',
@@ -104,11 +101,21 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['add_css']['monitoring'] = array(
             "lib/nvd3/src/nv.d3.css",
             "lib/jqueryplugins/tagbox/css/jquery.tagbox.css",
-            "css/views.css"
+            "css/views.css",
+
+             "css/webui/bootstrap.css",
+             "css/webui/bootstrap-theme.min.css",
+             "css/webui/font-awesome.min.css",
+             "css/webui/alertify.min.css",
+             "css/webui/alertify.bootstrap.min.css",
+             "css/webui/alignak_webui-items.css",
+             "css/webui/datatables.min.css"
             );
          $PLUGIN_HOOKS['add_javascript']['monitoring'] = array(
              "lib/jscolor/jscolor.min.js",
-             "lib/jqueryplugins/tagbox/js/jquery.tagbox.min.js"
+             "lib/jqueryplugins/tagbox/js/jquery.tagbox.min.js",
+             "lib/webui/bootstrap.min.js",
+             "lib/webui/datatables.min.js"
              );
 
          $plugin = new Plugin();
@@ -142,29 +149,11 @@ function plugin_init_monitoring() {
 
          // Icons add, search...
          // Still useful to declare all that stuff ? Menu is ok without this ...
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['command'] = 'front/command.form.php?add=1';
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['command'] = 'front/command.php';
-
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['checks'] = 'front/check.form.php?add=1';
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['checks'] = 'front/check.php';
-
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['componentscatalog'] = 'front/componentscatalog.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['componentscatalog'] = 'front/componentscatalog.php';
 
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['servicescatalog'] = 'front/servicescatalog.form.php?add=1';
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['servicescatalog'] = 'front/servicescatalog.php';
-
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['components'] = 'front/component.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['components'] = 'front/component.php';
-
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['contacttemplates'] = 'front/contacttemplate.form.php?add=1';
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['contacttemplates'] = 'front/contacttemplate.php';
-
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['hostnotificationtemplates'] = 'front/hostnotificationtemplate.form.php?add=1';
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['hostnotificationtemplates'] = 'front/hostnotificationtemplate.php';
-
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['servicenotificationtemplates'] = 'front/servicenotificationtemplate.form.php?add=1';
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['servicenotificationtemplates'] = 'front/servicenotificationtemplate.php';
 
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['displayview'] = 'front/displayview.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['displayview'] = 'front/displayview.php';
@@ -174,12 +163,6 @@ function plugin_init_monitoring() {
 
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['weathermap'] = 'front/weathermap.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['weathermap'] = 'front/weathermap.php';
-
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['eventhandler'] = 'front/eventhandler.form.php?add=1';
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['eventhandler'] = 'front/eventhandler.php';
-
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['notificationcommand'] = 'front/notificationcommand.form.php?add=1';
-         $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['notificationcommand'] = 'front/notificationcommand.php';
 
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['add']['perfdata'] = 'front/perfdata.form.php?add=1';
          $PLUGIN_HOOKS['submenu_entry']['monitoring']['search']['perfdata'] = 'front/perfdata.php';
@@ -200,26 +183,11 @@ function plugin_init_monitoring() {
 
             // Fil ariane
             // Still useful to declare all that stuff ? Menu is ok without this ...
-            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['check']['title'] = __('Check definition', 'monitoring');
-            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['check']['page']  = '/plugins/monitoring/front/check.php';
-
-            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['command']['title'] = __('Commands', 'monitoring');
-            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['command']['page']  = '/plugins/monitoring/front/command.php';
-
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['components']['title'] = __('Components', 'monitoring');
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['components']['page']  = '/plugins/monitoring/front/component.php';
 
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['componentscatalog']['title'] = __('Components catalog', 'monitoring');
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['componentscatalog']['page']  = '/plugins/monitoring/front/componentscatalog.php';
-
-            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['contacttemplates']['title'] = __('Contact templates', 'monitoring');
-            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['contacttemplates']['page']  = '/plugins/monitoring/front/contacttemplate.php';
-
-            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['hostnotificationtemplates']['title'] = __('Hosts notifications templates', 'monitoring');
-            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['hostnotificationtemplates']['page']  = '/plugins/monitoring/front/hostnotificationtemplate.php';
-
-            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['servicenotificationtemplates']['title'] = __('Services notifications templates', 'monitoring');
-            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['servicenotificationtemplates']['page']  = '/plugins/monitoring/front/servicenotificationtemplate.php';
 
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['display']['title'] = __('Dashboard', 'monitoring');
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['display']['page']  = '/plugins/monitoring/front/display_servicescatalog.php';
@@ -230,29 +198,14 @@ function plugin_init_monitoring() {
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['PluginMonitoringRealm']['title'] = __('Reamls', 'monitoring');
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['PluginMonitoringRealm']['page']  = '/plugins/monitoring/front/realm.php';
 
-            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['servicescatalog']['title'] = __('Services catalog', 'monitoring');
-            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['servicescatalog']['page']  = '/plugins/monitoring/front/servicescatalog.php';
-
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['weathermap']['title'] = __('Weathermap', 'monitoring');
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['weathermap']['page']  = '/plugins/monitoring/front/weathermap.php';
-
-            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['eventhandler']['title'] = __('Event handler', 'monitoring');
-            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['eventhandler']['page']  = '/plugins/monitoring/front/eventhandler.php';
-
-            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['notificationcommand']['title'] = __('Notification commands', 'monitoring');
-            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['notificationcommand']['page']  = '/plugins/monitoring/front/notificationcommand.php';
 
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['hostdailycounter']['title'] = __('Host daily counters', 'monitoring');
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['hostdailycounter']['page']  = '/plugins/monitoring/front/hostdailycounter.php';
 
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['unavailability']['title'] = __('Unavailabilities', 'monitoring');
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['unavailability']['page']  = '/plugins/monitoring/front/unavailability.php';
-
-            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['downtime']['title'] = __('Downtimes', 'monitoring');
-            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['downtime']['page']  = '/plugins/monitoring/front/downtime.php';
-
-            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['acknowledge']['title'] = __('Acknowledges', 'monitoring');
-            $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['acknowledge']['page']  = '/plugins/monitoring/front/acknowledge.php';
 
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['perfdata']['title'] = __('Graph templates', 'monitoring');
             $PLUGIN_HOOKS['submenu_entry']['monitoring']['options']['perfdata']['page']  = '/plugins/monitoring/front/perfdata.php';
@@ -316,6 +269,10 @@ function plugin_init_monitoring() {
          $PLUGIN_HOOKS['post_init']['monitoring'] = 'plugin_monitoring_postinit';
       $PLUGIN_HOOKS['webservices']['monitoring'] = 'plugin_monitoring_registerMethods';
 
+      if (!isset($PM_CONFIG['alignak_webui_url'])) {
+         $pmConfig = new PluginMonitoringConfig();
+         $pmConfig->load_alignak_url();
+      }
    }
    return $PLUGIN_HOOKS;
 }
@@ -336,7 +293,7 @@ function plugin_version_monitoring() {
 // Optional : check prerequisites before install : may print errors or add to message after redirect
 function plugin_monitoring_check_prerequisites() {
 
-   if (version_compare(GLPI_VERSION,'0.85','lt') || version_compare(GLPI_VERSION,'0.92','ge')) {
+   if (version_compare(GLPI_VERSION,'0.85','lt') || version_compare(GLPI_VERSION,'9.2','ge')) {
       echo "error, require GLPI 0.85.x or 0.90.x or 0.91.x";
    } else {
       return true;
