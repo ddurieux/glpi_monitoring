@@ -57,13 +57,6 @@ if (!isset($_GET['itemtype'])) {
 }
 $params = Search::manageParams("PluginMonitoringService", $_GET);
 
-/*
-// Display ressources perfdata ?
-if (isset($_SESSION['plugin_monitoring']['ressources_perfdata'])) {
-   Html::redirect($CFG_GLPI['root_doc']."/plugins/monitoring/front/perfdatas.php");
-   unset($_SESSION['plugin_monitoring']['ressources_perfdata']);
-}
-*/
 // Reduced or normal interface ?
 if (! isset($_SESSION['plugin_monitoring_reduced_interface'])) {
    $_SESSION['plugin_monitoring_reduced_interface'] = false;

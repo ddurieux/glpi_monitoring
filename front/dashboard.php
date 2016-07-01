@@ -70,8 +70,18 @@ PluginMonitoringUser::my_token($abc);
 $pmWebui = new PluginMonitoringWebui();
 $pmWebui->authentication($abc->token);
 
+echo "<table class='tab_cadre_fixe'>";
+echo "<tr>";
+echo "<td width='50%' style='vertical-align: top;'>";
 $page = $PM_CONFIG['alignak_webui_url']."/external/widget/livestate_table?widget_id=test&widget_template=livestate_table_widget";
-$pmWebui->load_page('webui', $page);
+$pmWebui->load_page($page);
+echo "</td>";
+echo "<td width='50%' style='vertical-align: top;'>";
+$page = $PM_CONFIG['alignak_webui_url']."/external/widget/livestate_graph?widget_id=test&widget_template=livestate_chart_widget";
+$pmWebui->load_page($page);
+echo "</td>";
+echo "</tr>";
+echo "</table>";
 
 
 if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {

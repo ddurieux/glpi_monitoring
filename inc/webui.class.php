@@ -53,8 +53,9 @@ class PluginMonitoringWebui {
    }
 
 
-   function load_page($div_id, $page) {
-      echo "<div id='webui'></div>";
+   function load_page($page) {
+      $div_id = "webui".mt_rand();
+      echo "<div id='".$div_id."'></div>";
       echo Html::scriptBlock(Ajax::updateItemJsCode($div_id, $page, array(), "",
               False));
    }
@@ -108,7 +109,7 @@ class PluginMonitoringWebui {
       //$page = $PM_CONFIG['alignak_webui_url']."/external/table/hosts_graph?page=1&links=1&widget_id=hosts_graph";
       $page = $PM_CONFIG['alignak_webui_url']."/external/table/hosts_table?widget_id=hosts_graph&links=/glpi090/plugins/monitoring/front/test.php?url=";
       //$page = $PM_CONFIG['alignak_webui_url']."/external/widget/livestate_table?widget_id=test&widget_template=livestate_table_widget";
-      $pmWebui->load_page('webui', $page);
+      $pmWebui->load_page($page);
 
    }
 }

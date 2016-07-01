@@ -108,13 +108,14 @@ function plugin_init_monitoring() {
              "css/webui/alertify.min.css",
              "css/webui/alertify.bootstrap.min.css",
              "css/webui/alignak_webui-items.css",
-             "css/webui/datatables.min.css"
+             "css/webui/datatables.min.css",
             );
          $PLUGIN_HOOKS['add_javascript']['monitoring'] = array(
              "lib/jscolor/jscolor.min.js",
              "lib/jqueryplugins/tagbox/js/jquery.tagbox.min.js",
              "lib/webui/bootstrap.min.js",
-             "lib/webui/datatables.min.js"
+             "lib/webui/datatables.min.js",
+             "lib/webui/plugins/chart.min.js"
              );
 
          $plugin = new Plugin();

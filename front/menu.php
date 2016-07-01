@@ -52,8 +52,6 @@ $pmMessage->getMessages();
 
 $toDisplayArea=0;
 
-PluginMonitoringDisplay::restartShinken();
-
 if (Session::haveRight("plugin_monitoring_dashboard", READ)
         && !Session::haveRight("config", READ)) {
    Html::redirect($CFG_GLPI['root_doc']."/plugins/monitoring/front/dashboard.php");
@@ -61,8 +59,7 @@ if (Session::haveRight("plugin_monitoring_dashboard", READ)
 
 if (Session::haveRight("plugin_monitoring_dashboard", READ)
       && (
-         Session::haveRight("plugin_monitoring_restartshinken", CREATE)
-         || Session::haveRight("plugin_monitoring_systemstatus", PluginMonitoringSystem::DASHBOARD)
+        Session::haveRight("plugin_monitoring_systemstatus", PluginMonitoringSystem::DASHBOARD)
          || Session::haveRight("plugin_monitoring_hoststatus", PluginMonitoringHost::DASHBOARD)
          || Session::haveRight("plugin_monitoring_componentscatalog", PluginMonitoringComponentscatalog::DASHBOARD)
          || Session::haveRight("plugin_monitoring_service", PluginMonitoringService::DASHBOARD)
