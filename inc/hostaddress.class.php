@@ -167,6 +167,16 @@ class PluginMonitoringHostaddress extends CommonDBTM {
    }
 
 
+
+   /**
+    * @0.90+2.0
+    * Get the IP of the device (computer, printer...)
+    *
+    * @param integer $items_id
+    * @param string $itemtype
+    * @param string $hostname
+    * @return string IP of the $hostname if no IP found
+    */
    static function getIp($items_id, $itemtype, $hostname) {
       global $DB;
 

@@ -46,6 +46,12 @@ if (!defined('GLPI_ROOT')) {
 
 class PluginMonitoringWebui {
 
+   /**
+    * @0.90+2.0
+    * Manage the authentication (Basic) for the webui widgets
+    *
+    * @param type $token
+    */
    function authentication($token) {
       echo Html::scriptBlock('$.ajaxSetup({
          headers: { "Authorization": "Basic " + btoa("'.$token.':") }}
@@ -53,6 +59,13 @@ class PluginMonitoringWebui {
    }
 
 
+
+   /**
+    * @0.90+2.0
+    * Load the webui widget
+    *
+    * @param type $page
+    */
    function load_page($page) {
       $div_id = "webui".mt_rand();
       echo "<div id='".$div_id."'></div>";
@@ -61,6 +74,15 @@ class PluginMonitoringWebui {
    }
 
 
+
+   /**
+    * @0.90+2.0
+    * Manage the routes used in webui widget. Each route redirect to the right
+    * page
+    *
+    * @param type $httpMethod
+    * @param type $url
+    */
    function routes($httpMethod, $url) {
       require GLPI_ROOT.'/plugins/monitoring/lib/vendor/autoload.php';
 

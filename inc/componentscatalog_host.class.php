@@ -197,6 +197,15 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
 
 
 
+   /**
+    * @0.90+2.0
+    * add / update templates for the host in the backend with result of the
+    * rules
+    *
+    * @param type $componentscatalogs_id
+    * @param type $componentscatalogs_hosts_id
+    * @param type $networkports_id
+    */
    function linkComponentsToItem($componentscatalogs_id, $componentscatalogs_hosts_id, $networkports_id=0) {
       global $DB, $PM_CONFIG;
 
@@ -235,7 +244,10 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
             if ($backend_host_id == '') {
                $datap = array(
                    'name'       => $item->fields['name'],
-                   'address'    => '127.0.0.1',
+                   'address'    => PluginMonitoringHostaddress::getIp(
+                           $pmComponentscatalog_Host->fields['items_id'],
+                           $pmComponentscatalog_Host->fields['itemtype'],
+                           $item->fields['name']),
                    '_templates' => array($data['backend_host_template']),
                    '_realm'     => $realm,
                    '_templates_with_services' => True
@@ -260,7 +272,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
                if (!in_array($backend_host['_templates'], $data['backend_host_template'])) {
                   array_push($data['_templates'], $backend_host['_templates']);
                   $update_data = array(
-                      '_templates' => $data['_templates']
+                      '_templates' => array_unique($data['_templates'])
                   );
                   $abc->patch("host/".$backend_host_id, $update_data, array(), True);
                }
@@ -295,6 +307,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
 
 
    /**
+    * @0.90+2.0
     * The componentscatalog_host is deleted, so we need remove the template(s)
     * configured in the componentscatalog.
     *
