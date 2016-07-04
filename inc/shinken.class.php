@@ -736,7 +736,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          // Manage host check_command arguments
          $array = array();
          preg_match_all("/\\$(ARG\d+)\\$/", $pmCommand->fields['command_line'], $array);
-         sort($array[0]);
+         natcasesort($array[0]);
          $a_arguments = importArrayFromDB($pmCommand->fields['arguments']);
          $a_argumentscustom = importArrayFromDB($a_fields['arguments']);
          foreach ($a_argumentscustom as $key=>$value) {
@@ -1744,7 +1744,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             // Manage arguments
             $array = array();
             preg_match_all("/\\$(ARG\d+)\\$/", $a_command['command_line'], $array);
-            sort($array[0]);
+            natcasesort($array[0]);
             $a_arguments = importArrayFromDB($a_component['arguments']);
             $a_argumentscustom = importArrayFromDB($data['arguments']);
             foreach ($a_argumentscustom as $key=>$value) {
