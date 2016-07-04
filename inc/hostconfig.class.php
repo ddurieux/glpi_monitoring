@@ -100,7 +100,6 @@ class PluginMonitoringHostconfig extends CommonDBTM {
    function showForm($items_id, $itemtype, $options=array()) {
       global $DB,$CFG_GLPI;
 
-      $pmComponent = new PluginMonitoringComponent();
       $pmRealm     = new PluginMonitoringRealm();
 
       $entities_id = 0;
@@ -188,8 +187,8 @@ class PluginMonitoringHostconfig extends CommonDBTM {
          if ($this->fields['plugin_monitoring_components_id'] == '-1') {
             echo "<td colspan='2' class='green center'>";
             echo __('Inheritance of the parent entity')."&nbsp;:&nbsp;";
-            $pmComponent->getFromDB($this->getValueAncestor("plugin_monitoring_components_id", $entities_id));
-            echo $pmComponent->fields['name'];
+//            $pmComponent->getFromDB($this->getValueAncestor("plugin_monitoring_components_id", $entities_id));
+//            echo $pmComponent->fields['name'];
             echo "</td>";
          } else {
             echo "<td colspan='2'>";

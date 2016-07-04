@@ -168,10 +168,14 @@ class PluginMonitoringHost extends CommonDBTM {
          if ($item->getID() > 0) {
             if (self::canView()) {
                $array_ret[0] = self::createTabEntry(
-                       __('Resources', 'monitoring'),
+                       __('Monit information', 'monitoring'),
                        self::countForItem($item));
                $array_ret[1] = self::createTabEntry(
-                       __('Resources (graph)', 'monitoring'));
+                       __('Monit services', 'monitoring'));
+               $array_ret[2] = self::createTabEntry(
+                       __('Monit timeline', 'monitoring'));
+               $array_ret[3] = self::createTabEntry(
+                       __('Monit history', 'monitoring'));
             }
          }
          return $array_ret;
@@ -223,9 +227,17 @@ class PluginMonitoringHost extends CommonDBTM {
             $pmHost->showForm(get_class($item), $item->fields['id']);
             $pmService->manageServices(get_class($item), $item->fields['id']);
             $pmHostconfig->showForm($item->getID(), get_class($item));
+
+            $pmHost->load_webui(get_class($item), $item->fields['id'], 'information');
          } else if ($tabnum == 1) {
-            $pmService = new PluginMonitoringService();
-            $pmService->showGraphsByHost(get_class($item), $item->fields['id']);
+            $pmHost = new PluginMonitoringHost();
+            $pmHost->load_webui(get_class($item), $item->fields['id'], 'services');
+         } else if ($tabnum == 2) {
+            $pmHost = new PluginMonitoringHost();
+            $pmHost->load_webui(get_class($item), $item->fields['id'], 'timeline');
+         } else if ($tabnum == 3) {
+            $pmHost = new PluginMonitoringHost();
+            $pmHost->load_webui(get_class($item), $item->fields['id'], 'history');
          }
       }
       return true;
@@ -990,6 +1002,34 @@ class PluginMonitoringHost extends CommonDBTM {
          $this->showFormButtons($options);
       }
       return true;
+   }
+
+
+   function load_webui($itemtype, $items_id, $page) {
+      global $DB, $PM_CONFIG;
+
+      $query = "SELECT * FROM `".$this->getTable()."`
+         WHERE `items_id`='".$items_id."'
+            AND `itemtype`='".$itemtype."'
+         LIMIT 1";
+
+      $writeable = False;
+      $result = $DB->query($query);
+      if ($DB->numrows($result) == '0') {
+         $this->getEmpty();
+      } else {
+         $data = $DB->fetch_assoc($result);
+         $this->getFromDB($data['id']);
+      }
+
+      $abc = new Alignak_Backend_Client($PM_CONFIG['alignak_backend_url']);
+      PluginMonitoringUser::my_token($abc);
+
+      $pmWebui = new PluginMonitoringWebui();
+      $pmWebui->authentication($abc->token);
+
+      $page = $PM_CONFIG['alignak_webui_url']."/external/host/".$this->fields['backend_host_id']."/".$page;
+      $pmWebui->load_page($page);
    }
 }
 
