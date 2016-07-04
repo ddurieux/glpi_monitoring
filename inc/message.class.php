@@ -50,6 +50,7 @@ class PluginMonitoringMessage extends CommonDBTM {
    static function getMessages() {
       global $CFG_GLPI;
 
+      return;
       $pmMessage = new self();
 
       $confchanges = $pmMessage->configurationchangesMessage();
