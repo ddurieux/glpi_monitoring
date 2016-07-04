@@ -59,16 +59,16 @@ function pluginMonitoringInstall($version) {
 //   require_once GLPI_ROOT . "/plugins/monitoring/inc/command.class.php";
 //   $pmCommand = new PluginMonitoringCommand();
 //   $pmCommand->initCommands();
-   require_once GLPI_ROOT . "/plugins/monitoring/inc/notificationcommand.class.php";
-   $pmNotificationcommand = new PluginMonitoringNotificationcommand();
-   $pmNotificationcommand->initCommands();
-   require_once GLPI_ROOT . "/plugins/monitoring/inc/check.class.php";
-   $pmCheck = new PluginMonitoringCheck();
-   $pmCheck->initChecks();
+//   require_once GLPI_ROOT . "/plugins/monitoring/inc/notificationcommand.class.php";
+//   $pmNotificationcommand = new PluginMonitoringNotificationcommand();
+//   $pmNotificationcommand->initCommands();
+//   require_once GLPI_ROOT . "/plugins/monitoring/inc/check.class.php";
+//   $pmCheck = new PluginMonitoringCheck();
+//   $pmCheck->initChecks();
 
-   require_once GLPI_ROOT . "/plugins/monitoring/inc/perfdata.class.php";
-   require_once GLPI_ROOT . "/plugins/monitoring/inc/perfdatadetail.class.php";
-   PluginMonitoringPerfdata::initDB();
+//   require_once GLPI_ROOT . "/plugins/monitoring/inc/perfdata.class.php";
+//   require_once GLPI_ROOT . "/plugins/monitoring/inc/perfdatadetail.class.php";
+//   PluginMonitoringPerfdata::initDB();
 
    require_once GLPI_ROOT . "/plugins/monitoring/inc/hostconfig.class.php";
    $pmHostconfig = new PluginMonitoringHostconfig();
