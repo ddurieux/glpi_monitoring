@@ -116,7 +116,7 @@ function plugin_init_monitoring() {
              "lib/jqueryplugins/tagbox/js/jquery.tagbox.min.js",
              "lib/webui/bootstrap.min.js",
              "lib/webui/datatables.min.js",
-             "lib/webui/plugins/chart.min.js"
+             "lib/webui/plugins/Chart.min.js"
              );
 
          $plugin = new Plugin();
