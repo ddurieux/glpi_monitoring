@@ -124,14 +124,21 @@ html, body {
 }
 
 /*
- * Side bar menu - do not float left the menu items.
+ * Side bar menu
+ * - do not float left the menu items.
+ * - min and max width
  */
 #sidebar-menu, #actionbar-menu  {
-    min-width: 150px;
+    min-width: 100px;
     max-width: 200px;
 }
 #sidebar-menu  li {
     float: none;
+}
+
+#actionbar-menu  {
+    position: absolute;
+    bottom: 10px;
 }
 
 /*

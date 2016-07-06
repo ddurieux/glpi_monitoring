@@ -14,24 +14,28 @@
 .item_active,
 .emerald { color: #2ecc71; }
 .item_open,
-.item_hostUp,
-.item_serviceOk,
-.item_livestateUp,
-.item_livestateOk,
+.item_host_up,
+.item_service_ok,
+.item_livestate_up,
+.item_livestate_ok,
+.item_logcheckresult_up,
+.item_logcheckresult_ok,
 .nephritis { color: #27ae60; }
 
 /* Blues */
 .item_unknown,
 .peter-river { color: #3498db; }
-.item_hostUnknown,
-.item_serviceUnknown,
-.item_livestateUnknown,
+.item_host_unknown,
+.item_service_unknown,
+.item_livestate_unknown,
+.item_logcheckresult_unknown,
 .belize-hole { color: #2980b9; }
 
 /* Purples */
-.item_hostDowntime,
-.item_serviceDowntime,
-.item_livestateDowntime,
+.item_host_in_downtime,
+.item_service_in_downtime,
+.item_livestate_in_downtime,
+.item_logcheckresult_in_downtime,
 .item_historyCheckRequest,
 .item_historyCheckRequested,
 .item_historyAckAdd,
@@ -58,18 +62,22 @@
 /* Oranges */
 .item_close,
 .item_inactive,
+.item_host_unreachable,
+.item_livestate_unreachable,
+.item_logcheckresult_unreachable,
+.item_service_warning,
+.item_livestate_warning,
+.item_logcheckresult_warning,
 .carrot { color: #e67e22; }
-.item_hostUnreachable,
-.item_serviceWarning,
-.item_livestateUnreachable,
-.item_livestateWarning,
 .pumpkin { color: #d35400; }
 
 /* Reds */
-.item_hostDown,
-.item_serviceCritical,
-.item_livestateDown,
-.item_livestateCritical,
+.item_host_down,
+.item_service_critical,
+.item_livestate_down,
+.item_livestate_critical,
+.item_logcheckresult_down,
+.item_logcheckresult_critical,
 .alizarin { color: #e74c3c; }
 .pomegranate { color: #c0392b; }
 
@@ -78,8 +86,10 @@
 .silver { color: #bdc3c7; }
 
 /* Grays */
-.item_hostAck,
-.item_serviceAck,
+.item_host_acknowledged,
+.item_service_acknowledged,
+.item_livestate_acknowledged,
+.item_logcheckresult_acknowledged,
 .concrete { color: #95a5a6; }
 .asbestos { color: #7f8c8d; }
 
