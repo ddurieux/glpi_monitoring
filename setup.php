@@ -107,6 +107,7 @@ function plugin_init_monitoring() {
              "css/webui/font-awesome.min.css",
              "css/webui/alertify.min.css",
              "css/webui/alertify.bootstrap.min.css",
+             "css/webui/alignak_webui.css",
              "css/webui/alignak_webui-items.css",
              "css/webui/datatables.min.css",
              "css/webui/timeline.css",
