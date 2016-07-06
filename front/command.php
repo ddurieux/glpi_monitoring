@@ -53,7 +53,7 @@ PluginMonitoringUser::my_token($abc);
 $pmWebui = new PluginMonitoringWebui();
 $pmWebui->authentication($abc->token);
 
-$page = $PM_CONFIG['alignak_webui_url']."/external/table/commands_table?widget_id=commands_graph&links=/glpi090/plugins/monitoring/front/test.php?url=";
+$page = $PM_CONFIG['alignak_webui_url']."/external/table/commands_table?widget_id=commands_table&links=/glpi090/plugins/monitoring/front/test.php?url=";
 $pmWebui->load_page($page);
 
 Html::footer();

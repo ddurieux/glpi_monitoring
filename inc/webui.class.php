@@ -129,7 +129,7 @@ class PluginMonitoringWebui {
 
       //$page = $PM_CONFIG['alignak_webui_url']."/external/widget/hosts_table?widget_id=test&widget_template=hosts_table_widget&links=1";
       //$page = $PM_CONFIG['alignak_webui_url']."/external/table/hosts_graph?page=1&links=1&widget_id=hosts_graph";
-      $page = $PM_CONFIG['alignak_webui_url']."/external/table/hosts_table?widget_id=hosts_graph&links=/glpi090/plugins/monitoring/front/test.php?url=";
+      $page = $PM_CONFIG['alignak_webui_url']."/external/table/hosts_table?widget_id=hosts_table&links=/glpi090/plugins/monitoring/front/test.php?url=";
       //$page = $PM_CONFIG['alignak_webui_url']."/external/widget/livestate_table?widget_id=test&widget_template=livestate_table_widget";
       $pmWebui->load_page($page);
 

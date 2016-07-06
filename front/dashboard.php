@@ -77,7 +77,7 @@ $page = $PM_CONFIG['alignak_webui_url']."/external/widget/livestate_table?widget
 $pmWebui->load_page($page);
 echo "</td>";
 echo "<td width='50%' style='vertical-align: top;'>";
-$page = $PM_CONFIG['alignak_webui_url']."/external/widget/livestate_graph?widget_id=test&widget_template=livestate_chart_widget";
+$page = $PM_CONFIG['alignak_webui_url']."/external/widget/livestate_chart?widget_id=test&widget_template=livestate_chart_widget";
 $pmWebui->load_page($page);
 echo "</td>";
 echo "</tr>";
