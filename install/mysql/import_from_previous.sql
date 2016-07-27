@@ -1,8 +1,9 @@
 /*
-SQLyog Ultimate v10.12 
+SQLyog Ultimate v10.12
 MySQL - 5.5.31-0+wheezy1 : Database - glpidb_save
 *********************************************************************
-*/
+*/
+
 
 /*!40101 SET NAMES utf8 */;
 
