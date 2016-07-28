@@ -44,6 +44,9 @@ include ("../../../inc/includes.php");
 
 Session::checkRight("plugin_monitoring_realm", READ);
 
+Html::header(__('Monitoring - realms', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
+             "PluginMonitoringDashboard", "realm");
+
 $dropdown = new PluginMonitoringRealm();
 include (GLPI_ROOT . "/front/dropdown.common.php");
 
