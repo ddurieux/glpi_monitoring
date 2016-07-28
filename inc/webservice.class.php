@@ -51,7 +51,6 @@ class PluginMonitoringWebservice {
       global $PM_EXPORTFOMAT;
 
       PluginMonitoringToolbox::logIfExtradebug(
-         'pm-shinken',
          "Starting methodShinkenGetConffiles ...\n"
       );
 
@@ -151,7 +150,6 @@ class PluginMonitoringWebservice {
 
       $tag = $params['tag'];
       PluginMonitoringToolbox::logIfExtradebug(
-         'pm-shinken',
          " - shinkenTags, get tags for: $tag\n"
       );
 
@@ -165,21 +163,18 @@ class PluginMonitoringWebservice {
          $a_entities_list = array();
          foreach ($a_entities_allowed as $idEntity) {
             PluginMonitoringToolbox::logIfExtradebug(
-               'pm-shinken',
                " - shinkenTags, found entity: $idEntity\n"
             );
 
             foreach ($Entity->find("entities_id='$idEntity'") as $son) {
                PluginMonitoringToolbox::logIfExtradebug(
-                  'pm-shinken',
-               " - shinkenTags, found son entity: {$son['id']}\n"
+                  " - shinkenTags, found son entity: {$son['id']}\n"
                );
                $a_entities_list[] = $son['id'];
             }
          }
          foreach ($a_entities_list as $idEntity) {
             PluginMonitoringToolbox::logIfExtradebug(
-               'pm-shinken',
                " - shinkenTags, search tags for entity: $idEntity\n"
             );
 
@@ -191,7 +186,6 @@ class PluginMonitoringWebservice {
       }
 
       PluginMonitoringToolbox::logIfExtradebug(
-         'pm-shinken',
          " - shinkenTags, tags: ".serialize($a_tags)."\n"
       );
 

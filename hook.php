@@ -651,8 +651,7 @@ function plugin_monitoring_searchOptionsValues($item) {
 
    // Fred : Add a log to check whether this function is still called ...
    PluginMonitoringToolbox::logIfExtradebug(
-      'pm',
-      "plugin_monitoring_searchOptionsValues is called ..\n"
+      "********** plugin_monitoring_searchOptionsValues is called ... still used?\n"
    );
    // Search options for services
    if ($item['searchoption']['table'] == 'glpi_plugin_monitoring_services'

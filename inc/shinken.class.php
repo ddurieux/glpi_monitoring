@@ -274,7 +274,6 @@ class PluginMonitoringShinken extends CommonDBTM {
    function generateCommandsCfg($file=0) {
 
       PluginMonitoringToolbox::logIfExtradebug(
-         'pm-shinken',
          "Starting generateCommandsCfg ...\n"
       );
       $pmCommand = new PluginMonitoringCommand();
@@ -331,7 +330,6 @@ class PluginMonitoringShinken extends CommonDBTM {
             $restart_shinken_1_4_found = true;
          }
          PluginMonitoringToolbox::logIfExtradebug(
-            'pm-shinken',
             "- command: ".$a_commands[$i]['command_name']." -> ".$a_commands[$i]['name']."\n"
          );
          $a_commands[$i] = $this->properties_list_to_string($a_commands[$i]);
@@ -385,7 +383,6 @@ class PluginMonitoringShinken extends CommonDBTM {
                     'command_name', $a_commands[$i]);
             $a_commands[$i] = $this->add_value_type($data['command_line'], 'command_line', $a_commands[$i]);
             PluginMonitoringToolbox::logIfExtradebug(
-               'pm-shinken',
                "- command: ".$a_commands[$i]['command_name']." -> ".$a_commands[$i]['name']."\n"
             );
             $a_commands[$i] = $this->properties_list_to_string($a_commands[$i]);
@@ -393,7 +390,6 @@ class PluginMonitoringShinken extends CommonDBTM {
          }
       }
       PluginMonitoringToolbox::logIfExtradebug(
-         'pm-shinken',
          "End generateCommandsCfg\n"
       );
 
@@ -432,7 +428,6 @@ class PluginMonitoringShinken extends CommonDBTM {
       }
 
       PluginMonitoringToolbox::logIfExtradebug(
-         'pm-shinken',
          "Starting generateHostsCfg ($tag) ...\n"
       );
       $pmCommand     = new PluginMonitoringCommand();
@@ -552,7 +547,6 @@ class PluginMonitoringShinken extends CommonDBTM {
          }
          $a_hosts_found[$a_hosts[$i]['host_name']] = 1;
          PluginMonitoringToolbox::logIfExtradebug(
-            'pm-shinken',
             " - add host ".$a_hosts[$i]['host_name']."\n"
          );
 
@@ -847,7 +841,6 @@ class PluginMonitoringShinken extends CommonDBTM {
          $calendar = new Calendar();
          $cid = Entity::getUsedConfig('calendars_id', $data['entityId'], '', 0);
          PluginMonitoringToolbox::logIfExtradebug(
-            'pm-shinken',
             " - add host ".$a_hosts[$i]['host_name']." in entity ".$data['entityId']. ", calendar: ". $cid ."\n"
          );
 
@@ -942,7 +935,6 @@ class PluginMonitoringShinken extends CommonDBTM {
          */
          // Location in notes ...
          // PluginMonitoringToolbox::logIfExtradebug(
-            // 'pm-shinken',
             // " - location:{$data['locationName']} - {$data['locationComment']}\n"
          // );
          $notes = array();
@@ -1019,7 +1011,6 @@ class PluginMonitoringShinken extends CommonDBTM {
             $a_componentscatalogs_hosts = $DB->fetch_assoc($resultcont);
 
             PluginMonitoringToolbox::logIfExtradebug(
-               'pm-shinken',
                "generateHostsCfg - CC, host: {$a_hosts[$i]['host_name']} in {$a_componentscatalogs_hosts['plugin_monitoring_componentscalalog_id']}\n"
             );
             // Notification options / interval
@@ -1029,7 +1020,6 @@ class PluginMonitoringShinken extends CommonDBTM {
             }
 
             PluginMonitoringToolbox::logIfExtradebug(
-               'pm-shinken',
                "generateHostsCfg - CC, host: {$a_hosts[$i]['host_name']} in {$pmComponentscatalog->fields['name']}\n"
             );
             // Host template/tag is CC name
@@ -1056,14 +1046,12 @@ class PluginMonitoringShinken extends CommonDBTM {
                }
 
                PluginMonitoringToolbox::logIfExtradebug(
-                  'pm-shinken',
                   "generateHostsCfg - CC, host: {$a_hosts[$i]['host_name']} in {$pmComponentscatalog->fields['name']}, no notifications.\n"
                );
             } else {
                $a_HN = $pmHNTemplate->fields;
 
                PluginMonitoringToolbox::logIfExtradebug(
-                  'pm-shinken',
                   "generateHostsCfg - CC, host: {$a_hosts[$i]['host_name']} in {$pmComponentscatalog->fields['name']}, notification template: {$a_HN['name']}.\n"
                );
 
@@ -1079,7 +1067,6 @@ class PluginMonitoringShinken extends CommonDBTM {
                           '0', 'notification_interval', $a_hosts[$i]);
 
                   PluginMonitoringToolbox::logIfExtradebug(
-                     'pm-shinken',
                      "generateHostsCfg - CC, host: {$a_hosts[$i]['host_name']} in {$pmComponentscatalog->fields['name']}, no notifications for host.\n"
                   );
                } else {
@@ -1096,7 +1083,6 @@ class PluginMonitoringShinken extends CommonDBTM {
                              '0', 'notification_interval', $a_hosts[$i]);
 
                      PluginMonitoringToolbox::logIfExtradebug(
-                        'pm-shinken',
                         "generateHostsCfg - CC, host: {$a_hosts[$i]['host_name']} in {$pmComponentscatalog->fields['name']}, no notifications for host.\n"
                      );
                   } else {
@@ -1105,7 +1091,6 @@ class PluginMonitoringShinken extends CommonDBTM {
                              '1', 'notifications_enabled', $a_hosts[$i]);
 
                      PluginMonitoringToolbox::logIfExtradebug(
-                        'pm-shinken',
                         "generateHostsCfg - CC, host: {$a_hosts[$i]['host_name']}, host notification period : {$a_HN['host_notification_period']}.\n"
                      );
                      // Notification period
@@ -1201,7 +1186,6 @@ class PluginMonitoringShinken extends CommonDBTM {
       $a_listBA = $pmServicescatalog->find("`is_generic`='0'");
       if (count($a_listBA) > 0) {
          PluginMonitoringToolbox::logIfExtradebug(
-            'pm-shinken',
             " - add host_for_bp\n"
          );
          $a_hosts[$i] = array();
@@ -1243,7 +1227,6 @@ class PluginMonitoringShinken extends CommonDBTM {
          $a_calendars = $calendar->find("`name`='".self::$shinkenParameters['shinken']['fake_hosts']['check_period']."'");
          foreach ($a_calendars as $calendar) {
             PluginMonitoringToolbox::logIfExtradebug(
-               'pm-shinken',
                " - add host_for_bp 2: ".serialize($calendar)." / ".$calendar['name']."\n"
             );
             if ($this->_addTimeperiod(0, $calendar['id'])) {
@@ -1293,7 +1276,6 @@ class PluginMonitoringShinken extends CommonDBTM {
       // Add one fake host for each entity
       if (self::$shinkenParameters['shinken']['fake_hosts']['build']) {
          PluginMonitoringToolbox::logIfExtradebug(
-            'pm-shinken',
             " - add fake hosts for parents relationship\n"
          );
 
@@ -1475,7 +1457,6 @@ class PluginMonitoringShinken extends CommonDBTM {
             $i++;
          }
          PluginMonitoringToolbox::logIfExtradebug(
-            'pm-shinken',
             "End generateHostgroupsCfg\n"
          );
       }
@@ -1496,7 +1477,6 @@ class PluginMonitoringShinken extends CommonDBTM {
 
 
       PluginMonitoringToolbox::logIfExtradebug(
-         'pm-shinken',
          "End generateHostsCfg\n"
       );
 
@@ -1519,7 +1499,6 @@ class PluginMonitoringShinken extends CommonDBTM {
       global $DB;
 
       PluginMonitoringToolbox::logIfExtradebug(
-         'pm-shinken',
          "Starting generateServicesCfg services ($tag) ...\n"
       );
       $pMonitoringCommand      = new PluginMonitoringCommand();
@@ -1612,7 +1591,6 @@ class PluginMonitoringShinken extends CommonDBTM {
       $result = $DB->query($query);
       while ($data=$DB->fetch_array($result)) {
          PluginMonitoringToolbox::logIfExtradebug(
-            'pm-shinken',
             " - fetching service: {$data['id']}\n"
          );
 
@@ -1624,7 +1602,6 @@ class PluginMonitoringShinken extends CommonDBTM {
          }
          if (empty($a_component)) {
             PluginMonitoringToolbox::logIfExtradebug(
-               'pm-shinken',
                " *** fetching service: {$data['id']} - no associated component !\n"
             );
             continue;
@@ -1643,7 +1620,6 @@ class PluginMonitoringShinken extends CommonDBTM {
             $item = new $itemtype();
             if (! $item->getFromDB($datah['items_id'])) {
                PluginMonitoringToolbox::logIfExtradebug(
-                  'pm-shinken',
                   " *** fetching service: {$data['id']} - no itemtype/items_id found !\n"
                );
                continue;
@@ -1652,7 +1628,6 @@ class PluginMonitoringShinken extends CommonDBTM {
             // Fix if hostname is not defined ...
             if (empty($item->fields['name'])) {
                PluginMonitoringToolbox::logIfExtradebug(
-                  'pm-shinken',
                   " *** fetching service: {$data['id']} - no item name found !\n"
                );
                continue;
@@ -1663,7 +1638,6 @@ class PluginMonitoringShinken extends CommonDBTM {
             }
 
             PluginMonitoringToolbox::logIfExtradebug(
-               'pm-shinken',
                " - fetching service: {$data['id']} ({$a_component['name']} - {$a_component['id']}) - {$datah['itemtype']} - {$datah['items_id']} -> {$item->fields['name']}\n"
             );
             $h = self::shinkenFilter($item->fields['name']);
@@ -1717,7 +1691,6 @@ class PluginMonitoringShinken extends CommonDBTM {
             }
             $a_services[$i]['display_name'] = $this->shinkenFilter($a_component['name']);
             PluginMonitoringToolbox::logIfExtradebug(
-               'pm-shinken',
                " - add service ".$a_services[$i]['service_description']." on ".$a_services[$i]['host_name']."\n"
             );
 
@@ -2012,8 +1985,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                $a_componentscatalog = $a_componentscatalogs[$plugin_monitoring_componentscatalogs_id];
 
                PluginMonitoringToolbox::logIfExtradebug(
-                  'pm-shinken',
-                  "generateServicesCfg - CC, service: {$a_services[$i]['service_description']}/{$a_services[$i]['host_name']} in {$a_componentscatalog['name']}\n"
+                     "generateServicesCfg - CC, service: {$a_services[$i]['service_description']}/{$a_services[$i]['host_name']} in {$a_componentscatalog['name']}\n"
                );
                $pmSNTemplate = new PluginMonitoringServicenotificationtemplate();
                if ((! isset ($a_componentscatalog['servicesnotification_id']))
@@ -2033,15 +2005,13 @@ class PluginMonitoringShinken extends CommonDBTM {
                   }
 
                   PluginMonitoringToolbox::logIfExtradebug(
-                     'pm-shinken',
-                     "generateServicesCfg - CC, service: {$a_services[$i]['service_description']}/{$a_services[$i]['host_name']} in {$a_componentscatalog['name']}, no notifications.\n"
+                           "generateServicesCfg - CC, service: {$a_services[$i]['service_description']}/{$a_services[$i]['host_name']} in {$a_componentscatalog['name']}, no notifications.\n"
                   );
                } else {
                   $a_SN = $pmSNTemplate->fields;
 
                   PluginMonitoringToolbox::logIfExtradebug(
-                     'pm-shinken',
-                     "generateServicesCfg - CC, service: {$a_services[$i]['service_description']}/{$a_services[$i]['host_name']} in {$a_componentscatalog['name']}, notification template: {$a_SN['name']}.\n"
+                           "generateServicesCfg - CC, service: {$a_services[$i]['service_description']}/{$a_services[$i]['host_name']} in {$a_componentscatalog['name']}, notification template: {$a_SN['name']}.\n"
                   );
 
                   if ($a_SN['service_notifications_enabled'] == 0) {
@@ -2056,8 +2026,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                              '0', 'notification_interval', $a_services[$i]);
 
                      PluginMonitoringToolbox::logIfExtradebug(
-                        'pm-shinken',
-                        "generateServicesCfg - CC, service: {$a_services[$i]['service_description']}/{$a_services[$i]['host_name']} in {$a_componentscatalog['name']}, no notifications.\n"
+                                 "generateServicesCfg - CC, service: {$a_services[$i]['service_description']}/{$a_services[$i]['host_name']} in {$a_componentscatalog['name']}, no notifications.\n"
                      );
                   } else {
                      if (! isset($a_SN['service_notification_period']) ||
@@ -2073,8 +2042,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                                 '0', 'notification_interval', $a_services[$i]);
 
                         PluginMonitoringToolbox::logIfExtradebug(
-                           'pm-shinken',
-                           "generateServicesCfg - CC, service: {$a_services[$i]['service_description']}/{$a_services[$i]['host_name']} in {$a_componentscatalog['name']}, no notifications.\n"
+                                       "generateServicesCfg - CC, service: {$a_services[$i]['service_description']}/{$a_services[$i]['host_name']} in {$a_componentscatalog['name']}, no notifications.\n"
                         );
                      } else {
                         // Notifications enabled for service
@@ -2303,8 +2271,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                      }
                   }
                   PluginMonitoringToolbox::logIfExtradebug(
-                     'pm-shinken',
-                     "   - SC group : ".$a_group[$gdata['id']]."\n"
+                           "   - SC group : ".$a_group[$gdata['id']]."\n"
                   );
                }
             }
@@ -2454,16 +2421,14 @@ class PluginMonitoringShinken extends CommonDBTM {
             foreach ($a_entitiesServices as $idEntity=>$a_entityServices) {
                // New entity ... so new business rule !
                PluginMonitoringToolbox::logIfExtradebug(
-                  'pm-shinken',
-                  "   - SC templated services for an entity : ".$idEntity."\n"
+                     "   - SC templated services for an entity : ".$idEntity."\n"
                );
 
                $pmDerivatedSC = new PluginMonitoringServicescatalog();
                $a_derivatedSC = $pmDerivatedSC->find("`entities_id`='$idEntity' AND `name` LIKE '".$dataBA['name']."%'");
                foreach ($a_derivatedSC as $a_derivated) {
                   PluginMonitoringToolbox::logIfExtradebug(
-                     'pm-shinken',
-                     "   - a_derivated : ".$a_derivated['name']."\n"
+                           "   - a_derivated : ".$a_derivated['name']."\n"
                   );
                   $a_derivatedSC = $a_derivated;
                }
@@ -3392,8 +3357,7 @@ Nagios configuration file :
                           $val, $key, $a_timeperiods[$i]);
                }
                PluginMonitoringToolbox::logIfExtradebug(
-                  'pm-shinken',
-                  " - ".serialize($data)."\n"
+                     " - ".serialize($data)."\n"
                );
                $a_timeperiods[$i] = $this->properties_list_to_string($a_timeperiods[$i]);
                $i++;
@@ -3407,8 +3371,7 @@ Nagios configuration file :
                           $val, $key, $a_timeperiods[$i]);
                }
                PluginMonitoringToolbox::logIfExtradebug(
-                  'pm-shinken',
-                  " - ".serialize($data)."\n"
+                     " - ".serialize($data)."\n"
                );
                $a_timeperiods[$i] = $this->properties_list_to_string($a_timeperiods[$i]);
                $i++;
@@ -3641,7 +3604,6 @@ Nagios configuration file :
       if (!isset($_SESSION['plugin_monitoring']['timeperiodsmapping'][$calendars_id])) {
          if (! $calendar->getFromDB($calendars_id)) {
             PluginMonitoringToolbox::logIfExtradebug(
-               'pm-shinken',
                " - invalid calendar: $calendars_id ...\n"
             );
             return false;

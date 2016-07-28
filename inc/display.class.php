@@ -177,8 +177,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       global $CFG_GLPI;
 
       PluginMonitoringToolbox::logIfExtradebug(
-         'pm',
-         "defineTabs ... no more use function ?\n"
+         "********** defineTabs ... no more used function ?\n"
       );
 
       if (isset($_GET['glpi_tab'])) {
@@ -220,8 +219,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
       global $CFG_GLPI;
 
       PluginMonitoringToolbox::logIfExtradebug(
-         'pm',
-         "showTabs ... no more use function ?\n"
+         "********** showTabs ... no more used function ?\n"
       );
 
       // for objects not in table like central

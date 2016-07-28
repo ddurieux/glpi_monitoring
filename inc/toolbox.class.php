@@ -414,7 +414,7 @@ myPicker.fromString(\''.$color.'\')
    /**
     * Log when extra-debug is activated
     */
-   static function logIfExtradebug($file, $message) {
+   static function logIfExtradebug($message, $file='debug-plugin-monitoring') {
       global $PM_CONFIG;
 
       if (!isset($PM_CONFIG['extradebug'])) {
@@ -423,7 +423,7 @@ myPicker.fromString(\''.$color.'\')
          $PM_CONFIG['extradebug'] = $config->fields['extradebug'];
       }
 
-      if ($PM_CONFIG['extradebug']) {
+      if ($PM_CONFIG['extradebug'] == "1") {
          if (is_array($message)) {
             $message = print_r($message, TRUE);
          }
