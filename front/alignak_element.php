@@ -42,20 +42,45 @@
 
 include ("../../../inc/includes.php");
 
-//Session::checkRight("plugin_monitoring_command", READ);
+if ((! isset ($_REQUEST["widget_type"])) || (! isset ($_REQUEST["element"]))) {
+   echo "<table class='tab_cadre' width='90%'>";
+   echo "<tr class='tab_bg_1'>";
+   echo "<th height='80'>";
+   echo __('Sorry, this page needs to specify an element type to view.', 'monitoring');
+   echo "</th>";
+   echo "</tr>";
+   echo "</table>";
+} else {
+   Html::header($_REQUEST["label"], $_SERVER["PHP_SELF"], "plugins",
+                "PluginMonitoringDashboard", $_REQUEST["element"]);
 
-Html::header(__('Monitoring - commands', 'monitoring'), $_SERVER["PHP_SELF"], "plugins",
-             "PluginMonitoringDashboard", "command");
+   PluginMonitoringToolbox::logIfExtradebug(
+      "Request Alignak WebUI for: ". $_REQUEST["widget_type"]
+      . ", element: " . $_REQUEST["element"] . "\n"
+   );
 
-$abc = new Alignak_Backend_Client($PM_CONFIG['alignak_backend_url']);
-PluginMonitoringUser::my_token($abc);
+   $abc = new Alignak_Backend_Client($PM_CONFIG['alignak_backend_url']);
+   $token = PluginMonitoringUser::my_token($abc);
+   if (!empty($token)) {
+      $pmWebui = new PluginMonitoringWebui();
+      $pmWebui->authentication($token);
 
-$pmWebui = new PluginMonitoringWebui();
-$pmWebui->authentication($abc->token);
-
-$page = $PM_CONFIG['alignak_webui_url']."/external/table/commands_table?widget_id=commands_table&links=/glpi090/plugins/monitoring/front/test.php?url=";
-$pmWebui->load_page($page);
+      $page = $PM_CONFIG['alignak_webui_url']
+              ."/external/". $_REQUEST["widget_type"] ."/"
+              . $_REQUEST["element"] ."s_". $_REQUEST["widget_type"]
+              ."?widget_id=". $_REQUEST["element"] ."s_". $_REQUEST["widget_type"] ."_1"
+              ."&links=/glpi090/plugins/monitoring/front/test.php";
+      $pmWebui->load_page($page);
+   } else {
+      echo "<table class='tab_cadre' width='90%'>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<th height='80'>";
+      echo __('Sorry, Alignak backend authentication failed. Please check the current credentials associated with the current Glpi user account.', 'monitoring');
+      echo "</th>";
+      echo "</tr>";
+      echo "</table>";
+   }
+}
 
 Html::footer();
-
 ?>

@@ -66,67 +66,52 @@ if (Session::haveRight("plugin_monitoring_dashboard", READ)
          || Session::haveRight("plugin_monitoring_displayview", PluginMonitoringDisplayview::DASHBOARD))) {
    $toDisplayArea++;
 
-   echo "<table class='tab_cadre' width='950'>";
+   echo "<table class='tab_cadre' width='90%'>";
    echo "<tr class='tab_bg_1'>";
-   echo "<th>";
+   echo "<th colspan='". count($PM_ALIGNAK_ELEMENTS) ."'>";
    echo "NEW MENU ALIGNAK";
    echo "</th>";
    echo "</tr>";
 
    echo "<tr class='tab_bg_1'>";
-   echo "<td height='30' align='center'>";
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/componentscatalog.php'>".__('Components catalog (templates + rules)', 'monitoring')."</a>";
+   echo "<td height='30' align='center' colspan='". count($PM_ALIGNAK_ELEMENTS) ."'>";
+   echo "<a href='".$CFG_GLPI['root_doc']
+        ."/plugins/monitoring/front/componentscatalog.php'>"
+        .__('Components catalog (templates + rules)', 'monitoring')."</a>";
    echo "</td>";
    echo "</tr>";
 
-   echo "<tr class='tab_bg_1'>";
-   echo "<td>";
-   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/command.php'>".__('Commands', 'monitoring')."</a>";
-   echo "
-livestate
-logs
-hosts
-services
-realms
-hostgroups
-servicegroups
-users
-timeperiod
-commands
-worldmap
-minemap
+   if (count($PM_ALIGNAK_ELEMENTS) > 0) {
+      echo "<tr>";
+      echo "<th colspan='". count($PM_ALIGNAK_ELEMENTS) ."'>";
+      echo "Alignak Backend elements tables";
+      echo "</th>";
+      echo "</tr>";
 
-   ";
-   echo "</td>";
-   echo "</tr>";
+      echo "<tr class='tab_bg_1' height='30'>";
+      foreach ($PM_ALIGNAK_ELEMENTS as $element => $label) {
+         if ($element == '' ) {
+            echo "<td align='center'>";
+            echo "|";
+            echo "</td>";
+         } else {
+            echo "<td align='center'>";
+            echo "<a href='".$CFG_GLPI['root_doc']
+                 ."/plugins/monitoring/front/alignak_element.php"
+                 ."?widget_type=table&element=". $element ."&label=". $label ."'>".$label."</a>";
+            echo "</td>";
+         }
+      }
+      echo "</tr>";
+   }
    echo "</table>";
 
    echo "<br/>";
-
-
-
-
-
-
-
-
-
-
-
-
-//   echo "<table class='tab_cadre' width='950'>";
-//   echo "<tr class='tab_bg_1'>";
-//   echo "<th height='80'>";
-//   echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/dashboard.php'>".__('Dashboard', 'monitoring')."</a>";
-//   echo "</th>";
-//   echo "</tr>";
-//   echo "</table>";
-//
-//   echo "<br/>";
 }
+
 if (Session::haveRight("plugin_monitoring_displayview", READ)) {
 
-   echo "<table class='tab_cadre' width='950'>";
+   echo "<table class='tab_cadre' width='90%'>";
    echo "<tr class='tab_bg_1'>";
    if (Session::haveRight("plugin_monitoring_displayview", READ)) {
       $toDisplayArea++;
@@ -142,7 +127,7 @@ if (Session::haveRight("plugin_monitoring_displayview", READ)) {
 
 if (Session::haveRight("plugin_monitoring_weathermap", READ)
       || Session::haveRight("plugin_monitoring_displayview", READ)) {
-   echo "<table class='tab_cadre' width='950'>";
+   echo "<table class='tab_cadre' width='90%'>";
    echo "<tr class='tab_bg_1'>";
 
    if (Session::haveRight("plugin_monitoring_weathermap", READ)) {
@@ -152,19 +137,6 @@ if (Session::haveRight("plugin_monitoring_weathermap", READ)
       echo "</th>";
    }
    echo "</tr>";
-
-//   echo "<tr class='tab_bg_1'>";
-//   if (Session::haveRight("plugin_monitoring_displayview", READ)) {
-//      $toDisplayArea++;
-//      echo "<th align='center' height='30' width='34%'>";
-//      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/customitem_gauge.php'>".PluginMonitoringCustomitem_Gauge::getTypeName()."</a>";
-//      echo "</th>";
-//
-//      echo "<th align='center' height='30' width='34%'>";
-//      echo "<a href='".$CFG_GLPI['root_doc']."/plugins/monitoring/front/customitem_counter.php'>".PluginMonitoringCustomitem_Counter::getTypeName()."</a>";
-//      echo "</th>";
-//   }
-//   echo "</tr>";
    echo "</table>";
    echo "<br/>";
 }
@@ -172,7 +144,7 @@ if (Session::haveRight("plugin_monitoring_weathermap", READ)
 if (Session::haveRight("config", READ)) {
 
    $toDisplayArea++;
-   echo "<table class='tab_cadre' width='950'>";
+   echo "<table class='tab_cadre' width='90%'>";
    echo "<tr class='tab_bg_1'>";
    echo "<th width='11%' height='25'>";
    echo "</th>";
