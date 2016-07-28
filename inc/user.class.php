@@ -143,18 +143,59 @@ class PluginMonitoringUser extends CommonDBTM {
    }
 
 
+   /**
+   * Get an authentication token for Alignak backend or WebUI
+   *
+   * If Alignak token is in the PHP session, return this token and do not try to log in the backend.
+   *
+   * If Alignak token is not in the session:
+   * 1/ If $backend parameter is provided, log in to the Alignak backend (with current user
+   * configured username/password or token) and set the backend token in the PHP session.
+   *
+   * 2/ If $backend parameter is null, returns the current user token if it exists else returns an
+   * empty token.
+   *
+   * Return the token to the function caller. Alignak backend or WebUI are not accessible.
+   *
+   * @param $backend Alignak backend client class object
+   *
+   * @return computed token
+   *
+   **/
+   static function my_token(&$backend=null) {
+      if (isset($_SESSION['alignak_backend_token'])) {
+         PluginMonitoringToolbox::logIfExtradebug(
+            "Use session stored token: ". $_SESSION['alignak_backend_token'] . "\n"
+         );
+         return $_SESSION['alignak_backend_token'];
+      }
 
-   static function my_token(&$backend) {
+      $token = '';
+
       $pmUser = new self();
       $a_list = $pmUser->find("`users_id`='".$_SESSION['glpiID']."'", '', 1);
       if (count($a_list)) {
          $user = current($a_list);
-         if (!empty($user['token'])) {
-            $backend->token = $user['backend_token'];
+         if ($backend) {
+            if (!empty($user['token'])) {
+               $backend->token = $user['backend_token'];
+            } else {
+               $backend->login($user['backend_login'], $user['backend_password']);
+            }
+            $token = $backend->token;
          } else {
-            $backend->login($user['backend_login'], $user['backend_password']);
+            if (!empty($user['token'])) {
+               $token = $user['backend_token'];
+            }
+         }
+         if (! isset($_SESSION['alignak_backend_token'])) {
+            $_SESSION['alignak_backend_token'] = $token;
+            PluginMonitoringToolbox::logIfExtradebug(
+               "Store Alignak backend token in the current session: ". $_SESSION['alignak_backend_token'] . "\n"
+            );
          }
       }
+      return($token);
    }
 
 }
