@@ -693,33 +693,37 @@ class PluginMonitoringShinken extends CommonDBTM {
 
          // Manage dependencies
          $parent = '';
+         $networkPort = new NetworkPort();
          if ($data['itemtype'] != 'NetworkEquipment') {
-            $networkPort = new NetworkPort();
             $a_networkports = $networkPort->find("`itemtype`='".$data['itemtype']."'
                AND `items_id`='".$data['items_id']."'");
-            foreach ($a_networkports as $data_n) {
-               $networkports_id = $networkPort->getContact($data_n['id']);
-               if ($networkports_id) {
-                  $networkPort->getFromDB($networkports_id);
-                  if ($networkPort->fields['itemtype'] == 'NetworkEquipment') {
-                     $networkEquipment->getFromDB($networkPort->fields['items_id']);
-                     $parent = self::shinkenFilter($networkEquipment->fields['name']);
-                     $a_parents_found[$parent] = 1;
-                     $pmHost->updateDependencies($classname, $data['items_id'], 'NetworkEquipment-'.$networkPort->fields['items_id']);
-                  }
+         } else {
+            $a_networkports = $networkPort->find("`itemtype`='".$data['itemtype']."'
+               AND `items_id`='".$data['items_id']."'
+               AND `name`='vers_parent_shinken' LIMIT 1");
+         }
+         foreach ($a_networkports as $data_n) {
+            $networkports_id = $networkPort->getContact($data_n['id']);
+            if ($networkports_id) {
+               $networkPort->getFromDB($networkports_id);
+               if ($networkPort->fields['itemtype'] == 'NetworkEquipment') {
+                  $networkEquipment->getFromDB($networkPort->fields['items_id']);
+                  $parent = self::shinkenFilter($networkEquipment->fields['name']);
+                  $a_parents_found[$parent] = 1;
+                  $pmHost->updateDependencies($classname, $data['items_id'], 'NetworkEquipment-'.$networkPort->fields['items_id']);
                }
             }
+         }
 
-            if (empty($parent)) {
-               if ($default_host['parents'] == 'entity') {
-                  foreach ($a_hosts[$i]['hostgroups'] as $val) {
-                     $a_hosts[$i] = $this->add_value_type(
-                             self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'].$val,
-                             'parents', $a_hosts[$i]);
-                  }
-               } else {
-                  $a_hosts[$i] = $this->add_value_type($default_host['parents'], 'parents', $a_hosts[$i]);
+         if (empty($parent)) {
+            if ($default_host['parents'] == 'entity') {
+               foreach ($a_hosts[$i]['hostgroups'] as $val) {
+                  $a_hosts[$i] = $this->add_value_type(
+                          self::$shinkenParameters['shinken']['fake_hosts']['name_prefix'].$val,
+                          'parents', $a_hosts[$i]);
                }
+            } else {
+               $a_hosts[$i] = $this->add_value_type($default_host['parents'], 'parents', $a_hosts[$i]);
             }
          }
 
