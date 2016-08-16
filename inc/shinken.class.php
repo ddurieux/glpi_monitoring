@@ -700,7 +700,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          } else {
             $a_networkports = $networkPort->find("`itemtype`='".$data['itemtype']."'
                AND `items_id`='".$data['items_id']."'
-               AND `name`='vers_parent_shinken' LIMIT 1");
+               AND `name` LIKE '%vers_parent_shinken%' LIMIT 1");
          }
          foreach ($a_networkports as $data_n) {
             $networkports_id = $networkPort->getContact($data_n['id']);
