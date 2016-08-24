@@ -53,7 +53,7 @@ $PM_ALIGNAK_ELEMENTS = array();
 
 // Init the hooks of monitoring
 function plugin_init_monitoring() {
-   global $PLUGIN_HOOKS, $PM_CONFIG, $PM_ALIGNAK_ELEMENTS;
+   global $PLUGIN_HOOKS, $PM_CONFIG, $PM_ALIGNAK_ELEMENTS, $CFG_GLPI;
 
    define("PLUGIN_MONITORING_SYSTEM", "alignak");
 
@@ -113,25 +113,25 @@ function plugin_init_monitoring() {
       $PLUGIN_HOOKS['add_css']['monitoring'] = array(
          "lib/nvd3/src/nv.d3.css",
          "lib/jqueryplugins/tagbox/css/jquery.tagbox.css",
-         "css/views.css",
+//         "css/views.css",
 
-          "css/webui/bootstrap.css",
-          "css/webui/bootstrap-theme.min.css",
-          "css/webui/font-awesome.min.css",
-          "css/webui/alertify.min.css",
-          "css/webui/alertify.bootstrap.min.css",
-          "css/webui/alignak_webui.css",
-          "css/webui/alignak_webui-items.css",
-          "css/webui/datatables.min.css",
-          "css/webui/timeline.css",
+//          "css/webui/bootstrap.css",
+//          "css/webui/bootstrap-theme.min.css",
+//          "css/webui/font-awesome.min.css",
+//          "css/webui/alertify.min.css",
+//          "css/webui/alertify.bootstrap.min.css",
+//          "css/webui/alignak_webui.css",
+//          "css/webui/alignak_webui-items.css",
+//          "css/webui/datatables.min.css",
+//          "css/webui/timeline.css",
          );
       $PLUGIN_HOOKS['add_javascript']['monitoring'] = array(
           "lib/jscolor/jscolor.min.js",
           "lib/jqueryplugins/tagbox/js/jquery.tagbox.min.js",
-          "lib/webui/bootstrap.min.js",
-          "lib/webui/datatables.min.js",
-          "lib/webui/alignak_webui-external.js",
-          "lib/webui/Chart.min.js"
+//          "lib/webui/bootstrap.min.js",
+//          "lib/webui/datatables.min.js",
+//          "lib/webui/alignak_webui-external.js",
+//          "lib/webui/Chart.min.js"
           );
 
       // Plugin profiles management
@@ -269,6 +269,67 @@ function plugin_init_monitoring() {
       if (!isset($PM_CONFIG['alignak_webui_url'])) {
          $pmConfig = new PluginMonitoringConfig();
          $pmConfig->load_alignak_url();
+      }
+
+      if (isset($_SESSION['glpiID'])) {
+         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-1.10.2.min.js");
+
+         $abc = new Alignak_Backend_Client($PM_CONFIG['alignak_backend_url']);
+         PluginMonitoringUser::myToken($abc);
+         $pmWebui = new PluginMonitoringWebui();
+         $pmWebui->authentication($abc->token);
+         $url_js = $PM_CONFIG['alignak_webui_url']."/external/files/js_list";
+         $url_css = $PM_CONFIG['alignak_webui_url']."/external/files/css_list";
+
+         echo '<script>
+            $.ajax({
+               dataType: "json",
+               url: "'.$url_css.'",
+               success: function(data) {
+                  var arrayLength = data["files"].length;
+                  for (var i = 0; i < arrayLength; i++) {
+                     var x = document.createElement("link");
+                     x.setAttribute("rel", "stylesheet");
+                     x.setAttribute("type", "text/css");
+                     x.setAttribute("href", "'.$PM_CONFIG['alignak_webui_url'].'" + data["files"][i]);
+                     document.getElementsByTagName("head")[0].appendChild(x);
+                  }
+                  var glpi_css = ["/plugins/monitoring/css/views.css","/css/styles.css"];
+                  var arrayLength = glpi_css.length;
+                  for (var i = 0; i < arrayLength; i++) {
+                     var x = document.createElement("link");
+                     x.setAttribute("rel", "stylesheet");
+                     x.setAttribute("type", "text/css");
+                     x.setAttribute("href", "'.$CFG_GLPI["root_doc"].'" + glpi_css[i]);
+                     document.getElementsByTagName("head")[0].appendChild(x);
+                  }
+               }
+             });
+
+            $.ajax({
+               dataType: "json",
+               url: "'.$url_js.'",
+               success: function(data) {
+                  // var list_js = jQuery.unique(data["files"]);
+                  var list_js = data["files"];
+                  var j = list_js.indexOf("/static/js/jquery-1.12.0.min.js");
+                  if(j != -1) {
+                     list_js.splice(j, 1);
+                  }
+                  var j = list_js.indexOf("/static/js/jquery-1.12.0.min.js");
+                  if(j != -1) {
+                     list_js.splice(j, 1);
+                  }
+                  var arrayLength = list_js.length;
+                  for (var i = 0; i < arrayLength; i++) {
+                     var x = document.createElement("script");
+                     x.setAttribute("type", "text/javascript");
+                     x.src = "'.$PM_CONFIG['alignak_webui_url'] .'" + list_js[i];
+                     document.getElementsByTagName("head")[0].appendChild(x);
+                  }
+               }
+             });
+         </script>';
       }
    }
    return $PLUGIN_HOOKS;

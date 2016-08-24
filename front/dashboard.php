@@ -71,6 +71,7 @@ $pmWebui = new PluginMonitoringWebui();
 $pmWebui->authentication($abc->token);
 
 echo "<table class='tab_cadre_fixe'>";
+
 echo '<tr>';
 echo "<td width='50%' style='vertical-align: top;'>";
 $page = $PM_CONFIG['alignak_webui_url']."/external/widget/livestate_hosts_chart?widget_id=livestate_hosts_chart";
@@ -81,10 +82,8 @@ $page = $PM_CONFIG['alignak_webui_url']."/external/widget/livestate_hosts_histor
 $pmWebui->load_page($page);
 echo "</td>";
 echo "</tr>";
-echo "</table>";
 
 echo '<tr>';
-echo "<td></td>";
 echo "<td width='50%' style='vertical-align: top;'>";
 $page = $PM_CONFIG['alignak_webui_url']."/external/widget/livestate_services_chart?widget_id=livestate_services_chart";
 $pmWebui->load_page($page);
@@ -94,10 +93,8 @@ $page = $PM_CONFIG['alignak_webui_url']."/external/widget/livestate_services_his
 $pmWebui->load_page($page);
 echo "</td>";
 echo "</tr>";
-echo "</table>";
 
 echo '<tr>';
-echo "<td></td>";
 echo "<td width='50%' style='vertical-align: top;'>";
 $page = $PM_CONFIG['alignak_webui_url']."/external/widget/livestate_hosts_counters?widget_id=livestate_hosts_counters";
 $pmWebui->load_page($page);
@@ -107,10 +104,8 @@ $page = $PM_CONFIG['alignak_webui_url']."/external/widget/livestate_services_cou
 $pmWebui->load_page($page);
 echo "</td>";
 echo "</tr>";
-echo "</table>";
 
 echo '<tr>';
-echo "<td></td>";
 echo "<td width='50%' style='vertical-align: top;'>";
 $page = $PM_CONFIG['alignak_webui_url']."/external/widget/livestate_hosts_sla?widget_id=livestate_hosts_sla";
 $pmWebui->load_page($page);
@@ -120,18 +115,14 @@ $page = $PM_CONFIG['alignak_webui_url']."/external/widget/livestate_services_sla
 $pmWebui->load_page($page);
 echo "</td>";
 echo "</tr>";
-echo "</table>";
 
-echo "<table class='tab_cadre_fixe'>";
 echo '<tr>';
-echo "<td width='50%' style='vertical-align: top;'>";
+echo "<td style='vertical-align: top;' colspan='2'>";
 $page = $PM_CONFIG['alignak_webui_url']."/external/widget/livestate_table?widget_id=livestate_table";
 $pmWebui->load_page($page);
 echo "</td>";
-echo "<td width='50%' style='vertical-align: top;'>";
-echo "</td>";
 echo "</tr>";
-
+echo "</table>";
 
 if ($_SESSION["glpiactiveprofile"]["interface"] == "central") {
    Html::footer();

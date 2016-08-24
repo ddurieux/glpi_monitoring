@@ -628,3 +628,7 @@ line.linkblack {
 .qtip-monitoring{
    max-width: 650px;
 }
+
+* {
+   box-sizing: initial;
+}
