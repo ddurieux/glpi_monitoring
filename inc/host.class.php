@@ -964,7 +964,7 @@ class PluginMonitoringHost extends CommonDBTM {
       Echo Html::hidden('items_id', array('value' => $items_id));
       Echo Html::hidden('itemtype', array('value' => $itemtype));
       $abc = new Alignak_Backend_Client($PM_CONFIG['alignak_backend_url']);
-      PluginMonitoringUser::my_token($abc);
+      PluginMonitoringUser::myToken($abc);
       if ($writeable) {
          $backend_hosts = array();
          $hosts = $abc->get_all('host');
@@ -1023,7 +1023,7 @@ class PluginMonitoringHost extends CommonDBTM {
       }
 
       $abc = new Alignak_Backend_Client($PM_CONFIG['alignak_backend_url']);
-      PluginMonitoringUser::my_token($abc);
+      PluginMonitoringUser::myToken($abc);
 
       $pmWebui = new PluginMonitoringWebui();
       $pmWebui->authentication($abc->token);

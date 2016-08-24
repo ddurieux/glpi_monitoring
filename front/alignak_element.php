@@ -60,7 +60,7 @@ if ((! isset ($_REQUEST["widget_type"])) || (! isset ($_REQUEST["element"]))) {
    );
 
    $abc = new Alignak_Backend_Client($PM_CONFIG['alignak_backend_url']);
-   $token = PluginMonitoringUser::my_token($abc);
+   $token = PluginMonitoringUser::myToken($abc);
    if (!empty($token)) {
       $pmWebui = new PluginMonitoringWebui();
       $pmWebui->authentication($token);

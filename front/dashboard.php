@@ -65,7 +65,7 @@ $pmDisplay->menu();
 
 
 $abc = new Alignak_Backend_Client($PM_CONFIG['alignak_backend_url']);
-PluginMonitoringUser::my_token($abc);
+PluginMonitoringUser::myToken($abc);
 
 $pmWebui = new PluginMonitoringWebui();
 $pmWebui->authentication($abc->token);

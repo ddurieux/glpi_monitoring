@@ -317,7 +317,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
       global $DB, $PM_CONFIG;
 
       $abc = new Alignak_Backend_Client($PM_CONFIG['alignak_backend_url']);
-      PluginMonitoringUser::my_token($abc);
+      PluginMonitoringUser::myToken($abc);
 
       $pmHost = new PluginMonitoringHost();
       $pmC_Host = new PluginMonitoringComponentscatalog_Host();

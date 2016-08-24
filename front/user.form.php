@@ -57,6 +57,9 @@ if (isset($_POST["add"])) {
 } else if (isset ($_POST["delete"])) {
    $pmUser->delete($_POST);
    Html::back();
+} else if (isset ($_POST["import"])) {
+   $pmUser->createInBackend($_POST['users_id']);
+   Html::back();
 }
 
 Html::footer();

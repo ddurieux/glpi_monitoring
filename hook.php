@@ -83,15 +83,23 @@ function plugin_monitoring_getAddSearchOptions($itemtype) {
 
    if ($itemtype == 'User') {
       // Contact template for user
-      $sopt[9102]['table']          ='glpi_plugin_monitoring_contacttemplates';
-      $sopt[9102]['field']          ='name';
-      $sopt[9102]['datatype']       = 'itemtype';
-      $sopt[9102]['name']           =__('User template', 'monitoring');
+      $sopt[9102]['table']         = 'glpi_plugin_monitoring_contacttemplates';
+      $sopt[9102]['field']         = 'name';
+      $sopt[9102]['datatype']      = 'itemtype';
+      $sopt[9102]['name']          = __('User template', 'monitoring');
       $sopt[9102]['joinparams']    = array('beforejoin'
                                          => array('table'      => 'glpi_plugin_monitoring_contacts',
                                                   'joinparams' => array('jointype' => 'child')));
+      $sopt[9102]['massiveaction'] = false;
 
-      $sopt[9102]['massiveaction']  = false;
+      // user in alignak backend
+      $sopt[9103]['table']         = 'glpi_plugin_monitoring_users';
+      $sopt[9103]['field']         = 'backend_login';
+      $sopt[9103]['datatype']      = 'string';
+      $sopt[9103]['name']          = __('alignak account name', 'monitoring');
+      $sopt[9103]['joinparams']    = array('jointype' => 'child');
+      $sopt[9103]['massiveaction'] = false;
+
    }
 
    return $sopt;
@@ -183,23 +191,27 @@ function plugin_monitoring_MassiveActions($type) {
    switch ($type) {
 
       case "Computer":
-    return array (
-       "plugin_monitoring_activatehosts" => __('Add these hosts to monitoring', 'monitoring')
-    );
-    break;
+         return array (
+            "plugin_monitoring_activatehosts" => __('Add these hosts to monitoring', 'monitoring')
+         );
+         break;
 
       case "PluginMonitoringComponentscatalog":
-    return array (
-       "plugin_monitoring_playrule_componentscatalog" => __('Force play rules', 'monitoring')
-    );
-    break;
+         return array (
+            "plugin_monitoring_playrule_componentscatalog" => __('Force play rules', 'monitoring')
+         );
+         break;
 
       case "PluginMonitoringDisplayview":
-    return array (
-       "plugin_monitoring_playrule_displayview" => __('Force play rules', 'monitoring')
-    );
-    break;
+         return array (
+            "plugin_monitoring_playrule_displayview" => __('Force play rules', 'monitoring')
+         );
+         break;
 
+      case "User":
+         return array(
+             'PluginMonitoringUser'.MassiveAction::CLASS_ACTION_SEPARATOR.'createalignakuser' => __('Create alignak backend account', 'monitoring')
+         );
    }
 
    return array ();
@@ -211,45 +223,36 @@ function plugin_monitoring_MassiveActionsDisplay($options=array()) {
    global $CFG_GLPI;
 
    switch ($options['itemtype']) {
+
       case "Computer":
-    switch ($options['action']) {
-       case "plugin_monitoring_activatehosts" :
-          $pmHost = new PluginMonitoringHost();
-          $a_list = $pmHost->find("`is_template`='1'");
-          $a_elements = array();
-          foreach ($a_list as $data) {
-        $a_elements[$data['id']] = $data['template_name'];
-          }
-          $rand = Dropdown::showFromArray("template_id", $a_elements);
-          echo "<img alt='' title=\"".__('add')."\" src='".$CFG_GLPI["root_doc"].
-           "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
-           onClick=\"var w = window.open('".$pmHost->getFormURL()."?withtemplate=1&popup=1&amp;rand=".
-           $rand."' ,'glpipopup', 'height=400, ".
-           "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
-          echo "<input name='add' value='Post' class='submit' type='submit'>";
-          break;
-    }
-    break;
+         if  ($options['action'] == 'plugin_monitoring_activatehosts') {
+            $pmHost = new PluginMonitoringHost();
+            $a_list = $pmHost->find("`is_template`='1'");
+            $a_elements = array();
+            foreach ($a_list as $data) {
+               $a_elements[$data['id']] = $data['template_name'];
+            }
+            $rand = Dropdown::showFromArray("template_id", $a_elements);
+            echo "<img alt='' title=\"".__('add')."\" src='".$CFG_GLPI["root_doc"].
+            "/pics/add_dropdown.png' style='cursor:pointer; margin-left:2px;'
+            onClick=\"var w = window.open('".$pmHost->getFormURL()."?withtemplate=1&popup=1&amp;rand=".
+            $rand."' ,'glpipopup', 'height=400, ".
+            "width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
+            echo "<input name='add' value='Post' class='submit' type='submit'>";
+         }
+         break;
 
       case "PluginMonitoringComponentscatalog":
-    switch ($options['action']) {
-
-       case "plugin_monitoring_playrule_componentscatalog":
-          echo "<input name='add' value='Post' class='submit' type='submit'>";
-          break;
-
-    }
-    break;
+         if ($options['action'] == 'plugin_monitoring_playrule_componentscatalog') {
+            echo "<input name='add' value='Post' class='submit' type='submit'>";
+         }
+         break;
 
       case "PluginMonitoringDisplayview":
-    switch ($options['action']) {
-
-       case "plugin_monitoring_playrule_displayview":
-          echo "<input name='add' value='Post' class='submit' type='submit'>";
-          break;
-
-    }
-    break;
+         if ($options['action'] == 'plugin_monitoring_playrule_displayview') {
+            echo "<input name='add' value='Post' class='submit' type='submit'>";
+         }
+         break;
    }
 
    return "";
@@ -260,41 +263,44 @@ function plugin_monitoring_MassiveActionsDisplay($options=array()) {
 function plugin_monitoring_MassiveActionsProcess($data) {
 
    switch ($data['action']) {
+
       case "plugin_monitoring_activatehosts" :
-    if ($data['itemtype'] == "Computer") {
-       $pmHost = new PluginMonitoringHost();
-       foreach ($data['item'] as $key => $val) {
-          if ($val == '1') {
-        $pmHost->massiveactionAddHost($data['itemtype'], $key, $data['template_id']);
-          }
-       }
-    }
-    break;
+         if ($data['itemtype'] == "Computer") {
+            $pmHost = new PluginMonitoringHost();
+            foreach ($data['item'] as $key => $val) {
+               if ($val == '1') {
+                  $pmHost->massiveactionAddHost($data['itemtype'], $key, $data['template_id']);
+               }
+            }
+         }
+         break;
 
       case 'plugin_monitoring_playrule_componentscatalog':
-    $pmComponentscatalog_rule = new PluginMonitoringComponentscatalog_rule();
-    foreach ($data['item'] as $key => $val) {
-       $a_rules = $pmComponentscatalog_rule->find("`plugin_monitoring_componentscalalog_id`='".$key."'");
-       foreach ($a_rules as $data) {
-          $pmComponentscatalog_rule->getFromDB($data['id']);
-          PluginMonitoringComponentscatalog_rule::getItemsDynamicly($pmComponentscatalog_rule);
-       }
-    }
-    break;
+         $pmComponentscatalog_rule = new PluginMonitoringComponentscatalog_rule();
+         foreach ($data['item'] as $key => $val) {
+            $a_rules = $pmComponentscatalog_rule->find("`plugin_monitoring_componentscalalog_id`='".$key."'");
+            foreach ($a_rules as $data) {
+               $pmComponentscatalog_rule->getFromDB($data['id']);
+               PluginMonitoringComponentscatalog_rule::getItemsDynamicly($pmComponentscatalog_rule);
+            }
+         }
+         break;
 
       case 'plugin_monitoring_playrule_displayview':
-    $pmDisplayview_rule = new PluginMonitoringDisplayview_rule();
-    foreach ($data['item'] as $key => $val) {
-       $a_rules = $pmDisplayview_rule->find("`plugin_monitoring_displayviews_id`='".$key."'");
-       foreach ($a_rules as $data) {
-          $pmDisplayview_rule->getFromDB($data['id']);
-          PluginMonitoringDisplayview_rule::getItemsDynamicly($pmDisplayview_rule);
-       }
-    }
-    break;
+         $pmDisplayview_rule = new PluginMonitoringDisplayview_rule();
+         foreach ($data['item'] as $key => $val) {
+            $a_rules = $pmDisplayview_rule->find("`plugin_monitoring_displayviews_id`='".$key."'");
+            foreach ($a_rules as $data) {
+               $pmDisplayview_rule->getFromDB($data['id']);
+               PluginMonitoringDisplayview_rule::getItemsDynamicly($pmDisplayview_rule);
+            }
+         }
+         break;
+
    }
    return TRUE;
 }
+
 
 
 function plugin_monitoring_addSelect($type,$id,$num) {
