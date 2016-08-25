@@ -282,7 +282,7 @@ function plugin_init_monitoring() {
          if ($token != '') {
          echo '<script>
     var request = new XMLHttpRequest();
-    request.open("POST", "'.$url_js.'", false);
+    request.open("GET", "'.$url_js.'", false);
     request.setRequestHeader("Authorization", "Basic " + btoa("'.$token.':"));
     request.send();
     var answer = JSON.parse(request.responseText);
@@ -300,7 +300,7 @@ function plugin_init_monitoring() {
 
          echo '<script>
     var request = new XMLHttpRequest();
-    request.open("POST", "'.$url_css.'", false);
+    request.open("GET", "'.$url_css.'", false);
     request.setRequestHeader("Authorization", "Basic " + btoa("'.$token.':"));
     request.send();
     var answer = JSON.parse(request.responseText);
