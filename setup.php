@@ -312,20 +312,14 @@ function plugin_init_monitoring() {
                success: function(data) {
                   // var list_js = jQuery.unique(data["files"]);
                   var list_js = data["files"];
-                  var j = list_js.indexOf("/static/js/jquery-1.12.0.min.js");
-                  if(j != -1) {
-                     list_js.splice(j, 1);
-                  }
-                  var j = list_js.indexOf("/static/js/jquery-1.12.0.min.js");
-                  if(j != -1) {
-                     list_js.splice(j, 1);
-                  }
                   var arrayLength = list_js.length;
                   for (var i = 0; i < arrayLength; i++) {
-                     var x = document.createElement("script");
-                     x.setAttribute("type", "text/javascript");
-                     x.src = "'.$PM_CONFIG['alignak_webui_url'] .'" + list_js[i];
-                     document.getElementsByTagName("head")[0].appendChild(x);
+                     if (list_js[i] != "/static/js/jquery-1.12.0.min.js") {
+                        var x = document.createElement("script");
+                        x.setAttribute("type", "text/javascript");
+                        x.src = "'.$PM_CONFIG['alignak_webui_url'] .'" + list_js[i];
+                        document.getElementsByTagName("head")[0].appendChild(x);
+                     }
                   }
                }
              });
