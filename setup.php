@@ -271,59 +271,61 @@ function plugin_init_monitoring() {
          $pmConfig->load_alignak_url();
       }
 
-      if (isset($_SESSION['glpiID'])) {
-         echo Html::script($CFG_GLPI["root_doc"]."/lib/jquery/js/jquery-1.10.2.min.js");
-
-         $abc = new Alignak_Backend_Client($PM_CONFIG['alignak_backend_url']);
-         PluginMonitoringUser::myToken($abc);
-         $pmWebui = new PluginMonitoringWebui();
-         $pmWebui->authentication($abc->token);
+      if (isset($_SESSION['glpiID'])
+              && (strpos($_SERVER['PHP_SELF'],"alignak_element.php")
+                  || strpos($_SERVER['PHP_SELF'],"dashboard.php"))) {
          $url_js = $PM_CONFIG['alignak_webui_url']."/external/files/js_list";
          $url_css = $PM_CONFIG['alignak_webui_url']."/external/files/css_list";
 
+         $abc = new Alignak_Backend_Client($PM_CONFIG['alignak_backend_url']);
+         $token = PluginMonitoringUser::myToken($abc);
+         if ($token != '') {
          echo '<script>
-            $.ajax({
-               dataType: "json",
-               url: "'.$url_css.'",
-               success: function(data) {
-                  var arrayLength = data["files"].length;
-                  for (var i = 0; i < arrayLength; i++) {
-                     var x = document.createElement("link");
-                     x.setAttribute("rel", "stylesheet");
-                     x.setAttribute("type", "text/css");
-                     x.setAttribute("href", "'.$PM_CONFIG['alignak_webui_url'].'" + data["files"][i]);
-                     document.getElementsByTagName("head")[0].appendChild(x);
-                  }
-                  var glpi_css = ["/plugins/monitoring/css/views.css","/css/styles.css"];
-                  var arrayLength = glpi_css.length;
-                  for (var i = 0; i < arrayLength; i++) {
-                     var x = document.createElement("link");
-                     x.setAttribute("rel", "stylesheet");
-                     x.setAttribute("type", "text/css");
-                     x.setAttribute("href", "'.$CFG_GLPI["root_doc"].'" + glpi_css[i]);
-                     document.getElementsByTagName("head")[0].appendChild(x);
-                  }
-               }
-             });
+    var request = new XMLHttpRequest();
+    request.open("POST", "'.$url_js.'", false);
+    request.setRequestHeader("Authorization", "Basic " + btoa("'.$token.':"));
+    request.send();
+    var answer = JSON.parse(request.responseText);
+    var list_js = answer["files"];
+    var arrayLength = list_js.length;
+    for (var i = 0; i < arrayLength; i++) {
+       if (list_js[i] != "/static/js/jquery-1.12.0.min.js") {
+          var x = document.createElement("script");
+          x.setAttribute("type", "text/javascript");
+          x.src = "'.$PM_CONFIG['alignak_webui_url'] .'" + list_js[i];
+          document.getElementsByTagName("head")[0].appendChild(x);
+       }
+    }
+  </script>';
 
-            $.ajax({
-               dataType: "json",
-               url: "'.$url_js.'",
-               success: function(data) {
-                  // var list_js = jQuery.unique(data["files"]);
-                  var list_js = data["files"];
-                  var arrayLength = list_js.length;
-                  for (var i = 0; i < arrayLength; i++) {
-                     if (list_js[i] != "/static/js/jquery-1.12.0.min.js") {
-                        var x = document.createElement("script");
-                        x.setAttribute("type", "text/javascript");
-                        x.src = "'.$PM_CONFIG['alignak_webui_url'] .'" + list_js[i];
-                        document.getElementsByTagName("head")[0].appendChild(x);
-                     }
-                  }
-               }
-             });
-         </script>';
+         echo '<script>
+    var request = new XMLHttpRequest();
+    request.open("POST", "'.$url_css.'", false);
+    request.setRequestHeader("Authorization", "Basic " + btoa("'.$token.':"));
+    request.send();
+    var answer = JSON.parse(request.responseText);
+    var arrayLength = answer["files"].length;
+    for (var i = 0; i < arrayLength; i++) {
+       var x = document.createElement("link");
+       x.setAttribute("rel", "stylesheet");
+       x.setAttribute("type", "text/css");
+       x.setAttribute("href", "'.$PM_CONFIG['alignak_webui_url'].'" + answer["files"][i]);
+       document.getElementsByTagName("head")[0].appendChild(x);
+    }
+    var glpi_css = ["/plugins/monitoring/css/views.css"];
+    var arrayLength = glpi_css.length;
+    for (var i = 0; i < arrayLength; i++) {
+       var x = document.createElement("link");
+       x.setAttribute("rel", "stylesheet");
+       x.setAttribute("type", "text/css");
+       x.setAttribute("href", "'.$CFG_GLPI["root_doc"].'" + glpi_css[i]);
+       document.getElementsByTagName("head")[0].appendChild(x);
+    }
+
+    </script>';
+            $pmWebui = new PluginMonitoringWebui();
+            $pmWebui->authentication($abc->token);
+         }
       }
    }
    return $PLUGIN_HOOKS;
