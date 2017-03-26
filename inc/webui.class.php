@@ -53,9 +53,11 @@ class PluginMonitoringWebui {
     * @param type $token
     */
    function authentication($token) {
-      echo Html::scriptBlock('$.ajaxSetup({
-         headers: { "Authorization": "Basic " + btoa("'.$token.':") }}
-      );');
+      echo Html::scriptBlock('window.setTimeout(function() {
+         $.ajaxSetup({
+            headers: { "Authorization": "Basic " + btoa("'.$token.':") }}
+         );
+         }, 10);');
    }
 
 

@@ -74,22 +74,22 @@ echo "<table class='tab_cadre_fixe'>";
 
 echo '<tr>';
 echo "<td width='50%' style='vertical-align: top;'>";
-$page = $PM_CONFIG['alignak_webui_url']."/external/widget/livestate_hosts_chart?widget_id=livestate_hosts_chart";
+$page = $PM_CONFIG['alignak_webui_url']."/external/widget/hosts_chart?widget_id=hosts_chart";
 $pmWebui->load_page($page);
 echo "</td>";
 echo "<td width='50%' style='vertical-align: top;'>";
-$page = $PM_CONFIG['alignak_webui_url']."/external/widget/livestate_hosts_history_chart?widget_id=livestate_hosts_history_chart";
+$page = $PM_CONFIG['alignak_webui_url']."/external/widget/hosts_table?widget_id=hosts_table";
 $pmWebui->load_page($page);
 echo "</td>";
 echo "</tr>";
 
 echo '<tr>';
 echo "<td width='50%' style='vertical-align: top;'>";
-$page = $PM_CONFIG['alignak_webui_url']."/external/widget/livestate_services_chart?widget_id=livestate_services_chart";
+$page = $PM_CONFIG['alignak_webui_url']."/external/widget/services_chart?widget_id=services_chart";
 $pmWebui->load_page($page);
 echo "</td>";
 echo "<td width='50%' style='vertical-align: top;'>";
-$page = $PM_CONFIG['alignak_webui_url']."/external/widget/livestate_services_history_chart?widget_id=livestate_services_history_chart";
+$page = $PM_CONFIG['alignak_webui_url']."/external/widget/services_table?widget_id=services_table";
 $pmWebui->load_page($page);
 echo "</td>";
 echo "</tr>";
@@ -118,7 +118,7 @@ echo "</tr>";
 
 echo '<tr>';
 echo "<td style='vertical-align: top;' colspan='2'>";
-$page = $PM_CONFIG['alignak_webui_url']."/external/widget/livestate_table?widget_id=livestate_table";
+$page = $PM_CONFIG['alignak_webui_url']."/external/widget/livestate?widget_id=livestate";
 $pmWebui->load_page($page);
 echo "</td>";
 echo "</tr>";
