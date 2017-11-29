@@ -806,7 +806,7 @@ echo "
          $_SESSION['plugin_monitoring_reduced_interface'] = false;
       }
 
-      $col_to_display = array(0, 10, 1, 2, 3, 6, 7, 8, 9, 11);
+      $col_to_display = array(10, 0, 1, 2, 3, 6, 7, 8, 9, 11);
 
       $data = Search::prepareDatasForSearch('PluginMonitoringHost', $params, $col_to_display);
       $data['tocompute'] = $data['toview'];
