@@ -62,15 +62,15 @@ class PluginMonitoringHost extends CommonDBTM {
       $tab = array();
       $tab['common'] = _n('Host characteristic', 'Host characteristics', 2);
 
-      $tab[0]['table']           = 'glpi_entities';
-      $tab[0]['field']           = 'name';
-      $tab[0]['name']            = __('Entity');
-      $tab[0]['datatype']        = 'string';
-
-      $tab[1]['table']           = 'glpi_computers';
+      $tab[1]['table']           = 'glpi_entities';
       $tab[1]['field']           = 'name';
-      $tab[1]['name']            = __('Host name', 'monitoring');
+      $tab[1]['name']            = __('Entity');
       $tab[1]['datatype']        = 'string';
+
+      $tab[0]['table']           = 'glpi_computers';
+      $tab[0]['field']           = 'name';
+      $tab[0]['name']            = __('Host name', 'monitoring');
+      $tab[0]['datatype']        = 'string';
 
       $tab[2]['table']           = $this->getTable();
       $tab[2]['field']           = 'state';
