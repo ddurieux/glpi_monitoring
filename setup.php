@@ -341,7 +341,7 @@ function plugin_monitoring_check_prerequisites() {
             version_compare(GLPI_VERSION,'0.85','lt') || version_compare(GLPI_VERSION,'0.92','ge')
          )) ||
          ( version_compare(GLPI_VERSION,'9','gt') && (
-            version_compare(GLPI_VERSION,'9.1','gt')
+            version_compare(GLPI_VERSION,'9.2','gt')
          ))
    ) {
       echo "error, require GLPI 0.85.x or 0.90.x or 0.91.x";
