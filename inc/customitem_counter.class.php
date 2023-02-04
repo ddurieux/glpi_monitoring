@@ -313,7 +313,7 @@ class PluginMonitoringCustomitem_Counter extends CommonDBTM {
                               ('".implode("','", $a_hosts)."')
                            AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
                      $result = $DB->query($query);
-                     while ($dataq=$DB->fetch_array($result)) {
+                     while ($dataq=$DB->fetchArray($result)) {
                         $a_services[$dataq['id']] = $data4;
                      }
                      // foreach ($a_services as $serviceId) {
@@ -382,7 +382,7 @@ class PluginMonitoringCustomitem_Counter extends CommonDBTM {
               (max_id.max = id)";
 
       $resultevent = $DB->query($query);
-      while ($dataevent=$DB->fetch_array($resultevent)) {
+      while ($dataevent=$DB->fetchArray($resultevent)) {
          $ret = $pmServiceevent->getData(
                  array($dataevent),
                  $pmComponent->fields['graph_template'],
@@ -435,7 +435,7 @@ class PluginMonitoringCustomitem_Counter extends CommonDBTM {
               (min_id.min = id)";
 
       $resultevent = $DB->query($query);
-      while ($dataevent=$DB->fetch_array($resultevent)) {
+      while ($dataevent=$DB->fetchArray($resultevent)) {
          $ret = $pmServiceevent->getData(
                  array($dataevent),
                  $pmComponent->fields['graph_template'],
@@ -538,7 +538,7 @@ class PluginMonitoringCustomitem_Counter extends CommonDBTM {
                               ('".implode("','", $a_hosts)."')
                            AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
                      $result = $DB->query($query);
-                     while ($dataq=$DB->fetch_array($result)) {
+                     while ($dataq=$DB->fetchArray($result)) {
                         $pmService->getFromDB($dataq['id']);
                         $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks($pmService->fields['plugin_monitoring_components_id']);
                         $pmComponent->getFromDB($dataq['plugin_monitoring_components_id']);
@@ -710,7 +710,7 @@ class PluginMonitoringCustomitem_Counter extends CommonDBTM {
       $pmComponent = new PluginMonitoringComponent();
       $pmComponent->getFromDB($components_id);
 
-      $perfdetail = getAllDatasFromTable(
+      $perfdetail = getAllDataFromTable(
               'glpi_plugin_monitoring_perfdatadetails',
               "`plugin_monitoring_perfdatas_id`='".$pmComponent->fields['graph_template']."'");
       $elements = array();

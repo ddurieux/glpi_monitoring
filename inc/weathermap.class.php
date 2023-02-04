@@ -279,7 +279,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          $elements = array();
          $elements[0] = Dropdown::EMPTY_VALUE;
          $result = $DB->query($query);
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $itemtype = $data['itemtype'];
             if ($itemtype == '0') {
                $pmWeathermapnode->delete($data);
@@ -332,7 +332,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          $elements = array();
          $elements[0] = Dropdown::EMPTY_VALUE;
          $result = $DB->query($query);
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $itemtype = $data['itemtype'];
             $item = new $itemtype();
             $item->getFromDB($data['items_id']);
@@ -403,7 +403,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          $elements[0] = Dropdown::EMPTY_VALUE;
          $elements2 = array();
          $result = $DB->query($query);
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $itemtype = $data['itemtype'];
             $item = new $itemtype();
             $item->getFromDB($data['items_id']);
@@ -465,7 +465,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
                            AND `items_id`='".$data['items_id']."'
                            AND `ifdescr`='".$argument."'";
                         $resultn = $DB->query($queryn);
-                        while ($pdata=$DB->fetch_array($resultn)) {
+                        while ($pdata=$DB->fetchArray($resultn)) {
                            if ($device_connected == '') {
                               $oppositeports_id = $networkPort->getContact($pdata['id']);
                               if ($oppositeports_id) {
@@ -538,7 +538,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          $elements = array();
          $elements[0] = Dropdown::EMPTY_VALUE;
          $result = $DB->query($query);
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $itemtype = $data['itemtype'];
             $item = new $itemtype();
             $item->getFromDB($data['items_id']);
@@ -597,7 +597,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          $elements = array();
          $elements[0] = Dropdown::EMPTY_VALUE;
          $result = $DB->query($query);
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $itemtype = $data['itemtype'];
             $item = new $itemtype();
             $item->getFromDB($data['items_id']);
@@ -876,7 +876,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
             ON `glpi_plugin_monitoring_services`.`id`=`plugin_monitoring_services_id`
          WHERE `plugin_monitoring_weathermaps_id`='".$weathermaps_id."'";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
 
          $graph_template = 0;
          if (isset($cache[$data['plugin_monitoring_components_id']])) {
@@ -972,7 +972,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          WHERE `plugin_monitoring_weathermaps_id`='".$weathermaps_id."'
          ORDER BY `name`";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $name = $data['name'];
          $url = '';
          $itemtype = $data['itemtype'];
@@ -1019,7 +1019,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
             ON `plugin_monitoring_weathermapnodes_id_1` = `glpi_plugin_monitoring_weathermapnodes`.`id`
          WHERE `plugin_monitoring_weathermaps_id`='".$weathermaps_id."'";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $pmWeathermapnode->getFromDB($data['plugin_monitoring_weathermapnodes_id_2']);
 
          if (!$pmService->getFromDB($data['plugin_monitoring_services_id'])) {
@@ -1034,7 +1034,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
             $resulttt = $DB->query($querytt);
             $s_id = 0;
             if ($DB->numrows($resulttt) == 1) {
-               $datatt = $DB->fetch_assoc($resulttt);
+               $datatt = $DB->fetchAssoc($resulttt);
                $input = array(
                    'id'                            => $data['id'],
                    'plugin_monitoring_services_id' => $datatt['id']
@@ -1053,7 +1053,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
          $in = '';
          $out = '';
          $service_exist = 0;
-         while ($dataevent=$DB->fetch_array($resultevent)) {
+         while ($dataevent=$DB->fetchArray($resultevent)) {
             if ($pmService->getFromDB($data['plugin_monitoring_services_id'])) {
                $pmComponent->getFromDB($pmService->fields['plugin_monitoring_components_id']);
 

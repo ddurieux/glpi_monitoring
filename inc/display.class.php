@@ -731,7 +731,7 @@ class PluginMonitoringDisplay extends CommonDBTM {
 
       PluginMonitoringDisplay::$ar_counterTypes = array();
       PluginMonitoringToolbox::loadLib();
-//      while ($data=$DB->fetch_array($result)) {
+//      while ($data=$DB->fetchArray($result)) {
 //echo "<pre>";      print_r($data['data']);
       foreach ($data['data']['rows'] as $row) {
          // Reduced array or not ?
@@ -1598,7 +1598,7 @@ echo "
          echo "<tr class='tab_bg_1'>";
          echo "<th colspan='2'>";
          $start = time();
-         $oldvalue = current(getAllDatasFromTable('glpi_plugin_monitoring_serviceevents',
+         $oldvalue = current(getAllDataFromTable('glpi_plugin_monitoring_serviceevents',
                                                   "`plugin_monitoring_services_id`='".$items_id."'",
                                                   false,
                                                   'date ASC LIMIT 1'));
@@ -1763,7 +1763,7 @@ echo "
          $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
          $queryCat = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs`";
          $resultCat = $DB->query($queryCat);
-         while ($data=$DB->fetch_array($resultCat)) {
+         while ($data=$DB->fetchArray($resultCat)) {
 
             $query = "SELECT COUNT(*) AS cpt FROM `".$pmComponentscatalog_Host->getTable()."`
                LEFT JOIN `glpi_plugin_monitoring_services`
@@ -1775,7 +1775,7 @@ echo "
                   AND `is_acknowledged`='0'";
 //            Toolbox::logInFile("pm", "Query critical - $query\n");
             $result = $DB->query($query);
-            $data2 = $DB->fetch_assoc($result);
+            $data2 = $DB->fetchAssoc($result);
             if ($data2['cpt'] > 0) {
                $critical++;
             } else {
@@ -1789,7 +1789,7 @@ echo "
                      AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
                      AND `is_acknowledged`='0'";
                $result = $DB->query($query);
-               $data2 = $DB->fetch_assoc($result);
+               $data2 = $DB->fetchAssoc($result);
                if ($data2['cpt'] > 0) {
                   $warningdata++;
                } else {
@@ -1801,7 +1801,7 @@ echo "
                      AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
                      AND `is_acknowledged`='0'";
                   $result = $DB->query($query);
-                  $data2 = $DB->fetch_assoc($result);
+                  $data2 = $DB->fetchAssoc($result);
                   if ($data2['cpt'] > 0) {
                      $ok++;
                   }
@@ -1817,7 +1817,7 @@ echo "
                   AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
                   AND `is_acknowledged`='0'";
             $result = $DB->query($query);
-            $data2 = $DB->fetch_assoc($result);
+            $data2 = $DB->fetchAssoc($result);
             if ($data2['cpt'] > 0) {
                $critical_soft++;
             } else {
@@ -1830,7 +1830,7 @@ echo "
                      AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
                      AND `is_acknowledged`='0'";
                $result = $DB->query($query);
-               $data2 = $DB->fetch_assoc($result);
+               $data2 = $DB->fetchAssoc($result);
                if ($data2['cpt'] > 0) {
                   $warningdata_soft++;
                } else {
@@ -1842,7 +1842,7 @@ echo "
                         AND `entities_id` IN (".$_SESSION['glpiactiveentities_string'].")
                         AND `is_acknowledged`='0'";
                   $result = $DB->query($query);
-                  $data2 = $DB->fetch_assoc($result);
+                  $data2 = $DB->fetchAssoc($result);
                   if ($data2['cpt'] > 0) {
                      $ok_soft++;
                   }
@@ -2603,7 +2603,7 @@ echo "
           WHERE ".$whereState."
             AND `".getTableForItemType($itemtype)."`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
       $result = $DB->query($query);
-      $ligne  = $DB->fetch_assoc($result);
+      $ligne  = $DB->fetchAssoc($result);
       return $ligne['cpt'];
    }
 
@@ -2622,7 +2622,7 @@ echo "
          WHERE ".$whereState."
             AND `glpi_plugin_monitoring_services`.`entities_id` IN (".$_SESSION['glpiactiveentities_string'].")";
       $result = $DB->query($query);
-      $ligne  = $DB->fetch_assoc($result);
+      $ligne  = $DB->fetchAssoc($result);
       return $ligne['cpt'];
    }
 

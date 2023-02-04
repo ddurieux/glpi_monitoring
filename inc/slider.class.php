@@ -419,7 +419,7 @@ class PluginMonitoringSlider extends CommonDBTM {
       $maxWidth = 0;
       $maxHeight = 0;
       $is_minemap = 0;
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          if ($data['itemtype'] == 'PluginMonitoringServicescatalog'
                  || $data['itemtype'] == 'PluginMonitoringComponentscatalog'
                  || $data['itemtype'] == 'PluginMonitoringCustomitem_Gauge'
@@ -473,7 +473,7 @@ top: 0px; left: 0px; width: '.$maxWidth.'px; height: '.$maxHeight.'px;">
     left: 0px; top: 0px; width: '.$maxWidth.'px; height: '.$maxHeight.'px;">';
 
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $itemtype = $data['itemtype'];
          $item = new $itemtype();
          if ($itemtype == "PluginMonitoringService") {
@@ -503,7 +503,7 @@ top: 0px; left: 0px; width: '.$maxWidth.'px; height: '.$maxHeight.'px;">
 echo '    </div>
 </div>';
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $itemtype = $data['itemtype'];
          $item = new $itemtype();
          // Ajax
@@ -583,7 +583,7 @@ echo '    </div>
                 ORDER BY `users_id`, `name`";
       $result = $DB->query($query);
       if ($DB->numrows($result)) {
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetchArray($result)) {
             $a_sliders[$data['id']] = $data['name'];
          }
       }

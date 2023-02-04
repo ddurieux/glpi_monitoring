@@ -87,7 +87,7 @@ class PluginMonitoringBusinessrule_component extends CommonDBTM {
                  . "          = '".$pmComponentscatalog_Component->fields['plugin_monitoring_components_id']."' ".
                  $restrict_entities;
          $result = $DB->query($query);
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $a_services[$data['id']] = $data['id'];
          }
       }
@@ -117,7 +117,7 @@ class PluginMonitoringBusinessrule_component extends CommonDBTM {
               . " WHERE `plugin_monitoring_businessrulegroups_id`='".$plugin_monitoring_businessrulegroups_id."'"
               . " AND `is_dynamic`=1";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          // Update if yet in DB
          if (isset($a_services[$data['plugin_monitoring_services_id']])) {
             unset($a_services[$data['plugin_monitoring_services_id']]);

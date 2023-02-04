@@ -124,7 +124,7 @@ class PluginMonitoringMessage extends CommonDBTM {
 
          WHERE `glpi_plugin_monitoring_services`.`id` IS NULL";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          if (!isset($servicescatalog_links[$data['plugin_monitoring_servicescatalogs_id']])) {
             $pmServicescatalog->getFromDB($data['plugin_monitoring_servicescatalogs_id']);
             $servicescatalog_links[$data['plugin_monitoring_servicescatalogs_id']] = $pmServicescatalog->getLink();
@@ -176,7 +176,7 @@ class PluginMonitoringMessage extends CommonDBTM {
                WHERE `id` > '".$id_restart."' AND `action`='add'
                ORDER BY `id` DESC";
             $result = $DB->query($query);
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetchArray($result)) {
                echo "[".Html::convDateTime($data['date_mod'])."] Add ".$data['value']."<br/>";
             }
             echo "</div>";
@@ -193,7 +193,7 @@ class PluginMonitoringMessage extends CommonDBTM {
                WHERE `id` > '".$id_restart."' AND `action`='delete'
                ORDER BY `id` DESC";
             $result = $DB->query($query);
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetchArray($result)) {
                echo "[".Html::convDateTime($data['date_mod'])."] Delete ".$data['value']."<br/>";
             }
             echo "</div>";
@@ -210,7 +210,7 @@ class PluginMonitoringMessage extends CommonDBTM {
                WHERE `id` > '".$id_restart."' AND `action`='update'
                ORDER BY `id` DESC";
             $result = $DB->query($query);
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetchArray($result)) {
                echo "[".Html::convDateTime($data['date_mod'])."] Update ".$data['value']."<br/>";
             }
             echo "</div>";
@@ -238,12 +238,12 @@ class PluginMonitoringMessage extends CommonDBTM {
       $query = "SELECT * FROM `glpi_plugin_monitoring_checks` ORDER BY `check_interval` DESC LIMIT 1";
 
       $result = $DB->query($query);
-      $data = $DB->fetch_assoc($result);
+      $data = $DB->fetchAssoc($result);
       $time_s = $data['check_interval'] * 60;
 
       $query = "SELECT count(id) as cnt FROM `glpi_plugin_monitoring_services`";
       $result = $DB->query($query);
-      $data = $DB->fetch_assoc($result);
+      $data = $DB->fetchAssoc($result);
       if ($data['cnt'] > 0) {
          $query = "SELECT * FROM `glpi_plugin_monitoring_services`
             WHERE UNIX_TIMESTAMP(last_check) > UNIX_TIMESTAMP()-".$time_s."

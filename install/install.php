@@ -49,7 +49,7 @@ function pluginMonitoringInstall($version) {
    $sql_query = fread($DBf_handle, filesize($DB_file));
    fclose($DBf_handle);
    foreach ( explode(";\n", "$sql_query") as $sql_line) {
-      if (get_magic_quotes_runtime()) $sql_line=Toolbox::stripslashes_deep($sql_line);
+      $sql_line=Toolbox::stripslashes_deep($sql_line);
       if (!empty($sql_line)) $DB->query($sql_line);
    }
 
@@ -191,7 +191,7 @@ function pluginMonitoringUninstall() {
 
    $query = "SHOW TABLES;";
    $result=$DB->query($query);
-   while ($data=$DB->fetch_array($result)) {
+   while ($data=$DB->fetchArray($result)) {
       if (strstr($data[0],"glpi_plugin_monitoring_")) {
          $query_delete = "DROP TABLE `".$data[0]."`;";
          $DB->query($query_delete) or die($DB->error());

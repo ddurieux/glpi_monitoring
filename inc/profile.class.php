@@ -327,7 +327,7 @@ class PluginMonitoringProfile extends Profile {
    static function migrateProfiles() {
       global $DB;
       //Get all rights from the old table
-      $profiles = getAllDatasFromTable(getTableForItemType(__CLASS__));
+      $profiles = getAllDataFromTable(getTableForItemType(__CLASS__));
 
       //Load mapping of old rights to their new equivalent
       $oldrights = self::getOldRightsMappings();

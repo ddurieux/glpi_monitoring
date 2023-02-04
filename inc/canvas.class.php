@@ -133,7 +133,7 @@ class PluginMonitoringCanvas {
          WHERE `itemtype`='".$itemtype."'
             AND `items_id`='".$items_id."'";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $critical += countElementsInTable("glpi_plugin_monitoring_services",
            "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
               AND `state_type`='HARD'
@@ -166,7 +166,7 @@ class PluginMonitoringCanvas {
             AND `items_id`='".$items_id."'
          LIMIT 1";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          if ($data['state_type'] == 'SOFT') {
             return 'ok';
          }

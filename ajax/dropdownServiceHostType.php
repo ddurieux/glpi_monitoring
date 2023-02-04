@@ -61,7 +61,7 @@ if (class_exists($_POST["itemtype"])) {
    $result = $DB->query($query);
    $a_hosts = array();
    $a_hosts[0] = Dropdown::EMPTY_VALUE;
-   while ($data = $DB->fetch_array($result)) {
+   while ($data = $DB->fetchArray($result)) {
       $a_hosts[$data['id']] = $data['name'];
    }
    $rand = Dropdown::showFromArray("hosts", $a_hosts);

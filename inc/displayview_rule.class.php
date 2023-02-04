@@ -282,7 +282,7 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
                   AND `itemtype`='".$pmDisplayview_rule->fields['type']."'
                   AND `extra_infos`='".$itemtype."'";
             $result = $DB->query($queryd);
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetchArray($result)) {
                $devices_present[$data['items_id']] = $data['id'];
             }
 
@@ -294,7 +294,7 @@ class PluginMonitoringDisplayview_rule extends CommonDBTM {
             $DBread->query("SET SESSION group_concat_max_len = 16384;");
             $result = $DBread->query($data['sql']['search']);
 
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetchArray($result)) {
                if (!isset($devices_present[$data['id']])) {
                   // Verify this device has one or more resources
                   $query_h = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`"

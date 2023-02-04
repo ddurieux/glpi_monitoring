@@ -337,14 +337,13 @@ function plugin_version_monitoring() {
 function plugin_monitoring_check_prerequisites() {
 
    if (
-         ( version_compare(GLPI_VERSION,'1','lt') && (
-            version_compare(GLPI_VERSION,'0.85','lt') || version_compare(GLPI_VERSION,'0.92','ge')
-         )) ||
-         ( version_compare(GLPI_VERSION,'9','gt') && (
-            version_compare(GLPI_VERSION,'9.2','gt')
+         ( version_compare(GLPI_VERSION,'10','lt') && 
+            version_compare(GLPI_VERSION,'10.0','lt') ) ||
+         ( version_compare(GLPI_VERSION,'10','gt') && (
+            version_compare(GLPI_VERSION,'10.2','gt')
          ))
    ) {
-      echo "error, require GLPI 0.85.x or 0.90.x or 0.91.x";
+      echo "error, require GLPI 10.0.x";
    } else {
       return true;
    }

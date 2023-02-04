@@ -966,7 +966,7 @@ class PluginMonitoringServicescatalog extends CommonDropdown {
          ORDER BY `glpi_plugin_monitoring_services`.`entities_id` ASC, `glpi_plugin_monitoring_services`.`id` ASC;
       ";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $a_services[$data['entities_id']][$data['id']] =
                   array("entityId" => $data['entities_id'],
                         "serviceId" => $data['id'],

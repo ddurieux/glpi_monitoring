@@ -88,7 +88,7 @@ class PluginMonitoringSlider_item extends CommonDBTM {
          WHERE `plugin_monitoring_sliders_id`='".$id."'";
       $result = $DB->query($query);
       $a_items = array();
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          if ($this->displayItem($data, $config)) {
             $a_items[] = "item".$data['id'];
          }
@@ -174,7 +174,7 @@ class PluginMonitoringSlider_item extends CommonDBTM {
       echo _n('Associated item', 'Associated items', 2);
       echo "</th>";
       echo "</tr>";
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>";
          $itemtype = $data['itemtype'];

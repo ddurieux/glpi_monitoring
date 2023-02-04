@@ -93,7 +93,7 @@ class PluginMonitoringContact_Item extends CommonDBTM {
             AND `itemtype`='".$itemtype."'
             AND `groups_id` > 0";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $group->getFromDB($data['groups_id']);
 
          echo "<tr>";
@@ -126,7 +126,7 @@ class PluginMonitoringContact_Item extends CommonDBTM {
             AND `itemtype`='".$itemtype."'
             AND `users_id` > 0";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $user->getFromDB($data['users_id']);
 
          echo "<tr>";

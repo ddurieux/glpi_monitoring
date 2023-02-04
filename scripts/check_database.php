@@ -93,7 +93,7 @@ $a_tables = array();
 // SHOW TABLES;
 $query = "SHOW TABLES";
 $result = $DB->query($query);
-while ($data=$DB->fetch_array($result)) {
+while ($data=$DB->fetchArray($result)) {
   if (strstr($data[0], "monitoring")) {
 
       $data[0] = str_replace(" COLLATE utf8_unicode_ci", "", $data[0]);
@@ -106,7 +106,7 @@ while ($data=$DB->fetch_array($result)) {
 foreach($a_tables as $table) {
    $query = "SHOW CREATE TABLE ".$table;
    $result = $DB->query($query);
-   while ($data=$DB->fetch_array($result)) {
+   while ($data=$DB->fetchArray($result)) {
       $a_lines = explode("\n", $data['Create Table']);
 
       foreach ($a_lines as $line) {

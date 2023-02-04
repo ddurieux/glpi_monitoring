@@ -94,7 +94,7 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
       $query = "SELECT * FROM `".$this->getTable()."`
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $used[] = $data['plugin_monitoring_components_id'];
          $pmComponent->getFromDB($data['plugin_monitoring_components_id']);
          echo "<tr>";
@@ -148,7 +148,7 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
       $query = "SELECT * FROM `".$this->getTable()."`
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $used[] = $data['plugin_monitoring_components_id'];
       }
 
@@ -188,7 +188,7 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
       $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $itemtype = $data['itemtype'];
          $item = new $itemtype();
          $item->getFromDB($data['items_id']);
@@ -207,7 +207,7 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
                WHERE `plugin_monitoring_components_id`='".$components_id."'
                   AND `plugin_monitoring_componentscatalogs_hosts_id`='".$data['id']."'";
             $results = $DB->query($querys);
-            while ($datas=$DB->fetch_array($results)) {
+            while ($datas=$DB->fetchArray($results)) {
                $a_services_created[$datas['networkports_id']] = $datas['id'];
             }
 
@@ -246,12 +246,12 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
       $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $querys = "SELECT * FROM `glpi_plugin_monitoring_services`
             WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$data['id']."'
                AND `plugin_monitoring_components_id`='".$components_id."'";
          $results = $DB->query($querys);
-         while ($datas=$DB->fetch_array($results)) {
+         while ($datas=$DB->fetchArray($results)) {
             $_SESSION['plugin_monitoring_hosts'] = $data;
             $pmService->delete(array('id'=>$datas['id']));
          }
@@ -278,7 +278,7 @@ class PluginMonitoringComponentscatalog_Component extends CommonDBTM {
          WHERE `plugin_monitoring_components_id`='".$components_id."'
          ORDER BY `glpi_plugin_monitoring_componentscatalogs`.`name`";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>";
          $pmComponentscatalog->getFromDB($data['id']);

@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `glpi_plugin_monitoring_hostcounters_tmp` (
    `id` INT(11) NOT NULL AUTO_INCREMENT,
    `serviceId` INT(11),
    `hostname` VARCHAR(255) DEFAULT NULL,
-   `date` DATETIME DEFAULT NULL,
+   `date` TIMESTAMP DEFAULT NULL,
    `cutPages` INT(11) NOT NULL DEFAULT '0',
    `retractedPages` INT(11) NOT NULL DEFAULT '0',
    `printerChanged` INT(11) NOT NULL DEFAULT '0',

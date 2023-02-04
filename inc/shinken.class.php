@@ -526,7 +526,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $where
          GROUP BY `itemtype`, `items_id`";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
 
          $a_hosts[$i] = array();
          $classname = $data['itemtype'];
@@ -680,7 +680,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                if (isset($conteners[$class->fields['computertypes_id']])) {
                   // get Host of contener/VM
                   $where = "LOWER(`uuid`)".  ComputerVirtualMachine::getUUIDRestrictRequest($class->fields['uuid']);
-                  $hosts = getAllDatasFromTable('glpi_computervirtualmachines', $where);
+                  $hosts = getAllDataFromTable('glpi_computervirtualmachines', $where);
                   if (!empty($hosts)) {
                      $host = current($hosts);
                      $ip = PluginMonitoringHostaddress::getIp($host['computers_id'], 'Computer', '');
@@ -1016,7 +1016,7 @@ class PluginMonitoringShinken extends CommonDBTM {
 
          $resultcont = $DB->query($querycont);
          if ($DB->numrows($resultcont) != 0) {
-            $a_componentscatalogs_hosts = $DB->fetch_assoc($resultcont);
+            $a_componentscatalogs_hosts = $DB->fetchAssoc($resultcont);
 
             PluginMonitoringToolbox::logIfExtradebug(
                'pm-shinken',
@@ -1388,7 +1388,7 @@ class PluginMonitoringShinken extends CommonDBTM {
             `glpi_entities`.`id` AS entityId, `glpi_entities`.`name` AS entityName
             FROM `glpi_entities` $where";
          $result = $DB->query($query);
-         while ($dataEntity=$DB->fetch_array($result)) {
+         while ($dataEntity=$DB->fetchArray($result)) {
             // Hostgroup name : used as host name for parents ...
             $fake_host_name = self::shinkenFilter($dataEntity['entityName']);
             $fake_host_name = preg_replace("/[ ]/","_",$fake_host_name);
@@ -1573,7 +1573,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $queryg = "SELECT * FROM `glpi_groups_users`
             WHERE `groups_id`='".$data['groups_id']."'";
          $resultg = $DB->query($queryg);
-         while ($datag=$DB->fetch_array($resultg)) {
+         while ($datag=$DB->fetchArray($resultg)) {
             if (isset($a_contacts_entities[$data['items_id']][$datag['users_id']])) {
                $contactentities = array_merge($contactentities, $a_contacts_entities[$data['items_id']][$datag['users_id']]);
             }
@@ -1610,7 +1610,7 @@ class PluginMonitoringShinken extends CommonDBTM {
       // "Normal" services ....
       $query = "SELECT * FROM `glpi_plugin_monitoring_services` $where";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          PluginMonitoringToolbox::logIfExtradebug(
             'pm-shinken',
             " - fetching service: {$data['id']}\n"
@@ -1840,7 +1840,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                         if (isset($conteners[$computerTypes_id])) {
                            // get Host of contener/VM
                            $where = "LOWER(`uuid`)".  ComputerVirtualMachine::getUUIDRestrictRequest($item->fields['uuid']);
-                           $hosts = getAllDatasFromTable('glpi_computervirtualmachines', $where);
+                           $hosts = getAllDataFromTable('glpi_computervirtualmachines', $where);
                            if (!empty($hosts)) {
                               $host = current($hosts);
 //                                 $ip = PluginMonitoringHostaddress::getIp($host['computers_id'], 'Computer', '');
@@ -1901,7 +1901,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                   $queryg = "SELECT * FROM `glpi_groups_users`
                      WHERE `groups_id`='".$data_contact['groups_id']."'";
                   $resultg = $DB->query($queryg);
-                  while ($datag=$DB->fetch_array($resultg)) {
+                  while ($datag=$DB->fetchArray($resultg)) {
                      if (in_array($data['entities_id'], $a_contacts_entities[$plugin_monitoring_componentscatalogs_id][$datag['users_id']])) {
                         if (!isset($a_users[$datag['users_id']])) {
                            $user->getFromDB($datag['users_id']);
@@ -2253,7 +2253,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          $queryg = "SELECT * FROM `glpi_groups_users`
             WHERE `groups_id`='".$data['groups_id']."'";
          $resultg = $DB->query($queryg);
-         while ($datag=$DB->fetch_array($resultg)) {
+         while ($datag=$DB->fetchArray($resultg)) {
             if (isset($a_contacts_entities[$data['items_id']][$datag['users_id']])) {
                $contactentities = array_merge($contactentities, $a_contacts_entities[$data['items_id']][$datag['users_id']]);
             }
@@ -2406,7 +2406,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                         $queryg = "SELECT * FROM `glpi_groups_users`
                            WHERE `groups_id`='".$data_contact['groups_id']."'";
                         $resultg = $DB->query($queryg);
-                        while ($datag=$DB->fetch_array($resultg)) {
+                        while ($datag=$DB->fetchArray($resultg)) {
                            if (in_array($data['entities_id'], $a_contacts_entities[$dataBA['id']][$datag['users_id']])) {
                               if (!isset($a_users[$datag['users_id']])) {
                                  $user->getFromDB($datag['users_id']);
@@ -2600,7 +2600,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                         $queryg = "SELECT * FROM `glpi_groups_users`
                            WHERE `groups_id`='".$data_contact['groups_id']."'";
                         $resultg = $DB->query($queryg);
-                        while ($datag=$DB->fetch_array($resultg)) {
+                        while ($datag=$DB->fetchArray($resultg)) {
                            if (in_array($data['entities_id'], $a_contacts_entities[$dataBA['id']][$datag['users_id']])) {
                               if (!isset($a_users[$datag['users_id']])) {
                                  $user->getFromDB($datag['users_id']);
@@ -2667,7 +2667,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          // ORDER BY `id`";
       $result = $DB->query($query);
       if ($DB->numrows($result) != 0) {
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
 
          $a_servicetemplates[$i] = array();
          PluginMonitoringToolbox::logIfExtradebug(
@@ -2809,7 +2809,7 @@ class PluginMonitoringShinken extends CommonDBTM {
                // AND `passive_checks_enabled`='".$data['passive_checks_enabled']."'
                // AND `calendars_id`='".$data['calendars_id']."'";
          // $resultc = $DB->query($queryc);
-         // while ($datac=$DB->fetch_array($resultc)) {
+         // while ($datac=$DB->fetchArray($resultc)) {
             // $a_templatesdef[$datac['id']] = $a_servicetemplates[$i]['name'];
          // }
          $a_templatesdef[$data['id']] = $a_servicetemplates[$i]['name'];
@@ -2870,7 +2870,7 @@ class PluginMonitoringShinken extends CommonDBTM {
          , `glpi_entities`.`website` AS website , `glpi_entities`.`fax` AS fax, `glpi_entities`.`email` AS email, `glpi_entities`.`phonenumber` AS phonenumber
          FROM `glpi_entities` $where";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
 /*
 Nagios configuration file :
    define hostgroup{
@@ -3057,7 +3057,7 @@ Nagios configuration file :
 
       $query = "SELECT * FROM `glpi_plugin_monitoring_contacts_items` $where";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          if ($data['users_id'] > 0) {
             if ((!isset($a_users_used[$data['users_id']]))) {
                $a_contacts = $this->_addContactUser($a_contacts, $data['users_id'], $i);
@@ -3068,7 +3068,7 @@ Nagios configuration file :
             $queryg = "SELECT * FROM `glpi_groups_users`
                WHERE `groups_id`='".$data['groups_id']."'";
             $resultg = $DB->query($queryg);
-            while ($datag=$DB->fetch_array($resultg)) {
+            while ($datag=$DB->fetchArray($resultg)) {
                if ((!isset($a_users_used[$datag['users_id']]))) {
                   $a_contacts = $this->_addContactUser($a_contacts, $datag['users_id'], $i);
                   $i++;
