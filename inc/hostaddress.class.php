@@ -82,7 +82,7 @@ class PluginMonitoringHostaddress extends CommonDBTM {
       if ($DB->numrows($result) == '0') {
          $this->getEmpty();
       } else {
-         $data = $DB->fetch_assoc($result);
+         $data = $DB->fetchAssoc($result);
          $this->getFromDB($data['id']);
       }
 
@@ -114,7 +114,7 @@ class PluginMonitoringHostaddress extends CommonDBTM {
             AND `glpi_ipaddresses`.`name` != ''
          ORDER BY `name`";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $a_networkport[$data['id']] = $data['name'];
       }
       $rand = Dropdown::showFromArray("networkports_id", $a_networkport,
@@ -159,7 +159,7 @@ class PluginMonitoringHostaddress extends CommonDBTM {
                AND `glpi_ipaddresses`.`name` != ''
             ORDER BY `name`";
          $result = $DB->query($query);
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $elements[$data['id']] = $data['name'];
          }
       }
@@ -184,7 +184,7 @@ class PluginMonitoringHostaddress extends CommonDBTM {
       LIMIT 1";
       $result = $DB->query($query);
       if ($DB->numrows($result) == '1') {
-         $data = $DB->fetch_assoc($result);
+         $data = $DB->fetchAssoc($result);
 
          if ($data['ipaddresses_id'] > 0
                  && $iPAddress->getFromDB($data['ipaddresses_id'])) {
@@ -236,7 +236,7 @@ class PluginMonitoringHostaddress extends CommonDBTM {
       LIMIT 1";
       $result = $DB->query($query);
       if ($DB->numrows($result) == '1') {
-         $data = $DB->fetch_assoc($result);
+         $data = $DB->fetchAssoc($result);
 
          $networkPort->getFromDB($data['networkports_id']);
          return $networkPort;

@@ -106,7 +106,7 @@ class NetworkportsTest extends RestoreDatabase_TestCase {
                  "May have one entrie in glpi_plugin_monitoring_componentscatalogs_hosts");
 
       // Check have services created
-         $a_services = getAllDatasFromTable('glpi_plugin_monitoring_services');
+         $a_services = getAllDataFromTable('glpi_plugin_monitoring_services');
          $this->assertEquals(2, count($a_services), "May have one service");
    }
 
@@ -129,7 +129,7 @@ class NetworkportsTest extends RestoreDatabase_TestCase {
          $pmNetworkport->updateNetworkports();
 
       // Check have services deleted
-         $a_services = getAllDatasFromTable('glpi_plugin_monitoring_services');
+         $a_services = getAllDataFromTable('glpi_plugin_monitoring_services');
          $this->assertEquals(1, count($a_services), "May have one service");
 
       // Check glpi_plugin_monitoring_componentscatalogs_hosts have 1 entry
@@ -152,7 +152,7 @@ class NetworkportsTest extends RestoreDatabase_TestCase {
          $networkport->delete(array('id' => '2'));
 
       // Check have services deleted
-         $a_services = getAllDatasFromTable('glpi_plugin_monitoring_services');
+         $a_services = getAllDataFromTable('glpi_plugin_monitoring_services');
          $this->assertEquals(0, count($a_services), "May have no service");
 
       // Check glpi_plugin_monitoring_componentscatalogs_hosts have 0 entry

@@ -213,7 +213,7 @@ return;
          WHERE `plugin_monitoring_servicescatalogs_id`='".$servicescatalogs_id."'
          ORDER BY `name`";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $pMonitoringBusinessrulegroup->showForm($data['id'], $servicescatalogs_id);
       }
       return;
@@ -238,7 +238,7 @@ return;
          WHERE `plugin_monitoring_servicescatalogs_id`='".$servicescatalogs_id."'
          ORDER BY `group`";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          echo "<tr class='tab_bg_1'>";
          echo "<td>";
          echo "<input type='checkbox'/>";
@@ -357,7 +357,7 @@ return;
       $query = "SELECT * FROM `glpi_plugin_monitoring_businessrules`
          WHERE `plugin_monitoring_businessrulegroups_id`='".$item->fields["id"]."'";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $pmBusinessrule->delete($data);
       }
    }

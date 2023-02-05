@@ -80,7 +80,7 @@ class PluginMonitoringEntity extends CommonDBTM {
          $pmEntity = new PluginMonitoringEntity();
          $pmHostconfig = new PluginMonitoringHostconfig();
 
-         $pmHostconfig->showForm($item->getID(), "Entity");
+         $pmHostconfig->showForm($item->getID(), ["itemtype" =>"Entity"]);
          $pmEntity->showForm($item->fields['id']);
       }
       return true;
@@ -155,7 +155,7 @@ class PluginMonitoringEntity extends CommonDBTM {
          $query = "SELECT * FROM `".$this->getTable()."`
             WHERE `tag`='".$tag."'";
          $result = $DB->query($query);
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $output[$data['entities_id']] = $data['entities_id'];
          }
          return $output;
@@ -171,7 +171,7 @@ class PluginMonitoringEntity extends CommonDBTM {
          WHERE `entities_id`='".$entities_id."'
             LIMIT 1";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          return $data['tag'];
       }
    }

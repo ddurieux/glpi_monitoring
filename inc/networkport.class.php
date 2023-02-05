@@ -95,7 +95,7 @@ class PluginMonitoringNetworkport extends CommonDBTM {
       global $DB;
 
       $nb = countElementsInTable("glpi_plugin_monitoring_networkports",
-              "`networkports_id` = '".$networkports_id."'");
+              ["networkports_id" => $networkports_id]);
       if ($nb > 0) {
          return true;
       }
@@ -113,7 +113,7 @@ class PluginMonitoringNetworkport extends CommonDBTM {
          WHERE `itemtype`='".$_POST['itemtype']."'
             AND `items_id`='".$_POST['items_id']."'";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $networkportInDB[$data['networkports_id']] = $data['id'];
       }
 
@@ -145,7 +145,7 @@ class PluginMonitoringNetworkport extends CommonDBTM {
          $query = "SELECT * FROM `glpi_plugin_monitoring_networkports`
             WHERE `networkports_id`='".$parm->fields['id']."'";
          $result = $DB->query($query);
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $pmNetworkPort = new PluginMonitoringNetworkport();
             $pmNetworkPort->delete($data);
          }

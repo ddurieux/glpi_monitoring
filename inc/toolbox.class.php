@@ -163,7 +163,7 @@ class PluginMonitoringToolbox {
       echo "<td>";
 
       $a_incremental = array();
-      $a_perfdatadetails = getAllDatasFromTable('glpi_plugin_monitoring_perfdatadetails',
+      $a_perfdatadetails = getAllDataFromTable('glpi_plugin_monitoring_perfdatadetails',
                            "plugin_monitoring_perfdatas_id='".$pmComponent->fields['graph_template']."'");
       foreach ($a_perfdatadetails as $data) {
          for ($nb=1; $nb <= 15; $nb++) {
@@ -233,7 +233,7 @@ echo "        <script>
       echo '<select id="jquery-tagbox-select2-options">';
 
       $a_incremental = array();
-      $a_perfdatadetails = getAllDatasFromTable('glpi_plugin_monitoring_perfdatadetails',
+      $a_perfdatadetails = getAllDataFromTable('glpi_plugin_monitoring_perfdatadetails',
                            "plugin_monitoring_perfdatas_id='".$pmComponent->fields['perfname']."'");
       foreach ($a_perfdatadetails as $data) {
          for ($nb=1; $nb <= 15; $nb++) {

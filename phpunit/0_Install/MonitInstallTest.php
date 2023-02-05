@@ -18,7 +18,7 @@ class MonitTest extends Common_TestCase {
       // Delete if Table of monitoring yet in DB
       $query = "SHOW FULL TABLES WHERE TABLE_TYPE LIKE 'VIEW'";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          if (strstr($data[0], "fusi")) {
             $DB->query("DROP VIEW ".$data[0]);
          }
@@ -26,7 +26,7 @@ class MonitTest extends Common_TestCase {
 
       $query = "SHOW TABLES";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          if (strstr($data[0], "tracker")
             OR strstr($data[0], "fusi")) {
                $DB->query("DROP TABLE ".$data[0]);

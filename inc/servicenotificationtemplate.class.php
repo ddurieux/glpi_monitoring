@@ -193,7 +193,7 @@ class PluginMonitoringServicenotificationtemplate extends CommonDBTM {
          $this->getEmpty();
       }
 
-      $this->showTabs($options);
+      //$this->showTabs($options);
       $this->showFormHeader($options);
 
       $this->getFromDB($items_id);

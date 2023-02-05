@@ -67,7 +67,7 @@ if (isset($_POST['id'])) {
       WHERE `plugin_monitoring_componentscalalog_id`='".$_POST['id']."'
       ORDER BY `glpi_plugin_monitoring_components`.`name`";
    $result = $DB->query($query);
-   while ($data=$DB->fetch_array($result)) {
+   while ($data=$DB->fetchArray($result)) {
       $elements[$data['id']] = $data['name'];
    }
 

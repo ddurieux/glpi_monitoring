@@ -249,8 +249,7 @@ class PluginMonitoringProfile extends Profile {
    static function addDefaultProfileInfos($profiles_id, $rights) {
       $profileRight = new ProfileRight();
       foreach ($rights as $right => $value) {
-         if (!countElementsInTable('glpi_profilerights',
-                                   "`profiles_id`='$profiles_id' AND `name`='$right'")) {
+         if (!countElementsInTable('glpi_profilerights',["profiles_id"=>$profiles_id, "name"=>$right])) {
             $myright['profiles_id'] = $profiles_id;
             $myright['name']        = $right;
             $myright['rights']      = $value;
@@ -327,7 +326,7 @@ class PluginMonitoringProfile extends Profile {
    static function migrateProfiles() {
       global $DB;
       //Get all rights from the old table
-      $profiles = getAllDatasFromTable(getTableForItemType(__CLASS__));
+      $profiles = getAllDataFromTable(getTableForItemType(__CLASS__));
 
       //Load mapping of old rights to their new equivalent
       $oldrights = self::getOldRightsMappings();
@@ -374,7 +373,7 @@ class PluginMonitoringProfile extends Profile {
       $a_rights  = $pfProfile->getAllRights();
 
       foreach ($a_rights as $data) {
-         if (countElementsInTable("glpi_profilerights", "`name` = '".$data['field']."'") == 0) {
+         if (countElementsInTable("glpi_profilerights", ["name"=>$data['field']]) == 0) {
             ProfileRight::addProfileRights(array($data['field']));
             $_SESSION['glpiactiveprofile'][$data['field']] = 0;
          }

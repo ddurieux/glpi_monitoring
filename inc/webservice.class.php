@@ -380,7 +380,7 @@ class PluginMonitoringWebservice {
                         `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
                   WHERE (`state`='OK' OR `state`='UP') AND `state_type`='HARD'";
                $result = $DB->query($query);
-               while ($data=$DB->fetch_array($result)) {
+               while ($data=$DB->fetchArray($result)) {
                   $itemtype = $data['itemtype'];
                   $item = new $itemtype();
                   $item->getFromDB($data['items_id']);
@@ -397,7 +397,7 @@ class PluginMonitoringWebservice {
                   WHERE (`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
                     AND `state_type`='HARD'";
                $result = $DB->query($query);
-               while ($data=$DB->fetch_array($result)) {
+               while ($data=$DB->fetchArray($result)) {
                   $itemtype = $data['itemtype'];
                   $item = new $itemtype();
                   $item->getFromDB($data['items_id']);
@@ -414,7 +414,7 @@ class PluginMonitoringWebservice {
                   WHERE (`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
                     AND `state_type`='HARD'";
                $result = $DB->query($query);
-               while ($data=$DB->fetch_array($result)) {
+               while ($data=$DB->fetchArray($result)) {
                   $itemtype = $data['itemtype'];
                   $item = new $itemtype();
                   $item->getFromDB($data['items_id']);
@@ -428,7 +428,7 @@ class PluginMonitoringWebservice {
          $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
          $queryCat = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs`";
          $resultCat = $DB->query($queryCat);
-         while ($data=$DB->fetch_array($resultCat)) {
+         while ($data=$DB->fetchArray($resultCat)) {
 
             $query = "SELECT * FROM `".$pmComponentscatalog_Host->getTable()."`
                WHERE `plugin_monitoring_componentscalalog_id`='".$data['id']."'";
@@ -437,22 +437,28 @@ class PluginMonitoringWebservice {
             $state['ok'] = 0;
             $state['warning'] = 0;
             $state['critical'] = 0;
-            while ($dataComponentscatalog_Host=$DB->fetch_array($result)) {
+            while ($dataComponentscatalog_Host=$DB->fetchArray($result)) {
 
-               $state['ok'] += countElementsInTable("glpi_plugin_monitoring_services",
-                       "(`state`='OK' OR `state`='UP') AND `state_type`='HARD'
-                          AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
+               $state['ok'] += countElementsInTable("glpi_plugin_monitoring_services",[
+                  'state' => PLUGIN_MONITORING_STATE_OK,
+                  "state_type"=>'HARD',
+                  "plugin_monitoring_componentscatalogs_hosts_id"=>$dataComponentscatalog_Host['id']]);
+      
+               
+            
 
+               $state['warning'] += countElementsInTable("glpi_plugin_monitoring_services",[
+                  'state' => PLUGIN_MONITORING_STATE_WARNING,
+                  "state_type"=>'HARD',
+                  "plugin_monitoring_componentscatalogs_hosts_id"=>$dataComponentscatalog_Host['id']]);
+                  
+                  
 
-               $state['warning'] += countElementsInTable("glpi_plugin_monitoring_services",
-                       "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
-                          AND `state_type`='HARD'
-                          AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
+               $state['critical'] += countElementsInTable("glpi_plugin_monitoring_services",[
+                  'state' => PLUGIN_MONITORING_STATE_CRITICAL,
+                  "state_type"=>'HARD',
+                  "plugin_monitoring_componentscatalogs_hosts_id"=>$dataComponentscatalog_Host['id']]);
 
-               $state['critical'] += countElementsInTable("glpi_plugin_monitoring_services",
-                       "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
-                          AND `state_type`='HARD'
-                          AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
 
             }
             if ($state['critical'] > 0) {
@@ -552,7 +558,7 @@ class PluginMonitoringWebservice {
       // Toolbox::logInFile("pm-ws", "getHostsStates, query : $query\n");
       $rows = array();
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $row = array();
          foreach ($data as $key=>$value) {
             if (is_string($key)) {
@@ -655,7 +661,7 @@ class PluginMonitoringWebservice {
       // Toolbox::logInFile("pm-ws", "getHostsLocations, query : $query\n");
       $rows = array();
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $row = array();
          foreach ($data as $key=>$value) {
             if (is_string($key)) {
@@ -788,7 +794,7 @@ class PluginMonitoringWebservice {
       // Toolbox::logInFile("pm-ws", "getServicesStates, query : $query\n");
       $rows = array();
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $row = array();
          foreach ($data as $key=>$value) {
             if (is_string($key)) {
@@ -877,7 +883,7 @@ ORDER BY `c`.`name`
 
      $indispo = array();
 
-     while($data=$DB->fetch_array($result)) {
+     while($data=$DB->fetchArray($result)) {
        $begin = strtotime($data['begin_date']);
        $end   = strtotime($data['end_date']);
 

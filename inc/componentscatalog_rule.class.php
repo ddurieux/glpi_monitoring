@@ -82,7 +82,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       echo "<th>".__('Name')."</th>";
       echo "</tr>";
 
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          echo "<tr>";
          echo "<td>";
          echo "<input type='checkbox' name='item[".$data["id"]."]' value='1'>";
@@ -116,7 +116,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       $query = "SELECT * FROM `".$this->getTable()."`
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $key = array_search($data['itemtype'], $networkport_types);
          if (isset($key)) {
             unset($networkport_types[$key]);
@@ -278,7 +278,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                AND `itemtype`='".$pmCc_Rule->fields['itemtype']."'
                AND `is_static`='0'";
          $result = $DB->query($queryd);
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $devices_present[$data['id']] = 1;
          }
 
@@ -291,7 +291,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                AND `networkports_id`!='0'
                AND `is_static`='0'";
          $result = $DB->query($queryd);
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $devicesnetworkport_present[$data['id']] = 1;
          }
 
@@ -305,7 +305,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
          /// Check group concat limit : if warning : increase limit
          if ($result2 = $DBread->query('SHOW WARNINGS')) {
             if ($DBread->numrows($result2) > 0) {
-               $res = $DBread->fetch_assoc($result2);
+               $res = $DBread->fetchAssoc($result2);
                if ($res['Code'] == 1260) {
                   $DBread->query("SET SESSION group_concat_max_len = 4194304;");
                   $result = $DBread->query($data['sql']['search']);
@@ -313,7 +313,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
             }
          }
 
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $networkports_id = 0;
             $itemtype_device = $pmCc_Rule->fields['itemtype'];
             $items_id_device = $data['id'];
@@ -348,7 +348,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                      $input['networkports_id'] = $networkports_id;
                      $componentscatalogs_hosts_id = $pmComponentscatalog_Host->add($input);
                   } else {
-                     $data2 = $DB->fetch_assoc($resultnet);
+                     $data2 = $DB->fetchAssoc($resultnet);
                      // modify entity of services (if entity of device is changed)
                         $itemtype = $data2['itemtype'];
                         $item = new $itemtype();
@@ -383,7 +383,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                   $input['itemtype'] = $itemtype_device;
                   $componentscatalogs_hosts_id = $pmComponentscatalog_Host->add($input);
                } else {
-                  $data2 = $DB->fetch_assoc($resulth);
+                  $data2 = $DB->fetchAssoc($resulth);
                   // modify entity of services (if entity of device is changed)
                      $itemtype = $data2['itemtype'];
                      $item = new $itemtype();
@@ -414,7 +414,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                AND `itemtype`='".$parm->fields['itemtype']."'
                AND `is_static`='0'";
          $result = $DB->query($queryd);
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $devices_present[$data['id']] = 1;
          }
       }
@@ -460,7 +460,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
       if (isset($_GET)) {
           $get_tmp = $_GET;
       }
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
 
          if (!isset($_SESSION['glpiactiveentities_string'])) {
             $_SESSION['glpiactiveentities_string'] = $parm->fields['entities_id'];
@@ -504,7 +504,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
          /// Check group concat limit : if warning : increase limit
          if ($result2 = $DBread->query('SHOW WARNINGS')) {
             if ($DBread->numrows($result2) > 0) {
-               $res = $DBread->fetch_assoc($result2);
+               $res = $DBread->fetchAssoc($result2);
                if ($res['Code'] == 1260) {
                   $DBread->query("SET SESSION group_concat_max_len = 4194304;");
                   $resultr = $DBread->query($datar['sql']['search']);
@@ -512,7 +512,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
             }
          }
          $find = 0;
-         while ($datar=$DB->fetch_array($resultr)) {
+         while ($datar=$DB->fetchArray($resultr)) {
             if ($datar['id'] == $items_id) {
                $find = 1;
                break;
@@ -543,7 +543,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                   AND `items_id`='".$items_id."'
                   AND`is_static`='0'";
             $result = $DB->query($query);
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetchArray($result)) {
                $pmComponentscatalog_Host->delete(array('id'=>$data['id']));
             }
          } else { //  add if not present
@@ -561,7 +561,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                $input['itemtype'] = $itemtype;
                $pmComponentscatalog_Host->add($input);
             } else {
-               $data2 = $DB->fetch_assoc($result);
+               $data2 = $DB->fetchAssoc($result);
                // modify entity of services (if entity of device is changed)
                   $item = new $itemtype();
                   $item->getFromDB($items_id);
@@ -597,7 +597,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
          $query = "SELECT * FROM `glpi_plugin_monitoring_networkports`
             WHERE `items_id`='".$parm->fields['id']."'";
          $result = $DB->query($query);
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $a_networkports_id[$data['networkports_id']] = $parm->fields['id'];
          }
       }
@@ -612,7 +612,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
          if (isset($_GET)) {
              $get_tmp = $_GET;
          }
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $session_glpisearch = array();
             if (isset($_SESSION['glpisearch'])) {
                $session_glpisearch = $_SESSION['glpisearch'];
@@ -678,7 +678,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                         AND `is_static`='0'
                         AND `networkports_id`='".$networkports_id."'";
                   $result = $DB->query($query);
-                  while ($data=$DB->fetch_array($result)) {
+                  while ($data=$DB->fetchArray($result)) {
                      $pmComponentscatalog_Host->getFromDB($data['hid']);
                      $_SESSION['plugin_monitoring_hosts'] = $pmComponentscatalog_Host->fields;
                      $pmService->delete(array('id'=>$data['id']));
@@ -701,7 +701,7 @@ class PluginMonitoringComponentscatalog_rule extends CommonDBTM {
                      $_SESSION['plugin_monitoring_nohook_addcomponentscatalog_host'] = 1;
                      $componentscatalogs_hosts_id = $pmComponentscatalog_Host->add($input);
                   } else {
-                     $a_componentscatalogs_hosts = $DB->fetch_assoc($result);
+                     $a_componentscatalogs_hosts = $DB->fetchAssoc($result);
                      $componentscatalogs_hosts_id = $a_componentscatalogs_hosts['id'];
                   }
                   // * Add service if not exist

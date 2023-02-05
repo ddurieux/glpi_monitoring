@@ -135,8 +135,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    **/
    static function countForStaticHosts(PluginMonitoringComponentscatalog $item) {
 
-      $restrict = "`plugin_monitoring_componentscalalog_id` = '".$item->getField('id') ."'
-         AND `is_static`='1'";
+      $restrict = ["plugin_monitoring_componentscalalog_id" => $item->getField('id'), "is_static" => '1'];
 
       return countElementsInTable('glpi_plugin_monitoring_componentscatalogs_hosts', $restrict);
    }
@@ -147,9 +146,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
     * @param $item PluginMonitoringComponentscatalog object
    **/
    static function countForDynamicHosts(PluginMonitoringComponentscatalog $item) {
-
-      $restrict = "`plugin_monitoring_componentscalalog_id` = '".$item->getField('id') ."'
-         AND `is_static`='0'";
+      $restrict = ["plugin_monitoring_componentscalalog_id" => $item->getField('id'), "is_static" => '0'];
 
       return countElementsInTable('glpi_plugin_monitoring_componentscatalogs_hosts', $restrict);
    }
@@ -161,7 +158,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    **/
    static function countForRules(PluginMonitoringComponentscatalog $item) {
 
-      $restrict = "`plugin_monitoring_componentscalalog_id` = '".$item->getField('id') ."'";
+      $restrict = ["plugin_monitoring_componentscalalog_id" => $item->getField('id')];
 
       return countElementsInTable('glpi_plugin_monitoring_componentscatalogs_rules', $restrict);
    }
@@ -173,7 +170,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    **/
    static function countForComponents(PluginMonitoringComponentscatalog $item) {
 
-      $restrict = "`plugin_monitoring_componentscalalog_id` = '".$item->getField('id') ."'";
+      $restrict = ["plugin_monitoring_componentscalalog_id" => $item->getField('id')];
 
       return countElementsInTable('glpi_plugin_monitoring_componentscatalogs_components', $restrict);
    }
@@ -185,8 +182,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    **/
    static function countForContacts(PluginMonitoringComponentscatalog $item) {
 
-      $restrict = "`items_id` = '".$item->getField('id') ."'"
-              . " AND `itemtype`='PluginMonitoringComponentscatalog'";
+      $restrict = ["itemtype" => "PluginMonitoringComponentscatalog", "items_id" => $item->getField('id')];
 
       return countElementsInTable('glpi_plugin_monitoring_contacts_items', $restrict);
    }
@@ -328,7 +324,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    }
 
 
-   function displaySpecificTypeField($ID, $field=array()) {
+   function displaySpecificTypeField($ID, $field=array(), $option=array()) {
 
 
       switch ($field['type']) {
@@ -452,7 +448,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
 
    static function replayRulesCatalog($item) {
 
-      $datas = getAllDatasFromTable("glpi_plugin_monitoring_componentscatalogs_rules",
+      $datas = getAllDataFromTable("glpi_plugin_monitoring_componentscatalogs_rules",
               "`plugin_monitoring_componentscalalog_id`='".$item->getID()."'");
       $pmComponentscatalog_rule = new PluginMonitoringComponentscatalog_rule();
       foreach($datas as $data) {
@@ -473,14 +469,14 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
          WHERE `plugin_monitoring_componentscalalog_id`='".$item->fields["id"]."'
             AND `is_static`='1'";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $pmComponentscatalog_Host->delete($data);
       }
 
       $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_rules`
          WHERE `plugin_monitoring_componentscalalog_id`='".$item->fields["id"]."'";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $pmComponentscatalog_rule->delete($data);
       }
    }
@@ -856,7 +852,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
       // Toolbox::logInFile("pm", "query : $query\n");
 
       $result = $DB->query($query);
-      while ($dataComponentscatalog_Host=$DB->fetch_array($result)) {
+      while ($dataComponentscatalog_Host=$DB->fetchArray($result)) {
          $ressources = array();
          $fakeService = array();
          $host_overall_state_ok = false;
@@ -906,7 +902,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             ORDER BY `glpi_plugin_monitoring_services`.`name` ASC;";
          // Toolbox::logInFile("pm", "query services - $queryService\n");
          $resultService = $DB->query($queryService);
-         while ($dataService=$DB->fetch_array($resultService)) {
+         while ($dataService=$DB->fetchArray($resultService)) {
             $nb_ressources++;
 
             $pmService->getFromDB($dataService["serviceId"]);
@@ -992,7 +988,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
             AND `state_type` LIKE '".$state_type."'
          ORDER BY `name`";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $pmService->getFromDB($dataService["id"]);
          if ($pmService->getShortState()) {
          // if (PluginMonitoringHost::getState($data['state'],
@@ -1363,7 +1359,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                AND `plugin_monitoring_components_id`='".$components_id."'";
          $result = $DB->query($query);
          $rownb = true;
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $itemtype = $data['itemtype'];
             $item = new $itemtype();
             $item->getFromDB($data['items_id']);
@@ -1528,7 +1524,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
                   AND `plugin_monitoring_components_id`='".$components_id."'";
             $result = $DB->query($query);
             $rownb = true;
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetchArray($result)) {
                $itemtype = $data['itemtype'];
                $item = new $itemtype();
                $item->getFromDB($data['items_id']);

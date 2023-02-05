@@ -43,20 +43,20 @@
 function pluginMonitoringGetCurrentVersion($version) {
    global $DB;
 
-   if ((!TableExists("glpi_plugin_monitoring_configs"))) {
+   if ((!$DB->TableExists("glpi_plugin_monitoring_configs"))) {
       return '0';
-   } else if (!FieldExists("glpi_plugin_monitoring_configs", "timezones")) {
+   } else if (!$DB->FieldExists("glpi_plugin_monitoring_configs", "timezones")) {
       // Version before 0.80+1.0 (test version)
       return "1.0.0";
-   } else if (!FieldExists("glpi_plugin_monitoring_configs", "version")) {
+   } else if (!$DB->FieldExists("glpi_plugin_monitoring_configs", "version")) {
       return "0.80+1.0";
-   } else if (FieldExists("glpi_plugin_monitoring_configs", "version")) {
+   } else if ($DB->FieldExists("glpi_plugin_monitoring_configs", "version")) {
       $query = "SELECT `version`
           FROM `glpi_plugin_monitoring_configs`
           WHERE `id` = '1'";
       $result = $DB->query($query);
       if ($DB->numrows($result) > 0) {
-         $data = $DB->fetch_assoc($result);
+         $data = $DB->fetchAssoc($result);
          if (is_null($data['version'])
                  || $data['version'] == '') {
             $data['version'] = '0.80+1.0';
@@ -91,13 +91,13 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    }
 
    $unavailability_recalculate = 0;
-   if (!TableExists("glpi_plugin_monitoring_unavailabilities")
-           || !FieldExists("glpi_plugin_monitoring_unavailabilities", "duration")) {
+   if (!$DB->TableExists("glpi_plugin_monitoring_unavailabilities")
+           || !$DB->FieldExists("glpi_plugin_monitoring_unavailabilities", "duration")) {
       $unavailability_recalculate = 1;
    }
 
    $unavailability_reset = 0;
-   if (!TableExists("glpi_plugin_monitoring_unavailabilities")) {
+   if (!$DB->TableExists("glpi_plugin_monitoring_unavailabilities")) {
       $unavailability_reset = 1;
    }
 
@@ -135,7 +135,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_servicescatalogs
     */
       $newTable = "glpi_plugin_monitoring_servicescatalogs";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -245,7 +245,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_componentscatalogs
     */
       $newTable = "glpi_plugin_monitoring_componentscatalogs";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -454,11 +454,11 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     /*
     * Table glpi_plugin_monitoring_components
     */
-      if (TableExists('glpi_plugin_monitoring_components')) {
-         $a_data = getAllDatasFromTable('glpi_plugin_monitoring_components');
+      if ($DB->TableExists('glpi_plugin_monitoring_components')) {
+         $a_data = getAllDataFromTable('glpi_plugin_monitoring_components');
          foreach ($a_data as $data) {
             if (!is_numeric($data['graph_template'])) {
-               $a_perfs = getAllDatasFromTable('glpi_plugin_monitoring_perfdatas',
+               $a_perfs = getAllDataFromTable('glpi_plugin_monitoring_perfdatas',
                        '`name`="'.$data['graph_template'].'"');
                if (count($a_perfs) == 0) {
                   $DB->query("UPDATE `glpi_plugin_monitoring_components`
@@ -475,7 +475,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       }
 
       $newTable = "glpi_plugin_monitoring_components";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -644,7 +644,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_componentscatalogs_components
     */
       $newTable = "glpi_plugin_monitoring_componentscatalogs_components";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -685,7 +685,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_componentscatalogs_hosts
     */
       $newTable = "glpi_plugin_monitoring_componentscatalogs_hosts";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -738,7 +738,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_componentscatalogs_rules
     */
       $newTable = "glpi_plugin_monitoring_componentscatalogs_rules";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -794,7 +794,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_services
     */
       $newTable = "glpi_plugin_monitoring_services";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -911,7 +911,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_hostnotificationtemplates
     */
       $newTable = "glpi_plugin_monitoring_hostnotificationtemplates";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -1000,7 +1000,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_servicenotificationtemplates
     */
       $newTable = "glpi_plugin_monitoring_servicenotificationtemplates";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -1097,7 +1097,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_contacttemplates
     */
       $newTable = "glpi_plugin_monitoring_contacttemplates";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -1278,7 +1278,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_contacts
     */
       $newTable = "glpi_plugin_monitoring_contacts";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -1312,7 +1312,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_contacts_items
     */
       $newTable = "glpi_plugin_monitoring_contacts_items";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -1367,7 +1367,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_commandtemplates
     */
       $newTable = "glpi_plugin_monitoring_commandtemplates";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -1408,7 +1408,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_rrdtooltemplates
     */
       $newTable = "glpi_plugin_monitoring_rrdtooltemplates";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -1449,7 +1449,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_configs
     */
       $newTable = "glpi_plugin_monitoring_configs";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -1512,7 +1512,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_displayviews
     */
       $newTable = "glpi_plugin_monitoring_displayviews";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -1594,7 +1594,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_displayviews_groups
     */
       $newTable = "glpi_plugin_monitoring_displayviews_groups";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -1629,7 +1629,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_displayviews_users
     */
       $newTable = "glpi_plugin_monitoring_displayviews_users";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -1644,8 +1644,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                               "int(11) NOT NULL DEFAULT '0'");
          $migration->addKey($newTable,
                             "pluginmonitoringdisplayviews_id");
-         $migration->addKey($newTable,
-                            "users_id");
+
       $migration->migrationOneTable($newTable);
 
 
@@ -1654,7 +1653,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_displayviews_items
     */
       $newTable = "glpi_plugin_monitoring_displayviews_items";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -1721,7 +1720,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_displayviews_rules
     */
       $newTable = "glpi_plugin_monitoring_displayviews_rules";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -1754,7 +1753,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_entities
     */
       $newTable = "glpi_plugin_monitoring_entities";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -1791,7 +1790,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_hostaddresses
     */
       $newTable = "glpi_plugin_monitoring_hostaddresses";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -1839,9 +1838,9 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_hostconfigs
     */
       $a_hostsconfig = array();
-      if (TableExists('glpi_plugin_monitoring_hostconfigs')
-              && (FieldExists('glpi_plugin_monitoring_hostconfigs', 'plugin_monitoring_commands_id'))) {
-         $a_hostsconfig = getAllDatasFromTable('glpi_plugin_monitoring_hostconfigs');
+      if ($DB->TableExists('glpi_plugin_monitoring_hostconfigs')
+              && ($DB->FieldExists('glpi_plugin_monitoring_hostconfigs', 'plugin_monitoring_commands_id'))) {
+         $a_hostsconfig = getAllDataFromTable('glpi_plugin_monitoring_hostconfigs');
       }
 
       $a_table = array();
@@ -1882,7 +1881,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       if (count($a_hostsconfig) > 0) {
          // Convert commands by components
          foreach ($a_hostsconfig as $data) {
-            $a_components = getAllDatasFromTable(
+            $a_components = getAllDataFromTable(
                     'glpi_plugin_monitoring_components',
                     "`plugin_monitoring_commands_id`='".$data['plugin_monitoring_commands_id']."'"
                     );
@@ -1901,15 +1900,15 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_hosts
     */
       $newTable = "glpi_plugin_monitoring_hosts";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
                      ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci";
          $DB->query($query);
       }
-      if (TableExists($newTable)) {
-         $a_hosts = getAllDatasFromTable($newTable,
+      if ($DB->TableExists($newTable)) {
+         $a_hosts = getAllDataFromTable($newTable,
                     "`itemtype`='Computer'");
       }
          // Duplicate field with event
@@ -2030,7 +2029,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
       if (count($a_hosts) > 0) {
          // Convert commands by components
          foreach ($a_hosts as $data) {
-            $a_computers = getAllDatasFromTable(
+            $a_computers = getAllDataFromTable(
                     'glpi_computers',
                     "`id`='".$data['items_id']."'"
                     );
@@ -2049,7 +2048,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_logs
     */
       $newTable = "glpi_plugin_monitoring_logs";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` bigint(30) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -2111,7 +2110,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_networkports
     */
       $newTable = "glpi_plugin_monitoring_networkports";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -2153,7 +2152,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     */
       $newTable = "glpi_plugin_monitoring_realms";
       $insertrealm = 0;
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -2247,7 +2246,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_commands
     */
       $newTable = "glpi_plugin_monitoring_commands";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -2326,7 +2325,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_checks
     */
       $newTable = "glpi_plugin_monitoring_checks";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -2431,7 +2430,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_businessrulegroups
     */
       $newTable = "glpi_plugin_monitoring_businessrulegroups";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -2472,7 +2471,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_eventhandlers
     */
       $newTable = "glpi_plugin_monitoring_eventhandlers";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -2524,7 +2523,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_notificationcommands
     */
       $newTable = "glpi_plugin_monitoring_notificationcommands";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -2588,7 +2587,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_contactgroups
     */
       $newTable = "glpi_plugin_monitoring_contactgroups";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -2615,7 +2614,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_contacts_contactgroups
     */
       $newTable = "glpi_plugin_monitoring_contacts_contactgroups";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -2657,7 +2656,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_contactgroups_contactgroups
     */
       $newTable = "glpi_plugin_monitoring_contactgroups_contactgroups";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -2759,7 +2758,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_servicedefs
     */
       $newTable = "glpi_plugin_monitoring_servicedefs";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -2961,7 +2960,10 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
               'name' => '',
               'type' => 'INDEX'));
 
-      $a_table['oldkeys'] = array();
+      $a_table['oldkeys'] = array(array(
+         'field' => 'users_id',
+         'name' => 'groups_id',
+         'type' => 'INDEX'));
 
       migrateTablesMonitoring($migration, $a_table);
 
@@ -3003,7 +3005,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_unavaibilities
     */
       $newTable = "glpi_plugin_monitoring_unavailabilities";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -3043,7 +3045,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
                                  'id',
                                  'id',
                                  "int(11) NOT NULL AUTO_INCREMENT");
-         if (!FieldExists($newTable, "plugin_monitoring_services_id")) {
+         if (!$DB->FieldExists($newTable, "plugin_monitoring_services_id")) {
             $migration->changeField($newTable,
                                     'items_id',
                                     'plugin_monitoring_services_id',
@@ -3099,7 +3101,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_weathermaps
     */
       $newTable = "glpi_plugin_monitoring_weathermaps";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -3147,7 +3149,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_weathermapnodes
     */
       $newTable = "glpi_plugin_monitoring_weathermapnodes";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -3212,7 +3214,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_weathermaplinks
     */
       $newTable = "glpi_plugin_monitoring_weathermaplinks";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -3267,7 +3269,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_shinkenwebservices
     */
       $newTable = "glpi_plugin_monitoring_shinkenwebservices";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -3294,7 +3296,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_tags
     */
       $newTable = "glpi_plugin_monitoring_tags";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `".$newTable."` (
                         `id` int(11) NOT NULL AUTO_INCREMENT,
                         PRIMARY KEY (`id`)
@@ -3329,7 +3331,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_downtimes
     */
       $newTable = "glpi_plugin_monitoring_downtimes";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `$newTable` (
                     `id` int(11) NOT NULL AUTO_INCREMENT,
                     `plugin_monitoring_hosts_id` int(11) NOT NULL DEFAULT '0',
@@ -3392,7 +3394,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_acknowledges
     */
       $newTable = "glpi_plugin_monitoring_acknowledges";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `$newTable` (
                     `id` int(11) NOT NULL AUTO_INCREMENT,
                     `itemtype` varchar(100) DEFAULT 'Host',
@@ -3441,7 +3443,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_hostcounters
     */
       $newTable = "glpi_plugin_monitoring_hostcounters";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `$newTable` (
                      `id` INT(11) NOT NULL AUTO_INCREMENT,
                      `hostname` VARCHAR(255) DEFAULT NULL,
@@ -3472,7 +3474,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
     * Table glpi_plugin_monitoring_hostdailycounters
     */
       $newTable = "glpi_plugin_monitoring_hostdailycounters";
-      if (!TableExists($newTable)) {
+      if (!$DB->TableExists($newTable)) {
          $query = "CREATE TABLE `$newTable` (
                     `id` INT(11) NOT NULL AUTO_INCREMENT,
                     `hostname` VARCHAR(255) NOT NULL DEFAULT '',
@@ -3592,13 +3594,13 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    /*
     * Table Delete old table not used
     */
-      if (TableExists("glpi_plugin_monitoring_servicesuggests")) {
+      if ($DB->TableExists("glpi_plugin_monitoring_servicesuggests")) {
          $DB->query("DROP TABLE `glpi_plugin_monitoring_servicesuggests`");
       }
-      if (TableExists("glpi_plugin_monitoring_servicegraphs")) {
+      if ($DB->TableExists("glpi_plugin_monitoring_servicegraphs")) {
          $DB->query("DROP TABLE `glpi_plugin_monitoring_servicegraphs`");
       }
-      if (TableExists("glpi_plugin_monitoring_securities")) {
+      if ($DB->TableExists("glpi_plugin_monitoring_securities")) {
          $DB->query("DROP TABLE `glpi_plugin_monitoring_securities`");
       }
 
@@ -3734,7 +3736,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          ON `glpi_plugin_monitoring_componentscatalogs_hosts`.`id` = `plugin_monitoring_componentscatalogs_hosts_id`
    WHERE `is_static` IS NULL";
    $result = $DB->query($query);
-   while ($data=$DB->fetch_array($result)) {
+   while ($data=$DB->fetchArray($result)) {
       $queryd = "DELETE FROM `glpi_plugin_monitoring_services`
          WHERE `id`='".$data['id']."'";
       $DB->query($queryd);
@@ -3749,7 +3751,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
          ON (`glpi_plugin_monitoring_componentscatalogs_hosts`.`items_id` = `glpi_computers`.`id`)
       WHERE (`glpi_computers`.`name` IS NULL);";
    $result = $DB->query($query);
-   while ($data=$DB->fetch_array($result)) {
+   while ($data=$DB->fetchArray($result)) {
       $queryd = "DELETE FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
          WHERE `id`='".$data['id']."'";
       $DB->query($queryd);
@@ -3766,7 +3768,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    $result = $DB->query($query);
    include (GLPI_ROOT . "/plugins/monitoring/inc/service.class.php");
    $pmService = new PluginMonitoringService();
-   while ($data=$DB->fetch_array($result)) {
+   while ($data=$DB->fetchArray($result)) {
       $pmService->delete($data);
    }
 
@@ -3780,7 +3782,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
            . " WHERE `glpi_plugin_monitoring_displayviews`.`id` IS NULL"
            . " AND `glpi_plugin_monitoring_displayviews_items`.`itemtype`='PluginMonitoringDisplayview'";
    $result = $DB->query($query);
-   while ($data=$DB->fetch_array($result)) {
+   while ($data=$DB->fetchArray($result)) {
       $DB->query("DELETE FROM `glpi_plugin_monitoring_displayviews_items`"
               . " WHERE `id`='".$data['id']."'");
    }
@@ -3812,7 +3814,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 
 
    // Add user monitoring if not defined
-   if (!countElementsInTable('glpi_users', "`name`='monitoring'")) {
+   if (!countElementsInTable('glpi_users', ["name"=>'monitoring'])) {
       // Create
       $input = array('name' => 'monitoring');
       $user = new User();
@@ -3823,7 +3825,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    $query = "SELECT *
       FROM `glpi_plugin_monitoring_displayviews_items`";
    $result = $DB->query($query);
-   while ($data=$DB->fetch_array($result)) {
+   while ($data=$DB->fetchArray($result)) {
       $x = 10 * round($data['x'] / 10);
       $y = 10 * round($data['y'] / 10);
 
@@ -3837,7 +3839,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
    $query = "SELECT *
       FROM `glpi_plugin_monitoring_componentscatalogs_rules`";
    $result = $DB->query($query);
-   while ($data=$DB->fetch_array($result)) {
+   while ($data=$DB->fetchArray($result)) {
       $data_array = importArrayFromDB($data['condition']);
       if (!isset($data_array['searchtype'])) {
          continue;
@@ -3875,7 +3877,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 //      $pmUnavailabilityState = new PluginMonitoringUnavailabilityState();
 //      $query = "SELECT * FROM `glpi_plugin_monitoring_services`";
 //      $result = $DB->query($query);
-//      while ($data=$DB->fetch_array($result)) {
+//      while ($data=$DB->fetchArray($result)) {
 //         if ($pmUnavailabilityState->getLastID($data['id']) == 0) {
 //            $query2 = "SELECT id FROM `glpi_plugin_monitoring_serviceevents`
 //               WHERE `plugin_monitoring_services_id`='".$data['id']."'
@@ -3883,7 +3885,7 @@ function pluginMonitoringUpdate($current_version, $migrationname='Migration') {
 //               ORDER BY id DESC
 //               LIMIT 1";
 //            $result2 = $DB->query($query2);
-//            while ($data2=$DB->fetch_array($result2)) {
+//            while ($data2=$DB->fetchArray($result2)) {
 //               $pmUnavailabilityState->setLastID($data['id'], $data2['id']);
 //            }
 //         }
@@ -3905,7 +3907,7 @@ function migrateTablesMonitoring($migration, $a_table) {
       $migration->renameTable($oldtable, $a_table['name']);
    }
 
-   if (!TableExists($a_table['name'])) {
+   if (!$DB->TableExists($a_table['name'])) {
       $query = "CREATE TABLE `".$a_table['name']."` (
                      `id` int(11) NOT NULL AUTO_INCREMENT,
                      PRIMARY KEY (`id`)
@@ -3963,7 +3965,7 @@ function migrateTablesMonitoring($migration, $a_table) {
    }
    $migration->migrationOneTable($a_table['name']);
 
-   $DB->list_fields($a_table['name'], FALSE);
+   //$DB->list_fields($a_table['name'], FALSE);
 
    // Update search rules
 //   $query = "SELECT `id`, `condition` FROM `glpi_plugin_monitoring_displayviews_rules`";
@@ -3978,7 +3980,7 @@ function migrateTablesMonitoring($migration, $a_table) {
    $query = "SELECT *
       FROM `glpi_plugin_monitoring_displayviews_rules`";
    $result = $DB->query($query);
-   while ($data=$DB->fetch_array($result)) {
+   while ($data=$DB->fetchArray($result)) {
       $data_array = importArrayFromDB($data['condition']);
       if (!isset($data_array['searchtype'])) {
          continue;

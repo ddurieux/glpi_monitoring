@@ -28,7 +28,7 @@ class PerfdataforgraphTest extends RestoreDatabase_TestCase {
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
-      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas",
+      $a_perfdatas = getAllDataFromTable("glpi_plugin_monitoring_perfdatas",
                                           "`name`='check_tcp'");
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
@@ -69,7 +69,7 @@ class PerfdataforgraphTest extends RestoreDatabase_TestCase {
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
-      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas",
+      $a_perfdatas = getAllDataFromTable("glpi_plugin_monitoring_perfdatas",
                                           "`name`='check_load'");
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
@@ -117,7 +117,7 @@ class PerfdataforgraphTest extends RestoreDatabase_TestCase {
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
-      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas",
+      $a_perfdatas = getAllDataFromTable("glpi_plugin_monitoring_perfdatas",
                                           "`name`='check_pf'");
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
@@ -158,7 +158,7 @@ class PerfdataforgraphTest extends RestoreDatabase_TestCase {
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
-      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas",
+      $a_perfdatas = getAllDataFromTable("glpi_plugin_monitoring_perfdatas",
                                           "`name`='check_disk'");
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
@@ -199,7 +199,7 @@ class PerfdataforgraphTest extends RestoreDatabase_TestCase {
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
-      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas",
+      $a_perfdatas = getAllDataFromTable("glpi_plugin_monitoring_perfdatas",
                                           "`name`='check_mysql_health tmp_disk_tables'");
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
@@ -239,7 +239,7 @@ class PerfdataforgraphTest extends RestoreDatabase_TestCase {
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
-      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas",
+      $a_perfdatas = getAllDataFromTable("glpi_plugin_monitoring_perfdatas",
                                           "`name`='check_cpu_usage'");
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
@@ -280,7 +280,7 @@ class PerfdataforgraphTest extends RestoreDatabase_TestCase {
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
-      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas",
+      $a_perfdatas = getAllDataFromTable("glpi_plugin_monitoring_perfdatas",
                                           "`name`='check_http'");
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
@@ -324,7 +324,7 @@ class PerfdataforgraphTest extends RestoreDatabase_TestCase {
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
-      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas",
+      $a_perfdatas = getAllDataFromTable("glpi_plugin_monitoring_perfdatas",
                                           "`name`='check_iostat_bsd'");
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
@@ -378,7 +378,7 @@ class PerfdataforgraphTest extends RestoreDatabase_TestCase {
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
-      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas",
+      $a_perfdatas = getAllDataFromTable("glpi_plugin_monitoring_perfdatas",
                                           "`name`='check_nginx_status'");
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
@@ -442,7 +442,7 @@ class PerfdataforgraphTest extends RestoreDatabase_TestCase {
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
-      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas",
+      $a_perfdatas = getAllDataFromTable("glpi_plugin_monitoring_perfdatas",
                                           "`name`='check_iftraffic41'");
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
@@ -482,7 +482,7 @@ class PerfdataforgraphTest extends RestoreDatabase_TestCase {
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
-      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas",
+      $a_perfdatas = getAllDataFromTable("glpi_plugin_monitoring_perfdatas",
                                           "`name`='check_tcp'");
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);
@@ -523,7 +523,7 @@ class PerfdataforgraphTest extends RestoreDatabase_TestCase {
       $query = 'SELECT * FROM `glpi_plugin_monitoring_serviceevents`';
       $result = $DB->query($query);
 
-      $a_perfdatas = getAllDatasFromTable("glpi_plugin_monitoring_perfdatas",
+      $a_perfdatas = getAllDataFromTable("glpi_plugin_monitoring_perfdatas",
                                           "`name`='check_tcp'");
       $a_perfdata = current($a_perfdatas);
       $_SESSION['plugin_monitoring_checkinterval'] = PluginMonitoringComponent::getTimeBetween2Checks(1);

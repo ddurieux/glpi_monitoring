@@ -310,7 +310,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       }
 
       $resultevent = $DB->query($query);
-      $dataevent = $DB->fetch_assoc($resultevent);
+      $dataevent = $DB->fetchAssoc($resultevent);
       $result = $DB->query($query);
 
       $ret = $this->getData(
@@ -360,7 +360,7 @@ class PluginMonitoringServiceevent extends CommonDBTM {
       $query_data = array();
       $cnt = 0;
       if (gettype($result) == 'object') {
-         while ($edata=$DB->fetch_array($result)) {
+         while ($edata=$DB->fetchArray($result)) {
 
             $current_timestamp = strtotime($edata['date']);
             $cnt++;

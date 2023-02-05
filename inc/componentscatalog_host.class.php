@@ -95,7 +95,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
       echo "<th>".__('Inventory number')."</th>";
       echo "</tr>";
 
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $itemtype = $data['itemtype'];
          $item = new $itemtype();
 
@@ -142,7 +142,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
 
          if ($networkports) {
             $itemport = new NetworkPort();
-            while ($datas = $DB->fetch_array($results)) {
+            while ($datas = $DB->fetchArray($results)) {
                $itemport->getFromDB($datas['networkports_id']);
                echo "<tr>";
                echo "<td>";
@@ -208,7 +208,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
       $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_components`
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
 
          $input = array();
          $itemtype = $pmComponentscatalog_Host->fields['itemtype'];
@@ -260,7 +260,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
       $query = "SELECT * FROM `glpi_plugin_monitoring_services`
          WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$parm->fields['id']."'";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $_SESSION['plugin_monitoring_hosts'] = $parm->fields;
          $pmService->delete(array('id'=>$data['id']));
       }
@@ -316,7 +316,7 @@ class PluginMonitoringComponentscatalog_Host extends CommonDBTM {
             LIMIT 1";
          $resultH = $DB->query($queryH);
          if ($DB->numrows($resultH) == 1) {
-            $dataH = $DB->fetch_assoc($resultH);
+            $dataH = $DB->fetchAssoc($resultH);
             $pmHost = new PluginMonitoringHost();
             $pmHost->delete($dataH);
          }

@@ -137,12 +137,12 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
       $start = time();
 
       $pmComponent = new PluginMonitoringComponent();
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $itemtype = $data['itemtype'];
          $item = new $itemtype();
          $item->getFromDB($data['items_id']);
          if (isset($item->fields['plugin_monitoring_components_id'])) {
-            $oldvalue = current(getAllDatasFromTable(
+            $oldvalue = current(getAllDataFromTable(
                     'glpi_plugin_monitoring_serviceevents',
                     "`plugin_monitoring_services_id`='".$data['items_id']."'",
                     false,
@@ -240,7 +240,7 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
 //         WHERE `plugin_monitoring_displayviews_id`='".$id."'";
 //      $result = $DB->query($query);
 //      $a_items = array();
-//      while ($data=$DB->fetch_array($result)) {
+//      while ($data=$DB->fetchArray($result)) {
 //         if ($this->displayItem($data, $config)) {
 //            $a_items[] = "item".$data['id'];
 //         }
@@ -557,7 +557,7 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
                           . "    AND `glpi_plugin_monitoring_services`.`id` IS NOT NULL";
 
          $result = $DB->query($query);
-         while ($data2=$DB->fetch_array($result)) {
+         while ($data2=$DB->fetchArray($result)) {
             if ($pmService->getFromDB($data2["id"])) {
                $ret = $pmService->getShortState();
                // $ret = PluginMonitoringHost::getState($data2['state'],
@@ -628,7 +628,7 @@ class PluginMonitoringDisplayview_item extends CommonDBTM {
          WHERE `plugin_monitoring_displayviews_id`='".$id."'";
       $resultitems = $DB->query($queryitems);
       $a_items = array();
-      while ($dataitems=$DB->fetch_array($resultitems)) {
+      while ($dataitems=$DB->fetchArray($resultitems)) {
 //         if ($this->displayItem($dataitems, $config)) {
             $a_items[] = $dataitems;
 //         }

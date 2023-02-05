@@ -267,7 +267,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
 //      $nb = 0;
 //      $tttime = 0;
 
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $pmUnavailability->getCurrentState($data['id']);
 
 //         Toolbox::logInFile('UNAV', "======= ".$data['id']." =======\n");
@@ -300,7 +300,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
 //               $nb += $limit;
             }
 
-            while ($data2=$DB->fetch_array($result2)) {
+            while ($data2=$DB->fetchArray($result2)) {
                $pmUnavailability->checkState($data2['state'],
                                              $data2['date'],
                                              $data['id'],
@@ -430,7 +430,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
                `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
          WHERE `plugin_monitoring_componentscalalog_id`='".$componentscatalogs_id."'";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $itemtype = $data['itemtype'];
          $item = new $itemtype();
          if ($item->getFromDB($data['items_id'])) {
@@ -496,7 +496,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
                AND `begin_date` >= '".$begindate."'
                AND `end_date` <= '".$enddate."'";
          $result = $DB->query($query);
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $timestart   = strtotime($data['begin_date']);
             $timeend     = strtotime($data['end_date']);
             $activetime  = $timeend-$timestart;
@@ -509,7 +509,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
                AND `begin_date` <= '".$enddate."'
                AND `end_date` > '".$enddate."'";
          $result = $DB->query($query);
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $timestart   = strtotime($data['begin_date']);
             $timeend     = strtotime($enddate);
             $activetime  = $timeend-$timestart;
@@ -522,7 +522,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
                AND `end_date` <= '".$enddate."'
                AND `end_date` >= '".$begindate."'";
          $result = $DB->query($query);
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $timestart   = strtotime($begindate);
             $timeend     = strtotime($data['end_date']);
             $activetime  = $timeend-$timestart;
@@ -546,7 +546,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
                   AND `begin_date` LIKE '".$month."%'
                   AND `end_date` LIKE '".$month."%'";
             $result = $DB->query($query);
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetchArray($result)) {
                $timestart   = strtotime($data['begin_date']);
                $timeend     = strtotime($data['end_date']);
                $activetime = $timeend-$timestart;
@@ -558,7 +558,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
                   AND `begin_date` NOT LIKE '".$month."%'
                   AND `end_date` LIKE '".$month."%'";
             $result = $DB->query($query);
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetchArray($result)) {
                $timestart   = strtotime($begindate);
                $timeend     = strtotime($data['end_date']);
                $activetime = $timeend-$timestart;
@@ -570,7 +570,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
                   AND `begin_date` LIKE '".$month."%'
                   AND `end_date` IS NULL";
             $result = $DB->query($query);
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetchArray($result)) {
                $timestart   = strtotime($data['begin_date']);
                $activetime = date('U')-$timestart;
                $timecriticalSeconds += $activetime;
@@ -580,7 +580,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
                   AND `begin_date` NOT LIKE '".$month."%'
                   AND `end_date` IS NULL";
             $result = $DB->query($query);
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetchArray($result)) {
                $timestart   = strtotime($begindate);
                $activetime = date('U')-$timestart;
                $timecriticalSeconds += $activetime;
@@ -601,7 +601,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
                   AND `begin_date` LIKE '".$month."%'
                   AND `end_date` LIKE '".$month."%'";
             $result = $DB->query($query);
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetchArray($result)) {
                $timestart   = strtotime($data['begin_date']);
                $timeend     = strtotime($data['end_date']);
                $activetime = $timeend-$timestart;
@@ -613,7 +613,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
                   AND `begin_date` NOT LIKE '".$month."%'
                   AND `end_date` LIKE '".$month."%'";
             $result = $DB->query($query);
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetchArray($result)) {
                $timestart   = strtotime($begindate);
                $timeend     = strtotime($data['end_date']);
                $activetime = $timeend-$timestart;
@@ -624,7 +624,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
                   AND `begin_date` LIKE '".$month."%'
                   AND `end_date` NOT LIKE '".$month."%'";
             $result = $DB->query($query);
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetchArray($result)) {
                $timestart   = strtotime($data['begin_date']);
                $timeend     = strtotime($enddate);
                $activetime = $timeend-$timestart;
@@ -645,7 +645,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
                   AND `begin_date` LIKE '".$year."%'
                   AND `end_date` LIKE '".$year."%'";
             $result = $DB->query($query);
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetchArray($result)) {
                $timestart   = strtotime($data['begin_date']);
                $timeend     = strtotime($data['end_date']);
                $activetime = $timeend-$timestart;
@@ -657,7 +657,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
                   AND `begin_date` NOT LIKE '".$year."%'
                   AND `end_date` LIKE '".$year."%'";
             $result = $DB->query($query);
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetchArray($result)) {
                $timestart   = strtotime($begindate);
                $timeend     = strtotime($data['end_date']);
                $activetime = $timeend-$timestart;
@@ -669,7 +669,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
                   AND `begin_date` LIKE '".$year."%'
                   AND `end_date` IS NULL";
             $result = $DB->query($query);
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetchArray($result)) {
                $timestart   = strtotime($data['begin_date']);
                $activetime = date('U')-$timestart;
                $timecriticalSeconds += $activetime;
@@ -679,7 +679,7 @@ class PluginMonitoringUnavailability extends CommonDBTM {
                   AND `begin_date` NOT LIKE '".$year."%'
                   AND `end_date` IS NULL";
             $result = $DB->query($query);
-            while ($data=$DB->fetch_array($result)) {
+            while ($data=$DB->fetchArray($result)) {
                $timestart   = strtotime($begindate);
                $activetime = date('U')-$timestart;
                $timecriticalSeconds += $activetime;

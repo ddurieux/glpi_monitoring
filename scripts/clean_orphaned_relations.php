@@ -83,7 +83,7 @@ if (!$Plugin->isActivated('monitoring')) {
                   = `glpi_networkports`.`id`
            WHERE `glpi_networkports`.`id` IS NULL";
    $result = $DB->query($query);
-   while ($data=$DB->fetch_array($result)) {
+   while ($data=$DB->fetchArray($result)) {
       $pmNetworkport->delete($data);
       echo ".";
    }
@@ -99,7 +99,7 @@ if (!$Plugin->isActivated('monitoring')) {
                   = `glpi_plugin_monitoring_componentscatalogs_hosts`.`id`
            WHERE `glpi_plugin_monitoring_componentscatalogs_hosts`.`id` IS NULL";
    $result = $DB->query($query);
-   while ($data=$DB->fetch_array($result)) {
+   while ($data=$DB->fetchArray($result)) {
       $pmService->delete($data);
       echo ".";
    }
@@ -113,7 +113,7 @@ if (!$Plugin->isActivated('monitoring')) {
            WHERE `networkports_id` > 0
            GROUP BY plugin_monitoring_components_id";
    $result = $DB->query($query);
-   while ($data=$DB->fetch_array($result)) {
+   while ($data=$DB->fetchArray($result)) {
       $DB->query("DELETE FROM `glpi_plugin_monitoring_services`
               WHERE `plugin_monitoring_components_id`='".$data['plugin_monitoring_components_id']."'
               AND `networkports_id`='0'");
@@ -132,10 +132,10 @@ if (!$Plugin->isActivated('monitoring')) {
            GROUP BY `plugin_monitoring_services_id`";
    $result = $DB->query($query);
    $nb = 0;
-   while ($data=$DB->fetch_array($result)) {
+   while ($data=$DB->fetchArray($result)) {
       $nb += countElementsInTable(
               'glpi_plugin_monitoring_serviceevents', 
-              "`plugin_monitoring_services_id`='".$data['plugin_monitoring_services_id']."'");
+              ["plugin_monitoring_services_id"=>$data['plugin_monitoring_services_id']]);
       $DB->query("DELETE FROM `glpi_plugin_monitoring_serviceevents`
               WHERE `plugin_monitoring_services_id`='".$data['plugin_monitoring_services_id']."'");
       echo ".";

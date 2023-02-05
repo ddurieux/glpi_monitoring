@@ -300,7 +300,7 @@ class PluginMonitoringService extends CommonDBTM {
                WHERE (`glpi_plugin_monitoring_services`.`id` = '".$this->getID()."');";
       $result = $DB->query($query);
       if ($DB->numrows($result) > 0) {
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             return $data['id'];
          }
       } else {
@@ -328,7 +328,7 @@ class PluginMonitoringService extends CommonDBTM {
                WHERE (`glpi_plugin_monitoring_services`.`id` = '".$this->getID()."');";
       $result = $DB->query($query);
       if ($DB->numrows($result) > 0) {
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             return $data['idComputer'];
          }
       } else {
@@ -379,7 +379,7 @@ class PluginMonitoringService extends CommonDBTM {
                WHERE (`glpi_plugin_monitoring_services`.`id` = '".$this->getID()."');";
       $result = $DB->query($query);
       if ($DB->numrows($result) > 0) {
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             return $data['name'];
          }
       } else {
@@ -654,7 +654,7 @@ class PluginMonitoringService extends CommonDBTM {
       // for performances, not use IN() in the bug table
       $datedb = '';
       foreach ($services_id as $service_id) {
-         $oldvalue = current(getAllDatasFromTable(
+         $oldvalue = current(getAllDataFromTable(
                  'glpi_plugin_monitoring_serviceevents',
                  "`plugin_monitoring_services_id` = '".$service_id."'",
                  false,
@@ -783,7 +783,7 @@ class PluginMonitoringService extends CommonDBTM {
               . ' <input type="text" id="custom_time" value="'.date('H:i').'"></center>';
 
       echo "<table class='tab_cadre_fixe'>";
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $pmComponentscatalog->getFromDB($data['plugin_monitoring_componentscalalog_id']);
 
          $querys = "SELECT `glpi_plugin_monitoring_services`.* FROM `glpi_plugin_monitoring_services`
@@ -792,7 +792,7 @@ class PluginMonitoringService extends CommonDBTM {
             WHERE `plugin_monitoring_componentscatalogs_hosts_id`='".$data['id']."'
                ORDER BY `name`";
          $results = $DB->query($querys);
-         while ($datas=$DB->fetch_array($results)) {
+         while ($datas=$DB->fetchArray($results)) {
             $pmComponent->getFromDB($datas['plugin_monitoring_components_id']);
             if ($pmComponent->fields['graph_template'] != 0) {
                echo "<tr>";
@@ -850,7 +850,7 @@ class PluginMonitoringService extends CommonDBTM {
       } else {
          $this->getFromDB($items_id);
       }
-      $this->showTabs($options);
+      //$this->showTabs($options);
       $this->showFormHeader($options);
       if (!isset($this->fields['plugin_monitoring_servicedefs_id'])
               OR empty($this->fields['plugin_monitoring_servicedefs_id'])) {
@@ -1172,7 +1172,7 @@ class PluginMonitoringService extends CommonDBTM {
                               AND `glpi_plugin_fusioninventory_mappings`.`name`='".$a_arg[1]."'";
 
                   $result=$DB->query($query);
-                  while ($data=$DB->fetch_array($result)) {
+                  while ($data=$DB->fetchArray($result)) {
                      return Dropdown::getDropdownName('glpi_plugin_fusioninventory_snmpmodelmiboids',$data['plugin_fusioninventory_snmpmodelmiboids_id']).
                           ".".$item->fields['logical_number'];
                   }
@@ -1410,10 +1410,11 @@ class PluginMonitoringService extends CommonDBTM {
       if ($this->fields['networkports_id'] > 0) {
          // Delete componentscatalog_host if no networkports in services
          if (countElementsInTable(
-                 'glpi_plugin_monitoring_services',
-                 "`plugin_monitoring_components_id`='".$this->fields['plugin_monitoring_components_id']."'
-                  AND `networkports_id`>0
-                  AND `plugin_monitoring_componentscatalogs_hosts_id`='".$this->fields['plugin_monitoring_componentscatalogs_hosts_id']."'") == 0) {
+                 'glpi_plugin_monitoring_services',  [
+                     "plugin_monitoring_components_id"=>$this->fields['plugin_monitoring_components_id'],
+                     "networkports_id"=>[">",0],
+                     "plugin_monitoring_componentscatalogs_hosts_id"=>$this->fields['plugin_monitoring_componentscatalogs_hosts_id']
+                  ]) == 0) {
             $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
             $pmComponentscatalog_Host->getFromDB($this->fields['plugin_monitoring_componentscatalogs_hosts_id']);
             if ($pmComponentscatalog_Host->fields['is_static'] == 0) {

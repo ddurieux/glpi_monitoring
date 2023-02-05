@@ -693,7 +693,7 @@ function plugin_monitoring_searchOptionsValues($item) {
       $use_ajax = false;
 
       if ($CFG_GLPI["use_ajax"]) {
-    $nb = countElementsInTable("glpi_plugin_monitoring_componentscatalogs_hosts", "`itemtype`='Computer'");
+    $nb = countElementsInTable("glpi_plugin_monitoring_componentscatalogs_hosts", ["itemtype"=>"Computer"]);
     if ($nb > $CFG_GLPI["ajax_limit_count"]) {
        $use_ajax = true;
     }

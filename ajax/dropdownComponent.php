@@ -54,7 +54,7 @@ if (!defined('GLPI_ROOT')) {
 Session::checkLoginUser();
 
 // Display dropdown of components of the catalog
-$a_data = getAllDatasFromTable(
+$a_data = getAllDataFromTable(
         'glpi_plugin_monitoring_componentscatalogs_components',
         '`plugin_monitoring_componentscalalog_id`="'.$_POST['plugin_monitoring_componentscalalog_id'].'"');
 

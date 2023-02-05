@@ -123,6 +123,7 @@ class PluginMonitoringCanvas {
 
 
 
+
    function getState($itemtype, $items_id) {
       global $DB;
 
@@ -133,21 +134,21 @@ class PluginMonitoringCanvas {
          WHERE `itemtype`='".$itemtype."'
             AND `items_id`='".$items_id."'";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
-         $critical += countElementsInTable("glpi_plugin_monitoring_services",
-           "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
-              AND `state_type`='HARD'
-              AND `plugin_monitoring_componentscatalogs_hosts_id`='".$data['id']."'");
+      while ($data=$DB->fetchArray($result)) {
+         $critical += countElementsInTable("glpi_plugin_monitoring_services",[
+            'state' => PLUGIN_MONITORING_STATE_CRITICAL,
+            "state_type"=>'HARD',
+            "plugin_monitoring_componentscatalogs_hosts_id"=>$data['id']]);
 
-         $warning += countElementsInTable("glpi_plugin_monitoring_services",
-           "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
-           AND `state_type`='HARD'
-              AND `plugin_monitoring_componentscatalogs_hosts_id`='".$data['id']."'");
+         $warning += countElementsInTable("glpi_plugin_monitoring_services",[
+            'state' => PLUGIN_MONITORING_STATE_WARNING,
+            "state_type"=>'HARD',
+            "plugin_monitoring_componentscatalogs_hosts_id"=>$data['id']]);
 
-         $ok += countElementsInTable("glpi_plugin_monitoring_services",
-           "(`state`='OK' OR `state`='UP')
-           AND `state_type`='HARD'
-              AND `plugin_monitoring_componentscatalogs_hosts_id`='".$data['id']."'");
+         $ok += countElementsInTable("glpi_plugin_monitoring_services",[
+            'state' => PLUGIN_MONITORING_STATE_OK,
+            "state_type"=>'HARD',
+            "plugin_monitoring_componentscatalogs_hosts_id"=>$data['id']]);
       }
       $output = array();
       $output['ok'] = $ok;
@@ -166,7 +167,7 @@ class PluginMonitoringCanvas {
             AND `items_id`='".$items_id."'
          LIMIT 1";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          if ($data['state_type'] == 'SOFT') {
             return 'ok';
          }

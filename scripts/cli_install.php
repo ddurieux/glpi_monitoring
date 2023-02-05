@@ -118,7 +118,7 @@ class CliMigration extends Migration {
 
 /*---------------------------------------------------------------------*/
 
-if (!TableExists("glpi_configs")) {
+if (!$DB->TableExists("glpi_configs")) {
    die("GLPI not installed\n");
 }
 

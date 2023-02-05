@@ -91,9 +91,7 @@ if (!defined('PHP_VERSION_ID')) {
     $version = explode('.', PHP_VERSION);
     define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
 }
-if (PHP_VERSION_ID < 50300) { $mqr = @get_magic_quotes_runtime(); }
-	else { $mqr=0; }
-if ($mqr) { set_magic_quotes_runtime(0); }
+
 
 $l = file('mpdf_source.php');
 if (!count($l)) { die("ERROR - Could not find mpdf_source.php file in current directory"); }

@@ -196,7 +196,7 @@ class PluginMonitoringHost extends CommonDBTM {
             AND `glpi_plugin_monitoring_services`.`id` IS NOT NULL";
 
       $result = $DB->query($query);
-      $ligne  = $DB->fetch_assoc($result);
+      $ligne  = $DB->fetchAssoc($result);
       return $ligne['cpt'];
    }
 
@@ -220,7 +220,7 @@ class PluginMonitoringHost extends CommonDBTM {
             $pmHostconfig = new PluginMonitoringHostconfig();
 
             $pmService->manageServices(get_class($item), $item->fields['id']);
-            $pmHostconfig->showForm($item->getID(), get_class($item));
+            $pmHostconfig->showForm($item->getID(), ["itemtype" =>get_class($item)]);
          } else if ($tabnum == 1) {
             $pmService = new PluginMonitoringService();
             $pmService->showGraphsByHost(get_class($item), $item->fields['id']);
@@ -254,7 +254,7 @@ class PluginMonitoringHost extends CommonDBTM {
       $query = "SELECT * FROM `glpi_plugin_monitoring_componentscatalogs_hosts`
          GROUP BY `itemtype`, `items_id`";
       $result = $DB->query($query);
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $queryH = "SELECT * FROM `".$this->getTable()."`
             WHERE `itemtype`='".$data['itemtype']."'
               AND `items_id`='".$data['items_id']."'
@@ -353,7 +353,7 @@ class PluginMonitoringHost extends CommonDBTM {
       $result = $DB->query($query);
       if ($DB->numrows($result) > 0) {
          $a_services = array();
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             $a_services[] = $data['service_id'];
          }
          return $a_services;
@@ -611,7 +611,7 @@ class PluginMonitoringHost extends CommonDBTM {
       $result = $DB->query($query);
       if ($DB->numrows($result) > 0) {
          $host_services_state_list = '';
-         while ($data=$DB->fetch_array($result)) {
+         while ($data=$DB->fetchArray($result)) {
             // Toolbox::logInFile("pm", "Service ".$data['name']." is ".$data['state'].", state : ".$data['event']."\n");
             if (! empty($host_services_state_list)) $host_services_state_list .= "\n";
             $host_services_state_list .= $data['last_check']." - ".$data['name']." : ".$data['state'].", event : ".$data['event'];
@@ -689,7 +689,7 @@ class PluginMonitoringHost extends CommonDBTM {
                  . " LIMIT 1";
          $result = $DB->query($query);
          if ($DB->numrows($result) > 0) {
-            $data = $DB->fetch_assoc($result);
+            $data = $DB->fetchAssoc($result);
 
             if (! empty($data['typename'])) {
                $toadd[] = array('name'  => __('Type'),

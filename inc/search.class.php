@@ -1171,7 +1171,7 @@ $p = array();
       /// Check group concat limit : if warning : increase limit
       if ($result2 = $DBread->query('SHOW WARNINGS')) {
          if ($DBread->numrows($result2) > 0) {
-            $data = $DBread->fetch_assoc($result2);
+            $data = $DBread->fetchAssoc($result2);
             if ($data['Code'] == 1260) {
                $DBread->query("SET SESSION group_concat_max_len = 4194304;");
                $result = $DBread->query($QUERY);

@@ -246,7 +246,7 @@ if ($item instanceof CommonTreeDropdown) {
       if ($DB->numrows($result)) {
          $prev = -1;
 
-         while ($data =$DB->fetch_array($result)) {
+         while ($data =$DB->fetchArray($result)) {
             $ID     = $data['id'];
             $level  = $data['level'];
             $output = $data['name'];
@@ -467,7 +467,7 @@ if ($item instanceof CommonTreeDropdown) {
       if ($DB->numrows($result)) {
          $prev = -1;
 
-         while ($data =$DB->fetch_array($result)) {
+         while ($data =$DB->fetchArray($result)) {
             $output = $data[$field];
 
             if ($displaywith) {

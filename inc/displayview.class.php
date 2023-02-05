@@ -404,7 +404,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
                 ORDER BY `users_id`, `name`";
       $result = $DB->query($query);
       if ($DB->numrows($result)) {
-         while ($data = $DB->fetch_array($result)) {
+         while ($data = $DB->fetchArray($result)) {
             $a_views[$data['id']] = $data['name'];
          }
       }
@@ -755,7 +755,7 @@ class PluginMonitoringDisplayview extends CommonDBTM {
       $services  = array();
       $resources = array();
       $i = 0;
-      while ($data=$DB->fetch_array($result)) {
+      while ($data=$DB->fetchArray($result)) {
          $ret = PluginMonitoringHost::getState($data['state'],
                                                   $data['state_type'],
                                                   '',

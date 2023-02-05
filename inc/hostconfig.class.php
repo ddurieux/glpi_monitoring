@@ -66,7 +66,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
             LIMIT 1";
          $result2 = $DB->query($query2);
          if ($DB->numrows($result2) == '1') {
-            $data = $DB->fetch_assoc($result2);
+            $data = $DB->fetchAssoc($result2);
             $input['plugin_monitoring_realms_id'] = $data['id'];
          }
          $input['plugin_monitoring_components_id'] = 1;
@@ -97,9 +97,9 @@ class PluginMonitoringHostconfig extends CommonDBTM {
    *@return bool true if form is ok
    *
    **/
-   function showForm($items_id, $itemtype, $options=array()) {
+   function showForm($items_id,  $options=array()) {
       global $DB,$CFG_GLPI;
-
+      $itemtype = $options["itemtype"];
       $pmComponent = new PluginMonitoringComponent();
       $pmRealm     = new PluginMonitoringRealm();
 
@@ -127,7 +127,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
             $this->fields['jetlag'] = 100;
          }
       } else {
-         $data = $DB->fetch_assoc($result);
+         $data = $DB->fetchAssoc($result);
          $this->getFromDB($data['id']);
       }
 
@@ -349,7 +349,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
             LIMIT 1";
          $result = $DB->query($query);
          if ($DB->numrows($result) == '1') {
-            $data = $DB->fetch_assoc($result);
+            $data = $DB->fetchAssoc($result);
             if ($fieldname == 'jetlag') {
                if ($data[$fieldname] != '100') {
                   return $data[$fieldname];
@@ -382,7 +382,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
                LIMIT 1";
             $result = $DB->query($query);
             if ($DB->numrows($result) != '0') {
-               $data = $DB->fetch_assoc($result);
+               $data = $DB->fetchAssoc($result);
                if ($fieldname == 'jetlag') {
                   if ($data[$fieldname] != '100') {
                      return $data[$fieldname];
@@ -395,7 +395,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
             }
          }
       } else {
-         $data = $DB->fetch_assoc($result);
+         $data = $DB->fetchAssoc($result);
          // Fix #168 ...
          if ( ($fieldname != 'jetlag' && $data[$fieldname] != '-1') || $fieldname == 'jetlag') {
             return $data[$fieldname];
@@ -411,7 +411,7 @@ class PluginMonitoringHostconfig extends CommonDBTM {
                   LIMIT 1";
                $result = $DB->query($query);
                if ($DB->numrows($result) != '0') {
-                  $data = $DB->fetch_assoc($result);
+                  $data = $DB->fetchAssoc($result);
                   if ($fieldname == 'jetlag') {
                      if ($data[$fieldname] != '100') {
                         return $data[$fieldname];
