@@ -95,7 +95,7 @@ class PluginMonitoringNetworkport extends CommonDBTM {
       global $DB;
 
       $nb = countElementsInTable("glpi_plugin_monitoring_networkports",
-              "`networkports_id` = '".$networkports_id."'");
+              ["networkports_id" => $networkports_id]);
       if ($nb > 0) {
          return true;
       }

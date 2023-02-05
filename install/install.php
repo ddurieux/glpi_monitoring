@@ -150,7 +150,7 @@ function pluginMonitoringInstall($version) {
    }
 
    // Add user monitoring if not defined
-   if (!countElementsInTable('glpi_users', "`name`='monitoring'")) {
+   if (!countElementsInTable('glpi_users', ["name"=>"monitoring"])) {
       // Create
       $input = array('name' => 'monitoring');
       $user = new User();

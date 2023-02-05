@@ -159,12 +159,11 @@ class PluginMonitoringMessage extends CommonDBTM {
       $nb_delete  = 0;
       $nb_add     = 0;
       $nb_update  = 0;
-      $nb_delete = countElementsInTable(getTableForItemType('PluginMonitoringLog'), "`id` > '".$id_restart."'
-         AND `action`='delete'");
-      $nb_add = countElementsInTable(getTableForItemType('PluginMonitoringLog'), "`id` > '".$id_restart."'
-         AND `action`='add'");
-      $nb_update = countElementsInTable(getTableForItemType('PluginMonitoringLog'), "`id` > '".$id_restart."'
-         AND `action`='update'");
+
+      
+      $nb_delete = countElementsInTable(getTableForItemType('PluginMonitoringLog'), ['id'=>['>',$id_restart],'action'=>"delete"]);
+      $nb_add = countElementsInTable(getTableForItemType('PluginMonitoringLog'), ['id'=>['>',$id_restart],'action'=>"add"]);
+      $nb_update = countElementsInTable(getTableForItemType('PluginMonitoringLog'), ['id'=>['>',$id_restart],'action'=>"update"]);
       if ($nb_delete > 0 OR $nb_add > 0 OR $nb_update > 0) {
          $input .= __('The configuration has changed', 'monitoring')."<br/>";
          if ($nb_add > 0) {

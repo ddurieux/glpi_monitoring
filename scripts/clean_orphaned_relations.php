@@ -135,7 +135,7 @@ if (!$Plugin->isActivated('monitoring')) {
    while ($data=$DB->fetchArray($result)) {
       $nb += countElementsInTable(
               'glpi_plugin_monitoring_serviceevents', 
-              "`plugin_monitoring_services_id`='".$data['plugin_monitoring_services_id']."'");
+              ["plugin_monitoring_services_id"=>$data['plugin_monitoring_services_id']]);
       $DB->query("DELETE FROM `glpi_plugin_monitoring_serviceevents`
               WHERE `plugin_monitoring_services_id`='".$data['plugin_monitoring_services_id']."'");
       echo ".";

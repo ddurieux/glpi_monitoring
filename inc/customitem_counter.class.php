@@ -103,7 +103,7 @@ class PluginMonitoringCustomitem_Counter extends CommonDBTM {
          $this->getEmpty();
       }
 
-      $this->showTabs($options);
+      //$this->showTabs($options);
       $this->showFormHeader($options);
 
       echo "<tr class='tab_bg_1'>";

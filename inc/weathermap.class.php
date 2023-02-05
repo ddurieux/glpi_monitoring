@@ -905,7 +905,7 @@ class PluginMonitoringWeathermap extends CommonDBTM {
 
       $this->getFromDB($weathermaps_id);
 
-      if (countElementsInTable('glpi_plugin_monitoring_weathermapnodes', "`plugin_monitoring_weathermaps_id`='".$weathermaps_id."'") == 0) {
+      if (countElementsInTable('glpi_plugin_monitoring_weathermapnodes', ["plugin_monitoring_weathermaps_id"=>$weathermaps_id]) == 0) {
          return;
       }
 

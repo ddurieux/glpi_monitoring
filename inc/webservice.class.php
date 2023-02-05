@@ -439,20 +439,26 @@ class PluginMonitoringWebservice {
             $state['critical'] = 0;
             while ($dataComponentscatalog_Host=$DB->fetchArray($result)) {
 
-               $state['ok'] += countElementsInTable("glpi_plugin_monitoring_services",
-                       "(`state`='OK' OR `state`='UP') AND `state_type`='HARD'
-                          AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
+               $state['ok'] += countElementsInTable("glpi_plugin_monitoring_services",[
+                  'state' => PLUGIN_MONITORING_STATE_OK,
+                  "state_type"=>'HARD',
+                  "plugin_monitoring_componentscatalogs_hosts_id"=>$dataComponentscatalog_Host['id']]);
+      
+               
+            
 
+               $state['warning'] += countElementsInTable("glpi_plugin_monitoring_services",[
+                  'state' => PLUGIN_MONITORING_STATE_WARNING,
+                  "state_type"=>'HARD',
+                  "plugin_monitoring_componentscatalogs_hosts_id"=>$dataComponentscatalog_Host['id']]);
+                  
+                  
 
-               $state['warning'] += countElementsInTable("glpi_plugin_monitoring_services",
-                       "(`state`='WARNING' OR `state`='UNKNOWN' OR `state`='RECOVERY' OR `state`='FLAPPING' OR `state` IS NULL)
-                          AND `state_type`='HARD'
-                          AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
+               $state['critical'] += countElementsInTable("glpi_plugin_monitoring_services",[
+                  'state' => PLUGIN_MONITORING_STATE_CRITICAL,
+                  "state_type"=>'HARD',
+                  "plugin_monitoring_componentscatalogs_hosts_id"=>$dataComponentscatalog_Host['id']]);
 
-               $state['critical'] += countElementsInTable("glpi_plugin_monitoring_services",
-                       "(`state`='DOWN' OR `state`='UNREACHABLE' OR `state`='CRITICAL' OR `state`='DOWNTIME')
-                          AND `state_type`='HARD'
-                          AND `plugin_monitoring_componentscatalogs_hosts_id`='".$dataComponentscatalog_Host['id']."'");
 
             }
             if ($state['critical'] > 0) {

@@ -135,8 +135,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    **/
    static function countForStaticHosts(PluginMonitoringComponentscatalog $item) {
 
-      $restrict = "`plugin_monitoring_componentscalalog_id` = '".$item->getField('id') ."'
-         AND `is_static`='1'";
+      $restrict = ["plugin_monitoring_componentscalalog_id" => $item->getField('id'), "is_static" => '1'];
 
       return countElementsInTable('glpi_plugin_monitoring_componentscatalogs_hosts', $restrict);
    }
@@ -147,9 +146,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
     * @param $item PluginMonitoringComponentscatalog object
    **/
    static function countForDynamicHosts(PluginMonitoringComponentscatalog $item) {
-
-      $restrict = "`plugin_monitoring_componentscalalog_id` = '".$item->getField('id') ."'
-         AND `is_static`='0'";
+      $restrict = ["plugin_monitoring_componentscalalog_id" => $item->getField('id'), "is_static" => '0'];
 
       return countElementsInTable('glpi_plugin_monitoring_componentscatalogs_hosts', $restrict);
    }
@@ -161,7 +158,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    **/
    static function countForRules(PluginMonitoringComponentscatalog $item) {
 
-      $restrict = "`plugin_monitoring_componentscalalog_id` = '".$item->getField('id') ."'";
+      $restrict = ["plugin_monitoring_componentscalalog_id" => $item->getField('id')];
 
       return countElementsInTable('glpi_plugin_monitoring_componentscatalogs_rules', $restrict);
    }
@@ -173,7 +170,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    **/
    static function countForComponents(PluginMonitoringComponentscatalog $item) {
 
-      $restrict = "`plugin_monitoring_componentscalalog_id` = '".$item->getField('id') ."'";
+      $restrict = ["plugin_monitoring_componentscalalog_id" => $item->getField('id')];
 
       return countElementsInTable('glpi_plugin_monitoring_componentscatalogs_components', $restrict);
    }
@@ -185,8 +182,7 @@ class PluginMonitoringComponentscatalog extends CommonDropdown {
    **/
    static function countForContacts(PluginMonitoringComponentscatalog $item) {
 
-      $restrict = "`items_id` = '".$item->getField('id') ."'"
-              . " AND `itemtype`='PluginMonitoringComponentscatalog'";
+      $restrict = ["itemtype" => "PluginMonitoringComponentscatalog", "items_id" => $item->getField('id')];
 
       return countElementsInTable('glpi_plugin_monitoring_contacts_items', $restrict);
    }

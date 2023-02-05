@@ -850,7 +850,7 @@ class PluginMonitoringService extends CommonDBTM {
       } else {
          $this->getFromDB($items_id);
       }
-      $this->showTabs($options);
+      //$this->showTabs($options);
       $this->showFormHeader($options);
       if (!isset($this->fields['plugin_monitoring_servicedefs_id'])
               OR empty($this->fields['plugin_monitoring_servicedefs_id'])) {
@@ -1410,10 +1410,11 @@ class PluginMonitoringService extends CommonDBTM {
       if ($this->fields['networkports_id'] > 0) {
          // Delete componentscatalog_host if no networkports in services
          if (countElementsInTable(
-                 'glpi_plugin_monitoring_services',
-                 "`plugin_monitoring_components_id`='".$this->fields['plugin_monitoring_components_id']."'
-                  AND `networkports_id`>0
-                  AND `plugin_monitoring_componentscatalogs_hosts_id`='".$this->fields['plugin_monitoring_componentscatalogs_hosts_id']."'") == 0) {
+                 'glpi_plugin_monitoring_services',  [
+                     "plugin_monitoring_components_id"=>$this->fields['plugin_monitoring_components_id'],
+                     "networkports_id"=>[">",0],
+                     "plugin_monitoring_componentscatalogs_hosts_id"=>$this->fields['plugin_monitoring_componentscatalogs_hosts_id']
+                  ]) == 0) {
             $pmComponentscatalog_Host = new PluginMonitoringComponentscatalog_Host();
             $pmComponentscatalog_Host->getFromDB($this->fields['plugin_monitoring_componentscatalogs_hosts_id']);
             if ($pmComponentscatalog_Host->fields['is_static'] == 0) {
